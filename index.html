@@ -17,14 +17,35 @@
 
       body {
         font-family: Arial, sans-serif;
-        background: #0a0a0a;
         min-height: 100vh;
         display: flex;
         justify-content: center;
         align-items: center;
         padding: 20px;
+        background: #0a0a0a;
+        /* ===== TAMBAHAN: GAMBAR LATAR BODY ===== */
+        background-image: url('https://images.unsplash.com/photo-1582139329536-e7284fece509?w=1600');
+        background-size: cover;
+        background-position: center;
+        background-attachment: fixed;
+        /* Gambar kekal walaupun scroll */
+        position: relative;
       }
 
+      /* Lapisan gelap di atas body - supaya dashboard menonjol */
+      body::before {
+        content: '';
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(0, 0, 0, 0.7);
+        /* 70% gelap - cukup untuk nampak gambar tapi teks jelas */
+        z-index: 0;
+      }
+
+      /* Pastikan dashboard di atas lapisan gelap */
       .dashboard {
         max-width: 1100px;
         width: 100%;
@@ -36,6 +57,31 @@
         border: 1px solid #2a2a2a;
         position: relative;
         overflow: hidden;
+        z-index: 1;
+      }
+
+      /* ===== TAMBAHAN: GAMBAR LATAR DASHBOARD (LAPISAN KEDUA) ===== */
+      .dashboard::after {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-image: url('https://images.unsplash.com/illustrations/a-firefighter-standing-in-front-of-a-fire-truck-jkicND8j4co?w=1600');
+        background-size: cover;
+        background-position: center;
+        opacity: 0.08;
+        /* 8% - sangat samar, sekadar tekstur */
+        border-radius: 28px;
+        z-index: 0;
+        pointer-events: none;
+      }
+
+      /* Pastikan semua content di ATAS gambar dashboard */
+      .dashboard > * {
+        position: relative;
+        z-index: 1;
       }
 
       /* JALUR MERAH DI ATAS - TANDA BOMBA */
@@ -49,6 +95,8 @@
         background: linear-gradient(90deg, #cc0000, #ffcc00, #cc0000);
         background-size: 200% 100%;
         animation: stripeMove 4s linear infinite;
+        z-index: 2;
+        /* Pastikan jalur di atas gambar */
       }
 
       @keyframes stripeMove {
