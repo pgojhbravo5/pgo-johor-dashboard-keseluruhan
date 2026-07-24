@@ -54,6 +54,7 @@
         background-position: center;
         background-attachment: fixed;
         position: relative;
+        overflow-x: hidden;
       }
 
       body::before {
@@ -65,6 +66,25 @@
         bottom: 0;
         background: rgba(0, 0, 0, 0.75);
         z-index: 0;
+      }
+
+      /* ===== OVERLAY UNTUK SIDEBAR ===== */
+      .sidebar-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(0, 0, 0, 0.7);
+        z-index: 998;
+        opacity: 0;
+        visibility: hidden;
+        transition: all 0.3s ease;
+      }
+
+      .sidebar-overlay.active {
+        opacity: 1;
+        visibility: visible;
       }
 
       .dashboard {
@@ -148,6 +168,222 @@
         }
       }
 
+      /* ===== SIDEBAR / MENU HAMBURGER ===== */
+      .sidebar {
+        position: fixed;
+        top: 0;
+        right: -380px;
+        width: 380px;
+        max-width: 90vw;
+        height: 100vh;
+        background: #141414;
+        z-index: 999;
+        transition: right 0.35s cubic-bezier(0.25, 0.8, 0.25, 1);
+        border-left: 2px solid #cc0000;
+        overflow-y: auto;
+        display: flex;
+        flex-direction: column;
+        box-shadow: -10px 0 40px rgba(0, 0, 0, 0.8);
+      }
+
+      .sidebar.active {
+        right: 0;
+      }
+
+      .sidebar-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 20px 22px;
+        background: linear-gradient(135deg, #1a0000, #0a0a0a);
+        border-bottom: 1px solid #2a2a2a;
+        flex-shrink: 0;
+      }
+
+      .sidebar-header h3 {
+        color: #ffcc00;
+        font-size: 18px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        letter-spacing: 0.5px;
+      }
+
+      .sidebar-header h3 i {
+        color: #ff6600;
+        font-size: 20px;
+      }
+
+      .sidebar-close {
+        width: 38px;
+        height: 38px;
+        border-radius: 50%;
+        background: #1a1a1a;
+        border: 1px solid #333;
+        color: #888;
+        font-size: 18px;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.3s ease;
+      }
+
+      .sidebar-close:hover {
+        background: #cc0000;
+        color: white;
+        border-color: #cc0000;
+      }
+
+      .sidebar-content {
+        flex: 1;
+        padding: 16px 22px;
+        overflow-y: auto;
+      }
+
+      /* Kategori */
+      .sidebar-category {
+        margin-bottom: 20px;
+      }
+
+      .sidebar-category-title {
+        color: #ff6600;
+        font-size: 10px;
+        text-transform: uppercase;
+        letter-spacing: 2px;
+        margin-bottom: 10px;
+        padding-bottom: 8px;
+        border-bottom: 1px solid #222;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+      }
+
+      /* Item pautan dalam sidebar */
+      .sidebar-link {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 12px 14px;
+        color: #cccccc;
+        text-decoration: none;
+        border-radius: 10px;
+        margin-bottom: 4px;
+        transition: all 0.25s ease;
+        border: 1px solid transparent;
+        font-size: 14px;
+      }
+
+      .sidebar-link:hover {
+        background: #1e1e1e;
+        color: #ffffff;
+        border-color: #333;
+        transform: translateX(-3px);
+      }
+
+      .sidebar-link .link-icon {
+        width: 36px;
+        height: 36px;
+        border-radius: 8px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 16px;
+        flex-shrink: 0;
+      }
+
+      .link-icon.weather {
+        background: rgba(59, 130, 246, 0.15);
+        color: #3b82f6;
+      }
+      .link-icon.tide {
+        background: rgba(6, 182, 212, 0.15);
+        color: #06b6d4;
+      }
+      .link-icon.disaster {
+        background: rgba(239, 68, 68, 0.15);
+        color: #ef4444;
+      }
+      .link-icon.road {
+        background: rgba(245, 158, 11, 0.15);
+        color: #f59e0b;
+      }
+      .link-icon.flood {
+        background: rgba(99, 102, 241, 0.15);
+        color: #6366f1;
+      }
+      .link-icon.quake {
+        background: rgba(168, 85, 247, 0.15);
+        color: #a855f7;
+      }
+      .link-icon.radar {
+        background: rgba(34, 197, 94, 0.15);
+        color: #22c55e;
+      }
+      .link-icon.fire {
+        background: rgba(249, 115, 22, 0.15);
+        color: #f97316;
+      }
+      .link-icon.emergency {
+        background: rgba(239, 68, 68, 0.15);
+        color: #ef4444;
+      }
+      .link-icon.info {
+        background: rgba(148, 163, 184, 0.15);
+        color: #94a3b8;
+      }
+
+      .sidebar-link .link-text {
+        flex: 1;
+      }
+
+      .sidebar-link .link-text .link-name {
+        display: block;
+        font-weight: 500;
+      }
+
+      .sidebar-link .link-text .link-desc {
+        display: block;
+        font-size: 10px;
+        color: #666;
+        margin-top: 2px;
+      }
+
+      .sidebar-link .external-arrow {
+        color: #444;
+        font-size: 12px;
+        transition: all 0.3s ease;
+      }
+
+      .sidebar-link:hover .external-arrow {
+        color: #ffcc00;
+      }
+
+      .sidebar-footer {
+        padding: 16px 22px;
+        border-top: 1px solid #222;
+        text-align: center;
+        font-size: 11px;
+        color: #555;
+        flex-shrink: 0;
+      }
+
+      .sidebar-footer .footer-icon {
+        color: #cc0000;
+      }
+
+      /* Scrollbar sidebar */
+      .sidebar::-webkit-scrollbar {
+        width: 4px;
+      }
+      .sidebar::-webkit-scrollbar-track {
+        background: #0a0a0a;
+      }
+      .sidebar::-webkit-scrollbar-thumb {
+        background: #cc0000;
+        border-radius: 10px;
+      }
+
       /* Header */
       .header {
         display: flex;
@@ -206,13 +442,13 @@
         letter-spacing: 1px;
       }
 
-      /* ===== HEADER RIGHT - JAM ANALOG + DIGITAL ===== */
+      /* ===== HEADER RIGHT - JAM + HAMBURGER BUTTON ===== */
       .header-right {
         display: flex;
         align-items: center;
-        gap: 16px;
+        gap: 12px;
         background: #1a1a1a;
-        padding: 8px 18px 8px 12px;
+        padding: 8px 12px 8px 12px;
         border-radius: 60px;
         border: 1px solid #2a2a2a;
       }
@@ -271,7 +507,6 @@
         z-index: 2;
       }
 
-      /* Titik-titik jam */
       .analog-clock .marker {
         position: absolute;
         width: 2px;
@@ -307,6 +542,68 @@
         color: #888888;
         font-size: 11px;
         margin-top: 1px;
+      }
+
+      /* ===== HAMBURGER BUTTON ===== */
+      .hamburger-btn {
+        width: 44px;
+        height: 44px;
+        border-radius: 50%;
+        background: #1a1a1a;
+        border: 1px solid #ffcc00;
+        cursor: pointer;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 5px;
+        transition: all 0.3s ease;
+        flex-shrink: 0;
+        position: relative;
+      }
+
+      .hamburger-btn:hover {
+        background: #cc0000;
+        border-color: #ff6600;
+        box-shadow: 0 0 20px rgba(204, 0, 0, 0.3);
+      }
+
+      .hamburger-btn span {
+        display: block;
+        width: 20px;
+        height: 2px;
+        background: #ffcc00;
+        border-radius: 2px;
+        transition: all 0.3s ease;
+      }
+
+      .hamburger-btn.active span:nth-child(1) {
+        transform: rotate(45deg) translate(5px, 5px);
+      }
+
+      .hamburger-btn.active span:nth-child(2) {
+        opacity: 0;
+      }
+
+      .hamburger-btn.active span:nth-child(3) {
+        transform: rotate(-45deg) translate(5px, -5px);
+      }
+
+      .hamburger-badge {
+        position: absolute;
+        top: -6px;
+        right: -6px;
+        width: 20px;
+        height: 20px;
+        background: #ef4444;
+        border-radius: 50%;
+        font-size: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-weight: bold;
+        border: 2px solid #0a0a0a;
       }
 
       /* Stats Bar */
@@ -351,12 +648,71 @@
         margin-bottom: 2px;
       }
 
+      /* ===== SECTION STATUS ===== */
+      .section-status {
+        margin-bottom: 30px;
+      }
+
+      .section-status:last-of-type {
+        margin-bottom: 20px;
+      }
+
+      .section-title {
+        color: #ffffff;
+        font-size: 14px;
+        font-weight: 700;
+        letter-spacing: 1.5px;
+        text-transform: uppercase;
+        margin-bottom: 14px;
+        padding-bottom: 8px;
+        border-bottom: 2px solid #2a2a2a;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+      }
+
+      .section-title .status-badge {
+        font-size: 11px;
+        padding: 2px 12px;
+        border-radius: 20px;
+        font-weight: 600;
+        letter-spacing: 0.5px;
+      }
+
+      .status-badge.live {
+        background: #3a1a1a;
+        color: #ff6b6b;
+        border: 1px solid #5a2a2a;
+        animation: blink 1.2s infinite;
+      }
+
+      .status-badge.online {
+        background: #1a3a1a;
+        color: #4ade80;
+        border: 1px solid #2a5a2a;
+      }
+
+      .status-badge.dev {
+        background: #3a2a1a;
+        color: #f6ad55;
+        border: 1px solid #5a3a2a;
+      }
+
+      @keyframes blink {
+        0%,
+        100% {
+          opacity: 1;
+        }
+        50% {
+          opacity: 0.4;
+        }
+      }
+
       /* Grid Apps */
       .apps-grid {
         display: grid;
         grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
         gap: 18px;
-        margin: 25px 0;
       }
 
       .app-card {
@@ -429,6 +785,12 @@
         animation: pulseNew 2s infinite;
       }
 
+      .app-card .badge.dev {
+        background: #3a2a1a;
+        color: #f6ad55;
+        border: 1px solid #5a3a2a;
+      }
+
       @keyframes pulseNew {
         0%,
         100% {
@@ -436,22 +798,6 @@
         }
         50% {
           opacity: 0.6;
-        }
-      }
-
-      .app-card .badge.dev {
-        background: #3a2a1a;
-        color: #f6ad55;
-        border: 1px solid #5a3a2a;
-      }
-
-      @keyframes blink {
-        0%,
-        100% {
-          opacity: 1;
-        }
-        50% {
-          opacity: 0.4;
         }
       }
 
@@ -467,7 +813,7 @@
         transform: translateX(5px);
       }
 
-      /* ===== FOOTER - DENGAN WHATSAPP & TELEGRAM ===== */
+      /* ===== FOOTER ===== */
       .footer {
         margin-top: 25px;
         padding-top: 18px;
@@ -535,7 +881,6 @@
         transform: translateY(-2px);
       }
 
-      /* Warna khas untuk WhatsApp & Telegram */
       .footer .social-links a.whatsapp:hover {
         color: #25d366;
         border-color: rgba(37, 211, 102, 0.2);
@@ -574,6 +919,11 @@
         .footer .social-links {
           justify-content: center;
         }
+        .sidebar {
+          width: 100%;
+          max-width: 100vw;
+          right: -100vw;
+        }
       }
 
       ::-webkit-scrollbar {
@@ -592,6 +942,235 @@
     </style>
   </head>
   <body>
+    <!-- ===== OVERLAY ===== -->
+    <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+    <!-- ===== SIDEBAR HAMBURGER ===== -->
+    <div class="sidebar" id="sidebar">
+      <div class="sidebar-header">
+        <h3><i class="fas fa-link"></i> PAUTAN PENTING</h3>
+        <button class="sidebar-close" id="sidebarClose">
+          <i class="fas fa-times"></i>
+        </button>
+      </div>
+      <div class="sidebar-content">
+        <!-- Kategori: Cuaca & Laut -->
+        <div class="sidebar-category">
+          <div class="sidebar-category-title">
+            <i class="fas fa-cloud-sun"></i> Cuaca & Laut
+          </div>
+          <a
+            href="https://www.met.gov.my/"
+            target="_blank"
+            class="sidebar-link"
+          >
+            <span class="link-icon weather"
+              ><i class="fas fa-cloud-sun-rain"></i
+            ></span>
+            <span class="link-text">
+              <span class="link-name">MetMalaysia - Cuaca</span>
+              <span class="link-desc">Ramalan & amaran cuaca rasmi</span>
+            </span>
+            <span class="external-arrow"
+              ><i class="fas fa-external-link-alt"></i
+            ></span>
+          </a>
+          <a
+            href="https://www.met.gov.my/iklim/tide-table/"
+            target="_blank"
+            class="sidebar-link"
+          >
+            <span class="link-icon tide"><i class="fas fa-water"></i></span>
+            <span class="link-text">
+              <span class="link-name">Pasang Surut Laut</span>
+              <span class="link-desc">Jadual air pasang surut Malaysia</span>
+            </span>
+            <span class="external-arrow"
+              ><i class="fas fa-external-link-alt"></i
+            ></span>
+          </a>
+          <a
+            href="https://www.met.gov.my/radar/"
+            target="_blank"
+            class="sidebar-link"
+          >
+            <span class="link-icon radar"
+              ><i class="fas fa-satellite-dish"></i
+            ></span>
+            <span class="link-text">
+              <span class="link-name">Radar Hujan</span>
+              <span class="link-desc">Imej radar hujan masa nyata</span>
+            </span>
+            <span class="external-arrow"
+              ><i class="fas fa-external-link-alt"></i
+            ></span>
+          </a>
+          <a
+            href="https://apims.doe.gov.my/"
+            target="_blank"
+            class="sidebar-link"
+          >
+            <span class="link-icon fire"><i class="fas fa-fire"></i></span>
+            <span class="link-text">
+              <span class="link-name">Indeks Cuaca Api (API)</span>
+              <span class="link-desc">IPU & status jerebu semasa</span>
+            </span>
+            <span class="external-arrow"
+              ><i class="fas fa-external-link-alt"></i
+            ></span>
+          </a>
+        </div>
+
+        <!-- Kategori: Bencana & Amaran -->
+        <div class="sidebar-category">
+          <div class="sidebar-category-title">
+            <i class="fas fa-exclamation-triangle"></i> Bencana & Amaran
+          </div>
+          <a
+            href="https://www.nadma.gov.my/"
+            target="_blank"
+            class="sidebar-link"
+          >
+            <span class="link-icon disaster"
+              ><i class="fas fa-house-damage"></i
+            ></span>
+            <span class="link-text">
+              <span class="link-name">NADMA - Agensi Pengurusan Bencana</span>
+              <span class="link-desc">Info & respons bencana negara</span>
+            </span>
+            <span class="external-arrow"
+              ><i class="fas fa-external-link-alt"></i
+            ></span>
+          </a>
+          <a
+            href="https://publicinfobanjir.water.gov.my/"
+            target="_blank"
+            class="sidebar-link"
+          >
+            <span class="link-icon flood"><i class="fas fa-water"></i></span>
+            <span class="link-text">
+              <span class="link-name">Public Infobanjir</span>
+              <span class="link-desc">Peta & status banjir semasa</span>
+            </span>
+            <span class="external-arrow"
+              ><i class="fas fa-external-link-alt"></i
+            ></span>
+          </a>
+          <a
+            href="https://www.met.gov.my/earthquake/"
+            target="_blank"
+            class="sidebar-link"
+          >
+            <span class="link-icon quake"
+              ><i class="fas fa-globe-asia"></i
+            ></span>
+            <span class="link-text">
+              <span class="link-name">Info Gempa Bumi</span>
+              <span class="link-desc"
+                >Aktiviti seismik Malaysia & antarabangsa</span
+              >
+            </span>
+            <span class="external-arrow"
+              ><i class="fas fa-external-link-alt"></i
+            ></span>
+          </a>
+        </div>
+
+        <!-- Kategori: Jalan Raya & Logistik -->
+        <div class="sidebar-category">
+          <div class="sidebar-category-title">
+            <i class="fas fa-road"></i> Jalan Raya & Logistik
+          </div>
+          <a
+            href="https://www.llm.gov.my/"
+            target="_blank"
+            class="sidebar-link"
+          >
+            <span class="link-icon road"><i class="fas fa-road"></i></span>
+            <span class="link-text">
+              <span class="link-name">LLM - Lebuhraya Malaysia</span>
+              <span class="link-desc">Status & laporan trafik lebuh raya</span>
+            </span>
+            <span class="external-arrow"
+              ><i class="fas fa-external-link-alt"></i
+            ></span>
+          </a>
+          <a
+            href="https://www.jpj.gov.my/"
+            target="_blank"
+            class="sidebar-link"
+          >
+            <span class="link-icon road"><i class="fas fa-car"></i></span>
+            <span class="link-text">
+              <span class="link-name">JPJ - Jabatan Pengangkutan Jalan</span>
+              <span class="link-desc">Maklumat jalan tutup & notis</span>
+            </span>
+            <span class="external-arrow"
+              ><i class="fas fa-external-link-alt"></i
+            ></span>
+          </a>
+        </div>
+
+        <!-- Kategori: Direktori Kecemasan -->
+        <div class="sidebar-category">
+          <div class="sidebar-category-title">
+            <i class="fas fa-phone-alt"></i> Direktori Kecemasan
+          </div>
+          <a
+            href="https://www.bomba.gov.my/"
+            target="_blank"
+            class="sidebar-link"
+          >
+            <span class="link-icon emergency"
+              ><i class="fas fa-fire-extinguisher"></i
+            ></span>
+            <span class="link-text">
+              <span class="link-name">JBPM Malaysia</span>
+              <span class="link-desc">Portal rasmi bomba</span>
+            </span>
+            <span class="external-arrow"
+              ><i class="fas fa-external-link-alt"></i
+            ></span>
+          </a>
+          <a
+            href="https://www.polis.gov.my/"
+            target="_blank"
+            class="sidebar-link"
+          >
+            <span class="link-icon info"
+              ><i class="fas fa-shield-alt"></i
+            ></span>
+            <span class="link-text">
+              <span class="link-name">PDRM - Polis Diraja Malaysia</span>
+              <span class="link-desc">Portal rasmi polis</span>
+            </span>
+            <span class="external-arrow"
+              ><i class="fas fa-external-link-alt"></i
+            ></span>
+          </a>
+          <a
+            href="https://www.999.gov.my/"
+            target="_blank"
+            class="sidebar-link"
+          >
+            <span class="link-icon emergency"
+              ><i class="fas fa-phone-alt"></i
+            ></span>
+            <span class="link-text">
+              <span class="link-name">MERS 999 - Kecemasan</span>
+              <span class="link-desc">Pusat panggilan kecemasan Malaysia</span>
+            </span>
+            <span class="external-arrow"
+              ><i class="fas fa-external-link-alt"></i
+            ></span>
+          </a>
+        </div>
+      </div>
+      <div class="sidebar-footer">
+        <span class="footer-icon">🔥</span> PGO Johor · Pusat Gerakan Operasi
+      </div>
+    </div>
+
     <div class="dashboard">
       <!-- HEADER -->
       <div class="header">
@@ -663,6 +1242,17 @@
             <div class="time" id="clock">12:00:00</div>
             <div class="date" id="date">23 JULAI 2026</div>
           </div>
+          <!-- HAMBURGER BUTTON -->
+          <button
+            class="hamburger-btn"
+            id="hamburgerBtn"
+            title="Pautan Penting"
+          >
+            <span></span>
+            <span></span>
+            <span></span>
+            <span class="hamburger-badge">14</span>
+          </button>
         </div>
       </div>
 
@@ -690,97 +1280,130 @@
         </div>
       </div>
 
-      <!-- GRID APPS -->
-      <div class="apps-grid">
-        <a
-          href="https://dashboard-kekuatan-anggota-12-jam-j.vercel.app/"
-          target="_blank"
-          class="app-card"
-        >
-          <span class="icon">👨‍🚒</span>
-          <h3>Kekuatan Anggota <span class="highlight">12 Jam</span></h3>
-          <p>Status anggota, syif, cuti & tugasan khas mengikut balai.</p>
-          <span class="badge online">● Online</span>
-          <span class="arrow">→</span>
-        </a>
+      <!-- ===== GRID APPS DISUSUN MENGIKUT STATUS ===== -->
 
-        <a
-          href="https://dashboard-data-jentera-jbpm-jo-git-1a1049-pgojhbravo5s-projects.vercel.app/"
-          target="_blank"
-          class="app-card"
-        >
-          <span class="icon">🚛</span>
-          <h3>Data <span class="highlight">Jentera</span> JBPM Johor</h3>
-          <p>Pemantauan status jentera & kenderaan operasi.</p>
-          <span class="badge online">● Online</span>
-          <span class="arrow">→</span>
-        </a>
-
-        <a
-          href="https://dashbord-live-statistik-kes.vercel.app/"
-          target="_blank"
-          class="app-card"
-        >
-          <span class="icon">📊</span>
-          <h3>Live Statistik Kes <span class="highlight">24 Jam</span></h3>
-          <p>Statistik masa nyata panggilan, lokasi & mangsa.</p>
-          <span class="badge live">● LIVE</span>
-          <span class="arrow">→</span>
-        </a>
-
-        <a
-          href="https://po1teknologia2.vercel.app/"
-          target="_blank"
-          class="app-card"
-        >
-          <span class="icon">📦</span>
-          <h3>Sistem Inventori<span class="highlight"> (DID)</span></h3>
-          <p>Pengurusan storan, peralatan & aset logistik.</p>
-          <span class="badge online">● Online</span>
-          <span class="arrow">→</span>
-        </a>
-
-        <a
-          href="https://daftar-masuk-pelawat.vercel.app/"
-          target="_blank"
-          class="app-card"
-        >
-          <span class="icon">📋</span>
-          <h3>Daftar Masuk Pelawat <span class="highlight">(ENTRY)</span></h3>
-          <p>Sistem daftar masuk dengan gambar ID & staf bertanggungjawab.</p>
-          <span class="badge online">● Online</span>
-          <span class="arrow">→</span>
-        </a>
-
-        <a href="LINK PETA KAWASAN JAGAAN" target="_blank" class="app-card">
-          <span class="icon">🗺️</span>
-          <h3>Peta Kawasan <span class="highlight">Jagaan Balai</span></h3>
-          <p>
-            Peta interaktif kawasan jagaan balai bomba mengikut zon di Johor.
-          </p>
-          <span class="badge new">● DALAM PEMBANGUNAN</span>
-          <span class="arrow">→</span>
-        </a>
-
-        <a href="LINK DATA GIRN" target="_blank" class="app-card">
-          <span class="icon">📡</span>
-          <h3>Dashboard Aset <span class="highlight">GIRN</span></h3>
-          <p>
-            Pemantauan aset GIRN JBPM Negeri Johor dengan tapisan & eksport.
-          </p>
-          <span class="badge new">● DALAM PEMBANGUNAN</span>
-          <span class="arrow">→</span>
-        </a>
+      <!-- SECTION: LIVE -->
+      <div class="section-status">
+        <div class="section-title">
+          <i class="fas fa-circle" style="color: #ff6b6b; font-size: 12px"></i>
+          LIVE
+          <span class="status-badge live">● LIVE</span>
+          <span style="color: #666; font-size: 12px; font-weight: 400"
+            >Data masa nyata</span
+          >
+        </div>
+        <div class="apps-grid">
+          <a
+            href="https://dashbord-live-statistik-kes.vercel.app/"
+            target="_blank"
+            class="app-card"
+          >
+            <span class="icon">📊</span>
+            <h3>Live Statistik Kes <span class="highlight">24 Jam</span></h3>
+            <p>Statistik masa nyata panggilan, lokasi & mangsa.</p>
+            <span class="badge live">● LIVE</span>
+            <span class="arrow">→</span>
+          </a>
+        </div>
       </div>
 
-      <!-- ===== FOOTER - DENGAN WHATSAPP & TELEGRAM ===== -->
+      <!-- SECTION: ONLINE -->
+      <div class="section-status">
+        <div class="section-title">
+          <i class="fas fa-circle" style="color: #4ade80; font-size: 12px"></i>
+          ONLINE
+          <span class="status-badge online">● Online</span>
+          <span style="color: #666; font-size: 12px; font-weight: 400"
+            >Sedia digunakan</span
+          >
+        </div>
+        <div class="apps-grid">
+          <a
+            href="https://dashboard-kekuatan-anggota-12-jam-j.vercel.app/"
+            target="_blank"
+            class="app-card"
+          >
+            <span class="icon">👨‍🚒</span>
+            <h3>Kekuatan Anggota <span class="highlight">12 Jam</span></h3>
+            <p>Status anggota, syif, cuti & tugasan khas mengikut balai.</p>
+            <span class="badge online">● Online</span>
+            <span class="arrow">→</span>
+          </a>
+
+          <a
+            href="https://po1teknologia2.vercel.app/"
+            target="_blank"
+            class="app-card"
+          >
+            <span class="icon">📦</span>
+            <h3>Sistem Inventori<span class="highlight"> (DID)</span></h3>
+            <p>Pengurusan storan, peralatan & aset logistik.</p>
+            <span class="badge online">● Online</span>
+            <span class="arrow">→</span>
+          </a>
+
+          <a
+            href="https://daftar-masuk-pelawat.vercel.app/"
+            target="_blank"
+            class="app-card"
+          >
+            <span class="icon">📋</span>
+            <h3>Daftar Masuk Pelawat <span class="highlight">(ENTRY)</span></h3>
+            <p>Sistem daftar masuk dengan gambar ID & staf bertanggungjawab.</p>
+            <span class="badge online">● Online</span>
+            <span class="arrow">→</span>
+          </a>
+        </div>
+      </div>
+
+      <!-- SECTION: DALAM PEMBANGUNAN -->
+      <div class="section-status">
+        <div class="section-title">
+          <i class="fas fa-circle" style="color: #f6ad55; font-size: 12px"></i>
+          DALAM PEMBANGUNAN
+          <span class="status-badge dev">● Dalam Pembangunan</span>
+          <span style="color: #666; font-size: 12px; font-weight: 400"
+            >Segera hadir</span
+          >
+        </div>
+        <div class="apps-grid">
+          <a href="#" target="_blank" class="app-card">
+            <span class="icon">🚛</span>
+            <h3>Data <span class="highlight">Jentera</span> JBPM Johor</h3>
+            <p>Pemantauan status jentera & kenderaan operasi.</p>
+            <span class="badge dev">● Dalam Pembangunan</span>
+            <span class="arrow">→</span>
+          </a>
+
+          <a href="#" target="_blank" class="app-card">
+            <span class="icon">🗺️</span>
+            <h3>Peta Kawasan <span class="highlight">Jagaan Balai</span></h3>
+            <p>
+              Peta interaktif kawasan jagaan balai bomba mengikut zon di Johor.
+            </p>
+            <span class="badge dev">● Dalam Pembangunan</span>
+            <span class="arrow">→</span>
+          </a>
+
+          <a href="#" target="_blank" class="app-card">
+            <span class="icon">📡</span>
+            <h3>Dashboard Aset <span class="highlight">GIRN</span></h3>
+            <p>
+              Pemantauan aset GIRN JBPM Negeri Johor dengan tapisan & eksport.
+            </p>
+            <span class="badge dev">● Dalam Pembangunan</span>
+            <span class="arrow">→</span>
+          </a>
+        </div>
+      </div>
+
+      <!-- FOOTER -->
       <div class="footer">
         <div class="brand">
           <span class="dot"></span>
           <span>© 2026 <strong style="color: #cc0000"></strong> PGO Johor</span>
         </div>
         <div class="social-links">
-          <!-- WhatsApp - Nombor 0196717865 -->
           <a
             href="https://wa.me/60196717865"
             target="_blank"
@@ -789,7 +1412,6 @@
           >
             <i class="fab fa-whatsapp"></i>
           </a>
-          <!-- Telegram - Nombor 0196717865 -->
           <a
             href="https://t.me/+60196717865"
             target="_blank"
@@ -798,11 +1420,9 @@
           >
             <i class="fab fa-telegram-plane"></i>
           </a>
-          <!-- Instagram - Optional -->
           <a href="#" target="_blank" title="Instagram">
             <i class="fab fa-instagram"></i>
           </a>
-          <!-- YouTube - Optional -->
           <a href="#" target="_blank" title="YouTube">
             <i class="fab fa-youtube"></i>
           </a>
@@ -812,7 +1432,40 @@
 
     <script>
       // ============================================================
-      // 1. JAM DIGITAL + ANALOG
+      // 1. SIDEBAR HAMBURGER
+      // ============================================================
+      const hamburgerBtn = document.getElementById('hamburgerBtn');
+      const sidebar = document.getElementById('sidebar');
+      const sidebarClose = document.getElementById('sidebarClose');
+      const sidebarOverlay = document.getElementById('sidebarOverlay');
+
+      function openSidebar() {
+        sidebar.classList.add('active');
+        sidebarOverlay.classList.add('active');
+        hamburgerBtn.classList.add('active');
+        document.body.style.overflow = 'hidden';
+      }
+
+      function closeSidebar() {
+        sidebar.classList.remove('active');
+        sidebarOverlay.classList.remove('active');
+        hamburgerBtn.classList.remove('active');
+        document.body.style.overflow = '';
+      }
+
+      hamburgerBtn.addEventListener('click', openSidebar);
+      sidebarClose.addEventListener('click', closeSidebar);
+      sidebarOverlay.addEventListener('click', closeSidebar);
+
+      // Tutup sidebar dengan kekunci ESC
+      document.addEventListener('keydown', function (e) {
+        if (e.key === 'Escape' && sidebar.classList.contains('active')) {
+          closeSidebar();
+        }
+      });
+
+      // ============================================================
+      // 2. JAM DIGITAL + ANALOG
       // ============================================================
       function updateClock() {
         const now = new Date();
@@ -848,8 +1501,15 @@
       setInterval(updateClock, 1000);
 
       // ============================================================
-      // 2. LIVE COUNTER
+      // 3. COUNTER STATISTIK
       // ============================================================
+      // Kiraan berdasarkan data sebenar
+      const totalApps = 7;
+      const liveApps = 1;
+      const onlineApps = 3;
+      const devApps = 3;
+      const percentOnline = Math.round((onlineApps / totalApps) * 100);
+
       function animateCounter(element, target, suffix = '') {
         let current = 0;
         const step = Math.max(1, Math.floor(target / 25));
@@ -864,9 +1524,13 @@
       }
 
       window.addEventListener('load', function () {
-        animateCounter(document.getElementById('appCount'), 7);
-        animateCounter(document.getElementById('onlinePercent'), 100, '%');
-        animateCounter(document.getElementById('liveCount'), 2);
+        animateCounter(document.getElementById('appCount'), totalApps);
+        animateCounter(
+          document.getElementById('onlinePercent'),
+          percentOnline,
+          '%'
+        );
+        animateCounter(document.getElementById('liveCount'), liveApps);
       });
     </script>
   </body>
