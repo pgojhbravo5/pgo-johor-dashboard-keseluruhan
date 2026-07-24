@@ -172,9 +172,9 @@
       .sidebar {
         position: fixed;
         top: 0;
-        right: -380px;
-        width: 380px;
-        max-width: 90vw;
+        right: -420px;
+        width: 420px;
+        max-width: 92vw;
         height: 100vh;
         background: #141414;
         z-index: 999;
@@ -198,6 +198,9 @@
         background: linear-gradient(135deg, #1a0000, #0a0a0a);
         border-bottom: 1px solid #2a2a2a;
         flex-shrink: 0;
+        position: sticky;
+        top: 0;
+        z-index: 10;
       }
 
       .sidebar-header h3 {
@@ -237,13 +240,13 @@
 
       .sidebar-content {
         flex: 1;
-        padding: 16px 22px;
+        padding: 16px 22px 30px;
         overflow-y: auto;
       }
 
       /* Kategori */
       .sidebar-category {
-        margin-bottom: 20px;
+        margin-bottom: 22px;
       }
 
       .sidebar-category-title {
@@ -332,6 +335,22 @@
         background: rgba(148, 163, 184, 0.15);
         color: #94a3b8;
       }
+      .link-icon.hospital {
+        background: rgba(16, 185, 129, 0.15);
+        color: #10b981;
+      }
+      .link-icon.maritime {
+        background: rgba(59, 130, 246, 0.15);
+        color: #3b82f6;
+      }
+      .link-icon.civil {
+        background: rgba(251, 191, 36, 0.15);
+        color: #fbbf24;
+      }
+      .link-icon.phone {
+        background: rgba(34, 197, 94, 0.15);
+        color: #22c55e;
+      }
 
       .sidebar-link .link-text {
         flex: 1;
@@ -366,6 +385,7 @@
         font-size: 11px;
         color: #555;
         flex-shrink: 0;
+        background: #0a0a0a;
       }
 
       .sidebar-footer .footer-icon {
@@ -382,6 +402,151 @@
       .sidebar::-webkit-scrollbar-thumb {
         background: #cc0000;
         border-radius: 10px;
+      }
+
+      /* ===== EMERGENCY DIRECTORY ===== */
+      .emergency-directory {
+        margin-top: 4px;
+      }
+
+      .emergency-group {
+        margin-bottom: 14px;
+      }
+
+      .emergency-group-title {
+        color: #888;
+        font-size: 11px;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        margin-bottom: 6px;
+        padding-left: 4px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+
+      .emergency-group-title .group-icon {
+        font-size: 13px;
+      }
+
+      .emergency-item {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 8px 12px;
+        background: #1a1a1a;
+        border-radius: 10px;
+        margin-bottom: 4px;
+        border: 1px solid #252525;
+        transition: all 0.25s ease;
+      }
+
+      .emergency-item:hover {
+        border-color: #cc0000;
+        background: #1f1f1f;
+      }
+
+      .emergency-item .e-icon {
+        width: 32px;
+        height: 32px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 14px;
+        flex-shrink: 0;
+      }
+
+      .e-icon.bomba {
+        background: rgba(239, 68, 68, 0.2);
+        color: #ef4444;
+      }
+      .e-icon.polis {
+        background: rgba(59, 130, 246, 0.2);
+        color: #3b82f6;
+      }
+      .e-icon.hospital {
+        background: rgba(16, 185, 129, 0.2);
+        color: #10b981;
+      }
+      .e-icon.maritim {
+        background: rgba(6, 182, 212, 0.2);
+        color: #06b6d4;
+      }
+      .e-icon.civil {
+        background: rgba(251, 191, 36, 0.2);
+        color: #fbbf24;
+      }
+      .e-icon.emergency {
+        background: rgba(239, 68, 68, 0.15);
+        color: #ef4444;
+      }
+
+      .emergency-item .e-info {
+        flex: 1;
+        min-width: 0;
+      }
+
+      .emergency-item .e-info .e-name {
+        color: #e0e0e0;
+        font-size: 13px;
+        font-weight: 500;
+        display: block;
+      }
+
+      .emergency-item .e-info .e-number {
+        color: #ffcc00;
+        font-size: 15px;
+        font-weight: 700;
+        font-family: 'Courier New', monospace;
+        display: block;
+      }
+
+      .emergency-item .e-info .e-desc {
+        color: #666;
+        font-size: 10px;
+        display: block;
+        margin-top: 1px;
+      }
+
+      .emergency-item .e-actions {
+        display: flex;
+        gap: 4px;
+        flex-shrink: 0;
+      }
+
+      .emergency-item .e-actions a {
+        width: 34px;
+        height: 34px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        text-decoration: none;
+        font-size: 14px;
+        transition: all 0.3s ease;
+        border: none;
+        cursor: pointer;
+      }
+
+      .e-actions .call-btn {
+        background: #cc0000;
+      }
+
+      .e-actions .call-btn:hover {
+        background: #ff0000;
+        transform: scale(1.1);
+      }
+
+      .e-actions .wa-btn {
+        background: #075e54;
+      }
+
+      .e-actions .wa-btn:hover {
+        background: #128c7e;
+        transform: scale(1.1);
       }
 
       /* Header */
@@ -669,6 +834,7 @@
         display: flex;
         align-items: center;
         gap: 12px;
+        flex-wrap: wrap;
       }
 
       .section-title .status-badge {
@@ -778,27 +944,10 @@
         animation: blink 1.2s infinite;
       }
 
-      .app-card .badge.new {
-        background: #1a3a5a;
-        color: #63b3ed;
-        border: 1px solid #2a5a7a;
-        animation: pulseNew 2s infinite;
-      }
-
       .app-card .badge.dev {
         background: #3a2a1a;
         color: #f6ad55;
         border: 1px solid #5a3a2a;
-      }
-
-      @keyframes pulseNew {
-        0%,
-        100% {
-          opacity: 1;
-        }
-        50% {
-          opacity: 0.6;
-        }
       }
 
       .app-card .arrow {
@@ -939,6 +1088,33 @@
       ::-webkit-scrollbar-thumb:hover {
         background: #ffcc00;
       }
+
+      /* Info box */
+      .info-box {
+        background: #0a0a0a;
+        border: 1px solid #1a1a1a;
+        border-radius: 10px;
+        padding: 12px 14px;
+        margin-top: 10px;
+      }
+
+      .info-box p {
+        color: #666;
+        font-size: 11px;
+        text-align: center;
+        line-height: 1.6;
+      }
+
+      .info-box p i {
+        color: #ffcc00;
+        margin-right: 4px;
+      }
+
+      .info-box .highlight-num {
+        color: #ffcc00;
+        font-weight: 700;
+        font-family: 'Courier New', monospace;
+      }
     </style>
   </head>
   <body>
@@ -959,65 +1135,37 @@
           <div class="sidebar-category-title">
             <i class="fas fa-cloud-sun"></i> Cuaca & Laut
           </div>
-          <a
-            href="https://www.met.gov.my/"
-            target="_blank"
-            class="sidebar-link"
-          >
-            <span class="link-icon weather"
-              ><i class="fas fa-cloud-sun-rain"></i
-            ></span>
+          <a href="https://www.met.gov.my/" target="_blank" class="sidebar-link">
+            <span class="link-icon weather"><i class="fas fa-cloud-sun-rain"></i></span>
             <span class="link-text">
               <span class="link-name">MetMalaysia - Cuaca</span>
               <span class="link-desc">Ramalan & amaran cuaca rasmi</span>
             </span>
-            <span class="external-arrow"
-              ><i class="fas fa-external-link-alt"></i
-            ></span>
+            <span class="external-arrow"><i class="fas fa-external-link-alt"></i></span>
           </a>
-          <a
-            href="https://www.met.gov.my/iklim/tide-table/"
-            target="_blank"
-            class="sidebar-link"
-          >
+          <a href="https://www.met.gov.my/iklim/tide-table/" target="_blank" class="sidebar-link">
             <span class="link-icon tide"><i class="fas fa-water"></i></span>
             <span class="link-text">
               <span class="link-name">Pasang Surut Laut</span>
               <span class="link-desc">Jadual air pasang surut Malaysia</span>
             </span>
-            <span class="external-arrow"
-              ><i class="fas fa-external-link-alt"></i
-            ></span>
+            <span class="external-arrow"><i class="fas fa-external-link-alt"></i></span>
           </a>
-          <a
-            href="https://www.met.gov.my/radar/"
-            target="_blank"
-            class="sidebar-link"
-          >
-            <span class="link-icon radar"
-              ><i class="fas fa-satellite-dish"></i
-            ></span>
+          <a href="https://www.met.gov.my/radar/" target="_blank" class="sidebar-link">
+            <span class="link-icon radar"><i class="fas fa-satellite-dish"></i></span>
             <span class="link-text">
               <span class="link-name">Radar Hujan</span>
               <span class="link-desc">Imej radar hujan masa nyata</span>
             </span>
-            <span class="external-arrow"
-              ><i class="fas fa-external-link-alt"></i
-            ></span>
+            <span class="external-arrow"><i class="fas fa-external-link-alt"></i></span>
           </a>
-          <a
-            href="https://apims.doe.gov.my/"
-            target="_blank"
-            class="sidebar-link"
-          >
+          <a href="https://apims.doe.gov.my/" target="_blank" class="sidebar-link">
             <span class="link-icon fire"><i class="fas fa-fire"></i></span>
             <span class="link-text">
               <span class="link-name">Indeks Cuaca Api (API)</span>
               <span class="link-desc">IPU & status jerebu semasa</span>
             </span>
-            <span class="external-arrow"
-              ><i class="fas fa-external-link-alt"></i
-            ></span>
+            <span class="external-arrow"><i class="fas fa-external-link-alt"></i></span>
           </a>
         </div>
 
@@ -1026,53 +1174,29 @@
           <div class="sidebar-category-title">
             <i class="fas fa-exclamation-triangle"></i> Bencana & Amaran
           </div>
-          <a
-            href="https://www.nadma.gov.my/"
-            target="_blank"
-            class="sidebar-link"
-          >
-            <span class="link-icon disaster"
-              ><i class="fas fa-house-damage"></i
-            ></span>
+          <a href="https://www.nadma.gov.my/" target="_blank" class="sidebar-link">
+            <span class="link-icon disaster"><i class="fas fa-house-damage"></i></span>
             <span class="link-text">
               <span class="link-name">NADMA - Agensi Pengurusan Bencana</span>
               <span class="link-desc">Info & respons bencana negara</span>
             </span>
-            <span class="external-arrow"
-              ><i class="fas fa-external-link-alt"></i
-            ></span>
+            <span class="external-arrow"><i class="fas fa-external-link-alt"></i></span>
           </a>
-          <a
-            href="https://publicinfobanjir.water.gov.my/"
-            target="_blank"
-            class="sidebar-link"
-          >
+          <a href="https://publicinfobanjir.water.gov.my/" target="_blank" class="sidebar-link">
             <span class="link-icon flood"><i class="fas fa-water"></i></span>
             <span class="link-text">
               <span class="link-name">Public Infobanjir</span>
               <span class="link-desc">Peta & status banjir semasa</span>
             </span>
-            <span class="external-arrow"
-              ><i class="fas fa-external-link-alt"></i
-            ></span>
+            <span class="external-arrow"><i class="fas fa-external-link-alt"></i></span>
           </a>
-          <a
-            href="https://www.met.gov.my/earthquake/"
-            target="_blank"
-            class="sidebar-link"
-          >
-            <span class="link-icon quake"
-              ><i class="fas fa-globe-asia"></i
-            ></span>
+          <a href="https://www.met.gov.my/earthquake/" target="_blank" class="sidebar-link">
+            <span class="link-icon quake"><i class="fas fa-globe-asia"></i></span>
             <span class="link-text">
               <span class="link-name">Info Gempa Bumi</span>
-              <span class="link-desc"
-                >Aktiviti seismik Malaysia & antarabangsa</span
-              >
+              <span class="link-desc">Aktiviti seismik Malaysia & antarabangsa</span>
             </span>
-            <span class="external-arrow"
-              ><i class="fas fa-external-link-alt"></i
-            ></span>
+            <span class="external-arrow"><i class="fas fa-external-link-alt"></i></span>
           </a>
         </div>
 
@@ -1081,89 +1205,254 @@
           <div class="sidebar-category-title">
             <i class="fas fa-road"></i> Jalan Raya & Logistik
           </div>
-          <a
-            href="https://www.llm.gov.my/"
-            target="_blank"
-            class="sidebar-link"
-          >
+          <a href="https://www.llm.gov.my/" target="_blank" class="sidebar-link">
             <span class="link-icon road"><i class="fas fa-road"></i></span>
             <span class="link-text">
               <span class="link-name">LLM - Lebuhraya Malaysia</span>
               <span class="link-desc">Status & laporan trafik lebuh raya</span>
             </span>
-            <span class="external-arrow"
-              ><i class="fas fa-external-link-alt"></i
-            ></span>
+            <span class="external-arrow"><i class="fas fa-external-link-alt"></i></span>
           </a>
-          <a
-            href="https://www.jpj.gov.my/"
-            target="_blank"
-            class="sidebar-link"
-          >
+          <a href="https://www.jpj.gov.my/" target="_blank" class="sidebar-link">
             <span class="link-icon road"><i class="fas fa-car"></i></span>
             <span class="link-text">
               <span class="link-name">JPJ - Jabatan Pengangkutan Jalan</span>
               <span class="link-desc">Maklumat jalan tutup & notis</span>
             </span>
-            <span class="external-arrow"
-              ><i class="fas fa-external-link-alt"></i
-            ></span>
+            <span class="external-arrow"><i class="fas fa-external-link-alt"></i></span>
           </a>
         </div>
 
-        <!-- Kategori: Direktori Kecemasan -->
+        <!-- ===== DIREKTORI KECEMASAN SELURUH MALAYSIA ===== -->
         <div class="sidebar-category">
           <div class="sidebar-category-title">
-            <i class="fas fa-phone-alt"></i> Direktori Kecemasan
+            <i class="fas fa-phone-alt"></i> DIREKTORI KECEMASAN MALAYSIA
+            <span style="color: #ef4444; font-size: 10px; margin-left: auto;">
+              <i class="fas fa-clock"></i> 24/7
+            </span>
           </div>
-          <a
-            href="https://www.bomba.gov.my/"
-            target="_blank"
-            class="sidebar-link"
-          >
-            <span class="link-icon emergency"
-              ><i class="fas fa-fire-extinguisher"></i
-            ></span>
-            <span class="link-text">
-              <span class="link-name">JBPM Malaysia</span>
-              <span class="link-desc">Portal rasmi bomba</span>
-            </span>
-            <span class="external-arrow"
-              ><i class="fas fa-external-link-alt"></i
-            ></span>
-          </a>
-          <a
-            href="https://www.polis.gov.my/"
-            target="_blank"
-            class="sidebar-link"
-          >
-            <span class="link-icon info"
-              ><i class="fas fa-shield-alt"></i
-            ></span>
-            <span class="link-text">
-              <span class="link-name">PDRM - Polis Diraja Malaysia</span>
-              <span class="link-desc">Portal rasmi polis</span>
-            </span>
-            <span class="external-arrow"
-              ><i class="fas fa-external-link-alt"></i
-            ></span>
-          </a>
-          <a
-            href="https://www.999.gov.my/"
-            target="_blank"
-            class="sidebar-link"
-          >
-            <span class="link-icon emergency"
-              ><i class="fas fa-phone-alt"></i
-            ></span>
-            <span class="link-text">
-              <span class="link-name">MERS 999 - Kecemasan</span>
-              <span class="link-desc">Pusat panggilan kecemasan Malaysia</span>
-            </span>
-            <span class="external-arrow"
-              ><i class="fas fa-external-link-alt"></i
-            ></span>
-          </a>
+
+          <div class="emergency-directory">
+
+            <!-- TALIAN KECEMASAN NASIONAL -->
+            <div class="emergency-group">
+              <div class="emergency-group-title">
+                <span class="group-icon">🇲🇾</span> TALIAN KECEMASAN NASIONAL
+              </div>
+              <div class="emergency-item">
+                <span class="e-icon emergency"><i class="fas fa-phone-alt"></i></span>
+                <div class="e-info">
+                  <span class="e-name">MERS 999 - Pusat Kecemasan Nasional</span>
+                  <span class="e-number">999</span>
+                  <span class="e-desc">Semua agensi kecemasan (Bomba, Polis, Hospital, Maritim, APM)</span>
+                </div>
+                <div class="e-actions">
+                  <a href="tel:999" class="call-btn" title="Panggil 999"><i class="fas fa-phone"></i></a>
+                </div>
+              </div>
+            </div>
+
+            <!-- BOMBA -->
+            <div class="emergency-group">
+              <div class="emergency-group-title">
+                <span class="group-icon">🔥</span> JABATAN BOMBA & PENYELAMAT (JBPM)
+              </div>
+              <div class="emergency-item">
+                <span class="e-icon bomba"><i class="fas fa-fire-extinguisher"></i></span>
+                <div class="e-info">
+                  <span class="e-name">Ibu Pejabat JBPM Malaysia</span>
+                  <span class="e-number">03-8888 2000</span>
+                  <span class="e-desc">Putrajaya - Pentadbiran Pusat</span>
+                </div>
+                <div class="e-actions">
+                  <a href="tel:0388882000" class="call-btn"><i class="fas fa-phone"></i></a>
+                </div>
+              </div>
+              <div class="emergency-item">
+                <span class="e-icon bomba"><i class="fas fa-fire-extinguisher"></i></span>
+                <div class="e-info">
+                  <span class="e-name">JBPM Johor</span>
+                  <span class="e-number">07-223 4444</span>
+                  <span class="e-desc">Ibu Pejabat JBPM Negeri Johor</span>
+                </div>
+                <div class="e-actions">
+                  <a href="tel:072234444" class="call-btn"><i class="fas fa-phone"></i></a>
+                </div>
+              </div>
+              <div class="emergency-item">
+                <span class="e-icon bomba"><i class="fas fa-fire-extinguisher"></i></span>
+                <div class="e-info">
+                  <span class="e-name">Kecemasan Kebakaran</span>
+                  <span class="e-number">999 / 994</span>
+                  <span class="e-desc">Talien kecemasan seluruh Malaysia</span>
+                </div>
+                <div class="e-actions">
+                  <a href="tel:999" class="call-btn"><i class="fas fa-phone"></i></a>
+                  <a href="https://wa.me/60199999999" target="_blank" class="wa-btn"><i class="fab fa-whatsapp"></i></a>
+                </div>
+              </div>
+            </div>
+
+            <!-- POLIS -->
+            <div class="emergency-group">
+              <div class="emergency-group-title">
+                <span class="group-icon">👮</span> POLIS DIRAJA MALAYSIA (PDRM)
+              </div>
+              <div class="emergency-item">
+                <span class="e-icon polis"><i class="fas fa-shield-alt"></i></span>
+                <div class="e-info">
+                  <span class="e-name">Ibu Pejabat PDRM Bukit Aman</span>
+                  <span class="e-number">03-2266 2222</span>
+                  <span class="e-desc">Kuala Lumpur - Pentadbiran Pusat</span>
+                </div>
+                <div class="e-actions">
+                  <a href="tel:0322662222" class="call-btn"><i class="fas fa-phone"></i></a>
+                </div>
+              </div>
+              <div class="emergency-item">
+                <span class="e-icon polis"><i class="fas fa-shield-alt"></i></span>
+                <div class="e-info">
+                  <span class="e-name">IPK Johor</span>
+                  <span class="e-number">07-225 4422</span>
+                  <span class="e-desc">Ibu Pejabat Polis Kontinjen Johor</span>
+                </div>
+                <div class="e-actions">
+                  <a href="tel:072254422" class="call-btn"><i class="fas fa-phone"></i></a>
+                </div>
+              </div>
+              <div class="emergency-item">
+                <span class="e-icon polis"><i class="fas fa-shield-alt"></i></span>
+                <div class="e-info">
+                  <span class="e-name">Kecemasan Polis</span>
+                  <span class="e-number">999</span>
+                  <span class="e-desc">Talien kecemasan polis seluruh Malaysia</span>
+                </div>
+                <div class="e-actions">
+                  <a href="tel:999" class="call-btn"><i class="fas fa-phone"></i></a>
+                </div>
+              </div>
+            </div>
+
+            <!-- HOSPITAL -->
+            <div class="emergency-group">
+              <div class="emergency-group-title">
+                <span class="group-icon">🏥</span> HOSPITAL & PERUBATAN (KKM)
+              </div>
+              <div class="emergency-item">
+                <span class="e-icon hospital"><i class="fas fa-hospital"></i></span>
+                <div class="e-info">
+                  <span class="e-name">Hospital Sultanah Aminah (HSA) Johor</span>
+                  <span class="e-number">07-223 1666</span>
+                  <span class="e-desc">Hospital Utama Johor Bahru</span>
+                </div>
+                <div class="e-actions">
+                  <a href="tel:072231666" class="call-btn"><i class="fas fa-phone"></i></a>
+                </div>
+              </div>
+              <div class="emergency-item">
+                <span class="e-icon hospital"><i class="fas fa-ambulance"></i></span>
+                <div class="e-info">
+                  <span class="e-name">Kecemasan Hospital</span>
+                  <span class="e-number">999</span>
+                  <span class="e-desc">Talien kecemasan perubatan & ambulans</span>
+                </div>
+                <div class="e-actions">
+                  <a href="tel:999" class="call-btn"><i class="fas fa-phone"></i></a>
+                </div>
+              </div>
+            </div>
+
+            <!-- MARITIM -->
+            <div class="emergency-group">
+              <div class="emergency-group-title">
+                <span class="group-icon">⚓</span> AGENSI MARITIM MALAYSIA (APMM)
+              </div>
+              <div class="emergency-item">
+                <span class="e-icon maritim"><i class="fas fa-anchor"></i></span>
+                <div class="e-info">
+                  <span class="e-name">Ibu Pejabat Maritim Malaysia</span>
+                  <span class="e-number">03-3169 0777</span>
+                  <span class="e-desc">Putrajaya - Pentadbiran Pusat</span>
+                </div>
+                <div class="e-actions">
+                  <a href="tel:0331690777" class="call-btn"><i class="fas fa-phone"></i></a>
+                </div>
+              </div>
+              <div class="emergency-item">
+                <span class="e-icon maritim"><i class="fas fa-ship"></i></span>
+                <div class="e-info">
+                  <span class="e-name">Maritim Negeri Johor</span>
+                  <span class="e-number">07-236 6338</span>
+                  <span class="e-desc">APMM Zon Maritim Johor</span>
+                </div>
+                <div class="e-actions">
+                  <a href="tel:072366338" class="call-btn"><i class="fas fa-phone"></i></a>
+                </div>
+              </div>
+              <div class="emergency-item">
+                <span class="e-icon maritim"><i class="fas fa-water"></i></span>
+                <div class="e-info">
+                  <span class="e-name">Kecemasan Maritim</span>
+                  <span class="e-number">999</span>
+                  <span class="e-desc">Talien kecemasan maritim</span>
+                </div>
+                <div class="e-actions">
+                  <a href="tel:999" class="call-btn"><i class="fas fa-phone"></i></a>
+                </div>
+              </div>
+            </div>
+
+            <!-- PERTAHANAN AWAM -->
+            <div class="emergency-group">
+              <div class="emergency-group-title">
+                <span class="group-icon">☂️</span> AGENSI PERTAHANAN AWAM (APM)
+              </div>
+              <div class="emergency-item">
+                <span class="e-icon civil"><i class="fas fa-umbrella"></i></span>
+                <div class="e-info">
+                  <span class="e-name">Ibu Pejabat APM Malaysia</span>
+                  <span class="e-number">03-8888 2000</span>
+                  <span class="e-desc">Putrajaya - Pengurusan Bencana</span>
+                </div>
+                <div class="e-actions">
+                  <a href="tel:0388882000" class="call-btn"><i class="fas fa-phone"></i></a>
+                </div>
+              </div>
+              <div class="emergency-item">
+                <span class="e-icon civil"><i class="fas fa-umbrella"></i></span>
+                <div class="e-info">
+                  <span class="e-name">APM Negeri Johor</span>
+                  <span class="e-number">07-227 3010</span>
+                  <span class="e-desc">Pertahanan Awam Negeri Johor</span>
+                </div>
+                <div class="e-actions">
+                  <a href="tel:072273010" class="call-btn"><i class="fas fa-phone"></i></a>
+                </div>
+              </div>
+              <div class="emergency-item">
+                <span class="e-icon civil"><i class="fas fa-exclamation-triangle"></i></span>
+                <div class="e-info">
+                  <span class="e-name">Kecemasan Bencana</span>
+                  <span class="e-number">999</span>
+                  <span class="e-desc">Talien kecemasan bencana & pertahanan awam</span>
+                </div>
+                <div class="e-actions">
+                  <a href="tel:999" class="call-btn"><i class="fas fa-phone"></i></a>
+                </div>
+              </div>
+            </div>
+
+            <!-- Maklumat tambahan -->
+            <div class="info-box">
+              <p>
+                <i class="fas fa-info-circle"></i>
+                <strong>📌 Nombor kecemasan <span class="highlight-num">999</span> adalah talian rasmi Malaysia</strong><br>
+                Menghubungkan semua agensi kecemasan: Bomba, Polis, Hospital, Maritim & APM.<br>
+                <span style="color: #555;">Sila guna untuk kecemasan sahaja.</span>
+              </p>
+            </div>
+
+          </div>
         </div>
       </div>
       <div class="sidebar-footer">
@@ -1184,54 +1473,18 @@
         <div class="header-right">
           <!-- JAM ANALOG -->
           <div class="analog-clock" id="analogClock">
-            <div
-              class="marker main"
-              style="transform: rotate(0deg) translateX(-50%)"
-            ></div>
-            <div
-              class="marker"
-              style="transform: rotate(30deg) translateX(-50%)"
-            ></div>
-            <div
-              class="marker"
-              style="transform: rotate(60deg) translateX(-50%)"
-            ></div>
-            <div
-              class="marker main"
-              style="transform: rotate(90deg) translateX(-50%)"
-            ></div>
-            <div
-              class="marker"
-              style="transform: rotate(120deg) translateX(-50%)"
-            ></div>
-            <div
-              class="marker"
-              style="transform: rotate(150deg) translateX(-50%)"
-            ></div>
-            <div
-              class="marker main"
-              style="transform: rotate(180deg) translateX(-50%)"
-            ></div>
-            <div
-              class="marker"
-              style="transform: rotate(210deg) translateX(-50%)"
-            ></div>
-            <div
-              class="marker"
-              style="transform: rotate(240deg) translateX(-50%)"
-            ></div>
-            <div
-              class="marker main"
-              style="transform: rotate(270deg) translateX(-50%)"
-            ></div>
-            <div
-              class="marker"
-              style="transform: rotate(300deg) translateX(-50%)"
-            ></div>
-            <div
-              class="marker"
-              style="transform: rotate(330deg) translateX(-50%)"
-            ></div>
+            <div class="marker main" style="transform: rotate(0deg) translateX(-50%)"></div>
+            <div class="marker" style="transform: rotate(30deg) translateX(-50%)"></div>
+            <div class="marker" style="transform: rotate(60deg) translateX(-50%)"></div>
+            <div class="marker main" style="transform: rotate(90deg) translateX(-50%)"></div>
+            <div class="marker" style="transform: rotate(120deg) translateX(-50%)"></div>
+            <div class="marker" style="transform: rotate(150deg) translateX(-50%)"></div>
+            <div class="marker main" style="transform: rotate(180deg) translateX(-50%)"></div>
+            <div class="marker" style="transform: rotate(210deg) translateX(-50%)"></div>
+            <div class="marker" style="transform: rotate(240deg) translateX(-50%)"></div>
+            <div class="marker main" style="transform: rotate(270deg) translateX(-50%)"></div>
+            <div class="marker" style="transform: rotate(300deg) translateX(-50%)"></div>
+            <div class="marker" style="transform: rotate(330deg) translateX(-50%)"></div>
             <div class="hand hour" id="hourHand"></div>
             <div class="hand minute" id="minuteHand"></div>
             <div class="hand second" id="secondHand"></div>
@@ -1243,11 +1496,7 @@
             <div class="date" id="date">23 JULAI 2026</div>
           </div>
           <!-- HAMBURGER BUTTON -->
-          <button
-            class="hamburger-btn"
-            id="hamburgerBtn"
-            title="Pautan Penting"
-          >
+          <button class="hamburger-btn" id="hamburgerBtn" title="Pautan Penting">
             <span></span>
             <span></span>
             <span></span>
@@ -1288,16 +1537,10 @@
           <i class="fas fa-circle" style="color: #ff6b6b; font-size: 12px"></i>
           LIVE
           <span class="status-badge live">● LIVE</span>
-          <span style="color: #666; font-size: 12px; font-weight: 400"
-            >Data masa nyata</span
-          >
+          <span style="color: #666; font-size: 12px; font-weight: 400">Data masa nyata</span>
         </div>
         <div class="apps-grid">
-          <a
-            href="https://dashbord-live-statistik-kes.vercel.app/"
-            target="_blank"
-            class="app-card"
-          >
+          <a href="https://dashbord-live-statistik-kes.vercel.app/" target="_blank" class="app-card">
             <span class="icon">📊</span>
             <h3>Live Statistik Kes <span class="highlight">24 Jam</span></h3>
             <p>Statistik masa nyata panggilan, lokasi & mangsa.</p>
@@ -1313,40 +1556,24 @@
           <i class="fas fa-circle" style="color: #4ade80; font-size: 12px"></i>
           ONLINE
           <span class="status-badge online">● Online</span>
-          <span style="color: #666; font-size: 12px; font-weight: 400"
-            >Sedia digunakan</span
-          >
+          <span style="color: #666; font-size: 12px; font-weight: 400">Sedia digunakan</span>
         </div>
         <div class="apps-grid">
-          <a
-            href="https://dashboard-kekuatan-anggota-12-jam-j.vercel.app/"
-            target="_blank"
-            class="app-card"
-          >
+          <a href="https://dashboard-kekuatan-anggota-12-jam-j.vercel.app/" target="_blank" class="app-card">
             <span class="icon">👨‍🚒</span>
             <h3>Kekuatan Anggota <span class="highlight">12 Jam</span></h3>
             <p>Status anggota, syif, cuti & tugasan khas mengikut balai.</p>
             <span class="badge online">● Online</span>
             <span class="arrow">→</span>
           </a>
-
-          <a
-            href="https://po1teknologia2.vercel.app/"
-            target="_blank"
-            class="app-card"
-          >
+          <a href="https://po1teknologia2.vercel.app/" target="_blank" class="app-card">
             <span class="icon">📦</span>
             <h3>Sistem Inventori<span class="highlight"> (DID)</span></h3>
             <p>Pengurusan storan, peralatan & aset logistik.</p>
             <span class="badge online">● Online</span>
             <span class="arrow">→</span>
           </a>
-
-          <a
-            href="https://daftar-masuk-pelawat.vercel.app/"
-            target="_blank"
-            class="app-card"
-          >
+          <a href="https://daftar-masuk-pelawat.vercel.app/" target="_blank" class="app-card">
             <span class="icon">📋</span>
             <h3>Daftar Masuk Pelawat <span class="highlight">(ENTRY)</span></h3>
             <p>Sistem daftar masuk dengan gambar ID & staf bertanggungjawab.</p>
@@ -1362,9 +1589,7 @@
           <i class="fas fa-circle" style="color: #f6ad55; font-size: 12px"></i>
           DALAM PEMBANGUNAN
           <span class="status-badge dev">● Dalam Pembangunan</span>
-          <span style="color: #666; font-size: 12px; font-weight: 400"
-            >Segera hadir</span
-          >
+          <span style="color: #666; font-size: 12px; font-weight: 400">Segera hadir</span>
         </div>
         <div class="apps-grid">
           <a href="#" target="_blank" class="app-card">
@@ -1374,23 +1599,17 @@
             <span class="badge dev">● Dalam Pembangunan</span>
             <span class="arrow">→</span>
           </a>
-
           <a href="#" target="_blank" class="app-card">
             <span class="icon">🗺️</span>
             <h3>Peta Kawasan <span class="highlight">Jagaan Balai</span></h3>
-            <p>
-              Peta interaktif kawasan jagaan balai bomba mengikut zon di Johor.
-            </p>
+            <p>Peta interaktif kawasan jagaan balai bomba mengikut zon di Johor.</p>
             <span class="badge dev">● Dalam Pembangunan</span>
             <span class="arrow">→</span>
           </a>
-
           <a href="#" target="_blank" class="app-card">
             <span class="icon">📡</span>
             <h3>Dashboard Aset <span class="highlight">GIRN</span></h3>
-            <p>
-              Pemantauan aset GIRN JBPM Negeri Johor dengan tapisan & eksport.
-            </p>
+            <p>Pemantauan aset GIRN JBPM Negeri Johor dengan tapisan & eksport.</p>
             <span class="badge dev">● Dalam Pembangunan</span>
             <span class="arrow">→</span>
           </a>
@@ -1404,20 +1623,10 @@
           <span>© 2026 <strong style="color: #cc0000"></strong> PGO Johor</span>
         </div>
         <div class="social-links">
-          <a
-            href="https://wa.me/60196717865"
-            target="_blank"
-            class="whatsapp"
-            title="WhatsApp"
-          >
+          <a href="https://wa.me/60196717865" target="_blank" class="whatsapp" title="WhatsApp">
             <i class="fab fa-whatsapp"></i>
           </a>
-          <a
-            href="https://t.me/+60196717865"
-            target="_blank"
-            class="telegram"
-            title="Telegram"
-          >
+          <a href="https://t.me/+60196717865" target="_blank" class="telegram" title="Telegram">
             <i class="fab fa-telegram-plane"></i>
           </a>
           <a href="#" target="_blank" title="Instagram">
@@ -1457,7 +1666,6 @@
       sidebarClose.addEventListener('click', closeSidebar);
       sidebarOverlay.addEventListener('click', closeSidebar);
 
-      // Tutup sidebar dengan kekunci ESC
       document.addEventListener('keydown', function (e) {
         if (e.key === 'Escape' && sidebar.classList.contains('active')) {
           closeSidebar();
@@ -1473,28 +1681,18 @@
         const m = now.getMinutes();
         const s = now.getSeconds();
 
-        document.getElementById('clock').textContent = now.toLocaleTimeString(
-          'ms-MY',
-          { hour12: false }
-        );
+        document.getElementById('clock').textContent = now.toLocaleTimeString('ms-MY', { hour12: false });
         document.getElementById('date').textContent = now
-          .toLocaleDateString('ms-MY', {
-            day: 'numeric',
-            month: 'long',
-            year: 'numeric',
-          })
+          .toLocaleDateString('ms-MY', { day: 'numeric', month: 'long', year: 'numeric' })
           .toUpperCase();
 
         const hourDeg = (h % 12) * 30 + m * 0.5;
         const minuteDeg = m * 6 + s * 0.1;
         const secondDeg = s * 6;
 
-        document.getElementById('hourHand').style.transform =
-          'rotate(' + hourDeg + 'deg)';
-        document.getElementById('minuteHand').style.transform =
-          'rotate(' + minuteDeg + 'deg)';
-        document.getElementById('secondHand').style.transform =
-          'rotate(' + secondDeg + 'deg)';
+        document.getElementById('hourHand').style.transform = 'rotate(' + hourDeg + 'deg)';
+        document.getElementById('minuteHand').style.transform = 'rotate(' + minuteDeg + 'deg)';
+        document.getElementById('secondHand').style.transform = 'rotate(' + secondDeg + 'deg)';
       }
 
       updateClock();
@@ -1503,11 +1701,9 @@
       // ============================================================
       // 3. COUNTER STATISTIK
       // ============================================================
-      // Kiraan berdasarkan data sebenar
       const totalApps = 7;
       const liveApps = 1;
       const onlineApps = 3;
-      const devApps = 3;
       const percentOnline = Math.round((onlineApps / totalApps) * 100);
 
       function animateCounter(element, target, suffix = '') {
@@ -1525,11 +1721,7 @@
 
       window.addEventListener('load', function () {
         animateCounter(document.getElementById('appCount'), totalApps);
-        animateCounter(
-          document.getElementById('onlinePercent'),
-          percentOnline,
-          '%'
-        );
+        animateCounter(document.getElementById('onlinePercent'), percentOnline, '%');
         animateCounter(document.getElementById('liveCount'), liveApps);
       });
     </script>
