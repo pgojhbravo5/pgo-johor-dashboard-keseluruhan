@@ -302,6 +302,24 @@
         animation: blink 1.2s infinite;
       }
 
+      .app-card .badge.new {
+        background: #1a3a5a;
+        color: #63b3ed;
+        border: 1px solid #2a5a7a;
+        animation: pulseNew 2s infinite;
+      }
+
+      @keyframes pulseNew {
+        0%, 100% { opacity: 1; }
+        50% { opacity: 0.6; }
+      }
+
+      .app-card .badge.dev {
+        background: #3a2a1a;
+        color: #f6ad55;
+        border: 1px solid #5a3a2a;
+      }
+
       @keyframes blink {
         0%, 100% { opacity: 1; }
         50% { opacity: 0.4; }
@@ -418,11 +436,11 @@
         </div>
       </div>
 
-      <!-- STATS BAR -->
+      <!-- STATS BAR - KEMAS KINI JUMLAH APP -->
       <div class="stats-bar">
         <div class="stat-item">
           <span class="icon-badge">🔥</span>
-          <div class="num">5</div>
+          <div class="num">7</div>
           <div class="label">Aplikasi</div>
         </div>
         <div class="stat-item">
@@ -442,16 +460,18 @@
         </div>
       </div>
 
-      <!-- GRID APPS -->
+      <!-- GRID APPS - TAMBAH 2 KAD BARU -->
       <div class="apps-grid">
+        <!-- APP 1: KEKUATAN ANGGOTA -->
         <a href="https://dashboard-kekuatan-anggota-12-jam-j.vercel.app/" target="_blank" class="app-card">
           <span class="icon">👨‍🚒</span>
           <h3>Kekuatan Anggota <span class="highlight">12 Jam</span></h3>
           <p>Status anggota, syif, cuti & tugasan khas mengikut balai.</p>
-          <span class="badge live">● LIVE</span>
+          <span class="badge online">● Online</span>
           <span class="arrow">→</span>
         </a>
 
+        <!-- APP 2: DATA JENTERA -->
         <a href="https://dashboard-data-jentera-jbpm-jo-git-1a1049-pgojhbravo5s-projects.vercel.app/" target="_blank" class="app-card">
           <span class="icon">🚛</span>
           <h3>Data <span class="highlight">Jentera</span> JBPM Johor</h3>
@@ -460,6 +480,7 @@
           <span class="arrow">→</span>
         </a>
 
+        <!-- APP 3: LIVE STATISTIK KES -->
         <a href="https://dashbord-live-statistik-kes.vercel.app/" target="_blank" class="app-card">
           <span class="icon">📊</span>
           <h3>Live Statistik Kes <span class="highlight">24 Jam</span></h3>
@@ -468,6 +489,7 @@
           <span class="arrow">→</span>
         </a>
 
+        <!-- APP 4: SISTEM INVENTORI -->
         <a href="https://po1teknologia2.vercel.app/" target="_blank" class="app-card">
           <span class="icon">📦</span>
           <h3>Sistem Inventori<span class="highlight"> (DID)</span></h3>
@@ -476,6 +498,7 @@
           <span class="arrow">→</span>
         </a>
 
+        <!-- APP 5: DAFTAR MASUK PELAWAT -->
         <a href="https://daftar-masuk-pelawat.vercel.app/" target="_blank" class="app-card">
           <span class="icon">📋</span>
           <h3>Daftar Masuk Pelawat <span class="highlight">(ENTRY)</span></h3>
@@ -483,6 +506,25 @@
           <span class="badge online">● Online</span>
           <span class="arrow">→</span>
         </a>
+
+        <!-- ★★★ APP 6: PETA KAWASAN JAGAAN (BARU) ★★★ -->
+        <a href="LINK PETA KAWASAN" target="_blank" class="app-card">
+          <span class="icon">🗺️</span>
+          <h3>Peta Kawasan <span class="highlight">Jagaan Balai</span></h3>
+          <p>Peta interaktif kawasan jagaan balai bomba mengikut zon di Johor.</p>
+          <span class="badge new">● DALAM PEMBANGUNAN</span>
+          <span class="arrow">→</span>
+        </a>
+
+        <!-- ★★★ APP 7: DASHBOARD ASET GIRN (BARU) ★★★ -->
+        <a href="LINK DATA GIRN" target="_blank" class="app-card">
+          <span class="icon">📡</span>
+          <h3>Dashboard Aset <span class="highlight">GIRN</span></h3>
+          <p>Pemantauan aset GIRN JBPM Negeri Johor dengan tapisan & eksport.</p>
+          <span class="badge new">● DALAM PEMBAGUNAN</span>
+          <span class="arrow">→</span>
+        </a>
+
       </div>
 
       <!-- FOOTER -->
