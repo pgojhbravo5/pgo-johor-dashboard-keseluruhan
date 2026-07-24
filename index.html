@@ -125,122 +125,51 @@
         color: #1a1a1a;
         border-bottom-color: #d0d0d0;
       }
-      body.mode-siang .header {
-        border-bottom-color: #d0d0d0;
-      }
       body.mode-siang .footer {
         border-top-color: #d0d0d0;
         color: #888;
       }
-      body.mode-siang .header-right {
-        background: #ffffff;
-        border-color: #d0d0d0;
-      }
       body.mode-siang .digital-time .date {
         color: #888;
       }
-      body.mode-siang .hamburger-btn {
+      body.mode-siang .header-bar-controls {
+        background: rgba(255, 255, 255, 0.9);
+        border-color: #d0d0d0;
+      }
+      body.mode-siang .header-bar-controls .mode-toggle-btn {
+        background: #ffffff;
+        border-color: #ff6b00;
+        color: #ff6b00;
+      }
+      body.mode-siang .header-bar-controls .mode-toggle-btn:hover {
+        background: #ff6b00;
+        color: #ffffff;
+      }
+      body.mode-siang .header-bar-controls .switch-mode-btn {
+        background: #ffffff;
+        border-color: #059669;
+        color: #059669;
+      }
+      body.mode-siang .header-bar-controls .switch-mode-btn:hover {
+        background: #059669;
+        color: #ffffff;
+      }
+      body.mode-siang .header-bar-controls .hamburger-btn {
         background: #ffffff;
         border-color: #ff6b00;
       }
-      body.mode-siang .hamburger-btn span {
+      body.mode-siang .header-bar-controls .hamburger-btn span {
         background: #ff6b00;
       }
-      body.mode-siang .analog-clock {
+      body.mode-siang .header-bar-controls .analog-clock {
         background: #f5f5f5;
         border-color: #ff6b00;
       }
-      body.mode-siang .analog-clock .hand.hour {
-        background: #ff6b00;
-      }
-      body.mode-siang .analog-clock .hand.minute {
-        background: #555;
-      }
-      body.mode-siang .analog-clock .center-dot {
-        background: #ff6b00;
-      }
-      body.mode-siang .analog-clock .marker.main {
-        background: #ff6b00;
-      }
-      body.mode-siang .analog-clock .marker {
-        background: #aaa;
-      }
-      body.mode-siang .sidebar {
-        background: #f5f5f5;
-        border-left-color: #ff6b00;
-      }
-      body.mode-siang .sidebar-header {
-        background: linear-gradient(135deg, #ffe0cc, #f5f5f5);
-        border-bottom-color: #d0d0d0;
-      }
-      body.mode-siang .sidebar-header h3 {
+      body.mode-siang .header-bar-controls .digital-time .time {
         color: #cc5500;
       }
-      body.mode-siang .sidebar-close {
-        background: #e8e8e8;
-        border-color: #ccc;
-        color: #666;
-      }
-      body.mode-siang .sidebar-category-title {
-        color: #cc5500;
-        border-bottom-color: #d0d0d0;
-      }
-      body.mode-siang .sidebar-link {
-        color: #333;
-      }
-      body.mode-siang .sidebar-link:hover {
-        background: #e8e8e8;
-        border-color: #ccc;
-        color: #000;
-      }
-      body.mode-siang .sidebar-footer {
-        border-top-color: #d0d0d0;
-        color: #999;
-        background: #e8e8e8;
-      }
-      body.mode-siang .emergency-item {
-        background: #ffffff;
-        border-color: #d0d0d0;
-      }
-      body.mode-siang .emergency-item:hover {
-        border-color: #ff6b00;
-        background: #f8f8f8;
-      }
-      body.mode-siang .emergency-item .e-info .e-name {
-        color: #1a1a1a;
-      }
-      body.mode-siang .info-box {
-        background: #e8e8e8;
-        border-color: #d0d0d0;
-      }
-      body.mode-siang .info-box p {
-        color: #666;
-      }
-      body.mode-siang .stats-bar .stat-item .num {
-        color: #cc5500;
-      }
-      body.mode-siang .app-card .badge.online {
-        background: #d4edda;
-        color: #155724;
-        border-color: #b8daff;
-      }
-      body.mode-siang .app-card .badge.live {
-        background: #f8d7da;
-        color: #721c24;
-        border-color: #f5c6cb;
-      }
-      body.mode-siang .app-card .badge.dev {
-        background: #fff3cd;
-        color: #856404;
-        border-color: #ffc107;
-      }
-      body.mode-siang .footer .social-links a {
+      body.mode-siang .header-bar-controls .digital-time .date {
         color: #888;
-      }
-      body.mode-siang .footer .social-links a:hover {
-        color: #cc5500;
-        border-color: rgba(204, 85, 0, 0.15);
-        background: rgba(204, 85, 0, 0.05);
       }
 
       /* ===== OVERLAY UNTUK SIDEBAR ===== */
@@ -261,12 +190,224 @@
         visibility: visible;
       }
 
+      /* ===== HEADER BAR CONTROLS (di luar dashboard) ===== */
+      .header-bar-controls {
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        background: rgba(20, 20, 20, 0.9);
+        padding: 8px 14px 8px 16px;
+        border-radius: 60px;
+        border: 1px solid #2a2a2a;
+        backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
+        z-index: 100;
+        transition: all 0.5s ease;
+        box-shadow: 0 8px 30px rgba(0, 0, 0, 0.5);
+      }
+
+      .header-bar-controls .mode-toggle-btn {
+        width: 38px;
+        height: 38px;
+        border-radius: 50%;
+        background: #1a1a1a;
+        border: 1px solid #ffcc00;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 18px;
+        transition: all 0.3s ease;
+        flex-shrink: 0;
+        color: #ffcc00;
+        position: relative;
+        user-select: none;
+      }
+      .header-bar-controls .mode-toggle-btn:hover {
+        background: #ffcc00;
+        color: #1a1a1a;
+        transform: scale(1.05);
+        box-shadow: 0 0 25px rgba(255, 204, 0, 0.3);
+      }
+      .header-bar-controls .mode-toggle-btn:active {
+        transform: scale(0.9);
+      }
+      .header-bar-controls .switch-mode-btn {
+        width: 38px;
+        height: 38px;
+        border-radius: 50%;
+        background: #1a1a1a;
+        border: 1px solid #4ade80;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 17px;
+        transition: all 0.3s ease;
+        flex-shrink: 0;
+        color: #4ade80;
+        position: relative;
+        user-select: none;
+      }
+      .header-bar-controls .switch-mode-btn:hover {
+        background: #4ade80;
+        color: #1a1a1a;
+        transform: scale(1.05);
+        box-shadow: 0 0 20px rgba(74, 222, 128, 0.3);
+      }
+      .header-bar-controls .switch-mode-btn:active {
+        transform: scale(0.9);
+      }
+      .header-bar-controls .analog-clock {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        background: #0a0a0a;
+        border: 2px solid #ffcc00;
+        position: relative;
+        flex-shrink: 0;
+        box-shadow: 0 0 15px rgba(255, 204, 0, 0.05);
+        transition: all 0.5s ease;
+      }
+      .header-bar-controls .analog-clock .hand {
+        position: absolute;
+        bottom: 50%;
+        left: 50%;
+        transform-origin: bottom center;
+        border-radius: 3px;
+        background: #e2e8f0;
+        transition: background 0.5s ease;
+      }
+      .header-bar-controls .analog-clock .hand.hour {
+        width: 3px;
+        height: 12px;
+        margin-left: -1.5px;
+        background: #ffcc00;
+      }
+      .header-bar-controls .analog-clock .hand.minute {
+        width: 2px;
+        height: 16px;
+        margin-left: -1px;
+        background: #94a3b8;
+      }
+      .header-bar-controls .analog-clock .hand.second {
+        width: 1.5px;
+        height: 18px;
+        margin-left: -0.75px;
+        background: #ef4444;
+      }
+      .header-bar-controls .analog-clock .center-dot {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        width: 4px;
+        height: 4px;
+        background: #ffcc00;
+        border-radius: 50%;
+        transform: translate(-50%, -50%);
+        z-index: 2;
+        transition: background 0.5s ease;
+      }
+      .header-bar-controls .analog-clock .marker {
+        position: absolute;
+        width: 2px;
+        height: 3px;
+        background: #4a5568;
+        top: 4px;
+        left: 50%;
+        margin-left: -1px;
+        transform-origin: bottom center;
+        transition: background 0.5s ease;
+      }
+      .header-bar-controls .analog-clock .marker.main {
+        height: 6px;
+        width: 2.5px;
+        background: #ffcc00;
+      }
+      .header-bar-controls .digital-time {
+        text-align: right;
+        line-height: 1.2;
+      }
+      .header-bar-controls .digital-time .time {
+        font-size: 16px;
+        font-weight: bold;
+        color: #ffcc00;
+        font-family: 'Courier New', monospace;
+        letter-spacing: 1px;
+        text-shadow: 0 0 20px rgba(255, 204, 0, 0.1);
+      }
+      .header-bar-controls .digital-time .date {
+        color: #888888;
+        font-size: 9px;
+        margin-top: 1px;
+        transition: color 0.5s ease;
+      }
+      .header-bar-controls .hamburger-btn {
+        width: 38px;
+        height: 38px;
+        border-radius: 50%;
+        background: #1a1a1a;
+        border: 1px solid #ffcc00;
+        cursor: pointer;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 4px;
+        transition: all 0.3s ease;
+        flex-shrink: 0;
+        position: relative;
+        user-select: none;
+      }
+      .header-bar-controls .hamburger-btn:hover {
+        background: #cc0000;
+        border-color: #ff6600;
+        box-shadow: 0 0 20px rgba(204, 0, 0, 0.3);
+      }
+      .header-bar-controls .hamburger-btn span {
+        display: block;
+        width: 17px;
+        height: 2px;
+        background: #ffcc00;
+        border-radius: 2px;
+        transition: all 0.3s ease;
+      }
+      .header-bar-controls .hamburger-btn.active span:nth-child(1) {
+        transform: rotate(45deg) translate(4px, 4px);
+      }
+      .header-bar-controls .hamburger-btn.active span:nth-child(2) {
+        opacity: 0;
+      }
+      .header-bar-controls .hamburger-btn.active span:nth-child(3) {
+        transform: rotate(-45deg) translate(4px, -4px);
+      }
+      .header-bar-controls .hamburger-badge {
+        position: absolute;
+        top: -6px;
+        right: -6px;
+        width: 18px;
+        height: 18px;
+        background: #ef4444;
+        border-radius: 50%;
+        font-size: 9px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-weight: bold;
+        border: 2px solid #0a0a0a;
+      }
+
       .dashboard {
         max-width: 1100px;
         width: 100%;
         background: #111111;
         border-radius: 28px;
         padding: 30px 24px;
+        padding-top: 50px;
         box-shadow: 0 25px 60px rgba(0, 0, 0, 0.8),
           0 0 40px rgba(204, 0, 0, 0.05);
         border: 1px solid #2a2a2a;
@@ -274,6 +415,7 @@
         overflow: hidden;
         z-index: 1;
         transition: all 0.5s ease;
+        margin-top: 20px;
       }
 
       .dashboard::after {
@@ -696,31 +838,54 @@
         transform: scale(1.1);
       }
 
-      /* Header */
+      /* ===== HEADER LAYOUT: LOGO KIRI + TAJUK TENGAH + LOGO KANAN ===== */
       .header {
         display: flex;
-        justify-content: space-between;
+        justify-content: center;
         align-items: center;
+        gap: 16px;
         flex-wrap: wrap;
-        gap: 15px;
         margin-bottom: 30px;
         padding-bottom: 20px;
         border-bottom: 2px solid #2a2a2a;
         transition: all 0.5s ease;
       }
+
       .logo {
         display: flex;
         align-items: center;
-        gap: 6px;
-        flex: 1;
+        justify-content: center;
+        gap: 16px;
+        flex-wrap: nowrap;
+        width: 100%;
       }
+
+      .logo-img-wrapper {
+        display: flex;
+        align-items: center;
+        flex-shrink: 0;
+      }
+
+      .logo-img {
+        height: 55px;
+        width: auto;
+        object-fit: contain;
+        display: inline-block;
+      }
+      .logo-img.logo-bomba {
+        height: 55px;
+      }
+      .logo-img.logo-komunikasi {
+        height: 55px;
+      }
+
       .logo-text {
         display: flex;
         flex-direction: column;
-        flex: 1;
         text-align: center;
+        flex: 0 1 auto;
       }
-      .logo h1 {
+      .logo-text h1 {
         color: white;
         font-size: 24px;
         letter-spacing: 1px;
@@ -731,266 +896,17 @@
         gap: 12px;
         flex-wrap: wrap;
       }
-      .logo h1 span {
+      .logo-text h1 span {
         color: #ffcc00;
       }
-      .logo .sub {
+      .logo-text .sub {
         color: #888888;
         font-size: 13px;
         display: block;
         letter-spacing: 1px;
         transition: color 0.5s ease;
         text-align: center;
-      }
-      .logo-img {
-        height: 50px;
-        width: auto;
-        object-fit: contain;
-        display: inline-block;
-      }
-      .logo-img.logo-bomba {
-        height: 55px;
-      }
-      .logo-img.logo-komunikasi {
-        height: 42px;
-      }
-      .logo-img-wrapper {
-        display: flex;
-        align-items: center;
-        gap: 4px;
-        flex-shrink: 0;
-      }
-
-      /* Header right group */
-      .header-right {
-        display: flex;
-        align-items: center;
-        gap: 10px;
-        background: #1a1a1a;
-        padding: 6px 10px 6px 12px;
-        border-radius: 60px;
-        border: 1px solid #2a2a2a;
-        transition: all 0.5s ease;
-      }
-
-      /* Mode toggle (siang/malam) */
-      .mode-toggle-btn {
-        width: 40px;
-        height: 40px;
-        border-radius: 50%;
-        background: #1a1a1a;
-        border: 1px solid #ffcc00;
-        cursor: pointer;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 20px;
-        transition: all 0.3s ease;
-        flex-shrink: 0;
-        color: #ffcc00;
-        position: relative;
-        user-select: none;
-      }
-      .mode-toggle-btn:hover {
-        background: #ffcc00;
-        color: #1a1a1a;
-        transform: scale(1.05);
-        box-shadow: 0 0 25px rgba(255, 204, 0, 0.3);
-      }
-      .mode-toggle-btn:active {
-        transform: scale(0.9);
-      }
-      body.mode-siang .mode-toggle-btn {
-        background: #ffcc00;
-        color: #1a1a1a;
-        border-color: #ff6b00;
-      }
-      body.mode-siang .mode-toggle-btn:hover {
-        background: #1a1a1a;
-        color: #ffcc00;
-        border-color: #ffcc00;
-        box-shadow: 0 0 25px rgba(0, 0, 0, 0.3);
-      }
-
-      /* Desktop/Mobile switch button */
-      .switch-mode-btn {
-        width: 40px;
-        height: 40px;
-        border-radius: 50%;
-        background: #1a1a1a;
-        border: 1px solid #4ade80;
-        cursor: pointer;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 18px;
-        transition: all 0.3s ease;
-        flex-shrink: 0;
-        color: #4ade80;
-        position: relative;
-        user-select: none;
-      }
-      .switch-mode-btn:hover {
-        background: #4ade80;
-        color: #1a1a1a;
-        transform: scale(1.05);
-        box-shadow: 0 0 20px rgba(74, 222, 128, 0.3);
-      }
-      .switch-mode-btn:active {
-        transform: scale(0.9);
-      }
-      body.mode-siang .switch-mode-btn {
-        background: #ffffff;
-        border-color: #059669;
-        color: #059669;
-      }
-      body.mode-siang .switch-mode-btn:hover {
-        background: #059669;
-        color: white;
-      }
-
-      /* Analog Clock */
-      .analog-clock {
-        width: 44px;
-        height: 44px;
-        border-radius: 50%;
-        background: #0a0a0a;
-        border: 2px solid #ffcc00;
-        position: relative;
-        flex-shrink: 0;
-        box-shadow: 0 0 15px rgba(255, 204, 0, 0.05);
-        transition: all 0.5s ease;
-      }
-      .analog-clock .hand {
-        position: absolute;
-        bottom: 50%;
-        left: 50%;
-        transform-origin: bottom center;
-        border-radius: 3px;
-        background: #e2e8f0;
-        transition: background 0.5s ease;
-      }
-      .analog-clock .hand.hour {
-        width: 3px;
-        height: 13px;
-        margin-left: -1.5px;
-        background: #ffcc00;
-      }
-      .analog-clock .hand.minute {
-        width: 2px;
-        height: 18px;
-        margin-left: -1px;
-        background: #94a3b8;
-      }
-      .analog-clock .hand.second {
-        width: 1.5px;
-        height: 20px;
-        margin-left: -0.75px;
-        background: #ef4444;
-      }
-      .analog-clock .center-dot {
-        position: absolute;
-        top: 50%;
-        left: 50%;
-        width: 5px;
-        height: 5px;
-        background: #ffcc00;
-        border-radius: 50%;
-        transform: translate(-50%, -50%);
-        z-index: 2;
-        transition: background 0.5s ease;
-      }
-      .analog-clock .marker {
-        position: absolute;
-        width: 2px;
-        height: 4px;
-        background: #4a5568;
-        top: 4px;
-        left: 50%;
-        margin-left: -1px;
-        transform-origin: bottom center;
-        transition: background 0.5s ease;
-      }
-      .analog-clock .marker.main {
-        height: 7px;
-        width: 2.5px;
-        background: #ffcc00;
-      }
-
-      .digital-time {
-        text-align: right;
-        line-height: 1.2;
-      }
-      .digital-time .time {
-        font-size: 18px;
-        font-weight: bold;
-        color: #ffcc00;
-        font-family: 'Courier New', monospace;
-        letter-spacing: 1px;
-        text-shadow: 0 0 20px rgba(255, 204, 0, 0.1);
-      }
-      .digital-time .date {
-        color: #888888;
-        font-size: 10px;
-        margin-top: 1px;
-        transition: color 0.5s ease;
-      }
-
-      /* Hamburger button */
-      .hamburger-btn {
-        width: 40px;
-        height: 40px;
-        border-radius: 50%;
-        background: #1a1a1a;
-        border: 1px solid #ffcc00;
-        cursor: pointer;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        gap: 4px;
-        transition: all 0.3s ease;
-        flex-shrink: 0;
-        position: relative;
-        user-select: none;
-      }
-      .hamburger-btn:hover {
-        background: #cc0000;
-        border-color: #ff6600;
-        box-shadow: 0 0 20px rgba(204, 0, 0, 0.3);
-      }
-      .hamburger-btn span {
-        display: block;
-        width: 18px;
-        height: 2px;
-        background: #ffcc00;
-        border-radius: 2px;
-        transition: all 0.3s ease;
-      }
-      .hamburger-btn.active span:nth-child(1) {
-        transform: rotate(45deg) translate(4px, 4px);
-      }
-      .hamburger-btn.active span:nth-child(2) {
-        opacity: 0;
-      }
-      .hamburger-btn.active span:nth-child(3) {
-        transform: rotate(-45deg) translate(4px, -4px);
-      }
-      .hamburger-badge {
-        position: absolute;
-        top: -6px;
-        right: -6px;
-        width: 18px;
-        height: 18px;
-        background: #ef4444;
-        border-radius: 50%;
-        font-size: 9px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        color: white;
-        font-weight: bold;
-        border: 2px solid #0a0a0a;
+        margin-top: 2px;
       }
 
       /* Stats */
@@ -1243,15 +1159,52 @@
       @media (max-width: 600px) {
         .dashboard {
           padding: 20px 16px;
+          padding-top: 70px;
         }
         .header {
           flex-direction: column;
-          align-items: start;
+          align-items: center;
+          gap: 10px;
         }
-        .header-right {
-          width: 100%;
-          justify-content: space-between;
-          padding: 6px 8px;
+        .logo {
+          flex-direction: row;
+          gap: 8px;
+          flex-wrap: nowrap;
+        }
+        .header-bar-controls {
+          top: 10px;
+          right: 10px;
+          padding: 6px 10px;
+          gap: 6px;
+        }
+        .header-bar-controls .analog-clock {
+          width: 34px;
+          height: 34px;
+        }
+        .header-bar-controls .analog-clock .hand.hour {
+          height: 10px;
+        }
+        .header-bar-controls .analog-clock .hand.minute {
+          height: 14px;
+        }
+        .header-bar-controls .analog-clock .hand.second {
+          height: 16px;
+        }
+        .header-bar-controls .mode-toggle-btn,
+        .header-bar-controls .switch-mode-btn {
+          width: 32px;
+          height: 32px;
+          font-size: 15px;
+        }
+        .header-bar-controls .hamburger-btn {
+          width: 32px;
+          height: 32px;
+        }
+        .header-bar-controls .digital-time .time {
+          font-size: 14px;
+        }
+        .header-bar-controls .digital-time .date {
+          font-size: 8px;
         }
         .apps-grid {
           grid-template-columns: 1fr;
@@ -1271,55 +1224,26 @@
           max-width: 100vw;
           right: -100vw;
         }
-        .analog-clock {
-          width: 38px;
-          height: 38px;
-        }
-        .analog-clock .hand.hour {
-          height: 11px;
-        }
-        .analog-clock .hand.minute {
-          height: 15px;
-        }
-        .analog-clock .hand.second {
-          height: 17px;
-        }
-        .mode-toggle-btn,
-        .switch-mode-btn {
-          width: 36px;
-          height: 36px;
-          font-size: 17px;
-        }
-        .hamburger-btn {
-          width: 36px;
-          height: 36px;
-        }
-        .digital-time .time {
+        .logo-text h1 {
           font-size: 16px;
         }
-        .digital-time .date {
-          font-size: 9px;
-        }
-        .logo h1 {
-          font-size: 18px;
+        .logo-text .sub {
+          font-size: 10px;
         }
         .logo-img {
           height: 38px;
         }
         .logo-img.logo-bomba {
-          height: 42px;
+          height: 38px;
         }
         .logo-img.logo-komunikasi {
-          height: 32px;
-        }
-        .logo-text {
-          text-align: center;
-        }
-        .logo h1 {
-          gap: 8px;
+          height: 38px;
         }
         .logo {
-          gap: 4px;
+          gap: 6px;
+        }
+        .logo-text {
+          flex: 0 1 auto;
         }
       }
 
@@ -1366,6 +1290,7 @@
       body.desktop-mode .dashboard {
         max-width: 1100px;
         padding: 30px 24px;
+        padding-top: 50px;
       }
       body.desktop-mode .apps-grid {
         grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
@@ -1378,15 +1303,17 @@
       body.mobile-mode .dashboard {
         max-width: 480px;
         padding: 20px 14px;
+        padding-top: 70px;
         border-radius: 24px;
       }
       body.mobile-mode .header {
         flex-direction: column;
-        align-items: flex-start;
+        align-items: center;
       }
-      body.mobile-mode .header-right {
-        width: 100%;
-        justify-content: space-between;
+      body.mobile-mode .logo {
+        flex-direction: row;
+        gap: 6px;
+        flex-wrap: nowrap;
       }
       body.mobile-mode .apps-grid {
         grid-template-columns: 1fr;
@@ -1396,30 +1323,20 @@
         grid-template-columns: repeat(2, 1fr);
         gap: 8px;
       }
-      body.mobile-mode .logo h1 {
-        font-size: 20px;
+      body.mobile-mode .logo-text h1 {
+        font-size: 18px;
+      }
+      body.mobile-mode .logo-text .sub {
+        font-size: 11px;
       }
       body.mobile-mode .logo-img {
-        height: 34px;
-      }
-      body.mobile-mode .logo-img.logo-bomba {
-        height: 38px;
-      }
-      body.mobile-mode .logo-img.logo-komunikasi {
-        height: 28px;
-      }
-      body.mobile-mode .analog-clock {
-        width: 36px;
         height: 36px;
       }
-      body.mobile-mode .digital-time .time {
-        font-size: 15px;
+      body.mobile-mode .logo-img.logo-bomba {
+        height: 36px;
       }
-      body.mobile-mode .hamburger-btn,
-      body.mobile-mode .mode-toggle-btn,
-      body.mobile-mode .switch-mode-btn {
-        width: 34px;
-        height: 34px;
+      body.mobile-mode .logo-img.logo-komunikasi {
+        height: 36px;
       }
       body.mobile-mode .app-card {
         padding: 18px 16px;
@@ -1434,13 +1351,86 @@
         flex-direction: column;
         text-align: center;
       }
-      body.mobile-mode .logo {
-        gap: 4px;
-      }
     </style>
   </head>
   <body class="desktop-mode">
     <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+    <!-- HEADER BAR CONTROLS - Di luar dashboard, fixed di atas kanan -->
+    <div class="header-bar-controls" id="headerControls">
+      <button class="mode-toggle-btn" id="modeToggleBtn" title="Tukar Mode">
+        🌙
+      </button>
+      <button
+        class="switch-mode-btn"
+        id="switchModeBtn"
+        title="Tukar Paparan Desktop/Mobile"
+      >
+        <i class="fas fa-mobile-alt"></i>
+      </button>
+      <div class="analog-clock" id="analogClock">
+        <div
+          class="marker main"
+          style="transform: rotate(0deg) translateX(-50%)"
+        ></div>
+        <div
+          class="marker"
+          style="transform: rotate(30deg) translateX(-50%)"
+        ></div>
+        <div
+          class="marker"
+          style="transform: rotate(60deg) translateX(-50%)"
+        ></div>
+        <div
+          class="marker main"
+          style="transform: rotate(90deg) translateX(-50%)"
+        ></div>
+        <div
+          class="marker"
+          style="transform: rotate(120deg) translateX(-50%)"
+        ></div>
+        <div
+          class="marker"
+          style="transform: rotate(150deg) translateX(-50%)"
+        ></div>
+        <div
+          class="marker main"
+          style="transform: rotate(180deg) translateX(-50%)"
+        ></div>
+        <div
+          class="marker"
+          style="transform: rotate(210deg) translateX(-50%)"
+        ></div>
+        <div
+          class="marker"
+          style="transform: rotate(240deg) translateX(-50%)"
+        ></div>
+        <div
+          class="marker main"
+          style="transform: rotate(270deg) translateX(-50%)"
+        ></div>
+        <div
+          class="marker"
+          style="transform: rotate(300deg) translateX(-50%)"
+        ></div>
+        <div
+          class="marker"
+          style="transform: rotate(330deg) translateX(-50%)"
+        ></div>
+        <div class="hand hour" id="hourHand"></div>
+        <div class="hand minute" id="minuteHand"></div>
+        <div class="hand second" id="secondHand"></div>
+        <div class="center-dot"></div>
+      </div>
+      <div class="digital-time">
+        <div class="time" id="clock">12:00:00</div>
+        <div class="date" id="date">23 JULAI 2026</div>
+      </div>
+      <button class="hamburger-btn" id="hamburgerBtn" title="Pautan Penting">
+        <span></span><span></span><span></span>
+        <span class="hamburger-badge">22</span>
+      </button>
+    </div>
 
     <!-- SIDEBAR LENGKAP DENGAN DIREKTORI AGENSI & KECEMASAN -->
     <div class="sidebar" id="sidebar">
@@ -1607,14 +1597,16 @@
             ></span>
           </a>
           <a
-            href="https://www.jkr.gov.my/"
+            href="https://bencana.jkr.gov.my/"
             target="_blank"
             class="sidebar-link"
           >
             <span class="link-icon road"><i class="fas fa-hard-hat"></i></span>
             <span class="link-text">
               <span class="link-name">JKR - Jabatan Kerja Raya</span>
-              <span class="link-desc">Infrastruktur & jalan persekutuan</span>
+              <span class="link-desc"
+                >Infrastruktur & jalan persekutuan(e-bencanajkr)</span
+              >
             </span>
             <span class="external-arrow"
               ><i class="fas fa-external-link-alt"></i
@@ -1628,7 +1620,7 @@
             <i class="fas fa-building"></i> DIREKTORI AGENSI KERAJAAN
           </div>
           <a
-            href="https://www.jbpm.gov.my/"
+            href="https://www.bomba.gov.my/en/"
             target="_blank"
             class="sidebar-link"
           >
@@ -1694,7 +1686,7 @@
             ></span>
           </a>
           <a
-            href="https://www.maritime.gov.my/"
+            href="https://www.mmea.gov.my/index.php/ms/"
             target="_blank"
             class="sidebar-link"
           >
@@ -1710,14 +1702,16 @@
             ></span>
           </a>
           <a
-            href="https://www.did.gov.my/"
+            href="https://infobanjirjpsjohor.water.gov.my/"
             target="_blank"
             class="sidebar-link"
           >
             <span class="link-icon flood"><i class="fas fa-water"></i></span>
             <span class="link-text">
               <span class="link-name">JPS - Jabatan Pengairan & Saliran</span>
-              <span class="link-desc">Pengurusan air & saliran</span>
+              <span class="link-desc"
+                >Pengurusan air & saliran(info banjir)</span
+              >
             </span>
             <span class="external-arrow"
               ><i class="fas fa-external-link-alt"></i
@@ -1901,102 +1895,32 @@
 
     <!-- DASHBOARD UTAMA -->
     <div class="dashboard">
+      <!-- HEADER: LOGO KIRI + TAJUK TENGAH + LOGO KANAN -->
       <div class="header">
         <div class="logo">
+          <!-- Logo JBPM di KIRI -->
           <div class="logo-img-wrapper">
-            <img src="https://i.ibb.co/fGtPXjpc/500px-Logo-of-the-Malaysian-Fire-and-Rescue-Department-svg.webp" 
-                 alt="JBPM Logo" 
-                 class="logo-img logo-bomba">
+            <img
+              src="https://i.ibb.co/fGtPXjpc/500px-Logo-of-the-Malaysian-Fire-and-Rescue-Department-svg.webp"
+              alt="JBPM Logo"
+              class="logo-img logo-bomba"
+            />
           </div>
+
+          <!-- Tulisan di TENGAH -->
           <div class="logo-text">
-            <h1>
-              PUSAT GERAKAN OPERASI <span>JBPM JOHOR</span>
-            </h1>
+            <h1>PUSAT GERAKAN OPERASI <span>JBPM JOHOR</span></h1>
             <span class="sub">DASHBOARD KESELURUHAN</span>
           </div>
+
+          <!-- Logo Unit Komunikasi di KANAN -->
           <div class="logo-img-wrapper">
-            <img src="https://i.ibb.co/fdXsyrBX/logo-unit-komunikasi-1.png" 
-                 alt="Unit Komunikasi Logo" 
-                 class="logo-img logo-komunikasi">
+            <img
+              src="https://i.ibb.co/fdXsyrBX/logo-unit-komunikasi-1.png"
+              alt="Unit Komunikasi Logo"
+              class="logo-img logo-komunikasi"
+            />
           </div>
-        </div>
-        <div class="header-right">
-          <button class="mode-toggle-btn" id="modeToggleBtn" title="Tukar Mode">
-            🌙
-          </button>
-          <button
-            class="switch-mode-btn"
-            id="switchModeBtn"
-            title="Tukar Paparan Desktop/Mobile"
-          >
-            <i class="fas fa-mobile-alt"></i>
-          </button>
-          <div class="analog-clock" id="analogClock">
-            <div
-              class="marker main"
-              style="transform: rotate(0deg) translateX(-50%)"
-            ></div>
-            <div
-              class="marker"
-              style="transform: rotate(30deg) translateX(-50%)"
-            ></div>
-            <div
-              class="marker"
-              style="transform: rotate(60deg) translateX(-50%)"
-            ></div>
-            <div
-              class="marker main"
-              style="transform: rotate(90deg) translateX(-50%)"
-            ></div>
-            <div
-              class="marker"
-              style="transform: rotate(120deg) translateX(-50%)"
-            ></div>
-            <div
-              class="marker"
-              style="transform: rotate(150deg) translateX(-50%)"
-            ></div>
-            <div
-              class="marker main"
-              style="transform: rotate(180deg) translateX(-50%)"
-            ></div>
-            <div
-              class="marker"
-              style="transform: rotate(210deg) translateX(-50%)"
-            ></div>
-            <div
-              class="marker"
-              style="transform: rotate(240deg) translateX(-50%)"
-            ></div>
-            <div
-              class="marker main"
-              style="transform: rotate(270deg) translateX(-50%)"
-            ></div>
-            <div
-              class="marker"
-              style="transform: rotate(300deg) translateX(-50%)"
-            ></div>
-            <div
-              class="marker"
-              style="transform: rotate(330deg) translateX(-50%)"
-            ></div>
-            <div class="hand hour" id="hourHand"></div>
-            <div class="hand minute" id="minuteHand"></div>
-            <div class="hand second" id="secondHand"></div>
-            <div class="center-dot"></div>
-          </div>
-          <div class="digital-time">
-            <div class="time" id="clock">12:00:00</div>
-            <div class="date" id="date">23 JULAI 2026</div>
-          </div>
-          <button
-            class="hamburger-btn"
-            id="hamburgerBtn"
-            title="Pautan Penting"
-          >
-            <span></span><span></span><span></span>
-            <span class="hamburger-badge">22</span>
-          </button>
         </div>
       </div>
 
