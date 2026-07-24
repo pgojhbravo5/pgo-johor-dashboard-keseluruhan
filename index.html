@@ -2,21 +2,33 @@
 <html lang="ms">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
+    />
     <title>JBPM PGO Johor - Dashboard</title>
 
     <!-- ===== PWA META TAGS ===== -->
     <meta name="theme-color" content="#cc0000" />
     <meta name="apple-mobile-web-app-capable" content="yes" />
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta
+      name="apple-mobile-web-app-status-bar-style"
+      content="black-translucent"
+    />
     <meta name="apple-mobile-web-app-title" content="PGO Johor" />
     <meta name="mobile-web-app-capable" content="yes" />
     <link rel="manifest" href="manifest.json" />
 
     <!-- ===== ICON APPS ===== -->
-    <!-- ★★★ TUKAR LINK ICON DI BAWAH DENGAN LINK IMGBB ANDA ★★★ -->
-    <link rel="icon" type="image/png" href="https://i.ibb.co/bjc5nKwZ/training.png" />
-    <link rel="apple-touch-icon" href="https://i.ibb.co/bjc5nKwZ/training.png" />
+    <link
+      rel="icon"
+      type="image/png"
+      href="https://i.ibb.co/bjc5nKwZ/training.png"
+    />
+    <link
+      rel="apple-touch-icon"
+      href="https://i.ibb.co/bjc5nKwZ/training.png"
+    />
 
     <link
       rel="stylesheet"
@@ -61,27 +73,52 @@
         background: #111111;
         border-radius: 28px;
         padding: 30px 24px;
-        box-shadow: 0 25px 60px rgba(0, 0, 0, 0.8), 0 0 40px rgba(204, 0, 0, 0.05);
+        box-shadow: 0 25px 60px rgba(0, 0, 0, 0.8),
+          0 0 40px rgba(204, 0, 0, 0.05);
         border: 1px solid #2a2a2a;
         position: relative;
         overflow: hidden;
         z-index: 1;
       }
 
+      /* ===== ANIMASI API LATAR (RINGAN) ===== */
       .dashboard::after {
         content: '';
         position: absolute;
-        top: 0;
-        left: 0;
-        right: 0;
-        bottom: 0;
-        background-image: url('https://images.unsplash.com/photo-1582139329536-e7284fece509?w=1200');
-        background-size: cover;
-        background-position: center;
-        opacity: 0.08;
+        top: -20%;
+        left: -10%;
+        right: -10%;
+        bottom: -20%;
+        background: radial-gradient(
+            ellipse at 20% 80%,
+            rgba(255, 80, 0, 0.08) 0%,
+            transparent 50%
+          ),
+          radial-gradient(
+            ellipse at 80% 20%,
+            rgba(255, 200, 0, 0.05) 0%,
+            transparent 50%
+          ),
+          radial-gradient(
+            ellipse at 50% 50%,
+            rgba(200, 0, 0, 0.04) 0%,
+            transparent 70%
+          );
+        animation: fireGlow 6s ease-in-out infinite alternate;
         border-radius: 28px;
         z-index: 0;
         pointer-events: none;
+      }
+
+      @keyframes fireGlow {
+        0% {
+          opacity: 0.4;
+          transform: scale(1) rotate(0deg);
+        }
+        100% {
+          opacity: 0.9;
+          transform: scale(1.03) rotate(1deg);
+        }
       }
 
       .dashboard > * {
@@ -103,8 +140,12 @@
       }
 
       @keyframes stripeMove {
-        0% { background-position: 0% 0%; }
-        100% { background-position: 200% 0%; }
+        0% {
+          background-position: 0% 0%;
+        }
+        100% {
+          background-position: 200% 0%;
+        }
       }
 
       /* Header */
@@ -165,29 +206,107 @@
         letter-spacing: 1px;
       }
 
+      /* ===== HEADER RIGHT - JAM ANALOG + DIGITAL ===== */
       .header-right {
-        color: #cbd5e1;
-        text-align: right;
-        font-size: 14px;
+        display: flex;
+        align-items: center;
+        gap: 16px;
         background: #1a1a1a;
-        padding: 10px 20px;
-        border-radius: 12px;
+        padding: 8px 18px 8px 12px;
+        border-radius: 60px;
         border: 1px solid #2a2a2a;
       }
 
-      .header-right .time {
-        font-size: 22px;
+      /* Jam Analog - Bulat Kecil */
+      .analog-clock {
+        width: 48px;
+        height: 48px;
+        border-radius: 50%;
+        background: #0a0a0a;
+        border: 2px solid #ffcc00;
+        position: relative;
+        flex-shrink: 0;
+        box-shadow: 0 0 15px rgba(255, 204, 0, 0.05);
+      }
+
+      .analog-clock .hand {
+        position: absolute;
+        bottom: 50%;
+        left: 50%;
+        transform-origin: bottom center;
+        border-radius: 3px;
+        background: #e2e8f0;
+      }
+
+      .analog-clock .hand.hour {
+        width: 3px;
+        height: 14px;
+        margin-left: -1.5px;
+        background: #ffcc00;
+      }
+
+      .analog-clock .hand.minute {
+        width: 2px;
+        height: 20px;
+        margin-left: -1px;
+        background: #94a3b8;
+      }
+
+      .analog-clock .hand.second {
+        width: 1.5px;
+        height: 22px;
+        margin-left: -0.75px;
+        background: #ef4444;
+      }
+
+      .analog-clock .center-dot {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        width: 5px;
+        height: 5px;
+        background: #ffcc00;
+        border-radius: 50%;
+        transform: translate(-50%, -50%);
+        z-index: 2;
+      }
+
+      /* Titik-titik jam */
+      .analog-clock .marker {
+        position: absolute;
+        width: 2px;
+        height: 5px;
+        background: #4a5568;
+        top: 4px;
+        left: 50%;
+        margin-left: -1px;
+        transform-origin: bottom center;
+      }
+
+      .analog-clock .marker.main {
+        height: 8px;
+        width: 2.5px;
+        background: #ffcc00;
+      }
+
+      .digital-time {
+        text-align: right;
+        line-height: 1.2;
+      }
+
+      .digital-time .time {
+        font-size: 20px;
         font-weight: bold;
         color: #ffcc00;
         font-family: 'Courier New', monospace;
-        letter-spacing: 2px;
+        letter-spacing: 1px;
         text-shadow: 0 0 20px rgba(255, 204, 0, 0.1);
       }
 
-      .header-right .date {
+      .digital-time .date {
         color: #888888;
-        font-size: 12px;
-        margin-top: 2px;
+        font-size: 11px;
+        margin-top: 1px;
       }
 
       /* Stats Bar */
@@ -212,9 +331,10 @@
       }
 
       .stat-item .num {
-        font-size: 24px;
+        font-size: 26px;
         font-weight: 800;
         color: #ffcc00;
+        display: inline-block;
       }
 
       .stat-item .label {
@@ -310,8 +430,13 @@
       }
 
       @keyframes pulseNew {
-        0%, 100% { opacity: 1; }
-        50% { opacity: 0.6; }
+        0%,
+        100% {
+          opacity: 1;
+        }
+        50% {
+          opacity: 0.6;
+        }
       }
 
       .app-card .badge.dev {
@@ -321,8 +446,13 @@
       }
 
       @keyframes blink {
-        0%, 100% { opacity: 1; }
-        50% { opacity: 0.4; }
+        0%,
+        100% {
+          opacity: 1;
+        }
+        50% {
+          opacity: 0.4;
+        }
       }
 
       .app-card .arrow {
@@ -337,7 +467,7 @@
         transform: translateX(5px);
       }
 
-      /* Footer */
+      /* ===== FOOTER - DENGAN WHATSAPP & TELEGRAM ===== */
       .footer {
         margin-top: 25px;
         padding-top: 18px;
@@ -367,20 +497,55 @@
       }
 
       @keyframes pulseDot {
-        0%, 100% { opacity: 1; transform: scale(1); }
-        50% { opacity: 0.3; transform: scale(0.8); }
+        0%,
+        100% {
+          opacity: 1;
+          transform: scale(1);
+        }
+        50% {
+          opacity: 0.3;
+          transform: scale(0.8);
+        }
       }
 
-      .footer a {
+      .footer .social-links {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+      }
+
+      .footer .social-links a {
         color: #555555;
-        margin-left: 14px;
         text-decoration: none;
         font-size: 17px;
-        transition: color 0.3s;
+        width: 38px;
+        height: 38px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.3s ease;
+        border: 1px solid transparent;
       }
 
-      .footer a:hover {
+      .footer .social-links a:hover {
         color: #ffcc00;
+        border-color: rgba(255, 204, 0, 0.15);
+        background: rgba(255, 204, 0, 0.05);
+        transform: translateY(-2px);
+      }
+
+      /* Warna khas untuk WhatsApp & Telegram */
+      .footer .social-links a.whatsapp:hover {
+        color: #25d366;
+        border-color: rgba(37, 211, 102, 0.2);
+        background: rgba(37, 211, 102, 0.05);
+      }
+
+      .footer .social-links a.telegram:hover {
+        color: #0088cc;
+        border-color: rgba(0, 136, 204, 0.2);
+        background: rgba(0, 136, 204, 0.05);
       }
 
       /* Responsive */
@@ -393,14 +558,21 @@
           align-items: start;
         }
         .header-right {
-          text-align: left;
           width: 100%;
+          justify-content: space-between;
         }
         .apps-grid {
           grid-template-columns: 1fr;
         }
         .stats-bar {
           grid-template-columns: repeat(2, 1fr);
+        }
+        .footer {
+          flex-direction: column;
+          text-align: center;
+        }
+        .footer .social-links {
+          justify-content: center;
         }
       }
 
@@ -431,26 +603,84 @@
           </div>
         </div>
         <div class="header-right">
-          <div class="time" id="clock">12:00:00</div>
-          <div class="date" id="date">23 JULAI 2026</div>
+          <!-- JAM ANALOG -->
+          <div class="analog-clock" id="analogClock">
+            <div
+              class="marker main"
+              style="transform: rotate(0deg) translateX(-50%)"
+            ></div>
+            <div
+              class="marker"
+              style="transform: rotate(30deg) translateX(-50%)"
+            ></div>
+            <div
+              class="marker"
+              style="transform: rotate(60deg) translateX(-50%)"
+            ></div>
+            <div
+              class="marker main"
+              style="transform: rotate(90deg) translateX(-50%)"
+            ></div>
+            <div
+              class="marker"
+              style="transform: rotate(120deg) translateX(-50%)"
+            ></div>
+            <div
+              class="marker"
+              style="transform: rotate(150deg) translateX(-50%)"
+            ></div>
+            <div
+              class="marker main"
+              style="transform: rotate(180deg) translateX(-50%)"
+            ></div>
+            <div
+              class="marker"
+              style="transform: rotate(210deg) translateX(-50%)"
+            ></div>
+            <div
+              class="marker"
+              style="transform: rotate(240deg) translateX(-50%)"
+            ></div>
+            <div
+              class="marker main"
+              style="transform: rotate(270deg) translateX(-50%)"
+            ></div>
+            <div
+              class="marker"
+              style="transform: rotate(300deg) translateX(-50%)"
+            ></div>
+            <div
+              class="marker"
+              style="transform: rotate(330deg) translateX(-50%)"
+            ></div>
+            <div class="hand hour" id="hourHand"></div>
+            <div class="hand minute" id="minuteHand"></div>
+            <div class="hand second" id="secondHand"></div>
+            <div class="center-dot"></div>
+          </div>
+          <!-- JAM DIGITAL -->
+          <div class="digital-time">
+            <div class="time" id="clock">12:00:00</div>
+            <div class="date" id="date">23 JULAI 2026</div>
+          </div>
         </div>
       </div>
 
-      <!-- STATS BAR - KEMAS KINI JUMLAH APP -->
+      <!-- STATS BAR -->
       <div class="stats-bar">
         <div class="stat-item">
           <span class="icon-badge">🔥</span>
-          <div class="num">7</div>
+          <div class="num" id="appCount">0</div>
           <div class="label">Aplikasi</div>
         </div>
         <div class="stat-item">
           <span class="icon-badge">🔥</span>
-          <div class="num">100%</div>
+          <div class="num" id="onlinePercent">0%</div>
           <div class="label">Online</div>
         </div>
         <div class="stat-item">
           <span class="icon-badge">🔥</span>
-          <div class="num">2</div>
+          <div class="num" id="liveCount">0</div>
           <div class="label">Live Updates</div>
         </div>
         <div class="stat-item">
@@ -460,10 +690,13 @@
         </div>
       </div>
 
-      <!-- GRID APPS - TAMBAH 2 KAD BARU -->
+      <!-- GRID APPS -->
       <div class="apps-grid">
-        <!-- APP 1: KEKUATAN ANGGOTA -->
-        <a href="https://dashboard-kekuatan-anggota-12-jam-j.vercel.app/" target="_blank" class="app-card">
+        <a
+          href="https://dashboard-kekuatan-anggota-12-jam-j.vercel.app/"
+          target="_blank"
+          class="app-card"
+        >
           <span class="icon">👨‍🚒</span>
           <h3>Kekuatan Anggota <span class="highlight">12 Jam</span></h3>
           <p>Status anggota, syif, cuti & tugasan khas mengikut balai.</p>
@@ -471,8 +704,11 @@
           <span class="arrow">→</span>
         </a>
 
-        <!-- APP 2: DATA JENTERA -->
-        <a href="https://dashboard-data-jentera-jbpm-jo-git-1a1049-pgojhbravo5s-projects.vercel.app/" target="_blank" class="app-card">
+        <a
+          href="https://dashboard-data-jentera-jbpm-jo-git-1a1049-pgojhbravo5s-projects.vercel.app/"
+          target="_blank"
+          class="app-card"
+        >
           <span class="icon">🚛</span>
           <h3>Data <span class="highlight">Jentera</span> JBPM Johor</h3>
           <p>Pemantauan status jentera & kenderaan operasi.</p>
@@ -480,8 +716,11 @@
           <span class="arrow">→</span>
         </a>
 
-        <!-- APP 3: LIVE STATISTIK KES -->
-        <a href="https://dashbord-live-statistik-kes.vercel.app/" target="_blank" class="app-card">
+        <a
+          href="https://dashbord-live-statistik-kes.vercel.app/"
+          target="_blank"
+          class="app-card"
+        >
           <span class="icon">📊</span>
           <h3>Live Statistik Kes <span class="highlight">24 Jam</span></h3>
           <p>Statistik masa nyata panggilan, lokasi & mangsa.</p>
@@ -489,8 +728,11 @@
           <span class="arrow">→</span>
         </a>
 
-        <!-- APP 4: SISTEM INVENTORI -->
-        <a href="https://po1teknologia2.vercel.app/" target="_blank" class="app-card">
+        <a
+          href="https://po1teknologia2.vercel.app/"
+          target="_blank"
+          class="app-card"
+        >
           <span class="icon">📦</span>
           <h3>Sistem Inventori<span class="highlight"> (DID)</span></h3>
           <p>Pengurusan storan, peralatan & aset logistik.</p>
@@ -498,8 +740,11 @@
           <span class="arrow">→</span>
         </a>
 
-        <!-- APP 5: DAFTAR MASUK PELAWAT -->
-        <a href="https://daftar-masuk-pelawat.vercel.app/" target="_blank" class="app-card">
+        <a
+          href="https://daftar-masuk-pelawat.vercel.app/"
+          target="_blank"
+          class="app-card"
+        >
           <span class="icon">📋</span>
           <h3>Daftar Masuk Pelawat <span class="highlight">(ENTRY)</span></h3>
           <p>Sistem daftar masuk dengan gambar ID & staf bertanggungjawab.</p>
@@ -507,53 +752,122 @@
           <span class="arrow">→</span>
         </a>
 
-        <!-- ★★★ APP 6: PETA KAWASAN JAGAAN (BARU) ★★★ -->
-        <a href="LINK PETA KAWASAN" target="_blank" class="app-card">
+        <a href="LINK PETA KAWASAN JAGAAN" target="_blank" class="app-card">
           <span class="icon">🗺️</span>
           <h3>Peta Kawasan <span class="highlight">Jagaan Balai</span></h3>
-          <p>Peta interaktif kawasan jagaan balai bomba mengikut zon di Johor.</p>
+          <p>
+            Peta interaktif kawasan jagaan balai bomba mengikut zon di Johor.
+          </p>
           <span class="badge new">● DALAM PEMBANGUNAN</span>
           <span class="arrow">→</span>
         </a>
 
-        <!-- ★★★ APP 7: DASHBOARD ASET GIRN (BARU) ★★★ -->
         <a href="LINK DATA GIRN" target="_blank" class="app-card">
           <span class="icon">📡</span>
           <h3>Dashboard Aset <span class="highlight">GIRN</span></h3>
-          <p>Pemantauan aset GIRN JBPM Negeri Johor dengan tapisan & eksport.</p>
-          <span class="badge new">● DALAM PEMBAGUNAN</span>
+          <p>
+            Pemantauan aset GIRN JBPM Negeri Johor dengan tapisan & eksport.
+          </p>
+          <span class="badge new">● DALAM PEMBANGUNAN</span>
           <span class="arrow">→</span>
         </a>
-
       </div>
 
-      <!-- FOOTER -->
+      <!-- ===== FOOTER - DENGAN WHATSAPP & TELEGRAM ===== -->
       <div class="footer">
         <div class="brand">
           <span class="dot"></span>
-          <span>© 2026 <strong style="color: #cc0000"></strong>PGO Johor</span>
+          <span>© 2026 <strong style="color: #cc0000"></strong> PGO Johor</span>
         </div>
-        <div>
-          <a href="#"><i class="fab fa-telegram"></i></a>
-          <a href="#"><i class="fab fa-whatsapp"></i></a>
-          <a href="#"><i class="fab fa-instagram"></i></a>
-          <a href="#"><i class="fab fa-youtube"></i></a>
+        <div class="social-links">
+          <!-- WhatsApp - Nombor 0196717865 -->
+          <a
+            href="https://wa.me/60196717865"
+            target="_blank"
+            class="whatsapp"
+            title="WhatsApp"
+          >
+            <i class="fab fa-whatsapp"></i>
+          </a>
+          <!-- Telegram - Nombor 0196717865 -->
+          <a
+            href="https://t.me/+60196717865"
+            target="_blank"
+            class="telegram"
+            title="Telegram"
+          >
+            <i class="fab fa-telegram-plane"></i>
+          </a>
+          <!-- Instagram - Optional -->
+          <a href="#" target="_blank" title="Instagram">
+            <i class="fab fa-instagram"></i>
+          </a>
+          <!-- YouTube - Optional -->
+          <a href="#" target="_blank" title="YouTube">
+            <i class="fab fa-youtube"></i>
+          </a>
         </div>
       </div>
     </div>
 
     <script>
+      // ============================================================
+      // 1. JAM DIGITAL + ANALOG
+      // ============================================================
       function updateClock() {
         const now = new Date();
-        document.getElementById('clock').textContent = now.toLocaleTimeString('ms-MY', { hour12: false });
-        document.getElementById('date').textContent = now.toLocaleDateString('ms-MY', {
-          day: 'numeric',
-          month: 'long',
-          year: 'numeric'
-        }).toUpperCase();
+        const h = now.getHours();
+        const m = now.getMinutes();
+        const s = now.getSeconds();
+
+        document.getElementById('clock').textContent = now.toLocaleTimeString(
+          'ms-MY',
+          { hour12: false }
+        );
+        document.getElementById('date').textContent = now
+          .toLocaleDateString('ms-MY', {
+            day: 'numeric',
+            month: 'long',
+            year: 'numeric',
+          })
+          .toUpperCase();
+
+        const hourDeg = (h % 12) * 30 + m * 0.5;
+        const minuteDeg = m * 6 + s * 0.1;
+        const secondDeg = s * 6;
+
+        document.getElementById('hourHand').style.transform =
+          'rotate(' + hourDeg + 'deg)';
+        document.getElementById('minuteHand').style.transform =
+          'rotate(' + minuteDeg + 'deg)';
+        document.getElementById('secondHand').style.transform =
+          'rotate(' + secondDeg + 'deg)';
       }
+
       updateClock();
       setInterval(updateClock, 1000);
+
+      // ============================================================
+      // 2. LIVE COUNTER
+      // ============================================================
+      function animateCounter(element, target, suffix = '') {
+        let current = 0;
+        const step = Math.max(1, Math.floor(target / 25));
+        const interval = setInterval(function () {
+          current += step;
+          if (current >= target) {
+            current = target;
+            clearInterval(interval);
+          }
+          element.textContent = current + suffix;
+        }, 50);
+      }
+
+      window.addEventListener('load', function () {
+        animateCounter(document.getElementById('appCount'), 7);
+        animateCounter(document.getElementById('onlinePercent'), 100, '%');
+        animateCounter(document.getElementById('liveCount'), 2);
+      });
     </script>
   </body>
 </html>
