@@ -1,0 +1,22 @@
+{
+  "name": "PGO Johor Dashboard",
+  "short_name": "PGO Johor",
+  "description": "Dashboard Pusat Gerakan Operasi JBPM Johor",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#111111",
+  "theme_color": "#cc0000",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "https://i.ibb.co/bjc5nKwZ/training.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "https://i.ibb.co/bjc5nKwZ/training.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}

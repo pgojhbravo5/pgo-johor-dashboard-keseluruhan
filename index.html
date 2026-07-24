@@ -2,8 +2,22 @@
 <html lang="ms">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
     <title>JBPM PGO Johor - Dashboard</title>
+
+    <!-- ===== PWA META TAGS ===== -->
+    <meta name="theme-color" content="#cc0000" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="apple-mobile-web-app-title" content="PGO Johor" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <link rel="manifest" href="manifest.json" />
+
+    <!-- ===== ICON APPS ===== -->
+    <!-- ★★★ TUKAR LINK ICON DI BAWAH DENGAN LINK IMGBB ANDA ★★★ -->
+    <link rel="icon" type="image/png" href="https://i.ibb.co/bjc5nKwZ/training.png" />
+    <link rel="apple-touch-icon" href="https://i.ibb.co/bjc5nKwZ/training.png" />
+
     <link
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
@@ -21,18 +35,15 @@
         display: flex;
         justify-content: center;
         align-items: center;
-        padding: 20px;
+        padding: 16px;
         background: #0a0a0a;
-        /* ===== TAMBAHAN: GAMBAR LATAR BODY ===== */
         background-image: url('https://images.unsplash.com/photo-1582139329536-e7284fece509?w=1600');
         background-size: cover;
         background-position: center;
         background-attachment: fixed;
-        /* Gambar kekal walaupun scroll */
         position: relative;
       }
 
-      /* Lapisan gelap di atas body - supaya dashboard menonjol */
       body::before {
         content: '';
         position: fixed;
@@ -40,27 +51,23 @@
         left: 0;
         right: 0;
         bottom: 0;
-        background: rgba(0, 0, 0, 0.7);
-        /* 70% gelap - cukup untuk nampak gambar tapi teks jelas */
+        background: rgba(0, 0, 0, 0.75);
         z-index: 0;
       }
 
-      /* Pastikan dashboard di atas lapisan gelap */
       .dashboard {
         max-width: 1100px;
         width: 100%;
         background: #111111;
         border-radius: 28px;
-        padding: 35px 30px;
-        box-shadow: 0 25px 60px rgba(0, 0, 0, 0.8),
-          0 0 40px rgba(204, 0, 0, 0.05);
+        padding: 30px 24px;
+        box-shadow: 0 25px 60px rgba(0, 0, 0, 0.8), 0 0 40px rgba(204, 0, 0, 0.05);
         border: 1px solid #2a2a2a;
         position: relative;
         overflow: hidden;
         z-index: 1;
       }
 
-      /* ===== TAMBAHAN: GAMBAR LATAR DASHBOARD (LAPISAN KEDUA) ===== */
       .dashboard::after {
         content: '';
         position: absolute;
@@ -68,23 +75,20 @@
         left: 0;
         right: 0;
         bottom: 0;
-        background-image: url('https://images.unsplash.com/illustrations/a-firefighter-standing-in-front-of-a-fire-truck-jkicND8j4co?w=1600');
+        background-image: url('https://images.unsplash.com/photo-1582139329536-e7284fece509?w=1200');
         background-size: cover;
         background-position: center;
         opacity: 0.08;
-        /* 8% - sangat samar, sekadar tekstur */
         border-radius: 28px;
         z-index: 0;
         pointer-events: none;
       }
 
-      /* Pastikan semua content di ATAS gambar dashboard */
       .dashboard > * {
         position: relative;
         z-index: 1;
       }
 
-      /* JALUR MERAH DI ATAS - TANDA BOMBA */
       .dashboard::before {
         content: '';
         position: absolute;
@@ -96,16 +100,11 @@
         background-size: 200% 100%;
         animation: stripeMove 4s linear infinite;
         z-index: 2;
-        /* Pastikan jalur di atas gambar */
       }
 
       @keyframes stripeMove {
-        0% {
-          background-position: 0% 0%;
-        }
-        100% {
-          background-position: 200% 0%;
-        }
+        0% { background-position: 0% 0%; }
+        100% { background-position: 200% 0%; }
       }
 
       /* Header */
@@ -140,7 +139,6 @@
         position: relative;
       }
 
-      /* Bintang JBPM */
       .logo-icon::after {
         content: '★';
         position: absolute;
@@ -192,7 +190,7 @@
         margin-top: 2px;
       }
 
-      /* STATS BAR - BARU TAMBAH */
+      /* Stats Bar */
       .stats-bar {
         display: grid;
         grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
@@ -233,7 +231,7 @@
         margin-bottom: 2px;
       }
 
-      /* Grid Apps - SAMA SEPERTI KOD ANDA */
+      /* Grid Apps */
       .apps-grid {
         display: grid;
         grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
@@ -305,13 +303,8 @@
       }
 
       @keyframes blink {
-        0%,
-        100% {
-          opacity: 1;
-        }
-        50% {
-          opacity: 0.4;
-        }
+        0%, 100% { opacity: 1; }
+        50% { opacity: 0.4; }
       }
 
       .app-card .arrow {
@@ -326,7 +319,7 @@
         transform: translateX(5px);
       }
 
-      /* Footer - TEMA BOMBA */
+      /* Footer */
       .footer {
         margin-top: 25px;
         padding-top: 18px;
@@ -356,15 +349,8 @@
       }
 
       @keyframes pulseDot {
-        0%,
-        100% {
-          opacity: 1;
-          transform: scale(1);
-        }
-        50% {
-          opacity: 0.3;
-          transform: scale(0.8);
-        }
+        0%, 100% { opacity: 1; transform: scale(1); }
+        50% { opacity: 0.3; transform: scale(0.8); }
       }
 
       .footer a {
@@ -400,7 +386,6 @@
         }
       }
 
-      /* Scrollbar */
       ::-webkit-scrollbar {
         width: 6px;
       }
@@ -418,7 +403,7 @@
   </head>
   <body>
     <div class="dashboard">
-      <!-- HEADER - TEMA BOMBA -->
+      <!-- HEADER -->
       <div class="header">
         <div class="logo">
           <div class="logo-icon">🚒</div>
@@ -433,7 +418,7 @@
         </div>
       </div>
 
-      <!-- STATS BAR - BARU -->
+      <!-- STATS BAR -->
       <div class="stats-bar">
         <div class="stat-item">
           <span class="icon-badge">🔥</span>
@@ -457,13 +442,9 @@
         </div>
       </div>
 
-      <!-- GRID APPS - SEMUA LINK ANDA -->
+      <!-- GRID APPS -->
       <div class="apps-grid">
-        <a
-          href="https://dashboard-kekuatan-anggota-12-jam-j.vercel.app/"
-          target="_blank"
-          class="app-card"
-        >
+        <a href="https://dashboard-kekuatan-anggota-12-jam-j.vercel.app/" target="_blank" class="app-card">
           <span class="icon">👨‍🚒</span>
           <h3>Kekuatan Anggota <span class="highlight">12 Jam</span></h3>
           <p>Status anggota, syif, cuti & tugasan khas mengikut balai.</p>
@@ -471,11 +452,7 @@
           <span class="arrow">→</span>
         </a>
 
-        <a
-          href="https://dashboard-data-jentera-jbpm-jo-git-1a1049-pgojhbravo5s-projects.vercel.app/"
-          target="_blank"
-          class="app-card"
-        >
+        <a href="https://dashboard-data-jentera-jbpm-jo-git-1a1049-pgojhbravo5s-projects.vercel.app/" target="_blank" class="app-card">
           <span class="icon">🚛</span>
           <h3>Data <span class="highlight">Jentera</span> JBPM Johor</h3>
           <p>Pemantauan status jentera & kenderaan operasi.</p>
@@ -483,23 +460,15 @@
           <span class="arrow">→</span>
         </a>
 
-        <a
-          href="https://dashbord-live-statistik-kes.vercel.app/"
-          target="_blank"
-          class="app-card"
-        >
+        <a href="https://dashbord-live-statistik-kes.vercel.app/" target="_blank" class="app-card">
           <span class="icon">📊</span>
-          <h3>Live Statistik Kes <span class="highlight"> 24 Jam</span></h3>
+          <h3>Live Statistik Kes <span class="highlight">24 Jam</span></h3>
           <p>Statistik masa nyata panggilan, lokasi & mangsa.</p>
           <span class="badge live">● LIVE</span>
           <span class="arrow">→</span>
         </a>
 
-        <a
-          href="https://po1teknologia2.vercel.app/"
-          target="_blank"
-          class="app-card"
-        >
+        <a href="https://po1teknologia2.vercel.app/" target="_blank" class="app-card">
           <span class="icon">📦</span>
           <h3>Sistem Inventori<span class="highlight"> (DID)</span></h3>
           <p>Pengurusan storan, peralatan & aset logistik.</p>
@@ -507,20 +476,16 @@
           <span class="arrow">→</span>
         </a>
 
-        <a
-          href="https://daftar-masuk-pelawat.vercel.app/"
-          target="_blank"
-          class="app-card"
-        >
+        <a href="https://daftar-masuk-pelawat.vercel.app/" target="_blank" class="app-card">
           <span class="icon">📋</span>
-          <h3>Daftar Masuk Pelawat <span class="highlight"> (ENTRY)</span></h3>
+          <h3>Daftar Masuk Pelawat <span class="highlight">(ENTRY)</span></h3>
           <p>Sistem daftar masuk dengan gambar ID & staf bertanggungjawab.</p>
           <span class="badge online">● Online</span>
           <span class="arrow">→</span>
         </a>
       </div>
 
-      <!-- FOOTER - TEMA BOMBA -->
+      <!-- FOOTER -->
       <div class="footer">
         <div class="brand">
           <span class="dot"></span>
@@ -538,17 +503,12 @@
     <script>
       function updateClock() {
         const now = new Date();
-        document.getElementById('clock').textContent = now.toLocaleTimeString(
-          'ms-MY',
-          { hour12: false }
-        );
-        document.getElementById('date').textContent = now
-          .toLocaleDateString('ms-MY', {
-            day: 'numeric',
-            month: 'long',
-            year: 'numeric',
-          })
-          .toUpperCase();
+        document.getElementById('clock').textContent = now.toLocaleTimeString('ms-MY', { hour12: false });
+        document.getElementById('date').textContent = now.toLocaleDateString('ms-MY', {
+          day: 'numeric',
+          month: 'long',
+          year: 'numeric'
+        }).toUpperCase();
       }
       updateClock();
       setInterval(updateClock, 1000);
