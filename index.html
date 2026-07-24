@@ -1,1789 +1,2348 @@
 <!DOCTYPE html>
 <html lang="ms">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
+    />
     <title>JBPM PGO Johor - Dashboard</title>
-    
+
     <!-- PWA META TAGS -->
-    <meta name="theme-color" content="#cc0000">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <meta name="apple-mobile-web-app-title" content="PGO Johor">
-    <meta name="mobile-web-app-capable" content="yes">
-    <link rel="manifest" href="manifest.json">
-    
+    <meta name="theme-color" content="#cc0000" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta
+      name="apple-mobile-web-app-status-bar-style"
+      content="black-translucent"
+    />
+    <meta name="apple-mobile-web-app-title" content="PGO Johor" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <link rel="manifest" href="manifest.json" />
+
     <!-- ICON APPS -->
-    <link rel="icon" type="image/png" href="https://i.ibb.co/bjc5nKwZ/training.png">
-    <link rel="apple-touch-icon" href="https://i.ibb.co/bjc5nKwZ/training.png">
-    
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link
+      rel="icon"
+      type="image/png"
+      href="https://i.ibb.co/bjc5nKwZ/training.png"
+    />
+    <link
+      rel="apple-touch-icon"
+      href="https://i.ibb.co/bjc5nKwZ/training.png"
+    />
+
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
+    />
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
 
-        body {
-            font-family: Arial, sans-serif;
-            min-height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            padding: 16px;
-            background: #0a0a0a;
-            background-image: url('https://images.unsplash.com/photo-1582139329536-e7284fece509?w=1600');
-            background-size: cover;
-            background-position: center;
-            background-attachment: fixed;
-            position: relative;
-            overflow-x: hidden;
-            transition: background 0.5s ease, background-image 0.5s ease;
-        }
+      body {
+        font-family: Arial, sans-serif;
+        min-height: 100vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding: 16px;
+        background: #0a0a0a;
+        background-image: url('https://images.unsplash.com/photo-1582139329536-e7284fece509?w=1600');
+        background-size: cover;
+        background-position: center;
+        background-attachment: fixed;
+        position: relative;
+        overflow-x: hidden;
+        transition: background 0.5s ease, background-image 0.5s ease;
+      }
 
-        body::before {
-            content: '';
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: rgba(0, 0, 0, 0.75);
-            z-index: 0;
-            transition: background 0.5s ease;
-        }
+      body::before {
+        content: '';
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(0, 0, 0, 0.75);
+        z-index: 0;
+        transition: background 0.5s ease;
+      }
 
-        /* ===== MODE SIANG ===== */
-        body.mode-siang {
-            background-image: url('https://images.unsplash.com/photo-1504384308090-c894fdcc538d?w=1600');
-        }
-        body.mode-siang::before {
-            background: rgba(255, 255, 255, 0.15);
-        }
-        body.mode-siang .dashboard {
-            background: #f0f0f0;
-            border-color: #d0d0d0;
-            box-shadow: 0 25px 60px rgba(0, 0, 0, 0.2), 0 0 40px rgba(255, 200, 0, 0.1);
-        }
-        body.mode-siang .dashboard::before {
-            background: linear-gradient(90deg, #ff6b00, #ffcc00, #ff6b00);
-        }
-        body.mode-siang .dashboard::after {
-            background: radial-gradient(ellipse at 20% 80%, rgba(255, 200, 0, 0.1) 0%, transparent 50%),
-                        radial-gradient(ellipse at 80% 20%, rgba(255, 150, 0, 0.08) 0%, transparent 50%);
-        }
-        body.mode-siang .logo h1 { color: #1a1a1a; }
-        body.mode-siang .logo .sub { color: #666; }
-        body.mode-siang .logo-icon {
-            background: linear-gradient(135deg, #ff6b00, #cc5500);
-            border-color: #ffcc00;
-        }
-        body.mode-siang .stat-item {
-            background: #ffffff;
-            border-color: #d0d0d0;
-        }
-        body.mode-siang .stat-item .label { color: #888; }
-        body.mode-siang .app-card {
-            background: #ffffff;
-            border-color: #d0d0d0;
-        }
-        body.mode-siang .app-card h3 { color: #1a1a1a; }
-        body.mode-siang .app-card p { color: #666; }
-        body.mode-siang .section-title {
-            color: #1a1a1a;
-            border-bottom-color: #d0d0d0;
-        }
-        body.mode-siang .header { border-bottom-color: #d0d0d0; }
-        body.mode-siang .footer {
-            border-top-color: #d0d0d0;
-            color: #888;
-        }
-        body.mode-siang .header-right {
-            background: #ffffff;
-            border-color: #d0d0d0;
-        }
-        body.mode-siang .digital-time .date { color: #888; }
-        body.mode-siang .hamburger-btn {
-            background: #ffffff;
-            border-color: #ff6b00;
-        }
-        body.mode-siang .hamburger-btn span { background: #ff6b00; }
-        body.mode-siang .analog-clock {
-            background: #f5f5f5;
-            border-color: #ff6b00;
-        }
-        body.mode-siang .analog-clock .hand.hour { background: #ff6b00; }
-        body.mode-siang .analog-clock .hand.minute { background: #555; }
-        body.mode-siang .analog-clock .center-dot { background: #ff6b00; }
-        body.mode-siang .analog-clock .marker.main { background: #ff6b00; }
-        body.mode-siang .analog-clock .marker { background: #aaa; }
-        body.mode-siang .sidebar {
-            background: #f5f5f5;
-            border-left-color: #ff6b00;
-        }
-        body.mode-siang .sidebar-header {
-            background: linear-gradient(135deg, #ffe0cc, #f5f5f5);
-            border-bottom-color: #d0d0d0;
-        }
-        body.mode-siang .sidebar-header h3 { color: #cc5500; }
-        body.mode-siang .sidebar-close {
-            background: #e8e8e8;
-            border-color: #ccc;
-            color: #666;
-        }
-        body.mode-siang .sidebar-category-title {
-            color: #cc5500;
-            border-bottom-color: #d0d0d0;
-        }
-        body.mode-siang .sidebar-link { color: #333; }
-        body.mode-siang .sidebar-link:hover {
-            background: #e8e8e8;
-            border-color: #ccc;
-            color: #000;
-        }
-        body.mode-siang .sidebar-footer {
-            border-top-color: #d0d0d0;
-            color: #999;
-            background: #e8e8e8;
-        }
-        body.mode-siang .emergency-item {
-            background: #ffffff;
-            border-color: #d0d0d0;
-        }
-        body.mode-siang .emergency-item:hover {
-            border-color: #ff6b00;
-            background: #f8f8f8;
-        }
-        body.mode-siang .emergency-item .e-info .e-name { color: #1a1a1a; }
-        body.mode-siang .info-box {
-            background: #e8e8e8;
-            border-color: #d0d0d0;
-        }
-        body.mode-siang .info-box p { color: #666; }
-        body.mode-siang .stats-bar .stat-item .num { color: #cc5500; }
-        body.mode-siang .app-card .badge.online {
-            background: #d4edda;
-            color: #155724;
-            border-color: #b8daff;
-        }
-        body.mode-siang .app-card .badge.live {
-            background: #f8d7da;
-            color: #721c24;
-            border-color: #f5c6cb;
-        }
-        body.mode-siang .app-card .badge.dev {
-            background: #fff3cd;
-            color: #856404;
-            border-color: #ffc107;
-        }
-        body.mode-siang .footer .social-links a { color: #888; }
-        body.mode-siang .footer .social-links a:hover {
-            color: #cc5500;
-            border-color: rgba(204, 85, 0, 0.15);
-            background: rgba(204, 85, 0, 0.05);
-        }
+      /* ===== MODE SIANG ===== */
+      body.mode-siang {
+        background-image: url('https://images.unsplash.com/photo-1504384308090-c894fdcc538d?w=1600');
+      }
+      body.mode-siang::before {
+        background: rgba(255, 255, 255, 0.15);
+      }
+      body.mode-siang .dashboard {
+        background: #f0f0f0;
+        border-color: #d0d0d0;
+        box-shadow: 0 25px 60px rgba(0, 0, 0, 0.2),
+          0 0 40px rgba(255, 200, 0, 0.1);
+      }
+      body.mode-siang .dashboard::before {
+        background: linear-gradient(90deg, #ff6b00, #ffcc00, #ff6b00);
+      }
+      body.mode-siang .dashboard::after {
+        background: radial-gradient(
+            ellipse at 20% 80%,
+            rgba(255, 200, 0, 0.1) 0%,
+            transparent 50%
+          ),
+          radial-gradient(
+            ellipse at 80% 20%,
+            rgba(255, 150, 0, 0.08) 0%,
+            transparent 50%
+          );
+      }
+      body.mode-siang .logo h1 {
+        color: #1a1a1a;
+      }
+      body.mode-siang .logo .sub {
+        color: #666;
+      }
+      body.mode-siang .stat-item {
+        background: #ffffff;
+        border-color: #d0d0d0;
+      }
+      body.mode-siang .stat-item .label {
+        color: #888;
+      }
+      body.mode-siang .app-card {
+        background: #ffffff;
+        border-color: #d0d0d0;
+      }
+      body.mode-siang .app-card h3 {
+        color: #1a1a1a;
+      }
+      body.mode-siang .app-card p {
+        color: #666;
+      }
+      body.mode-siang .section-title {
+        color: #1a1a1a;
+        border-bottom-color: #d0d0d0;
+      }
+      body.mode-siang .header {
+        border-bottom-color: #d0d0d0;
+      }
+      body.mode-siang .footer {
+        border-top-color: #d0d0d0;
+        color: #888;
+      }
+      body.mode-siang .header-right {
+        background: #ffffff;
+        border-color: #d0d0d0;
+      }
+      body.mode-siang .digital-time .date {
+        color: #888;
+      }
+      body.mode-siang .hamburger-btn {
+        background: #ffffff;
+        border-color: #ff6b00;
+      }
+      body.mode-siang .hamburger-btn span {
+        background: #ff6b00;
+      }
+      body.mode-siang .analog-clock {
+        background: #f5f5f5;
+        border-color: #ff6b00;
+      }
+      body.mode-siang .analog-clock .hand.hour {
+        background: #ff6b00;
+      }
+      body.mode-siang .analog-clock .hand.minute {
+        background: #555;
+      }
+      body.mode-siang .analog-clock .center-dot {
+        background: #ff6b00;
+      }
+      body.mode-siang .analog-clock .marker.main {
+        background: #ff6b00;
+      }
+      body.mode-siang .analog-clock .marker {
+        background: #aaa;
+      }
+      body.mode-siang .sidebar {
+        background: #f5f5f5;
+        border-left-color: #ff6b00;
+      }
+      body.mode-siang .sidebar-header {
+        background: linear-gradient(135deg, #ffe0cc, #f5f5f5);
+        border-bottom-color: #d0d0d0;
+      }
+      body.mode-siang .sidebar-header h3 {
+        color: #cc5500;
+      }
+      body.mode-siang .sidebar-close {
+        background: #e8e8e8;
+        border-color: #ccc;
+        color: #666;
+      }
+      body.mode-siang .sidebar-category-title {
+        color: #cc5500;
+        border-bottom-color: #d0d0d0;
+      }
+      body.mode-siang .sidebar-link {
+        color: #333;
+      }
+      body.mode-siang .sidebar-link:hover {
+        background: #e8e8e8;
+        border-color: #ccc;
+        color: #000;
+      }
+      body.mode-siang .sidebar-footer {
+        border-top-color: #d0d0d0;
+        color: #999;
+        background: #e8e8e8;
+      }
+      body.mode-siang .emergency-item {
+        background: #ffffff;
+        border-color: #d0d0d0;
+      }
+      body.mode-siang .emergency-item:hover {
+        border-color: #ff6b00;
+        background: #f8f8f8;
+      }
+      body.mode-siang .emergency-item .e-info .e-name {
+        color: #1a1a1a;
+      }
+      body.mode-siang .info-box {
+        background: #e8e8e8;
+        border-color: #d0d0d0;
+      }
+      body.mode-siang .info-box p {
+        color: #666;
+      }
+      body.mode-siang .stats-bar .stat-item .num {
+        color: #cc5500;
+      }
+      body.mode-siang .app-card .badge.online {
+        background: #d4edda;
+        color: #155724;
+        border-color: #b8daff;
+      }
+      body.mode-siang .app-card .badge.live {
+        background: #f8d7da;
+        color: #721c24;
+        border-color: #f5c6cb;
+      }
+      body.mode-siang .app-card .badge.dev {
+        background: #fff3cd;
+        color: #856404;
+        border-color: #ffc107;
+      }
+      body.mode-siang .footer .social-links a {
+        color: #888;
+      }
+      body.mode-siang .footer .social-links a:hover {
+        color: #cc5500;
+        border-color: rgba(204, 85, 0, 0.15);
+        background: rgba(204, 85, 0, 0.05);
+      }
 
-        /* ===== OVERLAY UNTUK SIDEBAR ===== */
-        .sidebar-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: rgba(0, 0, 0, 0.7);
-            z-index: 998;
-            opacity: 0;
-            visibility: hidden;
-            transition: all 0.3s ease;
-        }
-        .sidebar-overlay.active {
-            opacity: 1;
-            visibility: visible;
-        }
+      /* ===== OVERLAY UNTUK SIDEBAR ===== */
+      .sidebar-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(0, 0, 0, 0.7);
+        z-index: 998;
+        opacity: 0;
+        visibility: hidden;
+        transition: all 0.3s ease;
+      }
+      .sidebar-overlay.active {
+        opacity: 1;
+        visibility: visible;
+      }
 
+      .dashboard {
+        max-width: 1100px;
+        width: 100%;
+        background: #111111;
+        border-radius: 28px;
+        padding: 30px 24px;
+        box-shadow: 0 25px 60px rgba(0, 0, 0, 0.8),
+          0 0 40px rgba(204, 0, 0, 0.05);
+        border: 1px solid #2a2a2a;
+        position: relative;
+        overflow: hidden;
+        z-index: 1;
+        transition: all 0.5s ease;
+      }
+
+      .dashboard::after {
+        content: '';
+        position: absolute;
+        top: -20%;
+        left: -10%;
+        right: -10%;
+        bottom: -20%;
+        background: radial-gradient(
+            ellipse at 20% 80%,
+            rgba(255, 80, 0, 0.08) 0%,
+            transparent 50%
+          ),
+          radial-gradient(
+            ellipse at 80% 20%,
+            rgba(255, 200, 0, 0.05) 0%,
+            transparent 50%
+          ),
+          radial-gradient(
+            ellipse at 50% 50%,
+            rgba(200, 0, 0, 0.04) 0%,
+            transparent 70%
+          );
+        animation: fireGlow 6s ease-in-out infinite alternate;
+        border-radius: 28px;
+        z-index: 0;
+        pointer-events: none;
+        transition: all 0.5s ease;
+      }
+
+      @keyframes fireGlow {
+        0% {
+          opacity: 0.4;
+          transform: scale(1) rotate(0deg);
+        }
+        100% {
+          opacity: 0.9;
+          transform: scale(1.03) rotate(1deg);
+        }
+      }
+
+      .dashboard > * {
+        position: relative;
+        z-index: 1;
+      }
+
+      .dashboard::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 5px;
+        background: linear-gradient(90deg, #cc0000, #ffcc00, #cc0000);
+        background-size: 200% 100%;
+        animation: stripeMove 4s linear infinite;
+        z-index: 2;
+        transition: all 0.5s ease;
+      }
+
+      @keyframes stripeMove {
+        0% {
+          background-position: 0% 0%;
+        }
+        100% {
+          background-position: 200% 0%;
+        }
+      }
+
+      /* ===== SIDEBAR / MENU HAMBURGER ===== */
+      .sidebar {
+        position: fixed;
+        top: 0;
+        right: -420px;
+        width: 420px;
+        max-width: 92vw;
+        height: 100vh;
+        background: #141414;
+        z-index: 999;
+        transition: right 0.35s cubic-bezier(0.25, 0.8, 0.25, 1),
+          background 0.5s ease;
+        border-left: 2px solid #cc0000;
+        overflow-y: auto;
+        display: flex;
+        flex-direction: column;
+        box-shadow: -10px 0 40px rgba(0, 0, 0, 0.8);
+      }
+      .sidebar.active {
+        right: 0;
+      }
+
+      .sidebar-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 20px 22px;
+        background: linear-gradient(135deg, #1a0000, #0a0a0a);
+        border-bottom: 1px solid #2a2a2a;
+        flex-shrink: 0;
+        position: sticky;
+        top: 0;
+        z-index: 10;
+        transition: all 0.5s ease;
+      }
+      .sidebar-header h3 {
+        color: #ffcc00;
+        font-size: 18px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        letter-spacing: 0.5px;
+        transition: color 0.5s ease;
+      }
+      .sidebar-header h3 i {
+        color: #ff6600;
+        font-size: 20px;
+      }
+      .sidebar-close {
+        width: 38px;
+        height: 38px;
+        border-radius: 50%;
+        background: #1a1a1a;
+        border: 1px solid #333;
+        color: #888;
+        font-size: 18px;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.3s ease;
+      }
+      .sidebar-close:hover {
+        background: #cc0000;
+        color: white;
+        border-color: #cc0000;
+      }
+      .sidebar-content {
+        flex: 1;
+        padding: 16px 22px 30px;
+        overflow-y: auto;
+      }
+
+      .sidebar-category {
+        margin-bottom: 22px;
+      }
+      .sidebar-category-title {
+        color: #ff6600;
+        font-size: 10px;
+        text-transform: uppercase;
+        letter-spacing: 2px;
+        margin-bottom: 10px;
+        padding-bottom: 8px;
+        border-bottom: 1px solid #222;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        transition: all 0.5s ease;
+      }
+
+      .sidebar-link {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 12px 14px;
+        color: #cccccc;
+        text-decoration: none;
+        border-radius: 10px;
+        margin-bottom: 4px;
+        transition: all 0.25s ease;
+        border: 1px solid transparent;
+        font-size: 14px;
+      }
+      .sidebar-link:hover {
+        background: #1e1e1e;
+        color: #ffffff;
+        border-color: #333;
+        transform: translateX(-3px);
+      }
+      .sidebar-link .link-icon {
+        width: 36px;
+        height: 36px;
+        border-radius: 8px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 16px;
+        flex-shrink: 0;
+      }
+      .link-icon.weather {
+        background: rgba(59, 130, 246, 0.15);
+        color: #3b82f6;
+      }
+      .link-icon.tide {
+        background: rgba(6, 182, 212, 0.15);
+        color: #06b6d4;
+      }
+      .link-icon.disaster {
+        background: rgba(239, 68, 68, 0.15);
+        color: #ef4444;
+      }
+      .link-icon.road {
+        background: rgba(245, 158, 11, 0.15);
+        color: #f59e0b;
+      }
+      .link-icon.flood {
+        background: rgba(99, 102, 241, 0.15);
+        color: #6366f1;
+      }
+      .link-icon.quake {
+        background: rgba(168, 85, 247, 0.15);
+        color: #a855f7;
+      }
+      .link-icon.radar {
+        background: rgba(34, 197, 94, 0.15);
+        color: #22c55e;
+      }
+      .link-icon.fire {
+        background: rgba(249, 115, 22, 0.15);
+        color: #f97316;
+      }
+      .link-icon.emergency {
+        background: rgba(239, 68, 68, 0.15);
+        color: #ef4444;
+      }
+      .link-icon.info {
+        background: rgba(148, 163, 184, 0.15);
+        color: #94a3b8;
+      }
+      .link-icon.hospital {
+        background: rgba(16, 185, 129, 0.15);
+        color: #10b981;
+      }
+      .link-icon.maritime {
+        background: rgba(59, 130, 246, 0.15);
+        color: #3b82f6;
+      }
+      .link-icon.civil {
+        background: rgba(251, 191, 36, 0.15);
+        color: #fbbf24;
+      }
+      .link-icon.phone {
+        background: rgba(34, 197, 94, 0.15);
+        color: #22c55e;
+      }
+
+      .sidebar-link .link-text {
+        flex: 1;
+      }
+      .sidebar-link .link-text .link-name {
+        display: block;
+        font-weight: 500;
+      }
+      .sidebar-link .link-text .link-desc {
+        display: block;
+        font-size: 10px;
+        color: #666;
+        margin-top: 2px;
+      }
+      .sidebar-link .external-arrow {
+        color: #444;
+        font-size: 12px;
+        transition: all 0.3s ease;
+      }
+      .sidebar-link:hover .external-arrow {
+        color: #ffcc00;
+      }
+
+      .sidebar-footer {
+        padding: 16px 22px;
+        border-top: 1px solid #222;
+        text-align: center;
+        font-size: 11px;
+        color: #555;
+        flex-shrink: 0;
+        background: #0a0a0a;
+        transition: all 0.5s ease;
+      }
+      .sidebar-footer .footer-icon {
+        color: #cc0000;
+      }
+
+      .sidebar::-webkit-scrollbar {
+        width: 4px;
+      }
+      .sidebar::-webkit-scrollbar-track {
+        background: #0a0a0a;
+      }
+      .sidebar::-webkit-scrollbar-thumb {
+        background: #cc0000;
+        border-radius: 10px;
+      }
+
+      /* Emergency Directory */
+      .emergency-directory {
+        margin-top: 4px;
+      }
+      .emergency-group {
+        margin-bottom: 14px;
+      }
+      .emergency-group-title {
+        color: #888;
+        font-size: 11px;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        margin-bottom: 6px;
+        padding-left: 4px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+      .emergency-group-title .group-icon {
+        font-size: 13px;
+      }
+      .emergency-item {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 8px 12px;
+        background: #1a1a1a;
+        border-radius: 10px;
+        margin-bottom: 4px;
+        border: 1px solid #252525;
+        transition: all 0.25s ease;
+      }
+      .emergency-item:hover {
+        border-color: #cc0000;
+        background: #1f1f1f;
+      }
+      .emergency-item .e-icon {
+        width: 32px;
+        height: 32px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 14px;
+        flex-shrink: 0;
+      }
+      .e-icon.bomba {
+        background: rgba(239, 68, 68, 0.2);
+        color: #ef4444;
+      }
+      .e-icon.polis {
+        background: rgba(59, 130, 246, 0.2);
+        color: #3b82f6;
+      }
+      .e-icon.hospital {
+        background: rgba(16, 185, 129, 0.2);
+        color: #10b981;
+      }
+      .e-icon.maritim {
+        background: rgba(6, 182, 212, 0.2);
+        color: #06b6d4;
+      }
+      .e-icon.civil {
+        background: rgba(251, 191, 36, 0.2);
+        color: #fbbf24;
+      }
+      .e-icon.emergency {
+        background: rgba(239, 68, 68, 0.15);
+        color: #ef4444;
+      }
+      .emergency-item .e-info {
+        flex: 1;
+        min-width: 0;
+      }
+      .emergency-item .e-info .e-name {
+        color: #e0e0e0;
+        font-size: 13px;
+        font-weight: 500;
+        display: block;
+        transition: color 0.5s ease;
+      }
+      .emergency-item .e-info .e-number {
+        color: #ffcc00;
+        font-size: 15px;
+        font-weight: 700;
+        font-family: 'Courier New', monospace;
+        display: block;
+      }
+      .emergency-item .e-info .e-desc {
+        color: #666;
+        font-size: 10px;
+        display: block;
+        margin-top: 1px;
+      }
+      .emergency-item .e-actions {
+        display: flex;
+        gap: 4px;
+        flex-shrink: 0;
+      }
+      .emergency-item .e-actions a {
+        width: 34px;
+        height: 34px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        text-decoration: none;
+        font-size: 14px;
+        transition: all 0.3s ease;
+        border: none;
+        cursor: pointer;
+      }
+      .e-actions .call-btn {
+        background: #cc0000;
+      }
+      .e-actions .call-btn:hover {
+        background: #ff0000;
+        transform: scale(1.1);
+      }
+      .e-actions .wa-btn {
+        background: #075e54;
+      }
+      .e-actions .wa-btn:hover {
+        background: #128c7e;
+        transform: scale(1.1);
+      }
+
+      /* Header */
+      .header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 15px;
+        margin-bottom: 30px;
+        padding-bottom: 20px;
+        border-bottom: 2px solid #2a2a2a;
+        transition: all 0.5s ease;
+      }
+      .logo {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        flex: 1;
+      }
+      .logo-text {
+        display: flex;
+        flex-direction: column;
+        flex: 1;
+        text-align: center;
+      }
+      .logo h1 {
+        color: white;
+        font-size: 24px;
+        letter-spacing: 1px;
+        transition: color 0.5s ease;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 12px;
+        flex-wrap: wrap;
+      }
+      .logo h1 span {
+        color: #ffcc00;
+      }
+      .logo .sub {
+        color: #888888;
+        font-size: 13px;
+        display: block;
+        letter-spacing: 1px;
+        transition: color 0.5s ease;
+        text-align: center;
+      }
+      .logo-img {
+        height: 50px;
+        width: auto;
+        object-fit: contain;
+        display: inline-block;
+      }
+      .logo-img.logo-bomba {
+        height: 55px;
+      }
+      .logo-img.logo-komunikasi {
+        height: 42px;
+      }
+      .logo-img-wrapper {
+        display: flex;
+        align-items: center;
+        gap: 4px;
+        flex-shrink: 0;
+      }
+
+      /* Header right group */
+      .header-right {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        background: #1a1a1a;
+        padding: 6px 10px 6px 12px;
+        border-radius: 60px;
+        border: 1px solid #2a2a2a;
+        transition: all 0.5s ease;
+      }
+
+      /* Mode toggle (siang/malam) */
+      .mode-toggle-btn {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        background: #1a1a1a;
+        border: 1px solid #ffcc00;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 20px;
+        transition: all 0.3s ease;
+        flex-shrink: 0;
+        color: #ffcc00;
+        position: relative;
+        user-select: none;
+      }
+      .mode-toggle-btn:hover {
+        background: #ffcc00;
+        color: #1a1a1a;
+        transform: scale(1.05);
+        box-shadow: 0 0 25px rgba(255, 204, 0, 0.3);
+      }
+      .mode-toggle-btn:active {
+        transform: scale(0.9);
+      }
+      body.mode-siang .mode-toggle-btn {
+        background: #ffcc00;
+        color: #1a1a1a;
+        border-color: #ff6b00;
+      }
+      body.mode-siang .mode-toggle-btn:hover {
+        background: #1a1a1a;
+        color: #ffcc00;
+        border-color: #ffcc00;
+        box-shadow: 0 0 25px rgba(0, 0, 0, 0.3);
+      }
+
+      /* Desktop/Mobile switch button */
+      .switch-mode-btn {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        background: #1a1a1a;
+        border: 1px solid #4ade80;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 18px;
+        transition: all 0.3s ease;
+        flex-shrink: 0;
+        color: #4ade80;
+        position: relative;
+        user-select: none;
+      }
+      .switch-mode-btn:hover {
+        background: #4ade80;
+        color: #1a1a1a;
+        transform: scale(1.05);
+        box-shadow: 0 0 20px rgba(74, 222, 128, 0.3);
+      }
+      .switch-mode-btn:active {
+        transform: scale(0.9);
+      }
+      body.mode-siang .switch-mode-btn {
+        background: #ffffff;
+        border-color: #059669;
+        color: #059669;
+      }
+      body.mode-siang .switch-mode-btn:hover {
+        background: #059669;
+        color: white;
+      }
+
+      /* Analog Clock */
+      .analog-clock {
+        width: 44px;
+        height: 44px;
+        border-radius: 50%;
+        background: #0a0a0a;
+        border: 2px solid #ffcc00;
+        position: relative;
+        flex-shrink: 0;
+        box-shadow: 0 0 15px rgba(255, 204, 0, 0.05);
+        transition: all 0.5s ease;
+      }
+      .analog-clock .hand {
+        position: absolute;
+        bottom: 50%;
+        left: 50%;
+        transform-origin: bottom center;
+        border-radius: 3px;
+        background: #e2e8f0;
+        transition: background 0.5s ease;
+      }
+      .analog-clock .hand.hour {
+        width: 3px;
+        height: 13px;
+        margin-left: -1.5px;
+        background: #ffcc00;
+      }
+      .analog-clock .hand.minute {
+        width: 2px;
+        height: 18px;
+        margin-left: -1px;
+        background: #94a3b8;
+      }
+      .analog-clock .hand.second {
+        width: 1.5px;
+        height: 20px;
+        margin-left: -0.75px;
+        background: #ef4444;
+      }
+      .analog-clock .center-dot {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        width: 5px;
+        height: 5px;
+        background: #ffcc00;
+        border-radius: 50%;
+        transform: translate(-50%, -50%);
+        z-index: 2;
+        transition: background 0.5s ease;
+      }
+      .analog-clock .marker {
+        position: absolute;
+        width: 2px;
+        height: 4px;
+        background: #4a5568;
+        top: 4px;
+        left: 50%;
+        margin-left: -1px;
+        transform-origin: bottom center;
+        transition: background 0.5s ease;
+      }
+      .analog-clock .marker.main {
+        height: 7px;
+        width: 2.5px;
+        background: #ffcc00;
+      }
+
+      .digital-time {
+        text-align: right;
+        line-height: 1.2;
+      }
+      .digital-time .time {
+        font-size: 18px;
+        font-weight: bold;
+        color: #ffcc00;
+        font-family: 'Courier New', monospace;
+        letter-spacing: 1px;
+        text-shadow: 0 0 20px rgba(255, 204, 0, 0.1);
+      }
+      .digital-time .date {
+        color: #888888;
+        font-size: 10px;
+        margin-top: 1px;
+        transition: color 0.5s ease;
+      }
+
+      /* Hamburger button */
+      .hamburger-btn {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        background: #1a1a1a;
+        border: 1px solid #ffcc00;
+        cursor: pointer;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 4px;
+        transition: all 0.3s ease;
+        flex-shrink: 0;
+        position: relative;
+        user-select: none;
+      }
+      .hamburger-btn:hover {
+        background: #cc0000;
+        border-color: #ff6600;
+        box-shadow: 0 0 20px rgba(204, 0, 0, 0.3);
+      }
+      .hamburger-btn span {
+        display: block;
+        width: 18px;
+        height: 2px;
+        background: #ffcc00;
+        border-radius: 2px;
+        transition: all 0.3s ease;
+      }
+      .hamburger-btn.active span:nth-child(1) {
+        transform: rotate(45deg) translate(4px, 4px);
+      }
+      .hamburger-btn.active span:nth-child(2) {
+        opacity: 0;
+      }
+      .hamburger-btn.active span:nth-child(3) {
+        transform: rotate(-45deg) translate(4px, -4px);
+      }
+      .hamburger-badge {
+        position: absolute;
+        top: -6px;
+        right: -6px;
+        width: 18px;
+        height: 18px;
+        background: #ef4444;
+        border-radius: 50%;
+        font-size: 9px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-weight: bold;
+        border: 2px solid #0a0a0a;
+      }
+
+      /* Stats */
+      .stats-bar {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+        gap: 12px;
+        margin-bottom: 25px;
+      }
+      .stat-item {
+        background: #1a1a1a;
+        border-radius: 14px;
+        padding: 14px 16px;
+        text-align: center;
+        border: 1px solid #2a2a2a;
+        transition: all 0.3s ease;
+      }
+      .stat-item:hover {
+        border-color: #cc0000;
+      }
+      .stat-item .num {
+        font-size: 26px;
+        font-weight: 800;
+        color: #ffcc00;
+        display: inline-block;
+        transition: color 0.5s ease;
+      }
+      .stat-item .label {
+        font-size: 10px;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        color: #666666;
+        margin-top: 2px;
+        transition: color 0.5s ease;
+      }
+      .stat-item .icon-badge {
+        font-size: 16px;
+        display: block;
+        margin-bottom: 2px;
+      }
+
+      .section-status {
+        margin-bottom: 30px;
+      }
+      .section-status:last-of-type {
+        margin-bottom: 20px;
+      }
+      .section-title {
+        color: #ffffff;
+        font-size: 14px;
+        font-weight: 700;
+        letter-spacing: 1.5px;
+        text-transform: uppercase;
+        margin-bottom: 14px;
+        padding-bottom: 8px;
+        border-bottom: 2px solid #2a2a2a;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        flex-wrap: wrap;
+        transition: all 0.5s ease;
+      }
+      .section-title .status-badge {
+        font-size: 11px;
+        padding: 2px 12px;
+        border-radius: 20px;
+        font-weight: 600;
+        letter-spacing: 0.5px;
+      }
+      .status-badge.live {
+        background: #3a1a1a;
+        color: #ff6b6b;
+        border: 1px solid #5a2a2a;
+        animation: blink 1.2s infinite;
+      }
+      .status-badge.online {
+        background: #1a3a1a;
+        color: #4ade80;
+        border: 1px solid #2a5a2a;
+      }
+      .status-badge.dev {
+        background: #3a2a1a;
+        color: #f6ad55;
+        border: 1px solid #5a3a2a;
+      }
+
+      @keyframes blink {
+        0%,
+        100% {
+          opacity: 1;
+        }
+        50% {
+          opacity: 0.4;
+        }
+      }
+
+      .apps-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+        gap: 18px;
+      }
+      .app-card {
+        background: #1a1a1a;
+        border-radius: 18px;
+        padding: 22px 20px;
+        border: 1px solid #2a2a2a;
+        text-decoration: none;
+        color: white;
+        transition: all 0.3s ease;
+        display: block;
+        position: relative;
+      }
+      .app-card:hover {
+        transform: translateY(-5px);
+        border-color: #cc0000;
+        box-shadow: 0 10px 30px rgba(204, 0, 0, 0.15);
+      }
+      .app-card .icon {
+        font-size: 32px;
+        margin-bottom: 12px;
+        display: block;
+      }
+      .app-card h3 {
+        font-size: 17px;
+        margin-bottom: 6px;
+        color: white;
+        transition: color 0.5s ease;
+      }
+      .app-card h3 .highlight {
+        color: #ffcc00;
+      }
+      .app-card p {
+        color: #888888;
+        font-size: 13px;
+        line-height: 1.5;
+        margin-bottom: 14px;
+        transition: color 0.5s ease;
+      }
+      .app-card .badge {
+        display: inline-block;
+        font-size: 11px;
+        font-weight: bold;
+        padding: 4px 14px;
+        border-radius: 20px;
+        color: white;
+      }
+      .app-card .badge.online {
+        background: #1a3a1a;
+        color: #4ade80;
+        border: 1px solid #2a5a2a;
+        transition: all 0.5s ease;
+      }
+      .app-card .badge.live {
+        background: #3a1a1a;
+        color: #ff6b6b;
+        border: 1px solid #5a2a2a;
+        animation: blink 1.2s infinite;
+        transition: all 0.5s ease;
+      }
+      .app-card .badge.dev {
+        background: #3a2a1a;
+        color: #f6ad55;
+        border: 1px solid #5a3a2a;
+        transition: all 0.5s ease;
+      }
+      .app-card .arrow {
+        float: right;
+        color: #444444;
+        font-size: 18px;
+        transition: all 0.3s ease;
+      }
+      .app-card:hover .arrow {
+        color: #ffcc00;
+        transform: translateX(5px);
+      }
+
+      .footer {
+        margin-top: 25px;
+        padding-top: 18px;
+        border-top: 2px solid #2a2a2a;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 12px;
+        color: #555555;
+        font-size: 13px;
+        transition: all 0.5s ease;
+      }
+      .footer .brand {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+      .footer .brand .dot {
+        display: inline-block;
+        width: 8px;
+        height: 8px;
+        background: #cc0000;
+        border-radius: 50%;
+        animation: pulseDot 2s infinite;
+      }
+      @keyframes pulseDot {
+        0%,
+        100% {
+          opacity: 1;
+          transform: scale(1);
+        }
+        50% {
+          opacity: 0.3;
+          transform: scale(0.8);
+        }
+      }
+      .footer .social-links {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+      }
+      .footer .social-links a {
+        color: #555555;
+        text-decoration: none;
+        font-size: 17px;
+        width: 38px;
+        height: 38px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.3s ease;
+        border: 1px solid transparent;
+      }
+      .footer .social-links a:hover {
+        color: #ffcc00;
+        border-color: rgba(255, 204, 0, 0.15);
+        background: rgba(255, 204, 0, 0.05);
+        transform: translateY(-2px);
+      }
+      .footer .social-links a.whatsapp:hover {
+        color: #25d366;
+        border-color: rgba(37, 211, 102, 0.2);
+        background: rgba(37, 211, 102, 0.05);
+      }
+      .footer .social-links a.telegram:hover {
+        color: #0088cc;
+        border-color: rgba(0, 136, 204, 0.2);
+        background: rgba(0, 136, 204, 0.05);
+      }
+
+      /* Responsive */
+      @media (max-width: 600px) {
         .dashboard {
-            max-width: 1100px;
-            width: 100%;
-            background: #111111;
-            border-radius: 28px;
-            padding: 30px 24px;
-            box-shadow: 0 25px 60px rgba(0, 0, 0, 0.8), 0 0 40px rgba(204, 0, 0, 0.05);
-            border: 1px solid #2a2a2a;
-            position: relative;
-            overflow: hidden;
-            z-index: 1;
-            transition: all 0.5s ease;
+          padding: 20px 16px;
         }
-
-        .dashboard::after {
-            content: '';
-            position: absolute;
-            top: -20%;
-            left: -10%;
-            right: -10%;
-            bottom: -20%;
-            background: radial-gradient(ellipse at 20% 80%, rgba(255, 80, 0, 0.08) 0%, transparent 50%),
-                        radial-gradient(ellipse at 80% 20%, rgba(255, 200, 0, 0.05) 0%, transparent 50%),
-                        radial-gradient(ellipse at 50% 50%, rgba(200, 0, 0, 0.04) 0%, transparent 70%);
-            animation: fireGlow 6s ease-in-out infinite alternate;
-            border-radius: 28px;
-            z-index: 0;
-            pointer-events: none;
-            transition: all 0.5s ease;
-        }
-
-        @keyframes fireGlow {
-            0% { opacity: 0.4; transform: scale(1) rotate(0deg); }
-            100% { opacity: 0.9; transform: scale(1.03) rotate(1deg); }
-        }
-
-        .dashboard > * {
-            position: relative;
-            z-index: 1;
-        }
-
-        .dashboard::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 5px;
-            background: linear-gradient(90deg, #cc0000, #ffcc00, #cc0000);
-            background-size: 200% 100%;
-            animation: stripeMove 4s linear infinite;
-            z-index: 2;
-            transition: all 0.5s ease;
-        }
-
-        @keyframes stripeMove {
-            0% { background-position: 0% 0%; }
-            100% { background-position: 200% 0%; }
-        }
-
-        /* ===== SIDEBAR / MENU HAMBURGER ===== */
-        .sidebar {
-            position: fixed;
-            top: 0;
-            right: -420px;
-            width: 420px;
-            max-width: 92vw;
-            height: 100vh;
-            background: #141414;
-            z-index: 999;
-            transition: right 0.35s cubic-bezier(0.25, 0.8, 0.25, 1), background 0.5s ease;
-            border-left: 2px solid #cc0000;
-            overflow-y: auto;
-            display: flex;
-            flex-direction: column;
-            box-shadow: -10px 0 40px rgba(0, 0, 0, 0.8);
-        }
-        .sidebar.active {
-            right: 0;
-        }
-
-        .sidebar-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 20px 22px;
-            background: linear-gradient(135deg, #1a0000, #0a0a0a);
-            border-bottom: 1px solid #2a2a2a;
-            flex-shrink: 0;
-            position: sticky;
-            top: 0;
-            z-index: 10;
-            transition: all 0.5s ease;
-        }
-        .sidebar-header h3 {
-            color: #ffcc00;
-            font-size: 18px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            letter-spacing: 0.5px;
-            transition: color 0.5s ease;
-        }
-        .sidebar-header h3 i {
-            color: #ff6600;
-            font-size: 20px;
-        }
-        .sidebar-close {
-            width: 38px;
-            height: 38px;
-            border-radius: 50%;
-            background: #1a1a1a;
-            border: 1px solid #333;
-            color: #888;
-            font-size: 18px;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: all 0.3s ease;
-        }
-        .sidebar-close:hover {
-            background: #cc0000;
-            color: white;
-            border-color: #cc0000;
-        }
-        .sidebar-content {
-            flex: 1;
-            padding: 16px 22px 30px;
-            overflow-y: auto;
-        }
-
-        .sidebar-category {
-            margin-bottom: 22px;
-        }
-        .sidebar-category-title {
-            color: #ff6600;
-            font-size: 10px;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-            margin-bottom: 10px;
-            padding-bottom: 8px;
-            border-bottom: 1px solid #222;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            transition: all 0.5s ease;
-        }
-
-        .sidebar-link {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            padding: 12px 14px;
-            color: #cccccc;
-            text-decoration: none;
-            border-radius: 10px;
-            margin-bottom: 4px;
-            transition: all 0.25s ease;
-            border: 1px solid transparent;
-            font-size: 14px;
-        }
-        .sidebar-link:hover {
-            background: #1e1e1e;
-            color: #ffffff;
-            border-color: #333;
-            transform: translateX(-3px);
-        }
-        .sidebar-link .link-icon {
-            width: 36px;
-            height: 36px;
-            border-radius: 8px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 16px;
-            flex-shrink: 0;
-        }
-        .link-icon.weather { background: rgba(59, 130, 246, 0.15); color: #3b82f6; }
-        .link-icon.tide { background: rgba(6, 182, 212, 0.15); color: #06b6d4; }
-        .link-icon.disaster { background: rgba(239, 68, 68, 0.15); color: #ef4444; }
-        .link-icon.road { background: rgba(245, 158, 11, 0.15); color: #f59e0b; }
-        .link-icon.flood { background: rgba(99, 102, 241, 0.15); color: #6366f1; }
-        .link-icon.quake { background: rgba(168, 85, 247, 0.15); color: #a855f7; }
-        .link-icon.radar { background: rgba(34, 197, 94, 0.15); color: #22c55e; }
-        .link-icon.fire { background: rgba(249, 115, 22, 0.15); color: #f97316; }
-        .link-icon.emergency { background: rgba(239, 68, 68, 0.15); color: #ef4444; }
-        .link-icon.info { background: rgba(148, 163, 184, 0.15); color: #94a3b8; }
-        .link-icon.hospital { background: rgba(16, 185, 129, 0.15); color: #10b981; }
-        .link-icon.maritime { background: rgba(59, 130, 246, 0.15); color: #3b82f6; }
-        .link-icon.civil { background: rgba(251, 191, 36, 0.15); color: #fbbf24; }
-        .link-icon.phone { background: rgba(34, 197, 94, 0.15); color: #22c55e; }
-
-        .sidebar-link .link-text { flex: 1; }
-        .sidebar-link .link-text .link-name {
-            display: block;
-            font-weight: 500;
-        }
-        .sidebar-link .link-text .link-desc {
-            display: block;
-            font-size: 10px;
-            color: #666;
-            margin-top: 2px;
-        }
-        .sidebar-link .external-arrow {
-            color: #444;
-            font-size: 12px;
-            transition: all 0.3s ease;
-        }
-        .sidebar-link:hover .external-arrow {
-            color: #ffcc00;
-        }
-
-        .sidebar-footer {
-            padding: 16px 22px;
-            border-top: 1px solid #222;
-            text-align: center;
-            font-size: 11px;
-            color: #555;
-            flex-shrink: 0;
-            background: #0a0a0a;
-            transition: all 0.5s ease;
-        }
-        .sidebar-footer .footer-icon { color: #cc0000; }
-
-        .sidebar::-webkit-scrollbar { width: 4px; }
-        .sidebar::-webkit-scrollbar-track { background: #0a0a0a; }
-        .sidebar::-webkit-scrollbar-thumb {
-            background: #cc0000;
-            border-radius: 10px;
-        }
-
-        /* Emergency Directory */
-        .emergency-directory { margin-top: 4px; }
-        .emergency-group { margin-bottom: 14px; }
-        .emergency-group-title {
-            color: #888;
-            font-size: 11px;
-            font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            margin-bottom: 6px;
-            padding-left: 4px;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-        .emergency-group-title .group-icon { font-size: 13px; }
-        .emergency-item {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            padding: 8px 12px;
-            background: #1a1a1a;
-            border-radius: 10px;
-            margin-bottom: 4px;
-            border: 1px solid #252525;
-            transition: all 0.25s ease;
-        }
-        .emergency-item:hover {
-            border-color: #cc0000;
-            background: #1f1f1f;
-        }
-        .emergency-item .e-icon {
-            width: 32px;
-            height: 32px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 14px;
-            flex-shrink: 0;
-        }
-        .e-icon.bomba { background: rgba(239, 68, 68, 0.2); color: #ef4444; }
-        .e-icon.polis { background: rgba(59, 130, 246, 0.2); color: #3b82f6; }
-        .e-icon.hospital { background: rgba(16, 185, 129, 0.2); color: #10b981; }
-        .e-icon.maritim { background: rgba(6, 182, 212, 0.2); color: #06b6d4; }
-        .e-icon.civil { background: rgba(251, 191, 36, 0.2); color: #fbbf24; }
-        .e-icon.emergency { background: rgba(239, 68, 68, 0.15); color: #ef4444; }
-        .emergency-item .e-info { flex: 1; min-width: 0; }
-        .emergency-item .e-info .e-name {
-            color: #e0e0e0;
-            font-size: 13px;
-            font-weight: 500;
-            display: block;
-            transition: color 0.5s ease;
-        }
-        .emergency-item .e-info .e-number {
-            color: #ffcc00;
-            font-size: 15px;
-            font-weight: 700;
-            font-family: 'Courier New', monospace;
-            display: block;
-        }
-        .emergency-item .e-info .e-desc {
-            color: #666;
-            font-size: 10px;
-            display: block;
-            margin-top: 1px;
-        }
-        .emergency-item .e-actions {
-            display: flex;
-            gap: 4px;
-            flex-shrink: 0;
-        }
-        .emergency-item .e-actions a {
-            width: 34px;
-            height: 34px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            text-decoration: none;
-            font-size: 14px;
-            transition: all 0.3s ease;
-            border: none;
-            cursor: pointer;
-        }
-        .e-actions .call-btn { background: #cc0000; }
-        .e-actions .call-btn:hover {
-            background: #ff0000;
-            transform: scale(1.1);
-        }
-        .e-actions .wa-btn { background: #075e54; }
-        .e-actions .wa-btn:hover {
-            background: #128c7e;
-            transform: scale(1.1);
-        }
-
-        /* Header */
         .header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            flex-wrap: wrap;
-            gap: 15px;
-            margin-bottom: 30px;
-            padding-bottom: 20px;
-            border-bottom: 2px solid #2a2a2a;
-            transition: all 0.5s ease;
+          flex-direction: column;
+          align-items: start;
         }
-        .logo {
-            display: flex;
-            align-items: center;
-            gap: 14px;
-        }
-        .logo-icon {
-            background: linear-gradient(135deg, #cc0000, #990000);
-            width: 56px;
-            height: 56px;
-            border-radius: 14px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 28px;
-            border: 2px solid #ffcc00;
-            box-shadow: 0 0 30px rgba(204, 0, 0, 0.2);
-            position: relative;
-            transition: all 0.5s ease;
-        }
-        .logo-icon::after {
-            content: '★';
-            position: absolute;
-            top: -6px;
-            right: -6px;
-            font-size: 12px;
-            color: #ffcc00;
-        }
-        .logo h1 {
-            color: white;
-            font-size: 24px;
-            letter-spacing: 1px;
-            transition: color 0.5s ease;
-        }
-        .logo h1 span { color: #ffcc00; }
-        .logo .sub {
-            color: #888888;
-            font-size: 13px;
-            display: block;
-            letter-spacing: 1px;
-            transition: color 0.5s ease;
-        }
-
-        /* Header right group */
         .header-right {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            background: #1a1a1a;
-            padding: 6px 10px 6px 12px;
-            border-radius: 60px;
-            border: 1px solid #2a2a2a;
-            transition: all 0.5s ease;
+          width: 100%;
+          justify-content: space-between;
+          padding: 6px 8px;
         }
-
-        /* Mode toggle (siang/malam) */
-        .mode-toggle-btn {
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            background: #1a1a1a;
-            border: 1px solid #ffcc00;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 20px;
-            transition: all 0.3s ease;
-            flex-shrink: 0;
-            color: #ffcc00;
-            position: relative;
-            user-select: none;
-        }
-        .mode-toggle-btn:hover {
-            background: #ffcc00;
-            color: #1a1a1a;
-            transform: scale(1.05);
-            box-shadow: 0 0 25px rgba(255, 204, 0, 0.3);
-        }
-        .mode-toggle-btn:active { transform: scale(0.9); }
-        body.mode-siang .mode-toggle-btn {
-            background: #ffcc00;
-            color: #1a1a1a;
-            border-color: #ff6b00;
-        }
-        body.mode-siang .mode-toggle-btn:hover {
-            background: #1a1a1a;
-            color: #ffcc00;
-            border-color: #ffcc00;
-            box-shadow: 0 0 25px rgba(0, 0, 0, 0.3);
-        }
-
-        /* Desktop/Mobile switch button */
-        .switch-mode-btn {
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            background: #1a1a1a;
-            border: 1px solid #4ade80;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 18px;
-            transition: all 0.3s ease;
-            flex-shrink: 0;
-            color: #4ade80;
-            position: relative;
-            user-select: none;
-        }
-        .switch-mode-btn:hover {
-            background: #4ade80;
-            color: #1a1a1a;
-            transform: scale(1.05);
-            box-shadow: 0 0 20px rgba(74, 222, 128, 0.3);
-        }
-        .switch-mode-btn:active { transform: scale(0.9); }
-        body.mode-siang .switch-mode-btn {
-            background: #ffffff;
-            border-color: #059669;
-            color: #059669;
-        }
-        body.mode-siang .switch-mode-btn:hover {
-            background: #059669;
-            color: white;
-        }
-
-        /* Analog Clock */
-        .analog-clock {
-            width: 44px;
-            height: 44px;
-            border-radius: 50%;
-            background: #0a0a0a;
-            border: 2px solid #ffcc00;
-            position: relative;
-            flex-shrink: 0;
-            box-shadow: 0 0 15px rgba(255, 204, 0, 0.05);
-            transition: all 0.5s ease;
-        }
-        .analog-clock .hand {
-            position: absolute;
-            bottom: 50%;
-            left: 50%;
-            transform-origin: bottom center;
-            border-radius: 3px;
-            background: #e2e8f0;
-            transition: background 0.5s ease;
-        }
-        .analog-clock .hand.hour {
-            width: 3px;
-            height: 13px;
-            margin-left: -1.5px;
-            background: #ffcc00;
-        }
-        .analog-clock .hand.minute {
-            width: 2px;
-            height: 18px;
-            margin-left: -1px;
-            background: #94a3b8;
-        }
-        .analog-clock .hand.second {
-            width: 1.5px;
-            height: 20px;
-            margin-left: -0.75px;
-            background: #ef4444;
-        }
-        .analog-clock .center-dot {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            width: 5px;
-            height: 5px;
-            background: #ffcc00;
-            border-radius: 50%;
-            transform: translate(-50%, -50%);
-            z-index: 2;
-            transition: background 0.5s ease;
-        }
-        .analog-clock .marker {
-            position: absolute;
-            width: 2px;
-            height: 4px;
-            background: #4a5568;
-            top: 4px;
-            left: 50%;
-            margin-left: -1px;
-            transform-origin: bottom center;
-            transition: background 0.5s ease;
-        }
-        .analog-clock .marker.main {
-            height: 7px;
-            width: 2.5px;
-            background: #ffcc00;
-        }
-
-        .digital-time {
-            text-align: right;
-            line-height: 1.2;
-        }
-        .digital-time .time {
-            font-size: 18px;
-            font-weight: bold;
-            color: #ffcc00;
-            font-family: 'Courier New', monospace;
-            letter-spacing: 1px;
-            text-shadow: 0 0 20px rgba(255, 204, 0, 0.1);
-        }
-        .digital-time .date {
-            color: #888888;
-            font-size: 10px;
-            margin-top: 1px;
-            transition: color 0.5s ease;
-        }
-
-        /* Hamburger button */
-        .hamburger-btn {
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            background: #1a1a1a;
-            border: 1px solid #ffcc00;
-            cursor: pointer;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            gap: 4px;
-            transition: all 0.3s ease;
-            flex-shrink: 0;
-            position: relative;
-            user-select: none;
-        }
-        .hamburger-btn:hover {
-            background: #cc0000;
-            border-color: #ff6600;
-            box-shadow: 0 0 20px rgba(204, 0, 0, 0.3);
-        }
-        .hamburger-btn span {
-            display: block;
-            width: 18px;
-            height: 2px;
-            background: #ffcc00;
-            border-radius: 2px;
-            transition: all 0.3s ease;
-        }
-        .hamburger-btn.active span:nth-child(1) {
-            transform: rotate(45deg) translate(4px, 4px);
-        }
-        .hamburger-btn.active span:nth-child(2) { opacity: 0; }
-        .hamburger-btn.active span:nth-child(3) {
-            transform: rotate(-45deg) translate(4px, -4px);
-        }
-        .hamburger-badge {
-            position: absolute;
-            top: -6px;
-            right: -6px;
-            width: 18px;
-            height: 18px;
-            background: #ef4444;
-            border-radius: 50%;
-            font-size: 9px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-weight: bold;
-            border: 2px solid #0a0a0a;
-        }
-
-        /* Stats */
-        .stats-bar {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
-            gap: 12px;
-            margin-bottom: 25px;
-        }
-        .stat-item {
-            background: #1a1a1a;
-            border-radius: 14px;
-            padding: 14px 16px;
-            text-align: center;
-            border: 1px solid #2a2a2a;
-            transition: all 0.3s ease;
-        }
-        .stat-item:hover { border-color: #cc0000; }
-        .stat-item .num {
-            font-size: 26px;
-            font-weight: 800;
-            color: #ffcc00;
-            display: inline-block;
-            transition: color 0.5s ease;
-        }
-        .stat-item .label {
-            font-size: 10px;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            color: #666666;
-            margin-top: 2px;
-            transition: color 0.5s ease;
-        }
-        .stat-item .icon-badge {
-            font-size: 16px;
-            display: block;
-            margin-bottom: 2px;
-        }
-
-        .section-status { margin-bottom: 30px; }
-        .section-status:last-of-type { margin-bottom: 20px; }
-        .section-title {
-            color: #ffffff;
-            font-size: 14px;
-            font-weight: 700;
-            letter-spacing: 1.5px;
-            text-transform: uppercase;
-            margin-bottom: 14px;
-            padding-bottom: 8px;
-            border-bottom: 2px solid #2a2a2a;
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            flex-wrap: wrap;
-            transition: all 0.5s ease;
-        }
-        .section-title .status-badge {
-            font-size: 11px;
-            padding: 2px 12px;
-            border-radius: 20px;
-            font-weight: 600;
-            letter-spacing: 0.5px;
-        }
-        .status-badge.live {
-            background: #3a1a1a;
-            color: #ff6b6b;
-            border: 1px solid #5a2a2a;
-            animation: blink 1.2s infinite;
-        }
-        .status-badge.online {
-            background: #1a3a1a;
-            color: #4ade80;
-            border: 1px solid #2a5a2a;
-        }
-        .status-badge.dev {
-            background: #3a2a1a;
-            color: #f6ad55;
-            border: 1px solid #5a3a2a;
-        }
-
-        @keyframes blink {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.4; }
-        }
-
         .apps-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-            gap: 18px;
+          grid-template-columns: 1fr;
         }
-        .app-card {
-            background: #1a1a1a;
-            border-radius: 18px;
-            padding: 22px 20px;
-            border: 1px solid #2a2a2a;
-            text-decoration: none;
-            color: white;
-            transition: all 0.3s ease;
-            display: block;
-            position: relative;
+        .stats-bar {
+          grid-template-columns: repeat(2, 1fr);
         }
-        .app-card:hover {
-            transform: translateY(-5px);
-            border-color: #cc0000;
-            box-shadow: 0 10px 30px rgba(204, 0, 0, 0.15);
-        }
-        .app-card .icon {
-            font-size: 32px;
-            margin-bottom: 12px;
-            display: block;
-        }
-        .app-card h3 {
-            font-size: 17px;
-            margin-bottom: 6px;
-            color: white;
-            transition: color 0.5s ease;
-        }
-        .app-card h3 .highlight { color: #ffcc00; }
-        .app-card p {
-            color: #888888;
-            font-size: 13px;
-            line-height: 1.5;
-            margin-bottom: 14px;
-            transition: color 0.5s ease;
-        }
-        .app-card .badge {
-            display: inline-block;
-            font-size: 11px;
-            font-weight: bold;
-            padding: 4px 14px;
-            border-radius: 20px;
-            color: white;
-        }
-        .app-card .badge.online {
-            background: #1a3a1a;
-            color: #4ade80;
-            border: 1px solid #2a5a2a;
-            transition: all 0.5s ease;
-        }
-        .app-card .badge.live {
-            background: #3a1a1a;
-            color: #ff6b6b;
-            border: 1px solid #5a2a2a;
-            animation: blink 1.2s infinite;
-            transition: all 0.5s ease;
-        }
-        .app-card .badge.dev {
-            background: #3a2a1a;
-            color: #f6ad55;
-            border: 1px solid #5a3a2a;
-            transition: all 0.5s ease;
-        }
-        .app-card .arrow {
-            float: right;
-            color: #444444;
-            font-size: 18px;
-            transition: all 0.3s ease;
-        }
-        .app-card:hover .arrow {
-            color: #ffcc00;
-            transform: translateX(5px);
-        }
-
         .footer {
-            margin-top: 25px;
-            padding-top: 18px;
-            border-top: 2px solid #2a2a2a;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            flex-wrap: wrap;
-            gap: 12px;
-            color: #555555;
-            font-size: 13px;
-            transition: all 0.5s ease;
-        }
-        .footer .brand {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-        .footer .brand .dot {
-            display: inline-block;
-            width: 8px;
-            height: 8px;
-            background: #cc0000;
-            border-radius: 50%;
-            animation: pulseDot 2s infinite;
-        }
-        @keyframes pulseDot {
-            0%, 100% { opacity: 1; transform: scale(1); }
-            50% { opacity: 0.3; transform: scale(0.8); }
+          flex-direction: column;
+          text-align: center;
         }
         .footer .social-links {
-            display: flex;
-            align-items: center;
-            gap: 6px;
+          justify-content: center;
         }
-        .footer .social-links a {
-            color: #555555;
-            text-decoration: none;
-            font-size: 17px;
-            width: 38px;
-            height: 38px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: all 0.3s ease;
-            border: 1px solid transparent;
+        .sidebar {
+          width: 100%;
+          max-width: 100vw;
+          right: -100vw;
         }
-        .footer .social-links a:hover {
-            color: #ffcc00;
-            border-color: rgba(255, 204, 0, 0.15);
-            background: rgba(255, 204, 0, 0.05);
-            transform: translateY(-2px);
+        .analog-clock {
+          width: 38px;
+          height: 38px;
         }
-        .footer .social-links a.whatsapp:hover {
-            color: #25d366;
-            border-color: rgba(37, 211, 102, 0.2);
-            background: rgba(37, 211, 102, 0.05);
+        .analog-clock .hand.hour {
+          height: 11px;
         }
-        .footer .social-links a.telegram:hover {
-            color: #0088cc;
-            border-color: rgba(0, 136, 204, 0.2);
-            background: rgba(0, 136, 204, 0.05);
+        .analog-clock .hand.minute {
+          height: 15px;
         }
+        .analog-clock .hand.second {
+          height: 17px;
+        }
+        .mode-toggle-btn,
+        .switch-mode-btn {
+          width: 36px;
+          height: 36px;
+          font-size: 17px;
+        }
+        .hamburger-btn {
+          width: 36px;
+          height: 36px;
+        }
+        .digital-time .time {
+          font-size: 16px;
+        }
+        .digital-time .date {
+          font-size: 9px;
+        }
+        .logo h1 {
+          font-size: 18px;
+        }
+        .logo-img {
+          height: 38px;
+        }
+        .logo-img.logo-bomba {
+          height: 42px;
+        }
+        .logo-img.logo-komunikasi {
+          height: 32px;
+        }
+        .logo-text {
+          text-align: center;
+        }
+        .logo h1 {
+          gap: 8px;
+        }
+        .logo {
+          gap: 4px;
+        }
+      }
 
-        /* Responsive */
-        @media (max-width: 600px) {
-            .dashboard { padding: 20px 16px; }
-            .header { flex-direction: column; align-items: start; }
-            .header-right {
-                width: 100%;
-                justify-content: space-between;
-                padding: 6px 8px;
-            }
-            .apps-grid { grid-template-columns: 1fr; }
-            .stats-bar { grid-template-columns: repeat(2, 1fr); }
-            .footer { flex-direction: column; text-align: center; }
-            .footer .social-links { justify-content: center; }
-            .sidebar {
-                width: 100%;
-                max-width: 100vw;
-                right: -100vw;
-            }
-            .analog-clock { width: 38px; height: 38px; }
-            .analog-clock .hand.hour { height: 11px; }
-            .analog-clock .hand.minute { height: 15px; }
-            .analog-clock .hand.second { height: 17px; }
-            .mode-toggle-btn, .switch-mode-btn { width: 36px; height: 36px; font-size: 17px; }
-            .hamburger-btn { width: 36px; height: 36px; }
-            .digital-time .time { font-size: 16px; }
-            .digital-time .date { font-size: 9px; }
-        }
+      ::-webkit-scrollbar {
+        width: 6px;
+      }
+      ::-webkit-scrollbar-track {
+        background: #0a0a0a;
+      }
+      ::-webkit-scrollbar-thumb {
+        background: #cc0000;
+        border-radius: 10px;
+      }
+      ::-webkit-scrollbar-thumb:hover {
+        background: #ffcc00;
+      }
 
-        ::-webkit-scrollbar { width: 6px; }
-        ::-webkit-scrollbar-track { background: #0a0a0a; }
-        ::-webkit-scrollbar-thumb {
-            background: #cc0000;
-            border-radius: 10px;
-        }
-        ::-webkit-scrollbar-thumb:hover { background: #ffcc00; }
+      .info-box {
+        background: #0a0a0a;
+        border: 1px solid #1a1a1a;
+        border-radius: 10px;
+        padding: 12px 14px;
+        margin-top: 10px;
+        transition: all 0.5s ease;
+      }
+      .info-box p {
+        color: #666;
+        font-size: 11px;
+        text-align: center;
+        line-height: 1.6;
+        transition: color 0.5s ease;
+      }
+      .info-box p i {
+        color: #ffcc00;
+        margin-right: 4px;
+      }
+      .info-box .highlight-num {
+        color: #ffcc00;
+        font-weight: 700;
+        font-family: 'Courier New', monospace;
+      }
 
-        .info-box {
-            background: #0a0a0a;
-            border: 1px solid #1a1a1a;
-            border-radius: 10px;
-            padding: 12px 14px;
-            margin-top: 10px;
-            transition: all 0.5s ease;
-        }
-        .info-box p {
-            color: #666;
-            font-size: 11px;
-            text-align: center;
-            line-height: 1.6;
-            transition: color 0.5s ease;
-        }
-        .info-box p i {
-            color: #ffcc00;
-            margin-right: 4px;
-        }
-        .info-box .highlight-num {
-            color: #ffcc00;
-            font-weight: 700;
-            font-family: 'Courier New', monospace;
-        }
+      /* ===== DESKTOP MODE (default) ===== */
+      body.desktop-mode .dashboard {
+        max-width: 1100px;
+        padding: 30px 24px;
+      }
+      body.desktop-mode .apps-grid {
+        grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      }
+      body.desktop-mode .stats-bar {
+        grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+      }
 
-        /* ===== DESKTOP MODE (default) ===== */
-        body.desktop-mode .dashboard {
-            max-width: 1100px;
-            padding: 30px 24px;
-        }
-        body.desktop-mode .apps-grid {
-            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-        }
-        body.desktop-mode .stats-bar {
-            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
-        }
-
-        /* ===== MOBILE MODE ===== */
-        body.mobile-mode .dashboard {
-            max-width: 480px;
-            padding: 20px 14px;
-            border-radius: 24px;
-        }
-        body.mobile-mode .header {
-            flex-direction: column;
-            align-items: flex-start;
-        }
-        body.mobile-mode .header-right {
-            width: 100%;
-            justify-content: space-between;
-        }
-        body.mobile-mode .apps-grid {
-            grid-template-columns: 1fr;
-            gap: 12px;
-        }
-        body.mobile-mode .stats-bar {
-            grid-template-columns: repeat(2, 1fr);
-            gap: 8px;
-        }
-        body.mobile-mode .logo h1 { font-size: 20px; }
-        body.mobile-mode .logo-icon {
-            width: 46px;
-            height: 46px;
-            font-size: 24px;
-        }
-        body.mobile-mode .analog-clock { width: 36px; height: 36px; }
-        body.mobile-mode .digital-time .time { font-size: 15px; }
-        body.mobile-mode .hamburger-btn,
-        body.mobile-mode .mode-toggle-btn,
-        body.mobile-mode .switch-mode-btn {
-            width: 34px;
-            height: 34px;
-        }
-        body.mobile-mode .app-card { padding: 18px 16px; }
-        body.mobile-mode .app-card h3 { font-size: 15px; }
-        body.mobile-mode .app-card p { font-size: 12px; }
-        body.mobile-mode .footer {
-            flex-direction: column;
-            text-align: center;
-        }
+      /* ===== MOBILE MODE ===== */
+      body.mobile-mode .dashboard {
+        max-width: 480px;
+        padding: 20px 14px;
+        border-radius: 24px;
+      }
+      body.mobile-mode .header {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+      body.mobile-mode .header-right {
+        width: 100%;
+        justify-content: space-between;
+      }
+      body.mobile-mode .apps-grid {
+        grid-template-columns: 1fr;
+        gap: 12px;
+      }
+      body.mobile-mode .stats-bar {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 8px;
+      }
+      body.mobile-mode .logo h1 {
+        font-size: 20px;
+      }
+      body.mobile-mode .logo-img {
+        height: 34px;
+      }
+      body.mobile-mode .logo-img.logo-bomba {
+        height: 38px;
+      }
+      body.mobile-mode .logo-img.logo-komunikasi {
+        height: 28px;
+      }
+      body.mobile-mode .analog-clock {
+        width: 36px;
+        height: 36px;
+      }
+      body.mobile-mode .digital-time .time {
+        font-size: 15px;
+      }
+      body.mobile-mode .hamburger-btn,
+      body.mobile-mode .mode-toggle-btn,
+      body.mobile-mode .switch-mode-btn {
+        width: 34px;
+        height: 34px;
+      }
+      body.mobile-mode .app-card {
+        padding: 18px 16px;
+      }
+      body.mobile-mode .app-card h3 {
+        font-size: 15px;
+      }
+      body.mobile-mode .app-card p {
+        font-size: 12px;
+      }
+      body.mobile-mode .footer {
+        flex-direction: column;
+        text-align: center;
+      }
+      body.mobile-mode .logo {
+        gap: 4px;
+      }
     </style>
-</head>
-<body class="desktop-mode">
+  </head>
+  <body class="desktop-mode">
     <div class="sidebar-overlay" id="sidebarOverlay"></div>
 
     <!-- SIDEBAR LENGKAP DENGAN DIREKTORI AGENSI & KECEMASAN -->
     <div class="sidebar" id="sidebar">
-        <div class="sidebar-header">
-            <h3><i class="fas fa-link"></i> PAUTAN PENTING</h3>
-            <button class="sidebar-close" id="sidebarClose">
-                <i class="fas fa-times"></i>
-            </button>
+      <div class="sidebar-header">
+        <h3><i class="fas fa-link"></i> PAUTAN PENTING</h3>
+        <button class="sidebar-close" id="sidebarClose">
+          <i class="fas fa-times"></i>
+        </button>
+      </div>
+      <div class="sidebar-content">
+        <!-- CUACA & LAUT -->
+        <div class="sidebar-category">
+          <div class="sidebar-category-title">
+            <i class="fas fa-cloud-sun"></i> Cuaca & Laut
+          </div>
+          <a
+            href="https://www.met.gov.my/"
+            target="_blank"
+            class="sidebar-link"
+          >
+            <span class="link-icon weather"
+              ><i class="fas fa-cloud-sun-rain"></i
+            ></span>
+            <span class="link-text">
+              <span class="link-name">MetMalaysia - Cuaca</span>
+              <span class="link-desc">Ramalan & amaran cuaca rasmi</span>
+            </span>
+            <span class="external-arrow"
+              ><i class="fas fa-external-link-alt"></i
+            ></span>
+          </a>
+          <a
+            href="https://www.jupem.gov.my/ms/staps"
+            target="_blank"
+            class="sidebar-link"
+          >
+            <span class="link-icon tide"><i class="fas fa-water"></i></span>
+            <span class="link-text">
+              <span class="link-name">Pasang Surut Laut</span>
+              <span class="link-desc">Jadual air pasang surut Malaysia</span>
+            </span>
+            <span class="external-arrow"
+              ><i class="fas fa-external-link-alt"></i
+            ></span>
+          </a>
+          <a
+            href="https://www.accuweather.com/ms/my/national/weather-radar"
+            target="_blank"
+            class="sidebar-link"
+          >
+            <span class="link-icon radar"
+              ><i class="fas fa-satellite-dish"></i
+            ></span>
+            <span class="link-text">
+              <span class="link-name">Radar Hujan</span>
+              <span class="link-desc">Imej radar hujan masa nyata</span>
+            </span>
+            <span class="external-arrow"
+              ><i class="fas fa-external-link-alt"></i
+            ></span>
+          </a>
+          <a
+            href="https://apims.doe.gov.my/"
+            target="_blank"
+            class="sidebar-link"
+          >
+            <span class="link-icon fire"><i class="fas fa-fire"></i></span>
+            <span class="link-text">
+              <span class="link-name">Indeks Cuaca Api (API)</span>
+              <span class="link-desc">IPU & status jerebu semasa</span>
+            </span>
+            <span class="external-arrow"
+              ><i class="fas fa-external-link-alt"></i
+            ></span>
+          </a>
         </div>
-        <div class="sidebar-content">
-            <!-- CUACA & LAUT -->
-            <div class="sidebar-category">
-                <div class="sidebar-category-title">
-                    <i class="fas fa-cloud-sun"></i> Cuaca & Laut
-                </div>
-                <a href="https://www.met.gov.my/" target="_blank" class="sidebar-link">
-                    <span class="link-icon weather"><i class="fas fa-cloud-sun-rain"></i></span>
-                    <span class="link-text">
-                        <span class="link-name">MetMalaysia - Cuaca</span>
-                        <span class="link-desc">Ramalan & amaran cuaca rasmi</span>
-                    </span>
-                    <span class="external-arrow"><i class="fas fa-external-link-alt"></i></span>
-                </a>
-                <a href="https://www.jupem.gov.my/ms/staps" target="_blank" class="sidebar-link">
-                    <span class="link-icon tide"><i class="fas fa-water"></i></span>
-                    <span class="link-text">
-                        <span class="link-name">Pasang Surut Laut</span>
-                        <span class="link-desc">Jadual air pasang surut Malaysia</span>
-                    </span>
-                    <span class="external-arrow"><i class="fas fa-external-link-alt"></i></span>
-                </a>
-                <a href="https://www.accuweather.com/ms/my/national/weather-radar" target="_blank" class="sidebar-link">
-                    <span class="link-icon radar"><i class="fas fa-satellite-dish"></i></span>
-                    <span class="link-text">
-                        <span class="link-name">Radar Hujan</span>
-                        <span class="link-desc">Imej radar hujan masa nyata</span>
-                    </span>
-                    <span class="external-arrow"><i class="fas fa-external-link-alt"></i></span>
-                </a>
-                <a href="https://apims.doe.gov.my/" target="_blank" class="sidebar-link">
-                    <span class="link-icon fire"><i class="fas fa-fire"></i></span>
-                    <span class="link-text">
-                        <span class="link-name">Indeks Cuaca Api (API)</span>
-                        <span class="link-desc">IPU & status jerebu semasa</span>
-                    </span>
-                    <span class="external-arrow"><i class="fas fa-external-link-alt"></i></span>
-                </a>
-            </div>
 
-            <!-- BENCANA & AMARAN -->
-            <div class="sidebar-category">
-                <div class="sidebar-category-title">
-                    <i class="fas fa-exclamation-triangle"></i> Bencana & Amaran
-                </div>
-                <a href="https://www.nadma.gov.my/" target="_blank" class="sidebar-link">
-                    <span class="link-icon disaster"><i class="fas fa-house-damage"></i></span>
-                    <span class="link-text">
-                        <span class="link-name">NADMA - Agensi Pengurusan Bencana</span>
-                        <span class="link-desc">Info & respons bencana negara</span>
-                    </span>
-                    <span class="external-arrow"><i class="fas fa-external-link-alt"></i></span>
-                </a>
-                <a href="https://publicinfobanjir.water.gov.my/" target="_blank" class="sidebar-link">
-                    <span class="link-icon flood"><i class="fas fa-water"></i></span>
-                    <span class="link-text">
-                        <span class="link-name">Public Infobanjir</span>
-                        <span class="link-desc">Peta & status banjir semasa</span>
-                    </span>
-                    <span class="external-arrow"><i class="fas fa-external-link-alt"></i></span>
-                </a>
-                <a href="http://mygempa.met.gov.my/docroot/view/index.php" target="_blank" class="sidebar-link">
-                    <span class="link-icon quake"><i class="fas fa-globe-asia"></i></span>
-                    <span class="link-text">
-                        <span class="link-name">Info Gempa Bumi</span>
-                        <span class="link-desc">Aktiviti seismik Malaysia & antarabangsa</span>
-                    </span>
-                    <span class="external-arrow"><i class="fas fa-external-link-alt"></i></span>
-                </a>
-            </div>
-
-            <!-- JALAN RAYA & LOGISTIK -->
-            <div class="sidebar-category">
-                <div class="sidebar-category-title">
-                    <i class="fas fa-road"></i> Jalan Raya & Logistik
-                </div>
-                <a href="https://www.llm.gov.my/" target="_blank" class="sidebar-link">
-                    <span class="link-icon road"><i class="fas fa-road"></i></span>
-                    <span class="link-text">
-                        <span class="link-name">LLM - Lebuhraya Malaysia</span>
-                        <span class="link-desc">Status & laporan trafik lebuh raya</span>
-                    </span>
-                    <span class="external-arrow"><i class="fas fa-external-link-alt"></i></span>
-                </a>
-                <a href="https://www.jpj.gov.my/" target="_blank" class="sidebar-link">
-                    <span class="link-icon road"><i class="fas fa-car"></i></span>
-                    <span class="link-text">
-                        <span class="link-name">JPJ - Jabatan Pengangkutan Jalan</span>
-                        <span class="link-desc">Maklumat jalan tutup & notis</span>
-                    </span>
-                    <span class="external-arrow"><i class="fas fa-external-link-alt"></i></span>
-                </a>
-                <a href="https://www.jkr.gov.my/" target="_blank" class="sidebar-link">
-                    <span class="link-icon road"><i class="fas fa-hard-hat"></i></span>
-                    <span class="link-text">
-                        <span class="link-name">JKR - Jabatan Kerja Raya</span>
-                        <span class="link-desc">Infrastruktur & jalan persekutuan</span>
-                    </span>
-                    <span class="external-arrow"><i class="fas fa-external-link-alt"></i></span>
-                </a>
-            </div>
-
-            <!-- DIREKTORI AGENSI KERAJAAN (LENGKAP) -->
-            <div class="sidebar-category">
-                <div class="sidebar-category-title">
-                    <i class="fas fa-building"></i> DIREKTORI AGENSI KERAJAAN
-                </div>
-                <a href="https://www.jbpm.gov.my/" target="_blank" class="sidebar-link">
-                    <span class="link-icon emergency"><i class="fas fa-fire-extinguisher"></i></span>
-                    <span class="link-text">
-                        <span class="link-name">JBPM Malaysia</span>
-                        <span class="link-desc">Jabatan Bomba & Penyelamat Malaysia</span>
-                    </span>
-                    <span class="external-arrow"><i class="fas fa-external-link-alt"></i></span>
-                </a>
-                <a href="https://www.civildefence.gov.my/" target="_blank" class="sidebar-link">
-                    <span class="link-icon civil"><i class="fas fa-shield-virus"></i></span>
-                    <span class="link-text">
-                        <span class="link-name">APM - Angkatan Pertahanan Awam</span>
-                        <span class="link-desc">Pertahanan awam & pengurusan bencana</span>
-                    </span>
-                    <span class="external-arrow"><i class="fas fa-external-link-alt"></i></span>
-                </a>
-                <a href="https://www.rmp.gov.my/" target="_blank" class="sidebar-link">
-                    <span class="link-icon emergency"><i class="fas fa-shield-alt"></i></span>
-                    <span class="link-text">
-                        <span class="link-name">PDRM - Polis Diraja Malaysia</span>
-                        <span class="link-desc">Keselamatan & penguatkuasaan</span>
-                    </span>
-                    <span class="external-arrow"><i class="fas fa-external-link-alt"></i></span>
-                </a>
-                <a href="https://www.moh.gov.my/" target="_blank" class="sidebar-link">
-                    <span class="link-icon hospital"><i class="fas fa-hospital-alt"></i></span>
-                    <span class="link-text">
-                        <span class="link-name">KKM - Kementerian Kesihatan</span>
-                        <span class="link-desc">Perkhidmatan kesihatan & hospital</span>
-                    </span>
-                    <span class="external-arrow"><i class="fas fa-external-link-alt"></i></span>
-                </a>
-                <a href="https://www.maritime.gov.my/" target="_blank" class="sidebar-link">
-                    <span class="link-icon maritime"><i class="fas fa-ship"></i></span>
-                    <span class="link-text">
-                        <span class="link-name">Maritim Malaysia</span>
-                        <span class="link-desc">Agensi Penguatkuasaan Maritim Malaysia</span>
-                    </span>
-                    <span class="external-arrow"><i class="fas fa-external-link-alt"></i></span>
-                </a>
-                <a href="https://www.did.gov.my/" target="_blank" class="sidebar-link">
-                    <span class="link-icon flood"><i class="fas fa-water"></i></span>
-                    <span class="link-text">
-                        <span class="link-name">JPS - Jabatan Pengairan & Saliran</span>
-                        <span class="link-desc">Pengurusan air & saliran</span>
-                    </span>
-                    <span class="external-arrow"><i class="fas fa-external-link-alt"></i></span>
-                </a>
-                <a href="https://www.dosm.gov.my/" target="_blank" class="sidebar-link">
-                    <span class="link-icon info"><i class="fas fa-chart-bar"></i></span>
-                    <span class="link-text">
-                        <span class="link-name">DOSM - Jabatan Perangkaan</span>
-                        <span class="link-desc">Data & statistik rasmi Malaysia</span>
-                    </span>
-                    <span class="external-arrow"><i class="fas fa-external-link-alt"></i></span>
-                </a>
-            </div>
-
-            <!-- DIREKTORI KECEMASAN LENGKAP DENGAN APM -->
-            <div class="sidebar-category">
-                <div class="sidebar-category-title">
-                    <i class="fas fa-phone-alt"></i> DIREKTORI KECEMASAN MALAYSIA
-                    <span style="color: #ef4444; font-size: 10px; margin-left: auto">
-                        <i class="fas fa-clock"></i> 24/7
-                    </span>
-                </div>
-                <div class="emergency-directory">
-                    <!-- TALIAN KECEMASAN NASIONAL -->
-                    <div class="emergency-group">
-                        <div class="emergency-group-title">
-                            <span class="group-icon">🇲🇾</span> TALIAN KECEMASAN NASIONAL
-                        </div>
-                        <div class="emergency-item">
-                            <span class="e-icon emergency"><i class="fas fa-phone-alt"></i></span>
-                            <div class="e-info">
-                                <span class="e-name">MERS 999 - Pusat Kecemasan Nasional</span>
-                                <span class="e-number">999</span>
-                                <span class="e-desc">Semua agensi kecemasan</span>
-                            </div>
-                            <div class="e-actions">
-                                <a href="tel:999" class="call-btn"><i class="fas fa-phone"></i></a>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- JABATAN BOMBA & PENYELAMAT (JBPM) -->
-                    <div class="emergency-group">
-                        <div class="emergency-group-title">
-                            <span class="group-icon">🔥</span> JABATAN BOMBA & PENYELAMAT (JBPM)
-                        </div>
-                        <div class="emergency-item">
-                            <span class="e-icon bomba"><i class="fas fa-fire-extinguisher"></i></span>
-                            <div class="e-info">
-                                <span class="e-name">JBPM Johor</span>
-                                <span class="e-number">07-223 4444</span>
-                            </div>
-                            <div class="e-actions">
-                                <a href="tel:072234444" class="call-btn"><i class="fas fa-phone"></i></a>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- POLIS DIRAJA MALAYSIA (PDRM) -->
-                    <div class="emergency-group">
-                        <div class="emergency-group-title">
-                            <span class="group-icon">👮</span> POLIS DIRAJA MALAYSIA (PDRM)
-                        </div>
-                        <div class="emergency-item">
-                            <span class="e-icon polis"><i class="fas fa-shield-alt"></i></span>
-                            <div class="e-info">
-                                <span class="e-name">IPK Johor</span>
-                                <span class="e-number">07-225 4422</span>
-                            </div>
-                            <div class="e-actions">
-                                <a href="tel:072254422" class="call-btn"><i class="fas fa-phone"></i></a>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- HOSPITAL & PERUBATAN (KKM) -->
-                    <div class="emergency-group">
-                        <div class="emergency-group-title">
-                            <span class="group-icon">🏥</span> HOSPITAL & PERUBATAN (KKM)
-                        </div>
-                        <div class="emergency-item">
-                            <span class="e-icon hospital"><i class="fas fa-hospital"></i></span>
-                            <div class="e-info">
-                                <span class="e-name">Hospital Sultanah Aminah (HSA)</span>
-                                <span class="e-number">07-223 1666</span>
-                            </div>
-                            <div class="e-actions">
-                                <a href="tel:072231666" class="call-btn"><i class="fas fa-phone"></i></a>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- ANGKATAN PERTAHANAN AWAM (APM) - DITAMBAH -->
-                    <div class="emergency-group">
-                        <div class="emergency-group-title">
-                            <span class="group-icon">🛡️</span> ANGKATAN PERTAHANAN AWAM (APM)
-                        </div>
-                        <div class="emergency-item">
-                            <span class="e-icon civil"><i class="fas fa-shield-virus"></i></span>
-                            <div class="e-info">
-                                <span class="e-name">APM Johor</span>
-                                <span class="e-number">07-224 5454</span>
-                                <span class="e-desc">Bantuan kecemasan & bencana</span>
-                            </div>
-                            <div class="e-actions">
-                                <a href="tel:072245454" class="call-btn"><i class="fas fa-phone"></i></a>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- AGENSI PENGUATKUASAAN MARITIM -->
-                    <div class="emergency-group">
-                        <div class="emergency-group-title">
-                            <span class="group-icon">⚓</span> AGENSI PENGUATKUASAAN MARITIM
-                        </div>
-                        <div class="emergency-item">
-                            <span class="e-icon maritim"><i class="fas fa-ship"></i></span>
-                            <div class="e-info">
-                                <span class="e-name">Maritim Johor</span>
-                                <span class="e-number">07-219 9401</span>
-                                <span class="e-desc">Kecemasan di laut</span>
-                            </div>
-                            <div class="e-actions">
-                                <a href="tel:072199401" class="call-btn"><i class="fas fa-phone"></i></a>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- INFO BOX -->
-                    <div class="info-box">
-                        <p>
-                            <i class="fas fa-info-circle"></i>
-                            <strong>📌 Nombor kecemasan <span class="highlight-num">999</span> adalah talian rasmi Malaysia</strong><br>
-                            Menghubungkan semua agensi kecemasan.
-                        </p>
-                    </div>
-                </div>
-            </div>
+        <!-- BENCANA & AMARAN -->
+        <div class="sidebar-category">
+          <div class="sidebar-category-title">
+            <i class="fas fa-exclamation-triangle"></i> Bencana & Amaran
+          </div>
+          <a
+            href="https://www.nadma.gov.my/"
+            target="_blank"
+            class="sidebar-link"
+          >
+            <span class="link-icon disaster"
+              ><i class="fas fa-house-damage"></i
+            ></span>
+            <span class="link-text">
+              <span class="link-name">NADMA - Agensi Pengurusan Bencana</span>
+              <span class="link-desc">Info & respons bencana negara</span>
+            </span>
+            <span class="external-arrow"
+              ><i class="fas fa-external-link-alt"></i
+            ></span>
+          </a>
+          <a
+            href="https://publicinfobanjir.water.gov.my/"
+            target="_blank"
+            class="sidebar-link"
+          >
+            <span class="link-icon flood"><i class="fas fa-water"></i></span>
+            <span class="link-text">
+              <span class="link-name">Public Infobanjir</span>
+              <span class="link-desc">Peta & status banjir semasa</span>
+            </span>
+            <span class="external-arrow"
+              ><i class="fas fa-external-link-alt"></i
+            ></span>
+          </a>
+          <a
+            href="http://mygempa.met.gov.my/docroot/view/index.php"
+            target="_blank"
+            class="sidebar-link"
+          >
+            <span class="link-icon quake"
+              ><i class="fas fa-globe-asia"></i
+            ></span>
+            <span class="link-text">
+              <span class="link-name">Info Gempa Bumi</span>
+              <span class="link-desc"
+                >Aktiviti seismik Malaysia & antarabangsa</span
+              >
+            </span>
+            <span class="external-arrow"
+              ><i class="fas fa-external-link-alt"></i
+            ></span>
+          </a>
         </div>
-        <div class="sidebar-footer">
-            <span class="footer-icon">🔥</span> PGO Johor · Pusat Gerakan Operasi
+
+        <!-- JALAN RAYA & LOGISTIK -->
+        <div class="sidebar-category">
+          <div class="sidebar-category-title">
+            <i class="fas fa-road"></i> Jalan Raya & Logistik
+          </div>
+          <a
+            href="https://www.llm.gov.my/"
+            target="_blank"
+            class="sidebar-link"
+          >
+            <span class="link-icon road"><i class="fas fa-road"></i></span>
+            <span class="link-text">
+              <span class="link-name">LLM - Lebuhraya Malaysia</span>
+              <span class="link-desc">Status & laporan trafik lebuh raya</span>
+            </span>
+            <span class="external-arrow"
+              ><i class="fas fa-external-link-alt"></i
+            ></span>
+          </a>
+          <a
+            href="https://www.jpj.gov.my/"
+            target="_blank"
+            class="sidebar-link"
+          >
+            <span class="link-icon road"><i class="fas fa-car"></i></span>
+            <span class="link-text">
+              <span class="link-name">JPJ - Jabatan Pengangkutan Jalan</span>
+              <span class="link-desc">Maklumat jalan tutup & notis</span>
+            </span>
+            <span class="external-arrow"
+              ><i class="fas fa-external-link-alt"></i
+            ></span>
+          </a>
+          <a
+            href="https://www.jkr.gov.my/"
+            target="_blank"
+            class="sidebar-link"
+          >
+            <span class="link-icon road"><i class="fas fa-hard-hat"></i></span>
+            <span class="link-text">
+              <span class="link-name">JKR - Jabatan Kerja Raya</span>
+              <span class="link-desc">Infrastruktur & jalan persekutuan</span>
+            </span>
+            <span class="external-arrow"
+              ><i class="fas fa-external-link-alt"></i
+            ></span>
+          </a>
         </div>
+
+        <!-- DIREKTORI AGENSI KERAJAAN (LENGKAP) -->
+        <div class="sidebar-category">
+          <div class="sidebar-category-title">
+            <i class="fas fa-building"></i> DIREKTORI AGENSI KERAJAAN
+          </div>
+          <a
+            href="https://www.jbpm.gov.my/"
+            target="_blank"
+            class="sidebar-link"
+          >
+            <span class="link-icon emergency"
+              ><i class="fas fa-fire-extinguisher"></i
+            ></span>
+            <span class="link-text">
+              <span class="link-name">JBPM Malaysia</span>
+              <span class="link-desc">Jabatan Bomba & Penyelamat Malaysia</span>
+            </span>
+            <span class="external-arrow"
+              ><i class="fas fa-external-link-alt"></i
+            ></span>
+          </a>
+          <a
+            href="https://www.civildefence.gov.my/"
+            target="_blank"
+            class="sidebar-link"
+          >
+            <span class="link-icon civil"
+              ><i class="fas fa-shield-virus"></i
+            ></span>
+            <span class="link-text">
+              <span class="link-name">APM - Angkatan Pertahanan Awam</span>
+              <span class="link-desc"
+                >Pertahanan awam & pengurusan bencana</span
+              >
+            </span>
+            <span class="external-arrow"
+              ><i class="fas fa-external-link-alt"></i
+            ></span>
+          </a>
+          <a
+            href="https://www.rmp.gov.my/"
+            target="_blank"
+            class="sidebar-link"
+          >
+            <span class="link-icon emergency"
+              ><i class="fas fa-shield-alt"></i
+            ></span>
+            <span class="link-text">
+              <span class="link-name">PDRM - Polis Diraja Malaysia</span>
+              <span class="link-desc">Keselamatan & penguatkuasaan</span>
+            </span>
+            <span class="external-arrow"
+              ><i class="fas fa-external-link-alt"></i
+            ></span>
+          </a>
+          <a
+            href="https://www.moh.gov.my/"
+            target="_blank"
+            class="sidebar-link"
+          >
+            <span class="link-icon hospital"
+              ><i class="fas fa-hospital-alt"></i
+            ></span>
+            <span class="link-text">
+              <span class="link-name">KKM - Kementerian Kesihatan</span>
+              <span class="link-desc">Perkhidmatan kesihatan & hospital</span>
+            </span>
+            <span class="external-arrow"
+              ><i class="fas fa-external-link-alt"></i
+            ></span>
+          </a>
+          <a
+            href="https://www.maritime.gov.my/"
+            target="_blank"
+            class="sidebar-link"
+          >
+            <span class="link-icon maritime"><i class="fas fa-ship"></i></span>
+            <span class="link-text">
+              <span class="link-name">Maritim Malaysia</span>
+              <span class="link-desc"
+                >Agensi Penguatkuasaan Maritim Malaysia</span
+              >
+            </span>
+            <span class="external-arrow"
+              ><i class="fas fa-external-link-alt"></i
+            ></span>
+          </a>
+          <a
+            href="https://www.did.gov.my/"
+            target="_blank"
+            class="sidebar-link"
+          >
+            <span class="link-icon flood"><i class="fas fa-water"></i></span>
+            <span class="link-text">
+              <span class="link-name">JPS - Jabatan Pengairan & Saliran</span>
+              <span class="link-desc">Pengurusan air & saliran</span>
+            </span>
+            <span class="external-arrow"
+              ><i class="fas fa-external-link-alt"></i
+            ></span>
+          </a>
+          <a
+            href="https://www.dosm.gov.my/"
+            target="_blank"
+            class="sidebar-link"
+          >
+            <span class="link-icon info"><i class="fas fa-chart-bar"></i></span>
+            <span class="link-text">
+              <span class="link-name">DOSM - Jabatan Perangkaan</span>
+              <span class="link-desc">Data & statistik rasmi Malaysia</span>
+            </span>
+            <span class="external-arrow"
+              ><i class="fas fa-external-link-alt"></i
+            ></span>
+          </a>
+        </div>
+
+        <!-- DIREKTORI KECEMASAN LENGKAP DENGAN APM -->
+        <div class="sidebar-category">
+          <div class="sidebar-category-title">
+            <i class="fas fa-phone-alt"></i> DIREKTORI KECEMASAN MALAYSIA
+            <span style="color: #ef4444; font-size: 10px; margin-left: auto">
+              <i class="fas fa-clock"></i> 24/7
+            </span>
+          </div>
+          <div class="emergency-directory">
+            <!-- TALIAN KECEMASAN NASIONAL -->
+            <div class="emergency-group">
+              <div class="emergency-group-title">
+                <span class="group-icon">🇲🇾</span> TALIAN KECEMASAN NASIONAL
+              </div>
+              <div class="emergency-item">
+                <span class="e-icon emergency"
+                  ><i class="fas fa-phone-alt"></i
+                ></span>
+                <div class="e-info">
+                  <span class="e-name"
+                    >MERS 999 - Pusat Kecemasan Nasional</span
+                  >
+                  <span class="e-number">999</span>
+                  <span class="e-desc">Semua agensi kecemasan</span>
+                </div>
+                <div class="e-actions">
+                  <a href="tel:999" class="call-btn"
+                    ><i class="fas fa-phone"></i
+                  ></a>
+                </div>
+              </div>
+            </div>
+
+            <!-- JABATAN BOMBA & PENYELAMAT (JBPM) -->
+            <div class="emergency-group">
+              <div class="emergency-group-title">
+                <span class="group-icon">🔥</span> JABATAN BOMBA & PENYELAMAT
+                (JBPM)
+              </div>
+              <div class="emergency-item">
+                <span class="e-icon bomba"
+                  ><i class="fas fa-fire-extinguisher"></i
+                ></span>
+                <div class="e-info">
+                  <span class="e-name">JBPM Johor</span>
+                  <span class="e-number">07-223 4444</span>
+                </div>
+                <div class="e-actions">
+                  <a href="tel:072234444" class="call-btn"
+                    ><i class="fas fa-phone"></i
+                  ></a>
+                </div>
+              </div>
+            </div>
+
+            <!-- POLIS DIRAJA MALAYSIA (PDRM) -->
+            <div class="emergency-group">
+              <div class="emergency-group-title">
+                <span class="group-icon">👮</span> POLIS DIRAJA MALAYSIA (PDRM)
+              </div>
+              <div class="emergency-item">
+                <span class="e-icon polis"
+                  ><i class="fas fa-shield-alt"></i
+                ></span>
+                <div class="e-info">
+                  <span class="e-name">IPK Johor</span>
+                  <span class="e-number">07-225 4422</span>
+                </div>
+                <div class="e-actions">
+                  <a href="tel:072254422" class="call-btn"
+                    ><i class="fas fa-phone"></i
+                  ></a>
+                </div>
+              </div>
+            </div>
+
+            <!-- HOSPITAL & PERUBATAN (KKM) -->
+            <div class="emergency-group">
+              <div class="emergency-group-title">
+                <span class="group-icon">🏥</span> HOSPITAL & PERUBATAN (KKM)
+              </div>
+              <div class="emergency-item">
+                <span class="e-icon hospital"
+                  ><i class="fas fa-hospital"></i
+                ></span>
+                <div class="e-info">
+                  <span class="e-name">Hospital Sultanah Aminah (HSA)</span>
+                  <span class="e-number">07-223 1666</span>
+                </div>
+                <div class="e-actions">
+                  <a href="tel:072231666" class="call-btn"
+                    ><i class="fas fa-phone"></i
+                  ></a>
+                </div>
+              </div>
+            </div>
+
+            <!-- ANGKATAN PERTAHANAN AWAM (APM) - DITAMBAH -->
+            <div class="emergency-group">
+              <div class="emergency-group-title">
+                <span class="group-icon">🛡️</span> ANGKATAN PERTAHANAN AWAM
+                (APM)
+              </div>
+              <div class="emergency-item">
+                <span class="e-icon civil"
+                  ><i class="fas fa-shield-virus"></i
+                ></span>
+                <div class="e-info">
+                  <span class="e-name">APM Johor</span>
+                  <span class="e-number">07-224 5454</span>
+                  <span class="e-desc">Bantuan kecemasan & bencana</span>
+                </div>
+                <div class="e-actions">
+                  <a href="tel:072245454" class="call-btn"
+                    ><i class="fas fa-phone"></i
+                  ></a>
+                </div>
+              </div>
+            </div>
+
+            <!-- AGENSI PENGUATKUASAAN MARITIM -->
+            <div class="emergency-group">
+              <div class="emergency-group-title">
+                <span class="group-icon">⚓</span> AGENSI PENGUATKUASAAN MARITIM
+              </div>
+              <div class="emergency-item">
+                <span class="e-icon maritim"><i class="fas fa-ship"></i></span>
+                <div class="e-info">
+                  <span class="e-name">Maritim Johor</span>
+                  <span class="e-number">07-219 9401</span>
+                  <span class="e-desc">Kecemasan di laut</span>
+                </div>
+                <div class="e-actions">
+                  <a href="tel:072199401" class="call-btn"
+                    ><i class="fas fa-phone"></i
+                  ></a>
+                </div>
+              </div>
+            </div>
+
+            <!-- INFO BOX -->
+            <div class="info-box">
+              <p>
+                <i class="fas fa-info-circle"></i>
+                <strong
+                  >📌 Nombor kecemasan
+                  <span class="highlight-num">999</span> adalah talian rasmi
+                  Malaysia</strong
+                ><br />
+                Menghubungkan semua agensi kecemasan.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="sidebar-footer">
+        <span class="footer-icon">🔥</span> PGO Johor · Pusat Gerakan Operasi
+      </div>
     </div>
 
     <!-- DASHBOARD UTAMA -->
     <div class="dashboard">
-        <div class="header">
-            <div class="logo">
-                <div class="logo-icon">🚒</div>
-                <div>
-                    <h1>PUSAT GERAKAN OPERASI <span>JBPM JOHOR</span></h1>
-                    <span class="sub">DASHBOARD KESELURUHAN</span>
-                </div>
-            </div>
-            <div class="header-right">
-                <button class="mode-toggle-btn" id="modeToggleBtn" title="Tukar Mode">🌙</button>
-                <button class="switch-mode-btn" id="switchModeBtn" title="Tukar Paparan Desktop/Mobile">
-                    <i class="fas fa-mobile-alt"></i>
-                </button>
-                <div class="analog-clock" id="analogClock">
-                    <div class="marker main" style="transform: rotate(0deg) translateX(-50%)"></div>
-                    <div class="marker" style="transform: rotate(30deg) translateX(-50%)"></div>
-                    <div class="marker" style="transform: rotate(60deg) translateX(-50%)"></div>
-                    <div class="marker main" style="transform: rotate(90deg) translateX(-50%)"></div>
-                    <div class="marker" style="transform: rotate(120deg) translateX(-50%)"></div>
-                    <div class="marker" style="transform: rotate(150deg) translateX(-50%)"></div>
-                    <div class="marker main" style="transform: rotate(180deg) translateX(-50%)"></div>
-                    <div class="marker" style="transform: rotate(210deg) translateX(-50%)"></div>
-                    <div class="marker" style="transform: rotate(240deg) translateX(-50%)"></div>
-                    <div class="marker main" style="transform: rotate(270deg) translateX(-50%)"></div>
-                    <div class="marker" style="transform: rotate(300deg) translateX(-50%)"></div>
-                    <div class="marker" style="transform: rotate(330deg) translateX(-50%)"></div>
-                    <div class="hand hour" id="hourHand"></div>
-                    <div class="hand minute" id="minuteHand"></div>
-                    <div class="hand second" id="secondHand"></div>
-                    <div class="center-dot"></div>
-                </div>
-                <div class="digital-time">
-                    <div class="time" id="clock">12:00:00</div>
-                    <div class="date" id="date">23 JULAI 2026</div>
-                </div>
-                <button class="hamburger-btn" id="hamburgerBtn" title="Pautan Penting">
-                    <span></span><span></span><span></span>
-                    <span class="hamburger-badge">22</span>
-                </button>
-            </div>
+      <div class="header">
+        <div class="logo">
+          <div class="logo-img-wrapper">
+            <img src="https://i.ibb.co/fGtPXjpc/500px-Logo-of-the-Malaysian-Fire-and-Rescue-Department-svg.webp" 
+                 alt="JBPM Logo" 
+                 class="logo-img logo-bomba">
+          </div>
+          <div class="logo-text">
+            <h1>
+              PUSAT GERAKAN OPERASI <span>JBPM JOHOR</span>
+            </h1>
+            <span class="sub">DASHBOARD KESELURUHAN</span>
+          </div>
+          <div class="logo-img-wrapper">
+            <img src="https://i.ibb.co/fdXsyrBX/logo-unit-komunikasi-1.png" 
+                 alt="Unit Komunikasi Logo" 
+                 class="logo-img logo-komunikasi">
+          </div>
         </div>
+        <div class="header-right">
+          <button class="mode-toggle-btn" id="modeToggleBtn" title="Tukar Mode">
+            🌙
+          </button>
+          <button
+            class="switch-mode-btn"
+            id="switchModeBtn"
+            title="Tukar Paparan Desktop/Mobile"
+          >
+            <i class="fas fa-mobile-alt"></i>
+          </button>
+          <div class="analog-clock" id="analogClock">
+            <div
+              class="marker main"
+              style="transform: rotate(0deg) translateX(-50%)"
+            ></div>
+            <div
+              class="marker"
+              style="transform: rotate(30deg) translateX(-50%)"
+            ></div>
+            <div
+              class="marker"
+              style="transform: rotate(60deg) translateX(-50%)"
+            ></div>
+            <div
+              class="marker main"
+              style="transform: rotate(90deg) translateX(-50%)"
+            ></div>
+            <div
+              class="marker"
+              style="transform: rotate(120deg) translateX(-50%)"
+            ></div>
+            <div
+              class="marker"
+              style="transform: rotate(150deg) translateX(-50%)"
+            ></div>
+            <div
+              class="marker main"
+              style="transform: rotate(180deg) translateX(-50%)"
+            ></div>
+            <div
+              class="marker"
+              style="transform: rotate(210deg) translateX(-50%)"
+            ></div>
+            <div
+              class="marker"
+              style="transform: rotate(240deg) translateX(-50%)"
+            ></div>
+            <div
+              class="marker main"
+              style="transform: rotate(270deg) translateX(-50%)"
+            ></div>
+            <div
+              class="marker"
+              style="transform: rotate(300deg) translateX(-50%)"
+            ></div>
+            <div
+              class="marker"
+              style="transform: rotate(330deg) translateX(-50%)"
+            ></div>
+            <div class="hand hour" id="hourHand"></div>
+            <div class="hand minute" id="minuteHand"></div>
+            <div class="hand second" id="secondHand"></div>
+            <div class="center-dot"></div>
+          </div>
+          <div class="digital-time">
+            <div class="time" id="clock">12:00:00</div>
+            <div class="date" id="date">23 JULAI 2026</div>
+          </div>
+          <button
+            class="hamburger-btn"
+            id="hamburgerBtn"
+            title="Pautan Penting"
+          >
+            <span></span><span></span><span></span>
+            <span class="hamburger-badge">22</span>
+          </button>
+        </div>
+      </div>
 
-        <!-- STATS BAR -->
-        <div class="stats-bar">
-            <div class="stat-item">
-                <span class="icon-badge">🔥</span>
-                <div class="num" id="appCount">0</div>
-                <div class="label">Aplikasi</div>
-            </div>
-            <div class="stat-item">
-                <span class="icon-badge">🔥</span>
-                <div class="num" id="onlinePercent">0%</div>
-                <div class="label">Online</div>
-            </div>
-            <div class="stat-item">
-                <span class="icon-badge">🔥</span>
-                <div class="num" id="liveCount">0</div>
-                <div class="label">Live Updates</div>
-            </div>
-            <div class="stat-item">
-                <span class="icon-badge">🔥</span>
-                <div class="num">PGO</div>
-                <div class="label">Johor</div>
-            </div>
+      <!-- STATS BAR -->
+      <div class="stats-bar">
+        <div class="stat-item">
+          <span class="icon-badge">🔥</span>
+          <div class="num" id="appCount">0</div>
+          <div class="label">Aplikasi</div>
         </div>
+        <div class="stat-item">
+          <span class="icon-badge">🔥</span>
+          <div class="num" id="onlinePercent">0%</div>
+          <div class="label">Online</div>
+        </div>
+        <div class="stat-item">
+          <span class="icon-badge">🔥</span>
+          <div class="num" id="liveCount">0</div>
+          <div class="label">Live Updates</div>
+        </div>
+        <div class="stat-item">
+          <span class="icon-badge">🔥</span>
+          <div class="num">PGO</div>
+          <div class="label">Johor</div>
+        </div>
+      </div>
 
-        <!-- LIVE SECTION -->
-        <div class="section-status">
-            <div class="section-title">
-                <i class="fas fa-circle" style="color: #ff6b6b; font-size: 12px"></i>
-                LIVE <span class="status-badge live">● LIVE</span>
-            </div>
-            <div class="apps-grid">
-                <a href="https://dashbord-live-statistik-kes.vercel.app/" target="_blank" class="app-card">
-                    <span class="icon">📊</span>
-                    <h3>Live Statistik Kes 24 Jam <span class="highlight"> (DESK-OPS)</span></h3>
-                    <p>Statistik masa nyata panggilan, lokasi & mangsa.</p>
-                    <span class="badge live">● LIVE</span>
-                    <span class="arrow">→</span>
-                </a>
-            </div>
+      <!-- LIVE SECTION -->
+      <div class="section-status">
+        <div class="section-title">
+          <i class="fas fa-circle" style="color: #ff6b6b; font-size: 12px"></i>
+          LIVE <span class="status-badge live">● LIVE</span>
         </div>
+        <div class="apps-grid">
+          <a
+            href="https://dashbord-live-statistik-kes.vercel.app/"
+            target="_blank"
+            class="app-card"
+          >
+            <span class="icon">📊</span>
+            <h3>
+              Live Statistik Kes 24 Jam
+              <span class="highlight"> (DESK-OPS)</span>
+            </h3>
+            <p>Statistik masa nyata panggilan, lokasi & mangsa.</p>
+            <span class="badge live">● LIVE</span>
+            <span class="arrow">→</span>
+          </a>
+        </div>
+      </div>
 
-        <!-- ONLINE SECTION -->
-        <div class="section-status">
-            <div class="section-title">
-                <i class="fas fa-circle" style="color: #4ade80; font-size: 12px"></i>
-                ONLINE <span class="status-badge online">● Online</span>
-            </div>
-            <div class="apps-grid">
-                <a href="https://dashboard-kekuatan-anggota-12-jam-j.vercel.app/" target="_blank" class="app-card">
-                    <span class="icon">👨‍🚒</span>
-                    <h3>Kekuatan Anggota <span class="highlight">12 Jam</span></h3>
-                    <p>Status anggota, syif, cuti & tugasan khas.</p>
-                    <span class="badge online">● Online</span>
-                    <span class="arrow">→</span>
-                </a>
-                <a href="https://po1teknologia2.vercel.app/" target="_blank" class="app-card">
-                    <span class="icon">📦</span>
-                    <h3>Sistem Inventori<span class="highlight"> (DID)</span></h3>
-                    <p>Pengurusan storan, peralatan & aset logistik.</p>
-                    <span class="badge online">● Online</span>
-                    <span class="arrow">→</span>
-                </a>
-                <a href="https://daftar-masuk-pelawat.vercel.app/" target="_blank" class="app-card">
-                    <span class="icon">📋</span>
-                    <h3>Daftar Masuk Pelawat <span class="highlight">(ENTRY)</span></h3>
-                    <p>Sistem daftar masuk dengan gambar ID.</p>
-                    <span class="badge online">● Online</span>
-                    <span class="arrow">→</span>
-                </a>
-            </div>
+      <!-- ONLINE SECTION -->
+      <div class="section-status">
+        <div class="section-title">
+          <i class="fas fa-circle" style="color: #4ade80; font-size: 12px"></i>
+          ONLINE <span class="status-badge online">● Online</span>
         </div>
+        <div class="apps-grid">
+          <a
+            href="https://dashboard-kekuatan-anggota-12-jam-j.vercel.app/"
+            target="_blank"
+            class="app-card"
+          >
+            <span class="icon">👨‍🚒</span>
+            <h3>Kekuatan Anggota <span class="highlight">12 Jam</span></h3>
+            <p>Status anggota, syif, cuti & tugasan khas.</p>
+            <span class="badge online">● Online</span>
+            <span class="arrow">→</span>
+          </a>
+          <a
+            href="https://po1teknologia2.vercel.app/"
+            target="_blank"
+            class="app-card"
+          >
+            <span class="icon">📦</span>
+            <h3>Sistem Inventori<span class="highlight"> (DID)</span></h3>
+            <p>Pengurusan storan, peralatan & aset logistik.</p>
+            <span class="badge online">● Online</span>
+            <span class="arrow">→</span>
+          </a>
+          <a
+            href="https://daftar-masuk-pelawat.vercel.app/"
+            target="_blank"
+            class="app-card"
+          >
+            <span class="icon">📋</span>
+            <h3>Daftar Masuk Pelawat <span class="highlight">(ENTRY)</span></h3>
+            <p>Sistem daftar masuk dengan gambar ID.</p>
+            <span class="badge online">● Online</span>
+            <span class="arrow">→</span>
+          </a>
+        </div>
+      </div>
 
-        <!-- DALAM PEMBANGUNAN SECTION -->
-        <div class="section-status">
-            <div class="section-title">
-                <i class="fas fa-circle" style="color: #f6ad55; font-size: 12px"></i>
-                DALAM PEMBANGUNAN
-                <span class="status-badge dev">● Dalam Pembangunan</span>
-            </div>
-            <div class="apps-grid">
-                <a href="#" target="_blank" class="app-card">
-                    <span class="icon">🚛</span>
-                    <h3>Data <span class="highlight">Jentera</span> JBPM Johor</h3>
-                    <p>Pemantauan status jentera & kenderaan operasi.</p>
-                    <span class="badge dev">● Dalam Pembangunan</span>
-                    <span class="arrow">→</span>
-                </a>
-                <a href="#" target="_blank" class="app-card">
-                    <span class="icon">🗺️</span>
-                    <h3>Peta Kawasan <span class="highlight">Jagaan Balai</span></h3>
-                    <p>Peta interaktif kawasan jagaan balai bomba.</p>
-                    <span class="badge dev">● Dalam Pembangunan</span>
-                    <span class="arrow">→</span>
-                </a>
-                <a href="#" target="_blank" class="app-card">
-                    <span class="icon">📡</span>
-                    <h3>Dashboard Aset <span class="highlight">GIRN</span></h3>
-                    <p>Pemantauan aset GIRN JBPM Negeri Johor.</p>
-                    <span class="badge dev">● Dalam Pembangunan</span>
-                    <span class="arrow">→</span>
-                </a>
-            </div>
+      <!-- DALAM PEMBANGUNAN SECTION -->
+      <div class="section-status">
+        <div class="section-title">
+          <i class="fas fa-circle" style="color: #f6ad55; font-size: 12px"></i>
+          DALAM PEMBANGUNAN
+          <span class="status-badge dev">● Dalam Pembangunan</span>
         </div>
+        <div class="apps-grid">
+          <a href="#" target="_blank" class="app-card">
+            <span class="icon">🚛</span>
+            <h3>Data <span class="highlight">Jentera</span> JBPM Johor</h3>
+            <p>Pemantauan status jentera & kenderaan operasi.</p>
+            <span class="badge dev">● Dalam Pembangunan</span>
+            <span class="arrow">→</span>
+          </a>
+          <a href="#" target="_blank" class="app-card">
+            <span class="icon">🗺️</span>
+            <h3>Peta Kawasan <span class="highlight">Jagaan Balai</span></h3>
+            <p>Peta interaktif kawasan jagaan balai bomba.</p>
+            <span class="badge dev">● Dalam Pembangunan</span>
+            <span class="arrow">→</span>
+          </a>
+          <a href="#" target="_blank" class="app-card">
+            <span class="icon">📡</span>
+            <h3>Dashboard Aset <span class="highlight">GIRN</span></h3>
+            <p>Pemantauan aset GIRN JBPM Negeri Johor.</p>
+            <span class="badge dev">● Dalam Pembangunan</span>
+            <span class="arrow">→</span>
+          </a>
+        </div>
+      </div>
 
-        <!-- FOOTER -->
-        <div class="footer">
-            <div class="brand">
-                <span class="dot"></span>
-                <span>© 2026 <strong style="color: #cc0000"></strong> PGO Johor</span>
-            </div>
-            <div class="social-links">
-                <a href="https://wa.me/60196717865" target="_blank" class="whatsapp" title="WhatsApp">
-                    <i class="fab fa-whatsapp"></i>
-                </a>
-                <a href="https://t.me/+60196717865" target="_blank" class="telegram" title="Telegram">
-                    <i class="fab fa-telegram-plane"></i>
-                </a>
-                <a href="#" target="_blank" title="Instagram">
-                    <i class="fab fa-instagram"></i>
-                </a>
-                <a href="#" target="_blank" title="YouTube">
-                    <i class="fab fa-youtube"></i>
-                </a>
-            </div>
+      <!-- FOOTER -->
+      <div class="footer">
+        <div class="brand">
+          <span class="dot"></span>
+          <span>© 2026 <strong style="color: #cc0000"></strong> PGO Johor</span>
         </div>
+        <div class="social-links">
+          <a
+            href="https://wa.me/60196717865"
+            target="_blank"
+            class="whatsapp"
+            title="WhatsApp"
+          >
+            <i class="fab fa-whatsapp"></i>
+          </a>
+          <a
+            href="https://t.me/+60196717865"
+            target="_blank"
+            class="telegram"
+            title="Telegram"
+          >
+            <i class="fab fa-telegram-plane"></i>
+          </a>
+          <a href="#" target="_blank" title="Instagram">
+            <i class="fab fa-instagram"></i>
+          </a>
+          <a href="#" target="_blank" title="YouTube">
+            <i class="fab fa-youtube"></i>
+          </a>
+        </div>
+      </div>
     </div>
 
     <script>
-        (function() {
-            // Audio context untuk bunyi klik
-            let audioCtx = null;
-            function playClickSound() {
-                try {
-                    if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-                    if (audioCtx.state === 'suspended') audioCtx.resume();
-                    const oscillator = audioCtx.createOscillator();
-                    const gainNode = audioCtx.createGain();
-                    oscillator.connect(gainNode);
-                    gainNode.connect(audioCtx.destination);
-                    oscillator.frequency.value = 800;
-                    oscillator.type = 'sine';
-                    gainNode.gain.value = 0.15;
-                    oscillator.start(audioCtx.currentTime);
-                    oscillator.stop(audioCtx.currentTime + 0.05);
-                    gainNode.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.05);
-                } catch(e) {}
-            }
+      (function () {
+        // Audio context untuk bunyi klik
+        let audioCtx = null;
+        function playClickSound() {
+          try {
+            if (!audioCtx)
+              audioCtx = new (window.AudioContext ||
+                window.webkitAudioContext)();
+            if (audioCtx.state === 'suspended') audioCtx.resume();
+            const oscillator = audioCtx.createOscillator();
+            const gainNode = audioCtx.createGain();
+            oscillator.connect(gainNode);
+            gainNode.connect(audioCtx.destination);
+            oscillator.frequency.value = 800;
+            oscillator.type = 'sine';
+            gainNode.gain.value = 0.15;
+            oscillator.start(audioCtx.currentTime);
+            oscillator.stop(audioCtx.currentTime + 0.05);
+            gainNode.gain.exponentialRampToValueAtTime(
+              0.001,
+              audioCtx.currentTime + 0.05
+            );
+          } catch (e) {}
+        }
 
-            // --- MODE SIANG/MALAM ---
-            const modeToggleBtn = document.getElementById('modeToggleBtn');
-            let isSiang = false;
-            function toggleMode() {
-                playClickSound();
-                isSiang = !isSiang;
-                if (isSiang) {
-                    document.body.classList.add('mode-siang');
-                    modeToggleBtn.textContent = '☀️';
-                    modeToggleBtn.title = 'Tukar ke Mode Malam';
-                } else {
-                    document.body.classList.remove('mode-siang');
-                    modeToggleBtn.textContent = '🌙';
-                    modeToggleBtn.title = 'Tukar ke Mode Siang';
-                }
-                try { localStorage.setItem('pgoMode', isSiang ? 'siang' : 'malam'); } catch(e) {}
+        // --- MODE SIANG/MALAM ---
+        const modeToggleBtn = document.getElementById('modeToggleBtn');
+        let isSiang = false;
+        function toggleMode() {
+          playClickSound();
+          isSiang = !isSiang;
+          if (isSiang) {
+            document.body.classList.add('mode-siang');
+            modeToggleBtn.textContent = '☀️';
+            modeToggleBtn.title = 'Tukar ke Mode Malam';
+          } else {
+            document.body.classList.remove('mode-siang');
+            modeToggleBtn.textContent = '🌙';
+            modeToggleBtn.title = 'Tukar ke Mode Siang';
+          }
+          try {
+            localStorage.setItem('pgoMode', isSiang ? 'siang' : 'malam');
+          } catch (e) {}
+        }
+        function loadModePreference() {
+          try {
+            if (localStorage.getItem('pgoMode') === 'siang') {
+              isSiang = true;
+              document.body.classList.add('mode-siang');
+              modeToggleBtn.textContent = '☀️';
+              modeToggleBtn.title = 'Tukar ke Mode Malam';
             }
-            function loadModePreference() {
-                try {
-                    if (localStorage.getItem('pgoMode') === 'siang') {
-                        isSiang = true;
-                        document.body.classList.add('mode-siang');
-                        modeToggleBtn.textContent = '☀️';
-                        modeToggleBtn.title = 'Tukar ke Mode Malam';
-                    }
-                } catch(e) {}
+          } catch (e) {}
+        }
+        modeToggleBtn.addEventListener('click', toggleMode);
+
+        // --- SIDEBAR HAMBURGER ---
+        const hamburgerBtn = document.getElementById('hamburgerBtn');
+        const sidebar = document.getElementById('sidebar');
+        const sidebarClose = document.getElementById('sidebarClose');
+        const sidebarOverlay = document.getElementById('sidebarOverlay');
+        function openSidebar() {
+          playClickSound();
+          sidebar.classList.add('active');
+          sidebarOverlay.classList.add('active');
+          hamburgerBtn.classList.add('active');
+          document.body.style.overflow = 'hidden';
+        }
+        function closeSidebar() {
+          playClickSound();
+          sidebar.classList.remove('active');
+          sidebarOverlay.classList.remove('active');
+          hamburgerBtn.classList.remove('active');
+          document.body.style.overflow = '';
+        }
+        hamburgerBtn.addEventListener('click', openSidebar);
+        sidebarClose.addEventListener('click', closeSidebar);
+        sidebarOverlay.addEventListener('click', closeSidebar);
+        document.addEventListener('keydown', function (e) {
+          if (e.key === 'Escape' && sidebar.classList.contains('active'))
+            closeSidebar();
+        });
+
+        // --- JAM DIGITAL + ANALOG ---
+        function updateClock() {
+          const now = new Date();
+          const h = now.getHours(),
+            m = now.getMinutes(),
+            s = now.getSeconds();
+          document.getElementById('clock').textContent = now.toLocaleTimeString(
+            'ms-MY',
+            { hour12: false }
+          );
+          document.getElementById('date').textContent = now
+            .toLocaleDateString('ms-MY', {
+              day: 'numeric',
+              month: 'long',
+              year: 'numeric',
+            })
+            .toUpperCase();
+          const hourDeg = (h % 12) * 30 + m * 0.5;
+          const minuteDeg = m * 6 + s * 0.1;
+          const secondDeg = s * 6;
+          document.getElementById('hourHand').style.transform =
+            'rotate(' + hourDeg + 'deg)';
+          document.getElementById('minuteHand').style.transform =
+            'rotate(' + minuteDeg + 'deg)';
+          document.getElementById('secondHand').style.transform =
+            'rotate(' + secondDeg + 'deg)';
+        }
+        updateClock();
+        setInterval(updateClock, 1000);
+
+        // --- COUNTER STATISTIK ---
+        const totalApps = 7,
+          liveApps = 1,
+          onlineApps = 3;
+        const percentOnline = Math.round((onlineApps / totalApps) * 100);
+        function animateCounter(element, target, suffix = '') {
+          let current = 0;
+          const step = Math.max(1, Math.floor(target / 25));
+          const interval = setInterval(function () {
+            current += step;
+            if (current >= target) {
+              current = target;
+              clearInterval(interval);
             }
-            modeToggleBtn.addEventListener('click', toggleMode);
+            element.textContent = current + suffix;
+          }, 50);
+        }
 
-            // --- SIDEBAR HAMBURGER ---
-            const hamburgerBtn = document.getElementById('hamburgerBtn');
-            const sidebar = document.getElementById('sidebar');
-            const sidebarClose = document.getElementById('sidebarClose');
-            const sidebarOverlay = document.getElementById('sidebarOverlay');
-            function openSidebar() {
-                playClickSound();
-                sidebar.classList.add('active');
-                sidebarOverlay.classList.add('active');
-                hamburgerBtn.classList.add('active');
-                document.body.style.overflow = 'hidden';
+        // --- DESKTOP / MOBILE SWITCH ---
+        const switchModeBtn = document.getElementById('switchModeBtn');
+        let isMobileMode = false;
+
+        function applyViewMode() {
+          if (isMobileMode) {
+            document.body.classList.add('mobile-mode');
+            document.body.classList.remove('desktop-mode');
+            switchModeBtn.innerHTML = '<i class="fas fa-desktop"></i>';
+            switchModeBtn.title = 'Tukar ke Paparan Desktop';
+          } else {
+            document.body.classList.add('desktop-mode');
+            document.body.classList.remove('mobile-mode');
+            switchModeBtn.innerHTML = '<i class="fas fa-mobile-alt"></i>';
+            switchModeBtn.title = 'Tukar ke Paparan Mobile';
+          }
+          try {
+            localStorage.setItem(
+              'pgoViewMode',
+              isMobileMode ? 'mobile' : 'desktop'
+            );
+          } catch (e) {}
+        }
+
+        function toggleViewMode() {
+          playClickSound();
+          isMobileMode = !isMobileMode;
+          applyViewMode();
+        }
+
+        function loadViewModePreference() {
+          try {
+            const savedView = localStorage.getItem('pgoViewMode');
+            if (savedView === 'mobile') {
+              isMobileMode = true;
             }
-            function closeSidebar() {
-                playClickSound();
-                sidebar.classList.remove('active');
-                sidebarOverlay.classList.remove('active');
-                hamburgerBtn.classList.remove('active');
-                document.body.style.overflow = '';
-            }
-            hamburgerBtn.addEventListener('click', openSidebar);
-            sidebarClose.addEventListener('click', closeSidebar);
-            sidebarOverlay.addEventListener('click', closeSidebar);
-            document.addEventListener('keydown', function(e) {
-                if (e.key === 'Escape' && sidebar.classList.contains('active')) closeSidebar();
-            });
+          } catch (e) {}
+          applyViewMode();
+        }
 
-            // --- JAM DIGITAL + ANALOG ---
-            function updateClock() {
-                const now = new Date();
-                const h = now.getHours(), m = now.getMinutes(), s = now.getSeconds();
-                document.getElementById('clock').textContent = now.toLocaleTimeString('ms-MY', { hour12: false });
-                document.getElementById('date').textContent = now.toLocaleDateString('ms-MY', {
-                    day: 'numeric', month: 'long', year: 'numeric'
-                }).toUpperCase();
-                const hourDeg = (h % 12) * 30 + m * 0.5;
-                const minuteDeg = m * 6 + s * 0.1;
-                const secondDeg = s * 6;
-                document.getElementById('hourHand').style.transform = 'rotate(' + hourDeg + 'deg)';
-                document.getElementById('minuteHand').style.transform = 'rotate(' + minuteDeg + 'deg)';
-                document.getElementById('secondHand').style.transform = 'rotate(' + secondDeg + 'deg)';
-            }
-            updateClock();
-            setInterval(updateClock, 1000);
+        switchModeBtn.addEventListener('click', toggleViewMode);
 
-            // --- COUNTER STATISTIK ---
-            const totalApps = 7, liveApps = 1, onlineApps = 3;
-            const percentOnline = Math.round((onlineApps / totalApps) * 100);
-            function animateCounter(element, target, suffix = '') {
-                let current = 0;
-                const step = Math.max(1, Math.floor(target / 25));
-                const interval = setInterval(function() {
-                    current += step;
-                    if (current >= target) { current = target; clearInterval(interval); }
-                    element.textContent = current + suffix;
-                }, 50);
-            }
-
-            // --- DESKTOP / MOBILE SWITCH ---
-            const switchModeBtn = document.getElementById('switchModeBtn');
-            let isMobileMode = false;
-
-            function applyViewMode() {
-                if (isMobileMode) {
-                    document.body.classList.add('mobile-mode');
-                    document.body.classList.remove('desktop-mode');
-                    switchModeBtn.innerHTML = '<i class="fas fa-desktop"></i>';
-                    switchModeBtn.title = 'Tukar ke Paparan Desktop';
-                } else {
-                    document.body.classList.add('desktop-mode');
-                    document.body.classList.remove('mobile-mode');
-                    switchModeBtn.innerHTML = '<i class="fas fa-mobile-alt"></i>';
-                    switchModeBtn.title = 'Tukar ke Paparan Mobile';
-                }
-                try { localStorage.setItem('pgoViewMode', isMobileMode ? 'mobile' : 'desktop'); } catch(e) {}
-            }
-
-            function toggleViewMode() {
-                playClickSound();
-                isMobileMode = !isMobileMode;
-                applyViewMode();
-            }
-
-            function loadViewModePreference() {
-                try {
-                    const savedView = localStorage.getItem('pgoViewMode');
-                    if (savedView === 'mobile') { isMobileMode = true; }
-                } catch(e) {}
-                applyViewMode();
-            }
-
-            switchModeBtn.addEventListener('click', toggleViewMode);
-
-            // --- LOAD SEMUA PREFERENCE & ANIMASI ---
-            window.addEventListener('load', function() {
-                loadModePreference();
-                loadViewModePreference();
-                animateCounter(document.getElementById('appCount'), totalApps);
-                animateCounter(document.getElementById('onlinePercent'), percentOnline, '%');
-                animateCounter(document.getElementById('liveCount'), liveApps);
-            });
-        })();
+        // --- LOAD SEMUA PREFERENCE & ANIMASI ---
+        window.addEventListener('load', function () {
+          loadModePreference();
+          loadViewModePreference();
+          animateCounter(document.getElementById('appCount'), totalApps);
+          animateCounter(
+            document.getElementById('onlinePercent'),
+            percentOnline,
+            '%'
+          );
+          animateCounter(document.getElementById('liveCount'), liveApps);
+        });
+      })();
     </script>
-</body>
+  </body>
 </html>
