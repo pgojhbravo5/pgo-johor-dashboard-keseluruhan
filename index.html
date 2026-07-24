@@ -171,6 +171,15 @@
       body.mode-siang .header-bar-controls .digital-time .date {
         color: #888;
       }
+      body.mode-siang .toggle-header-btn {
+        background: #ffffff;
+        border-color: #ff6b00;
+        color: #ff6b00;
+      }
+      body.mode-siang .toggle-header-btn:hover {
+        background: #ff6b00;
+        color: #ffffff;
+      }
 
       /* ===== OVERLAY UNTUK SIDEBAR ===== */
       .sidebar-overlay {
@@ -207,6 +216,12 @@
         z-index: 100;
         transition: all 0.5s ease;
         box-shadow: 0 8px 30px rgba(0, 0, 0, 0.5);
+      }
+      .header-bar-controls.hidden {
+        opacity: 0;
+        visibility: hidden;
+        transform: translateY(-20px) scale(0.95);
+        pointer-events: none;
       }
 
       .header-bar-controls .mode-toggle-btn {
@@ -399,6 +414,45 @@
         color: white;
         font-weight: bold;
         border: 2px solid #0a0a0a;
+      }
+
+      /* ===== TOGGLE BUTTON UNTUK HIDE/SHOW HEADER ===== */
+      .toggle-header-btn {
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        width: 44px;
+        height: 44px;
+        border-radius: 50%;
+        background: rgba(20, 20, 20, 0.9);
+        border: 1px solid #ffcc00;
+        backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
+        color: #ffcc00;
+        font-size: 18px;
+        cursor: pointer;
+        z-index: 99;
+        transition: all 0.3s ease;
+        box-shadow: 0 8px 30px rgba(0, 0, 0, 0.5);
+        display: none;
+        align-items: center;
+        justify-content: center;
+      }
+      .toggle-header-btn:hover {
+        background: #ffcc00;
+        color: #1a1a1a;
+        transform: scale(1.05);
+        box-shadow: 0 0 25px rgba(255, 204, 0, 0.3);
+      }
+      .toggle-header-btn:active {
+        transform: scale(0.9);
+      }
+      .toggle-header-btn.visible {
+        display: flex;
+      }
+      /* Bila header hidden, toggle button nampak */
+      .header-bar-controls.hidden ~ .toggle-header-btn {
+        display: flex;
       }
 
       .dashboard {
@@ -1206,6 +1260,13 @@
         .header-bar-controls .digital-time .date {
           font-size: 8px;
         }
+        .toggle-header-btn {
+          top: 10px;
+          right: 10px;
+          width: 38px;
+          height: 38px;
+          font-size: 16px;
+        }
         .apps-grid {
           grid-template-columns: 1fr;
         }
@@ -1432,6 +1493,15 @@
       </button>
     </div>
 
+    <!-- TOGGLE BUTTON - Muncul bila header hidden -->
+    <button
+      class="toggle-header-btn"
+      id="toggleHeaderBtn"
+      title="Tunjukkan Panel Kawalan"
+    >
+      <i class="fas fa-eye"></i>
+    </button>
+
     <!-- SIDEBAR LENGKAP DENGAN DIREKTORI AGENSI & KECEMASAN -->
     <div class="sidebar" id="sidebar">
       <div class="sidebar-header">
@@ -1597,16 +1667,14 @@
             ></span>
           </a>
           <a
-            href="https://bencana.jkr.gov.my/"
+            href="https://www.jkr.gov.my/"
             target="_blank"
             class="sidebar-link"
           >
             <span class="link-icon road"><i class="fas fa-hard-hat"></i></span>
             <span class="link-text">
               <span class="link-name">JKR - Jabatan Kerja Raya</span>
-              <span class="link-desc"
-                >Infrastruktur & jalan persekutuan(e-bencanajkr)</span
-              >
+              <span class="link-desc">Infrastruktur & jalan persekutuan</span>
             </span>
             <span class="external-arrow"
               ><i class="fas fa-external-link-alt"></i
@@ -1620,7 +1688,7 @@
             <i class="fas fa-building"></i> DIREKTORI AGENSI KERAJAAN
           </div>
           <a
-            href="https://www.bomba.gov.my/en/"
+            href="https://www.jbpm.gov.my/"
             target="_blank"
             class="sidebar-link"
           >
@@ -1686,7 +1754,7 @@
             ></span>
           </a>
           <a
-            href="https://www.mmea.gov.my/index.php/ms/"
+            href="https://www.maritime.gov.my/"
             target="_blank"
             class="sidebar-link"
           >
@@ -1702,16 +1770,14 @@
             ></span>
           </a>
           <a
-            href="https://infobanjirjpsjohor.water.gov.my/"
+            href="https://www.did.gov.my/"
             target="_blank"
             class="sidebar-link"
           >
             <span class="link-icon flood"><i class="fas fa-water"></i></span>
             <span class="link-text">
               <span class="link-name">JPS - Jabatan Pengairan & Saliran</span>
-              <span class="link-desc"
-                >Pengurusan air & saliran(info banjir)</span
-              >
+              <span class="link-desc">Pengurusan air & saliran</span>
             </span>
             <span class="external-arrow"
               ><i class="fas fa-external-link-alt"></i
@@ -2254,10 +2320,56 @@
 
         switchModeBtn.addEventListener('click', toggleViewMode);
 
+        // --- TOGGLE HEADER BAR HIDE/SHOW ---
+        const headerControls = document.getElementById('headerControls');
+        const toggleBtn = document.getElementById('toggleHeaderBtn');
+
+        function toggleHeader() {
+          playClickSound();
+          const isHidden = headerControls.classList.toggle('hidden');
+          // Tukar icon button
+          if (isHidden) {
+            toggleBtn.innerHTML = '<i class="fas fa-eye"></i>';
+            toggleBtn.title = 'Tunjukkan Panel Kawalan';
+            localStorage.setItem('pgoHeaderHidden', 'true');
+          } else {
+            toggleBtn.innerHTML = '<i class="fas fa-eye-slash"></i>';
+            toggleBtn.title = 'Sembunyikan Panel Kawalan';
+            localStorage.setItem('pgoHeaderHidden', 'false');
+          }
+        }
+
+        function loadHeaderPreference() {
+          try {
+            const isHidden = localStorage.getItem('pgoHeaderHidden');
+            if (isHidden === 'true') {
+              headerControls.classList.add('hidden');
+              toggleBtn.innerHTML = '<i class="fas fa-eye"></i>';
+              toggleBtn.title = 'Tunjukkan Panel Kawalan';
+            } else {
+              toggleBtn.innerHTML = '<i class="fas fa-eye-slash"></i>';
+              toggleBtn.title = 'Sembunyikan Panel Kawalan';
+            }
+          } catch (e) {}
+        }
+
+        // Klik toggle button
+        toggleBtn.addEventListener('click', toggleHeader);
+
+        // Double click kat header controls untuk hide
+        headerControls.addEventListener('dblclick', function (e) {
+          // Jangan trigger kalau klik pada button
+          if (e.target.closest('button')) return;
+          if (!headerControls.classList.contains('hidden')) {
+            toggleHeader();
+          }
+        });
+
         // --- LOAD SEMUA PREFERENCE & ANIMASI ---
         window.addEventListener('load', function () {
           loadModePreference();
           loadViewModePreference();
+          loadHeaderPreference();
           animateCounter(document.getElementById('appCount'), totalApps);
           animateCounter(
             document.getElementById('onlinePercent'),
