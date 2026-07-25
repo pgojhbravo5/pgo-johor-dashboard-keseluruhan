@@ -42,7 +42,7 @@
       }
 
       body {
-        font-family: Arial, sans-serif;
+        font-family: 'Segoe UI', Arial, sans-serif;
         min-height: 100vh;
         display: flex;
         justify-content: center;
@@ -242,6 +242,27 @@
       body.mode-siang .info-box p {
         color: #666;
       }
+      body.mode-siang .dblclick-hint {
+        background: rgba(255, 255, 255, 0.95);
+        color: #ff6b00;
+        border-color: rgba(255, 107, 0, 0.4);
+      }
+      body.mode-siang .dblclick-hint .hint-dot {
+        background: #ff6b00;
+      }
+      body.mode-siang .dblclick-hint .hint-arrows {
+        color: #ff6b00;
+      }
+      body.mode-siang .header-bar-controls .mode-toggle-btn .btn-label,
+      body.mode-siang .header-bar-controls .switch-mode-btn .btn-label,
+      body.mode-siang .header-bar-controls .hamburger-btn .btn-label {
+        background: rgba(255, 255, 255, 0.95);
+        color: #333;
+        border-color: #d0d0d0;
+      }
+      body.mode-siang .header-bar-controls .btn-label::after {
+        border-top-color: rgba(255, 255, 255, 0.95);
+      }
 
       /* ===== OVERLAY UNTUK SIDEBAR ===== */
       .sidebar-overlay {
@@ -269,21 +290,89 @@
         display: flex;
         align-items: center;
         gap: 10px;
-        background: rgba(20, 20, 20, 0.9);
+        background: rgba(20, 20, 20, 0.95);
         padding: 8px 14px 8px 16px;
+        padding-bottom: 22px; /* Ruang untuk tooltip */
         border-radius: 60px;
         border: 1px solid #2a2a2a;
-        backdrop-filter: blur(10px);
-        -webkit-backdrop-filter: blur(10px);
+        backdrop-filter: blur(15px);
+        -webkit-backdrop-filter: blur(15px);
         z-index: 100;
-        transition: all 0.5s ease;
-        box-shadow: 0 8px 30px rgba(0, 0, 0, 0.5);
+        transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        box-shadow: 0 8px 30px rgba(0, 0, 0, 0.6);
       }
       .header-bar-controls.hidden {
         opacity: 0;
         visibility: hidden;
-        transform: translateY(-20px) scale(0.95);
+        transform: translateY(-20px) scale(0.9);
         pointer-events: none;
+      }
+
+      /* === BUTTON BASE STYLES === */
+      .header-bar-controls button {
+        position: relative;
+        overflow: hidden;
+        user-select: none;
+        -webkit-tap-highlight-color: transparent;
+      }
+
+      /* === RIPPLE EFFECT === */
+      .header-bar-controls button::after {
+        content: '';
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        width: 0;
+        height: 0;
+        border-radius: 50%;
+        background: rgba(255, 255, 255, 0.3);
+        transform: translate(-50%, -50%);
+        transition: width 0.6s ease, height 0.6s ease, opacity 0.6s ease;
+        pointer-events: none;
+      }
+      .header-bar-controls button:active::after {
+        width: 300%;
+        height: 300%;
+        opacity: 0;
+      }
+
+      /* === TOOLTIP UNTUK SETIAP BUTANG === */
+      .header-bar-controls button .btn-label {
+        position: absolute;
+        bottom: -32px;
+        left: 50%;
+        transform: translateX(-50%);
+        background: rgba(0, 0, 0, 0.9);
+        color: #fff;
+        font-size: 9px;
+        padding: 3px 8px;
+        border-radius: 8px;
+        white-space: nowrap;
+        pointer-events: none;
+        opacity: 0;
+        transition: all 0.3s ease;
+        border: 1px solid rgba(255, 204, 0, 0.2);
+        font-weight: 500;
+        letter-spacing: 0.3px;
+      }
+      .header-bar-controls button .btn-label::after {
+        content: '';
+        position: absolute;
+        top: -5px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 0;
+        height: 0;
+        border-left: 5px solid transparent;
+        border-right: 5px solid transparent;
+        border-bottom: 5px solid rgba(0, 0, 0, 0.9);
+      }
+      .header-bar-controls button:hover .btn-label {
+        opacity: 1;
+        bottom: -30px;
+      }
+      .header-bar-controls.hidden button .btn-label {
+        opacity: 0 !important;
       }
 
       .header-bar-controls .mode-toggle-btn {
@@ -300,18 +389,19 @@
         transition: all 0.3s ease;
         flex-shrink: 0;
         color: #ffcc00;
-        position: relative;
-        user-select: none;
+        margin-bottom: 0;
       }
       .header-bar-controls .mode-toggle-btn:hover {
         background: #ffcc00;
         color: #1a1a1a;
-        transform: scale(1.05);
-        box-shadow: 0 0 25px rgba(255, 204, 0, 0.3);
+        transform: scale(1.1);
+        box-shadow: 0 0 25px rgba(255, 204, 0, 0.4);
       }
       .header-bar-controls .mode-toggle-btn:active {
-        transform: scale(0.9);
+        transform: scale(0.85);
+        transition: transform 0.1s ease;
       }
+
       .header-bar-controls .switch-mode-btn {
         width: 38px;
         height: 38px;
@@ -326,28 +416,63 @@
         transition: all 0.3s ease;
         flex-shrink: 0;
         color: #4ade80;
-        position: relative;
-        user-select: none;
+        margin-bottom: 0;
       }
       .header-bar-controls .switch-mode-btn:hover {
         background: #4ade80;
         color: #1a1a1a;
-        transform: scale(1.05);
-        box-shadow: 0 0 20px rgba(74, 222, 128, 0.3);
+        transform: scale(1.1);
+        box-shadow: 0 0 20px rgba(74, 222, 128, 0.4);
       }
       .header-bar-controls .switch-mode-btn:active {
-        transform: scale(0.9);
+        transform: scale(0.85);
+        transition: transform 0.1s ease;
       }
+
+      /* === MODE INDIKATOR === */
+      .switch-mode-btn .mode-indicator-dot {
+        position: absolute;
+        bottom: -2px;
+        right: -2px;
+        width: 10px;
+        height: 10px;
+        background: #4ade80;
+        border-radius: 50%;
+        border: 2px solid #1a1a1a;
+        display: none;
+        animation: pulseIndicator 2s infinite;
+        transition: all 0.3s ease;
+      }
+      body.mobile-mode .switch-mode-btn .mode-indicator-dot {
+        display: block;
+      }
+      body.mode-siang .switch-mode-btn .mode-indicator-dot {
+        border-color: #ffffff;
+      }
+
+      @keyframes pulseIndicator {
+        0%, 100% {
+          opacity: 1;
+          transform: scale(1);
+        }
+        50% {
+          opacity: 0.4;
+          transform: scale(1.4);
+        }
+      }
+
       .header-bar-controls .analog-clock {
-        width: 40px;
-        height: 40px;
+        width: 42px;
+        height: 42px;
         border-radius: 50%;
         background: #0a0a0a;
         border: 2px solid #ffcc00;
         position: relative;
         flex-shrink: 0;
-        box-shadow: 0 0 15px rgba(255, 204, 0, 0.05);
+        box-shadow: 0 0 15px rgba(255, 204, 0, 0.08);
         transition: all 0.5s ease;
+        cursor: default;
+        margin-bottom: 0;
       }
       .header-bar-controls .analog-clock .hand {
         position: absolute;
@@ -355,7 +480,6 @@
         left: 50%;
         transform-origin: bottom center;
         border-radius: 3px;
-        background: #e2e8f0;
         transition: background 0.5s ease;
       }
       .header-bar-controls .analog-clock .hand.hour {
@@ -363,30 +487,34 @@
         height: 12px;
         margin-left: -1.5px;
         background: #ffcc00;
+        transition: transform 0.3s cubic-bezier(0.4, 2.3, 0.3, 1);
       }
       .header-bar-controls .analog-clock .hand.minute {
         width: 2px;
         height: 16px;
         margin-left: -1px;
         background: #94a3b8;
+        transition: transform 0.1s cubic-bezier(0.4, 2.3, 0.3, 1);
       }
       .header-bar-controls .analog-clock .hand.second {
         width: 1.5px;
         height: 18px;
         margin-left: -0.75px;
         background: #ef4444;
+        transition: transform 0.05s linear;
       }
       .header-bar-controls .analog-clock .center-dot {
         position: absolute;
         top: 50%;
         left: 50%;
-        width: 4px;
-        height: 4px;
+        width: 5px;
+        height: 5px;
         background: #ffcc00;
         border-radius: 50%;
         transform: translate(-50%, -50%);
         z-index: 2;
         transition: background 0.5s ease;
+        box-shadow: 0 0 6px rgba(255, 204, 0, 0.5);
       }
       .header-bar-controls .analog-clock .marker {
         position: absolute;
@@ -404,9 +532,12 @@
         width: 2.5px;
         background: #ffcc00;
       }
+
       .header-bar-controls .digital-time {
         text-align: right;
         line-height: 1.2;
+        min-width: 70px;
+        margin-bottom: 0;
       }
       .header-bar-controls .digital-time .time {
         font-size: 16px;
@@ -414,7 +545,8 @@
         color: #ffcc00;
         font-family: 'Courier New', monospace;
         letter-spacing: 1px;
-        text-shadow: 0 0 20px rgba(255, 204, 0, 0.1);
+        text-shadow: 0 0 20px rgba(255, 204, 0, 0.2);
+        transition: color 0.5s ease;
       }
       .header-bar-controls .digital-time .date {
         color: #888888;
@@ -422,6 +554,7 @@
         margin-top: 1px;
         transition: color 0.5s ease;
       }
+
       .header-bar-controls .hamburger-btn {
         width: 38px;
         height: 38px;
@@ -436,13 +569,17 @@
         gap: 4px;
         transition: all 0.3s ease;
         flex-shrink: 0;
-        position: relative;
-        user-select: none;
+        margin-bottom: 0;
       }
       .header-bar-controls .hamburger-btn:hover {
         background: #cc0000;
         border-color: #ff6600;
-        box-shadow: 0 0 20px rgba(204, 0, 0, 0.3);
+        box-shadow: 0 0 20px rgba(204, 0, 0, 0.5);
+        transform: scale(1.05);
+      }
+      .header-bar-controls .hamburger-btn:active {
+        transform: scale(0.9);
+        transition: transform 0.1s ease;
       }
       .header-bar-controls .hamburger-btn span {
         display: block;
@@ -452,14 +589,83 @@
         border-radius: 2px;
         transition: all 0.3s ease;
       }
+      .header-bar-controls .hamburger-btn.active {
+        background: #cc0000;
+        border-color: #ff6600;
+      }
+      .header-bar-controls .hamburger-btn.active span {
+        background: #ffffff;
+      }
       .header-bar-controls .hamburger-btn.active span:nth-child(1) {
-        transform: rotate(45deg) translate(4px, 4px);
+        transform: rotate(45deg) translate(4.5px, 4.5px);
       }
       .header-bar-controls .hamburger-btn.active span:nth-child(2) {
         opacity: 0;
+        transform: scale(0);
       }
       .header-bar-controls .hamburger-btn.active span:nth-child(3) {
-        transform: rotate(-45deg) translate(4px, -4px);
+        transform: rotate(-45deg) translate(4.5px, -4.5px);
+      }
+
+      /* ===== PETUNJUK DOUBLE-KLIK PADA HEADER BAR ===== */
+      .dblclick-hint {
+        position: absolute;
+        bottom: 4px;
+        left: 50%;
+        transform: translateX(-50%);
+        background: rgba(20, 20, 20, 0.9);
+        color: #ffcc00;
+        font-size: 8px;
+        padding: 3px 10px;
+        border-radius: 10px;
+        white-space: nowrap;
+        pointer-events: none;
+        opacity: 0;
+        transition: all 0.3s ease;
+        border: 1px solid rgba(255, 204, 0, 0.2);
+        letter-spacing: 0.5px;
+        font-weight: 500;
+        display: flex;
+        align-items: center;
+        gap: 4px;
+        z-index: 101;
+      }
+
+      .dblclick-hint .hint-dot {
+        display: inline-block;
+        width: 5px;
+        height: 5px;
+        background: #ffcc00;
+        border-radius: 50%;
+        animation: hintBlink 1.2s infinite;
+      }
+
+      .dblclick-hint .hint-arrows {
+        display: inline-flex;
+        gap: 1px;
+        font-size: 7px;
+        color: #ffcc00;
+        animation: hintTapAnim 1.5s infinite;
+      }
+
+      @keyframes hintBlink {
+        0%, 100% { opacity: 1; transform: scale(1); }
+        50% { opacity: 0.3; transform: scale(0.8); }
+      }
+
+      @keyframes hintTapAnim {
+        0%, 100% { transform: translateY(0); }
+        50% { transform: translateY(-2px); }
+      }
+
+      /* Tunjuk hint bila hover pada header bar */
+      .header-bar-controls:hover .dblclick-hint {
+        opacity: 1;
+      }
+
+      /* Sembunyi hint bila header hidden */
+      .header-bar-controls.hidden .dblclick-hint {
+        opacity: 0 !important;
       }
 
       /* ===== TOGGLE BUTTON UNTUK HIDE/SHOW HEADER ===== */
@@ -470,35 +676,49 @@
         width: 44px;
         height: 44px;
         border-radius: 50%;
-        background: rgba(20, 20, 20, 0.9);
+        background: rgba(20, 20, 20, 0.95);
         border: 1px solid #ffcc00;
-        backdrop-filter: blur(10px);
-        -webkit-backdrop-filter: blur(10px);
+        backdrop-filter: blur(15px);
+        -webkit-backdrop-filter: blur(15px);
         color: #ffcc00;
         font-size: 18px;
         cursor: pointer;
         z-index: 99;
         transition: all 0.3s ease;
-        box-shadow: 0 8px 30px rgba(0, 0, 0, 0.5);
+        box-shadow: 0 8px 30px rgba(0, 0, 0, 0.6);
         display: none;
         align-items: center;
         justify-content: center;
+        overflow: hidden;
       }
       .toggle-header-btn:hover {
         background: #ffcc00;
         color: #1a1a1a;
-        transform: scale(1.05);
-        box-shadow: 0 0 25px rgba(255, 204, 0, 0.3);
+        transform: scale(1.1);
+        box-shadow: 0 0 25px rgba(255, 204, 0, 0.5);
       }
       .toggle-header-btn:active {
-        transform: scale(0.9);
+        transform: scale(0.85);
+        transition: transform 0.1s ease;
       }
       .toggle-header-btn.visible {
         display: flex;
+        animation: fadeInScale 0.3s ease;
       }
-      /* Bila header hidden, toggle button nampak */
       .header-bar-controls.hidden ~ .toggle-header-btn {
         display: flex;
+        animation: fadeInScale 0.3s ease;
+      }
+
+      @keyframes fadeInScale {
+        from {
+          opacity: 0;
+          transform: scale(0.5);
+        }
+        to {
+          opacity: 1;
+          transform: scale(1);
+        }
       }
 
       .dashboard {
@@ -596,7 +816,7 @@
         height: 100vh;
         background: #141414;
         z-index: 999;
-        transition: right 0.35s cubic-bezier(0.25, 0.8, 0.25, 1),
+        transition: right 0.4s cubic-bezier(0.25, 0.8, 0.25, 1),
           background 0.5s ease;
         border-left: 2px solid #cc0000;
         overflow-y: auto;
@@ -633,7 +853,18 @@
       .sidebar-header h3 i {
         color: #ff6600;
         font-size: 20px;
+        animation: iconPulse 2s infinite;
       }
+
+      @keyframes iconPulse {
+        0%, 100% {
+          transform: scale(1);
+        }
+        50% {
+          transform: scale(1.15);
+        }
+      }
+
       .sidebar-close {
         width: 38px;
         height: 38px;
@@ -647,11 +878,18 @@
         align-items: center;
         justify-content: center;
         transition: all 0.3s ease;
+        position: relative;
+        overflow: hidden;
       }
       .sidebar-close:hover {
         background: #cc0000;
         color: white;
         border-color: #cc0000;
+        transform: rotate(90deg);
+      }
+      .sidebar-close:active {
+        transform: rotate(90deg) scale(0.85);
+        transition: transform 0.1s ease;
       }
       .sidebar-content {
         flex: 1;
@@ -661,21 +899,22 @@
 
       /* ===== ACCORDION STYLING ===== */
       .accordion-item {
-        margin-bottom: 6px;
-        border-radius: 10px;
+        margin-bottom: 8px;
+        border-radius: 12px;
         overflow: hidden;
         border: 1px solid #252525;
         transition: all 0.3s ease;
       }
       .accordion-item:hover {
         border-color: #cc0000;
+        box-shadow: 0 0 15px rgba(204, 0, 0, 0.1);
       }
 
       .accordion-header {
         display: flex;
         align-items: center;
         justify-content: space-between;
-        padding: 12px 16px;
+        padding: 13px 16px;
         background: #1a1a1a;
         cursor: pointer;
         transition: all 0.3s ease;
@@ -685,9 +924,14 @@
         width: 100%;
         text-align: left;
         font-family: inherit;
+        position: relative;
       }
       .accordion-header:hover {
         background: #222;
+      }
+      .accordion-header:focus-visible {
+        outline: 2px solid #ffcc00;
+        outline-offset: -2px;
       }
       .accordion-header .accordion-title {
         display: flex;
@@ -699,15 +943,19 @@
         text-transform: uppercase;
         letter-spacing: 1px;
         transition: color 0.5s ease;
+        pointer-events: none;
       }
       .accordion-header .accordion-title i {
         font-size: 14px;
+        width: 20px;
+        text-align: center;
       }
       .accordion-header .arrow {
         color: #666;
         font-size: 12px;
-        transition: all 0.3s ease;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         flex-shrink: 0;
+        pointer-events: none;
       }
       .accordion-header .arrow.open {
         transform: rotate(180deg);
@@ -717,7 +965,7 @@
       .accordion-content {
         max-height: 0;
         overflow: hidden;
-        transition: max-height 0.4s cubic-bezier(0.4, 0, 0.2, 1),
+        transition: max-height 0.5s cubic-bezier(0.4, 0, 0.2, 1),
           padding 0.3s ease;
         background: #0d0d0d;
         border-top: 0px solid #252525;
@@ -748,7 +996,12 @@
         background: #1e1e1e;
         color: #ffffff;
         border-color: #333;
-        transform: translateX(-3px);
+        transform: translateX(-4px);
+        box-shadow: -4px 0 12px rgba(204, 0, 0, 0.1);
+      }
+      .sidebar-link:focus-visible {
+        outline: 2px solid #ffcc00;
+        outline-offset: 2px;
       }
       .sidebar-link .link-icon {
         width: 32px;
@@ -759,6 +1012,10 @@
         justify-content: center;
         font-size: 14px;
         flex-shrink: 0;
+        transition: all 0.3s ease;
+      }
+      .sidebar-link:hover .link-icon {
+        transform: scale(1.1);
       }
       .link-icon.weather {
         background: rgba(59, 130, 246, 0.15);
@@ -819,24 +1076,33 @@
 
       .sidebar-link .link-text {
         flex: 1;
+        min-width: 0;
       }
       .sidebar-link .link-text .link-name {
         display: block;
         font-weight: 500;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
       }
       .sidebar-link .link-text .link-desc {
         display: block;
         font-size: 10px;
         color: #666;
         margin-top: 1px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
       }
       .sidebar-link .external-arrow {
         color: #444;
         font-size: 11px;
         transition: all 0.3s ease;
+        flex-shrink: 0;
       }
       .sidebar-link:hover .external-arrow {
         color: #ffcc00;
+        transform: translateX(3px);
       }
 
       .sidebar-footer {
@@ -851,6 +1117,7 @@
       }
       .sidebar-footer .footer-icon {
         color: #cc0000;
+        animation: blink 1.5s infinite;
       }
 
       .sidebar::-webkit-scrollbar {
@@ -869,7 +1136,7 @@
         margin-top: 2px;
       }
       .emergency-group {
-        margin-bottom: 10px;
+        margin-bottom: 12px;
       }
       .emergency-group-title {
         color: #888;
@@ -877,38 +1144,40 @@
         font-weight: 600;
         text-transform: uppercase;
         letter-spacing: 0.5px;
-        margin-bottom: 4px;
+        margin-bottom: 6px;
         padding-left: 4px;
         display: flex;
         align-items: center;
         gap: 6px;
       }
       .emergency-group-title .group-icon {
-        font-size: 12px;
+        font-size: 14px;
       }
       .emergency-item {
         display: flex;
         align-items: center;
         gap: 10px;
-        padding: 6px 10px;
+        padding: 8px 10px;
         background: #121212;
-        border-radius: 8px;
-        margin-bottom: 3px;
+        border-radius: 10px;
+        margin-bottom: 4px;
         border: 1px solid #1f1f1f;
-        transition: all 0.25s ease;
+        transition: all 0.3s ease;
       }
       .emergency-item:hover {
         border-color: #cc0000;
         background: #1a1a1a;
+        transform: translateX(-2px);
+        box-shadow: -4px 0 15px rgba(204, 0, 0, 0.15);
       }
       .emergency-item .e-icon {
-        width: 28px;
-        height: 28px;
+        width: 30px;
+        height: 30px;
         border-radius: 50%;
         display: flex;
         align-items: center;
         justify-content: center;
-        font-size: 12px;
+        font-size: 13px;
         flex-shrink: 0;
       }
       .e-icon.bomba {
@@ -945,6 +1214,9 @@
         font-weight: 500;
         display: block;
         transition: color 0.5s ease;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
       }
       .emergency-item .e-info .e-number {
         color: #ffcc00;
@@ -961,7 +1233,7 @@
       }
       .emergency-item .e-actions {
         display: flex;
-        gap: 4px;
+        gap: 5px;
         flex-shrink: 0;
       }
       .emergency-item .e-actions a {
@@ -977,28 +1249,47 @@
         transition: all 0.3s ease;
         border: none;
         cursor: pointer;
+        position: relative;
+        overflow: hidden;
       }
       .e-actions .call-btn {
         background: #cc0000;
+        animation: emergencyPulse 2s infinite;
       }
       .e-actions .call-btn:hover {
         background: #ff0000;
-        transform: scale(1.1);
+        transform: scale(1.15);
+        animation: none;
+        box-shadow: 0 0 20px rgba(255, 0, 0, 0.5);
       }
       .e-actions .wa-btn {
         background: #075e54;
       }
       .e-actions .wa-btn:hover {
         background: #128c7e;
-        transform: scale(1.1);
+        transform: scale(1.15);
+        box-shadow: 0 0 20px rgba(18, 140, 126, 0.5);
+      }
+      .e-actions a:active {
+        transform: scale(0.85);
+        transition: transform 0.1s ease;
+      }
+
+      @keyframes emergencyPulse {
+        0%, 100% {
+          box-shadow: 0 0 0 0 rgba(204, 0, 0, 0.5);
+        }
+        50% {
+          box-shadow: 0 0 0 10px rgba(204, 0, 0, 0);
+        }
       }
 
       .info-box {
         background: #0a0a0a;
         border: 1px solid #1a1a1a;
-        border-radius: 8px;
-        padding: 10px 12px;
-        margin-top: 8px;
+        border-radius: 10px;
+        padding: 12px 14px;
+        margin-top: 10px;
         transition: all 0.5s ease;
       }
       .info-box p {
@@ -1018,7 +1309,7 @@
         font-family: 'Courier New', monospace;
       }
 
-      /* ===== HEADER LAYOUT: LOGO KIRI + TAJUK TENGAH + LOGO KANAN ===== */
+      /* ===== HEADER LAYOUT ===== */
       .header {
         display: flex;
         justify-content: center;
@@ -1106,6 +1397,8 @@
       }
       .stat-item:hover {
         border-color: #cc0000;
+        transform: translateY(-2px);
+        box-shadow: 0 8px 20px rgba(204, 0, 0, 0.1);
       }
       .stat-item .num {
         font-size: 26px;
@@ -1174,13 +1467,8 @@
       }
 
       @keyframes blink {
-        0%,
-        100% {
-          opacity: 1;
-        }
-        50% {
-          opacity: 0.4;
-        }
+        0%, 100% { opacity: 1; }
+        50% { opacity: 0.4; }
       }
 
       .apps-grid {
@@ -1204,64 +1492,16 @@
         border-color: #cc0000;
         box-shadow: 0 10px 30px rgba(204, 0, 0, 0.15);
       }
-      .app-card .icon {
-        font-size: 32px;
-        margin-bottom: 12px;
-        display: block;
-      }
-      .app-card h3 {
-        font-size: 17px;
-        margin-bottom: 6px;
-        color: white;
-        transition: color 0.5s ease;
-      }
-      .app-card h3 .highlight {
-        color: #ffcc00;
-      }
-      .app-card p {
-        color: #888888;
-        font-size: 13px;
-        line-height: 1.5;
-        margin-bottom: 14px;
-        transition: color 0.5s ease;
-      }
-      .app-card .badge {
-        display: inline-block;
-        font-size: 11px;
-        font-weight: bold;
-        padding: 4px 14px;
-        border-radius: 20px;
-        color: white;
-      }
-      .app-card .badge.online {
-        background: #1a3a1a;
-        color: #4ade80;
-        border: 1px solid #2a5a2a;
-        transition: all 0.5s ease;
-      }
-      .app-card .badge.live {
-        background: #3a1a1a;
-        color: #ff6b6b;
-        border: 1px solid #5a2a2a;
-        animation: blink 1.2s infinite;
-        transition: all 0.5s ease;
-      }
-      .app-card .badge.dev {
-        background: #3a2a1a;
-        color: #f6ad55;
-        border: 1px solid #5a3a2a;
-        transition: all 0.5s ease;
-      }
-      .app-card .arrow {
-        float: right;
-        color: #444444;
-        font-size: 18px;
-        transition: all 0.3s ease;
-      }
-      .app-card:hover .arrow {
-        color: #ffcc00;
-        transform: translateX(5px);
-      }
+      .app-card .icon { font-size: 32px; margin-bottom: 12px; display: block; }
+      .app-card h3 { font-size: 17px; margin-bottom: 6px; color: white; transition: color 0.5s ease; }
+      .app-card h3 .highlight { color: #ffcc00; }
+      .app-card p { color: #888888; font-size: 13px; line-height: 1.5; margin-bottom: 14px; transition: color 0.5s ease; }
+      .app-card .badge { display: inline-block; font-size: 11px; font-weight: bold; padding: 4px 14px; border-radius: 20px; }
+      .app-card .badge.online { background: #1a3a1a; color: #4ade80; border: 1px solid #2a5a2a; }
+      .app-card .badge.live { background: #3a1a1a; color: #ff6b6b; border: 1px solid #5a2a2a; animation: blink 1.2s infinite; }
+      .app-card .badge.dev { background: #3a2a1a; color: #f6ad55; border: 1px solid #5a3a2a; }
+      .app-card .arrow { float: right; color: #444; font-size: 18px; transition: all 0.3s ease; }
+      .app-card:hover .arrow { color: #ffcc00; transform: translateX(5px); }
 
       .footer {
         margin-top: 25px;
@@ -1272,15 +1512,11 @@
         align-items: center;
         flex-wrap: wrap;
         gap: 12px;
-        color: #555555;
+        color: #555;
         font-size: 13px;
         transition: all 0.5s ease;
       }
-      .footer .brand {
-        display: flex;
-        align-items: center;
-        gap: 10px;
-      }
+      .footer .brand { display: flex; align-items: center; gap: 10px; }
       .footer .brand .dot {
         display: inline-block;
         width: 8px;
@@ -1290,23 +1526,12 @@
         animation: pulseDot 2s infinite;
       }
       @keyframes pulseDot {
-        0%,
-        100% {
-          opacity: 1;
-          transform: scale(1);
-        }
-        50% {
-          opacity: 0.3;
-          transform: scale(0.8);
-        }
+        0%, 100% { opacity: 1; transform: scale(1); }
+        50% { opacity: 0.3; transform: scale(0.8); }
       }
-      .footer .social-links {
-        display: flex;
-        align-items: center;
-        gap: 6px;
-      }
+      .footer .social-links { display: flex; align-items: center; gap: 6px; }
       .footer .social-links a {
-        color: #555555;
+        color: #555;
         text-decoration: none;
         font-size: 17px;
         width: 38px;
@@ -1324,1028 +1549,382 @@
         background: rgba(255, 204, 0, 0.05);
         transform: translateY(-2px);
       }
-      .footer .social-links a.whatsapp:hover {
-        color: #25d366;
-        border-color: rgba(37, 211, 102, 0.2);
-        background: rgba(37, 211, 102, 0.05);
-      }
-      .footer .social-links a.telegram:hover {
-        color: #0088cc;
-        border-color: rgba(0, 136, 204, 0.2);
-        background: rgba(0, 136, 204, 0.05);
-      }
+      .footer .social-links a.whatsapp:hover { color: #25d366; border-color: rgba(37, 211, 102, 0.2); background: rgba(37, 211, 102, 0.05); }
+      .footer .social-links a.telegram:hover { color: #0088cc; border-color: rgba(0, 136, 204, 0.2); background: rgba(0, 136, 204, 0.05); }
 
       /* Responsive */
       @media (max-width: 600px) {
-        .dashboard {
-          padding: 20px 16px;
-          padding-top: 70px;
-        }
-        .header {
-          flex-direction: column;
-          align-items: center;
-          gap: 10px;
-        }
-        .logo {
-          flex-direction: row;
-          gap: 8px;
-          flex-wrap: nowrap;
-        }
+        .dashboard { padding: 20px 16px; padding-top: 70px; }
+        .header { flex-direction: column; align-items: center; gap: 10px; }
+        .logo { flex-direction: row; gap: 8px; flex-wrap: nowrap; }
         .header-bar-controls {
           top: 10px;
           right: 10px;
           padding: 6px 10px;
+          padding-bottom: 20px;
           gap: 6px;
         }
-        .header-bar-controls .analog-clock {
-          width: 34px;
-          height: 34px;
-        }
-        .header-bar-controls .analog-clock .hand.hour {
-          height: 10px;
-        }
-        .header-bar-controls .analog-clock .hand.minute {
-          height: 14px;
-        }
-        .header-bar-controls .analog-clock .hand.second {
-          height: 16px;
-        }
+        .header-bar-controls .analog-clock { width: 34px; height: 34px; }
+        .header-bar-controls .analog-clock .hand.hour { height: 10px; }
+        .header-bar-controls .analog-clock .hand.minute { height: 14px; }
+        .header-bar-controls .analog-clock .hand.second { height: 16px; }
         .header-bar-controls .mode-toggle-btn,
-        .header-bar-controls .switch-mode-btn {
-          width: 32px;
-          height: 32px;
-          font-size: 15px;
-        }
-        .header-bar-controls .hamburger-btn {
-          width: 32px;
-          height: 32px;
-        }
-        .header-bar-controls .digital-time .time {
-          font-size: 14px;
-        }
-        .header-bar-controls .digital-time .date {
-          font-size: 8px;
-        }
-        .toggle-header-btn {
-          top: 10px;
-          right: 10px;
-          width: 38px;
-          height: 38px;
-          font-size: 16px;
-        }
-        .apps-grid {
-          grid-template-columns: 1fr;
-        }
-        .stats-bar {
-          grid-template-columns: repeat(2, 1fr);
-        }
-        .footer {
-          flex-direction: column;
-          text-align: center;
-        }
-        .footer .social-links {
-          justify-content: center;
-        }
-        .sidebar {
-          width: 100%;
-          max-width: 100vw;
-          right: -100vw;
-        }
-        .logo-text h1 {
-          font-size: 16px;
-        }
-        .logo-text .sub {
-          font-size: 10px;
-        }
-        .logo-img {
-          height: 38px;
-        }
-        .logo-img.logo-bomba {
-          height: 38px;
-        }
-        .logo-img.logo-komunikasi {
-          height: 38px;
-        }
-        .logo {
-          gap: 6px;
-        }
-        .logo-text {
-          flex: 0 1 auto;
-        }
-        .accordion-header {
-          padding: 10px 12px;
-        }
-        .accordion-header .accordion-title {
-          font-size: 10px;
-        }
-        .sidebar-link {
-          font-size: 12px;
-          padding: 8px 10px;
-        }
-        .emergency-item {
-          padding: 5px 8px;
-        }
-        .emergency-item .e-info .e-name {
-          font-size: 11px;
-        }
-        .emergency-item .e-info .e-number {
-          font-size: 12px;
-        }
+        .header-bar-controls .switch-mode-btn { width: 32px; height: 32px; font-size: 15px; }
+        .header-bar-controls .hamburger-btn { width: 32px; height: 32px; }
+        .header-bar-controls .digital-time .time { font-size: 14px; }
+        .header-bar-controls .digital-time .date { font-size: 8px; }
+        .toggle-header-btn { top: 10px; right: 10px; width: 38px; height: 38px; font-size: 16px; }
+        .apps-grid { grid-template-columns: 1fr; }
+        .stats-bar { grid-template-columns: repeat(2, 1fr); }
+        .footer { flex-direction: column; text-align: center; }
+        .footer .social-links { justify-content: center; }
+        .sidebar { width: 100%; max-width: 100vw; right: -100vw; }
+        .logo-text h1 { font-size: 16px; }
+        .logo-text .sub { font-size: 10px; }
+        .logo-img { height: 38px; }
+        .logo-img.logo-bomba { height: 38px; }
+        .logo-img.logo-komunikasi { height: 38px; }
+        .logo { gap: 6px; }
+        .logo-text { flex: 0 1 auto; }
+        .accordion-header { padding: 10px 12px; }
+        .accordion-header .accordion-title { font-size: 10px; }
+        .sidebar-link { font-size: 12px; padding: 8px 10px; }
+        .emergency-item { padding: 5px 8px; }
+        .emergency-item .e-info .e-name { font-size: 11px; }
+        .emergency-item .e-info .e-number { font-size: 12px; }
+        .dblclick-hint { font-size: 7px; padding: 2px 8px; bottom: 2px; }
       }
 
-      ::-webkit-scrollbar {
-        width: 6px;
-      }
-      ::-webkit-scrollbar-track {
-        background: #0a0a0a;
-      }
-      ::-webkit-scrollbar-thumb {
-        background: #cc0000;
-        border-radius: 10px;
-      }
-      ::-webkit-scrollbar-thumb:hover {
-        background: #ffcc00;
-      }
+      ::-webkit-scrollbar { width: 6px; }
+      ::-webkit-scrollbar-track { background: #0a0a0a; }
+      ::-webkit-scrollbar-thumb { background: #cc0000; border-radius: 10px; }
+      ::-webkit-scrollbar-thumb:hover { background: #ffcc00; }
 
-      /* ===== DESKTOP MODE (default) ===== */
-      body.desktop-mode .dashboard {
-        max-width: 1100px;
-        padding: 30px 24px;
-        padding-top: 50px;
-      }
-      body.desktop-mode .apps-grid {
-        grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-      }
-      body.desktop-mode .stats-bar {
-        grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
-      }
+      body.desktop-mode .dashboard { max-width: 1100px; padding: 30px 24px; padding-top: 50px; }
+      body.desktop-mode .apps-grid { grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); }
+      body.desktop-mode .stats-bar { grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); }
 
-      /* ===== MOBILE MODE ===== */
-      body.mobile-mode .dashboard {
-        max-width: 480px;
-        padding: 20px 14px;
-        padding-top: 70px;
-        border-radius: 24px;
-      }
-      body.mobile-mode .header {
-        flex-direction: column;
-        align-items: center;
-      }
-      body.mobile-mode .logo {
-        flex-direction: row;
-        gap: 6px;
-        flex-wrap: nowrap;
-      }
-      body.mobile-mode .apps-grid {
-        grid-template-columns: 1fr;
-        gap: 12px;
-      }
-      body.mobile-mode .stats-bar {
-        grid-template-columns: repeat(2, 1fr);
-        gap: 8px;
-      }
-      body.mobile-mode .logo-text h1 {
-        font-size: 18px;
-      }
-      body.mobile-mode .logo-text .sub {
-        font-size: 11px;
-      }
-      body.mobile-mode .logo-img {
-        height: 36px;
-      }
-      body.mobile-mode .logo-img.logo-bomba {
-        height: 36px;
-      }
-      body.mobile-mode .logo-img.logo-komunikasi {
-        height: 36px;
-      }
-      body.mobile-mode .app-card {
-        padding: 18px 16px;
-      }
-      body.mobile-mode .app-card h3 {
-        font-size: 15px;
-      }
-      body.mobile-mode .app-card p {
-        font-size: 12px;
-      }
-      body.mobile-mode .footer {
-        flex-direction: column;
-        text-align: center;
-      }
+      body.mobile-mode .dashboard { max-width: 480px; padding: 20px 14px; padding-top: 70px; border-radius: 24px; }
+      body.mobile-mode .header { flex-direction: column; align-items: center; }
+      body.mobile-mode .logo { flex-direction: row; gap: 6px; flex-wrap: nowrap; }
+      body.mobile-mode .apps-grid { grid-template-columns: 1fr; gap: 12px; }
+      body.mobile-mode .stats-bar { grid-template-columns: repeat(2, 1fr); gap: 8px; }
+      body.mobile-mode .logo-text h1 { font-size: 18px; }
+      body.mobile-mode .logo-text .sub { font-size: 11px; }
+      body.mobile-mode .logo-img { height: 36px; }
+      body.mobile-mode .logo-img.logo-bomba { height: 36px; }
+      body.mobile-mode .logo-img.logo-komunikasi { height: 36px; }
+      body.mobile-mode .app-card { padding: 18px 16px; }
+      body.mobile-mode .app-card h3 { font-size: 15px; }
+      body.mobile-mode .app-card p { font-size: 12px; }
+      body.mobile-mode .footer { flex-direction: column; text-align: center; }
     </style>
   </head>
   <body class="desktop-mode">
     <div class="sidebar-overlay" id="sidebarOverlay"></div>
 
-    <!-- HEADER BAR CONTROLS - Di luar dashboard, fixed di atas kanan -->
-    <div class="header-bar-controls" id="headerControls">
-      <button class="mode-toggle-btn" id="modeToggleBtn" title="Tukar Mode">
+    <!-- HEADER BAR CONTROLS -->
+    <div class="header-bar-controls" id="headerControls" role="toolbar" aria-label="Bar Kawalan Utama">
+      <button class="mode-toggle-btn" id="modeToggleBtn" title="Tukar Mode Paparan" aria-label="Tukar mod siang malam">
         🌙
+        <span class="btn-label">Siang/Malam</span>
       </button>
       <button
         class="switch-mode-btn"
         id="switchModeBtn"
         title="Tukar Paparan Desktop/Mobile"
+        aria-label="Tukar paparan desktop mobile"
       >
         <i class="fas fa-mobile-alt"></i>
+        <span class="mode-indicator-dot"></span>
+        <span class="btn-label">Desktop/Mobile</span>
       </button>
-      <div class="analog-clock" id="analogClock">
-        <div
-          class="marker main"
-          style="transform: rotate(0deg) translateX(-50%)"
-        ></div>
-        <div
-          class="marker"
-          style="transform: rotate(30deg) translateX(-50%)"
-        ></div>
-        <div
-          class="marker"
-          style="transform: rotate(60deg) translateX(-50%)"
-        ></div>
-        <div
-          class="marker main"
-          style="transform: rotate(90deg) translateX(-50%)"
-        ></div>
-        <div
-          class="marker"
-          style="transform: rotate(120deg) translateX(-50%)"
-        ></div>
-        <div
-          class="marker"
-          style="transform: rotate(150deg) translateX(-50%)"
-        ></div>
-        <div
-          class="marker main"
-          style="transform: rotate(180deg) translateX(-50%)"
-        ></div>
-        <div
-          class="marker"
-          style="transform: rotate(210deg) translateX(-50%)"
-        ></div>
-        <div
-          class="marker"
-          style="transform: rotate(240deg) translateX(-50%)"
-        ></div>
-        <div
-          class="marker main"
-          style="transform: rotate(270deg) translateX(-50%)"
-        ></div>
-        <div
-          class="marker"
-          style="transform: rotate(300deg) translateX(-50%)"
-        ></div>
-        <div
-          class="marker"
-          style="transform: rotate(330deg) translateX(-50%)"
-        ></div>
+      <div class="analog-clock" id="analogClock" aria-label="Jam analog" title="Jam Analog">
+        <div class="marker main" style="transform: rotate(0deg) translateX(-50%)"></div>
+        <div class="marker" style="transform: rotate(30deg) translateX(-50%)"></div>
+        <div class="marker" style="transform: rotate(60deg) translateX(-50%)"></div>
+        <div class="marker main" style="transform: rotate(90deg) translateX(-50%)"></div>
+        <div class="marker" style="transform: rotate(120deg) translateX(-50%)"></div>
+        <div class="marker" style="transform: rotate(150deg) translateX(-50%)"></div>
+        <div class="marker main" style="transform: rotate(180deg) translateX(-50%)"></div>
+        <div class="marker" style="transform: rotate(210deg) translateX(-50%)"></div>
+        <div class="marker" style="transform: rotate(240deg) translateX(-50%)"></div>
+        <div class="marker main" style="transform: rotate(270deg) translateX(-50%)"></div>
+        <div class="marker" style="transform: rotate(300deg) translateX(-50%)"></div>
+        <div class="marker" style="transform: rotate(330deg) translateX(-50%)"></div>
         <div class="hand hour" id="hourHand"></div>
         <div class="hand minute" id="minuteHand"></div>
         <div class="hand second" id="secondHand"></div>
         <div class="center-dot"></div>
       </div>
-      <div class="digital-time">
+      <div class="digital-time" aria-label="Masa dan tarikh semasa">
         <div class="time" id="clock">12:00:00</div>
         <div class="date" id="date">23 JULAI 2026</div>
       </div>
-      <button class="hamburger-btn" id="hamburgerBtn" title="Pautan Penting">
+      <button class="hamburger-btn" id="hamburgerBtn" title="Pautan Penting & Kecemasan" aria-label="Buka menu pautan penting" aria-expanded="false">
         <span></span><span></span><span></span>
-        <!-- BADGE DAH BUANG -->
+        <span class="btn-label">Menu Pautan</span>
       </button>
+
+      <!-- 👇 PETUNJUK DOUBLE-KLIK 👇 -->
+      <span class="dblclick-hint">
+        <span class="hint-dot"></span>
+        <span class="hint-arrows">⚡⚡</span>
+        Double-klik untuk sembunyi
+      </span>
     </div>
 
-    <!-- TOGGLE BUTTON - Muncul bila header hidden -->
+    <!-- TOGGLE BUTTON -->
     <button
       class="toggle-header-btn"
       id="toggleHeaderBtn"
       title="Tunjukkan Panel Kawalan"
+      aria-label="Tunjukkan panel kawalan"
     >
       <i class="fas fa-eye"></i>
     </button>
 
-    <!-- SIDEBAR LENGKAP DENGAN ACCORDION DROPDOWN -->
-    <div class="sidebar" id="sidebar">
+    <!-- SIDEBAR -->
+    <div class="sidebar" id="sidebar" role="navigation" aria-label="Menu Pautan Penting">
       <div class="sidebar-header">
         <h3><i class="fas fa-link"></i> PAUTAN PENTING</h3>
-        <button class="sidebar-close" id="sidebarClose">
+        <button class="sidebar-close" id="sidebarClose" aria-label="Tutup menu">
           <i class="fas fa-times"></i>
         </button>
       </div>
       <div class="sidebar-content">
-        <!-- ===== ACCORDION 1: CUACA & LAUT ===== -->
+        <!-- Accordion 1: Cuaca & Laut -->
         <div class="accordion-item">
-          <button class="accordion-header" data-target="accordion1">
-            <span class="accordion-title">
-              <i class="fas fa-cloud-sun"></i> Cuaca & Laut
-            </span>
+          <button class="accordion-header" data-target="accordion1" aria-expanded="false">
+            <span class="accordion-title"><i class="fas fa-cloud-sun"></i> Cuaca & Laut</span>
             <span class="arrow"><i class="fas fa-chevron-down"></i></span>
           </button>
           <div class="accordion-content" id="accordion1">
             <div class="accordion-inner">
-              <a
-                href="https://www.met.gov.my/"
-                target="_blank"
-                class="sidebar-link"
-              >
-                <span class="link-icon weather"
-                  ><i class="fas fa-cloud-sun-rain"></i
-                ></span>
-                <span class="link-text">
-                  <span class="link-name">MetMalaysia - Cuaca</span>
-                  <span class="link-desc">Ramalan & amaran cuaca rasmi</span>
-                </span>
-                <span class="external-arrow"
-                  ><i class="fas fa-external-link-alt"></i
-                ></span>
+              <a href="https://www.met.gov.my/" target="_blank" class="sidebar-link" rel="noopener noreferrer">
+                <span class="link-icon weather"><i class="fas fa-cloud-sun-rain"></i></span>
+                <span class="link-text"><span class="link-name">MetMalaysia - Cuaca</span><span class="link-desc">Ramalan & amaran cuaca rasmi</span></span>
+                <span class="external-arrow"><i class="fas fa-external-link-alt"></i></span>
               </a>
-              <a
-                href="https://www.jupem.gov.my/ms/staps"
-                target="_blank"
-                class="sidebar-link"
-              >
+              <a href="https://www.jupem.gov.my/ms/staps" target="_blank" class="sidebar-link" rel="noopener noreferrer">
                 <span class="link-icon tide"><i class="fas fa-water"></i></span>
-                <span class="link-text">
-                  <span class="link-name">Pasang Surut Laut</span>
-                  <span class="link-desc"
-                    >Jadual air pasang surut Malaysia</span
-                  >
-                </span>
-                <span class="external-arrow"
-                  ><i class="fas fa-external-link-alt"></i
-                ></span>
+                <span class="link-text"><span class="link-name">Pasang Surut Laut</span><span class="link-desc">Jadual air pasang surut Malaysia</span></span>
+                <span class="external-arrow"><i class="fas fa-external-link-alt"></i></span>
               </a>
-              <a
-                href="https://www.accuweather.com/ms/my/national/weather-radar"
-                target="_blank"
-                class="sidebar-link"
-              >
-                <span class="link-icon radar"
-                  ><i class="fas fa-satellite-dish"></i
-                ></span>
-                <span class="link-text">
-                  <span class="link-name">Radar Hujan</span>
-                  <span class="link-desc">Imej radar hujan masa nyata</span>
-                </span>
-                <span class="external-arrow"
-                  ><i class="fas fa-external-link-alt"></i
-                ></span>
+              <a href="https://www.accuweather.com/ms/my/national/weather-radar" target="_blank" class="sidebar-link" rel="noopener noreferrer">
+                <span class="link-icon radar"><i class="fas fa-satellite-dish"></i></span>
+                <span class="link-text"><span class="link-name">Radar Hujan</span><span class="link-desc">Imej radar hujan masa nyata</span></span>
+                <span class="external-arrow"><i class="fas fa-external-link-alt"></i></span>
               </a>
-              <a
-                href="https://apims.doe.gov.my/"
-                target="_blank"
-                class="sidebar-link"
-              >
+              <a href="https://apims.doe.gov.my/" target="_blank" class="sidebar-link" rel="noopener noreferrer">
                 <span class="link-icon fire"><i class="fas fa-fire"></i></span>
-                <span class="link-text">
-                  <span class="link-name">Indeks Cuaca Api (API)</span>
-                  <span class="link-desc">IPU & status jerebu semasa</span>
-                </span>
-                <span class="external-arrow"
-                  ><i class="fas fa-external-link-alt"></i
-                ></span>
+                <span class="link-text"><span class="link-name">Indeks Cuaca Api (API)</span><span class="link-desc">IPU & status jerebu semasa</span></span>
+                <span class="external-arrow"><i class="fas fa-external-link-alt"></i></span>
               </a>
             </div>
           </div>
         </div>
 
-        <!-- ===== ACCORDION 2: BENCANA & AMARAN ===== -->
+        <!-- Accordion 2: Bencana & Amaran -->
         <div class="accordion-item">
-          <button class="accordion-header" data-target="accordion2">
-            <span class="accordion-title">
-              <i class="fas fa-exclamation-triangle"></i> Bencana & Amaran
-            </span>
+          <button class="accordion-header" data-target="accordion2" aria-expanded="false">
+            <span class="accordion-title"><i class="fas fa-exclamation-triangle"></i> Bencana & Amaran</span>
             <span class="arrow"><i class="fas fa-chevron-down"></i></span>
           </button>
           <div class="accordion-content" id="accordion2">
             <div class="accordion-inner">
-              <a
-                href="https://www.nadma.gov.my/"
-                target="_blank"
-                class="sidebar-link"
-              >
-                <span class="link-icon disaster"
-                  ><i class="fas fa-house-damage"></i
-                ></span>
-                <span class="link-text">
-                  <span class="link-name"
-                    >NADMA - Agensi Pengurusan Bencana</span
-                  >
-                  <span class="link-desc">Info & respons bencana negara</span>
-                </span>
-                <span class="external-arrow"
-                  ><i class="fas fa-external-link-alt"></i
-                ></span>
+              <a href="https://www.nadma.gov.my/" target="_blank" class="sidebar-link" rel="noopener noreferrer">
+                <span class="link-icon disaster"><i class="fas fa-house-damage"></i></span>
+                <span class="link-text"><span class="link-name">NADMA - Agensi Pengurusan Bencana</span><span class="link-desc">Info & respons bencana negara</span></span>
+                <span class="external-arrow"><i class="fas fa-external-link-alt"></i></span>
               </a>
-              <a
-                href="https://publicinfobanjir.water.gov.my/"
-                target="_blank"
-                class="sidebar-link"
-              >
-                <span class="link-icon flood"
-                  ><i class="fas fa-water"></i
-                ></span>
-                <span class="link-text">
-                  <span class="link-name">Public Infobanjir</span>
-                  <span class="link-desc">Peta & status banjir semasa</span>
-                </span>
-                <span class="external-arrow"
-                  ><i class="fas fa-external-link-alt"></i
-                ></span>
+              <a href="https://publicinfobanjir.water.gov.my/" target="_blank" class="sidebar-link" rel="noopener noreferrer">
+                <span class="link-icon flood"><i class="fas fa-water"></i></span>
+                <span class="link-text"><span class="link-name">Public Infobanjir</span><span class="link-desc">Peta & status banjir semasa</span></span>
+                <span class="external-arrow"><i class="fas fa-external-link-alt"></i></span>
               </a>
-              <a
-                href="http://mygempa.met.gov.my/docroot/view/index.php"
-                target="_blank"
-                class="sidebar-link"
-              >
-                <span class="link-icon quake"
-                  ><i class="fas fa-globe-asia"></i
-                ></span>
-                <span class="link-text">
-                  <span class="link-name">Info Gempa Bumi</span>
-                  <span class="link-desc"
-                    >Aktiviti seismik Malaysia & antarabangsa</span
-                  >
-                </span>
-                <span class="external-arrow"
-                  ><i class="fas fa-external-link-alt"></i
-                ></span>
+              <a href="http://mygempa.met.gov.my/docroot/view/index.php" target="_blank" class="sidebar-link" rel="noopener noreferrer">
+                <span class="link-icon quake"><i class="fas fa-globe-asia"></i></span>
+                <span class="link-text"><span class="link-name">Info Gempa Bumi</span><span class="link-desc">Aktiviti seismik Malaysia & antarabangsa</span></span>
+                <span class="external-arrow"><i class="fas fa-external-link-alt"></i></span>
               </a>
             </div>
           </div>
         </div>
 
-        <!-- ===== ACCORDION 3: JALAN RAYA & LOGISTIK ===== -->
+        <!-- Accordion 3: Jalan Raya & Logistik -->
         <div class="accordion-item">
-          <button class="accordion-header" data-target="accordion3">
-            <span class="accordion-title">
-              <i class="fas fa-road"></i> Jalan Raya & Logistik
-            </span>
+          <button class="accordion-header" data-target="accordion3" aria-expanded="false">
+            <span class="accordion-title"><i class="fas fa-road"></i> Jalan Raya & Logistik</span>
             <span class="arrow"><i class="fas fa-chevron-down"></i></span>
           </button>
           <div class="accordion-content" id="accordion3">
             <div class="accordion-inner">
-              <a
-                href="https://www.llm.gov.my/"
-                target="_blank"
-                class="sidebar-link"
-              >
+              <a href="https://www.llm.gov.my/" target="_blank" class="sidebar-link" rel="noopener noreferrer">
                 <span class="link-icon road"><i class="fas fa-road"></i></span>
-                <span class="link-text">
-                  <span class="link-name">LLM - Lebuhraya Malaysia</span>
-                  <span class="link-desc"
-                    >Status & laporan trafik lebuh raya</span
-                  >
-                </span>
-                <span class="external-arrow"
-                  ><i class="fas fa-external-link-alt"></i
-                ></span>
+                <span class="link-text"><span class="link-name">LLM - Lebuhraya Malaysia</span><span class="link-desc">Status & laporan trafik lebuh raya</span></span>
+                <span class="external-arrow"><i class="fas fa-external-link-alt"></i></span>
               </a>
-              <a
-                href="https://www.jpj.gov.my/"
-                target="_blank"
-                class="sidebar-link"
-              >
+              <a href="https://www.jpj.gov.my/" target="_blank" class="sidebar-link" rel="noopener noreferrer">
                 <span class="link-icon road"><i class="fas fa-car"></i></span>
-                <span class="link-text">
-                  <span class="link-name"
-                    >JPJ - Jabatan Pengangkutan Jalan</span
-                  >
-                  <span class="link-desc">Maklumat jalan tutup & notis</span>
-                </span>
-                <span class="external-arrow"
-                  ><i class="fas fa-external-link-alt"></i
-                ></span>
+                <span class="link-text"><span class="link-name">JPJ - Jabatan Pengangkutan Jalan</span><span class="link-desc">Maklumat jalan tutup & notis</span></span>
+                <span class="external-arrow"><i class="fas fa-external-link-alt"></i></span>
               </a>
-              <a
-                href="https://www.jkr.gov.my/"
-                target="_blank"
-                class="sidebar-link"
-              >
-                <span class="link-icon road"
-                  ><i class="fas fa-hard-hat"></i
-                ></span>
-                <span class="link-text">
-                  <span class="link-name">JKR - Jabatan Kerja Raya</span>
-                  <span class="link-desc"
-                    >Infrastruktur & jalan persekutuan</span
-                  >
-                </span>
-                <span class="external-arrow"
-                  ><i class="fas fa-external-link-alt"></i
-                ></span>
+              <a href="https://www.jkr.gov.my/" target="_blank" class="sidebar-link" rel="noopener noreferrer">
+                <span class="link-icon road"><i class="fas fa-hard-hat"></i></span>
+                <span class="link-text"><span class="link-name">JKR - Jabatan Kerja Raya</span><span class="link-desc">Infrastruktur & jalan persekutuan</span></span>
+                <span class="external-arrow"><i class="fas fa-external-link-alt"></i></span>
               </a>
             </div>
           </div>
         </div>
 
-        <!-- ===== ACCORDION 4: DIREKTORI AGENSI KERAJAAN ===== -->
+        <!-- Accordion 4: Direktori Agensi Kerajaan -->
         <div class="accordion-item">
-          <button class="accordion-header" data-target="accordion4">
-            <span class="accordion-title">
-              <i class="fas fa-building"></i> DIREKTORI AGENSI KERAJAAN
-            </span>
+          <button class="accordion-header" data-target="accordion4" aria-expanded="false">
+            <span class="accordion-title"><i class="fas fa-building"></i> DIREKTORI AGENSI KERAJAAN</span>
             <span class="arrow"><i class="fas fa-chevron-down"></i></span>
           </button>
           <div class="accordion-content" id="accordion4">
             <div class="accordion-inner">
-              <a
-                href="https://www.jbpm.gov.my/"
-                target="_blank"
-                class="sidebar-link"
-              >
-                <span class="link-icon emergency"
-                  ><i class="fas fa-fire-extinguisher"></i
-                ></span>
-                <span class="link-text">
-                  <span class="link-name">JBPM Malaysia</span>
-                  <span class="link-desc"
-                    >Jabatan Bomba & Penyelamat Malaysia</span
-                  >
-                </span>
-                <span class="external-arrow"
-                  ><i class="fas fa-external-link-alt"></i
-                ></span>
-              </a>
-              <a
-                href="https://www.civildefence.gov.my/"
-                target="_blank"
-                class="sidebar-link"
-              >
-                <span class="link-icon civil"
-                  ><i class="fas fa-shield-virus"></i
-                ></span>
-                <span class="link-text">
-                  <span class="link-name">APM - Angkatan Pertahanan Awam</span>
-                  <span class="link-desc"
-                    >Pertahanan awam & pengurusan bencana</span
-                  >
-                </span>
-                <span class="external-arrow"
-                  ><i class="fas fa-external-link-alt"></i
-                ></span>
-              </a>
-              <a
-                href="https://www.rmp.gov.my/"
-                target="_blank"
-                class="sidebar-link"
-              >
-                <span class="link-icon emergency"
-                  ><i class="fas fa-shield-alt"></i
-                ></span>
-                <span class="link-text">
-                  <span class="link-name">PDRM - Polis Diraja Malaysia</span>
-                  <span class="link-desc">Keselamatan & penguatkuasaan</span>
-                </span>
-                <span class="external-arrow"
-                  ><i class="fas fa-external-link-alt"></i
-                ></span>
-              </a>
-              <a
-                href="https://www.moh.gov.my/"
-                target="_blank"
-                class="sidebar-link"
-              >
-                <span class="link-icon hospital"
-                  ><i class="fas fa-hospital-alt"></i
-                ></span>
-                <span class="link-text">
-                  <span class="link-name">KKM - Kementerian Kesihatan</span>
-                  <span class="link-desc"
-                    >Perkhidmatan kesihatan & hospital</span
-                  >
-                </span>
-                <span class="external-arrow"
-                  ><i class="fas fa-external-link-alt"></i
-                ></span>
-              </a>
-              <a
-                href="https://www.maritime.gov.my/"
-                target="_blank"
-                class="sidebar-link"
-              >
-                <span class="link-icon maritime"
-                  ><i class="fas fa-ship"></i
-                ></span>
-                <span class="link-text">
-                  <span class="link-name">Maritim Malaysia</span>
-                  <span class="link-desc"
-                    >Agensi Penguatkuasaan Maritim Malaysia</span
-                  >
-                </span>
-                <span class="external-arrow"
-                  ><i class="fas fa-external-link-alt"></i
-                ></span>
-              </a>
-              <a
-                href="https://www.did.gov.my/"
-                target="_blank"
-                class="sidebar-link"
-              >
-                <span class="link-icon flood"
-                  ><i class="fas fa-water"></i
-                ></span>
-                <span class="link-text">
-                  <span class="link-name"
-                    >JPS - Jabatan Pengairan & Saliran</span
-                  >
-                  <span class="link-desc">Pengurusan air & saliran</span>
-                </span>
-                <span class="external-arrow"
-                  ><i class="fas fa-external-link-alt"></i
-                ></span>
-              </a>
-              <a
-                href="https://www.dosm.gov.my/"
-                target="_blank"
-                class="sidebar-link"
-              >
-                <span class="link-icon info"
-                  ><i class="fas fa-chart-bar"></i
-                ></span>
-                <span class="link-text">
-                  <span class="link-name">DOSM - Jabatan Perangkaan</span>
-                  <span class="link-desc">Data & statistik rasmi Malaysia</span>
-                </span>
-                <span class="external-arrow"
-                  ><i class="fas fa-external-link-alt"></i
-                ></span>
-              </a>
+              <a href="https://www.jbpm.gov.my/" target="_blank" class="sidebar-link" rel="noopener noreferrer"><span class="link-icon emergency"><i class="fas fa-fire-extinguisher"></i></span><span class="link-text"><span class="link-name">JBPM Malaysia</span><span class="link-desc">Jabatan Bomba & Penyelamat Malaysia</span></span><span class="external-arrow"><i class="fas fa-external-link-alt"></i></span></a>
+              <a href="https://www.civildefence.gov.my/" target="_blank" class="sidebar-link" rel="noopener noreferrer"><span class="link-icon civil"><i class="fas fa-shield-virus"></i></span><span class="link-text"><span class="link-name">APM - Angkatan Pertahanan Awam</span><span class="link-desc">Pertahanan awam & pengurusan bencana</span></span><span class="external-arrow"><i class="fas fa-external-link-alt"></i></span></a>
+              <a href="https://www.rmp.gov.my/" target="_blank" class="sidebar-link" rel="noopener noreferrer"><span class="link-icon emergency"><i class="fas fa-shield-alt"></i></span><span class="link-text"><span class="link-name">PDRM - Polis Diraja Malaysia</span><span class="link-desc">Keselamatan & penguatkuasaan</span></span><span class="external-arrow"><i class="fas fa-external-link-alt"></i></span></a>
+              <a href="https://www.moh.gov.my/" target="_blank" class="sidebar-link" rel="noopener noreferrer"><span class="link-icon hospital"><i class="fas fa-hospital-alt"></i></span><span class="link-text"><span class="link-name">KKM - Kementerian Kesihatan</span><span class="link-desc">Perkhidmatan kesihatan & hospital</span></span><span class="external-arrow"><i class="fas fa-external-link-alt"></i></span></a>
+              <a href="https://www.maritime.gov.my/" target="_blank" class="sidebar-link" rel="noopener noreferrer"><span class="link-icon maritime"><i class="fas fa-ship"></i></span><span class="link-text"><span class="link-name">Maritim Malaysia</span><span class="link-desc">Agensi Penguatkuasaan Maritim Malaysia</span></span><span class="external-arrow"><i class="fas fa-external-link-alt"></i></span></a>
+              <a href="https://www.did.gov.my/" target="_blank" class="sidebar-link" rel="noopener noreferrer"><span class="link-icon flood"><i class="fas fa-water"></i></span><span class="link-text"><span class="link-name">JPS - Jabatan Pengairan & Saliran</span><span class="link-desc">Pengurusan air & saliran</span></span><span class="external-arrow"><i class="fas fa-external-link-alt"></i></span></a>
+              <a href="https://www.dosm.gov.my/" target="_blank" class="sidebar-link" rel="noopener noreferrer"><span class="link-icon info"><i class="fas fa-chart-bar"></i></span><span class="link-text"><span class="link-name">DOSM - Jabatan Perangkaan</span><span class="link-desc">Data & statistik rasmi Malaysia</span></span><span class="external-arrow"><i class="fas fa-external-link-alt"></i></span></a>
             </div>
           </div>
         </div>
 
-        <!-- ===== ACCORDION 5: DIREKTORI KECEMASAN ===== -->
+        <!-- Accordion 5: Direktori Kecemasan -->
         <div class="accordion-item">
-          <button class="accordion-header" data-target="accordion5">
-            <span class="accordion-title">
-              <i class="fas fa-phone-alt"></i> DIREKTORI KECEMASAN MALAYSIA
-              <span style="color: #ef4444; font-size: 9px; margin-left: 4px">
-                <i class="fas fa-clock"></i> 24/7
-              </span>
-            </span>
+          <button class="accordion-header" data-target="accordion5" aria-expanded="false">
+            <span class="accordion-title"><i class="fas fa-phone-alt"></i> DIREKTORI KECEMASAN <span style="color:#ef4444;font-size:9px;margin-left:4px"><i class="fas fa-clock"></i> 24/7</span></span>
             <span class="arrow"><i class="fas fa-chevron-down"></i></span>
           </button>
           <div class="accordion-content" id="accordion5">
             <div class="accordion-inner">
               <div class="emergency-directory">
-                <!-- TALIAN KECEMASAN NASIONAL -->
                 <div class="emergency-group">
-                  <div class="emergency-group-title">
-                    <span class="group-icon">🇲🇾</span> TALIAN KECEMASAN NASIONAL
-                  </div>
+                  <div class="emergency-group-title"><span class="group-icon">🇲🇾</span> TALIAN KECEMASAN NASIONAL</div>
                   <div class="emergency-item">
-                    <span class="e-icon emergency"
-                      ><i class="fas fa-phone-alt"></i
-                    ></span>
-                    <div class="e-info">
-                      <span class="e-name"
-                        >MERS 999 - Pusat Kecemasan Nasional</span
-                      >
-                      <span class="e-number">999</span>
-                      <span class="e-desc">Semua agensi kecemasan</span>
-                    </div>
-                    <div class="e-actions">
-                      <a href="tel:999" class="call-btn"
-                        ><i class="fas fa-phone"></i
-                      ></a>
-                    </div>
+                    <span class="e-icon emergency"><i class="fas fa-phone-alt"></i></span>
+                    <div class="e-info"><span class="e-name">MERS 999 - Pusat Kecemasan Nasional</span><span class="e-number">999</span><span class="e-desc">Semua agensi kecemasan</span></div>
+                    <div class="e-actions"><a href="tel:999" class="call-btn" aria-label="Hubungi 999"><i class="fas fa-phone"></i></a></div>
                   </div>
                 </div>
-
-                <!-- JABATAN BOMBA & PENYELAMAT (JBPM) -->
                 <div class="emergency-group">
-                  <div class="emergency-group-title">
-                    <span class="group-icon">🔥</span> JABATAN BOMBA &
-                    PENYELAMAT (JBPM)
-                  </div>
+                  <div class="emergency-group-title"><span class="group-icon">🔥</span> JABATAN BOMBA & PENYELAMAT (JBPM)</div>
                   <div class="emergency-item">
-                    <span class="e-icon bomba"
-                      ><i class="fas fa-fire-extinguisher"></i
-                    ></span>
-                    <div class="e-info">
-                      <span class="e-name">JBPM Johor</span>
-                      <span class="e-number">07-223 4444</span>
-                    </div>
-                    <div class="e-actions">
-                      <a href="tel:072234444" class="call-btn"
-                        ><i class="fas fa-phone"></i
-                      ></a>
-                    </div>
+                    <span class="e-icon bomba"><i class="fas fa-fire-extinguisher"></i></span>
+                    <div class="e-info"><span class="e-name">JBPM Johor</span><span class="e-number">07-223 4444</span></div>
+                    <div class="e-actions"><a href="tel:072234444" class="call-btn" aria-label="Hubungi JBPM Johor"><i class="fas fa-phone"></i></a></div>
                   </div>
                 </div>
-
-                <!-- POLIS DIRAJA MALAYSIA (PDRM) -->
                 <div class="emergency-group">
-                  <div class="emergency-group-title">
-                    <span class="group-icon">👮</span> POLIS DIRAJA MALAYSIA
-                    (PDRM)
-                  </div>
+                  <div class="emergency-group-title"><span class="group-icon">👮</span> POLIS DIRAJA MALAYSIA (PDRM)</div>
                   <div class="emergency-item">
-                    <span class="e-icon polis"
-                      ><i class="fas fa-shield-alt"></i
-                    ></span>
-                    <div class="e-info">
-                      <span class="e-name">IPK Johor</span>
-                      <span class="e-number">07-225 4422</span>
-                    </div>
-                    <div class="e-actions">
-                      <a href="tel:072254422" class="call-btn"
-                        ><i class="fas fa-phone"></i
-                      ></a>
-                    </div>
+                    <span class="e-icon polis"><i class="fas fa-shield-alt"></i></span>
+                    <div class="e-info"><span class="e-name">IPK Johor</span><span class="e-number">07-225 4422</span></div>
+                    <div class="e-actions"><a href="tel:072254422" class="call-btn" aria-label="Hubungi IPK Johor"><i class="fas fa-phone"></i></a></div>
                   </div>
                 </div>
-
-                <!-- HOSPITAL & PERUBATAN (KKM) -->
                 <div class="emergency-group">
-                  <div class="emergency-group-title">
-                    <span class="group-icon">🏥</span> HOSPITAL & PERUBATAN
-                    (KKM)
-                  </div>
+                  <div class="emergency-group-title"><span class="group-icon">🏥</span> HOSPITAL & PERUBATAN (KKM)</div>
                   <div class="emergency-item">
-                    <span class="e-icon hospital"
-                      ><i class="fas fa-hospital"></i
-                    ></span>
-                    <div class="e-info">
-                      <span class="e-name">Hospital Sultanah Aminah (HSA)</span>
-                      <span class="e-number">07-223 1666</span>
-                    </div>
-                    <div class="e-actions">
-                      <a href="tel:072231666" class="call-btn"
-                        ><i class="fas fa-phone"></i
-                      ></a>
-                    </div>
+                    <span class="e-icon hospital"><i class="fas fa-hospital"></i></span>
+                    <div class="e-info"><span class="e-name">Hospital Sultanah Aminah (HSA)</span><span class="e-number">07-223 1666</span></div>
+                    <div class="e-actions"><a href="tel:072231666" class="call-btn" aria-label="Hubungi HSA"><i class="fas fa-phone"></i></a></div>
                   </div>
                 </div>
-
-                <!-- ANGKATAN PERTAHANAN AWAM (APM) -->
                 <div class="emergency-group">
-                  <div class="emergency-group-title">
-                    <span class="group-icon">🛡️</span> ANGKATAN PERTAHANAN AWAM
-                    (APM)
-                  </div>
+                  <div class="emergency-group-title"><span class="group-icon">🛡️</span> ANGKATAN PERTAHANAN AWAM (APM)</div>
                   <div class="emergency-item">
-                    <span class="e-icon civil"
-                      ><i class="fas fa-shield-virus"></i
-                    ></span>
-                    <div class="e-info">
-                      <span class="e-name">APM Johor</span>
-                      <span class="e-number">07-224 5454</span>
-                      <span class="e-desc">Bantuan kecemasan & bencana</span>
-                    </div>
-                    <div class="e-actions">
-                      <a href="tel:072245454" class="call-btn"
-                        ><i class="fas fa-phone"></i
-                      ></a>
-                    </div>
+                    <span class="e-icon civil"><i class="fas fa-shield-virus"></i></span>
+                    <div class="e-info"><span class="e-name">APM Johor</span><span class="e-number">07-224 5454</span><span class="e-desc">Bantuan kecemasan & bencana</span></div>
+                    <div class="e-actions"><a href="tel:072245454" class="call-btn" aria-label="Hubungi APM Johor"><i class="fas fa-phone"></i></a></div>
                   </div>
                 </div>
-
-                <!-- AGENSI PENGUATKUASAAN MARITIM -->
                 <div class="emergency-group">
-                  <div class="emergency-group-title">
-                    <span class="group-icon">⚓</span> AGENSI PENGUATKUASAAN
-                    MARITIM
-                  </div>
+                  <div class="emergency-group-title"><span class="group-icon">⚓</span> AGENSI PENGUATKUASAAN MARITIM</div>
                   <div class="emergency-item">
-                    <span class="e-icon maritim"
-                      ><i class="fas fa-ship"></i
-                    ></span>
-                    <div class="e-info">
-                      <span class="e-name">Maritim Johor</span>
-                      <span class="e-number">07-219 9401</span>
-                      <span class="e-desc">Kecemasan di laut</span>
-                    </div>
-                    <div class="e-actions">
-                      <a href="tel:072199401" class="call-btn"
-                        ><i class="fas fa-phone"></i
-                      ></a>
-                    </div>
+                    <span class="e-icon maritim"><i class="fas fa-ship"></i></span>
+                    <div class="e-info"><span class="e-name">Maritim Johor</span><span class="e-number">07-219 9401</span><span class="e-desc">Kecemasan di laut</span></div>
+                    <div class="e-actions"><a href="tel:072199401" class="call-btn" aria-label="Hubungi Maritim Johor"><i class="fas fa-phone"></i></a></div>
                   </div>
                 </div>
-
-                <!-- INFO BOX -->
                 <div class="info-box">
-                  <p>
-                    <i class="fas fa-info-circle"></i>
-                    <strong
-                      >📌 Nombor kecemasan
-                      <span class="highlight-num">999</span> adalah talian rasmi
-                      Malaysia</strong
-                    ><br />
-                    Menghubungkan semua agensi kecemasan.
-                  </p>
+                  <p><i class="fas fa-info-circle"></i><strong>📌 Nombor kecemasan <span class="highlight-num">999</span> adalah talian rasmi Malaysia</strong><br>Menghubungkan semua agensi kecemasan.</p>
                 </div>
               </div>
             </div>
           </div>
         </div>
       </div>
-      <div class="sidebar-footer">
-        <span class="footer-icon">🚨</span> PGO Johor · Pusat Gerakan Operasi
-      </div>
+      <div class="sidebar-footer"><span class="footer-icon">🚨</span> PGO Johor · Pusat Gerakan Operasi</div>
     </div>
 
     <!-- DASHBOARD UTAMA -->
     <div class="dashboard">
-      <!-- HEADER: LOGO KIRI + TAJUK TENGAH + LOGO KANAN -->
       <div class="header">
         <div class="logo">
-          <!-- Logo JBPM di KIRI -->
-          <div class="logo-img-wrapper">
-            <img
-              src="https://i.ibb.co/fGtPXjpc/500px-Logo-of-the-Malaysian-Fire-and-Rescue-Department-svg.webp"
-              alt="JBPM Logo"
-              class="logo-img logo-bomba"
-            />
-          </div>
-
-          <!-- Tulisan di TENGAH -->
-          <div class="logo-text">
-            <h1>PUSAT GERAKAN OPERASI <span>JBPM JOHOR</span></h1>
-            <span class="sub">DASHBOARD KESELURUHAN</span>
-          </div>
-
-          <!-- Logo Unit Komunikasi di KANAN -->
-          <div class="logo-img-wrapper">
-            <img
-              src="https://i.ibb.co/fdXsyrBX/logo-unit-komunikasi-1.png"
-              alt="Unit Komunikasi Logo"
-              class="logo-img logo-komunikasi"
-            />
-          </div>
+          <div class="logo-img-wrapper"><img src="https://i.ibb.co/fGtPXjpc/500px-Logo-of-the-Malaysian-Fire-and-Rescue-Department-svg.webp" alt="JBPM Logo" class="logo-img logo-bomba" /></div>
+          <div class="logo-text"><h1>PUSAT GERAKAN OPERASI <span>JBPM JOHOR</span></h1><span class="sub">DASHBOARD KESELURUHAN</span></div>
+          <div class="logo-img-wrapper"><img src="https://i.ibb.co/fdXsyrBX/logo-unit-komunikasi-1.png" alt="Unit Komunikasi Logo" class="logo-img logo-komunikasi" /></div>
         </div>
       </div>
 
-      <!-- STATS BAR -->
       <div class="stats-bar">
-        <div class="stat-item">
-          <span class="icon-badge">🔥</span>
-          <div class="num" id="appCount">0</div>
-          <div class="label">Aplikasi</div>
-        </div>
-        <div class="stat-item">
-          <span class="icon-badge">🔥</span>
-          <div class="num" id="onlinePercent">0%</div>
-          <div class="label">Online</div>
-        </div>
-        <div class="stat-item">
-          <span class="icon-badge">🔥</span>
-          <div class="num" id="liveCount">0</div>
-          <div class="label">Live Updates</div>
-        </div>
-        <div class="stat-item">
-          <span class="icon-badge">🔥</span>
-          <div class="num">PGO</div>
-          <div class="label">Johor</div>
-        </div>
+        <div class="stat-item"><span class="icon-badge">🔥</span><div class="num" id="appCount">0</div><div class="label">Aplikasi</div></div>
+        <div class="stat-item"><span class="icon-badge">🔥</span><div class="num" id="onlinePercent">0%</div><div class="label">Online</div></div>
+        <div class="stat-item"><span class="icon-badge">🔥</span><div class="num" id="liveCount">0</div><div class="label">Live Updates</div></div>
+        <div class="stat-item"><span class="icon-badge">🔥</span><div class="num">PGO</div><div class="label">Johor</div></div>
       </div>
 
-      <!-- LIVE SECTION -->
       <div class="section-status">
-        <div class="section-title">
-          <i class="fas fa-circle" style="color: #ff6b6b; font-size: 12px"></i>
-          LIVE <span class="status-badge live">● LIVE</span>
-        </div>
+        <div class="section-title"><i class="fas fa-circle" style="color:#ff6b6b;font-size:12px"></i> LIVE <span class="status-badge live">● LIVE</span></div>
         <div class="apps-grid">
-          <a
-            href="https://dashbord-live-statistik-kes.vercel.app/"
-            target="_blank"
-            class="app-card"
-          >
-            <span class="icon">📊</span>
-            <h3>
-              Live Statistik Kes 24 Jam
-              <span class="highlight"> (DESK-OPS)</span>
-            </h3>
-            <p>Statistik masa nyata panggilan, lokasi & mangsa.</p>
-            <span class="badge live">● LIVE</span>
-            <span class="arrow">→</span>
-          </a>
+          <a href="https://dashbord-live-statistik-kes.vercel.app/" target="_blank" class="app-card" rel="noopener noreferrer"><span class="icon">📊</span><h3>Live Statistik Kes 24 Jam <span class="highlight"> (DESK-OPS)</span></h3><p>Statistik masa nyata panggilan, lokasi & mangsa.</p><span class="badge live">● LIVE</span><span class="arrow">→</span></a>
         </div>
       </div>
 
-      <!-- ONLINE SECTION -->
       <div class="section-status">
-        <div class="section-title">
-          <i class="fas fa-circle" style="color: #4ade80; font-size: 12px"></i>
-          ONLINE <span class="status-badge online">● Online</span>
-        </div>
+        <div class="section-title"><i class="fas fa-circle" style="color:#4ade80;font-size:12px"></i> ONLINE <span class="status-badge online">● Online</span></div>
         <div class="apps-grid">
-          <a
-            href="https://dashboard-kekuatan-anggota-12-jam-j.vercel.app/"
-            target="_blank"
-            class="app-card"
-          >
-            <span class="icon">👨‍🚒</span>
-            <h3>Kekuatan Anggota <span class="highlight">12 Jam</span></h3>
-            <p>Status anggota, syif, cuti & tugasan khas.</p>
-            <span class="badge online">● Online</span>
-            <span class="arrow">→</span>
-          </a>
-          <a
-            href="https://po1teknologia2.vercel.app/"
-            target="_blank"
-            class="app-card"
-          >
-            <span class="icon">📦</span>
-            <h3>Sistem Inventori<span class="highlight"> (DID)</span></h3>
-            <p>Pengurusan storan, peralatan & aset logistik.</p>
-            <span class="badge online">● Online</span>
-            <span class="arrow">→</span>
-          </a>
-          <a
-            href="https://daftar-masuk-pelawat.vercel.app/"
-            target="_blank"
-            class="app-card"
-          >
-            <span class="icon">📋</span>
-            <h3>
-              Sistem Daftar Masuk Pelawat <span class="highlight">(ENTRY)</span>
-            </h3>
-            <p>
-              Sistem daftar masuk dengan gambar ID. Perlu di isi oleh Pelawat
-              seperti Kontraktor Servis & Lain-lain.
-            </p>
-            <span class="badge online">● Online</span>
-            <span class="arrow">→</span>
-          </a>
+          <a href="https://dashboard-kekuatan-anggota-12-jam-j.vercel.app/" target="_blank" class="app-card" rel="noopener noreferrer"><span class="icon">👨‍🚒</span><h3>Kekuatan Anggota <span class="highlight">12 Jam</span></h3><p>Status anggota, syif, cuti & tugasan khas.</p><span class="badge online">● Online</span><span class="arrow">→</span></a>
+          <a href="https://po1teknologia2.vercel.app/" target="_blank" class="app-card" rel="noopener noreferrer"><span class="icon">📦</span><h3>Sistem Inventori<span class="highlight"> (DID)</span></h3><p>Pengurusan storan, peralatan & aset logistik.</p><span class="badge online">● Online</span><span class="arrow">→</span></a>
+          <a href="https://daftar-masuk-pelawat.vercel.app/" target="_blank" class="app-card" rel="noopener noreferrer"><span class="icon">📋</span><h3>Sistem Daftar Masuk Pelawat <span class="highlight">(ENTRY)</span></h3><p>Sistem daftar masuk dengan gambar ID.</p><span class="badge online">● Online</span><span class="arrow">→</span></a>
         </div>
       </div>
 
-      <!-- DALAM PEMBANGUNAN SECTION -->
       <div class="section-status">
-        <div class="section-title">
-          <i class="fas fa-circle" style="color: #f6ad55; font-size: 12px"></i>
-          DALAM PEMBANGUNAN
-          <span class="status-badge dev">● Dalam Pembangunan</span>
-        </div>
+        <div class="section-title"><i class="fas fa-circle" style="color:#f6ad55;font-size:12px"></i> DALAM PEMBANGUNAN <span class="status-badge dev">● Dalam Pembangunan</span></div>
         <div class="apps-grid">
-          <a href="#" target="_blank" class="app-card">
-            <span class="icon">🚛</span>
-            <h3>Data <span class="highlight">Jentera</span> JBPM Johor</h3>
-            <p>Pemantauan status jentera & kenderaan operasi.</p>
-            <span class="badge dev">● Dalam Pembangunan</span>
-            <span class="arrow">→</span>
-          </a>
-          <a href="#" target="_blank" class="app-card">
-            <span class="icon">🗺️</span>
-            <h3>Peta Kawasan <span class="highlight">Jagaan Balai</span></h3>
-            <p>Peta interaktif kawasan jagaan balai bomba.</p>
-            <span class="badge dev">● Dalam Pembangunan</span>
-            <span class="arrow">→</span>
-          </a>
-          <a href="#" target="_blank" class="app-card">
-            <span class="icon">📡</span>
-            <h3>Dashboard Aset <span class="highlight">GIRN</span></h3>
-            <p>Pemantauan aset GIRN JBPM Negeri Johor.</p>
-            <span class="badge dev">● Dalam Pembangunan</span>
-            <span class="arrow">→</span>
-          </a>
+          <a href="#" target="_blank" class="app-card"><span class="icon">🚛</span><h3>Data <span class="highlight">Jentera</span> JBPM Johor</h3><p>Pemantauan status jentera & kenderaan operasi.</p><span class="badge dev">● Dalam Pembangunan</span><span class="arrow">→</span></a>
+          <a href="#" target="_blank" class="app-card"><span class="icon">🗺️</span><h3>Peta Kawasan <span class="highlight">Jagaan Balai</span></h3><p>Peta interaktif kawasan jagaan balai bomba.</p><span class="badge dev">● Dalam Pembangunan</span><span class="arrow">→</span></a>
+          <a href="#" target="_blank" class="app-card"><span class="icon">📡</span><h3>Dashboard Aset <span class="highlight">GIRN</span></h3><p>Pemantauan aset GIRN JBPM Negeri Johor.</p><span class="badge dev">● Dalam Pembangunan</span><span class="arrow">→</span></a>
         </div>
       </div>
 
-      <!-- FOOTER -->
       <div class="footer">
-        <div class="brand">
-          <span class="dot"></span>
-          <span>© 2026 <strong style="color: #cc0000"></strong> PGO Johor</span>
-        </div>
+        <div class="brand"><span class="dot"></span><span>© 2026 PGO Johor</span></div>
         <div class="social-links">
-          <a
-            href="https://wa.me/60196717865"
-            target="_blank"
-            class="whatsapp"
-            title="WhatsApp"
-          >
-            <i class="fab fa-whatsapp"></i>
-          </a>
-          <a
-            href="https://t.me/+60196717865"
-            target="_blank"
-            class="telegram"
-            title="Telegram"
-          >
-            <i class="fab fa-telegram-plane"></i>
-          </a>
-          <a href="#" target="_blank" title="Instagram">
-            <i class="fab fa-instagram"></i>
-          </a>
-          <a href="#" target="_blank" title="YouTube">
-            <i class="fab fa-youtube"></i>
-          </a>
+          <a href="https://wa.me/60196717865" target="_blank" class="whatsapp" title="WhatsApp" rel="noopener noreferrer"><i class="fab fa-whatsapp"></i></a>
+          <a href="https://t.me/+60196717865" target="_blank" class="telegram" title="Telegram" rel="noopener noreferrer"><i class="fab fa-telegram-plane"></i></a>
+          <a href="#" target="_blank" title="Instagram"><i class="fab fa-instagram"></i></a>
+          <a href="#" target="_blank" title="YouTube"><i class="fab fa-youtube"></i></a>
         </div>
       </div>
     </div>
 
     <script>
       (function () {
-        // Audio context untuk bunyi klik
         let audioCtx = null;
         function playClickSound() {
           try {
-            if (!audioCtx)
-              audioCtx = new (window.AudioContext ||
-                window.webkitAudioContext)();
+            if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
             if (audioCtx.state === 'suspended') audioCtx.resume();
             const oscillator = audioCtx.createOscillator();
             const gainNode = audioCtx.createGain();
@@ -2353,17 +1932,13 @@
             gainNode.connect(audioCtx.destination);
             oscillator.frequency.value = 800;
             oscillator.type = 'sine';
-            gainNode.gain.value = 0.15;
+            gainNode.gain.value = 0.12;
             oscillator.start(audioCtx.currentTime);
-            oscillator.stop(audioCtx.currentTime + 0.05);
-            gainNode.gain.exponentialRampToValueAtTime(
-              0.001,
-              audioCtx.currentTime + 0.05
-            );
+            gainNode.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.06);
+            oscillator.stop(audioCtx.currentTime + 0.06);
           } catch (e) {}
         }
 
-        // --- MODE SIANG/MALAM ---
         const modeToggleBtn = document.getElementById('modeToggleBtn');
         let isSiang = false;
         function toggleMode() {
@@ -2371,39 +1946,35 @@
           isSiang = !isSiang;
           if (isSiang) {
             document.body.classList.add('mode-siang');
-            modeToggleBtn.textContent = '☀️';
-            modeToggleBtn.title = 'Tukar ke Mode Malam';
+            modeToggleBtn.innerHTML = '☀️<span class="btn-label">Siang/Malam</span>';
           } else {
             document.body.classList.remove('mode-siang');
-            modeToggleBtn.textContent = '🌙';
-            modeToggleBtn.title = 'Tukar ke Mode Siang';
+            modeToggleBtn.innerHTML = '🌙<span class="btn-label">Siang/Malam</span>';
           }
-          try {
-            localStorage.setItem('pgoMode', isSiang ? 'siang' : 'malam');
-          } catch (e) {}
+          try { localStorage.setItem('pgoMode', isSiang ? 'siang' : 'malam'); } catch (e) {}
         }
         function loadModePreference() {
           try {
             if (localStorage.getItem('pgoMode') === 'siang') {
               isSiang = true;
               document.body.classList.add('mode-siang');
-              modeToggleBtn.textContent = '☀️';
-              modeToggleBtn.title = 'Tukar ke Mode Malam';
+              modeToggleBtn.innerHTML = '☀️<span class="btn-label">Siang/Malam</span>';
             }
           } catch (e) {}
         }
         modeToggleBtn.addEventListener('click', toggleMode);
 
-        // --- SIDEBAR HAMBURGER ---
         const hamburgerBtn = document.getElementById('hamburgerBtn');
         const sidebar = document.getElementById('sidebar');
         const sidebarClose = document.getElementById('sidebarClose');
         const sidebarOverlay = document.getElementById('sidebarOverlay');
+        
         function openSidebar() {
           playClickSound();
           sidebar.classList.add('active');
           sidebarOverlay.classList.add('active');
           hamburgerBtn.classList.add('active');
+          hamburgerBtn.setAttribute('aria-expanded', 'true');
           document.body.style.overflow = 'hidden';
         }
         function closeSidebar() {
@@ -2411,198 +1982,126 @@
           sidebar.classList.remove('active');
           sidebarOverlay.classList.remove('active');
           hamburgerBtn.classList.remove('active');
+          hamburgerBtn.setAttribute('aria-expanded', 'false');
           document.body.style.overflow = '';
         }
-        hamburgerBtn.addEventListener('click', openSidebar);
+        hamburgerBtn.addEventListener('click', function() {
+          if (sidebar.classList.contains('active')) { closeSidebar(); }
+          else { openSidebar(); }
+        });
         sidebarClose.addEventListener('click', closeSidebar);
         sidebarOverlay.addEventListener('click', closeSidebar);
         document.addEventListener('keydown', function (e) {
-          if (e.key === 'Escape' && sidebar.classList.contains('active'))
-            closeSidebar();
+          if (e.key === 'Escape' && sidebar.classList.contains('active')) closeSidebar();
         });
 
-        // --- ACCORDION DROPDOWN ---
         const accordionHeaders = document.querySelectorAll('.accordion-header');
         accordionHeaders.forEach(function (header) {
           header.addEventListener('click', function () {
             const targetId = this.getAttribute('data-target');
             const content = document.getElementById(targetId);
             const arrow = this.querySelector('.arrow');
-
-            // Toggle content
             const isOpen = content.classList.contains('open');
-
-            // Close all other accordions
-            document
-              .querySelectorAll('.accordion-content')
-              .forEach(function (item) {
-                if (item.id !== targetId && item.classList.contains('open')) {
-                  item.classList.remove('open');
-                  const parentHeader = item
-                    .closest('.accordion-item')
-                    .querySelector('.accordion-header');
-                  if (parentHeader) {
-                    parentHeader
-                      .querySelector('.arrow')
-                      .classList.remove('open');
-                  }
-                }
-              });
-
-            // Toggle current
-            if (isOpen) {
-              content.classList.remove('open');
-              arrow.classList.remove('open');
-            } else {
-              content.classList.add('open');
-              arrow.classList.add('open');
-            }
+            document.querySelectorAll('.accordion-content').forEach(function (item) {
+              if (item.id !== targetId && item.classList.contains('open')) {
+                item.classList.remove('open');
+                const ph = item.closest('.accordion-item').querySelector('.accordion-header');
+                if (ph) { ph.querySelector('.arrow').classList.remove('open'); ph.setAttribute('aria-expanded', 'false'); }
+              }
+            });
+            if (isOpen) { content.classList.remove('open'); arrow.classList.remove('open'); this.setAttribute('aria-expanded', 'false'); }
+            else { content.classList.add('open'); arrow.classList.add('open'); this.setAttribute('aria-expanded', 'true'); }
           });
+          header.addEventListener('keydown', function (e) { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); this.click(); } });
         });
 
-        // --- JAM DIGITAL + ANALOG ---
         function updateClock() {
           const now = new Date();
-          const h = now.getHours(),
-            m = now.getMinutes(),
-            s = now.getSeconds();
-          document.getElementById('clock').textContent = now.toLocaleTimeString(
-            'ms-MY',
-            { hour12: false }
-          );
-          document.getElementById('date').textContent = now
-            .toLocaleDateString('ms-MY', {
-              day: 'numeric',
-              month: 'long',
-              year: 'numeric',
-            })
-            .toUpperCase();
-          const hourDeg = (h % 12) * 30 + m * 0.5;
-          const minuteDeg = m * 6 + s * 0.1;
-          const secondDeg = s * 6;
-          document.getElementById('hourHand').style.transform =
-            'rotate(' + hourDeg + 'deg)';
-          document.getElementById('minuteHand').style.transform =
-            'rotate(' + minuteDeg + 'deg)';
-          document.getElementById('secondHand').style.transform =
-            'rotate(' + secondDeg + 'deg)';
+          document.getElementById('clock').textContent = now.toLocaleTimeString('ms-MY', { hour12: false });
+          document.getElementById('date').textContent = now.toLocaleDateString('ms-MY', { day: 'numeric', month: 'long', year: 'numeric' }).toUpperCase();
+          const h = now.getHours(), m = now.getMinutes(), s = now.getSeconds();
+          document.getElementById('hourHand').style.transform = 'rotate(' + ((h % 12) * 30 + m * 0.5) + 'deg)';
+          document.getElementById('minuteHand').style.transform = 'rotate(' + (m * 6 + s * 0.1) + 'deg)';
+          document.getElementById('secondHand').style.transform = 'rotate(' + (s * 6) + 'deg)';
         }
         updateClock();
         setInterval(updateClock, 1000);
 
-        // --- COUNTER STATISTIK ---
-        const totalApps = 7,
-          liveApps = 1,
-          onlineApps = 3;
+        const totalApps = 7, liveApps = 1, onlineApps = 3;
         const percentOnline = Math.round((onlineApps / totalApps) * 100);
         function animateCounter(element, target, suffix = '') {
           let current = 0;
           const step = Math.max(1, Math.floor(target / 25));
           const interval = setInterval(function () {
             current += step;
-            if (current >= target) {
-              current = target;
-              clearInterval(interval);
-            }
+            if (current >= target) { current = target; clearInterval(interval); }
             element.textContent = current + suffix;
           }, 50);
         }
 
-        // --- DESKTOP / MOBILE SWITCH ---
         const switchModeBtn = document.getElementById('switchModeBtn');
         let isMobileMode = false;
-
         function applyViewMode() {
           if (isMobileMode) {
             document.body.classList.add('mobile-mode');
             document.body.classList.remove('desktop-mode');
-            switchModeBtn.innerHTML = '<i class="fas fa-desktop"></i>';
-            switchModeBtn.title = 'Tukar ke Paparan Desktop';
+            switchModeBtn.innerHTML = '<i class="fas fa-desktop"></i><span class="mode-indicator-dot"></span><span class="btn-label">Desktop/Mobile</span>';
           } else {
             document.body.classList.add('desktop-mode');
             document.body.classList.remove('mobile-mode');
-            switchModeBtn.innerHTML = '<i class="fas fa-mobile-alt"></i>';
-            switchModeBtn.title = 'Tukar ke Paparan Mobile';
+            switchModeBtn.innerHTML = '<i class="fas fa-mobile-alt"></i><span class="mode-indicator-dot"></span><span class="btn-label">Desktop/Mobile</span>';
           }
-          try {
-            localStorage.setItem(
-              'pgoViewMode',
-              isMobileMode ? 'mobile' : 'desktop'
-            );
-          } catch (e) {}
+          try { localStorage.setItem('pgoViewMode', isMobileMode ? 'mobile' : 'desktop'); } catch (e) {}
         }
-
-        function toggleViewMode() {
-          playClickSound();
-          isMobileMode = !isMobileMode;
-          applyViewMode();
-        }
-
+        function toggleViewMode() { playClickSound(); isMobileMode = !isMobileMode; applyViewMode(); }
         function loadViewModePreference() {
-          try {
-            const savedView = localStorage.getItem('pgoViewMode');
-            if (savedView === 'mobile') {
-              isMobileMode = true;
-            }
-          } catch (e) {}
+          try { if (localStorage.getItem('pgoViewMode') === 'mobile') isMobileMode = true; } catch (e) {}
           applyViewMode();
         }
-
         switchModeBtn.addEventListener('click', toggleViewMode);
 
-        // --- TOGGLE HEADER BAR HIDE/SHOW ---
         const headerControls = document.getElementById('headerControls');
         const toggleBtn = document.getElementById('toggleHeaderBtn');
-
         function toggleHeader() {
           playClickSound();
           const isHidden = headerControls.classList.toggle('hidden');
-          if (isHidden) {
-            toggleBtn.innerHTML = '<i class="fas fa-eye"></i>';
-            toggleBtn.title = 'Tunjukkan Panel Kawalan';
-            localStorage.setItem('pgoHeaderHidden', 'true');
-          } else {
-            toggleBtn.innerHTML = '<i class="fas fa-eye-slash"></i>';
-            toggleBtn.title = 'Sembunyikan Panel Kawalan';
-            localStorage.setItem('pgoHeaderHidden', 'false');
-          }
+          if (isHidden) { toggleBtn.innerHTML = '<i class="fas fa-eye"></i>'; localStorage.setItem('pgoHeaderHidden', 'true'); }
+          else { toggleBtn.innerHTML = '<i class="fas fa-eye-slash"></i>'; localStorage.setItem('pgoHeaderHidden', 'false'); }
         }
-
         function loadHeaderPreference() {
           try {
-            const isHidden = localStorage.getItem('pgoHeaderHidden');
-            if (isHidden === 'true') {
+            if (localStorage.getItem('pgoHeaderHidden') === 'true') {
               headerControls.classList.add('hidden');
               toggleBtn.innerHTML = '<i class="fas fa-eye"></i>';
-              toggleBtn.title = 'Tunjukkan Panel Kawalan';
-            } else {
-              toggleBtn.innerHTML = '<i class="fas fa-eye-slash"></i>';
-              toggleBtn.title = 'Sembunyikan Panel Kawalan';
-            }
+            } else { toggleBtn.innerHTML = '<i class="fas fa-eye-slash"></i>'; }
           } catch (e) {}
         }
-
         toggleBtn.addEventListener('click', toggleHeader);
-
         headerControls.addEventListener('dblclick', function (e) {
-          if (e.target.closest('button')) return;
-          if (!headerControls.classList.contains('hidden')) {
-            toggleHeader();
-          }
+          if (e.target.closest('button') || e.target.closest('.analog-clock') || e.target.closest('.digital-time')) return;
+          if (!headerControls.classList.contains('hidden')) toggleHeader();
         });
 
-        // --- LOAD SEMUA PREFERENCE & ANIMASI ---
+        // Flash hint kali pertama
         window.addEventListener('load', function () {
           loadModePreference();
           loadViewModePreference();
           loadHeaderPreference();
           animateCounter(document.getElementById('appCount'), totalApps);
-          animateCounter(
-            document.getElementById('onlinePercent'),
-            percentOnline,
-            '%'
-          );
+          animateCounter(document.getElementById('onlinePercent'), percentOnline, '%');
           animateCounter(document.getElementById('liveCount'), liveApps);
+          
+          // Flash double-klik hint kali pertama
+          try {
+            if (!localStorage.getItem('pgoDblclickShown')) {
+              const dblclickHint = document.querySelector('.dblclick-hint');
+              if (dblclickHint && !headerControls.classList.contains('hidden')) {
+                dblclickHint.style.opacity = '1';
+                setTimeout(function() { dblclickHint.style.opacity = '0'; }, 6000);
+                localStorage.setItem('pgoDblclickShown', 'true');
+              }
+            }
+          } catch (e) {}
         });
       })();
     </script>
