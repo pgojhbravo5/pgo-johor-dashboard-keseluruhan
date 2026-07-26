@@ -1166,6 +1166,7 @@
       }
       .emergency-group-title .group-icon {
         font-size: 14px;
+        color: #ffcc00;
       }
       .emergency-item {
         display: flex;
@@ -1434,8 +1435,8 @@
         font-size: 16px;
         display: block;
         margin-bottom: 2px;
+        color: #ffcc00;
       }
-
       .section-status {
         margin-bottom: 30px;
       }
@@ -1516,6 +1517,7 @@
         font-size: 32px;
         margin-bottom: 12px;
         display: block;
+        color: #ffcc00;
       }
       .app-card h3 {
         font-size: 17px;
@@ -1858,7 +1860,7 @@
         title="Tukar Mode Paparan"
         aria-label="Tukar mod siang malam"
       >
-        🌙
+        <i class="fas fa-moon"></i>
         <span class="btn-label">Siang/Malam</span>
       </button>
       <button
@@ -1945,10 +1947,10 @@
         <span class="btn-label">Menu Pautan</span>
       </button>
 
-      <!-- 👇 PETUNJUK DOUBLE-KLIK 👇 -->
+      <!-- PETUNJUK DOUBLE-KLIK -->
       <span class="dblclick-hint">
         <span class="hint-dot"></span>
-        <span class="hint-arrows">⚡⚡</span>
+        <span class="hint-arrows"><i class="fas fa-bolt"></i></span>
         Double-klik untuk sembunyi
       </span>
     </div>
@@ -2052,7 +2054,9 @@
                 class="sidebar-link"
                 rel="noopener noreferrer"
               >
-                <span class="link-icon fire"><i class="fas fa-fire"></i></span>
+                <span class="link-icon fire"
+                  ><i class="fas fa-fire-flame-curved"></i
+                ></span>
                 <span class="link-text"
                   ><span class="link-name">Indeks Cuaca Api (API)</span
                   ><span class="link-desc"
@@ -2075,7 +2079,7 @@
             aria-expanded="false"
           >
             <span class="accordion-title"
-              ><i class="fas fa-exclamation-triangle"></i> Bencana &
+              ><i class="fas fa-triangle-exclamation"></i> Bencana &
               Amaran</span
             >
             <span class="arrow"><i class="fas fa-chevron-down"></i></span>
@@ -2089,7 +2093,7 @@
                 rel="noopener noreferrer"
               >
                 <span class="link-icon disaster"
-                  ><i class="fas fa-house-damage"></i
+                  ><i class="fas fa-house-chimney-crack"></i
                 ></span>
                 <span class="link-text"
                   ><span class="link-name"
@@ -2109,7 +2113,7 @@
                 rel="noopener noreferrer"
               >
                 <span class="link-icon flood"
-                  ><i class="fas fa-water"></i
+                  ><i class="fas fa-house-flood-water"></i
                 ></span>
                 <span class="link-text"
                   ><span class="link-name">Public Infobanjir</span
@@ -2128,7 +2132,7 @@
                 rel="noopener noreferrer"
               >
                 <span class="link-icon quake"
-                  ><i class="fas fa-globe-asia"></i
+                  ><i class="fas fa-earth-asia"></i
                 ></span>
                 <span class="link-text"
                   ><span class="link-name">Info Gempa Bumi</span
@@ -2181,7 +2185,9 @@
                 class="sidebar-link"
                 rel="noopener noreferrer"
               >
-                <span class="link-icon road"><i class="fas fa-car"></i></span>
+                <span class="link-icon road"
+                  ><i class="fas fa-car-side"></i
+                ></span>
                 <span class="link-text"
                   ><span class="link-name"
                     >JPJ - Jabatan Pengangkutan Jalan</span
@@ -2200,7 +2206,7 @@
                 rel="noopener noreferrer"
               >
                 <span class="link-icon road"
-                  ><i class="fas fa-hard-hat"></i
+                  ><i class="fas fa-helmet-safety"></i
                 ></span>
                 <span class="link-text"
                   ><span class="link-name">JKR - Jabatan Kerja Raya</span
@@ -2224,7 +2230,8 @@
             aria-expanded="false"
           >
             <span class="accordion-title"
-              ><i class="fas fa-building"></i> DIREKTORI AGENSI KERAJAAN</span
+              ><i class="fas fa-building-columns"></i> DIREKTORI AGENSI
+              KERAJAAN</span
             >
             <span class="arrow"><i class="fas fa-chevron-down"></i></span>
           </button>
@@ -2251,7 +2258,7 @@
                 class="sidebar-link"
                 rel="noopener noreferrer"
                 ><span class="link-icon civil"
-                  ><i class="fas fa-shield-virus"></i></span
+                  ><i class="fas fa-shield-halved"></i></span
                 ><span class="link-text"
                   ><span class="link-name">APM - Angkatan Pertahanan Awam</span
                   ><span class="link-desc"
@@ -2266,7 +2273,7 @@
                 class="sidebar-link"
                 rel="noopener noreferrer"
                 ><span class="link-icon emergency"
-                  ><i class="fas fa-shield-alt"></i></span
+                  ><i class="fas fa-shield-cat"></i></span
                 ><span class="link-text"
                   ><span class="link-name">PDRM - Polis Diraja Malaysia</span
                   ><span class="link-desc"
@@ -2281,7 +2288,7 @@
                 class="sidebar-link"
                 rel="noopener noreferrer"
                 ><span class="link-icon hospital"
-                  ><i class="fas fa-hospital-alt"></i></span
+                  ><i class="fas fa-hospital-user"></i></span
                 ><span class="link-text"
                   ><span class="link-name">KKM - Kementerian Kesihatan</span
                   ><span class="link-desc"
@@ -2296,7 +2303,7 @@
                 class="sidebar-link"
                 rel="noopener noreferrer"
                 ><span class="link-icon maritime"
-                  ><i class="fas fa-ship"></i></span
+                  ><i class="fas fa-anchor"></i></span
                 ><span class="link-text"
                   ><span class="link-name">Maritim Malaysia</span
                   ><span class="link-desc"
@@ -2311,7 +2318,7 @@
                 class="sidebar-link"
                 rel="noopener noreferrer"
                 ><span class="link-icon flood"
-                  ><i class="fas fa-water"></i></span
+                  ><i class="fas fa-water-ladder"></i></span
                 ><span class="link-text"
                   ><span class="link-name"
                     >JPS - Jabatan Pengairan & Saliran</span
@@ -2325,7 +2332,7 @@
                 class="sidebar-link"
                 rel="noopener noreferrer"
                 ><span class="link-icon info"
-                  ><i class="fas fa-chart-bar"></i></span
+                  ><i class="fas fa-chart-line"></i></span
                 ><span class="link-text"
                   ><span class="link-name">DOSM - Jabatan Perangkaan</span
                   ><span class="link-desc"
@@ -2346,7 +2353,7 @@
             aria-expanded="false"
           >
             <span class="accordion-title"
-              ><i class="fas fa-phone-alt"></i> DIREKTORI KECEMASAN
+              ><i class="fas fa-phone-volume"></i> DIREKTORI KECEMASAN
               <span style="color: #ef4444; font-size: 9px; margin-left: 4px"
                 ><i class="fas fa-clock"></i> 24/7</span
               ></span
@@ -2358,11 +2365,12 @@
               <div class="emergency-directory">
                 <div class="emergency-group">
                   <div class="emergency-group-title">
-                    <span class="group-icon">🇲🇾</span> TALIAN KECEMASAN NASIONAL
+                    <i class="fas fa-flag group-icon"></i> TALIAN KECEMASAN
+                    NASIONAL
                   </div>
                   <div class="emergency-item">
                     <span class="e-icon emergency"
-                      ><i class="fas fa-phone-alt"></i
+                      ><i class="fas fa-headset"></i
                     ></span>
                     <div class="e-info">
                       <span class="e-name"
@@ -2382,12 +2390,12 @@
                 </div>
                 <div class="emergency-group">
                   <div class="emergency-group-title">
-                    <span class="group-icon">🔥</span> JABATAN BOMBA &
-                    PENYELAMAT (JBPM)
+                    <i class="fas fa-fire-extinguisher group-icon"></i> JABATAN
+                    BOMBA & PENYELAMAT (JBPM)
                   </div>
                   <div class="emergency-item">
                     <span class="e-icon bomba"
-                      ><i class="fas fa-fire-extinguisher"></i
+                      ><i class="fas fa-truck-droplet"></i
                     ></span>
                     <div class="e-info">
                       <span class="e-name">JBPM Johor</span
@@ -2405,12 +2413,12 @@
                 </div>
                 <div class="emergency-group">
                   <div class="emergency-group-title">
-                    <span class="group-icon">👮</span> POLIS DIRAJA MALAYSIA
-                    (PDRM)
+                    <i class="fas fa-shield-cat group-icon"></i> POLIS DIRAJA
+                    MALAYSIA (PDRM)
                   </div>
                   <div class="emergency-item">
                     <span class="e-icon polis"
-                      ><i class="fas fa-shield-alt"></i
+                      ><i class="fas fa-shield-cat"></i
                     ></span>
                     <div class="e-info">
                       <span class="e-name">IPK Johor</span
@@ -2428,8 +2436,8 @@
                 </div>
                 <div class="emergency-group">
                   <div class="emergency-group-title">
-                    <span class="group-icon">🏥</span> HOSPITAL & PERUBATAN
-                    (KKM)
+                    <i class="fas fa-hospital group-icon"></i> HOSPITAL &
+                    PERUBATAN (KKM)
                   </div>
                   <div class="emergency-item">
                     <span class="e-icon hospital"
@@ -2451,12 +2459,12 @@
                 </div>
                 <div class="emergency-group">
                   <div class="emergency-group-title">
-                    <span class="group-icon">🛡️</span> ANGKATAN PERTAHANAN AWAM
-                    (APM)
+                    <i class="fas fa-shield-halved group-icon"></i> ANGKATAN
+                    PERTAHANAN AWAM (APM)
                   </div>
                   <div class="emergency-item">
                     <span class="e-icon civil"
-                      ><i class="fas fa-shield-virus"></i
+                      ><i class="fas fa-person-shelter"></i
                     ></span>
                     <div class="e-info">
                       <span class="e-name">APM Johor</span
@@ -2475,12 +2483,12 @@
                 </div>
                 <div class="emergency-group">
                   <div class="emergency-group-title">
-                    <span class="group-icon">⚓</span> AGENSI PENGUATKUASAAN
-                    MARITIM
+                    <i class="fas fa-anchor group-icon"></i> AGENSI
+                    PENGUATKUASAAN MARITIM
                   </div>
                   <div class="emergency-item">
                     <span class="e-icon maritim"
-                      ><i class="fas fa-ship"></i
+                      ><i class="fas fa-anchor"></i
                     ></span>
                     <div class="e-info">
                       <span class="e-name">Maritim Johor</span
@@ -2544,22 +2552,22 @@
 
       <div class="stats-bar">
         <div class="stat-item">
-          <span class="icon-badge">🔥</span>
+          <span class="icon-badge"><i class="fas fa-cubes"></i></span>
           <div class="num" id="appCount">0</div>
           <div class="label">Aplikasi</div>
         </div>
         <div class="stat-item">
-          <span class="icon-badge">🔥</span>
+          <span class="icon-badge"><i class="fas fa-network-wired"></i></span>
           <div class="num" id="onlinePercent">0%</div>
           <div class="label">Online</div>
         </div>
         <div class="stat-item">
-          <span class="icon-badge">🔥</span>
+          <span class="icon-badge"><i class="fas fa-bolt"></i></span>
           <div class="num" id="liveCount">0</div>
           <div class="label">Live Updates</div>
         </div>
         <div class="stat-item">
-          <span class="icon-badge">🔥</span>
+          <span class="icon-badge"><i class="fas fa-building-shield"></i></span>
           <div class="num">PGO</div>
           <div class="label">Johor</div>
         </div>
@@ -2576,15 +2584,15 @@
             target="_blank"
             class="app-card"
             rel="noopener noreferrer"
-            ><span class="icon">📊</span>
+            ><span class="icon"><i class="fas fa-chart-column"></i></span>
             <h3>
               Live Statistik Kes 24 Jam
               <span class="highlight"> (DESK-OPS)</span>
             </h3>
             <p>Statistik masa nyata panggilan, lokasi & mangsa.</p>
             <span class="badge live">● LIVE</span
-            ><span class="arrow">→</span></a
-          >
+            ><span class="arrow"><i class="fas fa-arrow-right"></i></span
+          ></a>
         </div>
       </div>
 
@@ -2599,36 +2607,36 @@
             target="_blank"
             class="app-card"
             rel="noopener noreferrer"
-            ><span class="icon">👨‍🚒</span>
+            ><span class="icon"><i class="fas fa-user-shield"></i></span>
             <h3>Kekuatan Anggota <span class="highlight">12 Jam</span></h3>
             <p>Status anggota, syif, cuti & tugasan khas.</p>
             <span class="badge online">● Online</span
-            ><span class="arrow">→</span></a
-          >
+            ><span class="arrow"><i class="fas fa-arrow-right"></i></span
+          ></a>
           <a
             href="https://po1teknologia2.vercel.app/"
             target="_blank"
             class="app-card"
             rel="noopener noreferrer"
-            ><span class="icon">📦</span>
+            ><span class="icon"><i class="fas fa-boxes-stacked"></i></span>
             <h3>Sistem Inventori<span class="highlight"> (DID)</span></h3>
             <p>Pengurusan storan, peralatan & aset logistik.</p>
             <span class="badge online">● Online</span
-            ><span class="arrow">→</span></a
-          >
+            ><span class="arrow"><i class="fas fa-arrow-right"></i></span
+          ></a>
           <a
             href="https://daftar-masuk-pelawat.vercel.app/"
             target="_blank"
             class="app-card"
             rel="noopener noreferrer"
-            ><span class="icon">📋</span>
+            ><span class="icon"><i class="fas fa-id-card-clip"></i></span>
             <h3>
               Sistem Daftar Masuk Pelawat <span class="highlight">(ENTRY)</span>
             </h3>
             <p>Sistem daftar masuk dengan gambar ID.</p>
             <span class="badge online">● Online</span
-            ><span class="arrow">→</span></a
-          >
+            ><span class="arrow"><i class="fas fa-arrow-right"></i></span
+          ></a>
         </div>
       </div>
 
@@ -2640,26 +2648,26 @@
         </div>
         <div class="apps-grid">
           <a href="#" target="_blank" class="app-card"
-            ><span class="icon">🚛</span>
+            ><span class="icon"><i class="fas fa-truck-field"></i></span>
             <h3>Data <span class="highlight">Jentera</span> JBPM Johor</h3>
             <p>Pemantauan status jentera & kenderaan operasi.</p>
             <span class="badge dev">● Dalam Pembangunan</span
-            ><span class="arrow">→</span></a
-          >
+            ><span class="arrow"><i class="fas fa-arrow-right"></i></span
+          ></a>
           <a href="#" target="_blank" class="app-card"
-            ><span class="icon">🗺️</span>
+            ><span class="icon"><i class="fas fa-map-location-dot"></i></span>
             <h3>Peta Kawasan <span class="highlight">Jagaan Balai</span></h3>
             <p>Peta interaktif kawasan jagaan balai bomba.</p>
             <span class="badge dev">● Dalam Pembangunan</span
-            ><span class="arrow">→</span></a
-          >
+            ><span class="arrow"><i class="fas fa-arrow-right"></i></span
+          ></a>
           <a href="#" target="_blank" class="app-card"
-            ><span class="icon">📡</span>
+            ><span class="icon"><i class="fas fa-tower-cell"></i></span>
             <h3>Dashboard Aset <span class="highlight">GIRN</span></h3>
             <p>Pemantauan aset GIRN JBPM Negeri Johor.</p>
             <span class="badge dev">● Dalam Pembangunan</span
-            ><span class="arrow">→</span></a
-          >
+            ><span class="arrow"><i class="fas fa-arrow-right"></i></span
+          ></a>
         </div>
       </div>
 
@@ -2727,11 +2735,11 @@
           if (isSiang) {
             document.body.classList.add('mode-siang');
             modeToggleBtn.innerHTML =
-              '☀️<span class="btn-label">Siang/Malam</span>';
+              '<i class="fas fa-sun"></i><span class="btn-label">Siang/Malam</span>';
           } else {
             document.body.classList.remove('mode-siang');
             modeToggleBtn.innerHTML =
-              '🌙<span class="btn-label">Siang/Malam</span>';
+              '<i class="fas fa-moon"></i><span class="btn-label">Siang/Malam</span>';
           }
           try {
             localStorage.setItem('pgoMode', isSiang ? 'siang' : 'malam');
@@ -2743,7 +2751,7 @@
               isSiang = true;
               document.body.classList.add('mode-siang');
               modeToggleBtn.innerHTML =
-                '☀️<span class="btn-label">Siang/Malam</span>';
+                '<i class="fas fa-sun"></i><span class="btn-label">Siang/Malam</span>';
             }
           } catch (e) {}
         }
@@ -2935,7 +2943,6 @@
           if (!headerControls.classList.contains('hidden')) toggleHeader();
         });
 
-        // Flash hint kali pertama
         window.addEventListener('load', function () {
           loadModePreference();
           loadViewModePreference();
@@ -2948,7 +2955,6 @@
           );
           animateCounter(document.getElementById('liveCount'), liveApps);
 
-          // Flash double-klik hint kali pertama
           try {
             if (!localStorage.getItem('pgoDblclickShown')) {
               const dblclickHint = document.querySelector('.dblclick-hint');
