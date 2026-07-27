@@ -49,7 +49,8 @@
         align-items: center;
         padding: 16px;
         background: #0a0a0a;
-        background-image: url('https://images.unsplash.com/photo-1582139329536-e7284fece509?w=1600');
+        /* 🚒 BACKGROUND IMAGE DARI GITHUB REPO PGO JOHOR */
+        background-image: url('https://raw.githubusercontent.com/pgojhbravo5/pgo-johor-dashboard-keseluruhan/3c1b568398651e5e9612730038c9d189a673be48/firetruck-BG.png');
         background-size: cover;
         background-position: center;
         background-attachment: fixed;
@@ -1315,27 +1316,16 @@
         flex-shrink: 0;
       }
 
-      /* ANIMASI APUNGAN PERLAHAN PADA LOGO */
+      /* ✅ LOGO TANPA ANIMASI */
       .logo-img {
         height: 55px;
         width: auto;
         object-fit: contain;
         display: inline-block;
-        animation: floatLogo 4s ease-in-out infinite alternate;
       }
       .logo-img.logo-bomba { height: 55px; }
       .logo-img.logo-komunikasi { 
         height: 55px; 
-        animation-delay: 2s; 
-      }
-
-      @keyframes floatLogo {
-        0% {
-          transform: translateY(0);
-        }
-        100% {
-          transform: translateY(-5px);
-        }
       }
 
       .logo-text {
