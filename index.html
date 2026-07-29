@@ -446,7 +446,8 @@
       }
 
       @keyframes pulseIndicator {
-        0%, 100% {
+        0%,
+        100% {
           opacity: 1;
           transform: scale(1);
         }
@@ -551,8 +552,13 @@
         animation: blinkColon 1s infinite;
       }
       @keyframes blinkColon {
-        0%, 100% { opacity: 1; }
-        50% { opacity: 0.2; }
+        0%,
+        100% {
+          opacity: 1;
+        }
+        50% {
+          opacity: 0.2;
+        }
       }
 
       .header-bar-controls .digital-time .date {
@@ -654,7 +660,8 @@
       }
 
       @keyframes hintBlink {
-        0%, 100% {
+        0%,
+        100% {
           opacity: 1;
           transform: scale(1);
         }
@@ -665,7 +672,8 @@
       }
 
       @keyframes hintTapAnim {
-        0%, 100% {
+        0%,
+        100% {
           transform: translateY(0);
         }
         50% {
@@ -879,7 +887,8 @@
       }
 
       @keyframes iconPulse {
-        0%, 100% {
+        0%,
+        100% {
           transform: scale(1);
         }
         50% {
@@ -1039,20 +1048,62 @@
       .sidebar-link:hover .link-icon {
         transform: scale(1.15) rotate(-5deg);
       }
-      .link-icon.weather { background: rgba(59, 130, 246, 0.15); color: #3b82f6; }
-      .link-icon.tide { background: rgba(6, 182, 212, 0.15); color: #06b6d4; }
-      .link-icon.disaster { background: rgba(239, 68, 68, 0.15); color: #ef4444; }
-      .link-icon.road { background: rgba(245, 158, 11, 0.15); color: #f59e0b; }
-      .link-icon.flood { background: rgba(99, 102, 241, 0.15); color: #6366f1; }
-      .link-icon.quake { background: rgba(168, 85, 247, 0.15); color: #a855f7; }
-      .link-icon.radar { background: rgba(34, 197, 94, 0.15); color: #22c55e; }
-      .link-icon.fire { background: rgba(249, 115, 22, 0.15); color: #f97316; }
-      .link-icon.emergency { background: rgba(239, 68, 68, 0.15); color: #ef4444; }
-      .link-icon.info { background: rgba(148, 163, 184, 0.15); color: #94a3b8; }
-      .link-icon.hospital { background: rgba(16, 185, 129, 0.15); color: #10b981; }
-      .link-icon.maritime { background: rgba(59, 130, 246, 0.15); color: #3b82f6; }
-      .link-icon.civil { background: rgba(251, 191, 36, 0.15); color: #fbbf24; }
-      .link-icon.phone { background: rgba(34, 197, 94, 0.15); color: #22c55e; }
+      .link-icon.weather {
+        background: rgba(59, 130, 246, 0.15);
+        color: #3b82f6;
+      }
+      .link-icon.tide {
+        background: rgba(6, 182, 212, 0.15);
+        color: #06b6d4;
+      }
+      .link-icon.disaster {
+        background: rgba(239, 68, 68, 0.15);
+        color: #ef4444;
+      }
+      .link-icon.road {
+        background: rgba(245, 158, 11, 0.15);
+        color: #f59e0b;
+      }
+      .link-icon.flood {
+        background: rgba(99, 102, 241, 0.15);
+        color: #6366f1;
+      }
+      .link-icon.quake {
+        background: rgba(168, 85, 247, 0.15);
+        color: #a855f7;
+      }
+      .link-icon.radar {
+        background: rgba(34, 197, 94, 0.15);
+        color: #22c55e;
+      }
+      .link-icon.fire {
+        background: rgba(249, 115, 22, 0.15);
+        color: #f97316;
+      }
+      .link-icon.emergency {
+        background: rgba(239, 68, 68, 0.15);
+        color: #ef4444;
+      }
+      .link-icon.info {
+        background: rgba(148, 163, 184, 0.15);
+        color: #94a3b8;
+      }
+      .link-icon.hospital {
+        background: rgba(16, 185, 129, 0.15);
+        color: #10b981;
+      }
+      .link-icon.maritime {
+        background: rgba(59, 130, 246, 0.15);
+        color: #3b82f6;
+      }
+      .link-icon.civil {
+        background: rgba(251, 191, 36, 0.15);
+        color: #fbbf24;
+      }
+      .link-icon.phone {
+        background: rgba(34, 197, 94, 0.15);
+        color: #22c55e;
+      }
 
       .sidebar-link .link-text {
         flex: 1;
@@ -1160,13 +1211,31 @@
         font-size: 13px;
         flex-shrink: 0;
       }
-      .e-icon.bomba { background: rgba(239, 68, 68, 0.2); color: #ef4444; }
-      .e-icon.polis { background: rgba(59, 130, 246, 0.2); color: #3b82f6; }
-      .e-icon.hospital { background: rgba(16, 185, 129, 0.2); color: #10b981; }
-      .e-icon.maritim { background: rgba(6, 182, 212, 0.2); color: #06b6d4; }
-      .e-icon.civil { background: rgba(251, 191, 36, 0.2); color: #fbbf24; }
-      .e-icon.emergency { background: rgba(239, 68, 68, 0.15); color: #ef4444; }
-      
+      .e-icon.bomba {
+        background: rgba(239, 68, 68, 0.2);
+        color: #ef4444;
+      }
+      .e-icon.polis {
+        background: rgba(59, 130, 246, 0.2);
+        color: #3b82f6;
+      }
+      .e-icon.hospital {
+        background: rgba(16, 185, 129, 0.2);
+        color: #10b981;
+      }
+      .e-icon.maritim {
+        background: rgba(6, 182, 212, 0.2);
+        color: #06b6d4;
+      }
+      .e-icon.civil {
+        background: rgba(251, 191, 36, 0.2);
+        color: #fbbf24;
+      }
+      .e-icon.emergency {
+        background: rgba(239, 68, 68, 0.15);
+        color: #ef4444;
+      }
+
       .emergency-item .e-info {
         flex: 1;
         min-width: 0;
@@ -1323,9 +1392,11 @@
         object-fit: contain;
         display: inline-block;
       }
-      .logo-img.logo-bomba { height: 55px; }
-      .logo-img.logo-komunikasi { 
-        height: 55px; 
+      .logo-img.logo-bomba {
+        height: 55px;
+      }
+      .logo-img.logo-komunikasi {
+        height: 55px;
       }
 
       .logo-text {
@@ -1376,10 +1447,18 @@
         transform: translateY(20px);
         animation: fadeInUp 0.6s forwards;
       }
-      .stat-item:nth-child(1) { animation-delay: 0.1s; }
-      .stat-item:nth-child(2) { animation-delay: 0.2s; }
-      .stat-item:nth-child(3) { animation-delay: 0.3s; }
-      .stat-item:nth-child(4) { animation-delay: 0.4s; }
+      .stat-item:nth-child(1) {
+        animation-delay: 0.1s;
+      }
+      .stat-item:nth-child(2) {
+        animation-delay: 0.2s;
+      }
+      .stat-item:nth-child(3) {
+        animation-delay: 0.3s;
+      }
+      .stat-item:nth-child(4) {
+        animation-delay: 0.4s;
+      }
 
       .stat-item:hover {
         border-color: #cc0000;
@@ -1458,7 +1537,8 @@
       }
 
       @keyframes blink {
-        0%, 100% {
+        0%,
+        100% {
           opacity: 1;
         }
         50% {
@@ -1587,7 +1667,8 @@
         animation: pulseDot 2s infinite;
       }
       @keyframes pulseDot {
-        0%, 100% {
+        0%,
+        100% {
           opacity: 1;
           transform: scale(1);
           box-shadow: 0 0 0 0 rgba(204, 0, 0, 0.6);
@@ -1660,9 +1741,15 @@
           width: 34px;
           height: 34px;
         }
-        .header-bar-controls .analog-clock .hand.hour { height: 10px; }
-        .header-bar-controls .analog-clock .hand.minute { height: 14px; }
-        .header-bar-controls .analog-clock .hand.second { height: 16px; }
+        .header-bar-controls .analog-clock .hand.hour {
+          height: 10px;
+        }
+        .header-bar-controls .analog-clock .hand.minute {
+          height: 14px;
+        }
+        .header-bar-controls .analog-clock .hand.second {
+          height: 16px;
+        }
         .header-bar-controls .mode-toggle-btn,
         .header-bar-controls .switch-mode-btn {
           width: 32px;
@@ -1673,8 +1760,12 @@
           width: 32px;
           height: 32px;
         }
-        .header-bar-controls .digital-time .time { font-size: 14px; }
-        .header-bar-controls .digital-time .date { font-size: 8px; }
+        .header-bar-controls .digital-time .time {
+          font-size: 14px;
+        }
+        .header-bar-controls .digital-time .date {
+          font-size: 8px;
+        }
         .toggle-header-btn {
           top: 10px;
           right: 10px;
@@ -1682,38 +1773,84 @@
           height: 38px;
           font-size: 16px;
         }
-        .apps-grid { grid-template-columns: 1fr; }
-        .stats-bar { grid-template-columns: repeat(2, 1fr); }
+        .apps-grid {
+          grid-template-columns: 1fr;
+        }
+        .stats-bar {
+          grid-template-columns: repeat(2, 1fr);
+        }
         .footer {
           flex-direction: column;
           text-align: center;
         }
-        .footer .social-links { justify-content: center; }
+        .footer .social-links {
+          justify-content: center;
+        }
         .sidebar {
           width: 100%;
           max-width: 100vw;
           right: -100vw;
         }
-        .logo-text h1 { font-size: 16px; }
-        .logo-text .sub { font-size: 10px; }
-        .logo-img { height: 38px; }
-        .logo-img.logo-bomba { height: 38px; }
-        .logo-img.logo-komunikasi { height: 38px; }
-        .logo { gap: 6px; }
-        .logo-text { flex: 0 1 auto; }
-        .accordion-header { padding: 10px 12px; }
-        .accordion-header .accordion-title { font-size: 10px; }
-        .sidebar-link { font-size: 12px; padding: 8px 10px; }
-        .emergency-item { padding: 5px 8px; }
-        .emergency-item .e-info .e-name { font-size: 11px; }
-        .emergency-item .e-info .e-number { font-size: 12px; }
-        .dblclick-hint { font-size: 7px; padding: 2px 8px; bottom: 2px; }
+        .logo-text h1 {
+          font-size: 16px;
+        }
+        .logo-text .sub {
+          font-size: 10px;
+        }
+        .logo-img {
+          height: 38px;
+        }
+        .logo-img.logo-bomba {
+          height: 38px;
+        }
+        .logo-img.logo-komunikasi {
+          height: 38px;
+        }
+        .logo {
+          gap: 6px;
+        }
+        .logo-text {
+          flex: 0 1 auto;
+        }
+        .accordion-header {
+          padding: 10px 12px;
+        }
+        .accordion-header .accordion-title {
+          font-size: 10px;
+        }
+        .sidebar-link {
+          font-size: 12px;
+          padding: 8px 10px;
+        }
+        .emergency-item {
+          padding: 5px 8px;
+        }
+        .emergency-item .e-info .e-name {
+          font-size: 11px;
+        }
+        .emergency-item .e-info .e-number {
+          font-size: 12px;
+        }
+        .dblclick-hint {
+          font-size: 7px;
+          padding: 2px 8px;
+          bottom: 2px;
+        }
       }
 
-      ::-webkit-scrollbar { width: 6px; }
-      ::-webkit-scrollbar-track { background: #0a0a0a; }
-      ::-webkit-scrollbar-thumb { background: #cc0000; border-radius: 10px; }
-      ::-webkit-scrollbar-thumb:hover { background: #ffcc00; }
+      ::-webkit-scrollbar {
+        width: 6px;
+      }
+      ::-webkit-scrollbar-track {
+        background: #0a0a0a;
+      }
+      ::-webkit-scrollbar-thumb {
+        background: #cc0000;
+        border-radius: 10px;
+      }
+      ::-webkit-scrollbar-thumb:hover {
+        background: #ffcc00;
+      }
 
       body.desktop-mode .dashboard {
         max-width: 1100px;
@@ -1750,14 +1887,30 @@
         grid-template-columns: repeat(2, 1fr);
         gap: 8px;
       }
-      body.mobile-mode .logo-text h1 { font-size: 18px; }
-      body.mobile-mode .logo-text .sub { font-size: 11px; }
-      body.mobile-mode .logo-img { height: 36px; }
-      body.mobile-mode .logo-img.logo-bomba { height: 36px; }
-      body.mobile-mode .logo-img.logo-komunikasi { height: 36px; }
-      body.mobile-mode .app-card { padding: 18px 16px; }
-      body.mobile-mode .app-card h3 { font-size: 15px; }
-      body.mobile-mode .app-card p { font-size: 12px; }
+      body.mobile-mode .logo-text h1 {
+        font-size: 18px;
+      }
+      body.mobile-mode .logo-text .sub {
+        font-size: 11px;
+      }
+      body.mobile-mode .logo-img {
+        height: 36px;
+      }
+      body.mobile-mode .logo-img.logo-bomba {
+        height: 36px;
+      }
+      body.mobile-mode .logo-img.logo-komunikasi {
+        height: 36px;
+      }
+      body.mobile-mode .app-card {
+        padding: 18px 16px;
+      }
+      body.mobile-mode .app-card h3 {
+        font-size: 15px;
+      }
+      body.mobile-mode .app-card p {
+        font-size: 12px;
+      }
       body.mobile-mode .footer {
         flex-direction: column;
         text-align: center;
@@ -1853,7 +2006,10 @@
         <div class="center-dot"></div>
       </div>
       <div class="digital-time" aria-label="Masa dan tarikh semasa">
-        <div class="time" id="clock">12<span class="time-colon">:</span>00<span class="time-colon">:</span>00</div>
+        <div class="time" id="clock">
+          12<span class="time-colon">:</span>00<span class="time-colon">:</span
+          >00
+        </div>
         <div class="date" id="date">28 JULAI 2026</div>
       </div>
       <button
@@ -1995,7 +2151,8 @@
               >
                 <span class="link-icon fire"><i class="fas fa-fire"></i></span>
                 <span class="link-text"
-                  ><span class="link-name">Fire Danger Rating System (FDRS)</span
+                  ><span class="link-name"
+                    >Fire Danger Rating System (FDRS)</span
                   ><span class="link-desc"
                     >Sistem penarafan bahaya kebakaran</span
                   ></span
@@ -2541,6 +2698,7 @@
           ONLINE <span class="status-badge online">● Online</span>
         </div>
         <div class="apps-grid">
+          <!--
           <a
             href="https://dashboard-kekuatan-anggota-12-jam-j.vercel.app/"
             target="_blank"
@@ -2552,6 +2710,7 @@
             <span class="badge online">● Online</span
             ><span class="arrow"><i class="fas fa-arrow-right"></i></span
           ></a>
+          -->
           <a
             href="https://dashboard-data-jentera-jbpm-johor.vercel.app/"
             target="_blank"
@@ -2598,6 +2757,13 @@
           <span class="status-badge dev">● Dalam Pembangunan</span>
         </div>
         <div class="apps-grid">
+          <a href="#" target="_blank" class="app-card"
+            ><span class="icon"><i class="fas fa-user-shield"></i></span>
+            <h3>Kekuatan Anggota <span class="highlight">12 Jam</span></h3>
+            <p>Status anggota, syif, cuti & tugasan khas.</p>
+            <span class="badge dev">● Dalam Pembangunan</span
+            ><span class="arrow"><i class="fas fa-arrow-right"></i></span
+          ></a>
           <a href="#" target="_blank" class="app-card"
             ><span class="icon"><i class="fas fa-map-location-dot"></i></span>
             <h3>Peta Kawasan <span class="highlight">Jagaan Balai</span></h3>
@@ -2673,7 +2839,9 @@
 
         // --- KESAN RIPPLE KLIK DENGAN JS ---
         document.addEventListener('click', function (e) {
-          const targetBtn = e.target.closest('button, .app-card, .sidebar-link, .stat-item');
+          const targetBtn = e.target.closest(
+            'button, .app-card, .sidebar-link, .stat-item'
+          );
           if (targetBtn) {
             const rect = targetBtn.getBoundingClientRect();
             const ripple = document.createElement('span');
@@ -2752,7 +2920,8 @@
           });
         }
         if (sidebarClose) sidebarClose.addEventListener('click', closeSidebar);
-        if (sidebarOverlay) sidebarOverlay.addEventListener('click', closeSidebar);
+        if (sidebarOverlay)
+          sidebarOverlay.addEventListener('click', closeSidebar);
         document.addEventListener('keydown', function (e) {
           if (e.key === 'Escape' && sidebar.classList.contains('active'))
             closeSidebar();
@@ -2836,8 +3005,18 @@
         const dateEl = document.getElementById('date');
 
         const bulanNama = [
-          'JANUARI', 'FEBRUARI', 'MAC', 'APRIL', 'MEI', 'JUN',
-          'JULAI', 'OGOS', 'SEPTEMBER', 'OKTOBER', 'NOVEMBER', 'DISEMBER'
+          'JANUARI',
+          'FEBRUARI',
+          'MAC',
+          'APRIL',
+          'MEI',
+          'JUN',
+          'JULAI',
+          'OGOS',
+          'SEPTEMBER',
+          'OKTOBER',
+          'NOVEMBER',
+          'DISEMBER',
         ];
 
         function updateClock() {
@@ -2892,8 +3071,12 @@
         // --- MASUKKAN STATISTIK SECARA AUTOMATIK & ANIMASI KAUNTER ---
         function updateStats() {
           const totalApps = document.querySelectorAll('.app-card').length;
-          const onlineApps = document.querySelectorAll('.app-card .badge.online').length;
-          const liveApps = document.querySelectorAll('.app-card .badge.live').length;
+          const onlineApps = document.querySelectorAll(
+            '.app-card .badge.online'
+          ).length;
+          const liveApps = document.querySelectorAll(
+            '.app-card .badge.live'
+          ).length;
 
           const appCountEl = document.getElementById('appCount');
           const onlinePercentEl = document.getElementById('onlinePercent');
@@ -2904,7 +3087,8 @@
 
           if (onlinePercentEl) {
             const activeCount = onlineApps + liveApps;
-            const percent = totalApps > 0 ? Math.round((activeCount / totalApps) * 100) : 0;
+            const percent =
+              totalApps > 0 ? Math.round((activeCount / totalApps) * 100) : 0;
             animateCounter(onlinePercentEl, percent, '%');
           }
         }
