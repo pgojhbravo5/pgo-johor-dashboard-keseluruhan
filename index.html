@@ -168,11 +168,11 @@
         color: #059669;
       }
       body.mode-siang .hamburger-fixed-btn {
-        background: rgba(255, 255, 255, 0.92);
+        background: rgba(255, 255, 255, 0.95);
         border-color: #cc0000;
         color: #cc0000;
       }
-      body.mode-siang .hamburger-fixed-btn span {
+      body.mode-siang .hamburger-fixed-btn .hamburger-bars span {
         background: #cc0000;
       }
       body.mode-siang .header-top-controls .analog-clock {
@@ -235,86 +235,88 @@
         right: 0;
         bottom: 0;
         background: rgba(0, 0, 0, 0.75);
-        backdrop-filter: blur(4px);
-        -webkit-backdrop-filter: blur(4px);
+        backdrop-filter: blur(6px);
+        -webkit-backdrop-filter: blur(6px);
         z-index: 998;
         opacity: 0;
         visibility: hidden;
-        transition: all 0.3s ease;
+        transition: all 0.35s ease;
       }
       .sidebar-overlay.active {
         opacity: 1;
         visibility: visible;
       }
 
-      /* BUTANG HAMBURGER STICKY PENJURU ATAS KIRI */
+      /* BUTANG HAMBURGER MELEKAT PENJURU ATAS KIRI SKRIN */
       .hamburger-fixed-btn {
         position: fixed;
-        top: 20px;
-        left: 20px;
-        width: 46px;
-        height: 46px;
-        border-radius: 50%;
+        top: 0;
+        left: 0;
+        padding: 12px 18px 12px 14px;
+        border-bottom-right-radius: 18px;
         background: var(--hud-bg);
         border: 1px solid var(--fire-red);
+        border-top: none;
+        border-left: none;
         color: var(--fire-red);
         cursor: pointer;
         display: flex;
-        flex-direction: column;
         align-items: center;
-        justify-content: center;
-        gap: 4px;
+        gap: 10px;
         z-index: 1000;
         backdrop-filter: blur(20px);
         -webkit-backdrop-filter: blur(20px);
-        box-shadow: 0 10px 35px rgba(0, 0, 0, 0.8),
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.8),
           0 0 15px var(--fire-red-glow);
-        transition: opacity 0.3s ease, transform 0.3s ease, background 0.3s ease;
+        transition: opacity 0.35s cubic-bezier(0.16, 1, 0.3, 1),
+                    transform 0.35s cubic-bezier(0.16, 1, 0.3, 1),
+                    background 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
         user-select: none;
         -webkit-tap-highlight-color: transparent;
       }
+      
       .hamburger-fixed-btn:hover {
         background: var(--fire-red);
         color: #fff;
-        transform: scale(1.08);
-        box-shadow: 0 0 25px var(--fire-red-glow);
+        box-shadow: 0 0 25px var(--fire-red-glow), 0 10px 25px rgba(0, 0, 0, 0.6);
+        transform: translateY(2px);
       }
-      .hamburger-fixed-btn span {
-        display: block;
+
+      .hamburger-fixed-btn:hover .hamburger-bars span {
+        background: #ffffff;
+      }
+
+      .hamburger-fixed-btn .hamburger-bars {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        gap: 4px;
         width: 18px;
+      }
+
+      .hamburger-fixed-btn .hamburger-bars span {
+        display: block;
+        width: 100%;
         height: 2px;
         background: var(--hazard-gold);
         border-radius: 2px;
         transition: all 0.3s ease;
       }
 
-      /* APABILA SIDEBAR AKTIF, HAMBURGER DILINDUNGI SUPAYA TIADA DUA TANDA PANGKAH (X) */
+      .hamburger-fixed-btn .menu-title-text {
+        font-size: 11px;
+        font-weight: 800;
+        letter-spacing: 1px;
+        text-transform: uppercase;
+        white-space: nowrap;
+        color: inherit;
+        transition: color 0.3s ease;
+      }
+
       .hamburger-fixed-btn.active {
         opacity: 0;
         pointer-events: none;
-        transform: scale(0.8);
-      }
-
-      .hamburger-fixed-btn .btn-label {
-        position: absolute;
-        bottom: -30px;
-        left: 0;
-        background: rgba(5, 5, 10, 0.95);
-        color: #fff;
-        font-size: 10px;
-        font-weight: 600;
-        padding: 3px 8px;
-        border-radius: 6px;
-        white-space: nowrap;
-        pointer-events: none;
-        opacity: 0;
-        transition: all 0.3s ease;
-        border: 1px solid rgba(255, 204, 0, 0.3);
-        letter-spacing: 0.5px;
-      }
-      .hamburger-fixed-btn:hover .btn-label {
-        opacity: 1;
-        bottom: -26px;
+        transform: translateX(-100%);
       }
 
       .header-top-controls {
@@ -392,7 +394,7 @@
         align-items: center;
         justify-content: center;
         font-size: 16px;
-        transition: all 0.3s ease;
+        transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
         flex-shrink: 0;
         color: var(--hazard-gold);
       }
@@ -431,8 +433,7 @@
       }
 
       @keyframes pulseIndicator {
-        0%,
-        100% {
+        0%, 100% {
           transform: scale(1);
           opacity: 1;
         }
@@ -525,8 +526,7 @@
         animation: blinkColon 1s infinite;
       }
       @keyframes blinkColon {
-        0%,
-        100% {
+        0%, 100% {
           opacity: 1;
         }
         50% {
@@ -571,7 +571,7 @@
         }
       }
 
-      /* ANIMASI LAMPU BERGERAK (DIALIKKAN KE HEADER SUPAYA SENTIASA MELEKAT & IKUT BENTUK) */
+      /* ANIMASI LAMPU BERGERAK */
       .header::before {
         content: '';
         position: absolute;
@@ -649,6 +649,12 @@
         border-radius: 16px;
         border: 1px solid rgba(255, 255, 255, 0.08);
         flex-shrink: 0;
+        transition: transform 0.4s ease, border-color 0.4s ease;
+      }
+
+      .logo-img-wrapper:hover {
+        transform: scale(1.05);
+        border-color: var(--hazard-gold);
       }
 
       .logo-img {
@@ -709,9 +715,27 @@
         border: 1px solid var(--hud-border);
         position: relative;
         overflow: hidden;
-        transition: all 0.35s ease;
+        transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
         backdrop-filter: blur(10px);
+        animation: statFadeIn 0.6s ease backward;
       }
+
+      .stat-item:nth-child(1) { animation-delay: 0.1s; }
+      .stat-item:nth-child(2) { animation-delay: 0.2s; }
+      .stat-item:nth-child(3) { animation-delay: 0.3s; }
+      .stat-item:nth-child(4) { animation-delay: 0.4s; }
+
+      @keyframes statFadeIn {
+        from {
+          opacity: 0;
+          transform: translateY(15px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
       .stat-item::before {
         content: '';
         position: absolute;
@@ -721,17 +745,26 @@
         height: 100%;
         background: var(--hazard-gold);
         opacity: 0.6;
+        transition: opacity 0.3s ease, width 0.3s ease;
       }
       .stat-item:hover {
         border-color: var(--fire-red);
-        transform: translateY(-4px);
+        transform: translateY(-5px);
         box-shadow: 0 10px 25px rgba(204, 0, 0, 0.25);
+      }
+      .stat-item:hover::before {
+        opacity: 1;
+        width: 6px;
       }
       .stat-item .icon-badge {
         font-size: 18px;
         color: var(--hazard-gold);
         margin-bottom: 6px;
         display: block;
+        transition: transform 0.3s ease;
+      }
+      .stat-item:hover .icon-badge {
+        transform: scale(1.2);
       }
       .stat-item .num {
         font-size: 26px;
@@ -791,8 +824,7 @@
       }
 
       @keyframes pulseLive {
-        0%,
-        100% {
+        0%, 100% {
           opacity: 1;
         }
         50% {
@@ -819,6 +851,40 @@
         justify-content: space-between;
         position: relative;
         overflow: hidden;
+        animation: cardFadeIn 0.6s ease backward;
+      }
+
+      @keyframes cardFadeIn {
+        from {
+          opacity: 0;
+          transform: translateY(20px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      /* Shimmer sweep effect on card hover */
+      .app-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(
+          90deg,
+          transparent,
+          rgba(255, 255, 255, 0.06),
+          transparent
+        );
+        transition: left 0.6s ease;
+        pointer-events: none;
+      }
+
+      .app-card:hover::before {
+        left: 100%;
       }
 
       .app-card::after {
@@ -835,7 +901,7 @@
       }
 
       .app-card:hover {
-        transform: translateY(-6px);
+        transform: translateY(-6px) scale(1.01);
         border-color: var(--fire-red);
         box-shadow: 0 15px 35px rgba(204, 0, 0, 0.25);
       }
@@ -847,10 +913,11 @@
         font-size: 32px;
         color: var(--hazard-gold);
         margin-bottom: 14px;
-        transition: transform 0.3s ease;
+        transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1), color 0.3s ease;
       }
       .app-card:hover .icon {
-        transform: scale(1.15) rotate(-5deg);
+        transform: scale(1.18) rotate(-6deg);
+        color: #ffffff;
       }
 
       .app-card h3 {
@@ -942,8 +1009,7 @@
         animation: pulseDot 2s infinite;
       }
       @keyframes pulseDot {
-        0%,
-        100% {
+        0%, 100% {
           transform: scale(1);
           opacity: 1;
         }
@@ -1050,6 +1116,10 @@
         overflow: hidden;
         border: 1px solid rgba(255, 255, 255, 0.08);
         background: rgba(20, 20, 28, 0.5);
+        transition: border-color 0.3s ease;
+      }
+      .accordion-item:hover {
+        border-color: rgba(255, 204, 0, 0.3);
       }
 
       .accordion-header {
@@ -1128,55 +1198,24 @@
         justify-content: center;
         font-size: 14px;
         flex-shrink: 0;
+        transition: transform 0.3s ease;
       }
-      .link-icon.weather {
-        background: rgba(59, 130, 246, 0.15);
-        color: #3b82f6;
+      .sidebar-link:hover .link-icon {
+        transform: scale(1.15);
       }
-      .link-icon.tide {
-        background: rgba(6, 182, 212, 0.15);
-        color: #06b6d4;
-      }
-      .link-icon.disaster {
-        background: rgba(239, 68, 68, 0.15);
-        color: #ef4444;
-      }
-      .link-icon.road {
-        background: rgba(245, 158, 11, 0.15);
-        color: #f59e0b;
-      }
-      .link-icon.flood {
-        background: rgba(99, 102, 241, 0.15);
-        color: #6366f1;
-      }
-      .link-icon.quake {
-        background: rgba(168, 85, 247, 0.15);
-        color: #a855f7;
-      }
-      .link-icon.radar {
-        background: rgba(34, 197, 94, 0.15);
-        color: #22c55e;
-      }
-      .link-icon.fire {
-        background: rgba(249, 115, 22, 0.15);
-        color: #f97316;
-      }
-      .link-icon.emergency {
-        background: rgba(239, 68, 68, 0.15);
-        color: #ef4444;
-      }
-      .link-icon.info {
-        background: rgba(148, 163, 184, 0.15);
-        color: #94a3b8;
-      }
-      .link-icon.hospital {
-        background: rgba(16, 185, 129, 0.15);
-        color: #10b981;
-      }
-      .link-icon.civil {
-        background: rgba(251, 191, 36, 0.15);
-        color: #fbbf24;
-      }
+
+      .link-icon.weather { background: rgba(59, 130, 246, 0.15); color: #3b82f6; }
+      .link-icon.tide { background: rgba(6, 182, 212, 0.15); color: #06b6d4; }
+      .link-icon.disaster { background: rgba(239, 68, 68, 0.15); color: #ef4444; }
+      .link-icon.road { background: rgba(245, 158, 11, 0.15); color: #f59e0b; }
+      .link-icon.flood { background: rgba(99, 102, 241, 0.15); color: #6366f1; }
+      .link-icon.quake { background: rgba(168, 85, 247, 0.15); color: #a855f7; }
+      .link-icon.radar { background: rgba(34, 197, 94, 0.15); color: #22c55e; }
+      .link-icon.fire { background: rgba(249, 115, 22, 0.15); color: #f97316; }
+      .link-icon.emergency { background: rgba(239, 68, 68, 0.15); color: #ef4444; }
+      .link-icon.info { background: rgba(148, 163, 184, 0.15); color: #94a3b8; }
+      .link-icon.hospital { background: rgba(16, 185, 129, 0.15); color: #10b981; }
+      .link-icon.civil { background: rgba(251, 191, 36, 0.15); color: #fbbf24; }
 
       .sidebar-link .link-text {
         flex: 1;
@@ -1216,6 +1255,10 @@
         border-radius: 12px;
         margin-bottom: 6px;
         border: 1px solid rgba(255, 255, 255, 0.05);
+        transition: border-color 0.3s ease;
+      }
+      .emergency-item:hover {
+        border-color: rgba(204, 0, 0, 0.4);
       }
       .emergency-item .e-info {
         flex: 1;
@@ -1244,6 +1287,10 @@
         text-decoration: none;
         position: relative;
         box-shadow: 0 0 10px var(--fire-red-glow);
+        transition: transform 0.3s ease;
+      }
+      .emergency-item .e-actions .call-btn:hover {
+        transform: scale(1.15);
       }
       .emergency-item .e-actions .call-btn::before {
         content: '';
@@ -1304,13 +1351,10 @@
           padding-right: 12px;
         }
         .hamburger-fixed-btn {
-          top: 10px;
-          left: 10px;
-          width: 38px;
-          height: 38px;
+          padding: 10px 14px 10px 10px;
         }
-        .hamburger-fixed-btn span {
-          width: 15px;
+        .hamburger-fixed-btn .menu-title-text {
+          font-size: 10px;
         }
         .logo {
           flex-direction: row;
@@ -1420,7 +1464,7 @@
     <!-- OVERLAY LAYAR NAF -->
     <div class="sidebar-overlay" id="sidebarOverlay"></div>
 
-    <!-- BUTANG HAMBURGER STICKY PENJURU ATAS KIRI -->
+    <!-- BUTANG HAMBURGER MELEKAT PENJURU ATAS KIRI SKRIN -->
     <button
       class="hamburger-fixed-btn"
       id="hamburgerBtn"
@@ -1428,8 +1472,10 @@
       aria-label="Buka menu pautan penting"
       aria-expanded="false"
     >
-      <span></span><span></span><span></span>
-      <span class="btn-label">Menu Pautan</span>
+      <div class="hamburger-bars">
+        <span></span><span></span><span></span>
+      </div>
+      <span class="menu-title-text">MENU PAUTAN</span>
     </button>
 
     <!-- SIDEBAR DRAWER -->
@@ -1938,7 +1984,7 @@
               12<span class="time-colon">:</span>00<span class="time-colon">:</span
               >00
             </div>
-            <div class="date" id="date">28 JULAI 2026</div>
+            <div class="date" id="date">29 JULAI 2026</div>
           </div>
         </div>
 
