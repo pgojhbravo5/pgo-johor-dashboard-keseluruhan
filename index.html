@@ -22,7 +22,7 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
 
   <style>
-    /* ===== CSS PENUH SEPERTI VERSI SEBELUM, DENGAN TAMBAHAN RIPPLE EFFECT ===== */
+    /* ===== SEMUA CSS SAMA SEPERTI VERSI SEBELUM INI ===== */
     :root {
       --fire-red: #cc0000;
       --fire-red-glow: rgba(204,0,0,0.6);
@@ -138,29 +138,12 @@
       box-shadow:0 0.625rem 1.875rem rgba(0,0,0,0.8),0 0 0.9375rem var(--fire-red-glow);
       transition:opacity 0.35s cubic-bezier(0.16,1,0.3,1), transform 0.35s cubic-bezier(0.16,1,0.3,1), background 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
       user-select:none; -webkit-tap-highlight-color:transparent;
-      position:relative; /* untuk ripple */
     }
     .hamburger-fixed-btn:hover { background:var(--fire-red); color:#fff; box-shadow:0 0 1.5625rem var(--fire-red-glow),0 0.625rem 1.5625rem rgba(0,0,0,0.6); transform:translateY(0.125rem); }
     .hamburger-fixed-btn .hamburger-bars { display:flex; flex-direction:column; justify-content:center; gap:0.25rem; width:1.125rem; }
     .hamburger-fixed-btn .hamburger-bars span { display:block; width:100%; height:0.125rem; background:var(--hazard-gold); border-radius:0.125rem; transition:all 0.3s ease; }
     .hamburger-fixed-btn .menu-title-text { font-size:0.6875rem; font-weight:800; letter-spacing:0.0625rem; text-transform:uppercase; white-space:nowrap; color:inherit; transition:color 0.3s ease; }
     .hamburger-fixed-btn.active { opacity:0; pointer-events:none; transform:translateX(-100%); }
-
-    /* RIPPLE EFFECT */
-    .ripple-effect {
-      position: absolute;
-      border-radius: 50%;
-      background: rgba(255, 204, 0, 0.4);
-      transform: scale(0);
-      animation: rippleAnim 0.6s linear;
-      pointer-events: none;
-    }
-    @keyframes rippleAnim {
-      to {
-        transform: scale(4);
-        opacity: 0;
-      }
-    }
 
     /* HEADER TOP CONTROLS */
     .header-top-controls { display:flex; align-items:center; justify-content:flex-end; gap:0.75rem; margin-bottom:1rem; width:100%; flex-wrap:wrap; padding-bottom:0.75rem; border-bottom:1px dashed rgba(255,255,255,0.1); }
@@ -170,7 +153,6 @@
       width:2.625rem; height:2.625rem; border-radius:50%; background:rgba(20,20,28,0.9); border:1px solid var(--hazard-gold);
       cursor:pointer; display:flex; align-items:center; justify-content:center; font-size:1.125rem;
       transition:all 0.3s cubic-bezier(0.16,1,0.3,1); flex-shrink:0; color:var(--hazard-gold); border-color:rgba(255,204,0,0.4);
-      position:relative; /* untuk ripple */
     }
     .header-top-controls button:hover, .header-top-controls .refresh-btn:hover { background:var(--hazard-gold); color:#000; transform:scale(1.1); box-shadow:0 0 1.25rem var(--hazard-gold-glow); border-color:var(--hazard-gold); }
     .header-top-controls .switch-mode-btn { border-color:var(--status-green); color:var(--status-green); }
@@ -216,7 +198,7 @@
 
     /* STATS */
     .stats-bar { display:grid; grid-template-columns:repeat(4,1fr); gap:1rem; margin-bottom:2.1875rem; }
-    .stat-item { background:var(--hud-card-bg); border-radius:1rem; padding:1rem; text-align:center; border:1px solid var(--hud-border); position:relative; overflow:hidden; transition:all 0.35s cubic-bezier(0.16,1,0.3,1); backdrop-filter:blur(10px); animation:statFadeIn 0.6s ease backwards; display:flex; flex-direction:column; align-items:center; justify-content:center; position:relative; /* untuk ripple */ }
+    .stat-item { background:var(--hud-card-bg); border-radius:1rem; padding:1rem; text-align:center; border:1px solid var(--hud-border); position:relative; overflow:hidden; transition:all 0.35s cubic-bezier(0.16,1,0.3,1); backdrop-filter:blur(10px); animation:statFadeIn 0.6s ease backwards; display:flex; flex-direction:column; align-items:center; justify-content:center; }
     .stat-item:nth-child(1) { animation-delay:0.1s; }
     .stat-item:nth-child(2) { animation-delay:0.2s; }
     .stat-item:nth-child(3) { animation-delay:0.3s; }
@@ -240,7 +222,7 @@
     @keyframes pulseLive { 0%,100%{ opacity:1; } 50%{ opacity:0.5; } }
 
     .apps-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:1.25rem; }
-    .app-card { background:var(--hud-card-bg); border-radius:1.125rem; padding:1.5rem; border:1px solid var(--hud-border); text-decoration:none; color:#ffffff; transition:all 0.35s cubic-bezier(0.16,1,0.3,1); display:flex; flex-direction:column; justify-content:space-between; position:relative; overflow:hidden; animation:cardFadeIn 0.6s ease backwards; backdrop-filter:blur(10px); position:relative; /* untuk ripple */ }
+    .app-card { background:var(--hud-card-bg); border-radius:1.125rem; padding:1.5rem; border:1px solid var(--hud-border); text-decoration:none; color:#ffffff; transition:all 0.35s cubic-bezier(0.16,1,0.3,1); display:flex; flex-direction:column; justify-content:space-between; position:relative; overflow:hidden; animation:cardFadeIn 0.6s ease backwards; backdrop-filter:blur(10px); }
     .app-card.card-wide { grid-column:1 / -1; background:linear-gradient(135deg, rgba(204,0,0,0.2), rgba(255,204,0,0.05)); border-color:var(--fire-red); border-width:2px; }
     .app-card.card-wide .icon { color:#fff; }
     .app-card.card-wide .badge.live { background:rgba(239,68,68,0.3); }
@@ -269,7 +251,7 @@
     .footer .brand .dot { width:0.5rem; height:0.5rem; background:var(--fire-red); border-radius:50%; box-shadow:0 0 0.625rem var(--fire-red-glow); animation:pulseDot 2s infinite; }
     @keyframes pulseDot { 0%,100%{ transform:scale(1); opacity:1; } 50%{ transform:scale(0.7); opacity:0.4; } }
     .footer .social-links { display:flex; gap:0.5rem; }
-    .footer .social-links a { color:#94a3b8; width:2.25rem; height:2.25rem; border-radius:50%; background:rgba(255,255,255,0.04); display:flex; align-items:center; justify-content:center; transition:all 0.3s ease; border:1px solid rgba(255,255,255,0.08); position:relative; /* untuk ripple */ }
+    .footer .social-links a { color:#94a3b8; width:2.25rem; height:2.25rem; border-radius:50%; background:rgba(255,255,255,0.04); display:flex; align-items:center; justify-content:center; transition:all 0.3s ease; border:1px solid rgba(255,255,255,0.08); }
     .footer .social-links a:hover { color:var(--hazard-gold); border-color:var(--hazard-gold); transform:translateY(-0.1875rem); box-shadow:0 0 0.9375rem var(--hazard-gold-glow); }
     .footer .last-updated { font-size:0.6875rem; color:var(--text-secondary); }
 
@@ -278,7 +260,7 @@
     .sidebar.active { left:0; }
     .sidebar-header { display:flex; justify-content:space-between; align-items:center; padding:1.375rem 1.5rem; background:rgba(20,0,0,0.6); border-bottom:1px solid rgba(255,255,255,0.1); flex-shrink:0; }
     .sidebar-header h3 { color:var(--hazard-gold); font-size:0.9375rem; font-weight:800; display:flex; align-items:center; gap:0.625rem; letter-spacing:0.0625rem; }
-    .sidebar-close { width:2.375rem; height:2.375rem; border-radius:50%; background:rgba(239,68,68,0.15); border:1px solid rgba(239,68,68,0.4); color:#ef4444; font-size:1rem; cursor:pointer; display:flex; align-items:center; justify-content:center; transition:all 0.3s ease; position:relative; /* untuk ripple */ }
+    .sidebar-close { width:2.375rem; height:2.375rem; border-radius:50%; background:rgba(239,68,68,0.15); border:1px solid rgba(239,68,68,0.4); color:#ef4444; font-size:1rem; cursor:pointer; display:flex; align-items:center; justify-content:center; transition:all 0.3s ease; }
     .sidebar-close:hover { background:var(--fire-red); color:#fff; border-color:var(--fire-red); transform:rotate(90deg) scale(1.1); box-shadow:0 0 0.9375rem var(--fire-red-glow); }
 
     /* SEARCH BAR - GOOGLE SEARCH */
@@ -287,14 +269,14 @@
     .search-box input { flex:1; padding:0.5rem 2.5rem 0.5rem 2.25rem; border-radius:2rem; border:1px solid rgba(255,255,255,0.15); background:rgba(255,255,255,0.06); color:#fff; font-size:0.8125rem; outline:none; transition:border-color 0.3s ease; background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='%2394a3b8' viewBox='0 0 16 16'%3E%3Cpath d='M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z'/%3E%3C/svg%3E"); background-repeat:no-repeat; background-position:0.75rem center; background-size:1rem; }
     .search-box input::placeholder { color:#94a3b8; }
     .search-box input:focus { border-color:var(--hazard-gold); }
-    .search-box button { position:absolute; right:0.25rem; background:transparent; border:none; color:var(--hazard-gold); cursor:pointer; font-size:1rem; padding:0.25rem 0.75rem; border-radius:2rem; transition:background 0.2s ease; position:relative; /* untuk ripple */ }
+    .search-box button { position:absolute; right:0.25rem; background:transparent; border:none; color:var(--hazard-gold); cursor:pointer; font-size:1rem; padding:0.25rem 0.75rem; border-radius:2rem; transition:background 0.2s ease; }
     .search-box button:hover { background:rgba(255,204,0,0.15); }
 
     /* PAUTAN POPULAR */
     .popular-links { padding:0.75rem 1rem; border-bottom:1px solid rgba(255,255,255,0.08); flex-shrink:0; }
     .popular-links .popular-title { font-size:0.625rem; text-transform:uppercase; letter-spacing:0.0625rem; color:var(--text-secondary); margin-bottom:0.5rem; font-weight:700; }
     .popular-links .popular-grid { display:flex; flex-wrap:wrap; gap:0.5rem; }
-    .popular-links .popular-item { display:inline-flex; align-items:center; gap:0.375rem; padding:0.25rem 0.75rem; background:rgba(255,255,255,0.06); border-radius:1.25rem; border:1px solid rgba(255,255,255,0.08); color:#cbd5e1; font-size:0.6875rem; text-decoration:none; transition:all 0.2s ease; font-weight:500; position:relative; /* untuk ripple */ }
+    .popular-links .popular-item { display:inline-flex; align-items:center; gap:0.375rem; padding:0.25rem 0.75rem; background:rgba(255,255,255,0.06); border-radius:1.25rem; border:1px solid rgba(255,255,255,0.08); color:#cbd5e1; font-size:0.6875rem; text-decoration:none; transition:all 0.2s ease; font-weight:500; }
     .popular-links .popular-item:hover { background:var(--hazard-gold); color:#000; border-color:var(--hazard-gold); transform:translateY(-1px); }
     .popular-links .popular-item i { font-size:0.75rem; }
 
@@ -306,7 +288,7 @@
 
     .accordion-item { margin-bottom:0.625rem; border-radius:0.875rem; overflow:hidden; border:1px solid rgba(255,255,255,0.08); background:rgba(20,20,28,0.5); transition:border-color 0.3s ease; }
     .accordion-item:hover { border-color:rgba(255,204,0,0.3); }
-    .accordion-header { display:flex; align-items:center; justify-content:space-between; padding:0.875rem 1.125rem; background:rgba(255,255,255,0.02); cursor:pointer; user-select:none; width:100%; border:none; color:#ffffff; font-size:0.8125rem; font-weight:700; letter-spacing:0.05rem; text-transform:uppercase; transition:all 0.3s ease; position:relative; /* untuk ripple */ }
+    .accordion-header { display:flex; align-items:center; justify-content:space-between; padding:0.875rem 1.125rem; background:rgba(255,255,255,0.02); cursor:pointer; user-select:none; width:100%; border:none; color:#ffffff; font-size:0.8125rem; font-weight:700; letter-spacing:0.05rem; text-transform:uppercase; transition:all 0.3s ease; }
     .accordion-header:hover { background:rgba(255,204,0,0.08); }
     .accordion-header .accordion-title { display:flex; align-items:center; gap:0.625rem; color:var(--alert-orange); }
     .accordion-header .arrow { color:#64748b; transition:transform 0.3s ease; }
@@ -314,7 +296,7 @@
     .accordion-content { max-height:0; overflow:hidden; transition:max-height 0.4s cubic-bezier(0.4,0,0.2,1); background:rgba(5,5,10,0.6); }
     .accordion-content.open { max-height:125rem; padding:0.625rem; border-top:1px solid rgba(255,255,255,0.05); }
 
-    .sidebar-link { display:flex; align-items:center; gap:0.75rem; padding:0.625rem 0.75rem; color:#cbd5e1; text-decoration:none; border-radius:0.625rem; margin-bottom:0.25rem; transition:all 0.25s ease; border:1px solid transparent; font-size:0.8125rem; position:relative; /* untuk ripple */ }
+    .sidebar-link { display:flex; align-items:center; gap:0.75rem; padding:0.625rem 0.75rem; color:#cbd5e1; text-decoration:none; border-radius:0.625rem; margin-bottom:0.25rem; transition:all 0.25s ease; border:1px solid transparent; font-size:0.8125rem; position:relative; }
     .sidebar-link:hover { background:rgba(255,255,255,0.05); color:#ffffff; border-color:rgba(255,204,0,0.2); transform:translateX(0.25rem); }
     .sidebar-link .link-icon { width:2rem; height:2rem; border-radius:0.5rem; display:flex; align-items:center; justify-content:center; font-size:0.875rem; flex-shrink:0; transition:transform 0.3s ease; }
     .sidebar-link:hover .link-icon { transform:scale(1.15); }
@@ -345,7 +327,7 @@
 
     /* EMERGENCY ITEMS */
     .emergency-group-title { color:var(--hazard-gold); font-size:0.6875rem; font-weight:700; text-transform:uppercase; letter-spacing:0.05rem; margin:0.75rem 0 0.375rem 0.25rem; display:flex; align-items:center; gap:0.375rem; }
-    .emergency-item { display:flex; align-items:center; gap:0.75rem; padding:0.625rem 0.75rem; background:rgba(255,255,255,0.03); border-radius:0.75rem; margin-bottom:0.375rem; border:1px solid rgba(255,255,255,0.05); transition:border-color 0.3s ease; position:relative; /* untuk ripple */ }
+    .emergency-item { display:flex; align-items:center; gap:0.75rem; padding:0.625rem 0.75rem; background:rgba(255,255,255,0.03); border-radius:0.75rem; margin-bottom:0.375rem; border:1px solid rgba(255,255,255,0.05); transition:border-color 0.3s ease; }
     .emergency-item:hover { border-color:rgba(204,0,0,0.4); }
     .emergency-item .e-info { flex:1; }
     .emergency-item .e-info .e-name { font-size:0.75rem; font-weight:600; color:#ffffff; display:block; }
@@ -485,6 +467,7 @@
           <a href="https://www.civildefence.gov.my/" target="_blank" class="sidebar-link"><span class="link-icon civil"><i class="fas fa-shield-halved"></i></span><span class="link-text"><span class="link-name">APM Pertahanan Awam</span><span class="link-desc">Pengurusan Bencana</span></span><i class="fas fa-external-link-alt"></i></a>
           <a href="https://www.rmp.gov.my/" target="_blank" class="sidebar-link"><span class="link-icon emergency"><i class="fas fa-shield-cat"></i></span><span class="link-text"><span class="link-name">PDRM Polis Diraja</span><span class="link-desc">Keselamatan Awam</span></span><i class="fas fa-external-link-alt"></i></a>
           <a href="https://www.moh.gov.my/" target="_blank" class="sidebar-link"><span class="link-icon hospital"><i class="fas fa-hospital-user"></i></span><span class="link-text"><span class="link-name">KKM Kesihatan</span><span class="link-desc">Perkhidmatan Perubatan</span></span><i class="fas fa-external-link-alt"></i></a>
+          <!-- HSI, HEBHK, CPRC TELAH DIBUANG -->
         </div>
       </div>
 
@@ -495,12 +478,14 @@
           <span class="arrow"><i class="fas fa-chevron-down"></i></span>
         </button>
         <div class="accordion-content" id="accordion5">
+          <!-- 999 -->
           <div class="emergency-group-title"><i class="fas fa-flag"></i> TALIAN KECEMASAN NASIONAL</div>
           <div class="emergency-item">
             <div class="e-info"><span class="e-name">MERS 999</span><span class="e-number">999</span></div>
             <div class="e-actions"><a href="tel:999" class="call-btn"><i class="fas fa-phone"></i></a></div>
           </div>
 
+          <!-- JBPM -->
           <div class="emergency-group-title"><i class="fas fa-fire-extinguisher"></i> BOMBA (JBPM)</div>
           <div class="emergency-item">
             <div class="e-info"><span class="e-name">HQ Negeri Johor</span><span class="e-number">07-340 9999</span></div>
@@ -511,6 +496,7 @@
             <div class="e-actions"><a href="tel:1800888994" class="call-btn"><i class="fas fa-phone"></i></a></div>
           </div>
 
+          <!-- PDRM -->
           <div class="emergency-group-title"><i class="fas fa-shield-cat"></i> POLIS (PDRM)</div>
           <div class="emergency-item">
             <div class="e-info"><span class="e-name">IPK Johor (Hotline Operasi)</span><span class="e-number">07-225 4422</span></div>
@@ -521,6 +507,7 @@
             <div class="e-actions"><a href="tel:072212999" class="call-btn"><i class="fas fa-phone"></i></a></div>
           </div>
 
+          <!-- APMM -->
           <div class="emergency-group-title"><i class="fas fa-ship"></i> MARITIM (APMM)</div>
           <div class="emergency-item">
             <div class="e-info"><span class="e-name">MRSC Johor (24 jam)</span><span class="e-number">07-219 9401</span></div>
@@ -535,12 +522,14 @@
             <div class="e-actions"><a href="tel:078916595" class="call-btn"><i class="fas fa-phone"></i></a></div>
           </div>
 
+          <!-- APM -->
           <div class="emergency-group-title"><i class="fas fa-shield-halved"></i> PERTAHANAN AWAM (APM)</div>
           <div class="emergency-item">
             <div class="e-info"><span class="e-name">APM Negeri Johor</span><span class="e-number">07-221 1991</span></div>
             <div class="e-actions"><a href="tel:072211991" class="call-btn"><i class="fas fa-phone"></i></a></div>
           </div>
 
+          <!-- HSA -->
           <div class="emergency-group-title"><i class="fas fa-hospital"></i> HOSPITAL SULTANAH AMINAH (HSA)</div>
           <div class="emergency-item">
             <div class="e-info"><span class="e-name">Talian Utama</span><span class="e-number">07-225 7000</span></div>
@@ -559,18 +548,21 @@
             <div class="e-actions"><a href="tel:072231666" class="call-btn"><i class="fas fa-phone"></i></a></div>
           </div>
 
+          <!-- Hospital Sultan Ismail (HSI) - NOMBOR -->
           <div class="emergency-group-title"><i class="fas fa-hospital"></i> HOSPITAL SULTAN ISMAIL (HSI)</div>
           <div class="emergency-item">
             <div class="e-info"><span class="e-name">Talian Utama</span><span class="e-number">07-356 5000</span></div>
             <div class="e-actions"><a href="tel:073565000" class="call-btn"><i class="fas fa-phone"></i></a></div>
           </div>
 
+          <!-- HEBHK Kluang -->
           <div class="emergency-group-title"><i class="fas fa-hospital"></i> HEBHK KLUANG</div>
           <div class="emergency-item">
             <div class="e-info"><span class="e-name">Talian Utama</span><span class="e-number">07-234 5333</span></div>
             <div class="e-actions"><a href="tel:072345333" class="call-btn"><i class="fas fa-phone"></i></a></div>
           </div>
 
+          <!-- NOTA -->
           <div class="info-box">
             <i class="fas fa-info-circle"></i> <strong>999</strong> talian kecemasan bersepadu (PDRM, JBPM, KKM, APM, APMM).<br/>
             Untuk sambungan dalaman, hubungi talian am.
@@ -602,7 +594,7 @@
       </div>
     </div>
 
-    <div class="sidebar-footer">🚨 PGO Johor · Pusat Gerakan Operasi</div>
+    <div class="sidebar-footer"> PGO Johor · Pusat Gerakan Operasi</div>
   </nav>
 
   <!-- MAIN DASHBOARD -->
@@ -705,13 +697,10 @@
           osc.stop(audioCtx.currentTime + 0.05);
         } catch(e) {}
       }
-
-      // RIPPLE EFFECT (FIXED)
       document.addEventListener('click', function(e) {
-        const target = e.target.closest('button, .app-card, .sidebar-link, .stat-item, .hamburger-fixed-btn, .refresh-btn, .popular-item, .call-btn, .sidebar-close, .accordion-header, .search-box button, .social-links a');
+        const target = e.target.closest('button, .app-card, .sidebar-link, .stat-item, .hamburger-fixed-btn, .refresh-btn, .popular-item, .call-btn');
         if (target) {
           playClickSound();
-          // Cari elemen dengan position:relative untuk ripple
           const rect = target.getBoundingClientRect();
           const ripple = document.createElement('span');
           ripple.className = 'ripple-effect';
@@ -848,6 +837,8 @@
           }
         });
       });
+
+      // SEARCH FUNCTION TELAH DIBUANG - TIADA LAGI PENAPISAN PAUTAN
 
       // STATS ANIMATION
       const total = document.querySelectorAll('.app-card').length;
