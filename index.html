@@ -17,9 +17,8 @@
     />
     <meta name="apple-mobile-web-app-title" content="PGO Johor" />
     <meta name="mobile-web-app-capable" content="yes" />
-    <link rel="manifest" href="manifest.json" />
 
-    <!-- ICON APPS -->
+    <link rel="manifest" href="manifest.json" />
     <link
       rel="icon"
       type="image/png"
@@ -42,6 +41,7 @@
     />
 
     <style>
+      /* ===== SEMUA CSS SAMA SEPERTI VERSI SEBELUM INI (dengan search, popular, dll.) ===== */
       :root {
         --fire-red: #cc0000;
         --fire-red-glow: rgba(204, 0, 0, 0.6);
@@ -55,13 +55,19 @@
         --hud-border-red: rgba(204, 0, 0, 0.4);
         --font-main: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI',
           Roboto, sans-serif;
+        --font-size-base: 16px;
+        --text-primary: #e2e8f0;
+        --text-secondary: #94a3b8;
+        --bg-body: #050508;
       }
-
       * {
         margin: 0;
         padding: 0;
         box-sizing: border-box;
         font-family: var(--font-main);
+      }
+      html {
+        font-size: var(--font-size-base);
       }
 
       body {
@@ -70,20 +76,19 @@
         display: flex;
         justify-content: center;
         align-items: flex-start;
-        padding: 20px 16px;
-        background: #050508;
+        padding: 1.25rem 1rem;
+        background: var(--bg-body);
         background-image: url('https://raw.githubusercontent.com/pgojhbravo5/pgo-johor-dashboard-keseluruhan/3c1b568398651e5e9612730038c9d189a673be48/firetruck-BG.png');
         background-size: cover;
         background-position: center;
         background-attachment: fixed;
         position: relative;
         overflow-x: hidden;
-        color: #e2e8f0;
+        color: var(--text-primary);
         transition: background 0.5s ease, background-image 0.5s ease;
         -webkit-font-smoothing: antialiased;
         -moz-osx-font-smoothing: grayscale;
       }
-
       body::before {
         content: '';
         position: fixed;
@@ -98,12 +103,13 @@
           ),
           linear-gradient(rgba(255, 255, 255, 0.02) 1px, transparent 1px),
           linear-gradient(90deg, rgba(255, 255, 255, 0.02) 1px, transparent 1px);
-        background-size: 100% 100%, 30px 30px, 30px 30px;
+        background-size: 100% 100%, 1.875rem 1.875rem, 1.875rem 1.875rem;
         z-index: 0;
         transition: background 0.5s ease;
         pointer-events: none;
       }
 
+      /* MOD SIANG */
       body.mode-siang {
         background-image: url('https://images.unsplash.com/photo-1504384308090-c894fdcc538d?w=1600');
       }
@@ -115,7 +121,7 @@
           ),
           linear-gradient(rgba(0, 0, 0, 0.03) 1px, transparent 1px),
           linear-gradient(90deg, rgba(0, 0, 0, 0.03) 1px, transparent 1px);
-        background-size: 100% 100%, 30px 30px, 30px 30px;
+        background-size: 100% 100%, 1.875rem 1.875rem, 1.875rem 1.875rem;
       }
       body.mode-siang .dashboard {
         background: rgba(245, 247, 250, 0.92);
@@ -128,7 +134,7 @@
         color: #0f172a;
       }
       body.mode-siang .logo-text .sub {
-        color: #64748b;
+        color: #475569;
       }
       body.mode-siang .stat-item {
         background: #ffffff;
@@ -154,7 +160,7 @@
         color: #0f172a;
       }
       body.mode-siang .app-card p {
-        color: #64748b;
+        color: #475569;
       }
       body.mode-siang .section-title {
         color: #0f172a;
@@ -162,7 +168,7 @@
       }
       body.mode-siang .footer {
         border-top-color: #cbd5e1;
-        color: #64748b;
+        color: #475569;
       }
       body.mode-siang .header-top-controls .mode-toggle-btn {
         background: #f1f5f9;
@@ -190,7 +196,7 @@
         color: #cc5500;
       }
       body.mode-siang .header-top-controls .digital-time .date {
-        color: #64748b;
+        color: #475569;
       }
       body.mode-siang .sidebar {
         background: #f8fafc;
@@ -234,10 +240,40 @@
         border-color: #cbd5e1;
       }
       body.mode-siang .info-box p {
+        color: #475569;
+      }
+      body.mode-siang .refresh-btn {
+        background: #f1f5f9;
+        border-color: #3b82f6;
+        color: #3b82f6;
+      }
+      body.mode-siang .search-box {
+        background: #f1f5f9;
+        border-color: #cbd5e1;
+      }
+      body.mode-siang .search-box input {
+        color: #0f172a;
+      }
+      body.mode-siang .search-box input::placeholder {
+        color: #94a3b8;
+      }
+      body.mode-siang .popular-links .popular-item {
+        background: #ffffff;
+        border-color: #e2e8f0;
+      }
+      body.mode-siang .popular-links .popular-item:hover {
+        background: #f1f5f9;
+      }
+      body.mode-siang .status-badge.down {
+        background: rgba(239, 68, 68, 0.2);
+        color: #dc2626;
+        border-color: #dc2626;
+      }
+      body.mode-siang .update-timestamp {
         color: #64748b;
       }
 
-      /* OVERLAY SYSTEM */
+      /* OVERLAY */
       .sidebar-overlay {
         position: fixed;
         top: 0;
@@ -257,12 +293,13 @@
         visibility: visible;
       }
 
+      /* HAMBURGER */
       .hamburger-fixed-btn {
         position: fixed;
         top: 0;
         left: 0;
-        padding: 12px 18px 12px 14px;
-        border-bottom-right-radius: 18px;
+        padding: 0.75rem 1rem;
+        border-bottom-right-radius: 1.125rem;
         background: var(--hud-bg);
         border: 1px solid var(--fire-red);
         border-top: none;
@@ -271,130 +308,78 @@
         cursor: pointer;
         display: flex;
         align-items: center;
-        gap: 10px;
+        gap: 0.625rem;
         z-index: 1000;
         backdrop-filter: blur(20px);
         -webkit-backdrop-filter: blur(20px);
-        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.8),
-          0 0 15px var(--fire-red-glow);
+        box-shadow: 0 0.625rem 1.875rem rgba(0, 0, 0, 0.8),
+          0 0 0.9375rem var(--fire-red-glow);
         transition: opacity 0.35s cubic-bezier(0.16, 1, 0.3, 1),
-                    transform 0.35s cubic-bezier(0.16, 1, 0.3, 1),
-                    background 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+          transform 0.35s cubic-bezier(0.16, 1, 0.3, 1), background 0.3s ease,
+          border-color 0.3s ease, box-shadow 0.3s ease;
         user-select: none;
         -webkit-tap-highlight-color: transparent;
       }
-      
       .hamburger-fixed-btn:hover {
         background: var(--fire-red);
         color: #fff;
-        box-shadow: 0 0 25px var(--fire-red-glow), 0 10px 25px rgba(0, 0, 0, 0.6);
-        transform: translateY(2px);
+        box-shadow: 0 0 1.5625rem var(--fire-red-glow),
+          0 0.625rem 1.5625rem rgba(0, 0, 0, 0.6);
+        transform: translateY(0.125rem);
       }
-
-      .hamburger-fixed-btn:hover .hamburger-bars span {
-        background: #ffffff;
-      }
-
       .hamburger-fixed-btn .hamburger-bars {
         display: flex;
         flex-direction: column;
         justify-content: center;
-        gap: 4px;
-        width: 18px;
+        gap: 0.25rem;
+        width: 1.125rem;
       }
-
       .hamburger-fixed-btn .hamburger-bars span {
         display: block;
         width: 100%;
-        height: 2px;
+        height: 0.125rem;
         background: var(--hazard-gold);
-        border-radius: 2px;
+        border-radius: 0.125rem;
         transition: all 0.3s ease;
       }
-
       .hamburger-fixed-btn .menu-title-text {
-        font-size: 11px;
+        font-size: 0.6875rem;
         font-weight: 800;
-        letter-spacing: 1px;
+        letter-spacing: 0.0625rem;
         text-transform: uppercase;
         white-space: nowrap;
         color: inherit;
         transition: color 0.3s ease;
       }
-
       .hamburger-fixed-btn.active {
         opacity: 0;
         pointer-events: none;
         transform: translateX(-100%);
       }
 
+      /* HEADER TOP CONTROLS */
       .header-top-controls {
         display: flex;
         align-items: center;
-        justify-content: center;
-        gap: 16px;
-        margin-bottom: 24px;
+        justify-content: flex-end;
+        gap: 0.75rem;
+        margin-bottom: 1rem;
         width: 100%;
         flex-wrap: wrap;
-        padding-bottom: 12px;
+        padding-bottom: 0.75rem;
         border-bottom: 1px dashed rgba(255, 255, 255, 0.1);
       }
-
       body.mode-siang .header-top-controls {
         border-bottom-color: rgba(0, 0, 0, 0.1);
       }
-
-      .header-top-controls button {
+      .header-top-controls button,
+      .header-top-controls .refresh-btn {
         position: relative;
         overflow: hidden;
         user-select: none;
         -webkit-tap-highlight-color: transparent;
-      }
-
-      .ripple-effect {
-        position: absolute;
-        border-radius: 50%;
-        background: rgba(255, 204, 0, 0.4);
-        transform: scale(0);
-        animation: rippleAnim 0.6s linear;
-        pointer-events: none;
-      }
-
-      @keyframes rippleAnim {
-        to {
-          transform: scale(4);
-          opacity: 0;
-        }
-      }
-
-      .header-top-controls button .btn-label {
-        position: absolute;
-        bottom: -32px;
-        left: 50%;
-        transform: translateX(-50%);
-        background: rgba(5, 5, 10, 0.95);
-        color: #fff;
-        font-size: 10px;
-        font-weight: 600;
-        padding: 3px 8px;
-        border-radius: 6px;
-        white-space: nowrap;
-        pointer-events: none;
-        opacity: 0;
-        transition: all 0.3s ease;
-        border: 1px solid rgba(255, 204, 0, 0.3);
-        letter-spacing: 0.5px;
-        z-index: 10;
-      }
-      .header-top-controls button:hover .btn-label {
-        opacity: 1;
-        bottom: -28px;
-      }
-
-      .header-top-controls .mode-toggle-btn,
-      .header-top-controls .switch-mode-btn {
-        width: 42px;
-        height: 42px;
+        width: 2.625rem;
+        height: 2.625rem;
         border-radius: 50%;
         background: rgba(20, 20, 28, 0.9);
         border: 1px solid var(--hazard-gold);
@@ -402,18 +387,20 @@
         display: flex;
         align-items: center;
         justify-content: center;
-        font-size: 16px;
+        font-size: 1.125rem;
         transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
         flex-shrink: 0;
         color: var(--hazard-gold);
+        border-color: rgba(255, 204, 0, 0.4);
       }
-      .header-top-controls .mode-toggle-btn:hover {
+      .header-top-controls button:hover,
+      .header-top-controls .refresh-btn:hover {
         background: var(--hazard-gold);
         color: #000;
-        transform: scale(1.1) rotate(15deg);
-        box-shadow: 0 0 20px var(--hazard-gold-glow);
+        transform: scale(1.1);
+        box-shadow: 0 0 1.25rem var(--hazard-gold-glow);
+        border-color: var(--hazard-gold);
       }
-
       .header-top-controls .switch-mode-btn {
         border-color: var(--status-green);
         color: var(--status-green);
@@ -421,16 +408,25 @@
       .header-top-controls .switch-mode-btn:hover {
         background: var(--status-green);
         color: #000;
-        transform: scale(1.1);
-        box-shadow: 0 0 20px rgba(74, 222, 128, 0.4);
+        box-shadow: 0 0 1.25rem rgba(74, 222, 128, 0.4);
+        border-color: var(--status-green);
       }
-
+      .header-top-controls .refresh-btn {
+        border-color: #3b82f6;
+        color: #3b82f6;
+      }
+      .header-top-controls .refresh-btn:hover {
+        background: #3b82f6;
+        color: #000;
+        box-shadow: 0 0 1.25rem rgba(59, 130, 246, 0.4);
+        border-color: #3b82f6;
+      }
       .switch-mode-btn .mode-indicator-dot {
         position: absolute;
         bottom: 0px;
         right: 0px;
-        width: 10px;
-        height: 10px;
+        width: 0.625rem;
+        height: 0.625rem;
         background: var(--status-green);
         border-radius: 50%;
         border: 2px solid #000;
@@ -440,9 +436,9 @@
       body.mobile-mode .switch-mode-btn .mode-indicator-dot {
         display: block;
       }
-
       @keyframes pulseIndicator {
-        0%, 100% {
+        0%,
+        100% {
           transform: scale(1);
           opacity: 1;
         }
@@ -453,15 +449,16 @@
       }
 
       .header-top-controls .analog-clock {
-        width: 42px;
-        height: 42px;
+        width: 2.625rem;
+        height: 2.625rem;
         border-radius: 50%;
         background: #000;
         border: 2px solid var(--hazard-gold);
         position: relative;
         flex-shrink: 0;
-        box-shadow: 0 0 15px var(--hazard-gold-glow);
+        box-shadow: 0 0 0.9375rem var(--hazard-gold-glow);
         transition: all 0.3s ease;
+        margin-left: auto;
       }
       .header-top-controls .analog-clock:hover {
         transform: scale(1.1);
@@ -471,32 +468,32 @@
         bottom: 50%;
         left: 50%;
         transform-origin: bottom center;
-        border-radius: 3px;
+        border-radius: 0.1875rem;
       }
       .header-top-controls .analog-clock .hand.hour {
-        width: 3px;
-        height: 12px;
-        margin-left: -1.5px;
+        width: 0.1875rem;
+        height: 0.75rem;
+        margin-left: -0.09375rem;
         background: var(--hazard-gold);
       }
       .header-top-controls .analog-clock .hand.minute {
-        width: 2px;
-        height: 16px;
-        margin-left: -1px;
+        width: 0.125rem;
+        height: 1rem;
+        margin-left: -0.0625rem;
         background: #94a3b8;
       }
       .header-top-controls .analog-clock .hand.second {
-        width: 1.5px;
-        height: 18px;
-        margin-left: -0.75px;
+        width: 0.09375rem;
+        height: 1.125rem;
+        margin-left: -0.046875rem;
         background: #ef4444;
       }
       .header-top-controls .analog-clock .center-dot {
         position: absolute;
         top: 50%;
         left: 50%;
-        width: 5px;
-        height: 5px;
+        width: 0.3125rem;
+        height: 0.3125rem;
         background: var(--hazard-gold);
         border-radius: 50%;
         transform: translate(-50%, -50%);
@@ -504,38 +501,39 @@
       }
       .header-top-controls .analog-clock .marker {
         position: absolute;
-        width: 2px;
-        height: 3px;
+        width: 0.125rem;
+        height: 0.1875rem;
         background: #475569;
-        top: 3px;
+        top: 0.1875rem;
         left: 50%;
-        margin-left: -1px;
+        margin-left: -0.0625rem;
         transform-origin: bottom center;
       }
       .header-top-controls .analog-clock .marker.main {
-        height: 6px;
-        width: 2px;
+        height: 0.375rem;
+        width: 0.125rem;
         background: var(--hazard-gold);
       }
 
       .header-top-controls .digital-time {
-        text-align: left;
+        text-align: right;
         line-height: 1.1;
-        min-width: 90px;
-        margin-left: 4px;
+        min-width: 5.625rem;
+        margin-right: 0.5rem;
       }
       .header-top-controls .digital-time .time {
-        font-size: 15px;
+        font-size: 0.9375rem;
         font-weight: 800;
         color: var(--hazard-gold);
-        letter-spacing: 0.5px;
-        text-shadow: 0 0 10px var(--hazard-gold-glow);
+        letter-spacing: 0.03125rem;
+        text-shadow: 0 0 0.625rem var(--hazard-gold-glow);
       }
       .time-colon {
         animation: blinkColon 1s infinite;
       }
       @keyframes blinkColon {
-        0%, 100% {
+        0%,
+        100% {
           opacity: 1;
         }
         50% {
@@ -543,50 +541,49 @@
         }
       }
       .header-top-controls .digital-time .date {
-        color: #94a3b8;
-        font-size: 9px;
+        color: var(--text-secondary);
+        font-size: 0.5625rem;
         font-weight: 600;
-        letter-spacing: 0.8px;
-        margin-top: 2px;
+        letter-spacing: 0.05rem;
+        margin-top: 0.125rem;
       }
 
+      /* DASHBOARD */
       .dashboard {
-        max-width: 1180px;
+        max-width: 73.75rem;
         width: 100%;
         background: var(--hud-bg);
-        border-radius: 24px;
-        padding: 36px 30px;
-        box-shadow: 0 30px 70px rgba(0, 0, 0, 0.85),
-          0 0 40px rgba(204, 0, 0, 0.12);
+        border-radius: 1.5rem;
+        padding: 2.25rem 1.875rem;
+        box-shadow: 0 1.875rem 4.375rem rgba(0, 0, 0, 0.85),
+          0 0 2.5rem rgba(204, 0, 0, 0.12);
         border: 1px solid var(--hud-border-red);
         position: relative;
         overflow: visible;
         z-index: 1;
         transition: all 0.5s ease;
-        margin-top: 20px;
+        margin-top: 1.25rem;
         backdrop-filter: blur(20px);
         -webkit-backdrop-filter: blur(20px);
         animation: dashboardEntrance 0.8s cubic-bezier(0.16, 1, 0.3, 1);
       }
-
       @keyframes dashboardEntrance {
         0% {
           opacity: 0;
-          transform: translateY(30px) scale(0.98);
+          transform: translateY(1.875rem) scale(0.98);
         }
         100% {
           opacity: 1;
           transform: translateY(0) scale(1);
         }
       }
-
       .header::before {
         content: '';
         position: absolute;
         top: 0;
         left: 0;
         right: 0;
-        height: 4px;
+        height: 0.25rem;
         background: linear-gradient(
           90deg,
           var(--fire-red),
@@ -597,10 +594,9 @@
         background-size: 300% 100%;
         animation: stripeMove 6s linear infinite;
         z-index: 102;
-        border-top-left-radius: 24px;
-        border-top-right-radius: 24px;
+        border-top-left-radius: 1.5rem;
+        border-top-right-radius: 1.5rem;
       }
-
       @keyframes stripeMove {
         0% {
           background-position: 0% 0%;
@@ -609,14 +605,13 @@
           background-position: 300% 0%;
         }
       }
-
       .header {
         display: flex;
         flex-direction: column;
         justify-content: center;
         align-items: center;
-        margin-bottom: 30px;
-        padding-bottom: 24px;
+        margin-bottom: 1.875rem;
+        padding-bottom: 1.5rem;
         border-bottom: 1px solid rgba(255, 255, 255, 0.1);
         position: sticky;
         top: 0;
@@ -624,17 +619,16 @@
         background: rgba(15, 15, 20, 0.94);
         backdrop-filter: blur(20px);
         -webkit-backdrop-filter: blur(20px);
-        margin-top: -36px;
-        padding-top: 36px;
-        margin-left: -30px;
-        margin-right: -30px;
-        padding-left: 30px;
-        padding-right: 30px;
-        border-top-left-radius: 24px;
-        border-top-right-radius: 24px;
+        margin-top: -2.25rem;
+        padding-top: 2.25rem;
+        margin-left: -1.875rem;
+        margin-right: -1.875rem;
+        padding-left: 1.875rem;
+        padding-right: 1.875rem;
+        border-top-left-radius: 1.5rem;
+        border-top-right-radius: 1.5rem;
         transition: background 0.5s ease, border-color 0.5s ease;
       }
-
       body.mode-siang .header {
         background: rgba(245, 247, 250, 0.96);
         border-bottom-color: rgba(0, 0, 0, 0.1);
@@ -643,35 +637,31 @@
       .logo {
         display: flex;
         align-items: center;
-        justify-content: space-between;
+        justify-content: center;
         width: 100%;
-        gap: 20px;
+        gap: 1.25rem;
       }
-
       .logo-img-wrapper {
         display: flex;
         align-items: center;
         justify-content: center;
-        padding: 8px;
+        padding: 0.5rem;
         background: rgba(255, 255, 255, 0.03);
-        border-radius: 16px;
+        border-radius: 1rem;
         border: 1px solid rgba(255, 255, 255, 0.08);
         flex-shrink: 0;
         transition: transform 0.4s ease, border-color 0.4s ease;
       }
-
       .logo-img-wrapper:hover {
         transform: scale(1.05);
         border-color: var(--hazard-gold);
       }
-
       .logo-img {
-        height: 60px;
+        height: 3.75rem;
         width: auto;
         object-fit: contain;
-        filter: drop-shadow(0 4px 12px rgba(0, 0, 0, 0.5));
+        filter: drop-shadow(0 0.25rem 0.75rem rgba(0, 0, 0, 0.5));
       }
-
       .logo-text {
         display: flex;
         flex-direction: column;
@@ -679,77 +669,83 @@
         flex: 1;
         min-width: 0;
       }
-
       .logo-text h1 {
-        font-size: 22px;
+        font-size: 1.375rem;
         font-weight: 800;
-        letter-spacing: 1px;
+        letter-spacing: 0.0625rem;
         color: #ffffff;
         text-transform: uppercase;
         display: flex;
         align-items: center;
         justify-content: center;
-        gap: 10px;
+        gap: 0.625rem;
         flex-wrap: wrap;
       }
-
       .logo-text h1 span {
         color: var(--hazard-gold);
-        text-shadow: 0 0 15px var(--hazard-gold-glow);
+        text-shadow: 0 0 0.9375rem var(--hazard-gold-glow);
         font-weight: 900;
       }
-
       .logo-text .sub {
         color: var(--alert-orange);
-        font-size: 13px;
+        font-size: 0.8125rem;
         font-weight: 700;
-        letter-spacing: 3px;
+        letter-spacing: 0.1875rem;
         text-transform: uppercase;
-        margin-top: 4px;
+        margin-top: 0.25rem;
       }
 
+      /* STATS */
       .stats-bar {
         display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
-        gap: 16px;
-        margin-bottom: 35px;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 1rem;
+        margin-bottom: 2.1875rem;
       }
-
       .stat-item {
         background: var(--hud-card-bg);
-        border-radius: 16px;
-        padding: 16px;
+        border-radius: 1rem;
+        padding: 1rem;
         text-align: center;
         border: 1px solid var(--hud-border);
         position: relative;
         overflow: hidden;
         transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
         backdrop-filter: blur(10px);
-        animation: statFadeIn 0.6s ease backward;
+        animation: statFadeIn 0.6s ease backwards;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
       }
-
-      .stat-item:nth-child(1) { animation-delay: 0.1s; }
-      .stat-item:nth-child(2) { animation-delay: 0.2s; }
-      .stat-item:nth-child(3) { animation-delay: 0.3s; }
-      .stat-item:nth-child(4) { animation-delay: 0.4s; }
-
+      .stat-item:nth-child(1) {
+        animation-delay: 0.1s;
+      }
+      .stat-item:nth-child(2) {
+        animation-delay: 0.2s;
+      }
+      .stat-item:nth-child(3) {
+        animation-delay: 0.3s;
+      }
+      .stat-item:nth-child(4) {
+        animation-delay: 0.4s;
+      }
       @keyframes statFadeIn {
         from {
           opacity: 0;
-          transform: translateY(15px);
+          transform: translateY(0.9375rem);
         }
         to {
           opacity: 1;
           transform: translateY(0);
         }
       }
-
       .stat-item::before {
         content: '';
         position: absolute;
         top: 0;
         left: 0;
-        width: 4px;
+        width: 0.25rem;
         height: 100%;
         background: var(--hazard-gold);
         opacity: 0.6;
@@ -757,17 +753,17 @@
       }
       .stat-item:hover {
         border-color: var(--fire-red);
-        transform: translateY(-5px);
-        box-shadow: 0 10px 25px rgba(204, 0, 0, 0.25);
+        transform: translateY(-0.3125rem);
+        box-shadow: 0 0.625rem 1.5625rem rgba(204, 0, 0, 0.25);
       }
       .stat-item:hover::before {
         opacity: 1;
-        width: 6px;
+        width: 0.375rem;
       }
       .stat-item .icon-badge {
-        font-size: 18px;
+        font-size: 1.5rem;
         color: var(--hazard-gold);
-        margin-bottom: 6px;
+        margin-bottom: 0.375rem;
         display: block;
         transition: transform 0.3s ease;
       }
@@ -775,44 +771,44 @@
         transform: scale(1.2);
       }
       .stat-item .num {
-        font-size: 26px;
+        font-size: 1.75rem;
         font-weight: 800;
         color: #ffffff;
-        text-shadow: 0 0 10px rgba(255, 255, 255, 0.2);
+        text-shadow: 0 0 0.625rem rgba(255, 255, 255, 0.2);
+        line-height: 1.2;
       }
       .stat-item .label {
-        font-size: 11px;
+        font-size: 0.6875rem;
         font-weight: 700;
         text-transform: uppercase;
-        letter-spacing: 1.5px;
-        color: #94a3b8;
-        margin-top: 4px;
+        letter-spacing: 0.09375rem;
+        color: var(--text-secondary);
+        margin-top: 0.25rem;
       }
 
+      /* SECTIONS */
       .section-status {
-        margin-bottom: 35px;
+        margin-bottom: 2.5rem;
       }
-
       .section-title {
-        font-size: 14px;
+        font-size: 0.875rem;
         font-weight: 800;
-        letter-spacing: 1.5px;
+        letter-spacing: 0.09375rem;
         color: #ffffff;
         text-transform: uppercase;
-        margin-bottom: 18px;
-        padding-bottom: 10px;
+        margin-bottom: 1.125rem;
+        padding-bottom: 0.625rem;
         border-bottom: 1px solid rgba(255, 255, 255, 0.1);
         display: flex;
         align-items: center;
-        gap: 12px;
+        gap: 0.75rem;
       }
-
       .status-badge {
-        font-size: 11px;
-        padding: 3px 12px;
-        border-radius: 20px;
+        font-size: 0.6875rem;
+        padding: 0.1875rem 0.75rem;
+        border-radius: 1.25rem;
         font-weight: 700;
-        letter-spacing: 0.8px;
+        letter-spacing: 0.05rem;
       }
       .status-badge.live {
         background: rgba(239, 68, 68, 0.15);
@@ -830,9 +826,9 @@
         color: #f59e0b;
         border: 1px solid rgba(245, 158, 11, 0.4);
       }
-
       @keyframes pulseLive {
-        0%, 100% {
+        0%,
+        100% {
           opacity: 1;
         }
         50% {
@@ -842,14 +838,13 @@
 
       .apps-grid {
         display: grid;
-        grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-        gap: 20px;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 1.25rem;
       }
-
       .app-card {
         background: var(--hud-card-bg);
-        border-radius: 18px;
-        padding: 24px;
+        border-radius: 1.125rem;
+        padding: 1.5rem;
         border: 1px solid var(--hud-border);
         text-decoration: none;
         color: #ffffff;
@@ -859,20 +854,35 @@
         justify-content: space-between;
         position: relative;
         overflow: hidden;
-        animation: cardFadeIn 0.6s ease backward;
+        animation: cardFadeIn 0.6s ease backwards;
+        backdrop-filter: blur(10px);
       }
-
+      .app-card.card-wide {
+        grid-column: 1 / -1;
+        background: linear-gradient(
+          135deg,
+          rgba(204, 0, 0, 0.2),
+          rgba(255, 204, 0, 0.05)
+        );
+        border-color: var(--fire-red);
+        border-width: 2px;
+      }
+      .app-card.card-wide .icon {
+        color: #fff;
+      }
+      .app-card.card-wide .badge.live {
+        background: rgba(239, 68, 68, 0.3);
+      }
       @keyframes cardFadeIn {
         from {
           opacity: 0;
-          transform: translateY(20px);
+          transform: translateY(1.25rem);
         }
         to {
           opacity: 1;
           transform: translateY(0);
         }
       }
-
       .app-card::before {
         content: '';
         position: absolute;
@@ -889,11 +899,9 @@
         transition: left 0.6s ease;
         pointer-events: none;
       }
-
       .app-card:hover::before {
         left: 100%;
       }
-
       .app-card::after {
         content: '';
         position: absolute;
@@ -902,64 +910,59 @@
         width: 0;
         height: 0;
         border-style: solid;
-        border-width: 0 35px 35px 0;
+        border-width: 0 2.1875rem 2.1875rem 0;
         border-color: transparent var(--hud-border) transparent transparent;
         transition: border-color 0.3s ease;
       }
-
       .app-card:hover {
-        transform: translateY(-6px) scale(1.01);
+        transform: translateY(-0.375rem) scale(1.01);
         border-color: var(--fire-red);
-        box-shadow: 0 15px 35px rgba(204, 0, 0, 0.25);
+        box-shadow: 0 0.9375rem 2.1875rem rgba(204, 0, 0, 0.25);
       }
       .app-card:hover::after {
         border-color: transparent var(--fire-red) transparent transparent;
       }
-
       .app-card .icon {
-        font-size: 32px;
+        font-size: 2.25rem;
         color: var(--hazard-gold);
-        margin-bottom: 14px;
-        transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1), color 0.3s ease;
+        margin-bottom: 0.875rem;
+        transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1),
+          color 0.3s ease;
       }
       .app-card:hover .icon {
         transform: scale(1.18) rotate(-6deg);
         color: #ffffff;
       }
-
       .app-card h3 {
-        font-size: 16px;
+        font-size: 1rem;
         font-weight: 700;
-        margin-bottom: 8px;
+        margin-bottom: 0.5rem;
         color: #ffffff;
       }
       .app-card h3 .highlight {
         color: var(--hazard-gold);
         font-weight: 800;
       }
-
       .app-card p {
-        color: #94a3b8;
-        font-size: 13px;
+        color: var(--text-secondary);
+        font-size: 0.8125rem;
         line-height: 1.5;
         font-weight: 400;
-        margin-bottom: 18px;
+        margin-bottom: 1.125rem;
       }
-
       .card-footer {
         display: flex;
         align-items: center;
         justify-content: space-between;
         margin-top: auto;
       }
-
       .app-card .badge {
-        font-size: 11px;
+        font-size: 0.6875rem;
         font-weight: 700;
-        padding: 4px 12px;
-        border-radius: 20px;
+        padding: 0.25rem 0.75rem;
+        border-radius: 1.25rem;
         text-transform: uppercase;
-        letter-spacing: 0.5px;
+        letter-spacing: 0.03125rem;
       }
       .app-card .badge.online {
         background: rgba(74, 222, 128, 0.15);
@@ -976,47 +979,48 @@
         color: #f59e0b;
         border: 1px solid rgba(245, 158, 11, 0.3);
       }
-
       .app-card .arrow {
         color: #64748b;
-        font-size: 16px;
+        font-size: 1rem;
         transition: all 0.3s ease;
       }
       .app-card:hover .arrow {
         color: var(--hazard-gold);
-        transform: translateX(6px);
+        transform: translateX(0.375rem);
       }
 
+      /* FOOTER */
       .footer {
-        margin-top: 35px;
-        padding-top: 20px;
+        margin-top: 2.1875rem;
+        padding-top: 1.25rem;
         border-top: 1px solid rgba(255, 255, 255, 0.1);
         display: flex;
         justify-content: space-between;
         align-items: center;
         flex-wrap: wrap;
-        gap: 16px;
-        color: #64748b;
-        font-size: 12px;
+        gap: 1rem;
+        color: var(--text-secondary);
+        font-size: 0.75rem;
         font-weight: 500;
       }
       .footer .brand {
         display: flex;
         align-items: center;
-        gap: 10px;
+        gap: 0.625rem;
         font-weight: 600;
-        letter-spacing: 0.5px;
+        letter-spacing: 0.03125rem;
       }
       .footer .brand .dot {
-        width: 8px;
-        height: 8px;
+        width: 0.5rem;
+        height: 0.5rem;
         background: var(--fire-red);
         border-radius: 50%;
-        box-shadow: 0 0 10px var(--fire-red-glow);
+        box-shadow: 0 0 0.625rem var(--fire-red-glow);
         animation: pulseDot 2s infinite;
       }
       @keyframes pulseDot {
-        0%, 100% {
+        0%,
+        100% {
           transform: scale(1);
           opacity: 1;
         }
@@ -1027,12 +1031,12 @@
       }
       .footer .social-links {
         display: flex;
-        gap: 8px;
+        gap: 0.5rem;
       }
       .footer .social-links a {
         color: #94a3b8;
-        width: 36px;
-        height: 36px;
+        width: 2.25rem;
+        height: 2.25rem;
         border-radius: 50%;
         background: rgba(255, 255, 255, 0.04);
         display: flex;
@@ -1044,16 +1048,21 @@
       .footer .social-links a:hover {
         color: var(--hazard-gold);
         border-color: var(--hazard-gold);
-        transform: translateY(-3px);
-        box-shadow: 0 0 15px var(--hazard-gold-glow);
+        transform: translateY(-0.1875rem);
+        box-shadow: 0 0 0.9375rem var(--hazard-gold-glow);
+      }
+      .footer .last-updated {
+        font-size: 0.6875rem;
+        color: var(--text-secondary);
       }
 
+      /* SIDEBAR */
       .sidebar {
         position: fixed;
         top: 0;
-        left: -440px;
+        left: -27.5rem;
         right: auto;
-        width: 440px;
+        width: 27.5rem;
         max-width: 95vw;
         height: 100vh;
         background: rgba(12, 12, 18, 0.96);
@@ -1065,38 +1074,37 @@
         border-left: none;
         display: flex;
         flex-direction: column;
-        box-shadow: 15px 0 50px rgba(0, 0, 0, 0.9);
+        box-shadow: 0.9375rem 0 3.125rem rgba(0, 0, 0, 0.9);
       }
       .sidebar.active {
         left: 0;
       }
-
       .sidebar-header {
         display: flex;
         justify-content: space-between;
         align-items: center;
-        padding: 22px 24px;
+        padding: 1.375rem 1.5rem;
         background: rgba(20, 0, 0, 0.6);
         border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        flex-shrink: 0;
       }
       .sidebar-header h3 {
         color: var(--hazard-gold);
-        font-size: 15px;
+        font-size: 0.9375rem;
         font-weight: 800;
         display: flex;
         align-items: center;
-        gap: 10px;
-        letter-spacing: 1px;
+        gap: 0.625rem;
+        letter-spacing: 0.0625rem;
       }
-
       .sidebar-close {
-        width: 38px;
-        height: 38px;
+        width: 2.375rem;
+        height: 2.375rem;
         border-radius: 50%;
         background: rgba(239, 68, 68, 0.15);
         border: 1px solid rgba(239, 68, 68, 0.4);
         color: #ef4444;
-        font-size: 16px;
+        font-size: 1rem;
         cursor: pointer;
         display: flex;
         align-items: center;
@@ -1108,18 +1116,102 @@
         color: #fff;
         border-color: var(--fire-red);
         transform: rotate(90deg) scale(1.1);
-        box-shadow: 0 0 15px var(--fire-red-glow);
+        box-shadow: 0 0 0.9375rem var(--fire-red-glow);
       }
 
+      /* SEARCH */
+      .search-box {
+        padding: 0.75rem 1rem;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+        flex-shrink: 0;
+      }
+      .search-box input {
+        width: 100%;
+        padding: 0.5rem 0.75rem 0.5rem 2.25rem;
+        border-radius: 2rem;
+        border: 1px solid rgba(255, 255, 255, 0.15);
+        background: rgba(255, 255, 255, 0.06);
+        color: #fff;
+        font-size: 0.8125rem;
+        outline: none;
+        transition: border-color 0.3s ease;
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='%2394a3b8' viewBox='0 0 16 16'%3E%3Cpath d='M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z'/%3E%3C/svg%3E");
+        background-repeat: no-repeat;
+        background-position: 0.75rem center;
+        background-size: 1rem;
+      }
+      .search-box input::placeholder {
+        color: #94a3b8;
+      }
+      .search-box input:focus {
+        border-color: var(--hazard-gold);
+      }
+
+      /* PAUTAN POPULAR */
+      .popular-links {
+        padding: 0.75rem 1rem;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+        flex-shrink: 0;
+      }
+      .popular-links .popular-title {
+        font-size: 0.625rem;
+        text-transform: uppercase;
+        letter-spacing: 0.0625rem;
+        color: var(--text-secondary);
+        margin-bottom: 0.5rem;
+        font-weight: 700;
+      }
+      .popular-links .popular-grid {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.5rem;
+      }
+      .popular-links .popular-item {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.375rem;
+        padding: 0.25rem 0.75rem;
+        background: rgba(255, 255, 255, 0.06);
+        border-radius: 1.25rem;
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        color: #cbd5e1;
+        font-size: 0.6875rem;
+        text-decoration: none;
+        transition: all 0.2s ease;
+        font-weight: 500;
+      }
+      .popular-links .popular-item:hover {
+        background: var(--hazard-gold);
+        color: #000;
+        border-color: var(--hazard-gold);
+        transform: translateY(-1px);
+      }
+      .popular-links .popular-item i {
+        font-size: 0.75rem;
+      }
+
+      .update-timestamp {
+        padding: 0.5rem 1rem;
+        font-size: 0.625rem;
+        color: var(--text-secondary);
+        text-align: center;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+        flex-shrink: 0;
+      }
+      .update-timestamp i {
+        margin-right: 0.375rem;
+      }
+
+      /* SIDEBAR CONTENT */
       .sidebar-content {
         flex: 1;
-        padding: 16px;
+        padding: 0.5rem 1rem 1rem;
         overflow-y: auto;
       }
 
       .accordion-item {
-        margin-bottom: 10px;
-        border-radius: 14px;
+        margin-bottom: 0.625rem;
+        border-radius: 0.875rem;
         overflow: hidden;
         border: 1px solid rgba(255, 255, 255, 0.08);
         background: rgba(20, 20, 28, 0.5);
@@ -1128,21 +1220,20 @@
       .accordion-item:hover {
         border-color: rgba(255, 204, 0, 0.3);
       }
-
       .accordion-header {
         display: flex;
         align-items: center;
         justify-content: space-between;
-        padding: 14px 18px;
+        padding: 0.875rem 1.125rem;
         background: rgba(255, 255, 255, 0.02);
         cursor: pointer;
         user-select: none;
         width: 100%;
         border: none;
         color: #ffffff;
-        font-size: 13px;
+        font-size: 0.8125rem;
         font-weight: 700;
-        letter-spacing: 0.8px;
+        letter-spacing: 0.05rem;
         text-transform: uppercase;
         transition: all 0.3s ease;
       }
@@ -1152,7 +1243,7 @@
       .accordion-header .accordion-title {
         display: flex;
         align-items: center;
-        gap: 10px;
+        gap: 0.625rem;
         color: var(--alert-orange);
       }
       .accordion-header .arrow {
@@ -1163,7 +1254,6 @@
         transform: rotate(180deg);
         color: var(--hazard-gold);
       }
-
       .accordion-content {
         max-height: 0;
         overflow: hidden;
@@ -1171,59 +1261,123 @@
         background: rgba(5, 5, 10, 0.6);
       }
       .accordion-content.open {
-        max-height: 2000px;
-        padding: 10px;
+        max-height: 125rem;
+        padding: 0.625rem;
         border-top: 1px solid rgba(255, 255, 255, 0.05);
       }
 
       .sidebar-link {
         display: flex;
         align-items: center;
-        gap: 12px;
-        padding: 10px 12px;
+        gap: 0.75rem;
+        padding: 0.625rem 0.75rem;
         color: #cbd5e1;
         text-decoration: none;
-        border-radius: 10px;
-        margin-bottom: 4px;
+        border-radius: 0.625rem;
+        margin-bottom: 0.25rem;
         transition: all 0.25s ease;
         border: 1px solid transparent;
-        font-size: 13px;
+        font-size: 0.8125rem;
+        position: relative;
       }
       .sidebar-link:hover {
         background: rgba(255, 255, 255, 0.05);
         color: #ffffff;
         border-color: rgba(255, 204, 0, 0.2);
-        transform: translateX(4px);
+        transform: translateX(0.25rem);
       }
-
       .sidebar-link .link-icon {
-        width: 32px;
-        height: 32px;
-        border-radius: 8px;
+        width: 2rem;
+        height: 2rem;
+        border-radius: 0.5rem;
         display: flex;
         align-items: center;
         justify-content: center;
-        font-size: 14px;
+        font-size: 0.875rem;
         flex-shrink: 0;
         transition: transform 0.3s ease;
       }
       .sidebar-link:hover .link-icon {
         transform: scale(1.15);
       }
+      .sidebar-link .status-badge.down {
+        font-size: 0.5625rem;
+        padding: 0.125rem 0.5rem;
+        border-radius: 0.75rem;
+        background: rgba(239, 68, 68, 0.15);
+        color: #ef4444;
+        border: 1px solid rgba(239, 68, 68, 0.3);
+        font-weight: 700;
+        letter-spacing: 0.03125rem;
+        text-transform: uppercase;
+        margin-left: auto;
+        flex-shrink: 0;
+        display: none;
+      }
+      .sidebar-link.down .status-badge.down {
+        display: inline-block;
+      }
 
-      .link-icon.weather { background: rgba(59, 130, 246, 0.15); color: #3b82f6; }
-      .link-icon.tide { background: rgba(6, 182, 212, 0.15); color: #06b6d4; }
-      .link-icon.disaster { background: rgba(239, 68, 68, 0.15); color: #ef4444; }
-      .link-icon.road { background: rgba(245, 158, 11, 0.15); color: #f59e0b; }
-      .link-icon.flood { background: rgba(99, 102, 241, 0.15); color: #6366f1; }
-      .link-icon.quake { background: rgba(168, 85, 247, 0.15); color: #a855f7; }
-      .link-icon.radar { background: rgba(34, 197, 94, 0.15); color: #22c55e; }
-      .link-icon.fire { background: rgba(249, 115, 22, 0.15); color: #f97316; }
-      .link-icon.emergency { background: rgba(239, 68, 68, 0.15); color: #ef4444; }
-      .link-icon.info { background: rgba(148, 163, 184, 0.15); color: #94a3b8; }
-      .link-icon.hospital { background: rgba(16, 185, 129, 0.15); color: #10b981; }
-      .link-icon.civil { background: rgba(251, 191, 36, 0.15); color: #fbbf24; }
-      .link-icon.maritime { background: rgba(14, 165, 233, 0.15); color: #0ea5e9; }
+      .link-icon.weather {
+        background: rgba(59, 130, 246, 0.15);
+        color: #3b82f6;
+      }
+      .link-icon.tide {
+        background: rgba(6, 182, 212, 0.15);
+        color: #06b6d4;
+      }
+      .link-icon.disaster {
+        background: rgba(239, 68, 68, 0.15);
+        color: #ef4444;
+      }
+      .link-icon.road {
+        background: rgba(245, 158, 11, 0.15);
+        color: #f59e0b;
+      }
+      .link-icon.flood {
+        background: rgba(99, 102, 241, 0.15);
+        color: #6366f1;
+      }
+      .link-icon.quake {
+        background: rgba(168, 85, 247, 0.15);
+        color: #a855f7;
+      }
+      .link-icon.radar {
+        background: rgba(34, 197, 94, 0.15);
+        color: #22c55e;
+      }
+      .link-icon.fire {
+        background: rgba(249, 115, 22, 0.15);
+        color: #f97316;
+      }
+      .link-icon.emergency {
+        background: rgba(239, 68, 68, 0.15);
+        color: #ef4444;
+      }
+      .link-icon.info {
+        background: rgba(148, 163, 184, 0.15);
+        color: #94a3b8;
+      }
+      .link-icon.hospital {
+        background: rgba(16, 185, 129, 0.15);
+        color: #10b981;
+      }
+      .link-icon.civil {
+        background: rgba(251, 191, 36, 0.15);
+        color: #fbbf24;
+      }
+      .link-icon.maritime {
+        background: rgba(14, 165, 233, 0.15);
+        color: #0ea5e9;
+      }
+      .link-icon.international {
+        background: rgba(168, 85, 247, 0.15);
+        color: #a855f7;
+      }
+      .link-icon.gov {
+        background: rgba(251, 146, 60, 0.15);
+        color: #fb923c;
+      }
 
       .sidebar-link .link-text {
         flex: 1;
@@ -1237,31 +1391,42 @@
         text-overflow: ellipsis;
       }
       .sidebar-link .link-text .link-desc {
-        font-size: 11px;
+        font-size: 0.6875rem;
         color: #64748b;
         display: block;
-        margin-top: 1px;
+        margin-top: 0.0625rem;
       }
 
+      .sidebar-footer {
+        padding: 1rem;
+        border-top: 1px solid rgba(255, 255, 255, 0.1);
+        text-align: center;
+        font-size: 0.6875rem;
+        font-weight: 600;
+        color: #64748b;
+        flex-shrink: 0;
+      }
+
+      /* EMERGENCY ITEMS */
       .emergency-group-title {
         color: var(--hazard-gold);
-        font-size: 11px;
+        font-size: 0.6875rem;
         font-weight: 700;
         text-transform: uppercase;
-        letter-spacing: 0.8px;
-        margin: 12px 0 6px 4px;
+        letter-spacing: 0.05rem;
+        margin: 0.75rem 0 0.375rem 0.25rem;
         display: flex;
         align-items: center;
-        gap: 6px;
+        gap: 0.375rem;
       }
       .emergency-item {
         display: flex;
         align-items: center;
-        gap: 12px;
-        padding: 10px 12px;
+        gap: 0.75rem;
+        padding: 0.625rem 0.75rem;
         background: rgba(255, 255, 255, 0.03);
-        border-radius: 12px;
-        margin-bottom: 6px;
+        border-radius: 0.75rem;
+        margin-bottom: 0.375rem;
         border: 1px solid rgba(255, 255, 255, 0.05);
         transition: border-color 0.3s ease;
       }
@@ -1272,20 +1437,20 @@
         flex: 1;
       }
       .emergency-item .e-info .e-name {
-        font-size: 12px;
+        font-size: 0.75rem;
         font-weight: 600;
         color: #ffffff;
         display: block;
       }
       .emergency-item .e-info .e-number {
-        font-size: 13px;
+        font-size: 0.8125rem;
         font-weight: 700;
         color: var(--hazard-gold);
         display: block;
       }
       .emergency-item .e-actions .call-btn {
-        width: 32px;
-        height: 32px;
+        width: 2rem;
+        height: 2rem;
         border-radius: 50%;
         background: var(--fire-red);
         color: #fff;
@@ -1294,7 +1459,7 @@
         justify-content: center;
         text-decoration: none;
         position: relative;
-        box-shadow: 0 0 10px var(--fire-red-glow);
+        box-shadow: 0 0 0.625rem var(--fire-red-glow);
         transition: transform 0.3s ease;
       }
       .emergency-item .e-actions .call-btn:hover {
@@ -1314,7 +1479,6 @@
         position: relative;
         z-index: 1;
       }
-
       @keyframes radarPing {
         0% {
           transform: scale(1);
@@ -1329,139 +1493,121 @@
       .info-box {
         background: rgba(255, 204, 0, 0.05);
         border: 1px solid rgba(255, 204, 0, 0.2);
-        border-radius: 12px;
-        padding: 12px;
-        margin-top: 12px;
+        border-radius: 0.75rem;
+        padding: 0.75rem;
+        margin-top: 0.75rem;
         text-align: center;
-        font-size: 11px;
-        color: #94a3b8;
+        font-size: 0.6875rem;
+        color: var(--text-secondary);
       }
 
-      .sidebar-footer {
-        padding: 16px;
-        border-top: 1px solid rgba(255, 255, 255, 0.1);
-        text-align: center;
-        font-size: 11px;
-        font-weight: 600;
-        color: #64748b;
-      }
-
-      @media (max-width: 680px) {
+      /* RESPONSIVE */
+      @media (max-width: 42.5rem) {
         .dashboard {
-          padding: 20px 12px;
+          padding: 1.25rem 0.75rem;
         }
         .header {
-          margin-top: -20px;
-          margin-left: -12px;
-          margin-right: -12px;
-          padding-top: 20px;
-          padding-left: 12px;
-          padding-right: 12px;
+          margin-top: -1.25rem;
+          margin-left: -0.75rem;
+          margin-right: -0.75rem;
+          padding-top: 1.25rem;
+          padding-left: 0.75rem;
+          padding-right: 0.75rem;
         }
         .hamburger-fixed-btn {
-          padding: 10px 14px 10px 10px;
+          padding: 0.625rem 0.875rem 0.625rem 0.625rem;
         }
         .hamburger-fixed-btn .menu-title-text {
-          font-size: 10px;
+          font-size: 0.625rem;
         }
         .logo {
           flex-direction: row;
           align-items: center;
-          justify-content: space-between;
-          gap: 8px;
+          justify-content: center;
+          gap: 0.5rem;
+          flex-wrap: wrap;
         }
         .logo-img-wrapper {
-          padding: 6px;
-          border-radius: 12px;
-          flex-shrink: 0;
-          display: flex;
-          align-items: center;
-          justify-content: center;
+          padding: 0.375rem;
         }
         .logo-img {
-          height: 38px;
-          width: auto;
-          object-fit: contain;
-        }
-        .logo-text {
-          flex: 1;
-          min-width: 0;
-          text-align: center;
+          height: 2.375rem;
         }
         .logo-text h1 {
-          font-size: 12px;
+          font-size: 0.75rem;
           line-height: 1.25;
-          gap: 4px;
-          justify-content: center;
+          gap: 0.25rem;
         }
         .logo-text .sub {
-          font-size: 8px;
-          letter-spacing: 1px;
-          margin-top: 2px;
+          font-size: 0.5rem;
+          letter-spacing: 0.0625rem;
+          margin-top: 0.125rem;
         }
         .apps-grid {
           grid-template-columns: 1fr;
         }
+        .app-card.card-wide {
+          grid-column: 1;
+        }
         .stats-bar {
           grid-template-columns: repeat(2, 1fr);
-          gap: 10px;
+          gap: 0.625rem;
         }
         .header-top-controls {
-          gap: 10px;
-          margin-bottom: 16px;
-          padding-bottom: 10px;
+          gap: 0.5rem;
+          margin-bottom: 1rem;
+          padding-bottom: 0.625rem;
+          justify-content: center;
         }
         .header-top-controls .analog-clock {
-          width: 36px;
-          height: 36px;
+          width: 2.25rem;
+          height: 2.25rem;
+          margin-left: 0;
         }
-        .header-top-controls .mode-toggle-btn,
-        .header-top-controls .switch-mode-btn {
-          width: 36px;
-          height: 36px;
-          font-size: 14px;
+        .header-top-controls button,
+        .header-top-controls .refresh-btn {
+          width: 2.25rem;
+          height: 2.25rem;
+          font-size: 0.875rem;
         }
         .header-top-controls .digital-time .time {
-          font-size: 13px;
+          font-size: 0.8125rem;
+        }
+        .header-top-controls .digital-time {
+          min-width: 4.5rem;
+          margin-right: 0;
+          text-align: center;
+        }
+        .sidebar {
+          width: 100%;
+          max-width: 100vw;
+          left: -100%;
+        }
+        .sidebar.active {
+          left: 0;
         }
       }
-
       body.mobile-mode .dashboard {
-        max-width: 480px;
+        max-width: 30rem;
       }
       body.mobile-mode .header {
-        margin-top: -20px;
-        margin-left: -12px;
-        margin-right: -12px;
-        padding-top: 20px;
-        padding-left: 12px;
-        padding-right: 12px;
-      }
-      body.mobile-mode .logo {
-        flex-direction: row;
-        align-items: center;
-        justify-content: space-between;
-        gap: 8px;
-      }
-      body.mobile-mode .logo-img-wrapper {
-        padding: 6px;
-        border-radius: 12px;
-      }
-      body.mobile-mode .logo-img {
-        height: 38px;
+        margin-top: -1.25rem;
+        margin-left: -0.75rem;
+        margin-right: -0.75rem;
+        padding-top: 1.25rem;
+        padding-left: 0.75rem;
+        padding-right: 0.75rem;
       }
       body.mobile-mode .logo-text h1 {
-        font-size: 13px;
+        font-size: 0.8125rem;
         line-height: 1.25;
-        gap: 4px;
-      }
-      body.mobile-mode .logo-text .sub {
-        font-size: 8px;
-        letter-spacing: 1px;
-        margin-top: 2px;
+        gap: 0.25rem;
       }
       body.mobile-mode .apps-grid {
         grid-template-columns: 1fr;
+      }
+      body.mobile-mode .app-card.card-wide {
+        grid-column: 1;
       }
       body.mobile-mode .stats-bar {
         grid-template-columns: repeat(2, 1fr);
@@ -1469,10 +1615,10 @@
     </style>
   </head>
   <body class="desktop-mode">
-    <!-- OVERLAY LAYAR NAF -->
+    <!-- OVERLAY -->
     <div class="sidebar-overlay" id="sidebarOverlay"></div>
 
-    <!-- BUTANG HAMBURGER MELEKAT PENJURU ATAS KIRI SKRIN -->
+    <!-- HAMBURGER -->
     <button
       class="hamburger-fixed-btn"
       id="hamburgerBtn"
@@ -1480,26 +1626,80 @@
       aria-label="Buka menu pautan penting"
       aria-expanded="false"
     >
-      <div class="hamburger-bars">
-        <span></span><span></span><span></span>
-      </div>
-      <span class="menu-title-text">MENU PAUTAN</span>
+      <div class="hamburger-bars"><span></span><span></span><span></span></div>
+      <span class="menu-title-text">MENU</span>
     </button>
 
-    <!-- SIDEBAR DRAWER -->
-    <div
-      class="sidebar"
-      id="sidebar"
-      role="navigation"
-      aria-label="Menu Pautan Penting"
-    >
+    <!-- SIDEBAR -->
+    <nav class="sidebar" id="sidebar" aria-label="Menu Pautan Penting">
       <div class="sidebar-header">
         <h3><i class="fas fa-satellite-dish"></i> PAUTAN PENTING</h3>
-        <button class="sidebar-close" id="sidebarClose" title="Tutup Menu" aria-label="Tutup menu">
+        <button
+          class="sidebar-close"
+          id="sidebarClose"
+          title="Tutup Menu"
+          aria-label="Tutup menu"
+        >
           <i class="fas fa-times"></i>
         </button>
       </div>
-      <div class="sidebar-content">
+
+      <!-- SEARCH -->
+      <div class="search-box">
+        <input
+          type="text"
+          id="searchLinks"
+          placeholder="Cari pautan..."
+          aria-label="Cari pautan"
+        />
+      </div>
+
+      <!-- PAUTAN POPULAR -->
+      <div class="popular-links">
+        <div class="popular-title">
+          <i class="fas fa-star" style="color: var(--hazard-gold)"></i> Pautan
+          Popular
+        </div>
+        <div class="popular-grid">
+          <a
+            href="https://myclimate.met.gov.my/fdrsWmsObsMsiaMetPortal"
+            target="_blank"
+            class="popular-item"
+            rel="noopener noreferrer"
+            ><i class="fas fa-fire"></i> FDRS</a
+          >
+          <a
+            href="https://bencana.jkr.gov.my/"
+            target="_blank"
+            class="popular-item"
+            rel="noopener noreferrer"
+            ><i class="fas fa-road"></i> Bencana JKR</a
+          >
+          <a
+            href="https://www.nadma.gov.my/"
+            target="_blank"
+            class="popular-item"
+            rel="noopener noreferrer"
+            ><i class="fas fa-triangle-exclamation"></i> NADMA</a
+          >
+          <a
+            href="https://www.johor.gov.my/"
+            target="_blank"
+            class="popular-item"
+            rel="noopener noreferrer"
+            ><i class="fas fa-landmark"></i> Kerajaan Johor</a
+          >
+        </div>
+      </div>
+
+      <!-- TARIKH KEMAS KINI -->
+      <div class="update-timestamp">
+        <i class="fas fa-sync-alt"></i> Pautan dikemaskini:
+        <span id="linkUpdateDate">--</span>
+      </div>
+
+      <!-- SIDEBAR CONTENT -->
+      <div class="sidebar-content" id="sidebarContent">
         <!-- Accordion 1: Cuaca & Laut -->
         <div class="accordion-item">
           <button
@@ -1517,81 +1717,75 @@
               href="https://www.met.gov.my/"
               target="_blank"
               class="sidebar-link"
-              rel="noopener noreferrer"
-            >
-              <span class="link-icon weather"
-                ><i class="fas fa-cloud-sun-rain"></i
-              ></span>
-              <span class="link-text"
+              ><span class="link-icon weather"
+                ><i class="fas fa-cloud-sun-rain"></i></span
+              ><span class="link-text"
                 ><span class="link-name">MetMalaysia - Cuaca</span
                 ><span class="link-desc"
                   >Ramalan & amaran cuaca rasmi</span
                 ></span
-              >
-              <i class="fas fa-external-link-alt"></i>
-            </a>
+              ><i class="fas fa-external-link-alt"></i
+            ></a>
             <a
               href="https://www.jupem.gov.my/ms/staps"
               target="_blank"
               class="sidebar-link"
-              rel="noopener noreferrer"
-            >
-              <span class="link-icon tide"><i class="fas fa-water"></i></span>
-              <span class="link-text"
+              ><span class="link-icon tide"><i class="fas fa-water"></i></span
+              ><span class="link-text"
                 ><span class="link-name">Pasang Surut Laut</span
                 ><span class="link-desc"
                   >Jadual air pasang surut Malaysia</span
                 ></span
-              >
-              <i class="fas fa-external-link-alt"></i>
-            </a>
+              ><i class="fas fa-external-link-alt"></i
+            ></a>
             <a
               href="https://www.accuweather.com/ms/my/national/weather-radar"
               target="_blank"
               class="sidebar-link"
-              rel="noopener noreferrer"
-            >
-              <span class="link-icon radar"
-                ><i class="fas fa-satellite-dish"></i
-              ></span>
-              <span class="link-text"
+              ><span class="link-icon radar"
+                ><i class="fas fa-satellite-dish"></i></span
+              ><span class="link-text"
                 ><span class="link-name">Radar Hujan</span
                 ><span class="link-desc"
                   >Imej radar hujan masa nyata</span
                 ></span
-              >
-              <i class="fas fa-external-link-alt"></i>
-            </a>
+              ><i class="fas fa-external-link-alt"></i
+            ></a>
             <a
               href="https://apims.doe.gov.my/"
               target="_blank"
               class="sidebar-link"
-              rel="noopener noreferrer"
-            >
-              <span class="link-icon fire"
-                ><i class="fas fa-fire-flame-curved"></i
-              ></span>
-              <span class="link-text"
+              ><span class="link-icon fire"
+                ><i class="fas fa-fire-flame-curved"></i></span
+              ><span class="link-text"
                 ><span class="link-name">Indeks Cuaca Api (API)</span
                 ><span class="link-desc">IPU & status jerebu semasa</span></span
-              >
-              <i class="fas fa-external-link-alt"></i>
-            </a>
+              ><i class="fas fa-external-link-alt"></i
+            ></a>
             <a
               href="https://myclimate.met.gov.my/fdrsWmsObsMsiaMetPortal"
               target="_blank"
               class="sidebar-link"
-              rel="noopener noreferrer"
-            >
-              <span class="link-icon fire"><i class="fas fa-fire"></i></span>
-              <span class="link-text"
+              ><span class="link-icon fire"><i class="fas fa-fire"></i></span
+              ><span class="link-text"
                 ><span class="link-name">Fire Danger Rating System (FDRS)</span
                 ><span class="link-desc"
                   >Sistem penarafan bahaya kebakaran</span
                 ></span
-              >
-              <i class="fas fa-external-link-alt"></i>
-            </a>
+              ><i class="fas fa-external-link-alt"></i
+            ></a>
+            <a
+              href="https://water.doe.gov.my/"
+              target="_blank"
+              class="sidebar-link"
+              ><span class="link-icon tide"><i class="fas fa-droplet"></i></span
+              ><span class="link-text"
+                ><span class="link-name">JPS - Data Hidrologi</span
+                ><span class="link-desc"
+                  >Data kualiti air & hidrologi</span
+                ></span
+              ><i class="fas fa-external-link-alt"></i
+            ></a>
           </div>
         </div>
 
@@ -1613,53 +1807,41 @@
               href="https://www.nadma.gov.my/"
               target="_blank"
               class="sidebar-link"
-              rel="noopener noreferrer"
-            >
-              <span class="link-icon disaster"
-                ><i class="fas fa-house-chimney-crack"></i
-              ></span>
-              <span class="link-text"
+              ><span class="link-icon disaster"
+                ><i class="fas fa-house-chimney-crack"></i></span
+              ><span class="link-text"
                 ><span class="link-name">NADMA - Agensi Pengurusan Bencana</span
                 ><span class="link-desc"
                   >Info & respons bencana negara</span
                 ></span
-              >
-              <i class="fas fa-external-link-alt"></i>
-            </a>
+              ><i class="fas fa-external-link-alt"></i
+            ></a>
             <a
               href="https://publicinfobanjir.water.gov.my/"
               target="_blank"
               class="sidebar-link"
-              rel="noopener noreferrer"
-            >
-              <span class="link-icon flood"
-                ><i class="fas fa-house-flood-water"></i
-              ></span>
-              <span class="link-text"
+              ><span class="link-icon flood"
+                ><i class="fas fa-house-flood-water"></i></span
+              ><span class="link-text"
                 ><span class="link-name">Public Infobanjir</span
                 ><span class="link-desc"
                   >Peta & status banjir semasa</span
                 ></span
-              >
-              <i class="fas fa-external-link-alt"></i>
-            </a>
+              ><i class="fas fa-external-link-alt"></i
+            ></a>
             <a
               href="http://mygempa.met.gov.my/docroot/view/index.php"
               target="_blank"
               class="sidebar-link"
-              rel="noopener noreferrer"
-            >
-              <span class="link-icon quake"
-                ><i class="fas fa-earth-asia"></i
-              ></span>
-              <span class="link-text"
+              ><span class="link-icon quake"
+                ><i class="fas fa-earth-asia"></i></span
+              ><span class="link-text"
                 ><span class="link-name">Info Gempa Bumi</span
                 ><span class="link-desc"
                   >Aktiviti seismik Malaysia & antarabangsa</span
                 ></span
-              >
-              <i class="fas fa-external-link-alt"></i>
-            </a>
+              ><i class="fas fa-external-link-alt"></i
+            ></a>
           </div>
         </div>
 
@@ -1680,51 +1862,40 @@
               href="https://www.llm.gov.my/"
               target="_blank"
               class="sidebar-link"
-              rel="noopener noreferrer"
-            >
-              <span class="link-icon road"><i class="fas fa-road"></i></span>
-              <span class="link-text"
+              ><span class="link-icon road"><i class="fas fa-road"></i></span
+              ><span class="link-text"
                 ><span class="link-name">LLM - Lebuhraya Malaysia</span
                 ><span class="link-desc"
                   >Status & laporan trafik lebuh raya</span
                 ></span
-              >
-              <i class="fas fa-external-link-alt"></i>
-            </a>
+              ><i class="fas fa-external-link-alt"></i
+            ></a>
             <a
               href="https://www.jpj.gov.my/"
               target="_blank"
               class="sidebar-link"
-              rel="noopener noreferrer"
-            >
-              <span class="link-icon road"
-                ><i class="fas fa-car-side"></i
-              ></span>
-              <span class="link-text"
+              ><span class="link-icon road"
+                ><i class="fas fa-car-side"></i></span
+              ><span class="link-text"
                 ><span class="link-name">JPJ - Jabatan Pengangkutan Jalan</span
                 ><span class="link-desc"
                   >Maklumat jalan tutup & notis</span
                 ></span
-              >
-              <i class="fas fa-external-link-alt"></i>
-            </a>
+              ><i class="fas fa-external-link-alt"></i
+            ></a>
             <a
               href="https://bencana.jkr.gov.my/"
               target="_blank"
               class="sidebar-link"
-              rel="noopener noreferrer"
-            >
-              <span class="link-icon road"
-                ><i class="fas fa-helmet-safety"></i
-              ></span>
-              <span class="link-text"
+              ><span class="link-icon road"
+                ><i class="fas fa-helmet-safety"></i></span
+              ><span class="link-text"
                 ><span class="link-name">JKR - Jabatan Kerja Raya</span
                 ><span class="link-desc"
                   >Infrastruktur & jalan persekutuan</span
                 ></span
-              >
-              <i class="fas fa-external-link-alt"></i>
-            </a>
+              ><i class="fas fa-external-link-alt"></i
+            ></a>
           </div>
         </div>
 
@@ -1745,82 +1916,100 @@
               href="https://www.bomba.gov.my/en/"
               target="_blank"
               class="sidebar-link"
-              rel="noopener noreferrer"
-            >
-              <span class="link-icon emergency"
-                ><i class="fas fa-fire-extinguisher"></i
-              ></span>
-              <span class="link-text"
+              ><span class="link-icon emergency"
+                ><i class="fas fa-fire-extinguisher"></i></span
+              ><span class="link-text"
                 ><span class="link-name">JBPM Malaysia</span
                 ><span class="link-desc">Jabatan Bomba & Penyelamat</span></span
-              >
-              <i class="fas fa-external-link-alt"></i>
-            </a>
-            <!-- AGENSI MARITIM MALAYSIA (APMM) -->
+              ><i class="fas fa-external-link-alt"></i
+            ></a>
             <a
               href="https://www.mmea.gov.my/"
               target="_blank"
               class="sidebar-link"
-              rel="noopener noreferrer"
-            >
-              <span class="link-icon maritime"
-                ><i class="fas fa-ship"></i
-              ></span>
-              <span class="link-text"
+              ><span class="link-icon maritime"
+                ><i class="fas fa-ship"></i></span
+              ><span class="link-text"
                 ><span class="link-name">APMM Maritim Malaysia</span
-                ><span class="link-desc">Agensi Penguatkuasaan Maritim</span></span
-              >
-              <i class="fas fa-external-link-alt"></i>
-            </a>
+                ><span class="link-desc"
+                  >Agensi Penguatkuasaan Maritim</span
+                ></span
+              ><i class="fas fa-external-link-alt"></i
+            ></a>
             <a
               href="https://www.civildefence.gov.my/"
               target="_blank"
               class="sidebar-link"
-              rel="noopener noreferrer"
-            >
-              <span class="link-icon civil"
-                ><i class="fas fa-shield-halved"></i
-              ></span>
-              <span class="link-text"
+              ><span class="link-icon civil"
+                ><i class="fas fa-shield-halved"></i></span
+              ><span class="link-text"
                 ><span class="link-name">APM Pertahanan Awam</span
                 ><span class="link-desc">Pengurusan Bencana</span></span
-              >
-              <i class="fas fa-external-link-alt"></i>
-            </a>
+              ><i class="fas fa-external-link-alt"></i
+            ></a>
             <a
               href="https://www.rmp.gov.my/"
               target="_blank"
               class="sidebar-link"
-              rel="noopener noreferrer"
-            >
-              <span class="link-icon emergency"
-                ><i class="fas fa-shield-cat"></i
-              ></span>
-              <span class="link-text"
+              ><span class="link-icon emergency"
+                ><i class="fas fa-shield-cat"></i></span
+              ><span class="link-text"
                 ><span class="link-name">PDRM Polis Diraja</span
                 ><span class="link-desc">Keselamatan Awam</span></span
-              >
-              <i class="fas fa-external-link-alt"></i>
-            </a>
+              ><i class="fas fa-external-link-alt"></i
+            ></a>
             <a
               href="https://www.moh.gov.my/"
               target="_blank"
               class="sidebar-link"
-              rel="noopener noreferrer"
-            >
-              <span class="link-icon hospital"
-                ><i class="fas fa-hospital-user"></i
-              ></span>
-              <span class="link-text"
+              ><span class="link-icon hospital"
+                ><i class="fas fa-hospital-user"></i></span
+              ><span class="link-text"
                 ><span class="link-name">KKM Kesihatan</span
                 ><span class="link-desc">Perkhidmatan Perubatan</span></span
-              >
-              <i class="fas fa-external-link-alt"></i>
-            </a>
+              ><i class="fas fa-external-link-alt"></i
+            ></a>
+            <a
+              href="https://hsi.moh.gov.my/"
+              target="_blank"
+              class="sidebar-link"
+              ><span class="link-icon hospital"
+                ><i class="fas fa-hospital"></i></span
+              ><span class="link-text"
+                ><span class="link-name">Hospital Sultan Ismail (HSI)</span
+                ><span class="link-desc">Hospital utama Johor Bahru</span></span
+              ><i class="fas fa-external-link-alt"></i
+            ></a>
+            <a
+              href="https://hebhk.moh.gov.my/"
+              target="_blank"
+              class="sidebar-link"
+              ><span class="link-icon hospital"
+                ><i class="fas fa-hospital"></i></span
+              ><span class="link-text"
+                ><span class="link-name">HEBHK Kluang</span
+                ><span class="link-desc"
+                  >Hospital Enche' Besar Hajjah Khalsom</span
+                ></span
+              ><i class="fas fa-external-link-alt"></i
+            ></a>
+            <a
+              href="https://cprc.moh.gov.my/"
+              target="_blank"
+              class="sidebar-link"
+              ><span class="link-icon emergency"
+                ><i class="fas fa-biohazard"></i></span
+              ><span class="link-text"
+                ><span class="link-name">CPRC KKM</span
+                ><span class="link-desc"
+                  >Crisis Preparedness & Response Centre</span
+                ></span
+              ><i class="fas fa-external-link-alt"></i
+            ></a>
           </div>
         </div>
 
-        <!-- Accordion 5: Talian Kecemasan -->
+        <!-- ===== ACCORDION 5: TALIAN KECEMASAN (DIKEMASKINI PENUH SEPERTI VERSI SEBELUM) ===== -->
         <div class="accordion-item">
           <button
             class="accordion-header"
@@ -1833,161 +2022,318 @@
             <span class="arrow"><i class="fas fa-chevron-down"></i></span>
           </button>
           <div class="accordion-content" id="accordion5">
+            <!-- 999 -->
             <div class="emergency-group-title">
               <i class="fas fa-flag"></i> TALIAN KECEMASAN NASIONAL
             </div>
             <div class="emergency-item">
               <div class="e-info">
-                <span class="e-name">MERS 999</span>
-                <span class="e-number">999</span>
+                <span class="e-name">MERS 999</span
+                ><span class="e-number">999</span>
               </div>
               <div class="e-actions">
-                <a href="tel:999" class="call-btn" aria-label="Hubungi 999"
+                <a href="tel:999" class="call-btn"
                   ><i class="fas fa-phone"></i
                 ></a>
               </div>
             </div>
 
-            <!-- HQ JBPM NEGERI JOHOR -->
+            <!-- JBPM -->
             <div class="emergency-group-title">
-              <i class="fas fa-fire-extinguisher"></i> BOMBA JOHOR (HQ)
+              <i class="fas fa-fire-extinguisher"></i> BOMBA (JBPM)
             </div>
             <div class="emergency-item">
               <div class="e-info">
-                <span class="e-name">HQ JBPM Negeri Johor</span>
-                <span class="e-number">07-340 9999</span>
+                <span class="e-name">HQ Negeri Johor</span
+                ><span class="e-number">07-340 9999</span>
               </div>
               <div class="e-actions">
-                <a
-                  href="tel:073409999"
-                  class="call-btn"
-                  aria-label="Hubungi HQ JBPM Johor"
+                <a href="tel:073409999" class="call-btn"
                   ><i class="fas fa-phone"></i
                 ></a>
               </div>
-            </div>
-
-            <!-- MARITIM MALAYSIA (APMM) -->
-            <div class="emergency-group-title">
-              <i class="fas fa-ship"></i> MARITIM MALAYSIA (APMM)
             </div>
             <div class="emergency-item">
               <div class="e-info">
-                <span class="e-name">Pusat Operasi Maritim (MRSC Johor)</span>
-                <span class="e-number">07-219 9401</span>
+                <span class="e-name">Hotline Kebangsaan</span
+                ><span class="e-number">1-800-888-994</span>
               </div>
               <div class="e-actions">
-                <a
-                  href="tel:072199401"
-                  class="call-btn"
-                  aria-label="Hubungi Maritim Johor"
+                <a href="tel:1800888994" class="call-btn"
                   ><i class="fas fa-phone"></i
                 ></a>
               </div>
             </div>
 
-            <!-- APM TALIAN KECEMASAN -->
+            <!-- PDRM -->
+            <div class="emergency-group-title">
+              <i class="fas fa-shield-cat"></i> POLIS (PDRM)
+            </div>
+            <div class="emergency-item">
+              <div class="e-info">
+                <span class="e-name">IPK Johor (Hotline Operasi)</span
+                ><span class="e-number">07-225 4422</span>
+              </div>
+              <div class="e-actions">
+                <a href="tel:072254422" class="call-btn"
+                  ><i class="fas fa-phone"></i
+                ></a>
+              </div>
+            </div>
+            <div class="emergency-item">
+              <div class="e-info">
+                <span class="e-name">IPK Johor (Talian Am)</span
+                ><span class="e-number">07-221 2999</span>
+              </div>
+              <div class="e-actions">
+                <a href="tel:072212999" class="call-btn"
+                  ><i class="fas fa-phone"></i
+                ></a>
+              </div>
+            </div>
+
+            <!-- APMM -->
+            <div class="emergency-group-title">
+              <i class="fas fa-ship"></i> MARITIM (APMM)
+            </div>
+            <div class="emergency-item">
+              <div class="e-info">
+                <span class="e-name">MRSC Johor (24 jam)</span
+                ><span class="e-number">07-219 9401</span>
+              </div>
+              <div class="e-actions">
+                <a href="tel:072199401" class="call-btn"
+                  ><i class="fas fa-phone"></i
+                ></a>
+              </div>
+            </div>
+            <div class="emergency-item">
+              <div class="e-info">
+                <span class="e-name">Hotline 24 jam (Johor)</span
+                ><span class="e-number">07-219 9404</span>
+              </div>
+              <div class="e-actions">
+                <a href="tel:072199404" class="call-btn"
+                  ><i class="fas fa-phone"></i
+                ></a>
+              </div>
+            </div>
+            <div class="emergency-item">
+              <div class="e-info">
+                <span class="e-name">ZM Tanjung Sedili (24 jam)</span
+                ><span class="e-number">07-891 6595</span>
+              </div>
+              <div class="e-actions">
+                <a href="tel:078916595" class="call-btn"
+                  ><i class="fas fa-phone"></i
+                ></a>
+              </div>
+            </div>
+
+            <!-- APM -->
             <div class="emergency-group-title">
               <i class="fas fa-shield-halved"></i> PERTAHANAN AWAM (APM)
             </div>
             <div class="emergency-item">
               <div class="e-info">
-                <span class="e-name">APM Negeri Johor</span>
-                <span class="e-number">07-221 1991</span>
+                <span class="e-name">APM Negeri Johor</span
+                ><span class="e-number">07-221 1991</span>
               </div>
               <div class="e-actions">
-                <a
-                  href="tel:072211991"
-                  class="call-btn"
-                  aria-label="Hubungi APM Johor"
+                <a href="tel:072211991" class="call-btn"
                   ><i class="fas fa-phone"></i
                 ></a>
               </div>
             </div>
 
+            <!-- HSA -->
             <div class="emergency-group-title">
-              <i class="fas fa-shield-cat"></i> POLIS JOHOR
+              <i class="fas fa-hospital"></i> HOSPITAL SULTANAH AMINAH (HSA)
             </div>
             <div class="emergency-item">
               <div class="e-info">
-                <span class="e-name">IPK Johor</span>
-                <span class="e-number">07-225 4422</span>
+                <span class="e-name">Talian Utama</span
+                ><span class="e-number">07-225 7000</span>
               </div>
               <div class="e-actions">
-                <a
-                  href="tel:072254422"
-                  class="call-btn"
-                  aria-label="Hubungi IPK Johor"
+                <a href="tel:072257000" class="call-btn"
                   ><i class="fas fa-phone"></i
                 ></a>
               </div>
-            </div>
-
-            <div class="emergency-group-title">
-              <i class="fas fa-hospital"></i> HOSPITAL
             </div>
             <div class="emergency-item">
               <div class="e-info">
-                <span class="e-name">Hospital Sultanah Aminah</span>
-                <span class="e-number">07-225 7000</span>
+                <span class="e-name">MECC (Samb. 3248)</span
+                ><span class="e-number">07-225 7000 samb. 3248</span>
               </div>
               <div class="e-actions">
-                <a
-                  href="tel:072257000"
-                  class="call-btn"
-                  aria-label="Hubungi HSA"
+                <a href="tel:072257000,3248" class="call-btn"
+                  ><i class="fas fa-phone"></i
+                ></a>
+              </div>
+            </div>
+            <div class="emergency-item">
+              <div class="e-info">
+                <span class="e-name">Perhubungan Awam (Samb. 2722 / 3456)</span
+                ><span class="e-number">07-225 7000 samb. 2722/3456</span>
+              </div>
+              <div class="e-actions">
+                <a href="tel:072257000,2722" class="call-btn"
+                  ><i class="fas fa-phone"></i
+                ></a>
+              </div>
+            </div>
+            <div class="emergency-item">
+              <div class="e-info">
+                <span class="e-name">Alternatif</span
+                ><span class="e-number">07-223 1666</span>
+              </div>
+              <div class="e-actions">
+                <a href="tel:072231666" class="call-btn"
                   ><i class="fas fa-phone"></i
                 ></a>
               </div>
             </div>
 
+            <!-- Hospital Sultan Ismail (HSI) - TAMBAH NOMBOR -->
+            <div class="emergency-group-title">
+              <i class="fas fa-hospital"></i> HOSPITAL SULTAN ISMAIL (HSI)
+            </div>
+            <div class="emergency-item">
+              <div class="e-info">
+                <span class="e-name">Talian Utama</span
+                ><span class="e-number">07-356 5000</span>
+              </div>
+              <div class="e-actions">
+                <a href="tel:073565000" class="call-btn"
+                  ><i class="fas fa-phone"></i
+                ></a>
+              </div>
+            </div>
+
+            <!-- HEBHK Kluang -->
+            <div class="emergency-group-title">
+              <i class="fas fa-hospital"></i> HEBHK KLUANG
+            </div>
+            <div class="emergency-item">
+              <div class="e-info">
+                <span class="e-name">Talian Utama</span
+                ><span class="e-number">07-234 5333</span>
+              </div>
+              <div class="e-actions">
+                <a href="tel:072345333" class="call-btn"
+                  ><i class="fas fa-phone"></i
+                ></a>
+              </div>
+            </div>
+
+            <!-- NOTA -->
             <div class="info-box">
-              <i class="fas fa-info-circle"></i> Talian kecemasan
-              <strong>999</strong> beroperasi 24 jam sehari.
+              <i class="fas fa-info-circle"></i> <strong>999</strong> talian
+              kecemasan bersepadu (PDRM, JBPM, KKM, APM, APMM).<br />
+              Untuk sambungan dalaman, hubungi talian am.
             </div>
+          </div>
+        </div>
+
+        <!-- Accordion 6: Antarabangsa -->
+        <div class="accordion-item">
+          <button
+            class="accordion-header"
+            data-target="accordion6"
+            aria-expanded="false"
+          >
+            <span class="accordion-title"
+              ><i class="fas fa-globe-asia"></i> Antarabangsa</span
+            >
+            <span class="arrow"><i class="fas fa-chevron-down"></i></span>
+          </button>
+          <div class="accordion-content" id="accordion6">
+            <a
+              href="https://ahacentre.org/"
+              target="_blank"
+              class="sidebar-link"
+              ><span class="link-icon international"
+                ><i class="fas fa-handshake"></i></span
+              ><span class="link-text"
+                ><span class="link-name">AHA Centre</span
+                ><span class="link-desc"
+                  >ASEAN Coordinating Centre for Humanitarian Assistance</span
+                ></span
+              ><i class="fas fa-external-link-alt"></i
+            ></a>
+            <a href="https://wmo.int/" target="_blank" class="sidebar-link"
+              ><span class="link-icon international"
+                ><i class="fas fa-cloud"></i></span
+              ><span class="link-text"
+                ><span class="link-name"
+                  >World Meteorological Organization (WMO)</span
+                ><span class="link-desc">Data cuaca global</span></span
+              ><i class="fas fa-external-link-alt"></i
+            ></a>
+          </div>
+        </div>
+
+        <!-- Accordion 7: Kerajaan Negeri -->
+        <div class="accordion-item">
+          <button
+            class="accordion-header"
+            data-target="accordion7"
+            aria-expanded="false"
+          >
+            <span class="accordion-title"
+              ><i class="fas fa-landmark"></i> Kerajaan Negeri</span
+            >
+            <span class="arrow"><i class="fas fa-chevron-down"></i></span>
+          </button>
+          <div class="accordion-content" id="accordion7">
+            <a
+              href="https://www.johor.gov.my/"
+              target="_blank"
+              class="sidebar-link"
+              ><span class="link-icon gov"><i class="fas fa-landmark"></i></span
+              ><span class="link-text"
+                ><span class="link-name"
+                  >Laman Web Rasmi Kerajaan Negeri Johor</span
+                ><span class="link-desc"
+                  >Portal rasmi kerajaan negeri</span
+                ></span
+              ><i class="fas fa-external-link-alt"></i
+            ></a>
           </div>
         </div>
       </div>
 
       <div class="sidebar-footer">🚨 PGO Johor · Pusat Gerakan Operasi</div>
-    </div>
+    </nav>
 
-    <div class="dashboard">
-      <!-- HEADER CONTAINER -->
-      <div class="header">
-        <div
-          class="header-top-controls"
-          id="headerControls"
-          role="toolbar"
-          aria-label="Bar Kawalan Utama"
-        >
+    <!-- MAIN DASHBOARD -->
+    <main class="dashboard">
+      <header class="header">
+        <div class="header-top-controls" role="toolbar">
           <button
             class="mode-toggle-btn"
             id="modeToggleBtn"
-            title="Tukar Mode Paparan"
             aria-label="Tukar mod siang malam"
           >
             <i class="fas fa-moon"></i>
-            <span class="btn-label">Siang/Malam</span>
           </button>
-
           <button
             class="switch-mode-btn"
             id="switchModeBtn"
-            title="Tukar Paparan Desktop/Mobile"
             aria-label="Tukar paparan desktop mobile"
           >
-            <i class="fas fa-mobile-alt"></i>
-            <span class="mode-indicator-dot"></span>
-            <span class="btn-label">Desktop/Mobile</span>
+            <i class="fas fa-mobile-alt"></i
+            ><span class="mode-indicator-dot"></span>
           </button>
-
-          <div
-            class="analog-clock"
-            id="analogClock"
-            aria-label="Jam analog"
-            title="Jam Analog"
+          <button
+            class="refresh-btn"
+            id="refreshBtn"
+            aria-label="Muat semula halaman"
           >
+            <i class="fas fa-sync-alt"></i>
+          </button>
+          <div class="analog-clock" id="analogClock" aria-label="Jam analog">
             <div
               class="marker main"
               style="transform: rotate(0deg) translateX(-50%)"
@@ -2041,39 +2387,40 @@
             <div class="hand second" id="secondHand"></div>
             <div class="center-dot"></div>
           </div>
-
           <div class="digital-time" aria-label="Masa dan tarikh semasa">
             <div class="time" id="clock">
-              12<span class="time-colon">:</span>00<span class="time-colon">:</span
+              12<span class="time-colon">:</span>00<span class="time-colon"
+                >:</span
               >00
             </div>
             <div class="date" id="date">29 JULAI 2026</div>
           </div>
         </div>
-
         <div class="logo">
           <div class="logo-img-wrapper">
             <img
               src="https://i.ibb.co/fGtPXjpc/500px-Logo-of-the-Malaysian-Fire-and-Rescue-Department-svg.webp"
-              alt="JBPM Logo"
+              alt="Logo JBPM"
               class="logo-img"
+              loading="lazy"
             />
           </div>
           <div class="logo-text">
-            <h1>PUSAT GERAKAN OPERASI <span>JBPM JOHOR</span></h1>
+            <h1>PUSAT GERAKAN OPERASI <span>JOHOR</span></h1>
             <span class="sub">Dashboard Utama</span>
           </div>
           <div class="logo-img-wrapper">
             <img
               src="https://i.ibb.co/fdXsyrBX/logo-unit-komunikasi-1.png"
-              alt="Unit Komunikasi Logo"
+              alt="Logo Unit Komunikasi"
               class="logo-img"
+              loading="lazy"
             />
           </div>
         </div>
-      </div>
+      </header>
 
-      <div class="stats-bar">
+      <section class="stats-bar">
         <div class="stat-item">
           <i class="fas fa-cubes icon-badge"></i>
           <div class="num" id="appCount" data-target="0">0</div>
@@ -2094,19 +2441,21 @@
           <div class="num">PGO</div>
           <div class="label">Johor</div>
         </div>
-      </div>
+      </section>
 
-      <div class="section-status">
+      <section class="section-status">
         <div class="section-title">
-          <i class="fas fa-circle" style="color: #ef4444; font-size: 10px"></i>
-          LIVE
-          <span class="status-badge live">● LIVE</span>
+          <i
+            class="fas fa-circle"
+            style="color: #ef4444; font-size: 0.625rem"
+          ></i>
+          LIVE <span class="status-badge live">● LIVE</span>
         </div>
         <div class="apps-grid">
           <a
             href="https://dashbord-live-statistik-kes.vercel.app/"
             target="_blank"
-            class="app-card"
+            class="app-card card-wide"
             rel="noopener noreferrer"
           >
             <div class="icon"><i class="fas fa-chart-column"></i></div>
@@ -2118,21 +2467,20 @@
               <p>Statistik masa nyata panggilan, lokasi & mangsa operasi.</p>
             </div>
             <div class="card-footer">
-              <span class="badge live">● LIVE</span>
-              <span class="arrow"><i class="fas fa-arrow-right"></i></span>
+              <span class="badge live">● LIVE</span
+              ><span class="arrow"><i class="fas fa-arrow-right"></i></span>
             </div>
           </a>
         </div>
-      </div>
+      </section>
 
-      <div class="section-status">
+      <section class="section-status">
         <div class="section-title">
           <i
             class="fas fa-circle"
-            style="color: var(--status-green); font-size: 10px"
+            style="color: var(--status-green); font-size: 0.625rem"
           ></i>
-          ONLINE
-          <span class="status-badge online">● ONLINE</span>
+          ONLINE <span class="status-badge online">● ONLINE</span>
         </div>
         <div class="apps-grid">
           <a
@@ -2147,11 +2495,10 @@
               <p>Pemantauan status jentera & kenderaan operasi bomba.</p>
             </div>
             <div class="card-footer">
-              <span class="badge online">● ONLINE</span>
-              <span class="arrow"><i class="fas fa-arrow-right"></i></span>
+              <span class="badge online">● ONLINE</span
+              ><span class="arrow"><i class="fas fa-arrow-right"></i></span>
             </div>
           </a>
-
           <a
             href="https://po1teknologia2.vercel.app/"
             target="_blank"
@@ -2164,11 +2511,10 @@
               <p>Pengurusan storan, peralatan & aset logistik.</p>
             </div>
             <div class="card-footer">
-              <span class="badge online">● ONLINE</span>
-              <span class="arrow"><i class="fas fa-arrow-right"></i></span>
+              <span class="badge online">● ONLINE</span
+              ><span class="arrow"><i class="fas fa-arrow-right"></i></span>
             </div>
           </a>
-
           <a
             href="https://daftar-masuk-pelawat.vercel.app/"
             target="_blank"
@@ -2184,62 +2530,68 @@
               <p>Sistem daftar masuk dengan pendaftaran ID digital.</p>
             </div>
             <div class="card-footer">
-              <span class="badge online">● ONLINE</span>
-              <span class="arrow"><i class="fas fa-arrow-right"></i></span>
+              <span class="badge online">● ONLINE</span
+              ><span class="arrow"><i class="fas fa-arrow-right"></i></span>
             </div>
           </a>
         </div>
-      </div>
+      </section>
 
-      <div class="section-status">
+      <section class="section-status">
         <div class="section-title">
-          <i class="fas fa-circle" style="color: #f59e0b; font-size: 10px"></i>
-          DALAM PEMBANGUNAN
-          <span class="status-badge dev">● DEV</span>
+          <i
+            class="fas fa-circle"
+            style="color: #f59e0b; font-size: 0.625rem"
+          ></i>
+          DALAM PEMBANGUNAN <span class="status-badge dev">● DEV</span>
         </div>
         <div class="apps-grid">
-          <a href="#" class="app-card" onclick="return false;">
-            <div class="icon"><i class="fas fa-user-shield"></i></div>
+          <a href="#" class="app-card" onclick="return false;"
+            ><div class="icon"><i class="fas fa-user-shield"></i></div>
             <div>
               <h3>Kekuatan Anggota <span class="highlight">12 Jam</span></h3>
               <p>Status anggota, syif, cuti & tugasan khas.</p>
             </div>
             <div class="card-footer">
-              <span class="badge dev">● DEV</span>
-              <span class="arrow"><i class="fas fa-arrow-right"></i></span>
-            </div>
-          </a>
-
-          <a href="#" class="app-card" onclick="return false;">
-            <div class="icon"><i class="fas fa-map-location-dot"></i></div>
+              <span class="badge dev">● DEV</span
+              ><span class="arrow"
+                ><i class="fas fa-arrow-right"></i
+              ></span></div
+          ></a>
+          <a href="#" class="app-card" onclick="return false;"
+            ><div class="icon"><i class="fas fa-map-location-dot"></i></div>
             <div>
               <h3>Peta Kawasan <span class="highlight">Jagaan Balai</span></h3>
               <p>Peta interaktif kawasan jagaan balai bomba.</p>
             </div>
             <div class="card-footer">
-              <span class="badge dev">● DEV</span>
-              <span class="arrow"><i class="fas fa-arrow-right"></i></span>
-            </div>
-          </a>
-
-          <a href="#" class="app-card" onclick="return false;">
-            <div class="icon"><i class="fas fa-tower-cell"></i></div>
+              <span class="badge dev">● DEV</span
+              ><span class="arrow"
+                ><i class="fas fa-arrow-right"></i
+              ></span></div
+          ></a>
+          <a href="#" class="app-card" onclick="return false;"
+            ><div class="icon"><i class="fas fa-tower-cell"></i></div>
             <div>
               <h3>Dashboard Aset <span class="highlight">GIRN</span></h3>
               <p>Pemantauan aset komunikasi GIRN Negeri Johor.</p>
             </div>
             <div class="card-footer">
-              <span class="badge dev">● DEV</span>
-              <span class="arrow"><i class="fas fa-arrow-right"></i></span>
-            </div>
-          </a>
+              <span class="badge dev">● DEV</span
+              ><span class="arrow"
+                ><i class="fas fa-arrow-right"></i
+              ></span></div
+          ></a>
         </div>
-      </div>
+      </section>
 
-      <div class="footer">
+      <footer class="footer">
         <div class="brand">
-          <span class="dot"></span>
-          <span>© 2026 PGO Johor </span>
+          <span class="dot"></span><span>© 2026 PGO Johor</span>
+        </div>
+        <div class="last-updated">
+          <i class="fas fa-clock"></i> Kemaskini:
+          <span id="updateTime">--</span>
         </div>
         <div class="social-links">
           <a
@@ -2259,11 +2611,12 @@
           <a href="#" title="Instagram"><i class="fab fa-instagram"></i></a>
           <a href="#" title="YouTube"><i class="fab fa-youtube"></i></a>
         </div>
-      </div>
-    </div>
+      </footer>
+    </main>
 
     <script>
       document.addEventListener('DOMContentLoaded', function () {
+        // SOUND
         let audioCtx = null;
         function playClickSound() {
           try {
@@ -2286,38 +2639,38 @@
             osc.stop(audioCtx.currentTime + 0.05);
           } catch (e) {}
         }
-
         document.addEventListener('click', function (e) {
-          const targetBtn = e.target.closest(
-            'button, .app-card, .sidebar-link, .stat-item, .hamburger-fixed-btn'
+          const target = e.target.closest(
+            'button, .app-card, .sidebar-link, .stat-item, .hamburger-fixed-btn, .refresh-btn, .popular-item, .call-btn'
           );
-          if (targetBtn) {
+          if (target) {
             playClickSound();
-            const rect = targetBtn.getBoundingClientRect();
+            const rect = target.getBoundingClientRect();
             const ripple = document.createElement('span');
             ripple.className = 'ripple-effect';
             const size = Math.max(rect.width, rect.height);
-            ripple.style.width = ripple.style.height = `${size}px`;
-            ripple.style.left = `${e.clientX - rect.left - size / 2}px`;
-            ripple.style.top = `${e.clientY - rect.top - size / 2}px`;
-            targetBtn.appendChild(ripple);
+            ripple.style.width = ripple.style.height = size + 'px';
+            ripple.style.left = e.clientX - rect.left - size / 2 + 'px';
+            ripple.style.top = e.clientY - rect.top - size / 2 + 'px';
+            target.appendChild(ripple);
             setTimeout(() => ripple.remove(), 600);
           }
         });
 
+        // JAM
         const hourHand = document.getElementById('hourHand');
         const minuteHand = document.getElementById('minuteHand');
         const secondHand = document.getElementById('secondHand');
         const clockEl = document.getElementById('clock');
         const dateEl = document.getElementById('date');
-
-        const bulanMalay = [
+        const updateSpan = document.getElementById('updateTime');
+        const bulan = [
           'JANUARI',
           'FEBRUARI',
           'MAC',
           'APRIL',
           'MEI',
-          'JUN',
+          'JUNI',
           'JULAI',
           'OGOS',
           'SEPTEMBER',
@@ -2326,162 +2679,214 @@
           'DISEMBER',
         ];
 
+        function setInitialUpdateTime() {
+          const now = new Date();
+          updateSpan.textContent = now.toLocaleTimeString('ms-MY', {
+            hour: '2-digit',
+            minute: '2-digit',
+            second: '2-digit',
+          });
+        }
+
         function updateClocks() {
           const now = new Date();
-          const hours = now.getHours();
-          const minutes = now.getMinutes();
-          const seconds = now.getSeconds();
-
-          // Jam Analog
-          const hDeg = (hours % 12) * 30 + minutes * 0.5;
-          const mDeg = minutes * 6;
-          const sDeg = seconds * 6;
-
-          if (hourHand) hourHand.style.transform = `rotate(${hDeg}deg)`;
-          if (minuteHand) minuteHand.style.transform = `rotate(${mDeg}deg)`;
-          if (secondHand) secondHand.style.transform = `rotate(${sDeg}deg)`;
-
-          // Jam Digital
-          const hStr = String(hours).padStart(2, '0');
-          const mStr = String(minutes).padStart(2, '0');
-          const sStr = String(seconds).padStart(2, '0');
-
+          const h = now.getHours(),
+            m = now.getMinutes(),
+            s = now.getSeconds();
+          if (hourHand)
+            hourHand.style.transform = `rotate(${(h % 12) * 30 + m * 0.5}deg)`;
+          if (minuteHand) minuteHand.style.transform = `rotate(${m * 6}deg)`;
+          if (secondHand) secondHand.style.transform = `rotate(${s * 6}deg)`;
           if (clockEl) {
-            clockEl.innerHTML = `${hStr}<span class="time-colon">:</span>${mStr}<span class="time-colon">:</span>${sStr}`;
+            clockEl.innerHTML = `${String(h).padStart(
+              2,
+              '0'
+            )}<span class="time-colon">:</span>${String(m).padStart(
+              2,
+              '0'
+            )}<span class="time-colon">:</span>${String(s).padStart(2, '0')}`;
           }
-
           if (dateEl) {
-            const day = now.getDate();
-            const month = bulanMalay[now.getMonth()];
-            const year = now.getFullYear();
-            dateEl.textContent = `${day} ${month} ${year}`;
+            dateEl.textContent = `${now.getDate()} ${
+              bulan[now.getMonth()]
+            } ${now.getFullYear()}`;
           }
         }
-        setInterval(updateClocks, 1000);
+
+        function setLinkUpdateDate() {
+          const now = new Date();
+          document.getElementById(
+            'linkUpdateDate'
+          ).textContent = `${now.getDate()} ${
+            bulan[now.getMonth()]
+          } ${now.getFullYear()}`;
+        }
+
+        setInitialUpdateTime();
         updateClocks();
+        setLinkUpdateDate();
+        setInterval(updateClocks, 1000);
 
-        const modeToggleBtn = document.getElementById('modeToggleBtn');
-        const switchModeBtn = document.getElementById('switchModeBtn');
+        // LOCALSTORAGE
+        function loadState() {
+          const theme = localStorage.getItem('pgoTheme');
+          const displayMode = localStorage.getItem('pgoDisplayMode');
+          if (theme === 'siang') {
+            document.body.classList.add('mode-siang');
+            document.querySelector('#modeToggleBtn i').className = 'fas fa-sun';
+          } else {
+            document.body.classList.remove('mode-siang');
+            document.querySelector('#modeToggleBtn i').className =
+              'fas fa-moon';
+          }
+          if (displayMode === 'mobile') {
+            document.body.classList.add('mobile-mode');
+            document.body.classList.remove('desktop-mode');
+          } else {
+            document.body.classList.add('desktop-mode');
+            document.body.classList.remove('mobile-mode');
+          }
+        }
+        loadState();
 
-        if (modeToggleBtn) {
-          modeToggleBtn.addEventListener('click', function () {
+        // MODE TOGGLE
+        document
+          .getElementById('modeToggleBtn')
+          .addEventListener('click', function () {
             document.body.classList.toggle('mode-siang');
-            const icon = modeToggleBtn.querySelector('i');
+            const icon = this.querySelector('i');
             if (document.body.classList.contains('mode-siang')) {
               icon.className = 'fas fa-sun';
+              localStorage.setItem('pgoTheme', 'siang');
             } else {
               icon.className = 'fas fa-moon';
+              localStorage.setItem('pgoTheme', 'malam');
             }
           });
-        }
 
-        if (switchModeBtn) {
-          switchModeBtn.addEventListener('click', function () {
+        // SWITCH MODE
+        document
+          .getElementById('switchModeBtn')
+          .addEventListener('click', function () {
             document.body.classList.toggle('mobile-mode');
             document.body.classList.toggle('desktop-mode');
+            localStorage.setItem(
+              'pgoDisplayMode',
+              document.body.classList.contains('mobile-mode')
+                ? 'mobile'
+                : 'desktop'
+            );
           });
-        }
 
-        // CONTROL PENGURUSAN SIDEBAR MODAL & PENUTUP
-        const hamburgerBtn = document.getElementById('hamburgerBtn');
+        // REFRESH
+        document
+          .getElementById('refreshBtn')
+          .addEventListener('click', function () {
+            location.reload();
+          });
+
+        // SIDEBAR
+        const hamburger = document.getElementById('hamburgerBtn');
         const sidebar = document.getElementById('sidebar');
-        const sidebarClose = document.getElementById('sidebarClose');
-        const sidebarOverlay = document.getElementById('sidebarOverlay');
+        const closeBtn = document.getElementById('sidebarClose');
+        const overlay = document.getElementById('sidebarOverlay');
 
         function openSidebar() {
-          if (sidebar) sidebar.classList.add('active');
-          if (sidebarOverlay) sidebarOverlay.classList.add('active');
-          if (hamburgerBtn) {
-            hamburgerBtn.classList.add('active');
-            hamburgerBtn.setAttribute('aria-expanded', 'true');
-          }
+          sidebar.classList.add('active');
+          overlay.classList.add('active');
+          hamburger.classList.add('active');
+          hamburger.setAttribute('aria-expanded', 'true');
         }
-
         function closeSidebar() {
-          if (sidebar) sidebar.classList.remove('active');
-          if (sidebarOverlay) sidebarOverlay.classList.remove('active');
-          if (hamburgerBtn) {
-            hamburgerBtn.classList.remove('active');
-            hamburgerBtn.setAttribute('aria-expanded', 'false');
-          }
+          sidebar.classList.remove('active');
+          overlay.classList.remove('active');
+          hamburger.classList.remove('active');
+          hamburger.setAttribute('aria-expanded', 'false');
         }
-
-        function toggleSidebar() {
-          if (sidebar && sidebar.classList.contains('active')) {
-            closeSidebar();
-          } else {
-            openSidebar();
-          }
-        }
-
-        if (hamburgerBtn) hamburgerBtn.addEventListener('click', toggleSidebar);
-        if (sidebarClose) sidebarClose.addEventListener('click', closeSidebar);
-        if (sidebarOverlay) sidebarOverlay.addEventListener('click', closeSidebar);
-
-        // Boleh tutup modal menggunakan kekunci ESC
+        hamburger.addEventListener('click', function () {
+          if (sidebar.classList.contains('active')) closeSidebar();
+          else openSidebar();
+        });
+        closeBtn.addEventListener('click', closeSidebar);
+        overlay.addEventListener('click', closeSidebar);
         document.addEventListener('keydown', function (e) {
-          if (e.key === 'Escape' && sidebar && sidebar.classList.contains('active')) {
+          if (e.key === 'Escape' && sidebar.classList.contains('active'))
             closeSidebar();
-          }
         });
 
-        // Pengendalian Accordion Sidebar
-        const accordionHeaders = document.querySelectorAll('.accordion-header');
-        accordionHeaders.forEach(header => {
+        // ACCORDION
+        document.querySelectorAll('.accordion-header').forEach((header) => {
           header.addEventListener('click', function () {
-            const targetId = this.getAttribute('data-target');
-            const targetContent = document.getElementById(targetId);
+            const target = document.getElementById(
+              this.getAttribute('data-target')
+            );
             const arrow = this.querySelector('.arrow');
-            const isOpen = targetContent.classList.contains('open');
-
-            // Tutup semua yang lain (pilihan)
-            document.querySelectorAll('.accordion-content').forEach(c => {
-              if (c !== targetContent) c.classList.remove('open');
-            });
-            document.querySelectorAll('.accordion-header .arrow').forEach(a => {
-              if (a !== arrow) a.classList.remove('open');
-            });
-
-            if (isOpen) {
-              targetContent.classList.remove('open');
-              if (arrow) arrow.classList.remove('open');
-              this.setAttribute('aria-expanded', 'false');
-            } else {
-              targetContent.classList.add('open');
-              if (arrow) arrow.classList.add('open');
+            const isOpen = target.classList.contains('open');
+            document
+              .querySelectorAll('.accordion-content')
+              .forEach((c) => c.classList.remove('open'));
+            document
+              .querySelectorAll('.accordion-header .arrow')
+              .forEach((a) => a.classList.remove('open'));
+            if (!isOpen) {
+              target.classList.add('open');
+              arrow.classList.add('open');
               this.setAttribute('aria-expanded', 'true');
+            } else {
+              this.setAttribute('aria-expanded', 'false');
             }
           });
         });
 
-        // KIRA DENGAN ANIMASI UNTUK BAR STATISTIK
-        const appCards = document.querySelectorAll('.app-card');
-        const totalApps = appCards.length;
-        const onlineApps = document.querySelectorAll('.app-card .badge.online').length;
-        const liveApps = document.querySelectorAll('.app-card .badge.live').length;
-        const onlinePercent = totalApps > 0 ? Math.round(((onlineApps + liveApps) / totalApps) * 100) : 0;
+        // SEARCH
+        document
+          .getElementById('searchLinks')
+          .addEventListener('input', function () {
+            const q = this.value.toLowerCase().trim();
+            document.querySelectorAll('.sidebar-link').forEach((link) => {
+              const name =
+                link.querySelector('.link-name')?.textContent?.toLowerCase() ||
+                '';
+              const desc =
+                link.querySelector('.link-desc')?.textContent?.toLowerCase() ||
+                '';
+              link.style.display =
+                name.includes(q) || desc.includes(q) ? 'flex' : 'none';
+            });
+          });
+
+        // STATS ANIMATION
+        const total = document.querySelectorAll('.app-card').length;
+        const online = document.querySelectorAll(
+          '.app-card .badge.online'
+        ).length;
+        const live = document.querySelectorAll('.app-card .badge.live').length;
+        const percent =
+          total > 0 ? Math.round(((online + live) / total) * 100) : 0;
 
         function animateValue(id, start, end, duration, suffix = '') {
-          const obj = document.getElementById(id);
-          if (!obj) return;
-          let startTimestamp = null;
+          const el = document.getElementById(id);
+          if (!el) return;
+          let startTime = null;
           const step = (timestamp) => {
-            if (!startTimestamp) startTimestamp = timestamp;
-            const progress = Math.min((timestamp - startTimestamp) / duration, 1);
+            if (!startTime) startTime = timestamp;
+            const progress = Math.min((timestamp - startTime) / duration, 1);
             const val = Math.floor(progress * (end - start) + start);
-            obj.textContent = val + suffix;
-            if (progress < 1) {
-              window.requestAnimationFrame(step);
-            }
+            el.textContent = val + suffix;
+            if (progress < 1) requestAnimationFrame(step);
           };
-          window.requestAnimationFrame(step);
+          requestAnimationFrame(step);
         }
-
         setTimeout(() => {
-          animateValue('appCount', 0, totalApps, 1200);
-          animateValue('onlinePercent', 0, onlinePercent, 1400, '%');
-          animateValue('liveCount', 0, liveApps, 1000);
+          animateValue('appCount', 0, total, 1200);
+          animateValue('onlinePercent', 0, percent, 1400, '%');
+          animateValue('liveCount', 0, live, 1000);
         }, 300);
+
+        // SERVICE WORKER
+        if ('serviceWorker' in navigator) {
+          navigator.serviceWorker.register('sw.js').catch(() => {});
+        }
       });
     </script>
   </body>
