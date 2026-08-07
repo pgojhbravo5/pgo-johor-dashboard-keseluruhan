@@ -1,875 +1,1915 @@
 <!DOCTYPE html>
 <html lang="ms">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-  <title>JBPM PGO Johor - Tactical Dashboard</title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <title>JBPM PGO Johor - Tactical Dashboard</title>
 
-  <!-- PWA META TAGS -->
-  <meta name="theme-color" content="#cc0000" />
-  <meta name="apple-mobile-web-app-capable" content="yes" />
-  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-  <meta name="apple-mobile-web-app-title" content="PGO Johor" />
-  <meta name="mobile-web-app-capable" content="yes" />
+    <!-- PWA META TAGS -->
+    <meta name="theme-color" content="#cc0000" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="apple-mobile-web-app-title" content="PGO Johor" />
+    <meta name="mobile-web-app-capable" content="yes" />
 
-  <link rel="manifest" href="manifest.json" />
-  <link rel="icon" type="image/png" href="https://i.ibb.co/bjc5nKwZ/training.png" />
-  <link rel="apple-touch-icon" href="https://i.ibb.co/bjc5nKwZ/training.png" />
+    <link rel="manifest" href="manifest.json" />
+    <link rel="icon" type="image/png" href="https://i.ibb.co/bjc5nKwZ/training.png" />
+    <link rel="apple-touch-icon" href="https://i.ibb.co/bjc5nKwZ/training.png" />
 
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
 
-  <style>
-    /* ===== SEMUA CSS SAMA SEPERTI VERSI SEBELUM INI ===== */
-    :root {
-      --fire-red: #cc0000;
-      --fire-red-glow: rgba(204,0,0,0.6);
-      --hazard-gold: #ffcc00;
-      --hazard-gold-glow: rgba(255,204,0,0.4);
-      --alert-orange: #ff6600;
-      --status-green: #4ade80;
-      --hud-bg: rgba(15,15,20,0.85);
-      --hud-card-bg: rgba(22,22,28,0.75);
-      --hud-border: rgba(255,204,0,0.25);
-      --hud-border-red: rgba(204,0,0,0.4);
-      --font-main: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-      --font-size-base: 16px;
-      --text-primary: #e2e8f0;
-      --text-secondary: #94a3b8;
-      --bg-body: #050508;
-    }
-    * { margin:0; padding:0; box-sizing:border-box; font-family:var(--font-main); }
-    html { font-size:var(--font-size-base); }
+    <style>
+        /* ===== RESET & VARIABEL ===== */
+        :root {
+            --fire-red: #cc0000;
+            --fire-red-glow: rgba(204, 0, 0, 0.6);
+            --hazard-gold: #ffcc00;
+            --hazard-gold-glow: rgba(255, 204, 0, 0.4);
+            --alert-orange: #ff6600;
+            --status-green: #4ade80;
+            --hud-bg: rgba(15, 15, 20, 0.85);
+            --hud-card-bg: rgba(22, 22, 28, 0.75);
+            --hud-border: rgba(255, 204, 0, 0.25);
+            --hud-border-red: rgba(204, 0, 0, 0.4);
+            --font-main: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            --font-size-base: 16px;
+            --text-primary: #e2e8f0;
+            --text-secondary: #94a3b8;
+            --bg-body: #050508;
+        }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: var(--font-main);
+        }
+        html {
+            font-size: var(--font-size-base);
+        }
 
-    body {
-      font-family:var(--font-main);
-      min-height:100vh;
-      display:flex;
-      justify-content:center;
-      align-items:flex-start;
-      padding:1.25rem 1rem;
-      background:var(--bg-body);
-      background-image:url('https://raw.githubusercontent.com/pgojhbravo5/pgo-johor-dashboard-keseluruhan/3c1b568398651e5e9612730038c9d189a673be48/firetruck-BG.png');
-      background-size:cover;
-      background-position:center;
-      background-attachment:fixed;
-      position:relative;
-      overflow-x:hidden;
-      color:var(--text-primary);
-      transition:background 0.5s ease, background-image 0.5s ease;
-      -webkit-font-smoothing:antialiased;
-      -moz-osx-font-smoothing:grayscale;
-    }
-    body::before {
-      content:'';
-      position:fixed;
-      top:0; left:0; right:0; bottom:0;
-      background:radial-gradient(circle at 50% 50%, rgba(10,10,15,0.75), rgba(2,2,5,0.92)),
-                 linear-gradient(rgba(255,255,255,0.02) 1px, transparent 1px),
-                 linear-gradient(90deg, rgba(255,255,255,0.02) 1px, transparent 1px);
-      background-size:100% 100%, 1.875rem 1.875rem, 1.875rem 1.875rem;
-      z-index:0;
-      transition:background 0.5s ease;
-      pointer-events:none;
-    }
+        body {
+            font-family: var(--font-main);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            padding: 1.25rem 1rem;
+            background: var(--bg-body);
+            background-image: url('https://raw.githubusercontent.com/pgojhbravo5/pgo-johor-dashboard-keseluruhan/3c1b568398651e5e9612730038c9d189a673be48/firetruck-BG.png');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            position: relative;
+            overflow-x: hidden;
+            color: var(--text-primary);
+            transition: background 0.5s ease, background-image 0.5s ease;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            touch-action: manipulation;
+        }
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: radial-gradient(circle at 50% 50%, rgba(10, 10, 15, 0.75), rgba(2, 2, 5, 0.92)),
+                linear-gradient(rgba(255, 255, 255, 0.02) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255, 255, 255, 0.02) 1px, transparent 1px);
+            background-size: 100% 100%, 1.875rem 1.875rem, 1.875rem 1.875rem;
+            z-index: 0;
+            transition: background 0.5s ease;
+            pointer-events: none;
+        }
 
-    /* MOD SIANG */
-    body.mode-siang {
-      background-image:url('https://images.unsplash.com/photo-1504384308090-c894fdcc538d?w=1600');
-    }
-    body.mode-siang::before {
-      background:radial-gradient(circle at 50% 50%, rgba(240,242,245,0.85), rgba(220,225,230,0.95)),
-                 linear-gradient(rgba(0,0,0,0.03) 1px, transparent 1px),
-                 linear-gradient(90deg, rgba(0,0,0,0.03) 1px, transparent 1px);
-      background-size:100% 100%, 1.875rem 1.875rem, 1.875rem 1.875rem;
-    }
-    body.mode-siang .dashboard { background:rgba(245,247,250,0.92); border-color:rgba(204,0,0,0.3); box-shadow:0 25px 60px rgba(0,0,0,0.15),0 0 30px rgba(255,107,0,0.15); color:#1e293b; }
-    body.mode-siang .logo-text h1 { color:#0f172a; }
-    body.mode-siang .logo-text .sub { color:#475569; }
-    body.mode-siang .stat-item { background:#ffffff; border-color:#cbd5e1; box-shadow:0 4px 15px rgba(0,0,0,0.05); }
-    body.mode-siang .stat-item .num { color:#0f172a; text-shadow:none; }
-    body.mode-siang .stat-item .label { color:#475569; }
-    body.mode-siang .stat-item .icon-badge { color:#cc0000; }
-    body.mode-siang .app-card { background:#ffffff; border-color:#e2e8f0; box-shadow:0 4px 20px rgba(0,0,0,0.06); }
-    body.mode-siang .app-card h3 { color:#0f172a; }
-    body.mode-siang .app-card p { color:#475569; }
-    body.mode-siang .section-title { color:#0f172a; border-bottom-color:#cbd5e1; }
-    body.mode-siang .footer { border-top-color:#cbd5e1; color:#475569; }
-    body.mode-siang .header-top-controls .mode-toggle-btn { background:#f1f5f9; border-color:#ff6b00; color:#ff6b00; }
-    body.mode-siang .header-top-controls .switch-mode-btn { background:#f1f5f9; border-color:#059669; color:#059669; }
-    body.mode-siang .hamburger-fixed-btn { background:rgba(255,255,255,0.95); border-color:#cc0000; color:#cc0000; }
-    body.mode-siang .hamburger-fixed-btn .hamburger-bars span { background:#cc0000; }
-    body.mode-siang .header-top-controls .analog-clock { background:#ffffff; border-color:#ff6b00; }
-    body.mode-siang .header-top-controls .digital-time .time { color:#cc5500; }
-    body.mode-siang .header-top-controls .digital-time .date { color:#475569; }
-    body.mode-siang .sidebar { background:#f8fafc; border-right-color:#ff6b00; }
-    body.mode-siang .sidebar-header { background:linear-gradient(135deg,#fef2f2,#f1f5f9); border-bottom-color:#cbd5e1; }
-    body.mode-siang .sidebar-header h3 { color:#cc5500; }
-    body.mode-siang .accordion-header { background:#ffffff; border-color:#e2e8f0; color:#1e293b; }
-    body.mode-siang .accordion-content { background:#f1f5f9; }
-    body.mode-siang .sidebar-link { color:#334155; }
-    body.mode-siang .sidebar-link:hover { background:#ffffff; border-color:#cbd5e1; color:#0f172a; }
-    body.mode-siang .emergency-item { background:#ffffff; border-color:#e2e8f0; }
-    body.mode-siang .emergency-item .e-info .e-name { color:#0f172a; }
-    body.mode-siang .emergency-item .e-info .e-number { color:#cc0000; }
-    body.mode-siang .info-box { background:#f1f5f9; border-color:#cbd5e1; }
-    body.mode-siang .info-box p { color:#475569; }
-    body.mode-siang .refresh-btn { background:#f1f5f9; border-color:#3b82f6; color:#3b82f6; }
-    body.mode-siang .search-box { background:#f1f5f9; border-color:#cbd5e1; }
-    body.mode-siang .search-box input { color:#0f172a; }
-    body.mode-siang .search-box input::placeholder { color:#94a3b8; }
-    body.mode-siang .popular-links .popular-item { background:#ffffff; border-color:#e2e8f0; }
-    body.mode-siang .popular-links .popular-item:hover { background:#f1f5f9; }
-    body.mode-siang .status-badge.down { background:rgba(239,68,68,0.2); color:#dc2626; border-color:#dc2626; }
-    body.mode-siang .update-timestamp { color:#64748b; }
+        /* MOD SIANG */
+        body.mode-siang {
+            background-image: url('https://images.unsplash.com/photo-1504384308090-c894fdcc538d?w=1600');
+        }
+        body.mode-siang::before {
+            background: radial-gradient(circle at 50% 50%, rgba(240, 242, 245, 0.85), rgba(220, 225, 230, 0.95)),
+                linear-gradient(rgba(0, 0, 0, 0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0, 0, 0, 0.03) 1px, transparent 1px);
+            background-size: 100% 100%, 1.875rem 1.875rem, 1.875rem 1.875rem;
+        }
+        body.mode-siang .dashboard {
+            background: rgba(245, 247, 250, 0.92);
+            border-color: rgba(204, 0, 0, 0.3);
+            box-shadow: 0 25px 60px rgba(0, 0, 0, 0.15), 0 0 30px rgba(255, 107, 0, 0.15);
+            color: #1e293b;
+        }
+        body.mode-siang .logo-text h1 {
+            color: #0f172a;
+        }
+        body.mode-siang .logo-text .sub {
+            color: #475569;
+        }
+        body.mode-siang .stat-item {
+            background: #ffffff;
+            border-color: #cbd5e1;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+        }
+        body.mode-siang .stat-item .num {
+            color: #0f172a;
+            text-shadow: none;
+        }
+        body.mode-siang .stat-item .label {
+            color: #475569;
+        }
+        body.mode-siang .stat-item .icon-badge {
+            color: #cc0000;
+        }
+        body.mode-siang .app-card {
+            background: #ffffff;
+            border-color: #e2e8f0;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+        }
+        body.mode-siang .app-card h3 {
+            color: #0f172a;
+        }
+        body.mode-siang .app-card p {
+            color: #475569;
+        }
+        body.mode-siang .section-title {
+            color: #0f172a;
+            border-bottom-color: #cbd5e1;
+        }
+        body.mode-siang .footer {
+            border-top-color: #cbd5e1;
+            color: #475569;
+        }
+        body.mode-siang .header-top-controls .mode-toggle-btn {
+            background: #f1f5f9;
+            border-color: #ff6b00;
+            color: #ff6b00;
+        }
+        body.mode-siang .header-top-controls .switch-mode-btn {
+            background: #f1f5f9;
+            border-color: #059669;
+            color: #059669;
+        }
+        body.mode-siang .hamburger-fixed-btn {
+            background: rgba(255, 255, 255, 0.95);
+            border-color: #cc0000;
+            color: #cc0000;
+        }
+        body.mode-siang .hamburger-fixed-btn .hamburger-bars span {
+            background: #cc0000;
+        }
+        body.mode-siang .header-top-controls .analog-clock {
+            background: #ffffff;
+            border-color: #ff6b00;
+        }
+        body.mode-siang .header-top-controls .digital-time .time {
+            color: #cc5500;
+        }
+        body.mode-siang .header-top-controls .digital-time .date {
+            color: #475569;
+        }
+        body.mode-siang .sidebar {
+            background: #f8fafc;
+            border-right-color: #ff6b00;
+        }
+        body.mode-siang .sidebar-header {
+            background: linear-gradient(135deg, #fef2f2, #f1f5f9);
+            border-bottom-color: #cbd5e1;
+        }
+        body.mode-siang .sidebar-header h3 {
+            color: #cc5500;
+        }
+        body.mode-siang .accordion-header {
+            background: #ffffff;
+            border-color: #e2e8f0;
+            color: #1e293b;
+        }
+        body.mode-siang .accordion-content {
+            background: #f1f5f9;
+        }
+        body.mode-siang .sidebar-link {
+            color: #334155;
+        }
+        body.mode-siang .sidebar-link:hover {
+            background: #ffffff;
+            border-color: #cbd5e1;
+            color: #0f172a;
+        }
+        body.mode-siang .emergency-item {
+            background: #ffffff;
+            border-color: #e2e8f0;
+        }
+        body.mode-siang .emergency-item .e-info .e-name {
+            color: #0f172a;
+        }
+        body.mode-siang .emergency-item .e-info .e-number {
+            color: #cc0000;
+        }
+        body.mode-siang .info-box {
+            background: #f1f5f9;
+            border-color: #cbd5e1;
+        }
+        body.mode-siang .info-box p {
+            color: #475569;
+        }
+        body.mode-siang .refresh-btn {
+            background: #f1f5f9;
+            border-color: #3b82f6;
+            color: #3b82f6;
+        }
+        body.mode-siang .search-box {
+            background: #f1f5f9;
+            border-color: #cbd5e1;
+        }
+        body.mode-siang .search-box input {
+            color: #0f172a;
+        }
+        body.mode-siang .search-box input::placeholder {
+            color: #94a3b8;
+        }
+        body.mode-siang .popular-links .popular-item {
+            background: #ffffff;
+            border-color: #e2e8f0;
+        }
+        body.mode-siang .popular-links .popular-item:hover {
+            background: #f1f5f9;
+        }
+        body.mode-siang .status-badge.down {
+            background: rgba(239, 68, 68, 0.2);
+            color: #dc2626;
+            border-color: #dc2626;
+        }
+        body.mode-siang .update-timestamp {
+            color: #64748b;
+        }
 
-    /* OVERLAY */
-    .sidebar-overlay { position:fixed; top:0; left:0; right:0; bottom:0; background:rgba(0,0,0,0.75); backdrop-filter:blur(6px); -webkit-backdrop-filter:blur(6px); z-index:998; opacity:0; visibility:hidden; transition:all 0.35s ease; }
-    .sidebar-overlay.active { opacity:1; visibility:visible; }
+        /* ===== OVERLAY & SIDEBAR ===== */
+        .sidebar-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.75);
+            backdrop-filter: blur(6px);
+            -webkit-backdrop-filter: blur(6px);
+            z-index: 998;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.35s ease;
+        }
+        .sidebar-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
 
-    /* HAMBURGER */
-    .hamburger-fixed-btn {
-      position:fixed; top:0; left:0; padding:0.75rem 1rem; border-bottom-right-radius:1.125rem;
-      background:var(--hud-bg); border:1px solid var(--fire-red); border-top:none; border-left:none;
-      color:var(--fire-red); cursor:pointer; display:flex; align-items:center; gap:0.625rem; z-index:1000;
-      backdrop-filter:blur(20px); -webkit-backdrop-filter:blur(20px);
-      box-shadow:0 0.625rem 1.875rem rgba(0,0,0,0.8),0 0 0.9375rem var(--fire-red-glow);
-      transition:opacity 0.35s cubic-bezier(0.16,1,0.3,1), transform 0.35s cubic-bezier(0.16,1,0.3,1), background 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
-      user-select:none; -webkit-tap-highlight-color:transparent;
-    }
-    .hamburger-fixed-btn:hover { background:var(--fire-red); color:#fff; box-shadow:0 0 1.5625rem var(--fire-red-glow),0 0.625rem 1.5625rem rgba(0,0,0,0.6); transform:translateY(0.125rem); }
-    .hamburger-fixed-btn .hamburger-bars { display:flex; flex-direction:column; justify-content:center; gap:0.25rem; width:1.125rem; }
-    .hamburger-fixed-btn .hamburger-bars span { display:block; width:100%; height:0.125rem; background:var(--hazard-gold); border-radius:0.125rem; transition:all 0.3s ease; }
-    .hamburger-fixed-btn .menu-title-text { font-size:0.6875rem; font-weight:800; letter-spacing:0.0625rem; text-transform:uppercase; white-space:nowrap; color:inherit; transition:color 0.3s ease; }
-    .hamburger-fixed-btn.active { opacity:0; pointer-events:none; transform:translateX(-100%); }
+        /* HAMBURGER */
+        .hamburger-fixed-btn {
+            position: fixed;
+            top: 0;
+            left: 0;
+            padding: 0.75rem 1rem;
+            border-bottom-right-radius: 1.125rem;
+            background: var(--hud-bg);
+            border: 1px solid var(--fire-red);
+            border-top: none;
+            border-left: none;
+            color: var(--fire-red);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 0.625rem;
+            z-index: 1000;
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            box-shadow: 0 0.625rem 1.875rem rgba(0, 0, 0, 0.8), 0 0 0.9375rem var(--fire-red-glow);
+            transition: opacity 0.35s cubic-bezier(0.16, 1, 0.3, 1),
+                transform 0.35s cubic-bezier(0.16, 1, 0.3, 1),
+                background 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+            user-select: none;
+            -webkit-tap-highlight-color: transparent;
+        }
+        .hamburger-fixed-btn .hamburger-bars {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            gap: 0.25rem;
+            width: 1.125rem;
+        }
+        .hamburger-fixed-btn .hamburger-bars span {
+            display: block;
+            width: 100%;
+            height: 0.125rem;
+            background: var(--hazard-gold);
+            border-radius: 0.125rem;
+            transition: all 0.3s ease;
+        }
+        .hamburger-fixed-btn .menu-title-text {
+            font-size: 0.6875rem;
+            font-weight: 800;
+            letter-spacing: 0.0625rem;
+            text-transform: uppercase;
+            white-space: nowrap;
+            color: inherit;
+            transition: color 0.3s ease;
+        }
+        .hamburger-fixed-btn.active {
+            opacity: 0;
+            pointer-events: none;
+            transform: translateX(-100%);
+        }
+        @media (hover: hover) {
+            .hamburger-fixed-btn:hover {
+                background: var(--fire-red);
+                color: #fff;
+                box-shadow: 0 0 1.5625rem var(--fire-red-glow), 0 0.625rem 1.5625rem rgba(0, 0, 0, 0.6);
+                transform: translateY(0.125rem);
+            }
+        }
 
-    /* HEADER TOP CONTROLS */
-    .header-top-controls { display:flex; align-items:center; justify-content:flex-end; gap:0.75rem; margin-bottom:1rem; width:100%; flex-wrap:wrap; padding-bottom:0.75rem; border-bottom:1px dashed rgba(255,255,255,0.1); }
-    body.mode-siang .header-top-controls { border-bottom-color:rgba(0,0,0,0.1); }
-    .header-top-controls button, .header-top-controls .refresh-btn {
-      position:relative; overflow:hidden; user-select:none; -webkit-tap-highlight-color:transparent;
-      width:2.625rem; height:2.625rem; border-radius:50%; background:rgba(20,20,28,0.9); border:1px solid var(--hazard-gold);
-      cursor:pointer; display:flex; align-items:center; justify-content:center; font-size:1.125rem;
-      transition:all 0.3s cubic-bezier(0.16,1,0.3,1); flex-shrink:0; color:var(--hazard-gold); border-color:rgba(255,204,0,0.4);
-    }
-    .header-top-controls button:hover, .header-top-controls .refresh-btn:hover { background:var(--hazard-gold); color:#000; transform:scale(1.1); box-shadow:0 0 1.25rem var(--hazard-gold-glow); border-color:var(--hazard-gold); }
-    .header-top-controls .switch-mode-btn { border-color:var(--status-green); color:var(--status-green); }
-    .header-top-controls .switch-mode-btn:hover { background:var(--status-green); color:#000; box-shadow:0 0 1.25rem rgba(74,222,128,0.4); border-color:var(--status-green); }
-    .header-top-controls .refresh-btn { border-color:#3b82f6; color:#3b82f6; }
-    .header-top-controls .refresh-btn:hover { background:#3b82f6; color:#000; box-shadow:0 0 1.25rem rgba(59,130,246,0.4); border-color:#3b82f6; }
-    .switch-mode-btn .mode-indicator-dot { position:absolute; bottom:0px; right:0px; width:0.625rem; height:0.625rem; background:var(--status-green); border-radius:50%; border:2px solid #000; display:none; animation:pulseIndicator 2s infinite; }
-    body.mobile-mode .switch-mode-btn .mode-indicator-dot { display:block; }
-    @keyframes pulseIndicator { 0%,100%{ transform:scale(1); opacity:1; } 50%{ transform:scale(1.4); opacity:0.4; } }
+        /* HEADER TOP CONTROLS */
+        .header-top-controls {
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            gap: 0.75rem;
+            margin-bottom: 1rem;
+            width: 100%;
+            flex-wrap: wrap;
+            padding-bottom: 0.75rem;
+            border-bottom: 1px dashed rgba(255, 255, 255, 0.1);
+        }
+        body.mode-siang .header-top-controls {
+            border-bottom-color: rgba(0, 0, 0, 0.1);
+        }
+        .header-top-controls button,
+        .header-top-controls .refresh-btn {
+            position: relative;
+            overflow: hidden;
+            user-select: none;
+            -webkit-tap-highlight-color: transparent;
+            width: 2.625rem;
+            height: 2.625rem;
+            border-radius: 50%;
+            background: rgba(20, 20, 28, 0.9);
+            border: 1px solid var(--hazard-gold);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.125rem;
+            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+            flex-shrink: 0;
+            color: var(--hazard-gold);
+            border-color: rgba(255, 204, 0, 0.4);
+        }
+        @media (hover: hover) {
+            .header-top-controls button:hover,
+            .header-top-controls .refresh-btn:hover {
+                background: var(--hazard-gold);
+                color: #000;
+                transform: scale(1.1);
+                box-shadow: 0 0 1.25rem var(--hazard-gold-glow);
+                border-color: var(--hazard-gold);
+            }
+            .header-top-controls .switch-mode-btn:hover {
+                background: var(--status-green);
+                color: #000;
+                box-shadow: 0 0 1.25rem rgba(74, 222, 128, 0.4);
+                border-color: var(--status-green);
+            }
+            .header-top-controls .refresh-btn:hover {
+                background: #3b82f6;
+                color: #000;
+                box-shadow: 0 0 1.25rem rgba(59, 130, 246, 0.4);
+                border-color: #3b82f6;
+            }
+        }
+        .switch-mode-btn .mode-indicator-dot {
+            position: absolute;
+            bottom: 0px;
+            right: 0px;
+            width: 0.625rem;
+            height: 0.625rem;
+            background: var(--status-green);
+            border-radius: 50%;
+            border: 2px solid #000;
+            display: none;
+            animation: pulseIndicator 2s infinite;
+        }
+        body.mobile-mode .switch-mode-btn .mode-indicator-dot {
+            display: block;
+        }
+        @keyframes pulseIndicator {
+            0%, 100% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.4); opacity: 0.4; }
+        }
 
-    .header-top-controls .analog-clock { width:2.625rem; height:2.625rem; border-radius:50%; background:#000; border:2px solid var(--hazard-gold); position:relative; flex-shrink:0; box-shadow:0 0 0.9375rem var(--hazard-gold-glow); transition:all 0.3s ease; margin-left:auto; }
-    .header-top-controls .analog-clock:hover { transform:scale(1.1); }
-    .header-top-controls .analog-clock .hand { position:absolute; bottom:50%; left:50%; transform-origin:bottom center; border-radius:0.1875rem; }
-    .header-top-controls .analog-clock .hand.hour { width:0.1875rem; height:0.75rem; margin-left:-0.09375rem; background:var(--hazard-gold); }
-    .header-top-controls .analog-clock .hand.minute { width:0.125rem; height:1rem; margin-left:-0.0625rem; background:#94a3b8; }
-    .header-top-controls .analog-clock .hand.second { width:0.09375rem; height:1.125rem; margin-left:-0.046875rem; background:#ef4444; }
-    .header-top-controls .analog-clock .center-dot { position:absolute; top:50%; left:50%; width:0.3125rem; height:0.3125rem; background:var(--hazard-gold); border-radius:50%; transform:translate(-50%,-50%); z-index:2; }
-    .header-top-controls .analog-clock .marker { position:absolute; width:0.125rem; height:0.1875rem; background:#475569; top:0.1875rem; left:50%; margin-left:-0.0625rem; transform-origin:bottom center; }
-    .header-top-controls .analog-clock .marker.main { height:0.375rem; width:0.125rem; background:var(--hazard-gold); }
+        .header-top-controls .analog-clock {
+            width: 2.625rem;
+            height: 2.625rem;
+            border-radius: 50%;
+            background: #000;
+            border: 2px solid var(--hazard-gold);
+            position: relative;
+            flex-shrink: 0;
+            box-shadow: 0 0 0.9375rem var(--hazard-gold-glow);
+            transition: all 0.3s ease;
+            margin-left: auto;
+        }
+        @media (hover: hover) {
+            .header-top-controls .analog-clock:hover {
+                transform: scale(1.1);
+            }
+        }
+        .header-top-controls .analog-clock .hand {
+            position: absolute;
+            bottom: 50%;
+            left: 50%;
+            transform-origin: bottom center;
+            border-radius: 0.1875rem;
+        }
+        .header-top-controls .analog-clock .hand.hour {
+            width: 0.1875rem;
+            height: 0.75rem;
+            margin-left: -0.09375rem;
+            background: var(--hazard-gold);
+        }
+        .header-top-controls .analog-clock .hand.minute {
+            width: 0.125rem;
+            height: 1rem;
+            margin-left: -0.0625rem;
+            background: #94a3b8;
+        }
+        .header-top-controls .analog-clock .hand.second {
+            width: 0.09375rem;
+            height: 1.125rem;
+            margin-left: -0.046875rem;
+            background: #ef4444;
+        }
+        .header-top-controls .analog-clock .center-dot {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0.3125rem;
+            height: 0.3125rem;
+            background: var(--hazard-gold);
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 2;
+        }
+        .header-top-controls .analog-clock .marker {
+            position: absolute;
+            width: 0.125rem;
+            height: 0.1875rem;
+            background: #475569;
+            top: 0.1875rem;
+            left: 50%;
+            margin-left: -0.0625rem;
+            transform-origin: bottom center;
+        }
+        .header-top-controls .analog-clock .marker.main {
+            height: 0.375rem;
+            width: 0.125rem;
+            background: var(--hazard-gold);
+        }
 
-    .header-top-controls .digital-time { text-align:right; line-height:1.1; min-width:5.625rem; margin-right:0.5rem; }
-    .header-top-controls .digital-time .time { font-size:0.9375rem; font-weight:800; color:var(--hazard-gold); letter-spacing:0.03125rem; text-shadow:0 0 0.625rem var(--hazard-gold-glow); }
-    .time-colon { animation:blinkColon 1s infinite; }
-    @keyframes blinkColon { 0%,100%{ opacity:1; } 50%{ opacity:0.2; } }
-    .header-top-controls .digital-time .date { color:var(--text-secondary); font-size:0.5625rem; font-weight:600; letter-spacing:0.05rem; margin-top:0.125rem; }
+        .header-top-controls .digital-time {
+            text-align: right;
+            line-height: 1.1;
+            min-width: 5.625rem;
+            margin-right: 0.5rem;
+        }
+        .header-top-controls .digital-time .time {
+            font-size: 0.9375rem;
+            font-weight: 800;
+            color: var(--hazard-gold);
+            letter-spacing: 0.03125rem;
+            text-shadow: 0 0 0.625rem var(--hazard-gold-glow);
+        }
+        .time-colon {
+            animation: blinkColon 1s infinite;
+        }
+        @keyframes blinkColon {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.2; }
+        }
+        .header-top-controls .digital-time .date {
+            color: var(--text-secondary);
+            font-size: 0.5625rem;
+            font-weight: 600;
+            letter-spacing: 0.05rem;
+            margin-top: 0.125rem;
+        }
 
-    /* DASHBOARD */
-    .dashboard { max-width:73.75rem; width:100%; background:var(--hud-bg); border-radius:1.5rem; padding:2.25rem 1.875rem; box-shadow:0 1.875rem 4.375rem rgba(0,0,0,0.85),0 0 2.5rem rgba(204,0,0,0.12); border:1px solid var(--hud-border-red); position:relative; overflow:visible; z-index:1; transition:all 0.5s ease; margin-top:1.25rem; backdrop-filter:blur(20px); -webkit-backdrop-filter:blur(20px); animation:dashboardEntrance 0.8s cubic-bezier(0.16,1,0.3,1); }
-    @keyframes dashboardEntrance { 0%{ opacity:0; transform:translateY(1.875rem) scale(0.98); } 100%{ opacity:1; transform:translateY(0) scale(1); } }
-    .header::before { content:''; position:absolute; top:0; left:0; right:0; height:0.25rem; background:linear-gradient(90deg, var(--fire-red), var(--hazard-gold), var(--alert-orange), var(--fire-red)); background-size:300% 100%; animation:stripeMove 6s linear infinite; z-index:102; border-top-left-radius:1.5rem; border-top-right-radius:1.5rem; }
-    @keyframes stripeMove { 0%{ background-position:0% 0%; } 100%{ background-position:300% 0%; } }
-    .header { display:flex; flex-direction:column; justify-content:center; align-items:center; margin-bottom:1.875rem; padding-bottom:1.5rem; border-bottom:1px solid rgba(255,255,255,0.1); position:sticky; top:0; z-index:100; background:rgba(15,15,20,0.94); backdrop-filter:blur(20px); -webkit-backdrop-filter:blur(20px); margin-top:-2.25rem; padding-top:2.25rem; margin-left:-1.875rem; margin-right:-1.875rem; padding-left:1.875rem; padding-right:1.875rem; border-top-left-radius:1.5rem; border-top-right-radius:1.5rem; transition:background 0.5s ease, border-color 0.5s ease; }
-    body.mode-siang .header { background:rgba(245,247,250,0.96); border-bottom-color:rgba(0,0,0,0.1); }
+        /* DASHBOARD */
+        .dashboard {
+            max-width: 73.75rem;
+            width: 100%;
+            background: var(--hud-bg);
+            border-radius: 1.5rem;
+            padding: 2.25rem 1.875rem;
+            box-shadow: 0 1.875rem 4.375rem rgba(0, 0, 0, 0.85), 0 0 2.5rem rgba(204, 0, 0, 0.12);
+            border: 1px solid var(--hud-border-red);
+            position: relative;
+            overflow: visible;
+            z-index: 1;
+            transition: all 0.5s ease;
+            margin-top: 1.25rem;
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            animation: dashboardEntrance 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        @keyframes dashboardEntrance {
+            0% { opacity: 0; transform: translateY(1.875rem) scale(0.98); }
+            100% { opacity: 1; transform: translateY(0) scale(1); }
+        }
+        .header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 0.25rem;
+            background: linear-gradient(90deg, var(--fire-red), var(--hazard-gold), var(--alert-orange), var(--fire-red));
+            background-size: 300% 100%;
+            animation: stripeMove 6s linear infinite;
+            z-index: 102;
+            border-top-left-radius: 1.5rem;
+            border-top-right-radius: 1.5rem;
+        }
+        @keyframes stripeMove {
+            0% { background-position: 0% 0%; }
+            100% { background-position: 300% 0%; }
+        }
+        .header {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 1.875rem;
+            padding-bottom: 1.5rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            background: rgba(15, 15, 20, 0.94);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            margin-top: -2.25rem;
+            padding-top: 2.25rem;
+            margin-left: -1.875rem;
+            margin-right: -1.875rem;
+            padding-left: 1.875rem;
+            padding-right: 1.875rem;
+            border-top-left-radius: 1.5rem;
+            border-top-right-radius: 1.5rem;
+            transition: background 0.5s ease, border-color 0.5s ease;
+        }
+        body.mode-siang .header {
+            background: rgba(245, 247, 250, 0.96);
+            border-bottom-color: rgba(0, 0, 0, 0.1);
+        }
 
-    .logo { display:flex; align-items:center; justify-content:center; width:100%; gap:1.25rem; }
-    .logo-img-wrapper { display:flex; align-items:center; justify-content:center; padding:0.5rem; background:rgba(255,255,255,0.03); border-radius:1rem; border:1px solid rgba(255,255,255,0.08); flex-shrink:0; transition:transform 0.4s ease, border-color 0.4s ease; }
-    .logo-img-wrapper:hover { transform:scale(1.05); border-color:var(--hazard-gold); }
-    .logo-img { height:3.75rem; width:auto; object-fit:contain; filter:drop-shadow(0 0.25rem 0.75rem rgba(0,0,0,0.5)); }
-    .logo-text { display:flex; flex-direction:column; text-align:center; flex:1; min-width:0; }
-    .logo-text h1 { font-size:1.375rem; font-weight:800; letter-spacing:0.0625rem; color:#ffffff; text-transform:uppercase; display:flex; align-items:center; justify-content:center; gap:0.625rem; flex-wrap:wrap; }
-    .logo-text h1 span { color:var(--hazard-gold); text-shadow:0 0 0.9375rem var(--hazard-gold-glow); font-weight:900; }
-    .logo-text .sub { color:var(--alert-orange); font-size:0.8125rem; font-weight:700; letter-spacing:0.1875rem; text-transform:uppercase; margin-top:0.25rem; }
+        .logo {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            gap: 1.25rem;
+        }
+        .logo-img-wrapper {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0.5rem;
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 1rem;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            flex-shrink: 0;
+            transition: transform 0.4s ease, border-color 0.4s ease;
+        }
+        @media (hover: hover) {
+            .logo-img-wrapper:hover {
+                transform: scale(1.05);
+                border-color: var(--hazard-gold);
+            }
+        }
+        .logo-img {
+            height: 3.75rem;
+            width: auto;
+            object-fit: contain;
+            filter: drop-shadow(0 0.25rem 0.75rem rgba(0, 0, 0, 0.5));
+        }
+        .logo-text {
+            display: flex;
+            flex-direction: column;
+            text-align: center;
+            flex: 1;
+            min-width: 0;
+        }
+        .logo-text h1 {
+            font-size: 1.375rem;
+            font-weight: 800;
+            letter-spacing: 0.0625rem;
+            color: #ffffff;
+            text-transform: uppercase;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.625rem;
+            flex-wrap: wrap;
+        }
+        .logo-text h1 span {
+            color: var(--hazard-gold);
+            text-shadow: 0 0 0.9375rem var(--hazard-gold-glow);
+            font-weight: 900;
+        }
+        .logo-text .sub {
+            color: var(--alert-orange);
+            font-size: 0.8125rem;
+            font-weight: 700;
+            letter-spacing: 0.1875rem;
+            text-transform: uppercase;
+            margin-top: 0.25rem;
+        }
 
-    /* STATS */
-    .stats-bar { display:grid; grid-template-columns:repeat(4,1fr); gap:1rem; margin-bottom:2.1875rem; }
-    .stat-item { background:var(--hud-card-bg); border-radius:1rem; padding:1rem; text-align:center; border:1px solid var(--hud-border); position:relative; overflow:hidden; transition:all 0.35s cubic-bezier(0.16,1,0.3,1); backdrop-filter:blur(10px); animation:statFadeIn 0.6s ease backwards; display:flex; flex-direction:column; align-items:center; justify-content:center; }
-    .stat-item:nth-child(1) { animation-delay:0.1s; }
-    .stat-item:nth-child(2) { animation-delay:0.2s; }
-    .stat-item:nth-child(3) { animation-delay:0.3s; }
-    .stat-item:nth-child(4) { animation-delay:0.4s; }
-    @keyframes statFadeIn { from{ opacity:0; transform:translateY(0.9375rem); } to{ opacity:1; transform:translateY(0); } }
-    .stat-item::before { content:''; position:absolute; top:0; left:0; width:0.25rem; height:100%; background:var(--hazard-gold); opacity:0.6; transition:opacity 0.3s ease, width 0.3s ease; }
-    .stat-item:hover { border-color:var(--fire-red); transform:translateY(-0.3125rem); box-shadow:0 0.625rem 1.5625rem rgba(204,0,0,0.25); }
-    .stat-item:hover::before { opacity:1; width:0.375rem; }
-    .stat-item .icon-badge { font-size:1.5rem; color:var(--hazard-gold); margin-bottom:0.375rem; display:block; transition:transform 0.3s ease; }
-    .stat-item:hover .icon-badge { transform:scale(1.2); }
-    .stat-item .num { font-size:1.75rem; font-weight:800; color:#ffffff; text-shadow:0 0 0.625rem rgba(255,255,255,0.2); line-height:1.2; }
-    .stat-item .label { font-size:0.6875rem; font-weight:700; text-transform:uppercase; letter-spacing:0.09375rem; color:var(--text-secondary); margin-top:0.25rem; }
+        /* STATS BAR – tiada hover transform pada sentuh */
+        .stats-bar {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 1rem;
+            margin-bottom: 2.1875rem;
+        }
+        .stat-item {
+            background: var(--hud-card-bg);
+            border-radius: 1rem;
+            padding: 1rem;
+            text-align: center;
+            border: 1px solid var(--hud-border);
+            position: relative;
+            overflow: hidden;
+            transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+            backdrop-filter: blur(10px);
+            animation: statFadeIn 0.6s ease backwards;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            touch-action: manipulation;
+        }
+        .stat-item:nth-child(1) { animation-delay: 0.1s; }
+        .stat-item:nth-child(2) { animation-delay: 0.2s; }
+        .stat-item:nth-child(3) { animation-delay: 0.3s; }
+        .stat-item:nth-child(4) { animation-delay: 0.4s; }
+        @keyframes statFadeIn {
+            from { opacity: 0; transform: translateY(0.9375rem); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .stat-item::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 0.25rem;
+            height: 100%;
+            background: var(--hazard-gold);
+            opacity: 0.6;
+            transition: opacity 0.3s ease, width 0.3s ease;
+        }
+        @media (hover: hover) {
+            .stat-item:hover {
+                border-color: var(--fire-red);
+                transform: translateY(-0.3125rem);
+                box-shadow: 0 0.625rem 1.5625rem rgba(204, 0, 0, 0.25);
+            }
+            .stat-item:hover::before {
+                opacity: 1;
+                width: 0.375rem;
+            }
+            .stat-item:hover .icon-badge {
+                transform: scale(1.2);
+            }
+        }
+        .stat-item .icon-badge {
+            font-size: 1.5rem;
+            color: var(--hazard-gold);
+            margin-bottom: 0.375rem;
+            display: block;
+            transition: transform 0.3s ease;
+        }
+        .stat-item .num {
+            font-size: 1.75rem;
+            font-weight: 800;
+            color: #ffffff;
+            text-shadow: 0 0 0.625rem rgba(255, 255, 255, 0.2);
+            line-height: 1.2;
+        }
+        .stat-item .label {
+            font-size: 0.6875rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.09375rem;
+            color: var(--text-secondary);
+            margin-top: 0.25rem;
+        }
 
-    /* SECTIONS */
-    .section-status { margin-bottom:2.5rem; }
-    .section-title { font-size:0.875rem; font-weight:800; letter-spacing:0.09375rem; color:#ffffff; text-transform:uppercase; margin-bottom:1.125rem; padding-bottom:0.625rem; border-bottom:1px solid rgba(255,255,255,0.1); display:flex; align-items:center; gap:0.75rem; }
-    .status-badge { font-size:0.6875rem; padding:0.1875rem 0.75rem; border-radius:1.25rem; font-weight:700; letter-spacing:0.05rem; }
-    .status-badge.live { background:rgba(239,68,68,0.15); color:#ef4444; border:1px solid rgba(239,68,68,0.4); animation:pulseLive 1.5s infinite; }
-    .status-badge.online { background:rgba(74,222,128,0.15); color:var(--status-green); border:1px solid rgba(74,222,128,0.4); }
-    .status-badge.dev { background:rgba(245,158,11,0.15); color:#f59e0b; border:1px solid rgba(245,158,11,0.4); }
-    @keyframes pulseLive { 0%,100%{ opacity:1; } 50%{ opacity:0.5; } }
+        /* SECTIONS */
+        .section-status {
+            margin-bottom: 2.5rem;
+        }
+        .section-title {
+            font-size: 0.875rem;
+            font-weight: 800;
+            letter-spacing: 0.09375rem;
+            color: #ffffff;
+            text-transform: uppercase;
+            margin-bottom: 1.125rem;
+            padding-bottom: 0.625rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+        .status-badge {
+            font-size: 0.6875rem;
+            padding: 0.1875rem 0.75rem;
+            border-radius: 1.25rem;
+            font-weight: 700;
+            letter-spacing: 0.05rem;
+        }
+        .status-badge.live {
+            background: rgba(239, 68, 68, 0.15);
+            color: #ef4444;
+            border: 1px solid rgba(239, 68, 68, 0.4);
+            animation: pulseLive 1.5s infinite;
+        }
+        .status-badge.online {
+            background: rgba(74, 222, 128, 0.15);
+            color: var(--status-green);
+            border: 1px solid rgba(74, 222, 128, 0.4);
+        }
+        .status-badge.dev {
+            background: rgba(245, 158, 11, 0.15);
+            color: #f59e0b;
+            border: 1px solid rgba(245, 158, 11, 0.4);
+        }
+        @keyframes pulseLive {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
 
-    .apps-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:1.25rem; }
-    .app-card { background:var(--hud-card-bg); border-radius:1.125rem; padding:1.5rem; border:1px solid var(--hud-border); text-decoration:none; color:#ffffff; transition:all 0.35s cubic-bezier(0.16,1,0.3,1); display:flex; flex-direction:column; justify-content:space-between; position:relative; overflow:hidden; animation:cardFadeIn 0.6s ease backwards; backdrop-filter:blur(10px); }
-    .app-card.card-wide { grid-column:1 / -1; background:linear-gradient(135deg, rgba(204,0,0,0.2), rgba(255,204,0,0.05)); border-color:var(--fire-red); border-width:2px; }
-    .app-card.card-wide .icon { color:#fff; }
-    .app-card.card-wide .badge.live { background:rgba(239,68,68,0.3); }
-    @keyframes cardFadeIn { from{ opacity:0; transform:translateY(1.25rem); } to{ opacity:1; transform:translateY(0); } }
-    .app-card::before { content:''; position:absolute; top:0; left:-100%; width:100%; height:100%; background:linear-gradient(90deg, transparent, rgba(255,255,255,0.06), transparent); transition:left 0.6s ease; pointer-events:none; }
-    .app-card:hover::before { left:100%; }
-    .app-card::after { content:''; position:absolute; top:0; right:0; width:0; height:0; border-style:solid; border-width:0 2.1875rem 2.1875rem 0; border-color:transparent var(--hud-border) transparent transparent; transition:border-color 0.3s ease; }
-    .app-card:hover { transform:translateY(-0.375rem) scale(1.01); border-color:var(--fire-red); box-shadow:0 0.9375rem 2.1875rem rgba(204,0,0,0.25); }
-    .app-card:hover::after { border-color:transparent var(--fire-red) transparent transparent; }
-    .app-card .icon { font-size:2.25rem; color:var(--hazard-gold); margin-bottom:0.875rem; transition:transform 0.35s cubic-bezier(0.16,1,0.3,1), color 0.3s ease; }
-    .app-card:hover .icon { transform:scale(1.18) rotate(-6deg); color:#ffffff; }
-    .app-card h3 { font-size:1rem; font-weight:700; margin-bottom:0.5rem; color:#ffffff; }
-    .app-card h3 .highlight { color:var(--hazard-gold); font-weight:800; }
-    .app-card p { color:var(--text-secondary); font-size:0.8125rem; line-height:1.5; font-weight:400; margin-bottom:1.125rem; }
-    .card-footer { display:flex; align-items:center; justify-content:space-between; margin-top:auto; }
-    .app-card .badge { font-size:0.6875rem; font-weight:700; padding:0.25rem 0.75rem; border-radius:1.25rem; text-transform:uppercase; letter-spacing:0.03125rem; }
-    .app-card .badge.online { background:rgba(74,222,128,0.15); color:var(--status-green); border:1px solid rgba(74,222,128,0.3); }
-    .app-card .badge.live { background:rgba(239,68,68,0.15); color:#ef4444; border:1px solid rgba(239,68,68,0.3); }
-    .app-card .badge.dev { background:rgba(245,158,11,0.15); color:#f59e0b; border:1px solid rgba(245,158,11,0.3); }
-    .app-card .arrow { color:#64748b; font-size:1rem; transition:all 0.3s ease; }
-    .app-card:hover .arrow { color:var(--hazard-gold); transform:translateX(0.375rem); }
+        .apps-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1.25rem;
+        }
+        .app-card {
+            background: var(--hud-card-bg);
+            border-radius: 1.125rem;
+            padding: 1.5rem;
+            border: 1px solid var(--hud-border);
+            text-decoration: none;
+            color: #ffffff;
+            transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            position: relative;
+            overflow: hidden;
+            animation: cardFadeIn 0.6s ease backwards;
+            backdrop-filter: blur(10px);
+            touch-action: manipulation;
+        }
+        .app-card.card-wide {
+            grid-column: 1 / -1;
+            background: linear-gradient(135deg, rgba(204, 0, 0, 0.2), rgba(255, 204, 0, 0.05));
+            border-color: var(--fire-red);
+            border-width: 2px;
+        }
+        .app-card.card-wide .icon { color: #fff; }
+        .app-card.card-wide .badge.live { background: rgba(239, 68, 68, 0.3); }
+        @keyframes cardFadeIn {
+            from { opacity: 0; transform: translateY(1.25rem); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .app-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.06), transparent);
+            transition: left 0.6s ease;
+            pointer-events: none;
+        }
+        @media (hover: hover) {
+            .app-card:hover::before { left: 100%; }
+            .app-card:hover {
+                transform: translateY(-0.375rem) scale(1.01);
+                border-color: var(--fire-red);
+                box-shadow: 0 0.9375rem 2.1875rem rgba(204, 0, 0, 0.25);
+            }
+            .app-card:hover::after {
+                border-color: transparent var(--fire-red) transparent transparent;
+            }
+            .app-card:hover .icon {
+                transform: scale(1.18) rotate(-6deg);
+                color: #ffffff;
+            }
+            .app-card:hover .arrow {
+                color: var(--hazard-gold);
+                transform: translateX(0.375rem);
+            }
+        }
+        .app-card::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 0;
+            height: 0;
+            border-style: solid;
+            border-width: 0 2.1875rem 2.1875rem 0;
+            border-color: transparent var(--hud-border) transparent transparent;
+            transition: border-color 0.3s ease;
+        }
+        .app-card .icon {
+            font-size: 2.25rem;
+            color: var(--hazard-gold);
+            margin-bottom: 0.875rem;
+            transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1), color 0.3s ease;
+        }
+        .app-card h3 {
+            font-size: 1rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            color: #ffffff;
+        }
+        .app-card h3 .highlight {
+            color: var(--hazard-gold);
+            font-weight: 800;
+        }
+        .app-card p {
+            color: var(--text-secondary);
+            font-size: 0.8125rem;
+            line-height: 1.5;
+            font-weight: 400;
+            margin-bottom: 1.125rem;
+        }
+        .card-footer {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-top: auto;
+        }
+        .app-card .badge {
+            font-size: 0.6875rem;
+            font-weight: 700;
+            padding: 0.25rem 0.75rem;
+            border-radius: 1.25rem;
+            text-transform: uppercase;
+            letter-spacing: 0.03125rem;
+        }
+        .app-card .badge.online {
+            background: rgba(74, 222, 128, 0.15);
+            color: var(--status-green);
+            border: 1px solid rgba(74, 222, 128, 0.3);
+        }
+        .app-card .badge.live {
+            background: rgba(239, 68, 68, 0.15);
+            color: #ef4444;
+            border: 1px solid rgba(239, 68, 68, 0.3);
+        }
+        .app-card .badge.dev {
+            background: rgba(245, 158, 11, 0.15);
+            color: #f59e0b;
+            border: 1px solid rgba(245, 158, 11, 0.3);
+        }
+        .app-card .arrow {
+            color: #64748b;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
 
-    /* FOOTER */
-    .footer { margin-top:2.1875rem; padding-top:1.25rem; border-top:1px solid rgba(255,255,255,0.1); display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:1rem; color:var(--text-secondary); font-size:0.75rem; font-weight:500; }
-    .footer .brand { display:flex; align-items:center; gap:0.625rem; font-weight:600; letter-spacing:0.03125rem; }
-    .footer .brand .dot { width:0.5rem; height:0.5rem; background:var(--fire-red); border-radius:50%; box-shadow:0 0 0.625rem var(--fire-red-glow); animation:pulseDot 2s infinite; }
-    @keyframes pulseDot { 0%,100%{ transform:scale(1); opacity:1; } 50%{ transform:scale(0.7); opacity:0.4; } }
-    .footer .social-links { display:flex; gap:0.5rem; }
-    .footer .social-links a { color:#94a3b8; width:2.25rem; height:2.25rem; border-radius:50%; background:rgba(255,255,255,0.04); display:flex; align-items:center; justify-content:center; transition:all 0.3s ease; border:1px solid rgba(255,255,255,0.08); }
-    .footer .social-links a:hover { color:var(--hazard-gold); border-color:var(--hazard-gold); transform:translateY(-0.1875rem); box-shadow:0 0 0.9375rem var(--hazard-gold-glow); }
-    .footer .last-updated { font-size:0.6875rem; color:var(--text-secondary); }
+        /* FOOTER */
+        .footer {
+            margin-top: 2.1875rem;
+            padding-top: 1.25rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+            color: var(--text-secondary);
+            font-size: 0.75rem;
+            font-weight: 500;
+        }
+        .footer .brand {
+            display: flex;
+            align-items: center;
+            gap: 0.625rem;
+            font-weight: 600;
+            letter-spacing: 0.03125rem;
+        }
+        .footer .brand .dot {
+            width: 0.5rem;
+            height: 0.5rem;
+            background: var(--fire-red);
+            border-radius: 50%;
+            box-shadow: 0 0 0.625rem var(--fire-red-glow);
+            animation: pulseDot 2s infinite;
+        }
+        @keyframes pulseDot {
+            0%, 100% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(0.7); opacity: 0.4; }
+        }
+        .footer .social-links {
+            display: flex;
+            gap: 0.5rem;
+        }
+        .footer .social-links a {
+            color: #94a3b8;
+            width: 2.25rem;
+            height: 2.25rem;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.04);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+        @media (hover: hover) {
+            .footer .social-links a:hover {
+                color: var(--hazard-gold);
+                border-color: var(--hazard-gold);
+                transform: translateY(-0.1875rem);
+                box-shadow: 0 0 0.9375rem var(--hazard-gold-glow);
+            }
+        }
+        .footer .last-updated {
+            font-size: 0.6875rem;
+            color: var(--text-secondary);
+        }
 
-    /* SIDEBAR */
-    .sidebar { position:fixed; top:0; left:-27.5rem; right:auto; width:27.5rem; max-width:95vw; height:100vh; background:rgba(12,12,18,0.96); backdrop-filter:blur(25px); -webkit-backdrop-filter:blur(25px); z-index:999; transition:left 0.4s cubic-bezier(0.25,0.8,0.25,1); border-right:2px solid var(--fire-red); border-left:none; display:flex; flex-direction:column; box-shadow:0.9375rem 0 3.125rem rgba(0,0,0,0.9); }
-    .sidebar.active { left:0; }
-    .sidebar-header { display:flex; justify-content:space-between; align-items:center; padding:1.375rem 1.5rem; background:rgba(20,0,0,0.6); border-bottom:1px solid rgba(255,255,255,0.1); flex-shrink:0; }
-    .sidebar-header h3 { color:var(--hazard-gold); font-size:0.9375rem; font-weight:800; display:flex; align-items:center; gap:0.625rem; letter-spacing:0.0625rem; }
-    .sidebar-close { width:2.375rem; height:2.375rem; border-radius:50%; background:rgba(239,68,68,0.15); border:1px solid rgba(239,68,68,0.4); color:#ef4444; font-size:1rem; cursor:pointer; display:flex; align-items:center; justify-content:center; transition:all 0.3s ease; }
-    .sidebar-close:hover { background:var(--fire-red); color:#fff; border-color:var(--fire-red); transform:rotate(90deg) scale(1.1); box-shadow:0 0 0.9375rem var(--fire-red-glow); }
+        /* ===== SIDEBAR ===== */
+        .sidebar {
+            position: fixed;
+            top: 0;
+            left: -27.5rem;
+            right: auto;
+            width: 27.5rem;
+            max-width: 95vw;
+            height: 100vh;
+            background: rgba(12, 12, 18, 0.96);
+            backdrop-filter: blur(25px);
+            -webkit-backdrop-filter: blur(25px);
+            z-index: 999;
+            transition: left 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+            border-right: 2px solid var(--fire-red);
+            border-left: none;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0.9375rem 0 3.125rem rgba(0, 0, 0, 0.9);
+        }
+        .sidebar.active { left: 0; }
+        .sidebar-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1.375rem 1.5rem;
+            background: rgba(20, 0, 0, 0.6);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            flex-shrink: 0;
+        }
+        .sidebar-header h3 {
+            color: var(--hazard-gold);
+            font-size: 0.9375rem;
+            font-weight: 800;
+            display: flex;
+            align-items: center;
+            gap: 0.625rem;
+            letter-spacing: 0.0625rem;
+        }
+        .sidebar-close {
+            width: 2.375rem;
+            height: 2.375rem;
+            border-radius: 50%;
+            background: rgba(239, 68, 68, 0.15);
+            border: 1px solid rgba(239, 68, 68, 0.4);
+            color: #ef4444;
+            font-size: 1rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+        }
+        @media (hover: hover) {
+            .sidebar-close:hover {
+                background: var(--fire-red);
+                color: #fff;
+                border-color: var(--fire-red);
+                transform: rotate(90deg) scale(1.1);
+                box-shadow: 0 0 0.9375rem var(--fire-red-glow);
+            }
+        }
 
-    /* SEARCH BAR - GOOGLE SEARCH */
-    .search-box { padding:0.75rem 1rem; border-bottom:1px solid rgba(255,255,255,0.08); flex-shrink:0; }
-    .search-box form { display:flex; align-items:center; position:relative; }
-    .search-box input { flex:1; padding:0.5rem 2.5rem 0.5rem 2.25rem; border-radius:2rem; border:1px solid rgba(255,255,255,0.15); background:rgba(255,255,255,0.06); color:#fff; font-size:0.8125rem; outline:none; transition:border-color 0.3s ease; background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='%2394a3b8' viewBox='0 0 16 16'%3E%3Cpath d='M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z'/%3E%3C/svg%3E"); background-repeat:no-repeat; background-position:0.75rem center; background-size:1rem; }
-    .search-box input::placeholder { color:#94a3b8; }
-    .search-box input:focus { border-color:var(--hazard-gold); }
-    .search-box button { position:absolute; right:0.25rem; background:transparent; border:none; color:var(--hazard-gold); cursor:pointer; font-size:1rem; padding:0.25rem 0.75rem; border-radius:2rem; transition:background 0.2s ease; }
-    .search-box button:hover { background:rgba(255,204,0,0.15); }
+        /* SEARCH */
+        .search-box {
+            padding: 0.75rem 1rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+            flex-shrink: 0;
+        }
+        .search-box form {
+            display: flex;
+            align-items: center;
+            position: relative;
+        }
+        .search-box input {
+            flex: 1;
+            padding: 0.5rem 2.5rem 0.5rem 2.25rem;
+            border-radius: 2rem;
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            background: rgba(255, 255, 255, 0.06);
+            color: #fff;
+            font-size: 0.8125rem;
+            outline: none;
+            transition: border-color 0.3s ease;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='%2394a3b8' viewBox='0 0 16 16'%3E%3Cpath d='M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: 0.75rem center;
+            background-size: 1rem;
+        }
+        .search-box input::placeholder { color: #94a3b8; }
+        .search-box input:focus { border-color: var(--hazard-gold); }
+        .search-box button {
+            position: absolute;
+            right: 0.25rem;
+            background: transparent;
+            border: none;
+            color: var(--hazard-gold);
+            cursor: pointer;
+            font-size: 1rem;
+            padding: 0.25rem 0.75rem;
+            border-radius: 2rem;
+            transition: background 0.2s ease;
+        }
+        @media (hover: hover) {
+            .search-box button:hover { background: rgba(255, 204, 0, 0.15); }
+        }
 
-    /* PAUTAN POPULAR */
-    .popular-links { padding:0.75rem 1rem; border-bottom:1px solid rgba(255,255,255,0.08); flex-shrink:0; }
-    .popular-links .popular-title { font-size:0.625rem; text-transform:uppercase; letter-spacing:0.0625rem; color:var(--text-secondary); margin-bottom:0.5rem; font-weight:700; }
-    .popular-links .popular-grid { display:flex; flex-wrap:wrap; gap:0.5rem; }
-    .popular-links .popular-item { display:inline-flex; align-items:center; gap:0.375rem; padding:0.25rem 0.75rem; background:rgba(255,255,255,0.06); border-radius:1.25rem; border:1px solid rgba(255,255,255,0.08); color:#cbd5e1; font-size:0.6875rem; text-decoration:none; transition:all 0.2s ease; font-weight:500; }
-    .popular-links .popular-item:hover { background:var(--hazard-gold); color:#000; border-color:var(--hazard-gold); transform:translateY(-1px); }
-    .popular-links .popular-item i { font-size:0.75rem; }
+        /* PAUTAN POPULAR */
+        .popular-links {
+            padding: 0.75rem 1rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+            flex-shrink: 0;
+        }
+        .popular-links .popular-title {
+            font-size: 0.625rem;
+            text-transform: uppercase;
+            letter-spacing: 0.0625rem;
+            color: var(--text-secondary);
+            margin-bottom: 0.5rem;
+            font-weight: 700;
+        }
+        .popular-links .popular-grid {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+        .popular-links .popular-item {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.375rem;
+            padding: 0.25rem 0.75rem;
+            background: rgba(255, 255, 255, 0.06);
+            border-radius: 1.25rem;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            color: #cbd5e1;
+            font-size: 0.6875rem;
+            text-decoration: none;
+            transition: all 0.2s ease;
+            font-weight: 500;
+        }
+        @media (hover: hover) {
+            .popular-links .popular-item:hover {
+                background: var(--hazard-gold);
+                color: #000;
+                border-color: var(--hazard-gold);
+                transform: translateY(-1px);
+            }
+        }
+        .popular-links .popular-item i { font-size: 0.75rem; }
 
-    .update-timestamp { padding:0.5rem 1rem; font-size:0.625rem; color:var(--text-secondary); text-align:center; border-bottom:1px solid rgba(255,255,255,0.06); flex-shrink:0; }
-    .update-timestamp i { margin-right:0.375rem; }
+        .update-timestamp {
+            padding: 0.5rem 1rem;
+            font-size: 0.625rem;
+            color: var(--text-secondary);
+            text-align: center;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+            flex-shrink: 0;
+        }
+        .update-timestamp i { margin-right: 0.375rem; }
 
-    /* SIDEBAR CONTENT */
-    .sidebar-content { flex:1; padding:0.5rem 1rem 1rem; overflow-y:auto; }
+        .sidebar-content {
+            flex: 1;
+            padding: 0.5rem 1rem 1rem;
+            overflow-y: auto;
+        }
 
-    .accordion-item { margin-bottom:0.625rem; border-radius:0.875rem; overflow:hidden; border:1px solid rgba(255,255,255,0.08); background:rgba(20,20,28,0.5); transition:border-color 0.3s ease; }
-    .accordion-item:hover { border-color:rgba(255,204,0,0.3); }
-    .accordion-header { display:flex; align-items:center; justify-content:space-between; padding:0.875rem 1.125rem; background:rgba(255,255,255,0.02); cursor:pointer; user-select:none; width:100%; border:none; color:#ffffff; font-size:0.8125rem; font-weight:700; letter-spacing:0.05rem; text-transform:uppercase; transition:all 0.3s ease; }
-    .accordion-header:hover { background:rgba(255,204,0,0.08); }
-    .accordion-header .accordion-title { display:flex; align-items:center; gap:0.625rem; color:var(--alert-orange); }
-    .accordion-header .arrow { color:#64748b; transition:transform 0.3s ease; }
-    .accordion-header .arrow.open { transform:rotate(180deg); color:var(--hazard-gold); }
-    .accordion-content { max-height:0; overflow:hidden; transition:max-height 0.4s cubic-bezier(0.4,0,0.2,1); background:rgba(5,5,10,0.6); }
-    .accordion-content.open { max-height:125rem; padding:0.625rem; border-top:1px solid rgba(255,255,255,0.05); }
+        .accordion-item {
+            margin-bottom: 0.625rem;
+            border-radius: 0.875rem;
+            overflow: hidden;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            background: rgba(20, 20, 28, 0.5);
+            transition: border-color 0.3s ease;
+        }
+        @media (hover: hover) {
+            .accordion-item:hover { border-color: rgba(255, 204, 0, 0.3); }
+        }
+        .accordion-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0.875rem 1.125rem;
+            background: rgba(255, 255, 255, 0.02);
+            cursor: pointer;
+            user-select: none;
+            width: 100%;
+            border: none;
+            color: #ffffff;
+            font-size: 0.8125rem;
+            font-weight: 700;
+            letter-spacing: 0.05rem;
+            text-transform: uppercase;
+            transition: all 0.3s ease;
+        }
+        @media (hover: hover) {
+            .accordion-header:hover { background: rgba(255, 204, 0, 0.08); }
+        }
+        .accordion-header .accordion-title {
+            display: flex;
+            align-items: center;
+            gap: 0.625rem;
+            color: var(--alert-orange);
+        }
+        .accordion-header .arrow {
+            color: #64748b;
+            transition: transform 0.3s ease;
+        }
+        .accordion-header .arrow.open {
+            transform: rotate(180deg);
+            color: var(--hazard-gold);
+        }
+        .accordion-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.4s cubic-bezier(0.4, 0, 0.2, 1),
+                padding 0.4s ease,
+                border-top 0.4s ease;
+            background: rgba(5, 5, 10, 0.6);
+            padding: 0 0.625rem;
+            border-top: 0px solid transparent;
+        }
+        .accordion-content.open {
+            max-height: 1000px;
+            padding: 0.625rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+        }
 
-    .sidebar-link { display:flex; align-items:center; gap:0.75rem; padding:0.625rem 0.75rem; color:#cbd5e1; text-decoration:none; border-radius:0.625rem; margin-bottom:0.25rem; transition:all 0.25s ease; border:1px solid transparent; font-size:0.8125rem; position:relative; }
-    .sidebar-link:hover { background:rgba(255,255,255,0.05); color:#ffffff; border-color:rgba(255,204,0,0.2); transform:translateX(0.25rem); }
-    .sidebar-link .link-icon { width:2rem; height:2rem; border-radius:0.5rem; display:flex; align-items:center; justify-content:center; font-size:0.875rem; flex-shrink:0; transition:transform 0.3s ease; }
-    .sidebar-link:hover .link-icon { transform:scale(1.15); }
-    .sidebar-link .status-badge.down { font-size:0.5625rem; padding:0.125rem 0.5rem; border-radius:0.75rem; background:rgba(239,68,68,0.15); color:#ef4444; border:1px solid rgba(239,68,68,0.3); font-weight:700; letter-spacing:0.03125rem; text-transform:uppercase; margin-left:auto; flex-shrink:0; display:none; }
-    .sidebar-link.down .status-badge.down { display:inline-block; }
+        .sidebar-link {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.625rem 0.75rem;
+            color: #cbd5e1;
+            text-decoration: none;
+            border-radius: 0.625rem;
+            margin-bottom: 0.25rem;
+            transition: all 0.25s ease;
+            border: 1px solid transparent;
+            font-size: 0.8125rem;
+            position: relative;
+        }
+        @media (hover: hover) {
+            .sidebar-link:hover {
+                background: rgba(255, 255, 255, 0.05);
+                color: #ffffff;
+                border-color: rgba(255, 204, 0, 0.2);
+                transform: translateX(0.25rem);
+            }
+            .sidebar-link:hover .link-icon { transform: scale(1.15); }
+        }
+        .sidebar-link .link-icon {
+            width: 2rem;
+            height: 2rem;
+            border-radius: 0.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.875rem;
+            flex-shrink: 0;
+            transition: transform 0.3s ease;
+        }
+        .sidebar-link .status-badge.down {
+            font-size: 0.5625rem;
+            padding: 0.125rem 0.5rem;
+            border-radius: 0.75rem;
+            background: rgba(239, 68, 68, 0.15);
+            color: #ef4444;
+            border: 1px solid rgba(239, 68, 68, 0.3);
+            font-weight: 700;
+            letter-spacing: 0.03125rem;
+            text-transform: uppercase;
+            margin-left: auto;
+            flex-shrink: 0;
+            display: none;
+        }
+        .sidebar-link.down .status-badge.down { display: inline-block; }
 
-    .link-icon.weather { background:rgba(59,130,246,0.15); color:#3b82f6; }
-    .link-icon.tide { background:rgba(6,182,212,0.15); color:#06b6d4; }
-    .link-icon.disaster { background:rgba(239,68,68,0.15); color:#ef4444; }
-    .link-icon.road { background:rgba(245,158,11,0.15); color:#f59e0b; }
-    .link-icon.flood { background:rgba(99,102,241,0.15); color:#6366f1; }
-    .link-icon.quake { background:rgba(168,85,247,0.15); color:#a855f7; }
-    .link-icon.radar { background:rgba(34,197,94,0.15); color:#22c55e; }
-    .link-icon.fire { background:rgba(249,115,22,0.15); color:#f97316; }
-    .link-icon.emergency { background:rgba(239,68,68,0.15); color:#ef4444; }
-    .link-icon.info { background:rgba(148,163,184,0.15); color:#94a3b8; }
-    .link-icon.hospital { background:rgba(16,185,129,0.15); color:#10b981; }
-    .link-icon.civil { background:rgba(251,191,36,0.15); color:#fbbf24; }
-    .link-icon.maritime { background:rgba(14,165,233,0.15); color:#0ea5e9; }
-    .link-icon.international { background:rgba(168,85,247,0.15); color:#a855f7; }
-    .link-icon.gov { background:rgba(251,146,60,0.15); color:#fb923c; }
+        .link-icon.weather { background: rgba(59, 130, 246, 0.15); color: #3b82f6; }
+        .link-icon.tide { background: rgba(6, 182, 212, 0.15); color: #06b6d4; }
+        .link-icon.disaster { background: rgba(239, 68, 68, 0.15); color: #ef4444; }
+        .link-icon.road { background: rgba(245, 158, 11, 0.15); color: #f59e0b; }
+        .link-icon.flood { background: rgba(99, 102, 241, 0.15); color: #6366f1; }
+        .link-icon.quake { background: rgba(168, 85, 247, 0.15); color: #a855f7; }
+        .link-icon.radar { background: rgba(34, 197, 94, 0.15); color: #22c55e; }
+        .link-icon.fire { background: rgba(249, 115, 22, 0.15); color: #f97316; }
+        .link-icon.emergency { background: rgba(239, 68, 68, 0.15); color: #ef4444; }
+        .link-icon.info { background: rgba(148, 163, 184, 0.15); color: #94a3b8; }
+        .link-icon.hospital { background: rgba(16, 185, 129, 0.15); color: #10b981; }
+        .link-icon.civil { background: rgba(251, 191, 36, 0.15); color: #fbbf24; }
+        .link-icon.maritime { background: rgba(14, 165, 233, 0.15); color: #0ea5e9; }
+        .link-icon.international { background: rgba(168, 85, 247, 0.15); color: #a855f7; }
+        .link-icon.gov { background: rgba(251, 146, 60, 0.15); color: #fb923c; }
 
-    .sidebar-link .link-text { flex:1; min-width:0; }
-    .sidebar-link .link-text .link-name { font-weight:600; display:block; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
-    .sidebar-link .link-text .link-desc { font-size:0.6875rem; color:#64748b; display:block; margin-top:0.0625rem; }
+        .sidebar-link .link-text {
+            flex: 1;
+            min-width: 0;
+        }
+        .sidebar-link .link-text .link-name {
+            font-weight: 600;
+            display: block;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .sidebar-link .link-text .link-desc {
+            font-size: 0.6875rem;
+            color: #64748b;
+            display: block;
+            margin-top: 0.0625rem;
+        }
 
-    .sidebar-footer { padding:1rem; border-top:1px solid rgba(255,255,255,0.1); text-align:center; font-size:0.6875rem; font-weight:600; color:#64748b; flex-shrink:0; }
+        .sidebar-footer {
+            padding: 1rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            text-align: center;
+            font-size: 0.6875rem;
+            font-weight: 600;
+            color: #64748b;
+            flex-shrink: 0;
+        }
 
-    /* EMERGENCY ITEMS */
-    .emergency-group-title { color:var(--hazard-gold); font-size:0.6875rem; font-weight:700; text-transform:uppercase; letter-spacing:0.05rem; margin:0.75rem 0 0.375rem 0.25rem; display:flex; align-items:center; gap:0.375rem; }
-    .emergency-item { display:flex; align-items:center; gap:0.75rem; padding:0.625rem 0.75rem; background:rgba(255,255,255,0.03); border-radius:0.75rem; margin-bottom:0.375rem; border:1px solid rgba(255,255,255,0.05); transition:border-color 0.3s ease; }
-    .emergency-item:hover { border-color:rgba(204,0,0,0.4); }
-    .emergency-item .e-info { flex:1; }
-    .emergency-item .e-info .e-name { font-size:0.75rem; font-weight:600; color:#ffffff; display:block; }
-    .emergency-item .e-info .e-number { font-size:0.8125rem; font-weight:700; color:var(--hazard-gold); display:block; }
-    .emergency-item .e-actions .call-btn { width:2rem; height:2rem; border-radius:50%; background:var(--fire-red); color:#fff; display:flex; align-items:center; justify-content:center; text-decoration:none; position:relative; box-shadow:0 0 0.625rem var(--fire-red-glow); transition:transform 0.3s ease; }
-    .emergency-item .e-actions .call-btn:hover { transform:scale(1.15); }
-    .emergency-item .e-actions .call-btn::before { content:''; position:absolute; width:100%; height:100%; border-radius:50%; background:var(--fire-red); animation:radarPing 2s infinite; z-index:0; }
-    .emergency-item .e-actions .call-btn i { position:relative; z-index:1; }
-    @keyframes radarPing { 0%{ transform:scale(1); opacity:0.8; } 100%{ transform:scale(2); opacity:0; } }
+        /* EMERGENCY ITEMS */
+        .emergency-group-title {
+            color: var(--hazard-gold);
+            font-size: 0.6875rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.05rem;
+            margin: 0.75rem 0 0.375rem 0.25rem;
+            display: flex;
+            align-items: center;
+            gap: 0.375rem;
+        }
+        .emergency-item {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.625rem 0.75rem;
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 0.75rem;
+            margin-bottom: 0.375rem;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            transition: border-color 0.3s ease;
+        }
+        @media (hover: hover) {
+            .emergency-item:hover { border-color: rgba(204, 0, 0, 0.4); }
+        }
+        .emergency-item .e-info { flex: 1; }
+        .emergency-item .e-info .e-name {
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: #ffffff;
+            display: block;
+        }
+        .emergency-item .e-info .e-number {
+            font-size: 0.8125rem;
+            font-weight: 700;
+            color: var(--hazard-gold);
+            display: block;
+        }
+        .emergency-item .e-actions .call-btn {
+            width: 2rem;
+            height: 2rem;
+            border-radius: 50%;
+            background: var(--fire-red);
+            color: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-decoration: none;
+            position: relative;
+            box-shadow: 0 0 0.625rem var(--fire-red-glow);
+            transition: transform 0.3s ease;
+        }
+        @media (hover: hover) {
+            .emergency-item .e-actions .call-btn:hover { transform: scale(1.15); }
+        }
+        .emergency-item .e-actions .call-btn::before {
+            content: '';
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            background: var(--fire-red);
+            animation: radarPing 2s infinite;
+            z-index: 0;
+        }
+        .emergency-item .e-actions .call-btn i { position: relative; z-index: 1; }
+        @keyframes radarPing {
+            0% { transform: scale(1); opacity: 0.8; }
+            100% { transform: scale(2); opacity: 0; }
+        }
 
-    .info-box { background:rgba(255,204,0,0.05); border:1px solid rgba(255,204,0,0.2); border-radius:0.75rem; padding:0.75rem; margin-top:0.75rem; text-align:center; font-size:0.6875rem; color:var(--text-secondary); }
+        .info-box {
+            background: rgba(255, 204, 0, 0.05);
+            border: 1px solid rgba(255, 204, 0, 0.2);
+            border-radius: 0.75rem;
+            padding: 0.75rem;
+            margin-top: 0.75rem;
+            text-align: center;
+            font-size: 0.6875rem;
+            color: var(--text-secondary);
+        }
 
-    /* RESPONSIVE */
-    @media (max-width:42.5rem) {
-      .dashboard { padding:1.25rem 0.75rem; }
-      .header { margin-top:-1.25rem; margin-left:-0.75rem; margin-right:-0.75rem; padding-top:1.25rem; padding-left:0.75rem; padding-right:0.75rem; }
-      .hamburger-fixed-btn { padding:0.625rem 0.875rem 0.625rem 0.625rem; }
-      .hamburger-fixed-btn .menu-title-text { font-size:0.625rem; }
-      .logo { flex-direction:row; align-items:center; justify-content:center; gap:0.5rem; flex-wrap:wrap; }
-      .logo-img-wrapper { padding:0.375rem; }
-      .logo-img { height:2.375rem; }
-      .logo-text h1 { font-size:0.75rem; line-height:1.25; gap:0.25rem; }
-      .logo-text .sub { font-size:0.5rem; letter-spacing:0.0625rem; margin-top:0.125rem; }
-      .apps-grid { grid-template-columns:1fr; }
-      .app-card.card-wide { grid-column:1; }
-      .stats-bar { grid-template-columns:repeat(2,1fr); gap:0.625rem; }
-      .header-top-controls { gap:0.5rem; margin-bottom:1rem; padding-bottom:0.625rem; justify-content:center; }
-      .header-top-controls .analog-clock { width:2.25rem; height:2.25rem; margin-left:0; }
-      .header-top-controls button, .header-top-controls .refresh-btn { width:2.25rem; height:2.25rem; font-size:0.875rem; }
-      .header-top-controls .digital-time .time { font-size:0.8125rem; }
-      .header-top-controls .digital-time { min-width:4.5rem; margin-right:0; text-align:center; }
-      .sidebar { width:100%; max-width:100vw; left:-100%; }
-      .sidebar.active { left:0; }
-    }
-    body.mobile-mode .dashboard { max-width:30rem; }
-    body.mobile-mode .header { margin-top:-1.25rem; margin-left:-0.75rem; margin-right:-0.75rem; padding-top:1.25rem; padding-left:0.75rem; padding-right:0.75rem; }
-    body.mobile-mode .logo-text h1 { font-size:0.8125rem; line-height:1.25; gap:0.25rem; }
-    body.mobile-mode .apps-grid { grid-template-columns:1fr; }
-    body.mobile-mode .app-card.card-wide { grid-column:1; }
-    body.mobile-mode .stats-bar { grid-template-columns:repeat(2,1fr); }
-  </style>
+        /* ===== RESPONSIVE ===== */
+        @media (max-width: 42.5rem) {
+            .dashboard { padding: 1.25rem 0.75rem; }
+            .header {
+                margin-top: -1.25rem;
+                margin-left: -0.75rem;
+                margin-right: -0.75rem;
+                padding-top: 1.25rem;
+                padding-left: 0.75rem;
+                padding-right: 0.75rem;
+            }
+            .hamburger-fixed-btn { padding: 0.625rem 0.875rem 0.625rem 0.625rem; }
+            .hamburger-fixed-btn .menu-title-text { font-size: 0.625rem; }
+            .logo {
+                flex-direction: row;
+                align-items: center;
+                justify-content: center;
+                gap: 0.5rem;
+                flex-wrap: wrap;
+            }
+            .logo-img-wrapper { padding: 0.375rem; }
+            .logo-img { height: 2.375rem; }
+            .logo-text h1 {
+                font-size: 0.75rem;
+                line-height: 1.25;
+                gap: 0.25rem;
+            }
+            .logo-text .sub {
+                font-size: 0.5rem;
+                letter-spacing: 0.0625rem;
+                margin-top: 0.125rem;
+            }
+            .apps-grid { grid-template-columns: 1fr; }
+            .app-card.card-wide { grid-column: 1; }
+            .stats-bar {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 0.625rem;
+            }
+            .header-top-controls {
+                gap: 0.5rem;
+                margin-bottom: 1rem;
+                padding-bottom: 0.625rem;
+                justify-content: center;
+            }
+            .header-top-controls .analog-clock {
+                width: 2.25rem;
+                height: 2.25rem;
+                margin-left: 0;
+            }
+            .header-top-controls button,
+            .header-top-controls .refresh-btn {
+                width: 2.25rem;
+                height: 2.25rem;
+                font-size: 0.875rem;
+            }
+            .header-top-controls .digital-time .time { font-size: 0.8125rem; }
+            .header-top-controls .digital-time {
+                min-width: 4.5rem;
+                margin-right: 0;
+                text-align: center;
+            }
+            .sidebar {
+                width: 100%;
+                max-width: 100vw;
+                left: -100%;
+            }
+            .sidebar.active { left: 0; }
+        }
+        body.mobile-mode .dashboard { max-width: 30rem; }
+        body.mobile-mode .header {
+            margin-top: -1.25rem;
+            margin-left: -0.75rem;
+            margin-right: -0.75rem;
+            padding-top: 1.25rem;
+            padding-left: 0.75rem;
+            padding-right: 0.75rem;
+        }
+        body.mobile-mode .logo-text h1 {
+            font-size: 0.8125rem;
+            line-height: 1.25;
+            gap: 0.25rem;
+        }
+        body.mobile-mode .apps-grid { grid-template-columns: 1fr; }
+        body.mobile-mode .app-card.card-wide { grid-column: 1; }
+        body.mobile-mode .stats-bar { grid-template-columns: repeat(2, 1fr); }
+    </style>
 </head>
+
 <body class="desktop-mode">
-  <!-- OVERLAY -->
-  <div class="sidebar-overlay" id="sidebarOverlay"></div>
+    <!-- OVERLAY -->
+    <div class="sidebar-overlay" id="sidebarOverlay"></div>
 
-  <!-- HAMBURGER -->
-  <button class="hamburger-fixed-btn" id="hamburgerBtn" title="Pautan Penting & Kecemasan" aria-label="Buka menu pautan penting" aria-expanded="false">
-    <div class="hamburger-bars"><span></span><span></span><span></span></div>
-    <span class="menu-title-text">MENU</span>
-  </button>
+    <!-- HAMBURGER -->
+    <button class="hamburger-fixed-btn" id="hamburgerBtn" title="Pautan Penting & Kecemasan" aria-label="Buka menu pautan penting" aria-expanded="false">
+        <div class="hamburger-bars"><span></span><span></span><span></span></div>
+        <span class="menu-title-text">MENU</span>
+    </button>
 
-  <!-- SIDEBAR -->
-  <nav class="sidebar" id="sidebar" aria-label="Menu Pautan Penting">
-    <div class="sidebar-header">
-      <h3><i class="fas fa-satellite-dish"></i> PAUTAN PENTING</h3>
-      <button class="sidebar-close" id="sidebarClose" title="Tutup Menu" aria-label="Tutup menu"><i class="fas fa-times"></i></button>
-    </div>
-
-    <!-- SEARCH BAR - GOOGLE SEARCH -->
-    <div class="search-box">
-      <form action="https://www.google.com/search" method="get" target="_blank" rel="noopener noreferrer">
-        <input type="text" name="q" placeholder="Cari di Google..." aria-label="Cari di Google" />
-        <button type="submit" aria-label="Cari"><i class="fas fa-arrow-right"></i></button>
-      </form>
-    </div>
-
-    <!-- PAUTAN POPULAR -->
-    <div class="popular-links">
-      <div class="popular-title"><i class="fas fa-star" style="color:var(--hazard-gold);"></i> Pautan Popular</div>
-      <div class="popular-grid">
-        <a href="https://myclimate.met.gov.my/fdrsWmsObsMsiaMetPortal" target="_blank" class="popular-item" rel="noopener noreferrer"><i class="fas fa-fire"></i> FDRS</a>
-        <a href="https://bencana.jkr.gov.my/" target="_blank" class="popular-item" rel="noopener noreferrer"><i class="fas fa-road"></i> Bencana JKR</a>
-        <a href="https://www.nadma.gov.my/" target="_blank" class="popular-item" rel="noopener noreferrer"><i class="fas fa-triangle-exclamation"></i> NADMA</a>
-        <a href="https://www.johor.gov.my/" target="_blank" class="popular-item" rel="noopener noreferrer"><i class="fas fa-landmark"></i> Kerajaan Johor</a>
-      </div>
-    </div>
-
-    <!-- TARIKH KEMAS KINI -->
-    <div class="update-timestamp">
-      <i class="fas fa-sync-alt"></i> Pautan dikemaskini: <span id="linkUpdateDate">--</span>
-    </div>
-
-    <!-- SIDEBAR CONTENT -->
-    <div class="sidebar-content" id="sidebarContent">
-      <!-- Accordion 1: Cuaca & Laut -->
-      <div class="accordion-item">
-        <button class="accordion-header" data-target="accordion1" aria-expanded="false">
-          <span class="accordion-title"><i class="fas fa-cloud-sun"></i> Cuaca & Laut</span>
-          <span class="arrow"><i class="fas fa-chevron-down"></i></span>
-        </button>
-        <div class="accordion-content" id="accordion1">
-          <a href="https://www.met.gov.my/" target="_blank" class="sidebar-link"><span class="link-icon weather"><i class="fas fa-cloud-sun-rain"></i></span><span class="link-text"><span class="link-name">MetMalaysia - Cuaca</span><span class="link-desc">Ramalan & amaran cuaca rasmi</span></span><i class="fas fa-external-link-alt"></i></a>
-          <a href="https://www.jupem.gov.my/ms/staps" target="_blank" class="sidebar-link"><span class="link-icon tide"><i class="fas fa-water"></i></span><span class="link-text"><span class="link-name">Pasang Surut Laut</span><span class="link-desc">Jadual air pasang surut Malaysia</span></span><i class="fas fa-external-link-alt"></i></a>
-          <a href="https://www.accuweather.com/ms/my/national/weather-radar" target="_blank" class="sidebar-link"><span class="link-icon radar"><i class="fas fa-satellite-dish"></i></span><span class="link-text"><span class="link-name">Radar Hujan</span><span class="link-desc">Imej radar hujan masa nyata</span></span><i class="fas fa-external-link-alt"></i></a>
-          <a href="https://apims.doe.gov.my/" target="_blank" class="sidebar-link"><span class="link-icon fire"><i class="fas fa-fire-flame-curved"></i></span><span class="link-text"><span class="link-name">Indeks Cuaca Api (API)</span><span class="link-desc">IPU & status jerebu semasa</span></span><i class="fas fa-external-link-alt"></i></a>
-          <a href="https://myclimate.met.gov.my/fdrsWmsObsMsiaMetPortal" target="_blank" class="sidebar-link"><span class="link-icon fire"><i class="fas fa-fire"></i></span><span class="link-text"><span class="link-name">Fire Danger Rating System (FDRS)</span><span class="link-desc">Sistem penarafan bahaya kebakaran</span></span><i class="fas fa-external-link-alt"></i></a>
-          <a href="https://water.doe.gov.my/" target="_blank" class="sidebar-link"><span class="link-icon tide"><i class="fas fa-droplet"></i></span><span class="link-text"><span class="link-name">JPS - Data Hidrologi</span><span class="link-desc">Data kualiti air & hidrologi</span></span><i class="fas fa-external-link-alt"></i></a>
+    <!-- SIDEBAR -->
+    <nav class="sidebar" id="sidebar" aria-label="Menu Pautan Penting">
+        <div class="sidebar-header">
+            <h3><i class="fas fa-satellite-dish"></i> PAUTAN PENTING</h3>
+            <button class="sidebar-close" id="sidebarClose" title="Tutup Menu" aria-label="Tutup menu">
+                <i class="fas fa-times"></i>
+            </button>
         </div>
-      </div>
 
-      <!-- Accordion 2: Bencana & Amaran -->
-      <div class="accordion-item">
-        <button class="accordion-header" data-target="accordion2" aria-expanded="false">
-          <span class="accordion-title"><i class="fas fa-triangle-exclamation"></i> Bencana & Amaran</span>
-          <span class="arrow"><i class="fas fa-chevron-down"></i></span>
-        </button>
-        <div class="accordion-content" id="accordion2">
-          <a href="https://www.nadma.gov.my/" target="_blank" class="sidebar-link"><span class="link-icon disaster"><i class="fas fa-house-chimney-crack"></i></span><span class="link-text"><span class="link-name">NADMA - Agensi Pengurusan Bencana</span><span class="link-desc">Info & respons bencana negara</span></span><i class="fas fa-external-link-alt"></i></a>
-          <a href="https://publicinfobanjir.water.gov.my/" target="_blank" class="sidebar-link"><span class="link-icon flood"><i class="fas fa-house-flood-water"></i></span><span class="link-text"><span class="link-name">Public Infobanjir</span><span class="link-desc">Peta & status banjir semasa</span></span><i class="fas fa-external-link-alt"></i></a>
-          <a href="http://mygempa.met.gov.my/docroot/view/index.php" target="_blank" class="sidebar-link"><span class="link-icon quake"><i class="fas fa-earth-asia"></i></span><span class="link-text"><span class="link-name">Info Gempa Bumi</span><span class="link-desc">Aktiviti seismik Malaysia & antarabangsa</span></span><i class="fas fa-external-link-alt"></i></a>
+        <!-- SEARCH -->
+        <div class="search-box">
+            <form action="https://www.google.com/search" method="get" target="_blank" rel="noopener noreferrer">
+                <input type="text" name="q" placeholder="Cari di Google..." aria-label="Cari di Google" />
+                <button type="submit" aria-label="Cari"><i class="fas fa-arrow-right"></i></button>
+            </form>
         </div>
-      </div>
 
-      <!-- Accordion 3: Jalan Raya & Logistik -->
-      <div class="accordion-item">
-        <button class="accordion-header" data-target="accordion3" aria-expanded="false">
-          <span class="accordion-title"><i class="fas fa-road"></i> Jalan Raya & Logistik</span>
-          <span class="arrow"><i class="fas fa-chevron-down"></i></span>
-        </button>
-        <div class="accordion-content" id="accordion3">
-          <a href="https://www.llm.gov.my/" target="_blank" class="sidebar-link"><span class="link-icon road"><i class="fas fa-road"></i></span><span class="link-text"><span class="link-name">LLM - Lebuhraya Malaysia</span><span class="link-desc">Status & laporan trafik lebuh raya</span></span><i class="fas fa-external-link-alt"></i></a>
-          <a href="https://www.jpj.gov.my/" target="_blank" class="sidebar-link"><span class="link-icon road"><i class="fas fa-car-side"></i></span><span class="link-text"><span class="link-name">JPJ - Jabatan Pengangkutan Jalan</span><span class="link-desc">Maklumat jalan tutup & notis</span></span><i class="fas fa-external-link-alt"></i></a>
-          <a href="https://bencana.jkr.gov.my/" target="_blank" class="sidebar-link"><span class="link-icon road"><i class="fas fa-helmet-safety"></i></span><span class="link-text"><span class="link-name">JKR - Jabatan Kerja Raya</span><span class="link-desc">Infrastruktur & jalan persekutuan</span></span><i class="fas fa-external-link-alt"></i></a>
+        <!-- PAUTAN POPULAR -->
+        <div class="popular-links">
+            <div class="popular-title"><i class="fas fa-star" style="color: var(--hazard-gold)"></i> Pautan Popular</div>
+            <div class="popular-grid">
+                <a href="https://myclimate.met.gov.my/fdrsWmsObsMsiaMetPortal" target="_blank" class="popular-item" rel="noopener noreferrer"><i class="fas fa-fire"></i> FDRS</a>
+                <a href="https://bencana.jkr.gov.my/" target="_blank" class="popular-item" rel="noopener noreferrer"><i class="fas fa-road"></i> Bencana JKR</a>
+                <a href="https://www.nadma.gov.my/" target="_blank" class="popular-item" rel="noopener noreferrer"><i class="fas fa-triangle-exclamation"></i> NADMA</a>
+                <a href="https://www.johor.gov.my/" target="_blank" class="popular-item" rel="noopener noreferrer"><i class="fas fa-landmark"></i> Kerajaan Johor</a>
+            </div>
         </div>
-      </div>
 
-      <!-- Accordion 4: Direktori Agensi -->
-      <div class="accordion-item">
-        <button class="accordion-header" data-target="accordion4" aria-expanded="false">
-          <span class="accordion-title"><i class="fas fa-building-columns"></i> Direktori Agensi</span>
-          <span class="arrow"><i class="fas fa-chevron-down"></i></span>
-        </button>
-        <div class="accordion-content" id="accordion4">
-          <a href="https://www.bomba.gov.my/en/" target="_blank" class="sidebar-link"><span class="link-icon emergency"><i class="fas fa-fire-extinguisher"></i></span><span class="link-text"><span class="link-name">JBPM Malaysia</span><span class="link-desc">Jabatan Bomba & Penyelamat</span></span><i class="fas fa-external-link-alt"></i></a>
-          <a href="https://www.mmea.gov.my/" target="_blank" class="sidebar-link"><span class="link-icon maritime"><i class="fas fa-ship"></i></span><span class="link-text"><span class="link-name">APMM Maritim Malaysia</span><span class="link-desc">Agensi Penguatkuasaan Maritim</span></span><i class="fas fa-external-link-alt"></i></a>
-          <a href="https://www.civildefence.gov.my/" target="_blank" class="sidebar-link"><span class="link-icon civil"><i class="fas fa-shield-halved"></i></span><span class="link-text"><span class="link-name">APM Pertahanan Awam</span><span class="link-desc">Pengurusan Bencana</span></span><i class="fas fa-external-link-alt"></i></a>
-          <a href="https://www.rmp.gov.my/" target="_blank" class="sidebar-link"><span class="link-icon emergency"><i class="fas fa-shield-cat"></i></span><span class="link-text"><span class="link-name">PDRM Polis Diraja</span><span class="link-desc">Keselamatan Awam</span></span><i class="fas fa-external-link-alt"></i></a>
-          <a href="https://www.moh.gov.my/" target="_blank" class="sidebar-link"><span class="link-icon hospital"><i class="fas fa-hospital-user"></i></span><span class="link-text"><span class="link-name">KKM Kesihatan</span><span class="link-desc">Perkhidmatan Perubatan</span></span><i class="fas fa-external-link-alt"></i></a>
-          <!-- HSI, HEBHK, CPRC TELAH DIBUANG -->
+        <div class="update-timestamp">
+            <i class="fas fa-sync-alt"></i> Pautan dikemaskini: <span id="linkUpdateDate">--</span>
         </div>
-      </div>
 
-      <!-- ACCORDION 5: TALIAN KECEMASAN (PENUH) -->
-      <div class="accordion-item">
-        <button class="accordion-header" data-target="accordion5" aria-expanded="false">
-          <span class="accordion-title"><i class="fas fa-phone-volume"></i> Talian Kecemasan 24/7</span>
-          <span class="arrow"><i class="fas fa-chevron-down"></i></span>
-        </button>
-        <div class="accordion-content" id="accordion5">
-          <!-- 999 -->
-          <div class="emergency-group-title"><i class="fas fa-flag"></i> TALIAN KECEMASAN NASIONAL</div>
-          <div class="emergency-item">
-            <div class="e-info"><span class="e-name">MERS 999</span><span class="e-number">999</span></div>
-            <div class="e-actions"><a href="tel:999" class="call-btn"><i class="fas fa-phone"></i></a></div>
-          </div>
+        <div class="sidebar-content" id="sidebarContent">
+            <!-- Accordion 1: Cuaca & Laut -->
+            <div class="accordion-item">
+                <button class="accordion-header" data-target="accordion1" aria-expanded="false">
+                    <span class="accordion-title"><i class="fas fa-cloud-sun"></i> Cuaca & Laut</span>
+                    <span class="arrow"><i class="fas fa-chevron-down"></i></span>
+                </button>
+                <div class="accordion-content" id="accordion1">
+                    <a href="https://www.met.gov.my/" target="_blank" class="sidebar-link"><span class="link-icon weather"><i class="fas fa-cloud-sun-rain"></i></span><span class="link-text"><span class="link-name">MetMalaysia - Cuaca</span><span class="link-desc">Ramalan & amaran cuaca rasmi</span></span><i class="fas fa-external-link-alt"></i></a>
+                    <a href="https://www.jupem.gov.my/ms/staps" target="_blank" class="sidebar-link"><span class="link-icon tide"><i class="fas fa-water"></i></span><span class="link-text"><span class="link-name">Pasang Surut Laut</span><span class="link-desc">Jadual air pasang surut Malaysia</span></span><i class="fas fa-external-link-alt"></i></a>
+                    <a href="https://www.accuweather.com/ms/my/national/weather-radar" target="_blank" class="sidebar-link"><span class="link-icon radar"><i class="fas fa-satellite-dish"></i></span><span class="link-text"><span class="link-name">Radar Hujan</span><span class="link-desc">Imej radar hujan masa nyata</span></span><i class="fas fa-external-link-alt"></i></a>
+                    <a href="https://apims.doe.gov.my/" target="_blank" class="sidebar-link"><span class="link-icon fire"><i class="fas fa-fire-flame-curved"></i></span><span class="link-text"><span class="link-name">Indeks Cuaca Api (API)</span><span class="link-desc">IPU & status jerebu semasa</span></span><i class="fas fa-external-link-alt"></i></a>
+                    <a href="https://myclimate.met.gov.my/fdrsWmsObsMsiaMetPortal" target="_blank" class="sidebar-link"><span class="link-icon fire"><i class="fas fa-fire"></i></span><span class="link-text"><span class="link-name">Fire Danger Rating System (FDRS)</span><span class="link-desc">Sistem penarafan bahaya kebakaran</span></span><i class="fas fa-external-link-alt"></i></a>
+                    <a href="https://water.doe.gov.my/" target="_blank" class="sidebar-link"><span class="link-icon tide"><i class="fas fa-droplet"></i></span><span class="link-text"><span class="link-name">JPS - Data Hidrologi</span><span class="link-desc">Data kualiti air & hidrologi</span></span><i class="fas fa-external-link-alt"></i></a>
+                    <!-- PAUTAN BARU: MyEQMS -->
+                    <a href="https://eqms.doe.gov.my/" target="_blank" class="sidebar-link" rel="noopener noreferrer">
+                        <span class="link-icon" style="background:rgba(16,185,129,0.15);color:#10b981;"><i class="fas fa-leaf"></i></span>
+                        <span class="link-text"><span class="link-name">MyEQMS - Kualiti Alam Sekitar</span><span class="link-desc">Indeks Kualiti Udara, Sungai & Marin (DOE)</span></span>
+                        <i class="fas fa-external-link-alt"></i>
+                    </a>
+                </div>
+            </div>
 
-          <!-- JBPM -->
-          <div class="emergency-group-title"><i class="fas fa-fire-extinguisher"></i> BOMBA (JBPM)</div>
-          <div class="emergency-item">
-            <div class="e-info"><span class="e-name">HQ Negeri Johor</span><span class="e-number">07-340 9999</span></div>
-            <div class="e-actions"><a href="tel:073409999" class="call-btn"><i class="fas fa-phone"></i></a></div>
-          </div>
-          <div class="emergency-item">
-            <div class="e-info"><span class="e-name">Hotline Kebangsaan</span><span class="e-number">1-800-888-994</span></div>
-            <div class="e-actions"><a href="tel:1800888994" class="call-btn"><i class="fas fa-phone"></i></a></div>
-          </div>
+            <!-- Accordion 2: Bencana & Amaran -->
+            <div class="accordion-item">
+                <button class="accordion-header" data-target="accordion2" aria-expanded="false">
+                    <span class="accordion-title"><i class="fas fa-triangle-exclamation"></i> Bencana & Amaran</span>
+                    <span class="arrow"><i class="fas fa-chevron-down"></i></span>
+                </button>
+                <div class="accordion-content" id="accordion2">
+                    <a href="https://www.nadma.gov.my/" target="_blank" class="sidebar-link"><span class="link-icon disaster"><i class="fas fa-house-chimney-crack"></i></span><span class="link-text"><span class="link-name">NADMA - Agensi Pengurusan Bencana</span><span class="link-desc">Info & respons bencana negara</span></span><i class="fas fa-external-link-alt"></i></a>
+                    <a href="https://publicinfobanjir.water.gov.my/" target="_blank" class="sidebar-link"><span class="link-icon flood"><i class="fas fa-house-flood-water"></i></span><span class="link-text"><span class="link-name">Public Infobanjir</span><span class="link-desc">Peta & status banjir semasa</span></span><i class="fas fa-external-link-alt"></i></a>
+                    <a href="http://mygempa.met.gov.my/docroot/view/index.php" target="_blank" class="sidebar-link"><span class="link-icon quake"><i class="fas fa-earth-asia"></i></span><span class="link-text"><span class="link-name">Info Gempa Bumi</span><span class="link-desc">Aktiviti seismik Malaysia & antarabangsa</span></span><i class="fas fa-external-link-alt"></i></a>
+                    <!-- PAUTAN BARU: InfoBencana JKM -->
+                    <a href="https://infobencanajkmv2.jkm.gov.my/landing/index.php?b=0&a=0" target="_blank" class="sidebar-link" rel="noopener noreferrer">
+                        <span class="link-icon" style="background:rgba(239,68,68,0.15);color:#ef4444;"><i class="fas fa-hand-holding-heart"></i></span>
+                        <span class="link-text"><span class="link-name">InfoBencana JKM</span><span class="link-desc">Maklumat bencana & bantuan mangsa (Jabatan Kebajikan Masyarakat)</span></span>
+                        <i class="fas fa-external-link-alt"></i>
+                    </a>
+                </div>
+            </div>
 
-          <!-- PDRM -->
-          <div class="emergency-group-title"><i class="fas fa-shield-cat"></i> POLIS (PDRM)</div>
-          <div class="emergency-item">
-            <div class="e-info"><span class="e-name">IPK Johor (Hotline Operasi)</span><span class="e-number">07-225 4422</span></div>
-            <div class="e-actions"><a href="tel:072254422" class="call-btn"><i class="fas fa-phone"></i></a></div>
-          </div>
-          <div class="emergency-item">
-            <div class="e-info"><span class="e-name">IPK Johor (Talian Am)</span><span class="e-number">07-221 2999</span></div>
-            <div class="e-actions"><a href="tel:072212999" class="call-btn"><i class="fas fa-phone"></i></a></div>
-          </div>
+            <!-- Accordion 3: Jalan Raya & Logistik -->
+            <div class="accordion-item">
+                <button class="accordion-header" data-target="accordion3" aria-expanded="false">
+                    <span class="accordion-title"><i class="fas fa-road"></i> Jalan Raya & Logistik</span>
+                    <span class="arrow"><i class="fas fa-chevron-down"></i></span>
+                </button>
+                <div class="accordion-content" id="accordion3">
+                    <a href="https://www.llm.gov.my/" target="_blank" class="sidebar-link"><span class="link-icon road"><i class="fas fa-road"></i></span><span class="link-text"><span class="link-name">LLM - Lebuhraya Malaysia</span><span class="link-desc">Status & laporan trafik lebuh raya</span></span><i class="fas fa-external-link-alt"></i></a>
+                    <a href="https://www.jpj.gov.my/" target="_blank" class="sidebar-link"><span class="link-icon road"><i class="fas fa-car-side"></i></span><span class="link-text"><span class="link-name">JPJ - Jabatan Pengangkutan Jalan</span><span class="link-desc">Maklumat jalan tutup & notis</span></span><i class="fas fa-external-link-alt"></i></a>
+                    <a href="https://bencana.jkr.gov.my/" target="_blank" class="sidebar-link"><span class="link-icon road"><i class="fas fa-helmet-safety"></i></span><span class="link-text"><span class="link-name">JKR - Jabatan Kerja Raya</span><span class="link-desc">Infrastruktur & jalan persekutuan</span></span><i class="fas fa-external-link-alt"></i></a>
+                </div>
+            </div>
 
-          <!-- APMM -->
-          <div class="emergency-group-title"><i class="fas fa-ship"></i> MARITIM (APMM)</div>
-          <div class="emergency-item">
-            <div class="e-info"><span class="e-name">MRSC Johor (24 jam)</span><span class="e-number">07-219 9401</span></div>
-            <div class="e-actions"><a href="tel:072199401" class="call-btn"><i class="fas fa-phone"></i></a></div>
-          </div>
-          <div class="emergency-item">
-            <div class="e-info"><span class="e-name">Hotline 24 jam (Johor)</span><span class="e-number">07-219 9404</span></div>
-            <div class="e-actions"><a href="tel:072199404" class="call-btn"><i class="fas fa-phone"></i></a></div>
-          </div>
-          <div class="emergency-item">
-            <div class="e-info"><span class="e-name">ZM Tanjung Sedili (24 jam)</span><span class="e-number">07-891 6595</span></div>
-            <div class="e-actions"><a href="tel:078916595" class="call-btn"><i class="fas fa-phone"></i></a></div>
-          </div>
+            <!-- Accordion 4: Direktori Agensi -->
+            <div class="accordion-item">
+                <button class="accordion-header" data-target="accordion4" aria-expanded="false">
+                    <span class="accordion-title"><i class="fas fa-building-columns"></i> Direktori Agensi</span>
+                    <span class="arrow"><i class="fas fa-chevron-down"></i></span>
+                </button>
+                <div class="accordion-content" id="accordion4">
+                    <a href="https://www.bomba.gov.my/en/" target="_blank" class="sidebar-link"><span class="link-icon emergency"><i class="fas fa-fire-extinguisher"></i></span><span class="link-text"><span class="link-name">JBPM Malaysia</span><span class="link-desc">Jabatan Bomba & Penyelamat</span></span><i class="fas fa-external-link-alt"></i></a>
+                    <a href="https://www.mmea.gov.my/" target="_blank" class="sidebar-link"><span class="link-icon maritime"><i class="fas fa-ship"></i></span><span class="link-text"><span class="link-name">APMM Maritim Malaysia</span><span class="link-desc">Agensi Penguatkuasaan Maritim</span></span><i class="fas fa-external-link-alt"></i></a>
+                    <a href="https://www.civildefence.gov.my/" target="_blank" class="sidebar-link"><span class="link-icon civil"><i class="fas fa-shield-halved"></i></span><span class="link-text"><span class="link-name">APM Pertahanan Awam</span><span class="link-desc">Pengurusan Bencana</span></span><i class="fas fa-external-link-alt"></i></a>
+                    <a href="https://www.rmp.gov.my/" target="_blank" class="sidebar-link"><span class="link-icon emergency"><i class="fas fa-shield-cat"></i></span><span class="link-text"><span class="link-name">PDRM Polis Diraja</span><span class="link-desc">Keselamatan Awam</span></span><i class="fas fa-external-link-alt"></i></a>
+                    <a href="https://www.moh.gov.my/" target="_blank" class="sidebar-link"><span class="link-icon hospital"><i class="fas fa-hospital-user"></i></span><span class="link-text"><span class="link-name">KKM Kesihatan</span><span class="link-desc">Perkhidmatan Perubatan</span></span><i class="fas fa-external-link-alt"></i></a>
+                </div>
+            </div>
 
-          <!-- APM -->
-          <div class="emergency-group-title"><i class="fas fa-shield-halved"></i> PERTAHANAN AWAM (APM)</div>
-          <div class="emergency-item">
-            <div class="e-info"><span class="e-name">APM Negeri Johor</span><span class="e-number">07-221 1991</span></div>
-            <div class="e-actions"><a href="tel:072211991" class="call-btn"><i class="fas fa-phone"></i></a></div>
-          </div>
+            <!-- Accordion 5: Talian Kecemasan -->
+            <div class="accordion-item">
+                <button class="accordion-header" data-target="accordion5" aria-expanded="false">
+                    <span class="accordion-title"><i class="fas fa-phone-volume"></i> Talian Kecemasan 24/7</span>
+                    <span class="arrow"><i class="fas fa-chevron-down"></i></span>
+                </button>
+                <div class="accordion-content" id="accordion5">
+                    <div class="emergency-group-title"><i class="fas fa-flag"></i> TALIAN KECEMASAN NASIONAL</div>
+                    <div class="emergency-item"><div class="e-info"><span class="e-name">MERS 999</span><span class="e-number">999</span></div><div class="e-actions"><a href="tel:999" class="call-btn"><i class="fas fa-phone"></i></a></div></div>
 
-          <!-- HSA -->
-          <div class="emergency-group-title"><i class="fas fa-hospital"></i> HOSPITAL SULTANAH AMINAH (HSA)</div>
-          <div class="emergency-item">
-            <div class="e-info"><span class="e-name">Talian Utama</span><span class="e-number">07-225 7000</span></div>
-            <div class="e-actions"><a href="tel:072257000" class="call-btn"><i class="fas fa-phone"></i></a></div>
-          </div>
-          <div class="emergency-item">
-            <div class="e-info"><span class="e-name">MECC (Samb. 3248)</span><span class="e-number">07-225 7000 samb. 3248</span></div>
-            <div class="e-actions"><a href="tel:072257000,3248" class="call-btn"><i class="fas fa-phone"></i></a></div>
-          </div>
-          <div class="emergency-item">
-            <div class="e-info"><span class="e-name">Perhubungan Awam (Samb. 2722 / 3456)</span><span class="e-number">07-225 7000 samb. 2722/3456</span></div>
-            <div class="e-actions"><a href="tel:072257000,2722" class="call-btn"><i class="fas fa-phone"></i></a></div>
-          </div>
-          <div class="emergency-item">
-            <div class="e-info"><span class="e-name">Alternatif</span><span class="e-number">07-223 1666</span></div>
-            <div class="e-actions"><a href="tel:072231666" class="call-btn"><i class="fas fa-phone"></i></a></div>
-          </div>
+                    <div class="emergency-group-title"><i class="fas fa-fire-extinguisher"></i> BOMBA (JBPM)</div>
+                    <div class="emergency-item"><div class="e-info"><span class="e-name">HQ Negeri Johor</span><span class="e-number">07-340 9999</span></div><div class="e-actions"><a href="tel:073409999" class="call-btn"><i class="fas fa-phone"></i></a></div></div>
+                    <div class="emergency-item"><div class="e-info"><span class="e-name">Hotline Kebangsaan</span><span class="e-number">1-800-888-994</span></div><div class="e-actions"><a href="tel:1800888994" class="call-btn"><i class="fas fa-phone"></i></a></div></div>
 
-          <!-- Hospital Sultan Ismail (HSI) - NOMBOR -->
-          <div class="emergency-group-title"><i class="fas fa-hospital"></i> HOSPITAL SULTAN ISMAIL (HSI)</div>
-          <div class="emergency-item">
-            <div class="e-info"><span class="e-name">Talian Utama</span><span class="e-number">07-356 5000</span></div>
-            <div class="e-actions"><a href="tel:073565000" class="call-btn"><i class="fas fa-phone"></i></a></div>
-          </div>
+                    <div class="emergency-group-title"><i class="fas fa-shield-cat"></i> POLIS (PDRM)</div>
+                    <div class="emergency-item"><div class="e-info"><span class="e-name">IPK Johor (Hotline Operasi)</span><span class="e-number">07-225 4422</span></div><div class="e-actions"><a href="tel:072254422" class="call-btn"><i class="fas fa-phone"></i></a></div></div>
+                    <div class="emergency-item"><div class="e-info"><span class="e-name">IPK Johor (Talian Am)</span><span class="e-number">07-221 2999</span></div><div class="e-actions"><a href="tel:072212999" class="call-btn"><i class="fas fa-phone"></i></a></div></div>
 
-          <!-- HEBHK Kluang -->
-          <div class="emergency-group-title"><i class="fas fa-hospital"></i> HEBHK KLUANG</div>
-          <div class="emergency-item">
-            <div class="e-info"><span class="e-name">Talian Utama</span><span class="e-number">07-234 5333</span></div>
-            <div class="e-actions"><a href="tel:072345333" class="call-btn"><i class="fas fa-phone"></i></a></div>
-          </div>
+                    <div class="emergency-group-title"><i class="fas fa-ship"></i> MARITIM (APMM)</div>
+                    <div class="emergency-item"><div class="e-info"><span class="e-name">MRSC Johor (24 jam)</span><span class="e-number">07-219 9401</span></div><div class="e-actions"><a href="tel:072199401" class="call-btn"><i class="fas fa-phone"></i></a></div></div>
+                    <div class="emergency-item"><div class="e-info"><span class="e-name">Hotline 24 jam (Johor)</span><span class="e-number">07-219 9404</span></div><div class="e-actions"><a href="tel:072199404" class="call-btn"><i class="fas fa-phone"></i></a></div></div>
+                    <div class="emergency-item"><div class="e-info"><span class="e-name">ZM Tanjung Sedili (24 jam)</span><span class="e-number">07-891 6595</span></div><div class="e-actions"><a href="tel:078916595" class="call-btn"><i class="fas fa-phone"></i></a></div></div>
 
-          <!-- NOTA -->
-          <div class="info-box">
-            <i class="fas fa-info-circle"></i> <strong>999</strong> talian kecemasan bersepadu (PDRM, JBPM, KKM, APM, APMM).<br/>
-            Untuk sambungan dalaman, hubungi talian am.
-          </div>
+                    <div class="emergency-group-title"><i class="fas fa-shield-halved"></i> PERTAHANAN AWAM (APM)</div>
+                    <div class="emergency-item"><div class="e-info"><span class="e-name">APM Negeri Johor</span><span class="e-number">07-221 1991</span></div><div class="e-actions"><a href="tel:072211991" class="call-btn"><i class="fas fa-phone"></i></a></div></div>
+
+                    <div class="emergency-group-title"><i class="fas fa-hospital"></i> HOSPITAL SULTANAH AMINAH (HSA)</div>
+                    <div class="emergency-item"><div class="e-info"><span class="e-name">Talian Utama</span><span class="e-number">07-225 7000</span></div><div class="e-actions"><a href="tel:072257000" class="call-btn"><i class="fas fa-phone"></i></a></div></div>
+                    <div class="emergency-item"><div class="e-info"><span class="e-name">MECC (Samb. 3248)</span><span class="e-number">07-225 7000 samb. 3248</span></div><div class="e-actions"><a href="tel:072257000,3248" class="call-btn"><i class="fas fa-phone"></i></a></div></div>
+                    <div class="emergency-item"><div class="e-info"><span class="e-name">Perhubungan Awam (Samb. 2722 / 3456)</span><span class="e-number">07-225 7000 samb. 2722/3456</span></div><div class="e-actions"><a href="tel:072257000,2722" class="call-btn"><i class="fas fa-phone"></i></a></div></div>
+                    <div class="emergency-item"><div class="e-info"><span class="e-name">Alternatif</span><span class="e-number">07-223 1666</span></div><div class="e-actions"><a href="tel:072231666" class="call-btn"><i class="fas fa-phone"></i></a></div></div>
+
+                    <div class="emergency-group-title"><i class="fas fa-hospital"></i> HOSPITAL SULTAN ISMAIL (HSI)</div>
+                    <div class="emergency-item"><div class="e-info"><span class="e-name">Talian Utama</span><span class="e-number">07-356 5000</span></div><div class="e-actions"><a href="tel:073565000" class="call-btn"><i class="fas fa-phone"></i></a></div></div>
+
+                    <div class="emergency-group-title"><i class="fas fa-hospital"></i> HEBHK KLUANG</div>
+                    <div class="emergency-item"><div class="e-info"><span class="e-name">Talian Utama</span><span class="e-number">07-234 5333</span></div><div class="e-actions"><a href="tel:072345333" class="call-btn"><i class="fas fa-phone"></i></a></div></div>
+
+                    <div class="info-box"><i class="fas fa-info-circle"></i> <strong>999</strong> talian kecemasan bersepadu (PDRM, JBPM, KKM, APM, APMM).<br />Untuk sambungan dalaman, hubungi talian am.</div>
+                </div>
+            </div>
+
+            <!-- Accordion 6: Antarabangsa -->
+            <div class="accordion-item">
+                <button class="accordion-header" data-target="accordion6" aria-expanded="false">
+                    <span class="accordion-title"><i class="fas fa-globe-asia"></i> Antarabangsa</span>
+                    <span class="arrow"><i class="fas fa-chevron-down"></i></span>
+                </button>
+                <div class="accordion-content" id="accordion6">
+                    <a href="https://ahacentre.org/" target="_blank" class="sidebar-link"><span class="link-icon international"><i class="fas fa-handshake"></i></span><span class="link-text"><span class="link-name">AHA Centre</span><span class="link-desc">ASEAN Coordinating Centre for Humanitarian Assistance</span></span><i class="fas fa-external-link-alt"></i></a>
+                    <a href="https://wmo.int/" target="_blank" class="sidebar-link"><span class="link-icon international"><i class="fas fa-cloud"></i></span><span class="link-text"><span class="link-name">World Meteorological Organization (WMO)</span><span class="link-desc">Data cuaca global</span></span><i class="fas fa-external-link-alt"></i></a>
+                </div>
+            </div>
+
+            <!-- Accordion 7: Kerajaan Negeri -->
+            <div class="accordion-item">
+                <button class="accordion-header" data-target="accordion7" aria-expanded="false">
+                    <span class="accordion-title"><i class="fas fa-landmark"></i> Kerajaan Negeri</span>
+                    <span class="arrow"><i class="fas fa-chevron-down"></i></span>
+                </button>
+                <div class="accordion-content" id="accordion7">
+                    <a href="https://www.johor.gov.my/" target="_blank" class="sidebar-link"><span class="link-icon gov"><i class="fas fa-landmark"></i></span><span class="link-text"><span class="link-name">Laman Web Rasmi Kerajaan Negeri Johor</span><span class="link-desc">Portal rasmi kerajaan negeri</span></span><i class="fas fa-external-link-alt"></i></a>
+                </div>
+            </div>
         </div>
-      </div>
 
-      <!-- Accordion 6: Antarabangsa -->
-      <div class="accordion-item">
-        <button class="accordion-header" data-target="accordion6" aria-expanded="false">
-          <span class="accordion-title"><i class="fas fa-globe-asia"></i> Antarabangsa</span>
-          <span class="arrow"><i class="fas fa-chevron-down"></i></span>
-        </button>
-        <div class="accordion-content" id="accordion6">
-          <a href="https://ahacentre.org/" target="_blank" class="sidebar-link"><span class="link-icon international"><i class="fas fa-handshake"></i></span><span class="link-text"><span class="link-name">AHA Centre</span><span class="link-desc">ASEAN Coordinating Centre for Humanitarian Assistance</span></span><i class="fas fa-external-link-alt"></i></a>
-          <a href="https://wmo.int/" target="_blank" class="sidebar-link"><span class="link-icon international"><i class="fas fa-cloud"></i></span><span class="link-text"><span class="link-name">World Meteorological Organization (WMO)</span><span class="link-desc">Data cuaca global</span></span><i class="fas fa-external-link-alt"></i></a>
-        </div>
-      </div>
+        <div class="sidebar-footer">PGO Johor · Pusat Gerakan Operasi</div>
+    </nav>
 
-      <!-- Accordion 7: Kerajaan Negeri -->
-      <div class="accordion-item">
-        <button class="accordion-header" data-target="accordion7" aria-expanded="false">
-          <span class="accordion-title"><i class="fas fa-landmark"></i> Kerajaan Negeri</span>
-          <span class="arrow"><i class="fas fa-chevron-down"></i></span>
-        </button>
-        <div class="accordion-content" id="accordion7">
-          <a href="https://www.johor.gov.my/" target="_blank" class="sidebar-link"><span class="link-icon gov"><i class="fas fa-landmark"></i></span><span class="link-text"><span class="link-name">Laman Web Rasmi Kerajaan Negeri Johor</span><span class="link-desc">Portal rasmi kerajaan negeri</span></span><i class="fas fa-external-link-alt"></i></a>
-        </div>
-      </div>
-    </div>
+    <!-- MAIN DASHBOARD -->
+    <main class="dashboard">
+        <header class="header">
+            <div class="header-top-controls" role="toolbar">
+                <button class="mode-toggle-btn" id="modeToggleBtn" aria-label="Tukar mod siang malam"><i class="fas fa-moon"></i></button>
+                <button class="switch-mode-btn" id="switchModeBtn" aria-label="Tukar paparan desktop mobile"><i class="fas fa-mobile-alt"></i><span class="mode-indicator-dot"></span></button>
+                <button class="refresh-btn" id="refreshBtn" aria-label="Muat semula halaman"><i class="fas fa-sync-alt"></i></button>
+                <div class="analog-clock" id="analogClock" aria-label="Jam analog">
+                    <div class="marker main" style="transform: rotate(0deg) translateX(-50%)"></div>
+                    <div class="marker" style="transform: rotate(30deg) translateX(-50%)"></div>
+                    <div class="marker" style="transform: rotate(60deg) translateX(-50%)"></div>
+                    <div class="marker main" style="transform: rotate(90deg) translateX(-50%)"></div>
+                    <div class="marker" style="transform: rotate(120deg) translateX(-50%)"></div>
+                    <div class="marker" style="transform: rotate(150deg) translateX(-50%)"></div>
+                    <div class="marker main" style="transform: rotate(180deg) translateX(-50%)"></div>
+                    <div class="marker" style="transform: rotate(210deg) translateX(-50%)"></div>
+                    <div class="marker" style="transform: rotate(240deg) translateX(-50%)"></div>
+                    <div class="marker main" style="transform: rotate(270deg) translateX(-50%)"></div>
+                    <div class="marker" style="transform: rotate(300deg) translateX(-50%)"></div>
+                    <div class="marker" style="transform: rotate(330deg) translateX(-50%)"></div>
+                    <div class="hand hour" id="hourHand"></div>
+                    <div class="hand minute" id="minuteHand"></div>
+                    <div class="hand second" id="secondHand"></div>
+                    <div class="center-dot"></div>
+                </div>
+                <div class="digital-time" aria-label="Masa dan tarikh semasa">
+                    <div class="time" id="clock">12<span class="time-colon">:</span>00<span class="time-colon">:</span>00</div>
+                    <div class="date" id="date">29 JULAI 2026</div>
+                </div>
+            </div>
+            <div class="logo">
+                <div class="logo-img-wrapper"><img src="https://i.ibb.co/fGtPXjpc/500px-Logo-of-the-Malaysian-Fire-and-Rescue-Department-svg.webp" alt="Logo JBPM" class="logo-img" loading="lazy" /></div>
+                <div class="logo-text"><h1>PUSAT GERAKAN OPERASI <span>JOHOR</span></h1><span class="sub">Dashboard Utama</span></div>
+                <div class="logo-img-wrapper"><img src="https://i.ibb.co/fdXsyrBX/logo-unit-komunikasi-1.png" alt="Logo Unit Komunikasi" class="logo-img" loading="lazy" /></div>
+            </div>
+        </header>
 
-    <div class="sidebar-footer"> PGO Johor · Pusat Gerakan Operasi</div>
-  </nav>
+        <section class="stats-bar">
+            <div class="stat-item"><i class="fas fa-cubes icon-badge"></i><div class="num" id="appCount" data-target="0">0</div><div class="label">Aplikasi</div></div>
+            <div class="stat-item"><i class="fas fa-network-wired icon-badge"></i><div class="num" id="onlinePercent" data-target="0">0%</div><div class="label">Online</div></div>
+            <div class="stat-item"><i class="fas fa-bolt icon-badge"></i><div class="num" id="liveCount" data-target="0">0</div><div class="label">Live Updates</div></div>
+            <div class="stat-item"><i class="fas fa-building-shield icon-badge"></i><div class="num">PGO</div><div class="label">Johor</div></div>
+        </section>
 
-  <!-- MAIN DASHBOARD -->
-  <main class="dashboard">
-    <header class="header">
-      <div class="header-top-controls" role="toolbar">
-        <button class="mode-toggle-btn" id="modeToggleBtn" aria-label="Tukar mod siang malam"><i class="fas fa-moon"></i></button>
-        <button class="switch-mode-btn" id="switchModeBtn" aria-label="Tukar paparan desktop mobile"><i class="fas fa-mobile-alt"></i><span class="mode-indicator-dot"></span></button>
-        <button class="refresh-btn" id="refreshBtn" aria-label="Muat semula halaman"><i class="fas fa-sync-alt"></i></button>
-        <div class="analog-clock" id="analogClock" aria-label="Jam analog">
-          <div class="marker main" style="transform:rotate(0deg) translateX(-50%)"></div><div class="marker" style="transform:rotate(30deg) translateX(-50%)"></div><div class="marker" style="transform:rotate(60deg) translateX(-50%)"></div><div class="marker main" style="transform:rotate(90deg) translateX(-50%)"></div><div class="marker" style="transform:rotate(120deg) translateX(-50%)"></div><div class="marker" style="transform:rotate(150deg) translateX(-50%)"></div><div class="marker main" style="transform:rotate(180deg) translateX(-50%)"></div><div class="marker" style="transform:rotate(210deg) translateX(-50%)"></div><div class="marker" style="transform:rotate(240deg) translateX(-50%)"></div><div class="marker main" style="transform:rotate(270deg) translateX(-50%)"></div><div class="marker" style="transform:rotate(300deg) translateX(-50%)"></div><div class="marker" style="transform:rotate(330deg) translateX(-50%)"></div>
-          <div class="hand hour" id="hourHand"></div><div class="hand minute" id="minuteHand"></div><div class="hand second" id="secondHand"></div><div class="center-dot"></div>
-        </div>
-        <div class="digital-time" aria-label="Masa dan tarikh semasa">
-          <div class="time" id="clock">12<span class="time-colon">:</span>00<span class="time-colon">:</span>00</div>
-          <div class="date" id="date">29 JULAI 2026</div>
-        </div>
-      </div>
-      <div class="logo">
-        <div class="logo-img-wrapper"><img src="https://i.ibb.co/fGtPXjpc/500px-Logo-of-the-Malaysian-Fire-and-Rescue-Department-svg.webp" alt="Logo JBPM" class="logo-img" loading="lazy" /></div>
-        <div class="logo-text"><h1>PUSAT GERAKAN OPERASI <span>JOHOR</span></h1><span class="sub">Dashboard Utama</span></div>
-        <div class="logo-img-wrapper"><img src="https://i.ibb.co/fdXsyrBX/logo-unit-komunikasi-1.png" alt="Logo Unit Komunikasi" class="logo-img" loading="lazy" /></div>
-      </div>
-    </header>
+        <section class="section-status">
+            <div class="section-title"><i class="fas fa-circle" style="color: #ef4444; font-size: 0.625rem"></i> LIVE <span class="status-badge live">● LIVE</span></div>
+            <div class="apps-grid">
+                <a href="https://dashbord-live-statistik-kes.vercel.app/" target="_blank" class="app-card card-wide" rel="noopener noreferrer">
+                    <div class="icon"><i class="fas fa-chart-column"></i></div>
+                    <div><h3>Live Statistik Kes 24 Jam <span class="highlight">(DESK-OPS)</span></h3><p>Statistik masa nyata panggilan, lokasi & mangsa operasi.</p></div>
+                    <div class="card-footer"><span class="badge live">● LIVE</span><span class="arrow"><i class="fas fa-arrow-right"></i></span></div>
+                </a>
+            </div>
+        </section>
 
-    <section class="stats-bar">
-      <div class="stat-item"><i class="fas fa-cubes icon-badge"></i><div class="num" id="appCount" data-target="0">0</div><div class="label">Aplikasi</div></div>
-      <div class="stat-item"><i class="fas fa-network-wired icon-badge"></i><div class="num" id="onlinePercent" data-target="0">0%</div><div class="label">Online</div></div>
-      <div class="stat-item"><i class="fas fa-bolt icon-badge"></i><div class="num" id="liveCount" data-target="0">0</div><div class="label">Live Updates</div></div>
-      <div class="stat-item"><i class="fas fa-building-shield icon-badge"></i><div class="num">PGO</div><div class="label">Johor</div></div>
-    </section>
+        <section class="section-status">
+            <div class="section-title"><i class="fas fa-circle" style="color: var(--status-green); font-size: 0.625rem"></i> ONLINE <span class="status-badge online">● ONLINE</span></div>
+            <div class="apps-grid">
+                <a href="https://dashboard-data-jentera-jbpm-johor.vercel.app/" target="_blank" class="app-card" rel="noopener noreferrer">
+                    <div class="icon"><i class="fas fa-truck-field"></i></div>
+                    <div><h3>Data <span class="highlight">Jentera</span> JBPM Johor</h3><p>Pemantauan status jentera & kenderaan operasi bomba.</p></div>
+                    <div class="card-footer"><span class="badge online">● ONLINE</span><span class="arrow"><i class="fas fa-arrow-right"></i></span></div>
+                </a>
+                <a href="https://po1teknologia2.vercel.app/" target="_blank" class="app-card" rel="noopener noreferrer">
+                    <div class="icon"><i class="fas fa-boxes-stacked"></i></div>
+                    <div><h3>Sistem Inventori <span class="highlight">(DID)</span></h3><p>Pengurusan storan, peralatan & aset logistik.</p></div>
+                    <div class="card-footer"><span class="badge online">● ONLINE</span><span class="arrow"><i class="fas fa-arrow-right"></i></span></div>
+                </a>
+                <a href="https://daftar-masuk-pelawat.vercel.app/" target="_blank" class="app-card" rel="noopener noreferrer">
+                    <div class="icon"><i class="fas fa-id-card-clip"></i></div>
+                    <div><h3>Sistem Daftar Masuk Pelawat <span class="highlight">(ENTRY)</span></h3><p>Sistem daftar masuk dengan pendaftaran ID digital.</p></div>
+                    <div class="card-footer"><span class="badge online">● ONLINE</span><span class="arrow"><i class="fas fa-arrow-right"></i></span></div>
+                </a>
+            </div>
+        </section>
 
-    <section class="section-status">
-      <div class="section-title"><i class="fas fa-circle" style="color:#ef4444;font-size:0.625rem"></i> LIVE <span class="status-badge live">● LIVE</span></div>
-      <div class="apps-grid">
-        <a href="https://dashbord-live-statistik-kes.vercel.app/" target="_blank" class="app-card card-wide" rel="noopener noreferrer">
-          <div class="icon"><i class="fas fa-chart-column"></i></div>
-          <div><h3>Live Statistik Kes 24 Jam <span class="highlight">(DESK-OPS)</span></h3><p>Statistik masa nyata panggilan, lokasi & mangsa operasi.</p></div>
-          <div class="card-footer"><span class="badge live">● LIVE</span><span class="arrow"><i class="fas fa-arrow-right"></i></span></div>
-        </a>
-      </div>
-    </section>
+        <section class="section-status">
+            <div class="section-title"><i class="fas fa-circle" style="color: #f59e0b; font-size: 0.625rem"></i> DALAM PEMBANGUNAN <span class="status-badge dev">● DEV</span></div>
+            <div class="apps-grid">
+                <a href="#" class="app-card" onclick="return false;"><div class="icon"><i class="fas fa-user-shield"></i></div><div><h3>Kekuatan Anggota <span class="highlight">12 Jam</span></h3><p>Status anggota, syif, cuti & tugasan khas.</p></div><div class="card-footer"><span class="badge dev">● DEV</span><span class="arrow"><i class="fas fa-arrow-right"></i></span></div></a>
+                <a href="#" class="app-card" onclick="return false;"><div class="icon"><i class="fas fa-map-location-dot"></i></div><div><h3>Peta Kawasan <span class="highlight">Jagaan Balai</span></h3><p>Peta interaktif kawasan jagaan balai bomba.</p></div><div class="card-footer"><span class="badge dev">● DEV</span><span class="arrow"><i class="fas fa-arrow-right"></i></span></div></a>
+                <a href="#" class="app-card" onclick="return false;"><div class="icon"><i class="fas fa-tower-cell"></i></div><div><h3>Dashboard Aset <span class="highlight">GIRN</span></h3><p>Pemantauan aset komunikasi GIRN Negeri Johor.</p></div><div class="card-footer"><span class="badge dev">● DEV</span><span class="arrow"><i class="fas fa-arrow-right"></i></span></div></a>
+            </div>
+        </section>
 
-    <section class="section-status">
-      <div class="section-title"><i class="fas fa-circle" style="color:var(--status-green);font-size:0.625rem"></i> ONLINE <span class="status-badge online">● ONLINE</span></div>
-      <div class="apps-grid">
-        <a href="https://dashboard-data-jentera-jbpm-johor.vercel.app/" target="_blank" class="app-card" rel="noopener noreferrer">
-          <div class="icon"><i class="fas fa-truck-field"></i></div><div><h3>Data <span class="highlight">Jentera</span> JBPM Johor</h3><p>Pemantauan status jentera & kenderaan operasi bomba.</p></div>
-          <div class="card-footer"><span class="badge online">● ONLINE</span><span class="arrow"><i class="fas fa-arrow-right"></i></span></div>
-        </a>
-        <a href="https://po1teknologia2.vercel.app/" target="_blank" class="app-card" rel="noopener noreferrer">
-          <div class="icon"><i class="fas fa-boxes-stacked"></i></div><div><h3>Sistem Inventori <span class="highlight">(DID)</span></h3><p>Pengurusan storan, peralatan & aset logistik.</p></div>
-          <div class="card-footer"><span class="badge online">● ONLINE</span><span class="arrow"><i class="fas fa-arrow-right"></i></span></div>
-        </a>
-        <a href="https://daftar-masuk-pelawat.vercel.app/" target="_blank" class="app-card" rel="noopener noreferrer">
-          <div class="icon"><i class="fas fa-id-card-clip"></i></div><div><h3>Sistem Daftar Masuk Pelawat <span class="highlight">(ENTRY)</span></h3><p>Sistem daftar masuk dengan pendaftaran ID digital.</p></div>
-          <div class="card-footer"><span class="badge online">● ONLINE</span><span class="arrow"><i class="fas fa-arrow-right"></i></span></div>
-        </a>
-      </div>
-    </section>
+        <footer class="footer">
+            <div class="brand"><span class="dot"></span><span>© 2026 PGO Johor</span></div>
+            <div class="last-updated"><i class="fas fa-clock"></i> Kemaskini: <span id="updateTime">--</span></div>
+            <div class="social-links">
+                <a href="https://wa.me/60196717865" target="_blank" title="WhatsApp" rel="noopener noreferrer"><i class="fab fa-whatsapp"></i></a>
+                <a href="https://t.me/+60196717865" target="_blank" title="Telegram" rel="noopener noreferrer"><i class="fab fa-telegram-plane"></i></a>
+                <a href="#" title="Instagram"><i class="fab fa-instagram"></i></a>
+                <a href="#" title="YouTube"><i class="fab fa-youtube"></i></a>
+            </div>
+        </footer>
+    </main>
 
-    <section class="section-status">
-      <div class="section-title"><i class="fas fa-circle" style="color:#f59e0b;font-size:0.625rem"></i> DALAM PEMBANGUNAN <span class="status-badge dev">● DEV</span></div>
-      <div class="apps-grid">
-        <a href="#" class="app-card" onclick="return false;"><div class="icon"><i class="fas fa-user-shield"></i></div><div><h3>Kekuatan Anggota <span class="highlight">12 Jam</span></h3><p>Status anggota, syif, cuti & tugasan khas.</p></div><div class="card-footer"><span class="badge dev">● DEV</span><span class="arrow"><i class="fas fa-arrow-right"></i></span></div></a>
-        <a href="#" class="app-card" onclick="return false;"><div class="icon"><i class="fas fa-map-location-dot"></i></div><div><h3>Peta Kawasan <span class="highlight">Jagaan Balai</span></h3><p>Peta interaktif kawasan jagaan balai bomba.</p></div><div class="card-footer"><span class="badge dev">● DEV</span><span class="arrow"><i class="fas fa-arrow-right"></i></span></div></a>
-        <a href="#" class="app-card" onclick="return false;"><div class="icon"><i class="fas fa-tower-cell"></i></div><div><h3>Dashboard Aset <span class="highlight">GIRN</span></h3><p>Pemantauan aset komunikasi GIRN Negeri Johor.</p></div><div class="card-footer"><span class="badge dev">● DEV</span><span class="arrow"><i class="fas fa-arrow-right"></i></span></div></a>
-      </div>
-    </section>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // JAM
+            const hourHand = document.getElementById('hourHand');
+            const minuteHand = document.getElementById('minuteHand');
+            const secondHand = document.getElementById('secondHand');
+            const clockEl = document.getElementById('clock');
+            const dateEl = document.getElementById('date');
+            const updateSpan = document.getElementById('updateTime');
+            const bulan = ['JANUARI', 'FEBRUARI', 'MAC', 'APRIL', 'MEI', 'JUNI', 'JULAI', 'OGOS', 'SEPTEMBER', 'OKTOBER',
+                'NOVEMBER', 'DISEMBER'
+            ];
 
-    <footer class="footer">
-      <div class="brand"><span class="dot"></span><span>© 2026 PGO Johor</span></div>
-      <div class="last-updated"><i class="fas fa-clock"></i> Kemaskini: <span id="updateTime">--</span></div>
-      <div class="social-links">
-        <a href="https://wa.me/60196717865" target="_blank" title="WhatsApp" rel="noopener noreferrer"><i class="fab fa-whatsapp"></i></a>
-        <a href="https://t.me/+60196717865" target="_blank" title="Telegram" rel="noopener noreferrer"><i class="fab fa-telegram-plane"></i></a>
-        <a href="#" title="Instagram"><i class="fab fa-instagram"></i></a>
-        <a href="#" title="YouTube"><i class="fab fa-youtube"></i></a>
-      </div>
-    </footer>
-  </main>
+            function setInitialUpdateTime() {
+                const now = new Date();
+                updateSpan.textContent = now.toLocaleTimeString('ms-MY', { hour: '2-digit', minute: '2-digit',
+                    second: '2-digit' });
+            }
 
-  <script>
-    document.addEventListener('DOMContentLoaded', function() {
-      // SOUND
-      let audioCtx = null;
-      function playClickSound() {
-        try {
-          if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-          if (audioCtx.state === 'suspended') audioCtx.resume();
-          const osc = audioCtx.createOscillator();
-          const gain = audioCtx.createGain();
-          osc.connect(gain);
-          gain.connect(audioCtx.destination);
-          osc.frequency.value = 850;
-          osc.type = 'sine';
-          gain.gain.value = 0.08;
-          osc.start(audioCtx.currentTime);
-          gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.05);
-          osc.stop(audioCtx.currentTime + 0.05);
-        } catch(e) {}
-      }
-      document.addEventListener('click', function(e) {
-        const target = e.target.closest('button, .app-card, .sidebar-link, .stat-item, .hamburger-fixed-btn, .refresh-btn, .popular-item, .call-btn');
-        if (target) {
-          playClickSound();
-          const rect = target.getBoundingClientRect();
-          const ripple = document.createElement('span');
-          ripple.className = 'ripple-effect';
-          const size = Math.max(rect.width, rect.height);
-          ripple.style.width = ripple.style.height = size + 'px';
-          ripple.style.left = (e.clientX - rect.left - size/2) + 'px';
-          ripple.style.top = (e.clientY - rect.top - size/2) + 'px';
-          target.appendChild(ripple);
-          setTimeout(() => ripple.remove(), 600);
-        }
-      });
+            function updateClocks() {
+                const now = new Date();
+                const h = now.getHours(),
+                    m = now.getMinutes(),
+                    s = now.getSeconds();
+                if (hourHand) hourHand.style.transform = `rotate(${(h % 12) * 30 + m * 0.5}deg)`;
+                if (minuteHand) minuteHand.style.transform = `rotate(${m * 6}deg)`;
+                if (secondHand) secondHand.style.transform = `rotate(${s * 6}deg)`;
+                if (clockEl) {
+                    clockEl.innerHTML =
+                        `${String(h).padStart(2,'0')}<span class="time-colon">:</span>${String(m).padStart(2,'0')}<span class="time-colon">:</span>${String(s).padStart(2,'0')}`;
+                }
+                if (dateEl) {
+                    dateEl.textContent = `${now.getDate()} ${bulan[now.getMonth()]} ${now.getFullYear()}`;
+                }
+            }
 
-      // JAM
-      const hourHand = document.getElementById('hourHand');
-      const minuteHand = document.getElementById('minuteHand');
-      const secondHand = document.getElementById('secondHand');
-      const clockEl = document.getElementById('clock');
-      const dateEl = document.getElementById('date');
-      const updateSpan = document.getElementById('updateTime');
-      const bulan = ['JANUARI','FEBRUARI','MAC','APRIL','MEI','JUNI','JULAI','OGOS','SEPTEMBER','OKTOBER','NOVEMBER','DISEMBER'];
+            function setLinkUpdateDate() {
+                const now = new Date();
+                document.getElementById('linkUpdateDate').textContent =
+                    `${now.getDate()} ${bulan[now.getMonth()]} ${now.getFullYear()}`;
+            }
 
-      function setInitialUpdateTime() {
-        const now = new Date();
-        updateSpan.textContent = now.toLocaleTimeString('ms-MY', {hour:'2-digit', minute:'2-digit', second:'2-digit'});
-      }
+            setInitialUpdateTime();
+            updateClocks();
+            setLinkUpdateDate();
+            setInterval(updateClocks, 1000);
 
-      function updateClocks() {
-        const now = new Date();
-        const h = now.getHours(), m = now.getMinutes(), s = now.getSeconds();
-        if (hourHand) hourHand.style.transform = `rotate(${(h%12)*30 + m*0.5}deg)`;
-        if (minuteHand) minuteHand.style.transform = `rotate(${m*6}deg)`;
-        if (secondHand) secondHand.style.transform = `rotate(${s*6}deg)`;
-        if (clockEl) {
-          clockEl.innerHTML = `${String(h).padStart(2,'0')}<span class="time-colon">:</span>${String(m).padStart(2,'0')}<span class="time-colon">:</span>${String(s).padStart(2,'0')}`;
-        }
-        if (dateEl) {
-          dateEl.textContent = `${now.getDate()} ${bulan[now.getMonth()]} ${now.getFullYear()}`;
-        }
-      }
+            // LOCALSTORAGE
+            function loadState() {
+                const theme = localStorage.getItem('pgoTheme');
+                const displayMode = localStorage.getItem('pgoDisplayMode');
+                if (theme === 'siang') {
+                    document.body.classList.add('mode-siang');
+                    document.querySelector('#modeToggleBtn i').className = 'fas fa-sun';
+                } else {
+                    document.body.classList.remove('mode-siang');
+                    document.querySelector('#modeToggleBtn i').className = 'fas fa-moon';
+                }
+                if (displayMode === 'mobile') {
+                    document.body.classList.add('mobile-mode');
+                    document.body.classList.remove('desktop-mode');
+                } else {
+                    document.body.classList.add('desktop-mode');
+                    document.body.classList.remove('mobile-mode');
+                }
+            }
+            loadState();
 
-      function setLinkUpdateDate() {
-        const now = new Date();
-        document.getElementById('linkUpdateDate').textContent = `${now.getDate()} ${bulan[now.getMonth()]} ${now.getFullYear()}`;
-      }
+            // MODE TOGGLE
+            document.getElementById('modeToggleBtn').addEventListener('click', function() {
+                document.body.classList.toggle('mode-siang');
+                const icon = this.querySelector('i');
+                if (document.body.classList.contains('mode-siang')) {
+                    icon.className = 'fas fa-sun';
+                    localStorage.setItem('pgoTheme', 'siang');
+                } else {
+                    icon.className = 'fas fa-moon';
+                    localStorage.setItem('pgoTheme', 'malam');
+                }
+            });
 
-      setInitialUpdateTime();
-      updateClocks();
-      setLinkUpdateDate();
-      setInterval(updateClocks, 1000);
+            // SWITCH MODE
+            document.getElementById('switchModeBtn').addEventListener('click', function() {
+                document.body.classList.toggle('mobile-mode');
+                document.body.classList.toggle('desktop-mode');
+                localStorage.setItem('pgoDisplayMode', document.body.classList.contains('mobile-mode') ? 'mobile' :
+                    'desktop');
+            });
 
-      // LOCALSTORAGE
-      function loadState() {
-        const theme = localStorage.getItem('pgoTheme');
-        const displayMode = localStorage.getItem('pgoDisplayMode');
-        if (theme === 'siang') {
-          document.body.classList.add('mode-siang');
-          document.querySelector('#modeToggleBtn i').className = 'fas fa-sun';
-        } else {
-          document.body.classList.remove('mode-siang');
-          document.querySelector('#modeToggleBtn i').className = 'fas fa-moon';
-        }
-        if (displayMode === 'mobile') {
-          document.body.classList.add('mobile-mode');
-          document.body.classList.remove('desktop-mode');
-        } else {
-          document.body.classList.add('desktop-mode');
-          document.body.classList.remove('mobile-mode');
-        }
-      }
-      loadState();
+            // REFRESH
+            document.getElementById('refreshBtn').addEventListener('click', function() {
+                location.reload();
+            });
 
-      // MODE TOGGLE
-      document.getElementById('modeToggleBtn').addEventListener('click', function() {
-        document.body.classList.toggle('mode-siang');
-        const icon = this.querySelector('i');
-        if (document.body.classList.contains('mode-siang')) {
-          icon.className = 'fas fa-sun';
-          localStorage.setItem('pgoTheme', 'siang');
-        } else {
-          icon.className = 'fas fa-moon';
-          localStorage.setItem('pgoTheme', 'malam');
-        }
-      });
+            // SIDEBAR
+            const hamburger = document.getElementById('hamburgerBtn');
+            const sidebar = document.getElementById('sidebar');
+            const closeBtn = document.getElementById('sidebarClose');
+            const overlay = document.getElementById('sidebarOverlay');
 
-      // SWITCH MODE
-      document.getElementById('switchModeBtn').addEventListener('click', function() {
-        document.body.classList.toggle('mobile-mode');
-        document.body.classList.toggle('desktop-mode');
-        localStorage.setItem('pgoDisplayMode', document.body.classList.contains('mobile-mode') ? 'mobile' : 'desktop');
-      });
+            function openSidebar() {
+                sidebar.classList.add('active');
+                overlay.classList.add('active');
+                hamburger.classList.add('active');
+                hamburger.setAttribute('aria-expanded', 'true');
+            }
 
-      // REFRESH
-      document.getElementById('refreshBtn').addEventListener('click', function() { location.reload(); });
+            function closeSidebar() {
+                sidebar.classList.remove('active');
+                overlay.classList.remove('active');
+                hamburger.classList.remove('active');
+                hamburger.setAttribute('aria-expanded', 'false');
+            }
+            hamburger.addEventListener('click', function() {
+                if (sidebar.classList.contains('active')) closeSidebar();
+                else openSidebar();
+            });
+            closeBtn.addEventListener('click', closeSidebar);
+            overlay.addEventListener('click', closeSidebar);
+            document.addEventListener('keydown', function(e) {
+                if (e.key === 'Escape' && sidebar.classList.contains('active')) closeSidebar();
+            });
 
-      // SIDEBAR
-      const hamburger = document.getElementById('hamburgerBtn');
-      const sidebar = document.getElementById('sidebar');
-      const closeBtn = document.getElementById('sidebarClose');
-      const overlay = document.getElementById('sidebarOverlay');
+            // ACCORDION – stabil dengan lock
+            let animationLock = false;
+            document.querySelectorAll('.accordion-header').forEach((header) => {
+                header.addEventListener('click', function() {
+                    if (animationLock) return;
+                    const target = document.getElementById(this.getAttribute('data-target'));
+                    const arrow = this.querySelector('.arrow');
+                    const isOpen = target.classList.contains('open');
 
-      function openSidebar() {
-        sidebar.classList.add('active');
-        overlay.classList.add('active');
-        hamburger.classList.add('active');
-        hamburger.setAttribute('aria-expanded', 'true');
-      }
-      function closeSidebar() {
-        sidebar.classList.remove('active');
-        overlay.classList.remove('active');
-        hamburger.classList.remove('active');
-        hamburger.setAttribute('aria-expanded', 'false');
-      }
-      hamburger.addEventListener('click', function() {
-        if (sidebar.classList.contains('active')) closeSidebar(); else openSidebar();
-      });
-      closeBtn.addEventListener('click', closeSidebar);
-      overlay.addEventListener('click', closeSidebar);
-      document.addEventListener('keydown', function(e) { if (e.key === 'Escape' && sidebar.classList.contains('active')) closeSidebar(); });
+                    document.querySelectorAll('.accordion-content.open').forEach(c => {
+                        if (c !== target) c.classList.remove('open');
+                    });
+                    document.querySelectorAll('.accordion-header .arrow.open').forEach(a => {
+                        if (a !== arrow) a.classList.remove('open');
+                    });
 
-      // ACCORDION
-      document.querySelectorAll('.accordion-header').forEach(header => {
-        header.addEventListener('click', function() {
-          const target = document.getElementById(this.getAttribute('data-target'));
-          const arrow = this.querySelector('.arrow');
-          const isOpen = target.classList.contains('open');
-          document.querySelectorAll('.accordion-content').forEach(c => c.classList.remove('open'));
-          document.querySelectorAll('.accordion-header .arrow').forEach(a => a.classList.remove('open'));
-          if (!isOpen) {
-            target.classList.add('open');
-            arrow.classList.add('open');
-            this.setAttribute('aria-expanded', 'true');
-          } else {
-            this.setAttribute('aria-expanded', 'false');
-          }
+                    if (!isOpen) {
+                        animationLock = true;
+                        target.classList.add('open');
+                        arrow.classList.add('open');
+                        this.setAttribute('aria-expanded', 'true');
+                        setTimeout(() => { animationLock = false; }, 420);
+                    } else {
+                        target.classList.remove('open');
+                        arrow.classList.remove('open');
+                        this.setAttribute('aria-expanded', 'false');
+                    }
+                });
+            });
+
+            // STATS ANIMATION
+            const total = document.querySelectorAll('.app-card').length;
+            const online = document.querySelectorAll('.app-card .badge.online').length;
+            const live = document.querySelectorAll('.app-card .badge.live').length;
+            const percent = total > 0 ? Math.round(((online + live) / total) * 100) : 0;
+
+            function animateValue(id, start, end, duration, suffix = '') {
+                const el = document.getElementById(id);
+                if (!el) return;
+                let startTime = null;
+                const step = (timestamp) => {
+                    if (!startTime) startTime = timestamp;
+                    const progress = Math.min((timestamp - startTime) / duration, 1);
+                    const val = Math.floor(progress * (end - start) + start);
+                    el.textContent = val + suffix;
+                    if (progress < 1) requestAnimationFrame(step);
+                };
+                requestAnimationFrame(step);
+            }
+            setTimeout(() => {
+                animateValue('appCount', 0, total, 1200);
+                animateValue('onlinePercent', 0, percent, 1400, '%');
+                animateValue('liveCount', 0, live, 1000);
+            }, 300);
+
+            // SERVICE WORKER
+            if ('serviceWorker' in navigator) {
+                navigator.serviceWorker.register('sw.js').catch(() => {});
+            }
         });
-      });
-
-      // SEARCH FUNCTION TELAH DIBUANG - TIADA LAGI PENAPISAN PAUTAN
-
-      // STATS ANIMATION
-      const total = document.querySelectorAll('.app-card').length;
-      const online = document.querySelectorAll('.app-card .badge.online').length;
-      const live = document.querySelectorAll('.app-card .badge.live').length;
-      const percent = total > 0 ? Math.round(((online+live)/total)*100) : 0;
-
-      function animateValue(id, start, end, duration, suffix='') {
-        const el = document.getElementById(id);
-        if (!el) return;
-        let startTime = null;
-        const step = (timestamp) => {
-          if (!startTime) startTime = timestamp;
-          const progress = Math.min((timestamp - startTime) / duration, 1);
-          const val = Math.floor(progress * (end - start) + start);
-          el.textContent = val + suffix;
-          if (progress < 1) requestAnimationFrame(step);
-        };
-        requestAnimationFrame(step);
-      }
-      setTimeout(() => {
-        animateValue('appCount', 0, total, 1200);
-        animateValue('onlinePercent', 0, percent, 1400, '%');
-        animateValue('liveCount', 0, live, 1000);
-      }, 300);
-
-      // SERVICE WORKER
-      if ('serviceWorker' in navigator) {
-        navigator.serviceWorker.register('sw.js').catch(() => {});
-      }
-    });
-  </script>
+    </script>
 </body>
 </html>
