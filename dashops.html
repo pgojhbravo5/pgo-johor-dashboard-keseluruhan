@@ -154,7 +154,8 @@
       }
       .fullscreen-btn,
       .force-refresh-btn,
-      .theme-toggle-btn {
+      .theme-toggle-btn,
+      .btn-back {
         background: var(--bg-card);
         color: var(--text-primary);
         border: 1px solid var(--border-color);
@@ -162,15 +163,18 @@
         padding: 6px 12px;
         font-size: 0.8rem;
         cursor: pointer;
-        display: flex;
+        display: inline-flex;
         align-items: center;
         gap: 5px;
         transition: all 0.2s;
         white-space: nowrap;
+        text-decoration: none;
+        font-family: 'Segoe UI', Arial, sans-serif;
       }
       .fullscreen-btn:hover,
       .force-refresh-btn:hover,
-      .theme-toggle-btn:hover {
+      .theme-toggle-btn:hover,
+      .btn-back:hover {
         background: var(--bg-hover);
         border-color: var(--text-blue);
       }
@@ -1419,7 +1423,8 @@
         }
         .fullscreen-btn,
         .force-refresh-btn,
-        .theme-toggle-btn {
+        .theme-toggle-btn,
+        .btn-back {
           padding: 4px 8px;
           font-size: 0.6rem;
         }
@@ -1877,34 +1882,13 @@
         >
           📺 FULL SCREEN
         </button>
+        <!-- BUTANG KEMBALI (gaya seragam) -->
+        <a href="index.html" class="btn-back">⬅️ KEMBALI KE DASHBOARD UTAMA</a>
         <div class="datetime-display">
           <span class="date-text">📅 <span id="dateDisplay"></span></span>
           <span class="datetime-separator">|</span>
           <span class="time-text">🕒 <span id="clock"></span></span>
         </div>
-        <!-- BUTANG KEMBALI KE DASHBOARD UTAMA -->
-        <a
-          href="index.html"
-          class="btn-back"
-          style="
-            display: inline-flex;
-            align-items: center;
-            gap: 0.4rem;
-            padding: 0.4rem 0.9rem;
-            border-radius: 6px;
-            background: var(--text-gold, #ffcc00);
-            color: #000 !important;
-            border: 1px solid var(--text-gold, #ffcc00);
-            font-size: 0.7rem;
-            font-weight: 700;
-            text-decoration: none;
-            cursor: pointer;
-            transition: all 0.2s ease;
-            font-family: 'Segoe UI', Arial, sans-serif;
-          "
-        >
-          <i class="fas fa-arrow-left"></i> Kembali
-        </a>
       </div>
     </header>
 
