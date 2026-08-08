@@ -1,0 +1,4522 @@
+<!DOCTYPE html>
+<html lang="ms">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=3.0, user-scalable=yes, viewport-fit=cover"
+    />
+    <title>🚒 PGO JOHOR DASHBOARD - 24 JAM</title>
+
+    <style>
+      :root {
+        --bg-primary: #0b0e1a;
+        --bg-panel: #131a2e;
+        --bg-card: #1c2742;
+        --bg-hover: #243050;
+        --border-color: #2a3a5e;
+        --text-primary: #ffffff;
+        --text-secondary: #aaa;
+        --text-muted: #7a8ba0;
+        --text-blue: #5b9bd5;
+        --text-gold: #ffaa00;
+        --red: #e74c3c;
+        --orange: #f39c12;
+        --green: #2ecc71;
+        --blue: #2980b9;
+        --shif-a: #e74c3c;
+        --shif-b: #3498db;
+        --shif-c: #2ecc71;
+        --font-xl: clamp(1.2rem, 2vw, 2.4rem);
+        --font-lg: clamp(0.9rem, 1.5vw, 1.6rem);
+        --font-md: clamp(0.8rem, 1.2vw, 1.3rem);
+        --font-sm: clamp(0.7rem, 1vw, 1.1rem);
+        --font-xs: clamp(0.65rem, 0.9vw, 0.95rem);
+        --font-xxs: clamp(0.55rem, 0.8vw, 0.85rem);
+        --stat-number-size: clamp(1.2rem, 2.5vw, 2.6rem);
+        --stat-number-medium: clamp(0.85rem, 1.6vw, 1.5rem);
+        --stat-number-small: clamp(0.7rem, 1.3vw, 1.2rem);
+        --padding-panel: clamp(8px, 1.5vw, 18px);
+        --gap-grid: clamp(6px, 1.5vw, 16px);
+        --case-padding: clamp(6px, 1vw, 14px);
+        --badge-font: clamp(0.55rem, 0.8vw, 0.85rem);
+      }
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      body {
+        background: var(--bg-primary);
+        color: var(--text-primary);
+        font-family: 'Segoe UI', Arial, sans-serif;
+        padding: 10px;
+        padding-top: max(10px, env(safe-area-inset-top));
+        padding-bottom: max(10px, env(safe-area-inset-bottom));
+        padding-left: max(10px, env(safe-area-inset-left));
+        padding-right: max(10px, env(safe-area-inset-right));
+        height: 100vh;
+        height: 100dvh;
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
+        touch-action: manipulation;
+      }
+      body.fullscreen-mode {
+        padding: 0 !important;
+        padding-top: env(safe-area-inset-top) !important;
+        padding-bottom: env(safe-area-inset-bottom) !important;
+        margin: 0 !important;
+        height: 100vh !important;
+        height: 100dvh !important;
+        width: 100vw !important;
+        width: 100dvw !important;
+        overflow: hidden !important;
+      }
+      body.fullscreen-mode header {
+        padding: 4px 8px !important;
+        margin-bottom: 1px !important;
+        border-bottom-width: 1px !important;
+      }
+      body.fullscreen-mode .grid {
+        gap: 3px !important;
+        padding: 0 2px !important;
+      }
+      body.fullscreen-mode .panel {
+        border-radius: 4px !important;
+        padding: 5px !important;
+      }
+      body.fullscreen-mode .weather-ticker-container {
+        padding: 2px 0 !important;
+      }
+      body.fullscreen-mode .ticker-hint {
+        padding: 0 !important;
+        font-size: 0.4rem !important;
+        line-height: 1 !important;
+      }
+      body.fullscreen-mode .footer {
+        margin-top: 1px !important;
+        padding-top: 1px !important;
+      }
+      body.fullscreen-mode .watermark-line1,
+      body.fullscreen-mode .watermark-line2 {
+        font-size: 0.35rem !important;
+        line-height: 1.1 !important;
+      }
+      body.fullscreen-mode .panel-header {
+        padding-bottom: 4px !important;
+        margin-bottom: 4px !important;
+      }
+      body.fullscreen-mode .panel-header h2 {
+        font-size: 0.7rem !important;
+      }
+      body.fullscreen-mode .stats-row-main {
+        gap: 3px !important;
+      }
+      body.fullscreen-mode .stat-card {
+        padding: 5px 3px !important;
+      }
+      body.fullscreen-mode #map-container {
+        margin-top: 4px !important;
+      }
+
+      header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        border-bottom: 2px solid var(--red);
+        padding-bottom: 8px;
+        margin-bottom: 4px;
+        flex-wrap: wrap;
+        flex-shrink: 0;
+        gap: 10px;
+      }
+      .header-left {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+      .header-center {
+        text-align: center;
+        flex: 1;
+        min-width: 0;
+      }
+      .header-center h1 {
+        font-size: var(--font-xl);
+        letter-spacing: 1px;
+        margin: 0;
+      }
+      .header-right {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        flex-wrap: wrap;
+      }
+      .fullscreen-btn,
+      .force-refresh-btn,
+      .theme-toggle-btn {
+        background: var(--bg-card);
+        color: var(--text-primary);
+        border: 1px solid var(--border-color);
+        border-radius: 6px;
+        padding: 6px 12px;
+        font-size: 0.8rem;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        gap: 5px;
+        transition: all 0.2s;
+        white-space: nowrap;
+      }
+      .fullscreen-btn:hover,
+      .force-refresh-btn:hover,
+      .theme-toggle-btn:hover {
+        background: var(--bg-hover);
+        border-color: var(--text-blue);
+      }
+      .force-refresh-btn:hover {
+        border-color: var(--red);
+      }
+      .force-refresh-btn:active {
+        transform: scale(0.95);
+      }
+      .panel-refresh-btn {
+        background: var(--bg-card);
+        color: var(--text-primary);
+        border: 1px solid var(--border-color);
+        border-radius: 4px;
+        padding: 3px 8px;
+        font-size: 0.65rem;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        gap: 3px;
+        transition: all 0.2s;
+        white-space: nowrap;
+      }
+      .panel-refresh-btn:hover {
+        background: var(--bg-hover);
+        border-color: var(--red);
+      }
+      .panel-refresh-btn:active {
+        transform: scale(0.9);
+      }
+      .day-badge-large {
+        background: var(--green);
+        color: #000;
+        padding: 6px 14px;
+        border-radius: 16px;
+        font-size: 0.8rem;
+        font-weight: 700;
+        white-space: nowrap;
+        letter-spacing: 0.5px;
+      }
+      .datetime-display {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        background: rgba(0, 0, 0, 0.3);
+        padding: 4px 10px;
+        border-radius: 16px;
+        border: 1px solid var(--border-color);
+        font-size: 0.7rem;
+      }
+      .date-text {
+        color: var(--text-gold);
+        font-weight: 600;
+        white-space: nowrap;
+      }
+      .time-text {
+        color: var(--text-primary);
+        font-weight: 700;
+        white-space: nowrap;
+        letter-spacing: 1px;
+      }
+      .datetime-separator {
+        color: var(--text-muted);
+        opacity: 0.5;
+      }
+
+      /* SHIF BADGE */
+      .shif-badge {
+        display: inline-block;
+        padding: 2px 8px;
+        border-radius: 12px;
+        font-size: 0.6rem;
+        font-weight: 700;
+        letter-spacing: 0.5px;
+        white-space: nowrap;
+      }
+      .shif-badge.shif-a {
+        background: var(--shif-a);
+        color: #fff;
+      }
+      .shif-badge.shif-b {
+        background: var(--shif-b);
+        color: #fff;
+      }
+      .shif-badge.shif-c {
+        background: var(--shif-c);
+        color: #000;
+      }
+
+      .filter-toggle-btn {
+        background: var(--bg-card);
+        color: var(--text-gold);
+        border: 1px solid var(--border-color);
+        border-radius: 4px;
+        padding: 4px 10px;
+        font-size: 0.6rem;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        gap: 4px;
+        transition: all 0.2s;
+        white-space: nowrap;
+        font-weight: 600;
+        letter-spacing: 0.3px;
+      }
+      .filter-toggle-btn:hover {
+        background: var(--bg-hover);
+        border-color: var(--text-gold);
+      }
+      .filter-toggle-btn.collapsed {
+        color: var(--text-muted);
+        border-color: var(--text-muted);
+        opacity: 0.7;
+      }
+
+      .weather-ticker-container {
+        width: 100%;
+        overflow: hidden;
+        background: linear-gradient(
+          90deg,
+          #0a0f1e 0%,
+          #111a2e 50%,
+          #0a0f1e 100%
+        );
+        border-top: 1px solid #1a2540;
+        border-bottom: 1px solid #1a2540;
+        padding: 5px 0;
+        margin-bottom: 0;
+        flex-shrink: 0;
+        position: relative;
+      }
+      .weather-ticker-container::before,
+      .weather-ticker-container::after {
+        content: '';
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        width: 40px;
+        z-index: 2;
+        pointer-events: none;
+      }
+      .weather-ticker-container::before {
+        left: 0;
+        background: linear-gradient(90deg, #0a0f1e 0%, transparent 100%);
+      }
+      .weather-ticker-container::after {
+        right: 0;
+        background: linear-gradient(270deg, #0a0f1e 0%, transparent 100%);
+      }
+      .weather-ticker {
+        display: inline-block;
+        white-space: nowrap;
+        animation: ticker-scroll 45s linear infinite;
+        padding: 0 10px;
+      }
+      .weather-ticker-container:hover .weather-ticker {
+        animation-play-state: paused;
+      }
+      @keyframes ticker-scroll {
+        0% {
+          transform: translateX(0);
+        }
+        100% {
+          transform: translateX(-33.33%);
+        }
+      }
+      .weather-item {
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+        padding: 3px 10px;
+        margin: 0 6px;
+        font-size: 0.62rem;
+        font-weight: 600;
+        letter-spacing: 0.3px;
+        border-radius: 12px;
+        cursor: pointer;
+        transition: all 0.2s;
+        border: 1px solid transparent;
+      }
+      .weather-item:hover {
+        background: rgba(255, 255, 255, 0.08);
+        border-color: var(--text-gold);
+        transform: scale(1.05);
+      }
+      .weather-item:active {
+        transform: scale(0.95);
+      }
+      .weather-icon {
+        font-size: 0.85rem;
+      }
+      .weather-temp {
+        font-weight: 700;
+        font-size: 0.7rem;
+      }
+      .weather-location {
+        color: #8899b0;
+        font-size: 0.6rem;
+      }
+      .weather-separator {
+        color: #3a4a6e;
+        font-weight: 300;
+        opacity: 0.6;
+        margin: 0 2px;
+      }
+      .weather-loading {
+        display: inline-block;
+        color: #7a8ba0;
+        font-size: 0.62rem;
+        padding: 2px 20px;
+        animation: pulse 2s ease-in-out infinite;
+      }
+      @keyframes pulse {
+        0%,
+        100% {
+          opacity: 0.5;
+        }
+        50% {
+          opacity: 1;
+        }
+      }
+      .weather-hot {
+        color: #ff6b6b;
+      }
+      .weather-warm {
+        color: #ffaa00;
+      }
+      .weather-mild {
+        color: #ffd93d;
+      }
+      .weather-cool {
+        color: #6bcdff;
+      }
+      .ticker-hint {
+        font-size: 0.48rem;
+        color: #5a6a80;
+        text-align: center;
+        padding: 1px 0 4px;
+        letter-spacing: 0.5px;
+      }
+
+      .grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr 1fr;
+        gap: var(--gap-grid);
+        flex: 1;
+        overflow: hidden;
+      }
+      .panel {
+        background: var(--bg-panel);
+        border-radius: 10px;
+        padding: var(--padding-panel);
+        border: 1px solid var(--border-color);
+        display: flex;
+        flex-direction: column;
+        position: relative;
+        min-height: 0;
+        overflow: hidden;
+        transition: all 0.3s ease;
+        height: 100%;
+        max-height: 100%;
+      }
+      .panel-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        border-bottom: 1px solid var(--border-color);
+        padding-bottom: 8px;
+        margin-bottom: 10px;
+        flex-shrink: 0;
+        z-index: 10;
+        background: var(--bg-panel);
+        flex-wrap: wrap;
+        gap: 5px;
+      }
+      .panel-header h2 {
+        color: var(--text-blue);
+        font-size: var(--font-lg);
+        margin: 0;
+      }
+      .panel-zoom-controls {
+        display: flex;
+        gap: 3px;
+        align-items: center;
+      }
+      .panel-zoom-btn {
+        background: var(--bg-card);
+        color: var(--text-primary);
+        border: 1px solid var(--border-color);
+        border-radius: 4px;
+        width: 24px;
+        height: 24px;
+        font-size: 0.75rem;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.2s;
+        padding: 0;
+        line-height: 1;
+      }
+      .panel-zoom-btn:hover {
+        background: var(--bg-hover);
+        border-color: var(--text-blue);
+      }
+      .panel-zoom-btn:active {
+        background: var(--red);
+        transform: scale(0.9);
+      }
+      .panel-zoom-btn.reset-btn {
+        width: auto;
+        padding: 0 6px;
+        font-size: 0.65rem;
+      }
+      .panel.expanded {
+        position: fixed;
+        top: 10px;
+        left: 10px;
+        right: 10px;
+        bottom: 10px;
+        z-index: 9999;
+        border: 2px solid var(--text-blue);
+        box-shadow: 0 0 30px rgba(0, 0, 0, 0.8);
+      }
+      .panel.expanded .scroll-container {
+        min-height: 300px;
+        max-height: calc(100% - 80px);
+        height: auto;
+      }
+      .category-filters-header {
+        display: flex;
+        gap: 4px;
+        margin-bottom: 6px;
+        flex-shrink: 0;
+      }
+      .select-all-btn {
+        padding: 4px 8px;
+        border-radius: 12px;
+        font-size: 0.58rem;
+        font-weight: 700;
+        cursor: pointer;
+        border: 1px solid #3a4a6e;
+        background: var(--bg-card);
+        color: var(--text-primary);
+        transition: all 0.2s;
+        white-space: nowrap;
+        letter-spacing: 0.3px;
+        user-select: none;
+        flex: 1;
+        text-align: center;
+      }
+      .select-all-btn:hover {
+        background: var(--bg-hover);
+        border-color: var(--text-blue);
+      }
+      .select-all-btn.unselect:hover {
+        border-color: var(--red);
+        background: rgba(231, 76, 60, 0.2);
+      }
+      .category-filters {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 4px;
+        flex-shrink: 0;
+        padding-bottom: 6px;
+        border-bottom: 1px solid var(--border-color);
+        margin-bottom: 4px;
+        max-height: 140px;
+        overflow-y: auto;
+      }
+      .category-filters::-webkit-scrollbar {
+        width: 3px;
+      }
+      .category-filters::-webkit-scrollbar-track {
+        background: #1a2a3e;
+        border-radius: 10px;
+      }
+      .category-filters::-webkit-scrollbar-thumb {
+        background: var(--text-blue);
+        border-radius: 10px;
+      }
+      .category-checkbox {
+        display: flex;
+        align-items: center;
+        gap: 3px;
+        padding: 3px 7px;
+        border-radius: 12px;
+        font-size: 0.52rem;
+        font-weight: 600;
+        cursor: pointer;
+        border: 1px solid #3a4a6e;
+        background: var(--bg-card);
+        color: var(--text-muted);
+        transition: all 0.2s;
+        white-space: nowrap;
+        letter-spacing: 0.2px;
+        user-select: none;
+        line-height: 1.4;
+      }
+      .category-checkbox:hover {
+        border-color: var(--text-blue);
+        color: #bccfe0;
+      }
+      .category-checkbox input[type='checkbox'] {
+        display: none;
+      }
+      .category-checkbox .checkbox-label {
+        pointer-events: none;
+      }
+      .category-checkbox:has(input:checked) {
+        color: #fff;
+        font-weight: 700;
+      }
+      .category-checkbox[data-cat='kebakaran_bangunan']:has(input:checked) {
+        background: var(--red);
+        border-color: var(--red);
+        box-shadow: 0 0 6px rgba(231, 76, 60, 0.4);
+      }
+      .category-checkbox[data-cat='kebakaran_terbuka']:has(input:checked) {
+        background: var(--orange);
+        border-color: var(--orange);
+        box-shadow: 0 0 6px rgba(243, 156, 18, 0.4);
+        color: #000;
+      }
+      .category-checkbox[data-cat='kebakaran_perkakas']:has(input:checked) {
+        background: #e67e22;
+        border-color: #e67e22;
+        box-shadow: 0 0 6px rgba(230, 126, 34, 0.4);
+      }
+      .category-checkbox[data-cat='kebakaran_kenderaan']:has(input:checked) {
+        background: #c0392b;
+        border-color: #c0392b;
+        box-shadow: 0 0 6px rgba(192, 57, 43, 0.4);
+      }
+      .category-checkbox[data-cat='menyelamat']:has(input:checked) {
+        background: var(--blue);
+        border-color: var(--blue);
+        box-shadow: 0 0 6px rgba(41, 128, 185, 0.4);
+      }
+      .category-checkbox[data-cat='banjir']:has(input:checked) {
+        background: #2980b9;
+        border-color: #2980b9;
+        box-shadow: 0 0 6px rgba(41, 128, 185, 0.5);
+      }
+      .category-checkbox[data-cat='bencana_alam']:has(input:checked) {
+        background: #3498db;
+        border-color: #3498db;
+        box-shadow: 0 0 6px rgba(52, 152, 219, 0.4);
+      }
+      .category-checkbox[data-cat='tumpahan_bahan']:has(input:checked) {
+        background: #8b4513;
+        border-color: #8b4513;
+        box-shadow: 0 0 6px rgba(139, 69, 19, 0.4);
+      }
+      .category-checkbox[data-cat='menangkap_binatang']:has(input:checked) {
+        background: #1a7a1a;
+        border-color: #1a7a1a;
+        box-shadow: 0 0 6px rgba(26, 122, 26, 0.4);
+      }
+      .category-checkbox[data-cat='serangga']:has(input:checked) {
+        background: #8e44ad;
+        border-color: #8e44ad;
+        box-shadow: 0 0 6px rgba(142, 68, 173, 0.4);
+      }
+      .category-checkbox[data-cat='tugas_khas']:has(input:checked) {
+        background: #2c5f8a;
+        border-color: #2c5f8a;
+        box-shadow: 0 0 6px rgba(44, 95, 138, 0.4);
+      }
+      .category-checkbox[data-cat='lain_lain']:has(input:checked) {
+        background: #6c757d;
+        border-color: #6c757d;
+        box-shadow: 0 0 6px rgba(108, 117, 125, 0.4);
+      }
+
+      .scroll-container {
+        flex: 1;
+        overflow-y: auto;
+        padding-right: 3px;
+        position: relative;
+        min-height: 0;
+        max-height: 100%;
+        height: 100%;
+        mask-image: linear-gradient(
+          to bottom,
+          transparent 0%,
+          black 0.5%,
+          black 99.5%,
+          transparent 100%
+        );
+        -webkit-mask-image: linear-gradient(
+          to bottom,
+          transparent 0%,
+          black 0.5%,
+          black 99.5%,
+          transparent 100%
+        );
+      }
+      .scroll-container::-webkit-scrollbar {
+        width: 4px;
+      }
+      .scroll-container::-webkit-scrollbar-track {
+        background: #1a2a3e;
+        border-radius: 10px;
+      }
+      .scroll-container::-webkit-scrollbar-thumb {
+        background: var(--text-blue);
+        border-radius: 10px;
+      }
+      .motion-wrapper {
+        will-change: transform;
+        transition: none;
+      }
+      .case-item {
+        background: var(--bg-card);
+        padding: var(--case-padding);
+        border-radius: 8px;
+        margin-bottom: 8px;
+        border-left: 4px solid var(--red);
+        cursor: pointer;
+        transition: all 0.3s ease;
+        flex-shrink: 0;
+      }
+      .case-item:hover {
+        background: var(--bg-hover);
+        transform: translateX(3px);
+        box-shadow: 0 0 15px rgba(91, 155, 213, 0.2);
+      }
+      .case-item.cat-kebakaran {
+        border-left-color: var(--red);
+      }
+      .case-item.cat-menyelamat {
+        border-left-color: var(--orange);
+      }
+      .case-item.cat-khidmat {
+        border-left-color: var(--green);
+      }
+      .case-item.cat-tugaskhas {
+        border-left-color: #2c5f8a;
+      }
+      .case-item.cat-lain {
+        border-left-color: #6c757d;
+      }
+      .case-item .case-title {
+        font-size: var(--font-md);
+        font-weight: bold;
+      }
+      .case-item .case-detail {
+        color: var(--text-secondary);
+        font-size: var(--font-xs);
+        margin-top: 3px;
+      }
+      .case-item .case-header-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 4px;
+      }
+      .case-item .case-balai {
+        color: var(--text-secondary);
+        font-size: var(--font-xs);
+        display: flex;
+        align-items: center;
+        gap: 6px;
+      }
+      .case-click-hint {
+        font-size: 0.6rem;
+        color: var(--text-blue);
+        margin-top: 4px;
+        font-style: italic;
+      }
+      .badge {
+        display: inline-block;
+        color: #fff;
+        padding: 2px 8px;
+        border-radius: 15px;
+        font-size: var(--badge-font);
+        font-weight: bold;
+        margin-right: 3px;
+        margin-top: 3px;
+      }
+      .badge.mati {
+        background: var(--red);
+      }
+      .badge.cedera {
+        background: var(--orange);
+      }
+      .badge.selamat {
+        background: var(--green);
+      }
+
+      .stats-wrapper {
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+        flex-shrink: 0;
+      }
+      .stats-row-main {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 8px;
+      }
+      .stat-card {
+        background: var(--bg-card);
+        padding: 10px 6px;
+        border-radius: 8px;
+        text-align: center;
+        transition: all 0.3s ease;
+        min-width: 0;
+      }
+      .stat-card.flash {
+        background: var(--bg-hover);
+        transform: scale(1.02);
+      }
+      .stat-card .stat-number {
+        font-size: var(--stat-number-size);
+        font-weight: bold;
+        color: var(--text-blue);
+      }
+      .stat-card .stat-label {
+        font-size: var(--font-xxs);
+        color: var(--text-secondary);
+        margin-top: 2px;
+        line-height: 1.2;
+      }
+      .stats-row-category {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 5px;
+      }
+      .stat-card.stat-medium {
+        padding: 6px 3px;
+        border-radius: 6px;
+        background: #1a2235;
+      }
+      .stat-card.stat-medium .stat-number {
+        font-size: var(--stat-number-medium);
+      }
+      .stat-card.stat-medium .stat-label {
+        font-size: calc(var(--font-xxs) - 0.06rem);
+      }
+      .stats-row-victims {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 4px;
+      }
+      .stat-card.stat-small {
+        padding: 4px 2px;
+        border-radius: 5px;
+        background: #171e30;
+      }
+      .stat-card.stat-small .stat-number {
+        font-size: var(--stat-number-small);
+      }
+      .stat-card.stat-small .stat-label {
+        font-size: calc(var(--font-xxs) - 0.08rem);
+      }
+      .stat-card.mati .stat-number {
+        color: var(--red);
+      }
+      .stat-card.cedera .stat-number {
+        color: var(--orange);
+      }
+      .stat-card.selamat .stat-number {
+        color: var(--green);
+      }
+      .stat-card.kebakaran-kat .stat-number {
+        color: var(--red);
+      }
+      .stat-card.menyelamat-kat .stat-number {
+        color: var(--orange);
+      }
+      .stat-card.khidmat-kat .stat-number {
+        color: var(--green);
+      }
+      .stat-card.tugaskhas-kat .stat-number {
+        color: #2c5f8a;
+      }
+
+      .stat-card.stat-medium .stat-number#avgResponse {
+        color: #5b9bd5;
+        font-weight: 800;
+      }
+
+      /* MAP */
+      #map-container {
+        flex: 1;
+        min-height: 120px;
+        background: var(--bg-card);
+        border-radius: 8px;
+        border: 1px solid var(--border-color);
+        margin-top: 10px;
+        position: relative;
+        z-index: 1;
+        overflow: hidden;
+        touch-action: pan-x pan-y;
+      }
+      #map {
+        height: 100%;
+        width: 100%;
+        border-radius: 8px;
+        background: var(--bg-card);
+      }
+      .leaflet-control-attribution {
+        display: none !important;
+      }
+      .map-popup-overlay {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        width: 340px;
+        max-height: calc(100% - 20px);
+        background: rgba(15, 20, 40, 0.97);
+        border: 1px solid #3a4a6e;
+        border-radius: 10px;
+        z-index: 1000;
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
+        box-shadow: 0 6px 25px rgba(0, 0, 0, 0.7);
+        cursor: default;
+        backdrop-filter: blur(5px);
+      }
+      .map-popup-overlay.dragging {
+        opacity: 0.92;
+        box-shadow: 0 10px 35px rgba(0, 0, 0, 0.85);
+      }
+      .map-popup-header {
+        background: linear-gradient(180deg, #1c2a4a 0%, #15203a 100%);
+        padding: 8px 12px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        border-bottom: 2px solid #3a4a6e;
+        flex-shrink: 0;
+        cursor: grab;
+        user-select: none;
+        border-radius: 10px 10px 0 0;
+      }
+      .map-popup-header:active {
+        cursor: grabbing;
+      }
+      .map-popup-header h4 {
+        color: var(--text-gold);
+        font-size: 0.75rem;
+        margin: 0;
+        letter-spacing: 0.5px;
+        pointer-events: none;
+      }
+      .map-popup-header .popup-count {
+        color: #8a9ab5;
+        font-size: 0.65rem;
+        pointer-events: none;
+        background: rgba(0, 0, 0, 0.3);
+        padding: 2px 8px;
+        border-radius: 10px;
+      }
+      .map-popup-scroll {
+        flex: 1;
+        overflow-y: auto;
+        padding: 6px;
+        position: relative;
+        max-height: calc(100% - 40px);
+        background: rgba(0, 0, 0, 0.15);
+      }
+      .map-popup-scroll::-webkit-scrollbar {
+        width: 4px;
+      }
+      .map-popup-scroll::-webkit-scrollbar-track {
+        background: rgba(0, 0, 0, 0.2);
+        border-radius: 10px;
+      }
+      .map-popup-scroll::-webkit-scrollbar-thumb {
+        background: #4a6a9e;
+        border-radius: 10px;
+      }
+      .popup-case-item {
+        background: #1a2540;
+        padding: 7px 9px;
+        border-radius: 6px;
+        margin-bottom: 5px;
+        border-left: 4px solid var(--red);
+        cursor: pointer;
+        transition: all 0.2s;
+        border: 1px solid rgba(255, 255, 255, 0.05);
+      }
+      .popup-case-item:hover {
+        background: var(--bg-hover);
+        transform: translateX(3px);
+        box-shadow: 0 2px 12px rgba(91, 155, 213, 0.3);
+        border-color: rgba(255, 255, 255, 0.15);
+      }
+      .popup-case-item.active-location {
+        background: #2a4a3e !important;
+        border-left-color: var(--text-gold) !important;
+        box-shadow: 0 0 15px rgba(255, 170, 0, 0.4);
+        border-color: var(--text-gold) !important;
+      }
+
+      .custom-marker {
+        background: transparent !important;
+        border: none !important;
+      }
+      .custom-marker div {
+        width: 40px !important;
+        height: 40px !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        border-radius: 50% !important;
+        border: 2px solid white !important;
+        font-size: 20px !important;
+        background: rgba(0, 0, 0, 0.75) !important;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.6) !important;
+        animation: breath 2s ease-in-out infinite,
+          glow-white 2s ease-in-out infinite;
+      }
+      @keyframes breath {
+        0% {
+          transform: scale(1);
+        }
+        50% {
+          transform: scale(1.25);
+        }
+        100% {
+          transform: scale(1);
+        }
+      }
+      @keyframes glow-white {
+        0% {
+          box-shadow: 0 0 5px rgba(255, 255, 255, 0.3);
+        }
+        50% {
+          box-shadow: 0 0 25px rgba(255, 255, 255, 0.7);
+        }
+        100% {
+          box-shadow: 0 0 5px rgba(255, 255, 255, 0.3);
+        }
+      }
+      .custom-marker.kebakaran div {
+        animation: breath 2s infinite, glow-red 2s infinite;
+      }
+      @keyframes glow-red {
+        0% {
+          box-shadow: 0 0 5px rgba(255, 0, 0, 0.4);
+        }
+        50% {
+          box-shadow: 0 0 30px rgba(255, 0, 0, 0.9);
+        }
+        100% {
+          box-shadow: 0 0 5px rgba(255, 0, 0, 0.4);
+        }
+      }
+      .custom-marker.menyelamat div {
+        animation: breath 2s infinite, glow-orange 2s infinite;
+      }
+      @keyframes glow-orange {
+        0% {
+          box-shadow: 0 0 5px rgba(255, 165, 0, 0.4);
+        }
+        50% {
+          box-shadow: 0 0 30px rgba(255, 165, 0, 0.9);
+        }
+        100% {
+          box-shadow: 0 0 5px rgba(255, 165, 0, 0.4);
+        }
+      }
+      .custom-marker.khidmat div {
+        animation: breath 2s infinite, glow-green 2s infinite;
+      }
+      @keyframes glow-green {
+        0% {
+          box-shadow: 0 0 5px rgba(0, 255, 0, 0.4);
+        }
+        50% {
+          box-shadow: 0 0 30px rgba(0, 255, 0, 0.9);
+        }
+        100% {
+          box-shadow: 0 0 5px rgba(0, 255, 0, 0.4);
+        }
+      }
+
+      .panel-overlay {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(0, 0, 0, 0.7);
+        z-index: 9998;
+      }
+      .panel-overlay.active {
+        display: block;
+      }
+      .modal-overlay {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(0, 0, 0, 0.8);
+        z-index: 10000;
+        justify-content: center;
+        align-items: center;
+      }
+      .modal-overlay.active {
+        display: flex;
+      }
+      .modal-box {
+        background: var(--bg-panel);
+        border: 2px solid var(--text-blue);
+        border-radius: 15px;
+        padding: 25px;
+        max-width: 600px;
+        width: 90%;
+        max-height: 80vh;
+        overflow-y: auto;
+        position: relative;
+        animation: modalIn 0.3s ease;
+      }
+      @keyframes modalIn {
+        from {
+          transform: scale(0.8);
+          opacity: 0;
+        }
+        to {
+          transform: scale(1);
+          opacity: 1;
+        }
+      }
+      .modal-close {
+        position: absolute;
+        top: 10px;
+        right: 15px;
+        background: var(--red);
+        color: #fff;
+        border: none;
+        border-radius: 50%;
+        width: 30px;
+        height: 30px;
+        font-size: 1rem;
+        cursor: pointer;
+      }
+      .modal-close:hover {
+        background: #f00;
+      }
+      .modal-header {
+        color: var(--text-gold);
+        font-size: 1.3rem;
+        font-weight: bold;
+        margin-bottom: 15px;
+        padding-right: 35px;
+        border-bottom: 1px solid var(--border-color);
+        padding-bottom: 10px;
+      }
+      .modal-info {
+        margin: 8px 0;
+        font-size: 0.9rem;
+        color: #ccc;
+      }
+      .modal-info strong {
+        color: var(--text-blue);
+      }
+      .modal-section {
+        background: var(--bg-card);
+        border-radius: 8px;
+        padding: 12px;
+        margin: 10px 0;
+        border-left: 4px solid var(--text-gold);
+      }
+      .modal-section h3 {
+        color: var(--text-gold);
+        font-size: 0.9rem;
+        margin-bottom: 8px;
+      }
+      .modal-section p {
+        color: #ddd;
+        font-size: 0.85rem;
+        line-height: 1.5;
+        white-space: pre-wrap;
+      }
+
+      /* GOOGLE MAPS & WAZE LOGO BUTTON STYLING */
+      .nav-btn-group {
+        display: flex;
+        gap: 6px;
+        margin: 6px 0;
+        flex-wrap: wrap;
+        align-items: center;
+      }
+      .nav-btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        padding: 4px 8px;
+        border-radius: 6px;
+        transition: all 0.2s ease;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.35);
+        cursor: pointer;
+        text-decoration: none;
+        border: 1px solid rgba(255, 255, 255, 0.15);
+      }
+      .nav-btn:hover {
+        transform: translateY(-1px) scale(1.05);
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
+      }
+      .nav-btn:active {
+        transform: translateY(0) scale(0.98);
+      }
+      .btn-gmaps {
+        background: #ffffff;
+      }
+      .btn-gmaps:hover {
+        background: #f0f4fe;
+      }
+      .btn-waze {
+        background: #33ccff;
+      }
+      .btn-waze:hover {
+        background: #1abeff;
+      }
+
+      /* WEATHER MODAL */
+      .weather-modal-overlay {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(0, 0, 0, 0.85);
+        z-index: 20000;
+        justify-content: center;
+        align-items: center;
+      }
+      .weather-modal-overlay.active {
+        display: flex;
+      }
+      .weather-modal {
+        background: var(--bg-panel);
+        border: 2px solid var(--text-gold);
+        border-radius: 15px;
+        padding: 20px;
+        max-width: 600px;
+        width: 95%;
+        max-height: 85vh;
+        overflow-y: auto;
+        position: relative;
+        animation: modalIn 0.3s ease;
+      }
+      .weather-modal-close {
+        position: absolute;
+        top: 10px;
+        right: 15px;
+        background: var(--red);
+        color: #fff;
+        border: none;
+        border-radius: 50%;
+        width: 30px;
+        height: 30px;
+        font-size: 1rem;
+        cursor: pointer;
+        z-index: 10;
+      }
+      .weather-modal-close:hover {
+        background: #f00;
+      }
+      .weather-modal-nav {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 15px;
+        margin-bottom: 15px;
+      }
+      .weather-nav-arrow {
+        background: var(--bg-card);
+        color: var(--text-primary);
+        border: 1px solid var(--border-color);
+        border-radius: 50%;
+        width: 35px;
+        height: 35px;
+        font-size: 1.2rem;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.2s;
+      }
+      .weather-nav-arrow:hover {
+        background: var(--bg-hover);
+        border-color: var(--text-gold);
+        color: var(--text-gold);
+      }
+      .weather-modal-title {
+        color: var(--text-gold);
+        font-size: 1.1rem;
+        font-weight: bold;
+        text-align: center;
+        min-width: 180px;
+      }
+      .weather-modal-subtitle {
+        color: #8899b0;
+        font-size: 0.7rem;
+        text-align: center;
+        margin-bottom: 15px;
+      }
+      .weather-forecast-grid {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 8px;
+      }
+      .weather-hour-item {
+        text-align: center;
+        background: rgba(0, 0, 0, 0.2);
+        border-radius: 8px;
+        padding: 8px 4px;
+        transition: all 0.2s;
+      }
+      .weather-hour-item:hover {
+        background: var(--bg-hover);
+      }
+      .weather-hour-time {
+        font-size: 0.6rem;
+        color: #8899b0;
+        font-weight: 600;
+      }
+      .weather-hour-icon {
+        font-size: 1.4rem;
+        margin: 4px 0;
+      }
+      .weather-hour-temp {
+        font-size: 0.7rem;
+        font-weight: 700;
+      }
+      .weather-hour-rain {
+        font-size: 0.55rem;
+        color: #5b9bd5;
+        margin-top: 2px;
+      }
+      .weather-loading-forecast {
+        text-align: center;
+        color: #8899b0;
+        padding: 30px;
+        font-size: 0.9rem;
+      }
+
+      .footer {
+        margin-top: 8px;
+        text-align: center;
+        border-top: 1px solid #1a2a3e;
+        padding-top: 6px;
+        flex-shrink: 0;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 2px;
+      }
+      .watermark-line1 {
+        font-size: 0.6rem;
+        color: #3a4a5e;
+        letter-spacing: 1px;
+        font-weight: 500;
+      }
+      .watermark-line2 {
+        font-size: 0.55rem;
+        color: #2a3a4e;
+        letter-spacing: 0.5px;
+      }
+
+      @media screen and (max-width: 1023px) {
+        .grid {
+          grid-template-columns: 1fr 1fr;
+          gap: 8px;
+        }
+        .panel:nth-child(2) {
+          grid-column: 1 / -1;
+        }
+        .weather-forecast-grid {
+          grid-template-columns: repeat(3, 1fr);
+        }
+        .stats-row-main {
+          grid-template-columns: repeat(3, 1fr);
+          gap: 4px;
+        }
+        .stats-row-category {
+          grid-template-columns: repeat(4, 1fr);
+          gap: 4px;
+        }
+        .stats-row-victims {
+          grid-template-columns: repeat(3, 1fr);
+          gap: 4px;
+        }
+        #map-container {
+          min-height: 180px !important;
+          height: 180px !important;
+        }
+        .map-popup-overlay {
+          width: 280px !important;
+          max-width: 90% !important;
+          right: 5px !important;
+          top: 5px !important;
+          max-height: 70% !important;
+        }
+      }
+      @media screen and (max-width: 767px) {
+        body {
+          padding: 4px;
+          overflow-y: auto;
+          height: auto;
+          min-height: 100vh;
+          min-height: 100dvh;
+        }
+        .grid {
+          grid-template-columns: 1fr;
+          gap: 6px;
+          flex: none;
+        }
+        .map-popup-overlay {
+          display: none !important;
+        }
+        header {
+          flex-direction: column;
+          text-align: center;
+          gap: 6px;
+          padding-bottom: 4px;
+        }
+        .header-left,
+        .header-right {
+          justify-content: center;
+          flex-wrap: wrap;
+          width: 100%;
+        }
+        .header-center {
+          order: -1;
+          width: 100%;
+        }
+        .header-center h1 {
+          font-size: 1rem;
+        }
+        .day-badge-large {
+          font-size: 0.65rem;
+          padding: 4px 10px;
+        }
+        .fullscreen-btn,
+        .force-refresh-btn,
+        .theme-toggle-btn {
+          padding: 4px 8px;
+          font-size: 0.6rem;
+        }
+        .datetime-display {
+          font-size: 0.6rem;
+          padding: 3px 6px;
+        }
+        .panel {
+          padding: 8px;
+          border-radius: 8px;
+          max-height: none;
+          overflow: visible;
+          height: auto;
+          max-height: none;
+        }
+        .panel-header h2 {
+          font-size: 0.85rem;
+        }
+        .panel-zoom-btn {
+          width: 20px;
+          height: 20px;
+          font-size: 0.6rem;
+        }
+        .stats-row-main {
+          grid-template-columns: repeat(3, 1fr);
+          gap: 3px;
+        }
+        .stat-card {
+          padding: 6px 3px;
+        }
+        .stat-card .stat-number {
+          font-size: 1rem;
+        }
+        .stat-card .stat-label {
+          font-size: 0.5rem;
+        }
+        .stats-row-category {
+          grid-template-columns: repeat(4, 1fr);
+          gap: 3px;
+        }
+        .stat-card.stat-medium .stat-number {
+          font-size: 0.8rem;
+        }
+        .stat-card.stat-medium .stat-label {
+          font-size: 0.45rem;
+        }
+        .stats-row-victims {
+          grid-template-columns: repeat(3, 1fr);
+          gap: 3px;
+        }
+        .stat-card.stat-small .stat-number {
+          font-size: 0.7rem;
+        }
+        .stat-card.stat-small .stat-label {
+          font-size: 0.4rem;
+        }
+        #map-container {
+          min-height: 150px !important;
+          height: 150px !important;
+          margin-top: 6px;
+        }
+        .scroll-container {
+          max-height: 250px;
+          overflow-y: auto;
+          -webkit-overflow-scrolling: touch;
+          min-height: 150px;
+          height: auto;
+        }
+        .case-item {
+          padding: 6px 8px;
+          margin-bottom: 4px;
+        }
+        .case-item .case-title {
+          font-size: 0.85rem !important;
+        }
+        .case-item .case-detail {
+          font-size: 0.7rem !important;
+        }
+        .badge {
+          font-size: 0.5rem;
+          padding: 2px 6px;
+        }
+        .shif-badge {
+          font-size: 0.55rem !important;
+          padding: 3px 8px !important;
+        }
+        .category-filters {
+          max-height: 100px;
+          gap: 3px;
+        }
+        .category-checkbox {
+          font-size: 0.5rem;
+          padding: 3px 6px;
+        }
+        .select-all-btn {
+          font-size: 0.55rem;
+          padding: 4px 8px;
+        }
+        .filter-toggle-btn {
+          font-size: 0.7rem !important;
+          padding: 6px 12px !important;
+        }
+        .weather-ticker-container {
+          padding: 3px 0;
+        }
+        .weather-item {
+          font-size: 0.55rem;
+          padding: 3px 8px;
+          margin: 0 3px;
+        }
+        .weather-icon {
+          font-size: 0.75rem;
+        }
+        .weather-temp {
+          font-size: 0.6rem;
+        }
+        .weather-location {
+          font-size: 0.55rem;
+        }
+        .ticker-hint {
+          font-size: 0.45rem;
+        }
+        .modal-box {
+          padding: 15px;
+          max-width: 95%;
+          max-height: 90vh;
+        }
+        .modal-header {
+          font-size: 0.9rem;
+        }
+        .modal-info {
+          font-size: 0.7rem;
+        }
+        .modal-section {
+          padding: 8px;
+        }
+        .modal-section h3 {
+          font-size: 0.75rem;
+        }
+        .modal-section p {
+          font-size: 0.65rem;
+        }
+        .weather-modal {
+          padding: 12px;
+          max-width: 98%;
+        }
+        .weather-forecast-grid {
+          grid-template-columns: repeat(3, 1fr);
+          gap: 4px;
+        }
+        .weather-hour-item {
+          padding: 4px 2px;
+        }
+        .weather-hour-time {
+          font-size: 0.5rem;
+        }
+        .weather-hour-icon {
+          font-size: 1rem;
+        }
+        .weather-hour-temp {
+          font-size: 0.55rem;
+        }
+        .weather-hour-rain {
+          font-size: 0.45rem;
+        }
+        .footer {
+          margin-top: 4px;
+          padding-top: 4px;
+        }
+        .watermark-line1 {
+          font-size: 0.45rem;
+        }
+        .watermark-line2 {
+          font-size: 0.4rem;
+        }
+
+        body.fullscreen-mode {
+          padding: 0 !important;
+          overflow-y: auto !important;
+          overflow-x: hidden !important;
+          height: 100vh !important;
+          height: 100dvh !important;
+          -webkit-overflow-scrolling: touch !important;
+        }
+        body.fullscreen-mode header {
+          padding: 4px 6px !important;
+          gap: 3px !important;
+          flex-shrink: 0 !important;
+        }
+        body.fullscreen-mode .grid {
+          gap: 3px !important;
+          padding: 0 2px !important;
+          flex: none !important;
+          overflow: visible !important;
+        }
+        body.fullscreen-mode .panel {
+          padding: 4px !important;
+          border-radius: 4px !important;
+          max-height: none !important;
+          overflow: visible !important;
+          min-height: auto !important;
+          height: auto !important;
+          max-height: none !important;
+        }
+        body.fullscreen-mode .scroll-container {
+          max-height: 250px !important;
+          overflow-y: auto !important;
+          -webkit-overflow-scrolling: touch !important;
+          min-height: 150px !important;
+          height: auto !important;
+        }
+        body.fullscreen-mode .panel.expanded .scroll-container {
+          max-height: 400px !important;
+          min-height: 200px !important;
+        }
+        body.fullscreen-mode .weather-ticker-container {
+          padding: 2px 0 !important;
+          flex-shrink: 0 !important;
+        }
+        body.fullscreen-mode #map-container {
+          min-height: 150px !important;
+          height: 150px !important;
+          flex-shrink: 0 !important;
+        }
+        body.fullscreen-mode .footer {
+          margin-top: 8px !important;
+          padding-top: 4px !important;
+          padding-bottom: 8px !important;
+          flex-shrink: 0 !important;
+        }
+        body.fullscreen-mode .watermark-line1,
+        body.fullscreen-mode .watermark-line2 {
+          font-size: 0.35rem !important;
+        }
+      }
+      @media screen and (max-width: 480px) {
+        body {
+          padding: 2px;
+        }
+        .grid {
+          gap: 4px;
+        }
+        .panel {
+          padding: 4px;
+        }
+        .panel-header h2 {
+          font-size: 0.7rem;
+        }
+        .stats-row-main {
+          grid-template-columns: 1fr 1fr 1fr;
+          gap: 2px;
+        }
+        .stat-card {
+          padding: 4px 2px;
+        }
+        .stat-card .stat-number {
+          font-size: 0.8rem;
+        }
+        .stat-card .stat-label {
+          font-size: 0.4rem;
+        }
+        #map-container {
+          min-height: 120px !important;
+          height: 120px !important;
+        }
+        .scroll-container {
+          max-height: 150px;
+        }
+        .case-item .case-title {
+          font-size: 0.6rem;
+        }
+        .case-item .case-detail {
+          font-size: 0.5rem;
+        }
+        .category-checkbox {
+          font-size: 0.4rem;
+          padding: 1px 4px;
+        }
+        .weather-forecast-grid {
+          grid-template-columns: repeat(2, 1fr);
+        }
+      }
+
+      /* LIGHT MODE */
+      body.light-mode {
+        background: #f0f2f5;
+        color: #1a1a1a;
+      }
+      body.light-mode .panel {
+        background: #fff;
+        border-color: #d1d5db;
+      }
+      body.light-mode .panel-header {
+        background: #fff;
+        border-bottom-color: #e5e7eb;
+      }
+      body.light-mode .panel-header h2 {
+        color: #1e40af;
+      }
+      body.light-mode .case-item {
+        background: #f8fafc;
+        border: 1px solid #e2e8f0;
+      }
+      body.light-mode .stat-card {
+        background: #f8fafc;
+        border: 1px solid #e2e8f0;
+      }
+      body.light-mode .stat-card .stat-number {
+        color: #1e40af;
+      }
+      body.light-mode .map-popup-overlay {
+        background: rgba(255, 255, 255, 0.97);
+        border-color: #d1d5db;
+      }
+      body.light-mode .popup-case-item {
+        background: #f8fafc;
+        border-color: #e2e8f0;
+      }
+      body.light-mode .popup-case-item:hover {
+        background: #e8f0fe;
+      }
+      body.light-mode .category-checkbox {
+        background: #e2e8f0;
+        color: #4a5568;
+        border-color: #cbd5e0;
+      }
+      body.light-mode .select-all-btn {
+        background: #e2e8f0;
+        color: #4a5568;
+        border-color: #cbd5e0;
+      }
+      body.light-mode .modal-box {
+        background: #fff;
+        border-color: #1e40af;
+      }
+      body.light-mode .modal-header {
+        color: #d97706;
+      }
+      body.light-mode .modal-info {
+        color: #4a5568;
+      }
+      body.light-mode .modal-section {
+        background: #f8fafc;
+      }
+      body.light-mode .modal-section p {
+        color: #4a5568;
+      }
+      body.light-mode .weather-modal {
+        background: #fff;
+        border-color: #d97706;
+      }
+      body.light-mode .weather-modal-title {
+        color: #d97706;
+      }
+      body.light-mode .weather-ticker-container {
+        background: linear-gradient(
+          90deg,
+          #e8ecf1 0%,
+          #f0f2f5 50%,
+          #e8ecf1 100%
+        );
+        border-color: #d1d5db;
+      }
+      body.light-mode .weather-ticker-container::before {
+        background: linear-gradient(90deg, #e8ecf1 0%, transparent 100%);
+      }
+      body.light-mode .weather-ticker-container::after {
+        background: linear-gradient(270deg, #e8ecf1 0%, transparent 100%);
+      }
+      body.light-mode .weather-item {
+        color: #4a5568;
+      }
+      body.light-mode .weather-item:hover {
+        background: rgba(0, 0, 0, 0.05);
+        border-color: #d97706;
+      }
+    </style>
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+    />
+  </head>
+  <body id="bodyElement">
+    <!-- OVERLAYS & MODALS -->
+    <div
+      class="panel-overlay"
+      id="panelOverlay"
+      onclick="collapseAllPanels()"
+    ></div>
+    <div class="modal-overlay" id="modalOverlay" onclick="closeModal(event)">
+      <div class="modal-box" id="modalBox" onclick="event.stopPropagation()">
+        <button class="modal-close" onclick="closeModal()">✕</button>
+        <div class="modal-header" id="modalHeader"></div>
+        <div id="modalContent"></div>
+      </div>
+    </div>
+
+    <!-- WEATHER FORECAST MODAL -->
+    <div
+      class="weather-modal-overlay"
+      id="weatherModalOverlay"
+      onclick="closeWeatherModal(event)"
+    >
+      <div
+        class="weather-modal"
+        id="weatherModal"
+        onclick="event.stopPropagation()"
+      >
+        <button class="weather-modal-close" onclick="closeWeatherModal()">
+          ✕
+        </button>
+        <div class="weather-modal-nav">
+          <button class="weather-nav-arrow" onclick="navigateWeatherCity(-1)">
+            ⬅️
+          </button>
+          <div class="weather-modal-title" id="weatherModalTitle">
+            🌤️ RAMALAN CUACA
+          </div>
+          <button class="weather-nav-arrow" onclick="navigateWeatherCity(1)">
+            ➡️
+          </button>
+        </div>
+        <div class="weather-modal-subtitle" id="weatherModalDate"></div>
+        <div class="weather-forecast-grid" id="weatherForecastGrid">
+          <div class="weather-loading-forecast">⏳ Memuat data...</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- HEADER -->
+    <header>
+      <div class="header-left">
+        <span class="day-badge-large" id="dayBadge">📅 DAY -</span>
+      </div>
+      <div class="header-center"><h1>🚒 PGO JOHOR DASHBOARD - 24 JAM</h1></div>
+      <div class="header-right">
+        <button
+          class="theme-toggle-btn"
+          onclick="toggleTheme()"
+          id="themeToggleBtn"
+        >
+          🌙 MODE MALAM
+        </button>
+        <button
+          class="force-refresh-btn"
+          onclick="forceRefresh()"
+          id="forceRefreshBtn"
+        >
+          🔄 REFRESH
+        </button>
+        <button
+          class="fullscreen-btn"
+          onclick="toggleFullscreen()"
+          id="fullscreenBtn"
+        >
+          📺 FULL SCREEN
+        </button>
+        <div class="datetime-display">
+          <span class="date-text">📅 <span id="dateDisplay"></span></span>
+          <span class="datetime-separator">|</span>
+          <span class="time-text">🕒 <span id="clock"></span></span>
+        </div>
+        <!-- BUTANG KEMBALI KE DASHBOARD UTAMA -->
+        <a
+          href="index.html"
+          class="btn-back"
+          style="
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+            padding: 0.4rem 0.9rem;
+            border-radius: 6px;
+            background: var(--text-gold, #ffcc00);
+            color: #000 !important;
+            border: 1px solid var(--text-gold, #ffcc00);
+            font-size: 0.7rem;
+            font-weight: 700;
+            text-decoration: none;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-family: 'Segoe UI', Arial, sans-serif;
+          "
+        >
+          <i class="fas fa-arrow-left"></i> Kembali
+        </a>
+      </div>
+    </header>
+
+    <!-- WEATHER TICKER -->
+    <div class="weather-ticker-container" id="weatherTickerContainer">
+      <div class="weather-ticker" id="weatherTicker">
+        <span class="weather-loading">🛰️ Memuat data cuaca...</span>
+      </div>
+    </div>
+    <div class="ticker-hint">
+      👆 Klik mana-mana bandar untuk ramalan cuaca 12 jam
+    </div>
+
+    <!-- MAIN GRID -->
+    <div class="grid" id="mainGrid">
+      <!-- PANEL 1: KATEGORI KES -->
+      <div class="panel" id="panelFilter">
+        <div class="panel-header">
+          <h2>🔍 KATEGORI KES (12)</h2>
+          <div class="panel-zoom-controls">
+            <button class="panel-zoom-btn" onclick="expandPanel('panelFilter')">
+              🔍➕
+            </button>
+            <button
+              class="panel-zoom-btn reset-btn"
+              onclick="resetPanel('panelFilter')"
+            >
+              ↺
+            </button>
+          </div>
+        </div>
+
+        <!-- TOGGLE FILTER BUTTON -->
+        <div
+          style="
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            margin-bottom: 4px;
+          "
+        >
+          <button
+            class="filter-toggle-btn"
+            onclick="toggleFilterSection()"
+            id="filterToggleBtn"
+            title="Sembunyi/Papar filter kategori"
+          >
+            🔼 Sembunyi Filter
+          </button>
+        </div>
+
+        <!-- FILTER SECTION -->
+        <div id="filterSection">
+          <div class="category-filters-header">
+            <button class="select-all-btn" onclick="selectAllCategories()">
+              ✅ SELECT ALL
+            </button>
+            <button
+              class="select-all-btn unselect"
+              onclick="unselectAllCategories()"
+            >
+              ❌ UNSELECT ALL
+            </button>
+          </div>
+          <div class="category-filters" id="categoryFilters">
+            <label
+              class="category-checkbox active"
+              data-cat="kebakaran_bangunan"
+              ><input
+                type="checkbox"
+                checked
+                onchange="toggleCategoryCheckbox(this)"
+              /><span class="checkbox-label">🏢 KEBAKARAN BANGUNAN</span></label
+            >
+            <label class="category-checkbox active" data-cat="kebakaran_terbuka"
+              ><input
+                type="checkbox"
+                checked
+                onchange="toggleCategoryCheckbox(this)"
+              /><span class="checkbox-label">🔥 KEBAKARAN TERBUKA</span></label
+            >
+            <label
+              class="category-checkbox active"
+              data-cat="kebakaran_perkakas"
+              ><input
+                type="checkbox"
+                checked
+                onchange="toggleCategoryCheckbox(this)"
+              /><span class="checkbox-label">🔌 KEBAKARAN PERKAKAS</span></label
+            >
+            <label
+              class="category-checkbox active"
+              data-cat="kebakaran_kenderaan"
+              ><input
+                type="checkbox"
+                checked
+                onchange="toggleCategoryCheckbox(this)"
+              /><span class="checkbox-label"
+                >🚗 KEBAKARAN KENDERAAN</span
+              ></label
+            >
+            <label class="category-checkbox active" data-cat="menyelamat"
+              ><input
+                type="checkbox"
+                checked
+                onchange="toggleCategoryCheckbox(this)"
+              /><span class="checkbox-label">🚑 MENYELAMAT</span></label
+            >
+            <label class="category-checkbox active" data-cat="banjir"
+              ><input
+                type="checkbox"
+                checked
+                onchange="toggleCategoryCheckbox(this)"
+              /><span class="checkbox-label">🌊 BANJIR</span></label
+            >
+            <label class="category-checkbox active" data-cat="bencana_alam"
+              ><input
+                type="checkbox"
+                checked
+                onchange="toggleCategoryCheckbox(this)"
+              /><span class="checkbox-label">🌈 BENCANA ALAM</span></label
+            >
+            <label class="category-checkbox active" data-cat="tumpahan_bahan"
+              ><input
+                type="checkbox"
+                checked
+                onchange="toggleCategoryCheckbox(this)"
+              /><span class="checkbox-label"
+                >🛢️ TUMPAHAN & KEBOCORAN</span
+              ></label
+            >
+            <label
+              class="category-checkbox active"
+              data-cat="menangkap_binatang"
+              ><input
+                type="checkbox"
+                checked
+                onchange="toggleCategoryCheckbox(this)"
+              /><span class="checkbox-label"
+                >🐍🐱🦎 MENANGKAP & MENYELAMAT BINATANG</span
+              ></label
+            >
+            <label class="category-checkbox active" data-cat="serangga"
+              ><input
+                type="checkbox"
+                checked
+                onchange="toggleCategoryCheckbox(this)"
+              /><span class="checkbox-label">🐝🦟 SERANGGA</span></label
+            >
+            <label class="category-checkbox active" data-cat="tugas_khas"
+              ><input
+                type="checkbox"
+                checked
+                onchange="toggleCategoryCheckbox(this)"
+              /><span class="checkbox-label">🎯 TUGAS KHAS</span></label
+            >
+            <label class="category-checkbox active" data-cat="lain_lain"
+              ><input
+                type="checkbox"
+                checked
+                onchange="toggleCategoryCheckbox(this)"
+              /><span class="checkbox-label">📋 LAIN-LAIN</span></label
+            >
+          </div>
+        </div>
+        <!-- END FILTER SECTION -->
+
+        <div class="scroll-container" id="scrollFilterContainer">
+          <div class="motion-wrapper" id="filterWrapper">
+            <div id="filteredCases"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- PANEL 2: LOKASI & STATISTIK -->
+      <div class="panel" id="panelStats">
+        <div class="panel-header">
+          <h2>🗺️ LOKASI & STATISTIK (<span id="statDayLabel">-</span>)</h2>
+          <div class="panel-zoom-controls">
+            <button class="panel-refresh-btn" onclick="forceRefresh()">
+              🔄 Refresh
+            </button>
+            <button class="panel-zoom-btn" onclick="expandPanel('panelStats')">
+              🔍➕
+            </button>
+            <button
+              class="panel-zoom-btn reset-btn"
+              onclick="resetPanel('panelStats')"
+            >
+              ↺
+            </button>
+          </div>
+        </div>
+        <div
+          id="statsNormalContent"
+          style="display: flex; flex-direction: column; flex: 1; min-height: 0"
+        >
+          <div class="stats-wrapper" id="statsWrapper">
+            <div class="stats-row-main">
+              <div class="stat-card">
+                <div class="stat-number" id="totalCalls">0</div>
+                <div class="stat-label">JUMLAH PANGGILAN</div>
+              </div>
+              <div class="stat-card">
+                <div class="stat-number" id="jumlahBanjir">0</div>
+                <div class="stat-label">🌊 BENCANA BANJIR</div>
+              </div>
+              <div class="stat-card">
+                <div class="stat-number" id="totalKebakaranTerbuka">0</div>
+                <div class="stat-label">🔥 KEBAKARAN TERBUKA</div>
+              </div>
+            </div>
+
+            <div class="stats-row-category" style="margin-top: 4px">
+              <div class="stat-card stat-medium">
+                <div class="stat-number" id="luasTerbakar">0.00</div>
+                <div class="stat-label">🌾 LUAS TERBAKAR (Hektar)</div>
+              </div>
+              <div class="stat-card stat-medium">
+                <div class="stat-number" id="luasDipadam">0.00</div>
+                <div class="stat-label">💧 LUAS DIPADAM (Hektar)</div>
+              </div>
+              <div class="stat-card stat-medium">
+                <div class="stat-number" id="luasBaki">0.00</div>
+                <div class="stat-label">⚠️ BAKI BELUM DIPADAM (Hektar)</div>
+              </div>
+              <div class="stat-card stat-medium">
+                <div class="stat-number" id="avgResponse">00:00:00</div>
+                <div class="stat-label">⏱️ PURATA RESPON (min)</div>
+              </div>
+            </div>
+
+            <div class="stats-row-category">
+              <div class="stat-card stat-medium kebakaran-kat">
+                <div class="stat-number" id="kategoriKebakaran">0</div>
+                <div class="stat-label">🔥 KEBAKARAN</div>
+              </div>
+              <div class="stat-card stat-medium menyelamat-kat">
+                <div class="stat-number" id="kategoriMenyelamat">0</div>
+                <div class="stat-label">🚑 MENYELAMAT</div>
+              </div>
+              <div class="stat-card stat-medium khidmat-kat">
+                <div class="stat-number" id="kategoriKhidmat">0</div>
+                <div class="stat-label">🚧 KHIDMAT KEMANUSIAAN</div>
+              </div>
+              <div class="stat-card stat-medium tugaskhas-kat">
+                <div class="stat-number" id="kategoriTugasKhas">0</div>
+                <div class="stat-label">🎯 TUGAS KHAS</div>
+              </div>
+            </div>
+            <div class="stats-row-victims">
+              <div class="stat-card stat-small mati">
+                <div class="stat-number" id="victimsMati">0</div>
+                <div class="stat-label">🚨 MANGSA MATI</div>
+              </div>
+              <div class="stat-card stat-small cedera">
+                <div class="stat-number" id="victimsCedera">0</div>
+                <div class="stat-label">🟠 MANGSA CEDERA</div>
+              </div>
+              <div class="stat-card stat-small selamat">
+                <div class="stat-number" id="victimsSelamat">0</div>
+                <div class="stat-label">🟢 MANGSA SELAMAT</div>
+              </div>
+            </div>
+          </div>
+          <div id="map-container"><div id="map"></div></div>
+        </div>
+      </div>
+
+      <!-- PANEL 3: SEMUA KES -->
+      <div class="panel" id="panelAll">
+        <div class="panel-header">
+          <h2>📋 SEMUA KES</h2>
+          <div class="panel-zoom-controls">
+            <button class="panel-zoom-btn" onclick="expandPanel('panelAll')">
+              🔍➕
+            </button>
+            <button
+              class="panel-zoom-btn reset-btn"
+              onclick="resetPanel('panelAll')"
+            >
+              ↺
+            </button>
+          </div>
+        </div>
+        <div class="scroll-container" id="scrollAllContainer">
+          <div class="motion-wrapper" id="allWrapper">
+            <div id="allCases"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- FOOTER -->
+    <div class="footer">
+      <div class="watermark-line1">©2026 PGO JOHOR | Hak Cipta Terpelihara</div>
+    </div>
+
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script>
+      // ================================================================
+      // CONFIG
+      // ================================================================
+      const CSV_URLS = {
+        syifA:
+          'https://docs.google.com/spreadsheets/d/e/2PACX-1vRqq7kIOrESSTIiuwPXR-LfsmMu_NaJnWSr2qOyCrnUK4QDqP2DNQy8io0jJIysZQ6Nc6DCZr9YrrW-/pub?gid=1671240510&single=true&output=csv',
+        syifB:
+          'https://docs.google.com/spreadsheets/d/e/2PACX-1vToFUGdZ63m5oOjUMMYKta_aJ9cQlP3Bxz8QxjTxshfySACV1zqOQVwHBo6ptNyrk1mcw_yuvhIhbcH/pub?gid=1671240510&single=true&output=csv',
+        syifC:
+          'https://docs.google.com/spreadsheets/d/e/2PACX-1vRgdRVgrUyuMX5IocMXA6g1yM5e0gU1qg3YpazTpmvFhgkl9KCPX02hn-0epm40SCxeHFQ125xCJN2T/pub?gid=1671240510&single=true&output=csv',
+      };
+      const JOHOR_CITIES = [
+        { name: 'JOHOR BAHRU', lat: 1.4655, lng: 103.7578 },
+        { name: 'BATU PAHAT', lat: 1.8548, lng: 102.9324 },
+        { name: 'MUAR', lat: 2.0442, lng: 102.5689 },
+        { name: 'KLUANG', lat: 2.0301, lng: 103.3189 },
+        { name: 'KOTA TINGGI', lat: 1.7312, lng: 103.8998 },
+        { name: 'MERSING', lat: 2.4312, lng: 103.8405 },
+        { name: 'SEGAMAT', lat: 2.5148, lng: 102.8158 },
+        { name: 'PONTIAN', lat: 1.4868, lng: 103.3896 },
+        { name: 'PASIR GUDANG', lat: 1.4587, lng: 103.8819 },
+        { name: 'KULAI', lat: 1.6561, lng: 103.6033 },
+      ];
+      const JOHOR_BOUNDS = {
+        north: 2.73,
+        south: 1.2,
+        west: 102.49,
+        east: 104.59,
+        center: [1.85, 103.5],
+        defaultZoom: 9,
+      };
+      const WEATHER_CODES = {
+        0: { icon: '☀️', label: 'Cerah' },
+        1: { icon: '🌤️', label: 'Cerah Berawan' },
+        2: { icon: '⛅', label: 'Berawan' },
+        3: { icon: '☁️', label: 'Mendung' },
+        45: { icon: '🌫️', label: 'Kabus' },
+        48: { icon: '🌫️', label: 'Kabus Beku' },
+        51: { icon: '🌦️', label: 'Hujan Renyai' },
+        53: { icon: '🌦️', label: 'Hujan Renyai' },
+        55: { icon: '🌦️', label: 'Hujan Renyai' },
+        61: { icon: '🌧️', label: 'Hujan' },
+        63: { icon: '🌧️', label: 'Hujan Lebat' },
+        65: { icon: '🌧️', label: 'Hujan Sangat Lebat' },
+        80: { icon: '⛈️', label: 'Ribut Hujan' },
+        81: { icon: '⛈️', label: 'Ribut Hujan' },
+        82: { icon: '⛈️', label: 'Ribut Hujan Kuat' },
+        95: { icon: '⛈️', label: 'Ribut Petir' },
+        96: { icon: '⛈️', label: 'Ribut Petir Hujan Batu' },
+        99: { icon: '⛈️', label: 'Ribut Petir Kuat' },
+      };
+
+      // STATE
+      let allFetchedData = [],
+        allCaseData = [],
+        currentDay = null;
+      let activeCategories = {
+        kebakaran_bangunan: true,
+        kebakaran_terbuka: true,
+        kebakaran_perkakas: true,
+        kebakaran_kenderaan: true,
+        menyelamat: true,
+        banjir: true,
+        bencana_alam: true,
+        tumpahan_bahan: true,
+        menangkap_binatang: true,
+        serangga: true,
+        tugas_khas: true,
+        lain_lain: true,
+      };
+      let mapInstance = null,
+        markersLayer = null,
+        expandedPanel = null,
+        animationIds = {},
+        resumeTimeouts = {};
+      let popupMotionId = null,
+        popupResumeTimeout = null,
+        activePopupCaseIndex = null;
+      let isDragging = false,
+        dragStartX = 0,
+        dragStartY = 0,
+        popupStartX = 0,
+        popupStartY = 0,
+        dragTarget = null;
+      let weatherData = [],
+        weatherForecastData = [],
+        currentWeatherCityIndex = 0,
+        forecastFetchPromise = null;
+
+      // ================================================================
+      // TOGGLE FILTER SECTION
+      // ================================================================
+      function toggleFilterSection() {
+        const filterSection = document.getElementById('filterSection');
+        const toggleBtn = document.getElementById('filterToggleBtn');
+
+        if (filterSection.style.display === 'none') {
+          filterSection.style.display = 'block';
+          toggleBtn.innerHTML = '🔼 Sembunyi Filter';
+          toggleBtn.classList.remove('collapsed');
+          toggleBtn.title = 'Sembunyi filter kategori';
+          localStorage.setItem('pgoFilterHidden', 'false');
+          toggleBtn.removeAttribute('data-base-text');
+        } else {
+          filterSection.style.display = 'none';
+          toggleBtn.innerHTML = '🔽 Papar Filter';
+          toggleBtn.classList.add('collapsed');
+          toggleBtn.title = 'Papar filter kategori';
+          localStorage.setItem('pgoFilterHidden', 'true');
+          toggleBtn.removeAttribute('data-base-text');
+        }
+
+        updateFilterCount();
+
+        if (mapInstance) setTimeout(() => mapInstance.invalidateSize(), 400);
+      }
+
+      function initFilterSection() {
+        const saved = localStorage.getItem('pgoFilterHidden');
+        if (saved === 'true') {
+          document.getElementById('filterSection').style.display = 'none';
+          const btn = document.getElementById('filterToggleBtn');
+          if (btn) {
+            btn.innerHTML = '🔽 Papar Filter';
+            btn.classList.add('collapsed');
+            btn.removeAttribute('data-base-text');
+          }
+        }
+      }
+
+      // ================================================================
+      // UPDATE FILTER COUNT - PAPAR JUMLAH KES & SYIF
+      // ================================================================
+      function updateFilterCount() {
+        const btn = document.getElementById('filterToggleBtn');
+        if (!btn) return;
+
+        const totalKes = allCaseData.length;
+        const filteredData = getFilteredData();
+        const filteredKes = filteredData.length;
+
+        let countA = 0,
+          countB = 0,
+          countC = 0;
+        filteredData.forEach((d) => {
+          const shif = (d.shif || '').toString().trim().toUpperCase();
+          if (shif === 'A' || shif === 'SYIF A' || shif === 'SHIF A') countA++;
+          else if (shif === 'B' || shif === 'SYIF B' || shif === 'SHIF B')
+            countB++;
+          else if (shif === 'C' || shif === 'SYIF C' || shif === 'SHIF C')
+            countC++;
+        });
+
+        let baseText = btn.getAttribute('data-base-text');
+        if (!baseText) {
+          baseText = btn.textContent.split('|')[0].trim();
+          btn.setAttribute('data-base-text', baseText);
+        }
+
+        btn.innerHTML =
+          baseText +
+          ' | ' +
+          filteredKes +
+          '/' +
+          totalKes +
+          ' kes | ' +
+          '<span style="color:#e74c3c;font-weight:700;">A:' +
+          countA +
+          '</span> ' +
+          '<span style="color:#3498db;font-weight:700;">B:' +
+          countB +
+          '</span> ' +
+          '<span style="color:#2ecc71;font-weight:700;">C:' +
+          countC +
+          '</span>';
+      }
+
+      // ================================================================
+      // HELPER FUNCTIONS
+      // ================================================================
+      function formatMMSS(t) {
+        if (t <= 0 || isNaN(t)) return '00:00';
+        const m = Math.floor(t),
+          s = Math.round((t - m) * 60);
+        return String(m).padStart(2, '0') + ':' + String(s).padStart(2, '0');
+      }
+
+      function isInJohor(lt, ln) {
+        return (
+          lt >= JOHOR_BOUNDS.south &&
+          lt <= JOHOR_BOUNDS.north &&
+          ln >= JOHOR_BOUNDS.west &&
+          ln <= JOHOR_BOUNDS.east
+        );
+      }
+      function getWeatherColor(t) {
+        if (t >= 35) return 'weather-hot';
+        if (t >= 30) return 'weather-warm';
+        if (t >= 25) return 'weather-mild';
+        return 'weather-cool';
+      }
+      function getWeatherIcon(c) {
+        return WEATHER_CODES[c] || { icon: '🌡️', label: 'Tidak Diketahui' };
+      }
+      function formatHour(dt) {
+        return dt.toLocaleTimeString('ms-MY', {
+          hour: '2-digit',
+          hour12: true,
+          timeZone: 'Asia/Kuala_Lumpur',
+        });
+      }
+
+      function getShifBadge(shifValue) {
+        if (!shifValue || shifValue === '-') return '';
+        const shif = shifValue.toString().trim().toUpperCase();
+        let cssClass = '';
+        let label = shifValue.toString().trim();
+
+        if (shif === 'A' || shif === 'SYIF A' || shif === 'SHIF A') {
+          cssClass = 'shif-a';
+          label = 'SYIF A';
+        } else if (shif === 'B' || shif === 'SYIF B' || shif === 'SHIF B') {
+          cssClass = 'shif-b';
+          label = 'SYIF B';
+        } else if (shif === 'C' || shif === 'SYIF C' || shif === 'SHIF C') {
+          cssClass = 'shif-c';
+          label = 'SYIF C';
+        } else {
+          return `<span class="shif-badge">${label}</span>`;
+        }
+
+        return `<span class="shif-badge ${cssClass}">${label}</span>`;
+      }
+
+      function detectCurrentOperatingDay() {
+        const now = new Date();
+        const jam = now.getHours();
+
+        let operatingDate;
+        if (jam < 6) {
+          operatingDate = new Date(now);
+          operatingDate.setDate(operatingDate.getDate() - 1);
+        } else {
+          operatingDate = now;
+        }
+
+        return 'DAY ' + operatingDate.getDate();
+      }
+
+      function parseTarikhKejadian(tarikhStr) {
+        if (!tarikhStr || tarikhStr === '-') return null;
+        try {
+          const cleaned = tarikhStr.replace(/[\n\r]/g, '').trim();
+          const parts = cleaned.split('.');
+          if (parts.length === 3) {
+            const day = parseInt(parts[0]);
+            const month = parseInt(parts[1]) - 1;
+            const year = parseInt(parts[2]);
+            if (!isNaN(day) && !isNaN(month) && !isNaN(year)) {
+              return new Date(year, month, day);
+            }
+          }
+          const d = new Date(cleaned);
+          if (!isNaN(d.getTime())) return d;
+        } catch (e) {
+          // ignore
+        }
+        return null;
+      }
+
+      function parseJamDariMasa(masaStr) {
+        if (!masaStr || masaStr === '-') return 0;
+        try {
+          const cleaned = masaStr.replace(/[\n\r]/g, '').trim();
+          const parts = cleaned.split(':');
+          if (parts.length >= 1) {
+            return parseInt(parts[0]) || 0;
+          }
+        } catch (e) {
+          // ignore
+        }
+        return 0;
+      }
+
+      function findLatestOperatingDayFromData(allData) {
+        let latestOperatingDate = null;
+
+        allData.forEach((d) => {
+          const t = parseTarikhKejadian(d.tarikh);
+          if (!t) return;
+
+          const jam = parseJamDariMasa(d.masa);
+
+          let operatingDate = new Date(t);
+          if (jam < 6) {
+            operatingDate.setDate(operatingDate.getDate() - 1);
+          }
+
+          if (!latestOperatingDate || operatingDate > latestOperatingDate) {
+            latestOperatingDate = operatingDate;
+          }
+        });
+
+        if (latestOperatingDate) {
+          const latestDay = 'DAY ' + latestOperatingDate.getDate();
+          return latestDay;
+        }
+
+        const fallback = detectCurrentOperatingDay();
+        return fallback;
+      }
+
+      function parseCSV(text) {
+        text = text.replace(/^\uFEFF/, '');
+        text = text.replace(/\r\n/g, '\n');
+        text = text.replace(/\r/g, '\n');
+
+        const rows = [];
+        let currentRow = [];
+        let currentField = '';
+        let insideQuotes = false;
+        let i = 0;
+
+        while (i < text.length) {
+          const char = text[i];
+          const nextChar = text[i + 1];
+
+          if (insideQuotes) {
+            if (char === '"') {
+              if (nextChar === '"') {
+                currentField += '"';
+                i += 2;
+              } else {
+                insideQuotes = false;
+                i++;
+              }
+            } else {
+              currentField += char;
+              i++;
+            }
+          } else {
+            if (char === '"') {
+              insideQuotes = true;
+              i++;
+            } else if (char === ',') {
+              currentRow.push(currentField.trim());
+              currentField = '';
+              i++;
+            } else if (char === '\n') {
+              currentRow.push(currentField.trim());
+              if (currentRow.length > 1 || currentRow[0] !== '') {
+                rows.push(currentRow);
+              }
+              currentRow = [];
+              currentField = '';
+              i++;
+            } else {
+              currentField += char;
+              i++;
+            }
+          }
+        }
+
+        if (currentField || currentRow.length > 0) {
+          currentRow.push(currentField.trim());
+          if (currentRow.length > 1 || currentRow[0] !== '') {
+            rows.push(currentRow);
+          }
+        }
+
+        return rows;
+      }
+
+      function detectColumnIndex(headers, key) {
+        for (let i = 0; i < headers.length; i++) {
+          if ((headers[i] || '').trim() === key) return i;
+        }
+        const normalizedKey = key
+          .replace(/[\n\r]+/g, ' ')
+          .replace(/\s+/g, ' ')
+          .trim()
+          .toUpperCase();
+        for (let i = 0; i < headers.length; i++) {
+          const h = (headers[i] || '')
+            .replace(/[\n\r]+/g, ' ')
+            .replace(/\s+/g, ' ')
+            .trim()
+            .toUpperCase();
+          if (h === normalizedKey) return i;
+        }
+        for (let i = 0; i < headers.length; i++) {
+          const h = (headers[i] || '')
+            .replace(/[\n\r]+/g, ' ')
+            .replace(/\s+/g, ' ')
+            .trim()
+            .toUpperCase();
+          if (h.includes(normalizedKey) || normalizedKey.includes(h)) return i;
+        }
+        return -1;
+      }
+
+      function getCaseCategory(d) {
+        const j = (d.jenis || '').toLowerCase();
+        const adaMangsa =
+          d.mangsa_mati > 0 || d.mangsa_cedera > 0 || d.mangsa_selamat > 0;
+
+        if (
+          j.includes('kebakaran bangunan') ||
+          j.includes('kebakaran rumah') ||
+          j.includes('kebakaran kilang') ||
+          j.includes('kebakaran kedai') ||
+          j.includes('kebakaran pejabat') ||
+          j.includes('kebakaran premis') ||
+          j.includes('kebakaran sekolah') ||
+          j.includes('kebakaran hospital') ||
+          j.includes('kebakaran hotel') ||
+          j.includes('kebakaran pasar') ||
+          j.includes('kebakaran stesen') ||
+          j.includes('kebakaran jeti') ||
+          j.includes('kebakaran gudang') ||
+          j.includes('kebakaran stor') ||
+          j.includes('kebakaran bengkel') ||
+          j.includes('kebakaran warung') ||
+          j.includes('kebakaran gerai') ||
+          j.includes('kebakaran pondok') ||
+          j.includes('kebakaran kiosk') ||
+          j.includes('kebakaran restoran') ||
+          j.includes('kebakaran kafe') ||
+          j.includes('kebakaran surau') ||
+          j.includes('kebakaran masjid') ||
+          j.includes('kebakaran tokong') ||
+          j.includes('kebakaran gereja') ||
+          j.includes('kebakaran kuil') ||
+          j.includes('kebakaran istana') ||
+          j.includes('kebakaran muzium') ||
+          j.includes('kebakaran perpustakaan') ||
+          j.includes('kebakaran dewan') ||
+          j.includes('kebakaran stadium') ||
+          j.includes('kebakaran kompleks') ||
+          j.includes('kebakaran pusat') ||
+          j.includes('kebakaran wisma') ||
+          j.includes('kebakaran menara') ||
+          j.includes('kebakaran pangsapuri') ||
+          j.includes('kebakaran apartment') ||
+          j.includes('kebakaran kondominium') ||
+          j.includes('kebakaran asrama') ||
+          j.includes('kebakaran makmal') ||
+          j.includes('kebakaran kontena') ||
+          (j.includes('kebakaran') &&
+            (j.includes('bangunan') ||
+              j.includes('rumah') ||
+              j.includes('kilang') ||
+              j.includes('stor') ||
+              j.includes('warung') ||
+              j.includes('gerai') ||
+              j.includes('struktur') ||
+              j.includes('binaan')))
+        )
+          return 'kebakaran_bangunan';
+
+        if (
+          j.includes('kebakaran perkakas') ||
+          j.includes('pendawaian') ||
+          j.includes('pendaiwaian') ||
+          j.includes('tiang elektrik') ||
+          j.includes('kabel elektrik') ||
+          j.includes('kabel') ||
+          j.includes('papan suis') ||
+          j.includes('meter elektrik') ||
+          j.includes('peralatan elektrik') ||
+          j.includes('tnb') ||
+          j.includes('meter') ||
+          j.includes('fius') ||
+          j.includes('pemutus litar') ||
+          j.includes('kotak fius') ||
+          j.includes('kotak elektrik') ||
+          j.includes('suis') ||
+          j.includes('pencawang') ||
+          j.includes('transformer') ||
+          j.includes('step down') ||
+          j.includes('dapur') ||
+          j.includes('periuk') ||
+          j.includes('kuali') ||
+          j.includes('alat memasak') ||
+          j.includes('tong gas') ||
+          j.includes('dapur gas') ||
+          j.includes('pemasak') ||
+          j.includes('ketuhar') ||
+          j.includes('microwave') ||
+          j.includes('pemanas') ||
+          j.includes('kettle') ||
+          j.includes('rice cooker') ||
+          j.includes('periuk nasi') ||
+          j.includes('pemanggang') ||
+          j.includes('grill') ||
+          j.includes('stove') ||
+          j.includes('cooker') ||
+          j.includes('memasak') ||
+          (j.includes('kebakaran') &&
+            (j.includes('tnb') ||
+              j.includes('meter') ||
+              j.includes('fius') ||
+              j.includes('elektrik') ||
+              j.includes('transformer') ||
+              j.includes('pencawang') ||
+              j.includes('kabel') ||
+              j.includes('dapur') ||
+              j.includes('memasak') ||
+              j.includes('periuk') ||
+              j.includes('db box') ||
+              j.includes('db-box') ||
+              j.includes('papan agihan') ||
+              j.includes('distribution board') ||
+              j.includes('kuali')))
+        )
+          return 'kebakaran_perkakas';
+
+        if (
+          j.includes('kebakaran kenderaan') ||
+          j.includes('kebakaran kereta') ||
+          j.includes('kebakaran motorsikal') ||
+          j.includes('kebakaran motosikal') ||
+          j.includes('kebakaran lori') ||
+          j.includes('kebakaran bas') ||
+          j.includes('kebakaran van') ||
+          j.includes('kebakaran kapal') ||
+          j.includes('kenderaan terbakar') ||
+          j.includes('kereta terbakar')
+        )
+          return 'kebakaran_kenderaan';
+
+        if (
+          j.includes('kebakaran terbuka') ||
+          j.includes('kebakaran hutan') ||
+          j.includes('kebakaran belukar') ||
+          j.includes('kebakaran tanah') ||
+          j.includes('kebakaran semak') ||
+          j.includes('kebakaran ladang') ||
+          j.includes('kebakaran kebun') ||
+          j.includes('kebakaran sampah') ||
+          j.includes('terbuka') ||
+          (j.includes('kebakaran') &&
+            !j.includes('bangunan') &&
+            !j.includes('rumah') &&
+            !j.includes('kilang') &&
+            !j.includes('kenderaan') &&
+            !j.includes('kereta') &&
+            !j.includes('motorsikal') &&
+            !j.includes('motosikal') &&
+            !j.includes('lori') &&
+            !j.includes('perkakas') &&
+            !j.includes('elektrik') &&
+            !j.includes('tiang') &&
+            !j.includes('warung') &&
+            !j.includes('gerai') &&
+            !j.includes('struktur') &&
+            !j.includes('binaan') &&
+            !j.includes('kedai') &&
+            !j.includes('restoran') &&
+            !j.includes('surau') &&
+            !j.includes('masjid') &&
+            !j.includes('sekolah') &&
+            !j.includes('hospital') &&
+            !j.includes('pejabat') &&
+            !j.includes('premis') &&
+            !j.includes('tnb') &&
+            !j.includes('meter') &&
+            !j.includes('fius') &&
+            !j.includes('kabel') &&
+            !j.includes('dapur') &&
+            !j.includes('periuk') &&
+            !j.includes('kuali') &&
+            !j.includes('memasak') &&
+            !j.includes('ketuhar') &&
+            !j.includes('microwave') &&
+            !j.includes('pemanas') &&
+            !j.includes('kettle') &&
+            !j.includes('cooker') &&
+            !j.includes('stove') &&
+            !j.includes('grill') &&
+            !j.includes('pemanggang') &&
+            !j.includes('tong gas') &&
+            !j.includes('stor'))
+        )
+          return 'kebakaran_terbuka';
+
+        if (
+          j.includes('ular') ||
+          j.includes('sawa') ||
+          j.includes('tedung') ||
+          j.includes('ular hitam') ||
+          j.includes('musang') ||
+          j.includes('biawak') ||
+          j.includes('menyelamat kucing') ||
+          j.includes('menyelamat anjing') ||
+          j.includes('binatang') ||
+          j.includes('haiwan')
+        )
+          return 'menangkap_binatang';
+        if (
+          j.includes('lebah') ||
+          j.includes('serangga') ||
+          j.includes('tebuan')
+        )
+          return 'serangga';
+
+        if (
+          j.includes('terkunci dalam kereta') ||
+          j.includes('terkunci dalam rumah') ||
+          j.includes('kemalangan') ||
+          j.includes('langgar') ||
+          j.includes('terbabas') ||
+          j.includes('terbalik') ||
+          j.includes('rempuh') ||
+          j.includes('kjr') ||
+          j.includes('jalan raya') ||
+          j.includes('highway') ||
+          j.includes('lebuh raya')
+        )
+          return 'menyelamat';
+        if (
+          (j.includes('buka pintu') ||
+            j.includes('terkunci') ||
+            j.includes('terperangkap')) &&
+          adaMangsa
+        )
+          return 'menyelamat';
+        if (
+          (j.includes('angkat mayat') || j.includes('mengangkat mayat')) &&
+          !j.includes('bantuan') &&
+          !j.includes('agensi') &&
+          !j.includes('polis')
+        )
+          return 'menyelamat';
+        if (adaMangsa) return 'menyelamat';
+        if (j.includes('menyelamat') || j.includes('mangsa'))
+          return 'menyelamat';
+
+        if (
+          j.includes('banjir') ||
+          j.includes('air naik') ||
+          j.includes('air pasang') ||
+          j.includes('limpahan air') ||
+          j.includes('air melimpah') ||
+          j.includes('air bah') ||
+          (j.includes('hujan lebat') && j.includes('air')) ||
+          (j.includes('air') &&
+            (j.includes('naik') ||
+              j.includes('pasang') ||
+              j.includes('melimpah')))
+        )
+          return 'banjir';
+
+        if (
+          j.includes('tanah runtuh') ||
+          j.includes('ribut') ||
+          j.includes('bencana') ||
+          j.includes('taufan') ||
+          j.includes('gempa') ||
+          j.includes('tsunami') ||
+          j.includes('pokok tumbang') ||
+          (j.includes('pokok') && j.includes('tumbang')) ||
+          j.includes('dahan patah') ||
+          j.includes('pokok patah')
+        )
+          return 'bencana_alam';
+
+        if (
+          j.includes('tumpahan') ||
+          j.includes('kebocoran') ||
+          j.includes('bahan kimia') ||
+          j.includes('gas') ||
+          j.includes('minyak') ||
+          j.includes('petrol') ||
+          j.includes('diesel') ||
+          j.includes('bahan berbahaya') ||
+          j.includes('kimia') ||
+          j.includes('gas bocor')
+        )
+          return 'tumpahan_bahan';
+
+        if (
+          (j.includes('angkat mayat') || j.includes('mengangkat mayat')) &&
+          (j.includes('bantuan') || j.includes('agensi') || j.includes('polis'))
+        )
+          return 'tugas_khas';
+        if (
+          j.includes('standby') ||
+          j.includes('stand by') ||
+          j.includes('bantuan agensi') ||
+          j.includes('pengiring') ||
+          j.includes('rondaan') ||
+          j.includes('helikopter') ||
+          j.includes('bola sepak') ||
+          j.includes('sukan') ||
+          j.includes('perlawanan') ||
+          j.includes('eksesais') ||
+          j.includes('latihan') ||
+          j.includes('demonstrasi') ||
+          j.includes('kawalan') ||
+          j.includes('tugas khas')
+        )
+          return 'tugas_khas';
+
+        return 'lain_lain';
+      }
+
+      function classifyCase(r) {
+        const c = getCaseCategory(r);
+        if (
+          c === 'kebakaran_bangunan' ||
+          c === 'kebakaran_terbuka' ||
+          c === 'kebakaran_perkakas' ||
+          c === 'kebakaran_kenderaan'
+        )
+          return 'kebakaran';
+        if (c === 'menyelamat') return 'menyelamat';
+        if (c === 'tugas_khas') return 'tugaskhas';
+        if (c === 'lain_lain') return 'lain';
+        return 'khidmat';
+      }
+      function getBorderClass(k) {
+        const m = {
+          kebakaran: 'cat-kebakaran',
+          menyelamat: 'cat-menyelamat',
+          khidmat: 'cat-khidmat',
+          tugaskhas: 'cat-tugaskhas',
+          lain: 'cat-lain',
+        };
+        return m[k] || 'cat-khidmat';
+      }
+
+      function getCaseEmoji(j) {
+        const l = (j || '').toLowerCase();
+
+        if (
+          l.includes('kebakaran bangunan') ||
+          l.includes('kebakaran rumah') ||
+          l.includes('asrama pekerja') ||
+          l.includes('api') ||
+          l.includes('terbakar') ||
+          l.includes('perkakas') ||
+          l.includes('kebakaran kereta') ||
+          l.includes('kebakaran suis box') ||
+          l.includes('letupan')
+        )
+          return '🔥';
+
+        if (
+          l.includes('kebakaran terbuka') ||
+          l.includes('lalang') ||
+          l.includes('belukar') ||
+          l.includes('semak')
+        )
+          return '🍂';
+
+        if (l.includes('kebakaran sampah') || l.includes('longgokan sampah'))
+          return '🗑️';
+
+        if (
+          l.includes('kebakaran elektrik') ||
+          l.includes('tiang') ||
+          l.includes('meter') ||
+          l.includes('kabel')
+        )
+          return '⚡️';
+
+        if (l.includes('kilang') || l.includes('petronas')) return '🏭';
+
+        if (l.includes('lemas') || l.includes('pantai')) return '🏊🏼';
+
+        if (
+          l.includes('warung') ||
+          l.includes('gerai') ||
+          l.includes('kedai') ||
+          l.includes('restoran') ||
+          l.includes('kafe')
+        )
+          return '🏪';
+        if (
+          l.includes('kemalangan') ||
+          l.includes('KJR') ||
+          l.includes('langgar') ||
+          l.includes('terbabas') ||
+          l.includes('terbalik') ||
+          l.includes('rempuh')
+        )
+          return '🚗';
+
+        if (
+          l.includes('bantuan emrs') ||
+          l.includes('bantuan kkm') ||
+          l.includes('menyelamat mangsa') ||
+          l.includes('ambulans')
+        )
+          return '🚑';
+
+        if (l.includes('bantuan polis') || l.includes('angkat mayat'))
+          return '🛌';
+
+        if (
+          l.includes('tanah runtuh') ||
+          l.includes('ribut') ||
+          l.includes('bencana')
+        )
+          return '🌊';
+
+        if (
+          l.includes('banjir') ||
+          l.includes('air naik') ||
+          l.includes('air pasang')
+        )
+          return '🌊';
+
+        if (
+          l.includes('tumpahan') ||
+          l.includes('minyak') ||
+          l.includes('bahan berbahaya') ||
+          l.includes('kebocoran') ||
+          l.includes('gas')
+        )
+          return '🛢️';
+
+        if (l.includes('pokok') || l.includes('tumbang')) return '🪵';
+
+        if (l.includes('ular') || l.includes('sawah') || l.includes('tedung'))
+          return '🐍';
+
+        if (
+          l.includes('lebah') ||
+          l.includes('serangga') ||
+          l.includes('tebuan')
+        )
+          return '🐝';
+        if (l.includes('musang')) return '🦊';
+        if (l.includes('biawak')) return '🦎';
+        if (l.includes('kucing')) return '🐱';
+        if (l.includes('anjing')) return '🐶';
+        if (
+          l.includes('terperangkap') ||
+          l.includes('terkunci') ||
+          l.includes('buka pintu')
+        )
+          return '🚪';
+        if (l.includes('standby') || l.includes('stand by')) return '🎯';
+        if (l.includes('helikopter')) return '🚁';
+        if (l.includes('bola sepak') || l.includes('sukan')) return '⚽';
+        if (l.includes('rondaan')) return '🚒';
+        if (
+          l.includes('latihan') ||
+          l.includes('eksesais') ||
+          l.includes('demonstrasi')
+        )
+          return '📋';
+
+        if (l.includes('teknikal')) return '🔧';
+
+        if (l.includes('memotong cincin') || l.includes('cincin')) return '💍';
+
+        if (
+          l.includes('surau') ||
+          l.includes('masjid') ||
+          l.includes('tokong') ||
+          l.includes('gereja') ||
+          l.includes('kuil')
+        )
+          return '🕌';
+        if (
+          l.includes('sekolah') ||
+          l.includes('hospital') ||
+          l.includes('pejabat') ||
+          l.includes('premis')
+        )
+          return '🏢';
+        return '📍';
+      }
+
+      // ================================================================
+      // WEATHER
+      // ================================================================
+      async function fetchWeatherData() {
+        try {
+          const lats = JOHOR_CITIES.map((c) => c.lat).join(',');
+          const lngs = JOHOR_CITIES.map((c) => c.lng).join(',');
+          const url = `https://api.open-meteo.com/v1/forecast?latitude=${lats}&longitude=${lngs}&current_weather=true&timezone=Asia/Singapore`;
+          const r = await fetch(url);
+          if (!r.ok) throw new Error(`HTTP ${r.status}`);
+          const d = await r.json();
+          if (Array.isArray(d)) {
+            weatherData = d.map((city, i) => ({
+              name: JOHOR_CITIES[i].name,
+              temp: Math.round(city.current_weather.temperature),
+              code: city.current_weather.weathercode,
+              windspeed: city.current_weather.windspeed,
+              time: city.current_weather.time,
+            }));
+          } else {
+            const base = {
+              temp: Math.round(d.current_weather.temperature),
+              code: d.current_weather.weathercode,
+              windspeed: d.current_weather.windspeed,
+              time: d.current_weather.time,
+            };
+            weatherData = JOHOR_CITIES.map((c) => ({ ...base, name: c.name }));
+          }
+          updateWeatherTicker();
+        } catch (e) {
+          console.error('Weather error:', e.message);
+          document.getElementById('weatherTicker').innerHTML =
+            '<span class="weather-loading">⚠️ Cuaca tidak tersedia</span>';
+        }
+      }
+      function updateWeatherTicker() {
+        const t = document.getElementById('weatherTicker');
+        if (!t || !weatherData.length) return;
+        let h = '';
+        weatherData.forEach((c, i) => {
+          const wi = getWeatherIcon(c.code),
+            tc = getWeatherColor(c.temp);
+          h += `<span class="weather-item" onclick="event.stopPropagation();openWeatherForecast(${i})" title="Klik untuk ramalan ${c.name}"><span class="weather-icon">${wi.icon}</span><span class="weather-temp ${tc}">${c.temp}°C</span><span class="weather-location">${c.name}</span></span>`;
+          if (i < weatherData.length - 1)
+            h += '<span class="weather-separator">|</span>';
+        });
+        t.innerHTML = h + h + h;
+      }
+      async function fetchWeatherForecast() {
+        try {
+          const lats = JOHOR_CITIES.map((c) => c.lat).join(',');
+          const lngs = JOHOR_CITIES.map((c) => c.lng).join(',');
+          const url = `https://api.open-meteo.com/v1/forecast?latitude=${lats}&longitude=${lngs}&hourly=temperature_2m,weathercode,precipitation_probability&timezone=Asia%2FSingapore&forecast_days=1`;
+          const r = await fetch(url);
+          if (!r.ok) throw new Error(`HTTP ${r.status}`);
+          const d = await r.json();
+          if (Array.isArray(d)) {
+            weatherForecastData = d.map((city, i) => ({
+              name: JOHOR_CITIES[i].name,
+              hourly: city.hourly,
+            }));
+          } else {
+            weatherForecastData = JOHOR_CITIES.map((c) => ({
+              name: c.name,
+              hourly: d.hourly,
+            }));
+          }
+          if (
+            document
+              .getElementById('weatherModalOverlay')
+              .classList.contains('active')
+          )
+            renderWeatherForecast();
+        } catch (e) {
+          console.error('Forecast error:', e.message);
+        }
+      }
+      function openWeatherForecast(cityIndex) {
+        currentWeatherCityIndex = cityIndex;
+        document.getElementById('weatherModalOverlay').classList.add('active');
+        document.body.style.overflow = 'hidden';
+        const now = new Date();
+        document.getElementById('weatherModalDate').textContent =
+          '📅 ' +
+          now.toLocaleDateString('ms-MY', {
+            weekday: 'long',
+            day: 'numeric',
+            month: 'long',
+            year: 'numeric',
+          }) +
+          ' | 🕒 ' +
+          formatHour(now);
+        renderWeatherForecast();
+        if (!weatherForecastData.length && !forecastFetchPromise) {
+          forecastFetchPromise = fetchWeatherForecast().finally(() => {
+            forecastFetchPromise = null;
+          });
+        }
+      }
+      function closeWeatherModal(e) {
+        if (e && e.target !== e.currentTarget) return;
+        document
+          .getElementById('weatherModalOverlay')
+          .classList.remove('active');
+        document.body.style.overflow = '';
+      }
+      function navigateWeatherCity(dir) {
+        currentWeatherCityIndex += dir;
+        if (currentWeatherCityIndex < 0)
+          currentWeatherCityIndex = JOHOR_CITIES.length - 1;
+        if (currentWeatherCityIndex >= JOHOR_CITIES.length)
+          currentWeatherCityIndex = 0;
+        renderWeatherForecast();
+      }
+      function renderWeatherForecast() {
+        const grid = document.getElementById('weatherForecastGrid'),
+          title = document.getElementById('weatherModalTitle');
+        if (!grid || !title) return;
+        title.textContent =
+          '🌤️ RAMALAN CUACA - ' + JOHOR_CITIES[currentWeatherCityIndex].name;
+        if (!weatherForecastData.length) {
+          grid.innerHTML =
+            '<div class="weather-loading-forecast" style="grid-column:1/-1;">⏳ Memuat data...</div>';
+          return;
+        }
+        const city = weatherForecastData[currentWeatherCityIndex];
+        if (!city?.hourly?.time?.length) {
+          grid.innerHTML =
+            '<div class="weather-loading-forecast" style="grid-column:1/-1;">⚠️ Tiada data</div>';
+          return;
+        }
+        const now = new Date();
+        let html = '',
+          count = 0,
+          startIdx = 0;
+        for (let i = 0; i < city.hourly.time.length; i++) {
+          if (new Date(city.hourly.time[i]) >= now) {
+            startIdx = i;
+            break;
+          }
+        }
+        for (let i = startIdx; i < city.hourly.time.length && count < 12; i++) {
+          const time = new Date(city.hourly.time[i]),
+            temp = Math.round(city.hourly.temperature_2m[i]),
+            code = city.hourly.weathercode[i],
+            rain = city.hourly.precipitation_probability?.[i] || 0,
+            wi = getWeatherIcon(code),
+            tc = getWeatherColor(temp);
+          html += `<div class="weather-hour-item"><div class="weather-hour-time">${formatHour(
+            time
+          )}</div><div class="weather-hour-icon">${
+            wi.icon
+          }</div><div class="weather-hour-temp ${tc}">${temp}°C</div>${
+            rain > 0 ? `<div class="weather-hour-rain">💧${rain}%</div>` : ''
+          }</div>`;
+          count++;
+        }
+        grid.innerHTML = count
+          ? html
+          : '<div class="weather-loading-forecast" style="grid-column:1/-1;">⚠️ Tiada data</div>';
+      }
+
+      // ================================================================
+      // DATA FETCHING
+      // ================================================================
+      async function fetchSingleCSV(url, label) {
+        try {
+          const response = await fetch(url, { cache: 'no-cache' });
+          const text = await response.text();
+          const rows = parseCSV(text);
+
+          if (rows.length < 2) {
+            console.warn(`⚠️ ${label}: No data rows found`);
+            return [];
+          }
+
+          const headers = rows[0];
+
+          const idx = {
+            callCard: detectColumnIndex(headers, 'CALL CARD'),
+            balai: detectColumnIndex(headers, 'Balai'),
+            jenis: detectColumnIndex(headers, 'Jenis Panggilan Operasi'),
+            alamat: detectColumnIndex(headers, 'Alamat Tempat Kejadian'),
+            masa: detectColumnIndex(headers, 'TERIMA PANGGILAN'),
+            sampai: detectColumnIndex(headers, 'SAMPAI LOKASI'),
+            respon: detectColumnIndex(headers, 'TEMPOH MASA SAMPAI LOKASI'),
+            tempoh: detectColumnIndex(headers, 'TEMPOH OPERASI'),
+            lat: detectColumnIndex(headers, 'LAT'),
+            lng: detectColumnIndex(headers, 'LONG'),
+            latLong: detectColumnIndex(headers, 'LAT LONG'),
+            mati: detectColumnIndex(headers, 'MATI'),
+            cedera: detectColumnIndex(headers, 'CEDERA'),
+            selamat: detectColumnIndex(headers, 'SELAMAT'),
+            maklumat: detectColumnIndex(headers, 'MAKLUMAT KEJADIAN'),
+            tarikh: detectColumnIndex(headers, 'Tarikh \n Kejadian \n (q)'),
+            operasiTamat: detectColumnIndex(headers, 'OPERASI TAMAT O/T'),
+            pko: detectColumnIndex(headers, 'LIST BALAI SELAIN BALAI SG'),
+            kiraRT: detectColumnIndex(
+              headers,
+              'KES YANG TIDAK DIKIRA SEBAGAI RT'
+            ),
+            shif: detectColumnIndex(headers, 'SHIF'),
+            keluasanTerbuka: detectColumnIndex(
+              headers,
+              'KELUASAN KEBAKARAN TERBUKA (HEKTAR)'
+            ),
+            keluasanDipadam: detectColumnIndex(
+              headers,
+              'KELUASAN DIPADAMKAN (HEKTAR)'
+            ),
+          };
+
+          const data = [];
+          let skippedCount = 0;
+          let totalRows = 0;
+
+          for (let i = 1; i < rows.length; i++) {
+            const row = rows[i];
+            totalRows++;
+
+            if (
+              !row ||
+              row.length === 0 ||
+              (row.length === 1 && !row[0].trim())
+            ) {
+              skippedCount++;
+              continue;
+            }
+
+            const callCard =
+              idx.callCard >= 0 ? (row[idx.callCard] || '').trim() : '';
+
+            if (
+              !callCard.includes('JBPM') ||
+              callCard.includes('XXXXXX') ||
+              callCard.length <= 5
+            ) {
+              skippedCount++;
+              continue;
+            }
+
+            let lat = 0,
+              lng = 0;
+
+            if (idx.lat >= 0 && idx.lng >= 0) {
+              const latStr = (row[idx.lat] || '').trim();
+              const lngStr = (row[idx.lng] || '').trim();
+              if (latStr && lngStr) {
+                const latVal = parseFloat(latStr);
+                const lngVal = parseFloat(lngStr);
+                if (!isNaN(latVal) && !isNaN(lngVal)) {
+                  lat = latVal;
+                  lng = lngVal;
+                }
+              }
+            }
+
+            if (lat === 0 && lng === 0 && idx.latLong >= 0) {
+              const latLongStr = (row[idx.latLong] || '').trim();
+              if (latLongStr && latLongStr.includes(',')) {
+                const parts = latLongStr.split(',');
+                if (parts.length >= 2) {
+                  const latVal = parseFloat(parts[0].trim());
+                  const lngVal = parseFloat(parts[1].trim());
+                  if (!isNaN(latVal) && !isNaN(lngVal)) {
+                    lat = latVal;
+                    lng = lngVal;
+                  }
+                }
+              }
+            }
+
+            let kiraRT = 'YA';
+            if (idx.kiraRT >= 0) {
+              const val = (row[idx.kiraRT] || '').trim().toUpperCase();
+              if (val === 'YA' || val === 'TIDAK') kiraRT = val;
+            }
+
+            let responTime = '-';
+            if (idx.respon >= 0) responTime = (row[idx.respon] || '').trim();
+            if ((responTime === '-' || responTime === '') && idx.tempoh >= 0) {
+              responTime = (row[idx.tempoh] || '').trim();
+            }
+
+            const caseData = {
+              callCard: callCard,
+              balai: idx.balai >= 0 ? (row[idx.balai] || '').trim() : '-',
+              jenis: idx.jenis >= 0 ? (row[idx.jenis] || '').trim() : '-',
+              alamat: idx.alamat >= 0 ? (row[idx.alamat] || '').trim() : '-',
+              masa: idx.masa >= 0 ? (row[idx.masa] || '').trim() : '-',
+              respon_time: responTime,
+              tempoh_operasi:
+                idx.tempoh >= 0 ? (row[idx.tempoh] || '').trim() : '-',
+              sampai_lokasi:
+                idx.sampai >= 0 ? (row[idx.sampai] || '').trim() : '-',
+              lat: lat,
+              long: lng,
+              mangsa_mati: idx.mati >= 0 ? parseInt(row[idx.mati]) || 0 : 0,
+              mangsa_cedera:
+                idx.cedera >= 0 ? parseInt(row[idx.cedera]) || 0 : 0,
+              mangsa_selamat:
+                idx.selamat >= 0 ? parseInt(row[idx.selamat]) || 0 : 0,
+              maklumat_kejadian:
+                idx.maklumat >= 0 ? (row[idx.maklumat] || '').trim() : '',
+              tarikh: idx.tarikh >= 0 ? (row[idx.tarikh] || '').trim() : '-',
+              operasi_tamat:
+                idx.operasiTamat >= 0
+                  ? (row[idx.operasiTamat] || '').trim()
+                  : '-',
+              pko: idx.pko >= 0 ? (row[idx.pko] || '').trim() : '-',
+              kira_respon_time: kiraRT,
+              shif: idx.shif >= 0 ? (row[idx.shif] || '').trim() : '-',
+              source: label,
+              keluasan_terbuka:
+                idx.keluasanTerbuka >= 0
+                  ? parseFloat(row[idx.keluasanTerbuka]) || 0
+                  : 0,
+              keluasan_dipadam:
+                idx.keluasanDipadam >= 0
+                  ? parseFloat(row[idx.keluasanDipadam]) || 0
+                  : 0,
+            };
+
+            data.push(caseData);
+          }
+
+          return data;
+        } catch (error) {
+          console.error(`❌ Error fetching ${label}:`, error.message);
+          return [];
+        }
+      }
+
+      async function fetchAllData() {
+        try {
+          const [dataA, dataB, dataC] = await Promise.all([
+            fetchSingleCSV(CSV_URLS.syifA, 'Syif A'),
+            fetchSingleCSV(CSV_URLS.syifB, 'Syif B'),
+            fetchSingleCSV(CSV_URLS.syifC, 'Syif C'),
+          ]);
+
+          allFetchedData = [...dataA, ...dataB, ...dataC];
+          currentDay = findLatestOperatingDayFromData(allFetchedData);
+
+          updateDayBadge();
+          filterDataByDay();
+        } catch (error) {
+          console.error('❌ Error fetching all data:', error.message);
+          document.getElementById('filteredCases').innerHTML =
+            '<div class="case-item cat-kebakaran">⚠️ Error: ' +
+            error.message +
+            '</div>';
+        }
+      }
+
+      // ================================================================
+      // DASHBOARD FUNCTIONS
+      // ================================================================
+      function updateDayBadge() {
+        const badge = document.getElementById('dayBadge');
+        const label = document.getElementById('statDayLabel');
+        if (badge) badge.textContent = '📅 ' + (currentDay || 'DAY -');
+        if (label) label.textContent = currentDay || '-';
+      }
+
+      function filterDataByDay() {
+        allCaseData = currentDay
+          ? allFetchedData.filter((d) => {
+              const t = parseTarikhKejadian(d.tarikh);
+              if (!t) return false;
+              const jam = parseJamDariMasa(d.masa);
+              let operatingDate = new Date(t);
+              if (jam < 6) {
+                operatingDate.setDate(operatingDate.getDate() - 1);
+              }
+              const dayFromDateTime = 'DAY ' + operatingDate.getDate();
+              return dayFromDateTime === currentDay;
+            })
+          : [...allFetchedData];
+
+        updateDashboard(allCaseData);
+        renderFilteredCases();
+        if (expandedPanel === 'panelStats') renderPopupCases();
+      }
+
+      function getFilteredData() {
+        return allCaseData.filter(
+          (d) => activeCategories[getCaseCategory(d)] === true
+        );
+      }
+
+      function renderFilteredCases() {
+        const container = document.getElementById('filteredCases');
+        if (!container) return;
+
+        const filtered = getFilteredData();
+        let html = filtered
+          .map((d) => {
+            const emoji = getCaseEmoji(d.jenis);
+            const classification = classifyCase(d);
+            const borderClass = getBorderClass(classification);
+            const shifBadge = getShifBadge(d.shif);
+            let badges = '';
+            if (d.mangsa_mati > 0)
+              badges += `<span class="badge mati">💀${d.mangsa_mati}</span> `;
+            if (d.mangsa_cedera > 0)
+              badges += `<span class="badge cedera">🟠${d.mangsa_cedera}</span> `;
+            if (d.mangsa_selamat > 0)
+              badges += `<span class="badge selamat">🟢${d.mangsa_selamat}</span> `;
+            return `<div class="case-item ${borderClass}" onclick="showCaseDetail(allCaseData[${allCaseData.indexOf(
+              d
+            )}])"><div class="case-header-row"><span class="case-title">${emoji} ${
+              d.jenis
+            }</span><span class="case-balai">${
+              d.balai
+            } ${shifBadge}</span></div><div class="case-detail">📌 ${d.alamat.substring(
+              0,
+              35
+            )}...</div><div class="case-detail">📅 ${d.tarikh} · 🕒 ${
+              d.masa
+            } · ⏱️ ${
+              d.respon_time
+            }</div>${badges}<div class="case-click-hint">👆 Klik untuk maklumat</div></div>`;
+          })
+          .join('');
+
+        container.innerHTML = html
+          ? html + html + html
+          : '<div style="color:#888;padding:20px;text-align:center;">✅ Tiada kes untuk filter dipilih</div>';
+
+        if (animationIds['filterWrapper'])
+          cancelAnimationFrame(animationIds['filterWrapper']);
+        if (resumeTimeouts['filterWrapper'])
+          clearTimeout(resumeTimeouts['filterWrapper']);
+        startInfiniteMotion('filterWrapper', 0.3);
+
+        updateFilterCount();
+      }
+
+      // ================================================================
+      // MAP FUNCTIONS
+      // ================================================================
+      function initMap() {
+        if (mapInstance) {
+          mapInstance.remove();
+          mapInstance = null;
+        }
+
+        const container = document.getElementById('map-container');
+        if (!container) return;
+
+        const isMobile = window.innerWidth < 768;
+        const height = isMobile ? '150px' : '200px';
+        container.style.height = height;
+        container.style.minHeight = height;
+
+        mapInstance = L.map('map', {
+          center: JOHOR_BOUNDS.center,
+          zoom: isMobile ? 8 : JOHOR_BOUNDS.defaultZoom,
+          minZoom: 7,
+          maxZoom: 18,
+          maxBounds: [
+            [JOHOR_BOUNDS.south - 0.5, JOHOR_BOUNDS.west - 0.5],
+            [JOHOR_BOUNDS.north + 0.5, JOHOR_BOUNDS.east + 0.5],
+          ],
+          maxBoundsViscosity: 1.0,
+          touchZoom: true,
+          scrollWheelZoom: true,
+          doubleClickZoom: true,
+        });
+
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+          attribution: '© OpenStreetMap',
+          maxZoom: 18,
+        }).addTo(mapInstance);
+
+        setTimeout(() => {
+          if (mapInstance) mapInstance.invalidateSize();
+        }, 300);
+      }
+
+      function updateMap(data) {
+        const valid = data.filter(
+          (d) =>
+            d.lat !== 0 &&
+            d.long !== 0 &&
+            !isNaN(d.lat) &&
+            !isNaN(d.long) &&
+            isInJohor(d.lat, d.long)
+        );
+
+        if (!mapInstance) {
+          initMap();
+          setTimeout(() => updateMap(data), 100);
+          return;
+        }
+
+        if (markersLayer) {
+          mapInstance.removeLayer(markersLayer);
+          markersLayer = null;
+        }
+
+        markersLayer = L.layerGroup();
+        const isMobile = window.innerWidth < 768;
+        const maxMarkers = isMobile ? 50 : 200;
+
+        valid.slice(0, maxMarkers).forEach((d) => {
+          const emoji = getCaseEmoji(d.jenis);
+          const classification = classifyCase(d);
+          const markerClass =
+            classification === 'kebakaran'
+              ? 'kebakaran'
+              : classification === 'menyelamat'
+              ? 'menyelamat'
+              : classification === 'khidmat'
+              ? 'khidmat'
+              : classification === 'tugaskhas'
+              ? 'tugaskhas'
+              : 'lain';
+
+          const size = isMobile ? 30 : 40;
+          const fontSize = isMobile ? '14px' : '20px';
+
+          const icon = L.divIcon({
+            className: 'custom-marker ' + markerClass,
+            html: `<div style="width:${size}px;height:${size}px;font-size:${fontSize};">${emoji}</div>`,
+            iconSize: [size, size],
+            iconAnchor: [size / 2, size / 2],
+            popupAnchor: [0, -size / 2],
+          });
+
+          const marker = L.marker([d.lat, d.long], { icon: icon });
+          const popupContent = isMobile
+            ? `<div style="font-size:0.7rem;cursor:pointer;" onclick="showCaseDetail(allCaseData[${allCaseData.indexOf(
+                d
+              )}])"><strong>${emoji} ${
+                d.jenis
+              }</strong><br>📍 ${d.alamat.substring(0, 30)}<br>🏢 ${
+                d.balai
+              }<br>🗺️ ${d.lat.toFixed(5)}, ${d.long.toFixed(5)}</div>`
+            : `<div style="font-family:Arial;max-width:220px;font-size:0.85rem;cursor:pointer;" onclick="showCaseDetail(allCaseData[${allCaseData.indexOf(
+                d
+              )}])">
+                 <div style="font-weight:bold;font-size:0.95rem;margin-bottom:2px;">${emoji} ${
+                d.jenis
+              }</div>
+                 <div style="color:#444;margin-bottom:4px;">🏢 ${d.balai}</div>
+                 <div style="color:#555;border-bottom:1px solid #ccc;padding-bottom:6px;margin-bottom:6px;">
+                   📍 ${d.alamat.substring(0, 45)}
+                 </div>
+                 <div style="color:#666;font-size:0.75rem;">
+                   🗺️ ${d.lat.toFixed(5)}, ${d.long.toFixed(5)}
+                 </div>
+               </div>`;
+
+          marker.bindPopup(popupContent, {
+            maxWidth: isMobile ? 200 : 300,
+            className: 'custom-popup',
+          });
+
+          markersLayer.addLayer(marker);
+        });
+
+        markersLayer.addTo(mapInstance);
+
+        if (valid.length > 0) {
+          mapInstance.fitBounds(
+            L.latLngBounds(valid.map((d) => [d.lat, d.long])),
+            {
+              padding: [isMobile ? 10 : 20, isMobile ? 10 : 20],
+              maxZoom: isMobile ? 11 : 13,
+            }
+          );
+        } else {
+          mapInstance.setView(
+            JOHOR_BOUNDS.center,
+            isMobile ? 8 : JOHOR_BOUNDS.defaultZoom
+          );
+        }
+
+        setTimeout(() => {
+          if (mapInstance) mapInstance.invalidateSize();
+        }, 200);
+      }
+
+      function updateMapForCurrentMode() {
+        updateMap(
+          expandedPanel === 'panelStats' ? allCaseData : getFilteredData()
+        );
+      }
+
+      // ================================================================
+      // INFINITE SCROLL
+      // ================================================================
+      function startInfiniteMotion(wrapperId, speed) {
+        const wrapper = document.getElementById(wrapperId);
+        if (!wrapper) return;
+
+        const container = wrapper.parentElement;
+        let y = 0;
+        let paused = false;
+        const isMobile = window.innerWidth < 768;
+        const adjustedSpeed = isMobile ? speed * 1.5 : speed;
+
+        function animate() {
+          if (!paused && wrapper.scrollHeight > container.clientHeight) {
+            y -= adjustedSpeed;
+            if (y <= -(wrapper.scrollHeight / 3)) y = 0;
+            wrapper.style.transform = 'translateY(' + y + 'px)';
+          }
+          animationIds[wrapperId] = requestAnimationFrame(animate);
+        }
+
+        function pauseMotion() {
+          paused = true;
+          if (resumeTimeouts[wrapperId])
+            clearTimeout(resumeTimeouts[wrapperId]);
+          resumeTimeouts[wrapperId] = setTimeout(() => {
+            paused = false;
+          }, 3000);
+        }
+
+        container.addEventListener('scroll', pauseMotion);
+        container.addEventListener('wheel', pauseMotion);
+        container.addEventListener('touchstart', pauseMotion);
+        container.addEventListener('mousedown', pauseMotion);
+
+        if (animationIds[wrapperId])
+          cancelAnimationFrame(animationIds[wrapperId]);
+        animate();
+      }
+
+      // ================================================================
+      // MAP POPUP
+      // ================================================================
+      function createMapPopup() {
+        if (window.innerWidth < 768) return;
+        removeMapPopup();
+
+        const mapContainer = document.getElementById('map-container');
+        if (!mapContainer) return;
+
+        const popup = document.createElement('div');
+        popup.id = 'mapCasePopup';
+        popup.className = 'map-popup-overlay';
+        popup.innerHTML = `<div class="map-popup-header" id="popupDragHandle"><h4>📋 SEMUA KES</h4><span class="popup-count" id="popupCount">0 rekod</span></div><div class="map-popup-scroll" id="popupScroll"><div class="map-popup-motion" id="popupMotion"><div id="popupCases"></div></div></div>`;
+        mapContainer.appendChild(popup);
+
+        document
+          .getElementById('popupDragHandle')
+          ?.addEventListener('mousedown', startDrag);
+        document
+          .getElementById('popupDragHandle')
+          ?.addEventListener('touchstart', startDrag, { passive: false });
+        document.addEventListener('mousemove', onDrag);
+        document.addEventListener('mouseup', stopDrag);
+        document.addEventListener('touchmove', onDrag, { passive: false });
+        document.addEventListener('touchend', stopDrag);
+
+        renderPopupCases();
+        startPopupMotion();
+      }
+
+      function renderPopupCases() {
+        const container = document.getElementById('popupCases');
+        const count = document.getElementById('popupCount');
+        if (!container || !count) return;
+
+        count.textContent = allCaseData.length + ' rekod';
+
+        let html = allCaseData
+          .map((d, i) => {
+            const emoji = getCaseEmoji(d.jenis);
+            const classification = classifyCase(d);
+            const borderClass = getBorderClass(classification);
+            const shifBadge = getShifBadge(d.shif);
+            let badges = '';
+            if (d.mangsa_mati > 0)
+              badges += `<span class="badge mati">💀${d.mangsa_mati}</span>`;
+            if (d.mangsa_cedera > 0)
+              badges += `<span class="badge cedera">🟠${d.mangsa_cedera}</span>`;
+            if (d.mangsa_selamat > 0)
+              badges += `<span class="badge selamat">🟢${d.mangsa_selamat}</span>`;
+
+            return `<div class="popup-case-item ${borderClass}" onclick="showPopupCaseDetail(${i})" style="display:flex;justify-content:space-between;align-items:flex-start;">
+              <div style="flex:1;padding-right:10px;">
+                <div style="font-weight:bold;font-size:0.85rem;">${emoji} ${
+              d.jenis
+            }</div>
+                <div style="font-size:0.7rem;color:#aaa;font-weight:normal;margin-top:2px;">📍 ${d.alamat.substring(
+                  0,
+                  40
+                )}</div>
+                ${
+                  badges
+                    ? '<div style="margin-top:4px;">' + badges + '</div>'
+                    : ''
+                }
+              </div>
+              <div style="display:flex;flex-direction:column;align-items:flex-end;flex-shrink:0;gap:4px;">
+                <span style="font-size:0.6rem;color:#888;">🕒 ${d.masa}</span>
+                ${shifBadge}
+              </div>
+            </div>`;
+          })
+          .join('');
+
+        container.innerHTML = html
+          ? html + html + html
+          : '<div style="color:#888;padding:10px;">✅ Tiada kes</div>';
+      }
+
+      function startPopupMotion() {
+        stopPopupMotion();
+        const wrapper = document.getElementById('popupMotion');
+        if (!wrapper) return;
+
+        let y = 0;
+        window._popupPaused = false;
+
+        function animate() {
+          if (!window._popupPaused) {
+            y -= 0.2;
+            if (y <= -(wrapper.scrollHeight / 3)) y = 0;
+            wrapper.style.transform = 'translateY(' + y + 'px)';
+          }
+          popupMotionId = requestAnimationFrame(animate);
+        }
+
+        animate();
+      }
+
+      function stopPopupMotion() {
+        if (popupMotionId) cancelAnimationFrame(popupMotionId);
+        popupMotionId = null;
+        if (popupResumeTimeout) clearTimeout(popupResumeTimeout);
+        window._popupPaused = false;
+      }
+
+      function showPopupCaseDetail(index) {
+        if (!allCaseData[index]) return;
+        const data = allCaseData[index];
+
+        document
+          .querySelectorAll('.popup-case-item')
+          .forEach((el) => el.classList.remove('active-location'));
+        activePopupCaseIndex = index;
+
+        if (
+          data.lat !== 0 &&
+          data.long !== 0 &&
+          isInJohor(data.lat, data.long) &&
+          mapInstance
+        ) {
+          mapInstance.setView([data.lat, data.long], 15, {
+            animate: true,
+            duration: 0.8,
+          });
+        }
+
+        showCaseDetail(data);
+      }
+
+      function removeMapPopup() {
+        stopDrag();
+        const popup = document.getElementById('mapCasePopup');
+        if (popup) popup.remove();
+        activePopupCaseIndex = null;
+      }
+
+      function startDrag(e) {
+        if (window.innerWidth < 768) return;
+        const popup = document.getElementById('mapCasePopup');
+        if (!popup || !e.target.closest('#popupDragHandle')) return;
+
+        isDragging = true;
+        dragTarget = popup;
+        dragStartX = e.touches ? e.touches[0].clientX : e.clientX;
+        dragStartY = e.touches ? e.touches[0].clientY : e.clientY;
+        popupStartX = popup.offsetLeft || 0;
+        popupStartY = popup.offsetTop || 0;
+        popup.classList.add('dragging');
+        popup.style.right = 'auto';
+        popup.style.top = popupStartY + 'px';
+        popup.style.left = popupStartX + 'px';
+        if (e.touches) e.preventDefault();
+      }
+
+      function onDrag(e) {
+        if (!isDragging || !dragTarget) return;
+        const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+        const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+        let newX = popupStartX + (clientX - dragStartX);
+        let newY = popupStartY + (clientY - dragStartY);
+
+        const container = dragTarget.parentElement;
+        newX = Math.max(
+          0,
+          Math.min(newX, container.clientWidth - dragTarget.offsetWidth)
+        );
+        newY = Math.max(
+          0,
+          Math.min(newY, container.clientHeight - dragTarget.offsetHeight)
+        );
+
+        dragTarget.style.left = newX + 'px';
+        dragTarget.style.top = newY + 'px';
+      }
+
+      function stopDrag() {
+        if (isDragging && dragTarget) dragTarget.classList.remove('dragging');
+        isDragging = false;
+        dragTarget = null;
+      }
+
+      // ================================================================
+      // MODAL FUNCTIONS
+      // ================================================================
+      function showCaseDetail(data, index) {
+        if (mapInstance && data.lat !== 0 && data.long !== 0) {
+          mapInstance.setView([data.lat, data.long], 15, {
+            animate: true,
+            duration: 0.8,
+          });
+
+          setTimeout(() => {
+            if (markersLayer) {
+              markersLayer.eachLayer((marker) => {
+                const latLng = marker.getLatLng();
+                if (
+                  Math.abs(latLng.lat - data.lat) < 0.0001 &&
+                  Math.abs(latLng.lng - data.long) < 0.0001
+                ) {
+                  marker.openPopup();
+                }
+              });
+            }
+          }, 900);
+
+          setTimeout(() => {
+            if (mapInstance) {
+              if (markersLayer) {
+                const allMarkers = [];
+                markersLayer.eachLayer((marker) => {
+                  allMarkers.push(marker.getLatLng());
+                });
+                if (allMarkers.length > 0) {
+                  const bounds = L.latLngBounds(allMarkers);
+                  mapInstance.fitBounds(bounds, {
+                    padding: [20, 20],
+                    maxZoom: 11,
+                    animate: true,
+                    duration: 0.8,
+                  });
+                } else {
+                  mapInstance.setView(
+                    JOHOR_BOUNDS.center,
+                    JOHOR_BOUNDS.defaultZoom,
+                    {
+                      animate: true,
+                      duration: 0.8,
+                    }
+                  );
+                }
+              }
+            }
+          }, 10000);
+        }
+
+        if (index !== undefined) {
+          document
+            .querySelectorAll('#allCases .case-item')
+            .forEach((el) => (el.style.borderLeftColor = 'var(--red)'));
+          const target = document.getElementById(`allCaseItem_${index}`);
+          if (target) target.style.borderLeftColor = 'var(--text-gold)';
+        }
+
+        const category = getCaseCategory(data);
+        const categoryMap = {
+          kebakaran_bangunan: '🏢 Kebakaran Bangunan',
+          kebakaran_terbuka: '🔥 Kebakaran Terbuka',
+          kebakaran_perkakas: '🔌 Kebakaran Perkakas',
+          kebakaran_kenderaan: '🚗 Kebakaran Kenderaan',
+          menyelamat: '🚑 Menyelamat',
+          banjir: '🌊 Banjir',
+          bencana_alam: '🌈 Bencana Alam',
+          tumpahan_bahan: '🛢️ Tumpahan & Kebocoran',
+          menangkap_binatang: '🐍🐱🦎 Binatang',
+          serangga: '🐝🦟 Serangga',
+          tugas_khas: '🎯 Tugas Khas',
+          lain_lain: '📋 Lain-lain',
+        };
+
+        document.getElementById('modalHeader').innerHTML = `${getCaseEmoji(
+          data.jenis
+        )} ${data.jenis} <span style="font-size:0.7rem;color:#aaa;">[${
+          categoryMap[category] || '📋 Lain-lain'
+        }]</span>`;
+
+        let html = `<div class="modal-info"><strong>🏢 Balai:</strong> ${
+          data.balai
+        } ${getShifBadge(data.shif)}</div>`;
+        if (data.pko && data.pko !== '-')
+          html += `<div class="modal-info"><strong>🏢 Balai Bantuan:</strong> ${data.pko}</div>`;
+        html += `<div class="modal-info"><strong>📌 Alamat:</strong> ${data.alamat}</div>`;
+        html += `<div class="modal-info"><strong>📅 Tarikh:</strong> ${data.tarikh}</div>`;
+        html += `<div class="modal-info"><strong>🚒 Terima Panggilan:</strong> ${data.masa}</div>`;
+        html += `<div class="modal-info"><strong>📍 Sampai Lokasi:</strong> ${data.sampai_lokasi}</div>`;
+        html += `<div class="modal-info"><strong>🛑 Operasi Tamat:</strong> ${data.operasi_tamat}</div>`;
+        html += `<div class="modal-info"><strong>⏳ Tempoh Operasi:</strong> ${data.tempoh_operasi}</div>`;
+
+        // BUTANG GOOGLE MAPS & WAZE DENGAN HANYA LOGO
+        if (data.lat !== 0 && data.long !== 0) {
+          html += `<div class="modal-info"><strong>🗺️ Koordinat:</strong> ${data.lat.toFixed(
+            5
+          )}, ${data.long.toFixed(5)}</div>`;
+
+          html += `<div class="nav-btn-group">
+            <a href="https://www.google.com/maps?q=${data.lat},${data.long}" target="_blank" rel="noopener noreferrer" class="nav-btn btn-gmaps" title="Google Maps">
+              <svg width="14" height="14" viewBox="0 0 48 48">
+                <path fill="#EA4335" d="M24 4C14.06 4 6 12.06 6 22c0 13.6 18 22 18 22s18-8.4 18-22C42 12.06 33.94 4 24 4z"/>
+                <circle fill="#FFFFFF" cx="24" cy="20" r="7"/>
+              </svg>
+            </a>
+            <a href="https://waze.com/ul?ll=${data.lat},${data.long}&navigate=yes" target="_blank" rel="noopener noreferrer" class="nav-btn btn-waze" title="Waze">
+              <svg width="14" height="14" viewBox="0 0 64 64">
+                <path fill="#101318" d="M32 6C17.6 6 6 17.6 6 32c0 6.3 2.3 12.1 6.1 16.6L9 58l9.8-3c4 2.5 8.4 3 13.2 3 14.4 0 26-11.6 26-26S46.4 6 32 6z"/>
+                <path fill="#FFFFFF" d="M32 9c-12.7 0-23 10.3-23 23 0 5.5 2 10.6 5.4 14.5L12 54l7.8-2.4c3.5 2.2 7.7 3.4 12.2 3.4 12.7 0 23-10.3 23-23S44.7 9 32 9z"/>
+                <circle cx="23" cy="28" r="4.5" fill="#101318"/>
+                <circle cx="41" cy="28" r="4.5" fill="#101318"/>
+                <path d="M23 37c4 5 14 5 18 0" fill="none" stroke="#101318" stroke-width="4" stroke-linecap="round"/>
+              </svg>
+            </a>
+          </div>`;
+        } else if (data.alamat && data.alamat !== '-') {
+          const query = encodeURIComponent(data.alamat + ', Johor');
+          html += `<div class="nav-btn-group">
+            <a href="https://www.google.com/maps/search/?api=1&query=${query}" target="_blank" rel="noopener noreferrer" class="nav-btn btn-gmaps" title="Google Maps (Carian)">
+              <svg width="14" height="14" viewBox="0 0 48 48">
+                <path fill="#EA4335" d="M24 4C14.06 4 6 12.06 6 22c0 13.6 18 22 18 22s18-8.4 18-22C42 12.06 33.94 4 24 4z"/>
+                <circle fill="#FFFFFF" cx="24" cy="20" r="7"/>
+              </svg>
+            </a>
+            <a href="https://waze.com/ul?q=${query}&navigate=yes" target="_blank" rel="noopener noreferrer" class="nav-btn btn-waze" title="Waze (Carian)">
+              <svg width="14" height="14" viewBox="0 0 64 64">
+                <path fill="#101318" d="M32 6C17.6 6 6 17.6 6 32c0 6.3 2.3 12.1 6.1 16.6L9 58l9.8-3c4 2.5 8.4 3 13.2 3 14.4 0 26-11.6 26-26S46.4 6 32 6z"/>
+                <path fill="#FFFFFF" d="M32 9c-12.7 0-23 10.3-23 23 0 5.5 2 10.6 5.4 14.5L12 54l7.8-2.4c3.5 2.2 7.7 3.4 12.2 3.4 12.7 0 23-10.3 23-23S44.7 9 32 9z"/>
+                <circle cx="23" cy="28" r="4.5" fill="#101318"/>
+                <circle cx="41" cy="28" r="4.5" fill="#101318"/>
+                <path d="M23 37c4 5 14 5 18 0" fill="none" stroke="#101318" stroke-width="4" stroke-linecap="round"/>
+              </svg>
+            </a>
+          </div>`;
+        }
+
+        if (category === 'kebakaran_terbuka') {
+          html += `<div class="modal-info"><strong>🌾 Luas Terbakar:</strong> ${(
+            data.keluasan_terbuka || 0
+          ).toFixed(2)} HA</div>`;
+          html += `<div class="modal-info"><strong>💧 Luas Dipadam:</strong> ${(
+            data.keluasan_dipadam || 0
+          ).toFixed(2)} HA</div>`;
+          const baki =
+            (data.keluasan_terbuka || 0) - (data.keluasan_dipadam || 0);
+          html += `<div class="modal-info"><strong>⚠️ Baki Belum Dipadam:</strong> ${baki.toFixed(
+            2
+          )} HA</div>`;
+        }
+
+        if (
+          data.mangsa_mati > 0 ||
+          data.mangsa_cedera > 0 ||
+          data.mangsa_selamat > 0
+        ) {
+          html += `<div class="modal-section"><h3>👥 Maklumat Mangsa</h3>`;
+          if (data.mangsa_mati > 0)
+            html += `<p>💀 <strong>Mati:</strong> ${data.mangsa_mati} orang</p>`;
+          if (data.mangsa_cedera > 0)
+            html += `<p>🟠 <strong>Cedera:</strong> ${data.mangsa_cedera} orang</p>`;
+          if (data.mangsa_selamat > 0)
+            html += `<p>🟢 <strong>Selamat:</strong> ${data.mangsa_selamat} orang</p>`;
+          html += `</div>`;
+        }
+
+        if (
+          data.maklumat_kejadian &&
+          data.maklumat_kejadian !== '-' &&
+          data.maklumat_kejadian.trim()
+        ) {
+          html += `<div class="modal-section"><h3>📝 Maklumat Kejadian</h3><p>${data.maklumat_kejadian.replace(
+            /\n/g,
+            '<br>'
+          )}</p></div>`;
+        } else {
+          html += `<div class="modal-section"><h3>📝 Maklumat Kejadian</h3><p style="color:#888;">Tiada maklumat kejadian direkodkan.</p></div>`;
+        }
+
+        document.getElementById('modalContent').innerHTML = html;
+        document.getElementById('modalOverlay').classList.add('active');
+        document.body.style.overflow = 'hidden';
+      }
+
+      function closeModal(event) {
+        if (event && event.target !== document.getElementById('modalOverlay'))
+          return;
+        document.getElementById('modalOverlay').classList.remove('active');
+        document.body.style.overflow = '';
+      }
+
+      // ================================================================
+      // PANEL FUNCTIONS
+      // ================================================================
+      function expandPanel(panelId) {
+        if (expandedPanel === panelId) {
+          collapseAllPanels();
+          return;
+        }
+
+        collapseAllPanels();
+        const panel = document.getElementById(panelId);
+        document.getElementById('panelOverlay').classList.add('active');
+        panel.classList.add('expanded');
+        expandedPanel = panelId;
+
+        if (panelId === 'panelStats') {
+          if (window.innerWidth >= 768) createMapPopup();
+          updateMap(allCaseData);
+          setTimeout(() => {
+            if (mapInstance) mapInstance.invalidateSize();
+          }, 500);
+        }
+
+        if (mapInstance) setTimeout(() => mapInstance.invalidateSize(), 400);
+      }
+
+      function collapseAllPanels() {
+        document.getElementById('panelOverlay').classList.remove('active');
+        document
+          .querySelectorAll('.panel')
+          .forEach((p) => p.classList.remove('expanded'));
+        expandedPanel = null;
+        removeMapPopup();
+        stopPopupMotion();
+        activePopupCaseIndex = null;
+        updateMap(getFilteredData());
+        if (mapInstance) setTimeout(() => mapInstance.invalidateSize(), 300);
+      }
+
+      function resetPanel(panelId) {
+        if (expandedPanel === panelId) collapseAllPanels();
+        if (mapInstance) setTimeout(() => mapInstance.invalidateSize(), 300);
+      }
+
+      // ================================================================
+      // CATEGORY FILTERS
+      // ================================================================
+      function toggleCategoryCheckbox(checkbox) {
+        const label = checkbox.closest('.category-checkbox');
+        const category = label.dataset.cat;
+        activeCategories[category] = checkbox.checked;
+        if (checkbox.checked) {
+          label.classList.add('active');
+        } else {
+          label.classList.remove('active');
+        }
+        renderFilteredCases();
+        updateMapForCurrentMode();
+      }
+
+      function selectAllCategories() {
+        document
+          .querySelectorAll('.category-checkbox input[type="checkbox"]')
+          .forEach((checkbox) => {
+            checkbox.checked = true;
+            const label = checkbox.closest('.category-checkbox');
+            activeCategories[label.dataset.cat] = true;
+            label.classList.add('active');
+          });
+        renderFilteredCases();
+        updateMapForCurrentMode();
+      }
+
+      function unselectAllCategories() {
+        document
+          .querySelectorAll('.category-checkbox input[type="checkbox"]')
+          .forEach((checkbox) => {
+            checkbox.checked = false;
+            const label = checkbox.closest('.category-checkbox');
+            activeCategories[label.dataset.cat] = false;
+            label.classList.remove('active');
+          });
+        renderFilteredCases();
+        updateMapForCurrentMode();
+      }
+
+      // ================================================================
+      // DASHBOARD UPDATE
+      // ================================================================
+      function updateDashboard(data) {
+        const total = data.length;
+
+        let totalMinutes = 0,
+          countWithResponse = 0;
+        data.forEach((item) => {
+          const time = item.respon_time;
+          if (time && time.includes(':') && item.kira_respon_time === 'YA') {
+            const parts = time.split(':');
+            let minutes = 0,
+              seconds = 0;
+            if (parts.length >= 3) {
+              minutes =
+                (parseInt(parts[0]) || 0) * 60 + (parseInt(parts[1]) || 0);
+              seconds = parseInt(parts[2]) || 0;
+            } else {
+              minutes = parseInt(parts[0]) || 0;
+              seconds = parseInt(parts[1]) || 0;
+            }
+            totalMinutes += minutes + seconds / 60;
+            countWithResponse++;
+          }
+        });
+        const averageResponse =
+          countWithResponse > 0 ? totalMinutes / countWithResponse : 0;
+
+        let totalMati = 0,
+          totalCedera = 0,
+          totalSelamat = 0;
+        let countKebakaran = 0,
+          countMenyelamat = 0,
+          countKhidmat = 0,
+          countTugasKhas = 0;
+
+        let totalKesTerbuka = 0;
+        let totalLuasTerbakar = 0;
+        let totalLuasDipadam = 0;
+
+        let totalBanjir = 0;
+
+        data.forEach((item) => {
+          totalMati += item.mangsa_mati;
+          totalCedera += item.mangsa_cedera;
+          totalSelamat += item.mangsa_selamat;
+
+          const category = getCaseCategory(item);
+          const classification = classifyCase(item);
+
+          if (classification === 'kebakaran') countKebakaran++;
+          else if (classification === 'menyelamat') countMenyelamat++;
+          else if (classification === 'khidmat') countKhidmat++;
+          else if (classification === 'tugaskhas') countTugasKhas++;
+
+          if (category === 'kebakaran_terbuka') {
+            totalKesTerbuka++;
+            totalLuasTerbakar += item.keluasan_terbuka || 0;
+            totalLuasDipadam += item.keluasan_dipadam || 0;
+          }
+
+          if (category === 'banjir') {
+            totalBanjir++;
+          }
+        });
+
+        const bakiLuas = totalLuasTerbakar - totalLuasDipadam;
+
+        animateNumber('totalCalls', total);
+        animateNumber('jumlahBanjir', totalBanjir);
+        animateNumber('totalKebakaranTerbuka', totalKesTerbuka);
+
+        animateNumber('victimsMati', totalMati);
+        animateNumber('victimsCedera', totalCedera);
+        animateNumber('victimsSelamat', totalSelamat);
+
+        animateNumber('kategoriKebakaran', countKebakaran);
+        animateNumber('kategoriMenyelamat', countMenyelamat);
+        animateNumber('kategoriKhidmat', countKhidmat);
+        animateNumber('kategoriTugasKhas', countTugasKhas);
+
+        document.getElementById('luasTerbakar').textContent =
+          totalLuasTerbakar.toFixed(2);
+        document.getElementById('luasDipadam').textContent =
+          totalLuasDipadam.toFixed(2);
+        document.getElementById('luasBaki').textContent = bakiLuas.toFixed(2);
+
+        animateNumber('avgResponse', formatMMSS(averageResponse));
+
+        let allHtml = data
+          .map((item) => {
+            const emoji = getCaseEmoji(item.jenis);
+            const classification = classifyCase(item);
+            const borderClass = getBorderClass(classification);
+            const shifBadge = getShifBadge(item.shif);
+            let badges = '';
+            if (item.mangsa_mati > 0)
+              badges += `<span class="badge mati">💀${item.mangsa_mati}</span> `;
+            if (item.mangsa_cedera > 0)
+              badges += `<span class="badge cedera">🟠${item.mangsa_cedera}</span> `;
+            if (item.mangsa_selamat > 0)
+              badges += `<span class="badge selamat">🟢${item.mangsa_selamat}</span> `;
+            return `<div class="case-item ${borderClass}" onclick="showCaseDetail(allCaseData[${data.indexOf(
+              item
+            )}])"><div class="case-header-row"><span class="case-title">${emoji} ${
+              item.jenis
+            }</span><span class="case-balai">${
+              item.balai
+            } ${shifBadge}</span></div><div class="case-detail">📌 ${item.alamat.substring(
+              0,
+              35
+            )}...</div><div class="case-detail">📅 ${item.tarikh} · 🕒 ${
+              item.masa
+            } · ⏱️ ${
+              item.respon_time
+            }</div>${badges}<div class="case-click-hint">👆 Klik untuk maklumat</div></div>`;
+          })
+          .join('');
+
+        document.getElementById('allCases').innerHTML = allHtml
+          ? allHtml + allHtml + allHtml
+          : '<div style="color:#888;padding:20px;">✅ Tiada kes untuk DAY ini.</div>';
+
+        Object.values(animationIds).forEach((id) => cancelAnimationFrame(id));
+        animationIds = {};
+        Object.values(resumeTimeouts).forEach((id) => clearTimeout(id));
+        resumeTimeouts = {};
+
+        startInfiniteMotion('filterWrapper', 0.3);
+        startInfiniteMotion('allWrapper', 0.3);
+
+        updateMapForCurrentMode();
+      }
+
+      function animateNumber(elementId, newValue) {
+        const element = document.getElementById(elementId);
+        if (!element) return;
+
+        if (elementId === 'avgResponse') {
+          element.textContent = newValue;
+          return;
+        }
+
+        const oldValue = parseInt(element.textContent) || 0;
+        if (oldValue === newValue) return;
+
+        const startTime = performance.now();
+        const difference = newValue - oldValue;
+        const card = element.closest('.stat-card');
+
+        if (card) {
+          card.classList.add('flash');
+          setTimeout(() => card.classList.remove('flash'), 300);
+        }
+
+        function update(currentTime) {
+          const progress = Math.min((currentTime - startTime) / 800, 1);
+          const eased = 1 - Math.pow(1 - progress, 3);
+          element.textContent = Math.round(oldValue + difference * eased);
+          if (progress < 1) {
+            requestAnimationFrame(update);
+          } else {
+            element.textContent = newValue;
+          }
+        }
+
+        requestAnimationFrame(update);
+      }
+
+      // ================================================================
+      // UI FUNCTIONS
+      // ================================================================
+      function forceRefresh() {
+        location.reload();
+      }
+
+      function toggleFullscreen() {
+        const element = document.documentElement;
+        const body = document.body;
+
+        if (!document.fullscreenElement && !document.webkitFullscreenElement) {
+          if (element.requestFullscreen) element.requestFullscreen();
+          else if (element.webkitRequestFullscreen)
+            element.webkitRequestFullscreen();
+          body.classList.add('fullscreen-mode');
+        } else {
+          if (document.exitFullscreen) document.exitFullscreen();
+          else if (document.webkitExitFullscreen)
+            document.webkitExitFullscreen();
+          body.classList.remove('fullscreen-mode');
+        }
+      }
+
+      function updateFullscreenButton() {
+        const isFullscreen =
+          document.fullscreenElement || document.webkitFullscreenElement;
+        document.getElementById('fullscreenBtn').innerHTML = isFullscreen
+          ? '🔲 KELUAR'
+          : '📺 FULL SCREEN';
+        if (isFullscreen) document.body.classList.add('fullscreen-mode');
+        else document.body.classList.remove('fullscreen-mode');
+        setTimeout(() => {
+          if (mapInstance) mapInstance.invalidateSize();
+        }, 300);
+      }
+
+      document.addEventListener('fullscreenchange', updateFullscreenButton);
+      document.addEventListener(
+        'webkitfullscreenchange',
+        updateFullscreenButton
+      );
+
+      function toggleTheme() {
+        const body = document.body;
+        const button = document.getElementById('themeToggleBtn');
+        if (body.classList.contains('light-mode')) {
+          body.classList.remove('light-mode');
+          button.innerHTML = '🌙 MODE MALAM';
+          localStorage.setItem('pgoTheme', 'dark');
+        } else {
+          body.classList.add('light-mode');
+          button.innerHTML = '☀️ MODE SIANG';
+          localStorage.setItem('pgoTheme', 'light');
+        }
+        if (mapInstance) setTimeout(() => mapInstance.invalidateSize(), 300);
+      }
+
+      function updateClock() {
+        const now = new Date();
+        document.getElementById('clock').textContent = now.toLocaleTimeString(
+          'ms-MY',
+          {
+            timeZone: 'Asia/Kuala_Lumpur',
+            hour12: false,
+          }
+        );
+        document.getElementById('dateDisplay').textContent =
+          now.toLocaleDateString('ms-MY', {
+            weekday: 'short',
+            day: 'numeric',
+            month: 'short',
+            year: 'numeric',
+          });
+      }
+
+      // KEYBOARD SHORTCUTS
+      document.addEventListener('keydown', function (event) {
+        if (event.key === 'Escape') {
+          if (
+            document
+              .getElementById('weatherModalOverlay')
+              .classList.contains('active')
+          ) {
+            closeWeatherModal();
+            return;
+          }
+          if (
+            document.getElementById('modalOverlay').classList.contains('active')
+          ) {
+            closeModal();
+            return;
+          }
+          if (expandedPanel) collapseAllPanels();
+        }
+        if (event.ctrlKey && event.key === 'r') {
+          event.preventDefault();
+          forceRefresh();
+        }
+        if (event.key === 'f' || event.key === 'F') {
+          if (!event.target.closest('input, textarea, [contenteditable]')) {
+            toggleFilterSection();
+          }
+        }
+      });
+
+      // INITIALIZATION
+      (function init() {
+        if (localStorage.getItem('pgoTheme') === 'light') {
+          document.body.classList.add('light-mode');
+          document.getElementById('themeToggleBtn').innerHTML = '☀️ MODE SIANG';
+        }
+
+        setInterval(updateClock, 1000);
+        updateClock();
+
+        setTimeout(() => initMap(), 100);
+
+        fetchAllData();
+
+        setTimeout(() => fetchWeatherData(), 3000);
+        setTimeout(() => fetchWeatherForecast(), 6000);
+
+        setInterval(fetchAllData, 60000);
+        setInterval(fetchWeatherData, 600000);
+        setInterval(fetchWeatherForecast, 600000);
+
+        updateFullscreenButton();
+
+        initFilterSection();
+      })();
+    </script>
+    <script>
+      // BUNYI KLIK (CLICK SOUND)
+      (function () {
+        let audioCtx = null;
+
+        function playClickSound() {
+          try {
+            if (!audioCtx) {
+              audioCtx = new (window.AudioContext ||
+                window.webkitAudioContext)();
+            }
+
+            const oscillator = audioCtx.createOscillator();
+            const gainNode = audioCtx.createGain();
+
+            oscillator.type = 'sine';
+            oscillator.frequency.value = 1200;
+
+            gainNode.gain.setValueAtTime(0.3, audioCtx.currentTime);
+            gainNode.gain.exponentialRampToValueAtTime(
+              0.01,
+              audioCtx.currentTime + 0.08
+            );
+
+            oscillator.connect(gainNode);
+            gainNode.connect(audioCtx.destination);
+
+            oscillator.start();
+            oscillator.stop(audioCtx.currentTime + 0.08);
+          } catch (e) {
+            // Senyap
+          }
+        }
+
+        document.addEventListener('click', function (e) {
+          playClickSound();
+        });
+      })();
+    </script>
+  </body>
+</html>
