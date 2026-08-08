@@ -1,0 +1,1689 @@
+<!DOCTYPE html>
+<html lang="ms">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <title>JBPM JOHOR · DASHBOARD KEKUATAN ANGGOTA</title>
+
+    <!-- ===== ANTI-CACHE ===== -->
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+    <meta http-equiv="Pragma" content="no-cache" />
+    <meta http-equiv="Expires" content="0" />
+
+    <!-- ===== IKON / LOGO ===== -->
+    <link rel="icon" type="image/png" href="https://raw.githubusercontent.com/pgojhbravo5/KEKUATAN-ANGGOTA-JBPM-JOHOR/main/balai-bomba.png?v=3" />
+    <link rel="apple-touch-icon" href="https://raw.githubusercontent.com/pgojhbravo5/KEKUATAN-ANGGOTA-JBPM-JOHOR/main/balai-bomba.png?v=3" />
+
+    <!-- ===== FONT AWESOME ===== -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+
+    <!-- ===== GOOGLE FONTS ===== -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+
+    <!-- ===== TAILWIND CSS ===== -->
+    <script src="https://cdn.tailwindcss.com">
+    </script>
+
+    <!-- ===== SUPABASE JS ===== -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2">
+    </script>
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: { sans: ['Inter', 'sans-serif'] },
+                    colors: {
+                        bomba: { red: '#b91c1c', darkred: '#7f1d1d', navy: '#1e293b', gold: '#eab308' }
+                    },
+                    animation: { 'pulse-slow': 'pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite' }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        /* ===== ROOT & SAFE AREA ===== */
+        :root {
+            --sab: env(safe-area-inset-bottom, 0px);
+            --sat: env(safe-area-inset-top, 0px);
+        }
+
+        /* ===== LATAR BELAKANG ===== */
+        body {
+            background-image: url('https://raw.githubusercontent.com/pgojhbravo5/KEKUATAN-ANGGOTA-JBPM-JOHOR/8c44a756dcbf34a06db7847334a711d6134efbde/firetruck-BG.png?v=3');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            background-repeat: no-repeat;
+            min-height: 100vh;
+            position: relative;
+            padding-bottom: 80px;
+        }
+        @media (min-width: 1024px) {
+            body {
+                padding-bottom: 0;
+            }
+        }
+
+        body::after {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(15, 23, 42, 0.70);
+            backdrop-filter: blur(4px);
+            -webkit-backdrop-filter: blur(4px);
+            z-index: -2;
+            pointer-events: none;
+        }
+
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: transparent;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8;
+        }
+
+        .hide-scroll {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+        .hide-scroll::-webkit-scrollbar {
+            display: none;
+        }
+        .table-container {
+            max-height: 400px;
+            overflow-y: auto;
+            scroll-behavior: smooth;
+        }
+        .table-breakdown-wrap {
+            max-height: 420px;
+            overflow-y: auto;
+            scroll-behavior: smooth;
+        }
+        .table-breakdown {
+            overflow-x: auto;
+        }
+        .table-breakdown table {
+            min-width: 900px;
+        }
+        .table-breakdown th,
+        .table-breakdown td {
+            white-space: nowrap;
+        }
+        .sticky-col {
+            position: sticky;
+            left: 0;
+            background: white;
+            z-index: 5;
+        }
+        .sticky-col-header {
+            position: sticky;
+            left: 0;
+            background: #f8fafc;
+            z-index: 10;
+        }
+
+        /* ===== BADGE ===== */
+        .badge-status {
+            padding: 0.1rem 0.6rem;
+            border-radius: 20px;
+            font-size: 0.6rem;
+            font-weight: 700;
+            border: 1px solid transparent;
+            display: inline-block;
+            white-space: nowrap;
+        }
+        .badge-status.green {
+            background: #ecfdf5;
+            color: #065f46;
+            border-color: #a7f3d0;
+        }
+        .badge-status.amber {
+            background: #fffbeb;
+            color: #92400e;
+            border-color: #fde68a;
+        }
+        .badge-status.red {
+            background: #fef2f2;
+            color: #991b1b;
+            border-color: #fca5a5;
+        }
+        .badge-status.purple {
+            background: #f5f3ff;
+            color: #5b21b6;
+            border-color: #c4b5fd;
+        }
+        .badge-status.slate {
+            background: #f1f5f9;
+            color: #475569;
+            border-color: #cbd5e1;
+        }
+        .badge-status.blue {
+            background: #eff6ff;
+            color: #1e40af;
+            border-color: #93c5fd;
+        }
+        .badge-status.emerald {
+            background: #ecfdf5;
+            color: #065f46;
+            border-color: #6ee7b7;
+        }
+        .badge-status.rose {
+            background: #fef2f2;
+            color: #991b1b;
+            border-color: #fca5a5;
+        }
+
+        /* ===== GRID 2 LAJUR (Desktop) ===== */
+        .panel-grid-2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.25rem;
+        }
+        @media (max-width: 768px) {
+            .panel-grid-2 {
+                grid-template-columns: 1fr;
+                gap: 0.75rem;
+            }
+        }
+
+        /* ===== BROADCAST TICKER ===== */
+        .ticker-wrap {
+            width: 100%;
+            overflow: hidden;
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #0f172a 100%);
+            border-radius: 14px;
+            border-left: 4px solid #eab308;
+            border-right: 4px solid #eab308;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+            position: relative;
+            padding: 0.5rem 0;
+        }
+        @media (max-width: 768px) {
+            .ticker-wrap {
+                padding: 0.3rem 0;
+                border-radius: 10px;
+            }
+            .ticker-item {
+                font-size: 0.65rem !important;
+                padding: 0 0.8rem !important;
+                gap: 0.3rem !important;
+            }
+            .ticker-item .stat-label {
+                font-size: 0.55rem !important;
+            }
+            .ticker-item .stat-num {
+                font-size: 0.65rem !important;
+                padding: 0.05rem 0.3rem !important;
+            }
+            .ticker-badge {
+                font-size: 0.45rem !important;
+                padding: 0.05rem 0.3rem !important;
+            }
+            .ticker-item .icon-stat {
+                font-size: 0.65rem !important;
+            }
+        }
+        .ticker-wrap::before,
+        .ticker-wrap::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            width: 60px;
+            z-index: 2;
+            pointer-events: none;
+        }
+        .ticker-wrap::before {
+            left: 0;
+            background: linear-gradient(to right, #0f172a, transparent);
+        }
+        .ticker-wrap::after {
+            right: 0;
+            background: linear-gradient(to left, #0f172a, transparent);
+        }
+        .ticker-track {
+            display: flex;
+            white-space: nowrap;
+            animation: tickerScroll 35s linear infinite;
+            will-change: transform;
+        }
+        .ticker-track:hover {
+            animation-play-state: paused;
+        }
+        @keyframes tickerScroll {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(-50%); }
+        }
+        .ticker-item {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.6rem;
+            padding: 0 1.8rem;
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: #e2e8f0;
+            letter-spacing: 0.02em;
+            flex-shrink: 0;
+        }
+        .ticker-item .stat-num {
+            color: #facc15;
+            font-weight: 800;
+            background: rgba(250, 204, 21, 0.12);
+            padding: 0.05rem 0.5rem;
+            border-radius: 6px;
+            border: 1px solid rgba(250, 204, 21, 0.15);
+        }
+        .ticker-item .stat-label {
+            color: #94a3b8;
+            font-weight: 500;
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+        }
+        .ticker-item .sep {
+            color: #334155;
+            font-weight: 300;
+            margin: 0 0.1rem;
+        }
+        .ticker-item .icon-stat {
+            color: #eab308;
+            font-size: 0.85rem;
+        }
+        .ticker-item .icon-stat.green {
+            color: #4ade80;
+        }
+        .ticker-item .icon-stat.red {
+            color: #f87171;
+        }
+        .ticker-item .icon-stat.blue {
+            color: #60a5fa;
+        }
+        .ticker-item .icon-stat.purple {
+            color: #a78bfa;
+        }
+        .ticker-item .icon-stat.amber {
+            color: #fbbf24;
+        }
+        .ticker-badge {
+            display: inline-block;
+            background: #eab308;
+            color: #0f172a;
+            font-size: 0.55rem;
+            font-weight: 800;
+            padding: 0.1rem 0.6rem;
+            border-radius: 4px;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            margin-right: 0.2rem;
+        }
+
+        /* ===== AUTO-SCROLL INDICATOR ===== */
+        .scroll-indicator {
+            font-size: 0.55rem;
+            color: #94a3b8;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 0.3rem;
+            opacity: 0.6;
+            transition: opacity 0.3s;
+        }
+        .scroll-indicator i {
+            font-size: 0.5rem;
+            animation: bounceUp 1.2s ease-in-out infinite;
+        }
+        @keyframes bounceUp {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-4px); }
+        }
+        .panel-scroll-container {
+            position: relative;
+        }
+        .panel-scroll-container .scroll-indicator {
+            position: absolute;
+            bottom: 0.5rem;
+            right: 0.8rem;
+            background: rgba(15, 23, 42, 0.6);
+            backdrop-filter: blur(4px);
+            padding: 0.15rem 0.6rem;
+            border-radius: 10px;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            z-index: 20;
+            pointer-events: none;
+        }
+        .panel-scroll-container .scroll-indicator.paused {
+            opacity: 0.3;
+        }
+        .panel-scroll-container .scroll-indicator.paused i {
+            animation: none;
+        }
+        .ticker-wrap:hover .ticker-track {
+            animation-play-state: paused;
+        }
+
+        /* ===== LOGO IMG HEADER ===== */
+        .logo-img-header {
+            width: 44px;
+            height: 44px;
+            border-radius: 12px;
+            border: 2px solid white;
+            box-shadow: 0 0 15px rgba(234, 179, 8, 0.4);
+            object-fit: cover;
+            flex-shrink: 0;
+            background: #b91c1c;
+        }
+        @media (max-width: 640px) {
+            .logo-img-header {
+                width: 36px;
+                height: 36px;
+                border-radius: 10px;
+            }
+        }
+        @media (min-width: 640px) {
+            .logo-img-header {
+                width: 56px;
+                height: 56px;
+                border-radius: 16px;
+            }
+        }
+
+        /* ===== SPECIAL UNITS CARDS ===== */
+        .unit-card {
+            background: white;
+            border-radius: 14px;
+            padding: 0.75rem 1rem;
+            border-left: 4px solid #eab308;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+            display: flex;
+            flex-direction: column;
+            gap: 0.2rem;
+            transition: transform 0.15s;
+        }
+        .unit-card:hover {
+            transform: translateY(-2px);
+        }
+        .unit-card .unit-name {
+            font-weight: 800;
+            font-size: 0.8rem;
+            color: #1e293b;
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+        }
+        .unit-card .unit-name i {
+            font-size: 1rem;
+            color: #b91c1c;
+        }
+        .unit-card .unit-count {
+            font-size: 1.1rem;
+            font-weight: 900;
+            color: #0f172a;
+        }
+        .unit-card .unit-status {
+            font-size: 0.6rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+            padding: 0.1rem 0.6rem;
+            border-radius: 20px;
+            display: inline-block;
+            width: fit-content;
+        }
+        .unit-status.ready {
+            background: #dcfce7;
+            color: #166534;
+            border: 1px solid #86efac;
+        }
+        .unit-status.partial {
+            background: #fef3c7;
+            color: #92400e;
+            border: 1px solid #fcd34d;
+        }
+        .unit-status.notready {
+            background: #fee2e2;
+            color: #991b1b;
+            border: 1px solid #fca5a5;
+        }
+        .unit-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 0.75rem;
+        }
+        @media (max-width: 640px) {
+            .unit-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+        @media (max-width: 480px) {
+            .unit-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* ===== BOTTOM NAVIGATION (MOBILE) ===== */
+        .mobile-bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: rgba(15, 23, 42, 0.95);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-top: 2px solid #eab308;
+            display: flex;
+            align-items: center;
+            justify-content: space-around;
+            padding: 6px 4px calc(6px + var(--sab)) 4px;
+            z-index: 50;
+            box-shadow: 0 -4px 15px rgba(0, 0, 0, 0.3);
+        }
+        @media (min-width: 1024px) {
+            .mobile-bottom-nav {
+                display: none !important;
+            }
+        }
+        .mobile-nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            color: #94a3b8;
+            font-size: 0.55rem;
+            font-weight: 800;
+            padding: 4px 6px;
+            border-radius: 8px;
+            text-decoration: none;
+            transition: all 0.2s ease;
+            flex: 1;
+            text-align: center;
+            cursor: pointer;
+            border: none;
+            background: transparent;
+        }
+        .mobile-nav-item.active {
+            color: #eab308;
+            background: rgba(255, 255, 255, 0.08);
+        }
+        .mobile-nav-item i {
+            font-size: 1.1rem;
+            margin-bottom: 2px;
+        }
+        .mobile-nav-item span {
+            font-size: 0.5rem;
+            line-height: 1.2;
+        }
+
+        @media (max-width: 640px) {
+            .card-title {
+                font-size: 0.7rem !important;
+            }
+            .card-title i {
+                font-size: 0.8rem !important;
+            }
+            .text-xs {
+                font-size: 0.65rem !important;
+            }
+            .text-sm {
+                font-size: 0.7rem !important;
+            }
+            .badge-status {
+                font-size: 0.5rem !important;
+                padding: 0.05rem 0.4rem !important;
+            }
+            .roster-table td,
+            .logistik-table td,
+            .checklist-table td {
+                font-size: 0.6rem !important;
+                padding: 4px 6px !important;
+            }
+            .roster-table th,
+            .logistik-table th,
+            .checklist-table th {
+                font-size: 0.55rem !important;
+                padding: 4px 6px !important;
+            }
+        }
+    </style>
+</head>
+<body class="text-slate-800 p-2 md:p-4 lg:p-6 max-w-[1600px] mx-auto">
+
+    <!-- ===== HEADER ===== -->
+    <header class="bg-gradient-to-r from-bomba-darkred to-bomba-red text-white p-3 md:p-5 rounded-2xl mb-3 border-b-4 border-bomba-gold shadow-lg flex flex-col md:flex-row justify-between items-start md:items-center gap-3">
+        <div class="flex items-center gap-3">
+            <img src="https://raw.githubusercontent.com/pgojhbravo5/KEKUATAN-ANGGOTA-JBPM-JOHOR/main/balai-bomba.png?v=3" alt="Logo JBPM" class="logo-img-header" />
+            <div>
+                <h1 class="text-sm md:text-2xl font-extrabold tracking-tight">JBPM NEGERI JOHOR</h1>
+                <p class="text-[10px] md:text-xs text-red-100 font-medium opacity-90 mt-0.5">Dashboard Kekuatan, Logistik &amp; Checklist</p>
+            </div>
+        </div>
+        <div class="flex items-center gap-2 w-full md:w-auto justify-between md:justify-end flex-wrap md:flex-nowrap">
+            <div class="flex items-center gap-1.5 bg-black/20 px-2 py-1 md:px-3 md:py-1.5 rounded-lg border border-white/10">
+                <i class="fa-solid fa-clock text-bomba-gold text-xs md:text-base"></i>
+                <span class="text-[8px] md:text-xs font-bold text-white">Shift: <span id="currentShift">-</span></span>
+            </div>
+            <div class="text-[8px] md:text-xs text-red-200 font-medium flex items-center gap-1 bg-black/20 px-2 py-1 md:px-3 md:py-1.5 rounded-lg" id="realtimeBadge">
+                <i class="fa-solid fa-bolt text-xs md:text-lg text-bomba-gold"></i>
+                <span id="realtimeLabel" class="hidden xs:inline">Menyambung Live...</span>
+                <span id="realtimeLabelShort" class="xs:hidden">Live...</span>
+            </div>
+            <div class="bg-black/30 p-1 pl-2 pr-1 md:p-2 md:pl-4 md:pr-2 rounded-xl flex items-center gap-2 md:gap-4 border border-white/10">
+                <div class="flex flex-col text-right">
+                    <div class="flex items-center justify-end gap-1 md:gap-2 mb-0.5">
+                        <span class="w-1.5 h-1.5 md:w-2.5 md:h-2.5 rounded-full bg-emerald-400 animate-pulse-slow shadow-[0_0_8px_rgba(52,211,153,0.8)]" id="statusDot"></span>
+                        <span class="text-[0.4rem] md:text-[0.6rem] font-bold text-slate-300 uppercase tracking-wider hidden sm:inline">Kemaskini</span>
+                    </div>
+                    <span id="lastUpdate" class="text-[8px] md:text-xs font-mono text-white font-medium">Memuat...</span>
+                </div>
+                <button class="bg-white/10 hover:bg-white/20 transition-all text-white border border-white/20 px-1.5 py-1 md:px-3 md:py-2 rounded-lg font-semibold text-[8px] md:text-sm flex items-center gap-1 md:gap-2" onclick="fetchData()">
+                    <i class="fa-solid fa-rotate"></i> <span class="hidden xs:inline">Refresh</span>
+                </button>
+                <!-- BUTANG KEMBALI KE DASHBOARD UTAMA -->
+                <a href="index.html" class="bg-white/10 hover:bg-white/20 transition-all text-white border border-white/20 px-1.5 py-1 md:px-3 md:py-2 rounded-lg font-semibold text-[8px] md:text-sm flex items-center gap-1 md:gap-2">
+                    <i class="fa-solid fa-arrow-left"></i> <span class="hidden xs:inline">Dashboard</span>
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <div id="errorContainer"></div>
+
+    <!-- ===== BROADCAST TICKER ===== -->
+    <div class="ticker-wrap mb-3" id="broadcastTicker">
+        <div class="ticker-track" id="tickerTrack">
+            <!-- Content dijana oleh JavaScript -->
+        </div>
+    </div>
+
+    <!-- ========================================== -->
+    <!-- ===== SECTION: RINGKASAN (Overview) ===== -->
+    <!-- ========================================== -->
+    <div id="sectionOverview">
+
+        <!-- ===== AMARAN / PERLU PERHATIAN ===== -->
+        <div id="alertsPanel" class="mb-4"></div>
+
+        <!-- ===== STATUS KESEDIAAN PASUKAN KHAS ===== -->
+        <div class="bg-white rounded-2xl p-3 md:p-4 shadow-sm border border-slate-100 mb-4">
+            <div class="flex items-center gap-2 pb-1.5 mb-2 border-b-2 border-slate-100">
+                <i class="fa-solid fa-user-shield text-bomba-red text-base md:text-lg"></i>
+                <h2 class="text-xs md:text-sm font-bold text-slate-700">STATUS KESEDIAAN PASUKAN KHAS</h2>
+                <span class="text-[0.5rem] md:text-[0.6rem] font-medium text-slate-400 ml-auto">Berdasarkan anggota bertugas</span>
+            </div>
+            <div id="specialUnitsContainer" class="unit-grid">
+                <!-- akan dijana oleh JavaScript -->
+            </div>
+        </div>
+
+        <!-- ===== BARISAN 1: KEKUATAN & KESEDIAAN MENGIKUT BALAI ===== -->
+        <div class="bg-white rounded-2xl p-3 md:p-5 shadow-sm border border-slate-100 mb-4 panel-scroll-container" data-scroll="breakdownScroll">
+            <div class="flex items-center gap-1.5 pb-1.5 mb-2 border-b-2 border-slate-100 flex-wrap">
+                <i class="fa-solid fa-building text-bomba-navy text-base md:text-lg"></i>
+                <h2 class="text-xs md:text-sm font-bold text-slate-700">KEKUATAN &amp; KESEDIAAN MENGIKUT BALAI</h2>
+                <span class="text-[0.5rem] md:text-[0.6rem] font-medium text-slate-400 ml-auto hidden sm:inline">Dikira terus dari rekod live</span>
+                <span class="scroll-indicator" id="breakdownScrollIndicator"><i class="fa-solid fa-chevron-up"></i> Auto</span>
+            </div>
+            <div id="breakdownScroll" class="table-breakdown-wrap">
+                <div id="breakdownBalaiTable" class="table-breakdown"><div class="text-center py-4 text-slate-400 font-medium text-sm">Memuatkan...</div></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ========================================== -->
+    <!-- ===== SECTION: ANGGOTA & JENTERA ===== -->
+    <!-- ========================================== -->
+    <div class="panel-grid-2 mb-4">
+        <!-- PANEL ANGGOTA -->
+        <div id="sectionAnggota" class="bg-white rounded-2xl p-3 md:p-4 shadow-sm border border-slate-100 flex flex-col h-full panel-scroll-container" data-scroll="anggotaScroll">
+            <div class="flex justify-between items-center pb-1.5 mb-2 border-b-2 border-slate-100">
+                <h2 class="text-xs md:text-sm font-bold text-bomba-navy flex items-center gap-1.5">
+                    <i class="fa-solid fa-users text-bomba-red text-base md:text-lg"></i> KEKUATAN ANGGOTA
+                </h2>
+                <span class="text-[0.5rem] md:text-[0.6rem] font-bold bg-slate-100 text-slate-500 px-2 py-0.5 rounded-full" id="anggotaCount">0 rekod</span>
+                <span class="scroll-indicator" id="anggotaScrollIndicator"><i class="fa-solid fa-chevron-up"></i> Auto</span>
+            </div>
+            <div class="flex flex-col sm:flex-row gap-1.5 mb-2">
+                <div class="relative flex-1">
+                    <i class="fa-solid fa-magnifying-glass absolute left-2.5 top-1/2 -translate-y-1/2 text-slate-400 text-[10px] md:text-xs"></i>
+                    <input type="text" id="filterAnggotaNama" placeholder="Cari..." class="w-full pl-7 pr-2 py-1.5 bg-slate-50 border border-slate-200 rounded-lg text-xs md:text-sm focus:outline-none focus:ring-2 focus:ring-bomba-red/20 focus:border-bomba-red transition-all" oninput="renderAnggota()">
+                </div>
+                <select id="filterAnggotaBalai" class="bg-slate-50 border border-slate-200 rounded-lg text-xs md:text-sm px-2 py-1.5 focus:outline-none focus:ring-2 focus:ring-bomba-red/20 focus:border-bomba-red flex-1 font-medium text-slate-700" onchange="renderAnggota()">
+                    <option value="SEMUA">Semua Balai</option>
+                </select>
+                <select id="filterAnggotaStatus" class="bg-slate-50 border border-slate-200 rounded-lg text-xs md:text-sm px-2 py-1.5 focus:outline-none focus:ring-2 focus:ring-bomba-red/20 focus:border-bomba-red flex-1 font-medium text-slate-700" onchange="renderAnggota()">
+                    <option value="SEMUA">Semua Status</option>
+                    <option value="BERTUGAS">Bertugas</option>
+                    <option value="CUTI">Cuti</option>
+                    <option value="CUTI SAKIT">Cuti Sakit</option>
+                    <option value="TUGAS KHAS">Tugas Khas</option>
+                </select>
+            </div>
+            <div id="anggotaScroll" class="table-container flex-1">
+                <div id="anggotaTable"><div class="text-center py-6 text-slate-400 font-medium text-sm flex flex-col items-center gap-2"><i class="fa-solid fa-spinner animate-spin text-xl"></i> Memuatkan...</div></div>
+            </div>
+        </div>
+
+        <!-- PANEL JENTERA -->
+        <div id="sectionJentera" class="bg-white rounded-2xl p-3 md:p-4 shadow-sm border border-slate-100 flex flex-col h-full panel-scroll-container" data-scroll="jenteraScroll">
+            <div class="flex justify-between items-center pb-1.5 mb-2 border-b-2 border-slate-100">
+                <h2 class="text-xs md:text-sm font-bold text-bomba-navy flex items-center gap-1.5">
+                    <i class="fa-solid fa-truck text-bomba-gold text-base md:text-lg"></i> LOGISTIK JENTERA
+                </h2>
+                <span class="text-[0.5rem] md:text-[0.6rem] font-bold bg-slate-100 text-slate-500 px-2 py-0.5 rounded-full" id="jenteraCount">0 rekod</span>
+                <span class="scroll-indicator" id="jenteraScrollIndicator"><i class="fa-solid fa-chevron-up"></i> Auto</span>
+            </div>
+            <div class="flex flex-col sm:flex-row gap-1.5 mb-2">
+                <div class="relative flex-1">
+                    <i class="fa-solid fa-magnifying-glass absolute left-2.5 top-1/2 -translate-y-1/2 text-slate-400 text-[10px] md:text-xs"></i>
+                    <input type="text" id="filterJenteraCari" placeholder="Cari..." class="w-full pl-7 pr-2 py-1.5 bg-slate-50 border border-slate-200 rounded-lg text-xs md:text-sm focus:outline-none focus:ring-2 focus:ring-bomba-red/20 focus:border-bomba-red transition-all" oninput="renderJentera()">
+                </div>
+                <select id="filterJenteraBalai" class="bg-slate-50 border border-slate-200 rounded-lg text-xs md:text-sm px-2 py-1.5 focus:outline-none focus:ring-2 focus:ring-bomba-red/20 focus:border-bomba-red flex-1 font-medium text-slate-700" onchange="renderJentera()">
+                    <option value="SEMUA">Semua Balai</option>
+                </select>
+                <select id="filterJenteraStatus" class="bg-slate-50 border border-slate-200 rounded-lg text-xs md:text-sm px-2 py-1.5 focus:outline-none focus:ring-2 focus:ring-bomba-red/20 focus:border-bomba-red flex-1 font-medium text-slate-700" onchange="renderJentera()">
+                    <option value="SEMUA">Semua Status</option>
+                    <option value="BAIK">Sedia Beroperasi</option>
+                    <option value="ROSAK">Rosak</option>
+                    <option value="SELENGGARA">Dlm Selenggara</option>
+                </select>
+            </div>
+            <div id="jenteraScroll" class="table-container flex-1">
+                <div id="jenteraTable"><div class="text-center py-6 text-slate-400 font-medium text-sm flex flex-col items-center gap-2"><i class="fa-solid fa-spinner animate-spin text-xl"></i> Memuatkan...</div></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ========================================== -->
+    <!-- ===== SECTION: CHECKLIST ===== -->
+    <!-- ========================================== -->
+    <div id="sectionChecklist" class="bg-white rounded-2xl p-3 md:p-4 shadow-sm border border-slate-100 mb-4 panel-scroll-container" data-scroll="checklistScroll">
+        <div class="flex justify-between items-center pb-1.5 mb-2 border-b-2 border-slate-100">
+            <h2 class="text-xs md:text-sm font-bold text-bomba-navy flex items-center gap-1.5">
+                <i class="fa-solid fa-list-check text-emerald-500 text-base md:text-lg"></i> CHECKLIST PERKAKAS BILIK KAWALAN (8 ITEM)
+            </h2>
+            <span class="text-[0.5rem] md:text-[0.6rem] font-bold bg-slate-100 text-slate-500 px-2 py-0.5 rounded-full" id="checklistCount">0 rekod</span>
+            <span class="scroll-indicator" id="checklistScrollIndicator"><i class="fa-solid fa-chevron-up"></i> Auto</span>
+        </div>
+        <div class="flex flex-col sm:flex-row gap-1.5 mb-2">
+            <select id="filterChecklistBalai" class="bg-slate-50 border border-slate-200 rounded-lg text-xs md:text-sm px-2 py-1.5 focus:outline-none focus:ring-2 focus:ring-bomba-red/20 focus:border-bomba-red flex-1 font-medium text-slate-700" onchange="renderChecklist()">
+                <option value="SEMUA">Semua Balai</option>
+            </select>
+            <select id="filterChecklistStatus" class="bg-slate-50 border border-slate-200 rounded-lg text-xs md:text-sm px-2 py-1.5 focus:outline-none focus:ring-2 focus:ring-bomba-red/20 focus:border-bomba-red flex-1 font-medium text-slate-700" onchange="renderChecklist()">
+                <option value="SEMUA">Semua Status</option>
+                <option value="BAIK">Semua Baik</option>
+                <option value="ROSAK">Ada Rosak</option>
+            </select>
+        </div>
+        <div id="checklistScroll" class="table-container">
+            <div id="checklistTable"><div class="text-center py-6 text-slate-400 font-medium text-sm flex flex-col items-center gap-2"><i class="fa-solid fa-spinner animate-spin text-xl"></i> Memuatkan data...</div></div>
+        </div>
+    </div>
+
+    <!-- ===== FOOTER ===== -->
+    <div class="text-center text-[8px] md:text-xs font-medium text-slate-400 py-2 flex flex-col sm:flex-row justify-center items-center gap-1.5">
+        <span><i class="fa-solid fa-bolt text-amber-400"></i> Sistem JBPM Negeri Johor</span>
+        <span class="hidden sm:inline">•</span>
+        <span>Data dari Supabase Cloud</span>
+        <span class="hidden sm:inline">•</span>
+        <span id="footerTimestamp"></span>
+    </div>
+
+    <!-- ===== BOTTOM NAVIGATION (MOBILE) ===== -->
+    <nav class="mobile-bottom-nav no-print" id="mobileBottomNav">
+        <button class="mobile-nav-item active" onclick="aktifkanTabBottomNav(this, 'sectionOverview')">
+            <i class="fa-solid fa-gauge-high"></i>
+            <span>RINGKASAN</span>
+        </button>
+        <button class="mobile-nav-item" onclick="aktifkanTabBottomNav(this, 'sectionAnggota')">
+            <i class="fa-solid fa-users"></i>
+            <span>ANGGOTA</span>
+        </button>
+        <button class="mobile-nav-item" onclick="aktifkanTabBottomNav(this, 'sectionJentera')">
+            <i class="fa-solid fa-truck"></i>
+            <span>JENTERA</span>
+        </button>
+        <button class="mobile-nav-item" onclick="aktifkanTabBottomNav(this, 'sectionChecklist')">
+            <i class="fa-solid fa-list-check"></i>
+            <span>CHECKLIST</span>
+        </button>
+    </nav>
+
+    <!-- ============================================================ -->
+    <!-- ===== JAVASCRIPT ===== -->
+    <script>
+        // ============================================================
+        // KONFIGURASI
+        // ============================================================
+        const SUPABASE_URL = 'https://hglmbrqweijpguxfeloq.supabase.co';
+        const SUPABASE_ANON_KEY =
+            'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhnbG1icnF3ZWlqcGd1eGZlbG9xIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODU1NDcyNDAsImV4cCI6MjEwMTEyMzI0MH0.xBuhxHVmkuIPC34421QfuCERIpBPFiyVi1sSC-PQAiQ';
+
+        let dataCache = null;
+        let supabaseClient = null;
+        let realtimeChannel = null;
+        const FALLBACK_POLL_MS = 60000;
+
+        // ============================================================
+        // MOBILE TAB NAVIGATION
+        // ============================================================
+        function aktifkanTabBottomNav(el, sectionId) {
+            document.querySelectorAll('.mobile-nav-item').forEach(item => item.classList.remove('active'));
+            if (el) el.classList.add('active');
+            const target = document.getElementById(sectionId);
+            if (target) {
+                const offset = 80;
+                const top = target.getBoundingClientRect().top + window.pageYOffset - offset;
+                window.scrollTo({ top: top, behavior: 'smooth' });
+            }
+        }
+
+        let scrollTimeout;
+        window.addEventListener('scroll', function() {
+            if (window.innerWidth < 1024) {
+                clearTimeout(scrollTimeout);
+                scrollTimeout = setTimeout(updateActiveTabOnScroll, 100);
+            }
+        });
+
+        function updateActiveTabOnScroll() {
+            const sections = ['sectionOverview', 'sectionAnggota', 'sectionJentera', 'sectionChecklist'];
+            const scrollPos = window.scrollY + 100;
+            let currentSection = 'sectionOverview';
+            for (const id of sections) {
+                const el = document.getElementById(id);
+                if (el) {
+                    const top = el.offsetTop;
+                    const bottom = top + el.offsetHeight;
+                    if (scrollPos >= top && scrollPos < bottom) {
+                        currentSection = id;
+                        break;
+                    }
+                }
+            }
+            document.querySelectorAll('.mobile-nav-item').forEach(item => {
+                item.classList.remove('active');
+                if (item.getAttribute('onclick') && item.getAttribute('onclick').includes(currentSection)) {
+                    item.classList.add('active');
+                }
+            });
+        }
+
+        // ============================================================
+        // UTILITY
+        // ============================================================
+        function cariChecklist(payload) {
+            const fields = ['checklistPerkakas', 'checklist_perkakas', 'senaraiChecklist', 'senarai_checklist',
+                'checklistData', 'checklist_data', 'ChecklistPerkakas', 'CHECKLIST_PERKAKAS', 'perkakasChecklist'
+            ];
+            for (const f of fields) {
+                if (payload[f] && Array.isArray(payload[f]) && payload[f].length > 0) return payload[f];
+            }
+            return [];
+        }
+
+        function getVal(obj, ...keys) {
+            for (const k of keys) {
+                if (obj[k] !== undefined && obj[k] !== null) return obj[k];
+            }
+            return '-';
+        }
+
+        function escapeHtml(str) {
+            if (str === null || str === undefined) return '';
+            return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;').replace(/'/g, '&#039;');
+        }
+
+        function formatPhoneNumber(phone) {
+            if (!phone) return '';
+            return phone.replace(/[^0-9]/g, '');
+        }
+
+        function createPhoneLinks(noTel) {
+            if (!noTel || noTel === '-') return '';
+            const clean = formatPhoneNumber(noTel);
+            if (!clean) return '';
+            const display = clean.length > 8 ? clean.slice(0, 3) + '-' + clean.slice(3) : clean;
+            let wa = clean;
+            if (wa.startsWith('0')) wa = '60' + wa.slice(1);
+            return `
+            <div class="mt-1 flex flex-col items-start gap-0.5">
+              <span class="text-[8px] font-mono text-slate-500 font-bold">📱 ${display}</span>
+              <div class="flex flex-wrap gap-0.5">
+                <a href="tel:${clean}" class="bg-emerald-50 hover:bg-emerald-100 text-emerald-700 border border-emerald-200 px-1.5 py-0.5 rounded flex items-center gap-0.5 text-[7px] font-bold transition-colors">📞 Call</a>
+                <a href="https://wa.me/${wa}" target="_blank" class="bg-emerald-50 hover:bg-emerald-100 text-emerald-700 border border-emerald-200 px-1.5 py-0.5 rounded flex items-center gap-0.5 text-[7px] font-bold transition-colors"><i class="fa-brands fa-whatsapp"></i> WhatsApp</a>
+              </div>
+            </div>`;
+        }
+
+        // ===== PARSE CHECKLIST =====
+        function parseChecklistItem(item, mainKey) {
+            const detailKeys = [mainKey + 'Detail', mainKey + '_detail', mainKey.charAt(0).toUpperCase() + mainKey.slice(1) +
+                'Detail'
+            ];
+            for (const dk of detailKeys) {
+                const obj = item[dk];
+                if (obj && (obj.baik !== undefined || obj.rosak !== undefined)) {
+                    return {
+                        baik: parseInt(obj.baik) || 0,
+                        rosak: parseInt(obj.rosak) || 0,
+                        catatan: obj.catatan || '-',
+                        isNew: true
+                    };
+                }
+            }
+            const old = getVal(item, mainKey, mainKey.toUpperCase(), mainKey.charAt(0).toUpperCase() + mainKey.slice(1));
+            if (old !== '-') {
+                const u = old.toUpperCase();
+                if (u === 'BAIK') return { baik: 1, rosak: 0, catatan: '-', isNew: false };
+                if (u === 'ROSAK') return { baik: 0, rosak: 1, catatan: '-', isNew: false };
+            }
+            return { baik: 0, rosak: 0, catatan: '-', isNew: false };
+        }
+
+        function renderCheckBadge(parsed) {
+            const total = parsed.baik + parsed.rosak;
+            if (total === 0) {
+                return `<span class="badge-status slate text-[9px]"><i class="fa-solid fa-circle-minus text-[9px] mr-1"></i>N/A</span>`;
+            }
+            if (parsed.rosak === 0) {
+                return `<span class="badge-status green text-[9px]"><i class="fa-solid fa-circle-check text-[9px] mr-1"></i>BAIK ${parsed.baik}u</span>`;
+            }
+            return `<span class="badge-status red text-[9px]"><i class="fa-solid fa-circle-exclamation text-[9px] mr-1"></i>ROSAK ${parsed.baik}B/${parsed.rosak}R</span>`;
+        }
+
+        // ===================== STATUS JENTERA: BADGE & KLASIFIKASI =====================
+        function getStatusKategori(status) {
+            if (!status) return 'LAIN';
+            const s = status.toUpperCase();
+            if (s === 'BAIK & BOLEH BEROPERASI') return 'BAIK';
+            if (s === 'ROSAK MINOR & BOLEH BEROPERASI') return 'SELENGGARA';
+            if (s === 'ROSAK & TIDAK BOLEH BEROPERASI') return 'ROSAK';
+            if (s === 'DALAM PROSES LUPUS') return 'SELENGGARA';
+            if (s === 'LUPUS') return 'ROSAK';
+            // Fallback untuk status lama
+            if (s === 'SEDIA BEROPERASI' || s === 'BAIK') return 'BAIK';
+            if (s.includes('ROSAK') && s.includes('TIDAK BOLEH')) return 'ROSAK';
+            if (s.includes('ROSAK') || s.includes('MINOR')) return 'SELENGGARA';
+            if (s.includes('SELENGGARA') || s.includes('PENYELENGGARAAN')) return 'SELENGGARA';
+            return 'LAIN';
+        }
+
+        function getBadge(type, val) {
+            val = (val || '').toUpperCase();
+            const base = 'badge-status';
+            if (type === 'status') {
+                // Untuk anggota
+                if (val.includes('BERTUGAS')) return `${base} green`;
+                if (val === 'CUTI') return `${base} amber`;
+                if (val.includes('SAKIT')) return `${base} red`;
+                if (val === 'TUGAS KHAS') return `${base} purple`;
+                // Untuk jentera - guna klasifikasi status baharu
+                const kat = getStatusKategori(val);
+                if (kat === 'BAIK') return `${base} green`;
+                if (kat === 'ROSAK') return `${base} red`;
+                if (kat === 'SELENGGARA') return `${base} amber`;
+                return `${base} slate`;
+            }
+            if (type === 'pasukan') {
+                if (val.includes('A')) return `${base} red`;
+                if (val.includes('B')) return `${base} amber`;
+                if (val.includes('C')) return `${base} blue`;
+                return `${base} slate`;
+            }
+            return `${base} slate`;
+        }
+
+        // ===== SHIFT BERTUGAS SEMASA =====
+        function determineCurrentShift(anggota) {
+            if (!anggota || anggota.length === 0) return '-';
+            const count = {};
+            anggota.forEach(a => {
+                const p = a.pasukan || 'TIDAK DITETAPKAN';
+                count[p] = (count[p] || 0) + 1;
+            });
+            let maxCount = 0;
+            let shift = '-';
+            for (const [key, val] of Object.entries(count)) {
+                if (val > maxCount) {
+                    maxCount = val;
+                    shift = key;
+                }
+            }
+            return shift;
+        }
+
+        function updateCurrentShift(anggota) {
+            document.getElementById('currentShift').textContent = determineCurrentShift(anggota);
+        }
+
+        // ===== BROADCAST TICKER =====
+        function buildTickerContent(anggota, jentera, checklist) {
+            const totalA = anggota.length;
+            const bertugas = anggota.filter(a => a.status === 'BERTUGAS').length;
+            const cuti = anggota.filter(a => a.status === 'CUTI').length;
+            const cutiSakit = anggota.filter(a => a.status === 'CUTI SAKIT').length;
+            const tugasKhas = anggota.filter(a => a.status === 'TUGAS KHAS').length;
+            const pA = anggota.filter(a => a.pasukan === 'PASUKAN A').length;
+            const pB = anggota.filter(a => a.pasukan === 'PASUKAN B').length;
+            const pC = anggota.filter(a => a.pasukan === 'PASUKAN C').length;
+
+            const totalJ = jentera.length;
+            // Guna klasifikasi status baharu
+            const jBaik = jentera.filter(j => getStatusKategori(j.status) === 'BAIK').length;
+            const jRosak = jentera.filter(j => getStatusKategori(j.status) === 'ROSAK').length;
+            const jSelenggara = jentera.filter(j => getStatusKategori(j.status) === 'SELENGGARA').length;
+
+            const itemKeys = ['cad', 'wic', 'bomra', 'desktopGirn', 'handheldGirn', 'vehicularGirn', 'internet',
+                'handphone'
+            ];
+            const totalC = checklist.length;
+            const cBaik = checklist.filter(c => itemKeys.every(k => {
+                const p = parseChecklistItem(c, k);
+                return p.rosak === 0 && (p.baik + p.rosak) > 0;
+            })).length;
+            const cRosak = checklist.filter(c => itemKeys.some(k => parseChecklistItem(c, k).rosak > 0)).length;
+
+            const items = [];
+            items.push(
+                `<span class="ticker-badge">ANGGOTA</span> <span class="stat-label">Jumlah</span> <span class="stat-num">${totalA}</span> <span class="sep">|</span>`
+                );
+            items.push(
+                `<i class="fa-solid fa-circle-check green icon-stat"></i> <span class="stat-label">Bertugas</span> <span class="stat-num">${bertugas}</span> <span class="sep">|</span>`
+                );
+            items.push(
+                `<i class="fa-solid fa-moon amber icon-stat"></i> <span class="stat-label">Cuti</span> <span class="stat-num">${cuti}</span> <span class="sep">|</span>`
+                );
+            items.push(
+                `<i class="fa-solid fa-kit-medical red icon-stat"></i> <span class="stat-label">Cuti Sakit</span> <span class="stat-num">${cutiSakit}</span> <span class="sep">|</span>`
+                );
+            items.push(
+                `<i class="fa-solid fa-bullseye purple icon-stat"></i> <span class="stat-label">Tugas Khas</span> <span class="stat-num">${tugasKhas}</span> <span class="sep">|</span>`
+                );
+            items.push(
+                `<i class="fa-solid fa-flag red icon-stat"></i> <span class="stat-label">P.A</span> <span class="stat-num">${pA}</span> <span class="sep">|</span>`
+                );
+            items.push(
+                `<i class="fa-solid fa-flag amber icon-stat"></i> <span class="stat-label">P.B</span> <span class="stat-num">${pB}</span> <span class="sep">|</span>`
+                );
+            items.push(
+                `<i class="fa-solid fa-flag blue icon-stat"></i> <span class="stat-label">P.C</span> <span class="stat-num">${pC}</span> <span class="sep" style="margin-right:0.8rem;">|</span>`
+                );
+            items.push(
+                `<span class="ticker-badge" style="background:#f59e0b;">JENTERA</span> <span class="stat-label">Jumlah</span> <span class="stat-num">${totalJ}</span> <span class="sep">|</span>`
+                );
+            items.push(
+                `<i class="fa-solid fa-gears green icon-stat"></i> <span class="stat-label">Baik</span> <span class="stat-num">${jBaik}</span> <span class="sep">|</span>`
+                );
+            items.push(
+                `<i class="fa-solid fa-circle-exclamation red icon-stat"></i> <span class="stat-label">Rosak</span> <span class="stat-num">${jRosak}</span> <span class="sep">|</span>`
+                );
+            items.push(
+                `<i class="fa-solid fa-wrench amber icon-stat"></i> <span class="stat-label">Selenggara</span> <span class="stat-num">${jSelenggara}</span> <span class="sep" style="margin-right:0.8rem;">|</span>`
+                );
+            items.push(
+                `<span class="ticker-badge" style="background:#10b981;">CHECKLIST</span> <span class="stat-label">Jumlah</span> <span class="stat-num">${totalC}</span> <span class="sep">|</span>`
+                );
+            items.push(
+                `<i class="fa-solid fa-shield-halved green icon-stat"></i> <span class="stat-label">Semua Baik</span> <span class="stat-num">${cBaik}</span> <span class="sep">|</span>`
+                );
+            items.push(
+                `<i class="fa-solid fa-triangle-exclamation red icon-stat"></i> <span class="stat-label">Ada Rosak</span> <span class="stat-num">${cRosak}</span>`
+                );
+            return items.join(' ');
+        }
+
+        function renderBroadcastTicker(anggota, jentera, checklist) {
+            const track = document.getElementById('tickerTrack');
+            if (!track) return;
+            const content = buildTickerContent(anggota, jentera, checklist);
+            track.innerHTML = `
+                <span class="ticker-item">${content}</span>
+                <span class="ticker-item">${content}</span>
+                <span class="ticker-item">${content}</span>
+            `;
+        }
+
+        // ===== STATUS KESEDIAAN PASUKAN KHAS =====
+        function renderSpecialUnits(anggota) {
+            const container = document.getElementById('specialUnitsContainer');
+            if (!container) return;
+            const units = [
+                { key: 'HAZMAT', label: 'HAZMAT', icon: 'fa-flask', field: 'unitBerbayar', value: 'HAZMAT' },
+                { key: 'PPDA', label: 'PPDA', icon: 'fa-helmet-safety', field: 'unitBerbayar', value: 'PPDA' },
+                { key: 'STORM', label: 'STORM', icon: 'fa-bolt', field: 'unitTidakBerbayar', value: 'STOM/MUST' }
+            ];
+            let html = '';
+            units.forEach(u => {
+                const members = anggota.filter(a => a[u.field] === u.value);
+                const total = members.length;
+                const bertugas = members.filter(a => a.status === 'BERTUGAS').length;
+                let statusClass = 'notready';
+                let statusLabel = 'TIDAK SEDIA';
+                if (total === 0) {
+                    statusClass = 'slate';
+                    statusLabel = 'TIADA ANGGOTA';
+                } else if (bertugas === total) {
+                    statusClass = 'ready';
+                    statusLabel = 'SEDIA (100%)';
+                } else if (bertugas > 0) {
+                    statusClass = 'partial';
+                    statusLabel = `SEPARA (${Math.round((bertugas/total)*100)}%)`;
+                } else {
+                    statusClass = 'notready';
+                    statusLabel = 'TIDAK SEDIA';
+                }
+                html += `
+                    <div class="unit-card">
+                        <div class="unit-name">
+                            <i class="fa-solid ${u.icon}"></i> ${u.label}
+                        </div>
+                        <div class="unit-count">${bertugas} / ${total}</div>
+                        <span class="unit-status ${statusClass}">${statusLabel}</span>
+                    </div>
+                `;
+            });
+            container.innerHTML = html;
+        }
+
+        // ===== FETCH DATA =====
+        async function fetchData() {
+            try {
+                const dot = document.getElementById('statusDot');
+                dot.className = 'w-1.5 h-1.5 md:w-2.5 md:h-2.5 rounded-full bg-amber-400 animate-pulse shadow-[0_0_8px_rgba(251,191,36,0.8)]';
+                document.getElementById('errorContainer').innerHTML = '';
+
+                const resp = await fetch(`${SUPABASE_URL}/rest/v1/jbpm_data?id=eq.1&select=*`, {
+                    headers: { 'apikey': SUPABASE_ANON_KEY, 'Authorization': 'Bearer ' + SUPABASE_ANON_KEY,
+                        'Content-Type': 'application/json' }
+                });
+                if (!resp.ok) throw new Error(`HTTP ${resp.status}: ${resp.statusText}`);
+                const data = await resp.json();
+                if (data && data.length > 0) {
+                    dataCache = data[0];
+                    renderAll();
+                    dot.className = 'w-1.5 h-1.5 md:w-2.5 md:h-2.5 rounded-full bg-emerald-400 shadow-[0_0_8px_rgba(52,211,153,0.8)]';
+                    document.getElementById('lastUpdate').innerHTML = new Date().toLocaleTimeString('ms-MY', { hour: '2-digit',
+                        minute: '2-digit', second: '2-digit' });
+                    document.getElementById('footerTimestamp').innerHTML = 'Kemaskini: ' + new Date().toLocaleString(
+                    'ms-MY');
+                } else {
+                    showError('Tiada data dijumpai. Sila simpan data dari aplikasi utama dahulu.');
+                }
+            } catch (err) {
+                showError(`Gagal memuat data: ${err.message}`);
+            }
+        }
+
+        // ===== REALTIME =====
+        function initRealtime() {
+            const badge = document.getElementById('realtimeBadge');
+            const label = document.getElementById('realtimeLabel');
+            const labelShort = document.getElementById('realtimeLabelShort');
+            if (!window.supabase || typeof window.supabase.createClient !== 'function') {
+                if (label) label.innerText = 'Realtime tidak tersedia';
+                if (labelShort) labelShort.innerText = 'Offline';
+                return;
+            }
+            supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+            realtimeChannel = supabaseClient
+                .channel('dashboard_jbpm_data_changes')
+                .on('postgres_changes', { event: 'UPDATE', schema: 'public', table: 'jbpm_data', filter: 'id=eq.1' },
+                    (payload) => {
+                        if (!payload.new) return;
+                        dataCache = payload.new;
+                        renderAll();
+                        document.getElementById('lastUpdate').innerHTML = new Date().toLocaleTimeString('ms-MY', { hour: '2-digit',
+                            minute: '2-digit', second: '2-digit' });
+                        document.getElementById('footerTimestamp').innerHTML = 'Kemaskini: ' + new Date().toLocaleString(
+                            'ms-MY');
+                    })
+                .subscribe((status) => {
+                    if (status === 'SUBSCRIBED') {
+                        badge.className =
+                            'text-[8px] md:text-xs text-emerald-100 font-medium flex items-center gap-1 bg-emerald-900/30 px-2 py-1 md:px-3 md:py-1.5 rounded-lg';
+                        if (label) label.innerText = 'LIVE — Auto Kemaskini Aktif';
+                        if (labelShort) labelShort.innerText = 'Live';
+                    } else if (status === 'CHANNEL_ERROR' || status === 'TIMED_OUT') {
+                        badge.className =
+                            'text-[8px] md:text-xs text-amber-100 font-medium flex items-center gap-1 bg-amber-900/30 px-2 py-1 md:px-3 md:py-1.5 rounded-lg';
+                        if (label) label.innerText = 'Live terputus — guna refresh berkala';
+                        if (labelShort) labelShort.innerText = 'Offline';
+                    } else if (status === 'CLOSED') {
+                        badge.className =
+                            'text-[8px] md:text-xs text-slate-300 font-medium flex items-center gap-1 bg-black/20 px-2 py-1 md:px-3 md:py-1.5 rounded-lg';
+                        if (label) label.innerText = 'Live dihentikan';
+                        if (labelShort) labelShort.innerText = 'Offline';
+                    }
+                });
+            setInterval(fetchData, FALLBACK_POLL_MS);
+        }
+
+        function showError(msg) {
+            document.getElementById('errorContainer').innerHTML = `
+            <div class="bg-red-50 border border-red-200 text-red-700 p-2 md:p-3 rounded-xl mb-3 flex items-center gap-2 shadow-sm">
+              <i class="fa-solid fa-circle-exclamation text-sm md:text-lg"></i>
+              <span class="font-medium text-xs md:text-sm">${escapeHtml(msg)}</span>
+            </div>`;
+            document.getElementById('statusDot').className = 'w-1.5 h-1.5 md:w-2.5 md:h-2.5 rounded-full bg-red-500 shadow-[0_0_8px_rgba(239,68,68,0.8)]';
+        }
+
+        // ===== RENDER UTAMA =====
+        function renderAll() {
+            if (!dataCache) return;
+            const p = dataCache;
+            const anggota = p.rekodAnggota || p.rekod_anggota || [];
+            const jentera = p.logistikBertugas || p.logistik_bertugas || [];
+            const checklist = cariChecklist(p);
+
+            updateCurrentShift(anggota);
+            renderBroadcastTicker(anggota, jentera, checklist);
+            renderSpecialUnits(anggota);
+
+            const balaiLive = computeBalaiLive(anggota, jentera, checklist);
+            populateBalaiFilters(balaiLive);
+
+            renderAlerts(jentera, checklist);
+            renderBreakdownBalai(balaiLive, anggota, jentera, checklist);
+            renderAnggota(anggota);
+            renderJentera(jentera);
+            renderChecklist(checklist);
+
+            setTimeout(setupAllScrolls, 400);
+            setTimeout(updateActiveTabOnScroll, 600);
+        }
+
+        function setupAllScrolls() {
+            setupPanelScroll('anggotaScroll', 'anggotaScrollIndicator');
+            setupPanelScroll('jenteraScroll', 'jenteraScrollIndicator');
+            setupPanelScroll('checklistScroll', 'checklistScrollIndicator');
+            setupPanelScroll('breakdownScroll', 'breakdownScrollIndicator');
+        }
+
+        // =============================================================
+        //  ====== AUTO-SCROLL ENGINE ======
+        // =============================================================
+        const scrollAnim = {};
+        const SCROLL_SPEED_PX_PER_SEC = 28;
+
+        function startAutoScroll(containerId, indicatorId) {
+            const container = document.getElementById(containerId);
+            if (!container) return;
+            if (scrollAnim[containerId]) {
+                cancelAnimationFrame(scrollAnim[containerId].frameId);
+                delete scrollAnim[containerId];
+            }
+            if (container.scrollHeight <= container.clientHeight) {
+                return;
+            }
+            const state = {
+                paused: false,
+                frameId: null,
+                speedPerFrame: SCROLL_SPEED_PX_PER_SEC / 60,
+            };
+
+            function step() {
+                if (state.paused) {
+                    state.frameId = requestAnimationFrame(step);
+                    return;
+                }
+                const currentScrollTop = container.scrollTop;
+                const maxScroll = container.scrollHeight - container.clientHeight;
+                if (currentScrollTop >= maxScroll - 1) {
+                    const target = 0;
+                    const startTime = performance.now();
+                    const startPos = currentScrollTop;
+                    const duration = 800;
+
+                    function smoothReset(time) {
+                        const elapsed = time - startTime;
+                        const progress = Math.min(elapsed / duration, 1);
+                        const eased = 1 - Math.pow(1 - progress, 3);
+                        const currentPos = startPos + (target - startPos) * eased;
+                        container.scrollTop = currentPos;
+                        if (progress < 1) {
+                            requestAnimationFrame(smoothReset);
+                        } else {
+                            container.scrollTop = target;
+                            state.frameId = requestAnimationFrame(step);
+                        }
+                    }
+                    state.frameId = requestAnimationFrame(smoothReset);
+                } else {
+                    container.scrollTop = Math.min(currentScrollTop + state.speedPerFrame, maxScroll);
+                    state.frameId = requestAnimationFrame(step);
+                }
+            }
+
+            state.frameId = requestAnimationFrame(step);
+            scrollAnim[containerId] = state;
+
+            const indicator = document.getElementById(indicatorId);
+            if (indicator) {
+                indicator.classList.remove('paused');
+                indicator.innerHTML = '<i class="fa-solid fa-chevron-up"></i> Auto';
+            }
+        }
+
+        function stopAutoScroll(containerId, indicatorId) {
+            if (scrollAnim[containerId]) {
+                scrollAnim[containerId].paused = true;
+                const indicator = document.getElementById(indicatorId);
+                if (indicator) {
+                    indicator.classList.add('paused');
+                    indicator.innerHTML = '<i class="fa-solid fa-pause"></i> Dijeda';
+                }
+            }
+        }
+
+        function resumeAutoScroll(containerId, indicatorId) {
+            const state = scrollAnim[containerId];
+            if (state) {
+                state.paused = false;
+                const indicator = document.getElementById(indicatorId);
+                if (indicator) {
+                    indicator.classList.remove('paused');
+                    indicator.innerHTML = '<i class="fa-solid fa-chevron-up"></i> Auto';
+                }
+            } else {
+                startAutoScroll(containerId, indicatorId);
+            }
+        }
+
+        function setupPanelScroll(containerId, indicatorId) {
+            const container = document.getElementById(containerId);
+            if (!container) return;
+            setTimeout(() => startAutoScroll(containerId, indicatorId), 800);
+
+            container.addEventListener('mouseenter', () => {
+                stopAutoScroll(containerId, indicatorId);
+            });
+            container.addEventListener('mouseleave', () => {
+                if (container.scrollHeight > container.clientHeight) {
+                    resumeAutoScroll(containerId, indicatorId);
+                }
+            });
+
+            container.addEventListener('touchstart', () => {
+                stopAutoScroll(containerId, indicatorId);
+            });
+            container.addEventListener('touchend', () => {
+                setTimeout(() => {
+                    if (container.scrollHeight > container.clientHeight) {
+                        resumeAutoScroll(containerId, indicatorId);
+                    }
+                }, 3000);
+            });
+
+            let scrollTimeout = null;
+            container.addEventListener('scroll', () => {
+                stopAutoScroll(containerId, indicatorId);
+                clearTimeout(scrollTimeout);
+                scrollTimeout = setTimeout(() => {
+                    if (container.scrollHeight > container.clientHeight) {
+                        resumeAutoScroll(containerId, indicatorId);
+                    }
+                }, 4000);
+            });
+        }
+
+        function computeBalaiLive(anggota, jentera, checklist) {
+            const s = new Set();
+            anggota.forEach(a => { if (a.balai) s.add(a.balai); });
+            jentera.forEach(j => { if (j.balai) s.add(j.balai); });
+            checklist.forEach(c => { const b = getVal(c, 'balai', 'Balai', 'BALAI'); if (b && b !== '-') s.add(b); });
+            return Array.from(s).sort();
+        }
+
+        function populateBalaiFilters(balaiLive) {
+            const opts = balaiLive.map(b => `<option value="${escapeHtml(b)}">${escapeHtml(b)}</option>`).join('');
+            const def = '<option value="SEMUA">Semua Balai</option>';
+            ['filterAnggotaBalai', 'filterJenteraBalai', 'filterChecklistBalai'].forEach(id => {
+                const el = document.getElementById(id);
+                if (!el) return;
+                const cur = el.value;
+                el.innerHTML = def + opts;
+                if ([...el.options].some(o => o.value === cur)) el.value = cur;
+            });
+        }
+
+        // ===== ALERTS =====
+        function renderAlerts(jentera, checklist) {
+            const itemKeys = ['cad', 'wic', 'bomra', 'desktopGirn', 'handheldGirn', 'vehicularGirn', 'internet',
+                'handphone'
+            ];
+            const labelMap = { cad: 'CAD', wic: 'WIC', bomra: 'BOMRA', desktopGirn: 'D.GIRN', handheldGirn: 'H.GIRN',
+                vehicularGirn: 'V.GIRN', internet: 'INET', handphone: 'HP' };
+
+            // Jentera bermasalah: ROSAK atau SELENGGARA (termasuk Lupus, Dalam Proses Lupus, Rosak Minor)
+            const jBermasalah = jentera.filter(j => {
+                const kat = getStatusKategori(j.status);
+                return kat === 'ROSAK' || kat === 'SELENGGARA';
+            });
+
+            const cBermasalah = [];
+            checklist.forEach(c => {
+                const balai = getVal(c, 'balai', 'Balai', 'BALAI');
+                const isu = [];
+                itemKeys.forEach(k => {
+                    const p = parseChecklistItem(c, k);
+                    if (p.rosak > 0) isu.push(`${labelMap[k]} (${p.rosak})`);
+                });
+                if (isu.length > 0) cBermasalah.push({ balai, isu });
+            });
+
+            if (jBermasalah.length === 0 && cBermasalah.length === 0) {
+                document.getElementById('alertsPanel').innerHTML = `
+              <div class="bg-emerald-50 border border-emerald-200 text-emerald-700 p-2 md:p-3 rounded-xl flex items-center gap-2 shadow-sm">
+                <i class="fa-solid fa-shield-halved text-sm md:text-lg"></i>
+                <span class="font-bold text-xs md:text-sm">Semua jentera &amp; checklist dalam keadaan baik. Tiada isu perlu perhatian sekarang.</span>
+              </div>`;
+                return;
+            }
+
+            let h = `<div class="bg-white rounded-2xl p-3 md:p-4 shadow-sm border border-red-100">
+            <div class="flex items-center gap-1.5 pb-1.5 mb-2 border-b-2 border-red-50">
+              <i class="fa-solid fa-circle-exclamation text-red-500 text-sm md:text-lg"></i>
+              <h2 class="text-xs md:text-sm font-bold text-red-700">PERLU PERHATIAN SEGERA</h2>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-3">`;
+
+            if (jBermasalah.length > 0) {
+                h += `<div>
+              <p class="text-[8px] md:text-[10px] font-bold text-slate-500 uppercase tracking-wider mb-1">Jentera (${jBermasalah.length})</p>
+              <div class="space-y-0.5 max-h-48 overflow-y-auto pr-0.5">`;
+                jBermasalah.forEach(j => {
+                    h += `<div class="flex items-center justify-between bg-red-50 border border-red-100 rounded-lg px-2 py-1 text-[8px] md:text-xs">
+                <span class="font-bold text-slate-700">${escapeHtml(j.callsign)||'-'} <span class="text-slate-400 font-normal">(${escapeHtml(j.balai)||'-'})</span></span>
+                <span class="${getBadge('status', j.status)}">${escapeHtml(j.status)}</span>
+              </div>`;
+                });
+                h += `</div></div>`;
+            }
+
+            if (cBermasalah.length > 0) {
+                h += `<div>
+              <p class="text-[8px] md:text-[10px] font-bold text-slate-500 uppercase tracking-wider mb-1">Checklist (${cBermasalah.length} balai)</p>
+              <div class="space-y-0.5 max-h-48 overflow-y-auto pr-0.5">`;
+                cBermasalah.forEach(c => {
+                    h += `<div class="bg-red-50 border border-red-100 rounded-lg px-2 py-1 text-[8px] md:text-xs">
+                <div class="font-bold text-slate-700 mb-0.5">${escapeHtml(c.balai)}</div>
+                <div class="text-red-600 font-medium text-[8px] md:text-[10px]">${c.isu.map(escapeHtml).join(', ')}</div>
+              </div>`;
+                });
+                h += `</div></div>`;
+            }
+
+            h += `</div></div>`;
+            document.getElementById('alertsPanel').innerHTML = h;
+        }
+
+        // ===== BREAKDOWN IKUT BALAI =====
+        function renderBreakdownBalai(balaiLive, anggota, jentera, checklist) {
+            if (balaiLive.length === 0) {
+                document.getElementById('breakdownBalaiTable').innerHTML =
+                    '<div class="py-4 text-center text-sm text-slate-400 font-medium bg-slate-50 rounded-xl border border-dashed border-slate-200">Tiada data balai</div>';
+                return;
+            }
+
+            const itemKeys = ['cad', 'wic', 'bomra', 'desktopGirn', 'handheldGirn', 'vehicularGirn', 'internet',
+                'handphone'
+            ];
+
+            let h = `<table class="w-full text-left text-[9px] md:text-[10px] border-collapse">
+            <thead>
+              <tr class="bg-slate-50 border-b-2 border-slate-200">
+                <th class="sticky-col-header py-1.5 px-2 font-bold text-slate-400 uppercase tracking-wider text-[8px] md:text-[9px] border-r border-slate-200" style="min-width:110px;">Balai</th>
+                <th colspan="5" class="py-0.5 px-1 text-center font-bold text-slate-400 uppercase tracking-wider text-[8px] md:text-[9px] border-r border-slate-200">Anggota</th>
+                <th colspan="4" class="py-0.5 px-1 text-center font-bold text-slate-400 uppercase tracking-wider text-[8px] md:text-[9px] border-r border-slate-200">Jentera</th>
+                <th colspan="3" class="py-0.5 px-1 text-center font-bold text-slate-400 uppercase tracking-wider text-[8px] md:text-[9px]">Checklist</th>
+              </tr>
+              <tr class="bg-white border-b border-slate-200">
+                <th class="sticky-col-header py-1 px-2 border-r border-slate-200"></th>
+                <th class="py-1 px-1 text-center font-bold text-slate-500 text-[7px] md:text-[8px] uppercase">Total</th>
+                <th class="py-1 px-1 text-center font-bold text-emerald-600 text-[7px] md:text-[8px] uppercase">Bertugas</th>
+                <th class="py-1 px-1 text-center font-bold text-amber-600 text-[7px] md:text-[8px] uppercase">Cuti</th>
+                <th class="py-1 px-1 text-center font-bold text-rose-600 text-[7px] md:text-[8px] uppercase">Cuti Sakit</th>
+                <th class="py-1 px-1 text-center font-bold text-purple-600 text-[7px] md:text-[8px] uppercase border-r border-slate-200">Tugas Khas</th>
+                <th class="py-1 px-1 text-center font-bold text-slate-500 text-[7px] md:text-[8px] uppercase">Total</th>
+                <th class="py-1 px-1 text-center font-bold text-emerald-600 text-[7px] md:text-[8px] uppercase">Baik</th>
+                <th class="py-1 px-1 text-center font-bold text-red-600 text-[7px] md:text-[8px] uppercase">Rosak</th>
+                <th class="py-1 px-1 text-center font-bold text-amber-600 text-[7px] md:text-[8px] uppercase border-r border-slate-200">Selenggara</th>
+                <th class="py-1 px-1 text-center font-bold text-slate-500 text-[7px] md:text-[8px] uppercase">Total</th>
+                <th class="py-1 px-1 text-center font-bold text-emerald-600 text-[7px] md:text-[8px] uppercase">Baik</th>
+                <th class="py-1 px-1 text-center font-bold text-red-600 text-[7px] md:text-[8px] uppercase">Ada Rosak</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-slate-100">`;
+
+            balaiLive.forEach(balai => {
+                const aBalai = anggota.filter(a => a.balai === balai);
+                const jBalai = jentera.filter(j => j.balai === balai);
+                const cBalai = checklist.filter(c => getVal(c, 'balai', 'Balai', 'BALAI') === balai);
+
+                const aTotal = aBalai.length;
+                const aBertugas = aBalai.filter(a => a.status === 'BERTUGAS').length;
+                const aCuti = aBalai.filter(a => a.status === 'CUTI').length;
+                const aCutiSakit = aBalai.filter(a => a.status === 'CUTI SAKIT').length;
+                const aTugasKhas = aBalai.filter(a => a.status === 'TUGAS KHAS').length;
+
+                const jTotal = jBalai.length;
+                const jBaik = jBalai.filter(j => getStatusKategori(j.status) === 'BAIK').length;
+                const jRosak = jBalai.filter(j => getStatusKategori(j.status) === 'ROSAK').length;
+                const jSelenggara = jBalai.filter(j => getStatusKategori(j.status) === 'SELENGGARA').length;
+
+                const cTotal = cBalai.length;
+                const cBaik = cBalai.filter(c => itemKeys.every(k => {
+                    const p = parseChecklistItem(c, k);
+                    return p.rosak === 0 && (p.baik + p.rosak) > 0;
+                })).length;
+                const cRosak = cBalai.filter(c => itemKeys.some(k => parseChecklistItem(c, k).rosak > 0)).length;
+
+                h += `<tr class="hover:bg-slate-50/60 transition-colors">
+              <td class="sticky-col py-1.5 px-2 font-bold text-slate-700 border-r border-slate-200 bg-white">${escapeHtml(balai)}</td>
+              <td class="py-1.5 px-1 text-center font-bold">${aTotal}</td>
+              <td class="py-1.5 px-1 text-center"><span class="badge-status green">${aBertugas}</span></td>
+              <td class="py-1.5 px-1 text-center"><span class="badge-status amber">${aCuti}</span></td>
+              <td class="py-1.5 px-1 text-center"><span class="badge-status red">${aCutiSakit}</span></td>
+              <td class="py-1.5 px-1 text-center border-r border-slate-200"><span class="badge-status purple">${aTugasKhas}</span></td>
+              <td class="py-1.5 px-1 text-center font-bold">${jTotal}</td>
+              <td class="py-1.5 px-1 text-center"><span class="badge-status emerald">${jBaik}</span></td>
+              <td class="py-1.5 px-1 text-center"><span class="badge-status red">${jRosak}</span></td>
+              <td class="py-1.5 px-1 text-center border-r border-slate-200"><span class="badge-status amber">${jSelenggara}</span></td>
+              <td class="py-1.5 px-1 text-center font-bold">${cTotal}</td>
+              <td class="py-1.5 px-1 text-center"><span class="badge-status emerald">${cBaik}</span></td>
+              <td class="py-1.5 px-1 text-center"><span class="badge-status red">${cRosak}</span></td>
+            </tr>`;
+            });
+
+            h += `</tbody></table>`;
+            document.getElementById('breakdownBalaiTable').innerHTML = h;
+        }
+
+        // ===== RENDER ANGGOTA =====
+        function renderAnggota(data) {
+            let d = data || (dataCache ? (dataCache.rekodAnggota || dataCache.rekod_anggota || []) : []);
+            const fName = (document.getElementById('filterAnggotaNama')?.value || '').toUpperCase();
+            const fBalai = document.getElementById('filterAnggotaBalai')?.value || 'SEMUA';
+            const fStatus = document.getElementById('filterAnggotaStatus')?.value || 'SEMUA';
+
+            let filtered = d.filter(a =>
+                (!fName || (a.nama || '').toUpperCase().includes(fName) || (a.pangkat || '').toUpperCase().includes(
+                fName)) &&
+                (fBalai === 'SEMUA' || a.balai === fBalai) &&
+                (fStatus === 'SEMUA' || a.status === fStatus)
+            );
+
+            document.getElementById('anggotaCount').innerText = `${filtered.length} rekod`;
+            if (filtered.length === 0) {
+                document.getElementById('anggotaTable').innerHTML =
+                    '<div class="py-4 text-center text-sm text-slate-400 font-medium bg-slate-50 rounded-xl border border-dashed border-slate-200">Tiada rekod ditemui</div>';
+                return;
+            }
+
+            let h =
+                `<table class="w-full text-left text-[9px] md:text-[10px]"><thead class="sticky top-0 bg-white shadow-sm z-10"><tr class="text-slate-400 font-bold uppercase tracking-wider border-b-2 border-slate-100">
+            <th class="py-1.5 px-1.5 w-6">#</th><th class="py-1.5 px-1.5">Nama &amp; Info</th><th class="py-1.5 px-1.5">Status</th><th class="py-1.5 px-1.5">Lokasi</th>
+          </tr></thead><tbody class="divide-y divide-slate-100">`;
+            filtered.forEach((a, i) => {
+                h += `<tr class="hover:bg-slate-50 transition-colors group">
+              <td class="py-1.5 px-1.5 text-slate-400">${i+1}</td>
+              <td class="py-1.5 px-1.5">
+                <div class="font-bold text-slate-700 group-hover:text-bomba-red transition-colors text-[9px] md:text-xs">${escapeHtml(a.nama)||'-'}</div>
+                <div class="text-slate-500 font-medium text-[7px] md:text-[9px] uppercase mt-0.5">${escapeHtml(a.pangkat)||'-'}</div>
+                ${createPhoneLinks(a.noTel)}
+              </td>
+              <td class="py-1.5 px-1.5">
+                <div class="flex flex-col items-start gap-0.5">
+                  <span class="${getBadge('status', a.status)}">${escapeHtml(a.status)||'-'}</span>
+                  <span class="${getBadge('pasukan', a.pasukan)}">${escapeHtml(a.pasukan)||'-'}</span>
+                </div>
+              </td>
+              <td class="py-1.5 px-1.5 font-medium text-slate-600 text-[8px] md:text-[10px]">${escapeHtml(a.balai)||'-'}</td>
+            </tr>`;
+            });
+            document.getElementById('anggotaTable').innerHTML = h + '</tbody></table>';
+            const container = document.getElementById('anggotaScroll');
+            if (container && container.scrollHeight > container.clientHeight) {
+                setTimeout(() => startAutoScroll('anggotaScroll', 'anggotaScrollIndicator'), 300);
+            }
+        }
+
+        // ===== RENDER JENTERA (dengan status baharu) =====
+        function renderJentera(data) {
+            let d = data || (dataCache ? (dataCache.logistikBertugas || dataCache.logistik_bertugas || []) : []);
+            const fCari = (document.getElementById('filterJenteraCari')?.value || '').toUpperCase();
+            const fBalai = document.getElementById('filterJenteraBalai')?.value || 'SEMUA';
+            const fStatus = document.getElementById('filterJenteraStatus')?.value || 'SEMUA';
+
+            let filtered = d.filter(j => {
+                const cari = !fCari || (j.callsign || '').toUpperCase().includes(fCari) || (j.plate || '').toUpperCase()
+                    .includes(fCari) || (j.jenis || '').toUpperCase().includes(fCari);
+                const balai = fBalai === 'SEMUA' || j.balai === fBalai;
+                const kat = getStatusKategori(j.status);
+                let st = true;
+                if (fStatus === 'BAIK') st = (kat === 'BAIK');
+                else if (fStatus === 'ROSAK') st = (kat === 'ROSAK');
+                else if (fStatus === 'SELENGGARA') st = (kat === 'SELENGGARA');
+                return cari && balai && st;
+            });
+
+            document.getElementById('jenteraCount').innerText = `${filtered.length} rekod`;
+            if (filtered.length === 0) {
+                document.getElementById('jenteraTable').innerHTML =
+                    '<div class="py-4 text-center text-sm text-slate-400 font-medium bg-slate-50 rounded-xl border border-dashed border-slate-200">Tiada rekod ditemui</div>';
+                return;
+            }
+
+            let h =
+                `<table class="w-full text-left text-[9px] md:text-[10px]"><thead class="sticky top-0 bg-white shadow-sm z-10"><tr class="text-slate-400 font-bold uppercase tracking-wider border-b-2 border-slate-100">
+            <th class="py-1.5 px-1.5 w-6">#</th><th class="py-1.5 px-1.5">Jentera</th><th class="py-1.5 px-1.5">Status</th><th class="py-1.5 px-1.5">Balai</th>
+          </tr></thead><tbody class="divide-y divide-slate-100">`;
+            filtered.forEach((j, i) => {
+                h += `<tr class="hover:bg-slate-50 transition-colors">
+              <td class="py-1.5 px-1.5 text-slate-400">${i+1}</td>
+              <td class="py-1.5 px-1.5">
+                <div class="font-bold text-bomba-darkred text-[9px] md:text-xs">${escapeHtml(j.callsign)||'-'}</div>
+                <div class="flex items-center gap-1 mt-0.5 text-slate-500 font-medium text-[7px] md:text-[9px]"><span>${escapeHtml(j.plate||j.plat)||'-'}</span> <span class="text-slate-300">•</span> <span>${escapeHtml(j.jenis)||'-'}</span></div>
+              </td>
+              <td class="py-1.5 px-1.5"><span class="${getBadge('status', j.status)}">${escapeHtml(j.status)||'-'}</span></td>
+              <td class="py-1.5 px-1.5 font-medium text-slate-600 text-[8px] md:text-[10px]">${escapeHtml(j.balai)||'-'}</td>
+            </tr>`;
+            });
+            document.getElementById('jenteraTable').innerHTML = h + '</tbody></table>';
+            const container = document.getElementById('jenteraScroll');
+            if (container && container.scrollHeight > container.clientHeight) {
+                setTimeout(() => startAutoScroll('jenteraScroll', 'jenteraScrollIndicator'), 300);
+            }
+        }
+
+        // ===== RENDER CHECKLIST =====
+        function renderChecklist(data) {
+            let d = data || (dataCache ? cariChecklist(dataCache) : []);
+            const fBalai = document.getElementById('filterChecklistBalai')?.value || 'SEMUA';
+            const fStatus = document.getElementById('filterChecklistStatus')?.value || 'SEMUA';
+            const itemKeys = ['cad', 'wic', 'bomra', 'desktopGirn', 'handheldGirn', 'vehicularGirn', 'internet',
+                'handphone'
+            ];
+
+            let filtered = d.filter(c => {
+                const balai = fBalai === 'SEMUA' || getVal(c, 'balai', 'Balai', 'BALAI') === fBalai;
+                let st = true;
+                if (fStatus === 'BAIK' || fStatus === 'ROSAK') {
+                    const parsed = itemKeys.map(k => parseChecklistItem(c, k));
+                    const totalRosak = parsed.reduce((s, p) => s + p.rosak, 0);
+                    const totalUnit = parsed.reduce((s, p) => s + p.baik + p.rosak, 0);
+                    if (fStatus === 'BAIK') st = (totalRosak === 0 && totalUnit > 0);
+                    else st = (totalRosak > 0);
+                }
+                return balai && st;
+            });
+
+            document.getElementById('checklistCount').innerText = `${filtered.length} rekod`;
+            if (filtered.length === 0) {
+                document.getElementById('checklistTable').innerHTML =
+                    '<div class="py-4 text-center text-sm text-slate-400 font-medium bg-slate-50 rounded-xl border border-dashed border-slate-200">Tiada rekod ditemui</div>';
+                return;
+            }
+
+            const labels = { cad: 'CAD', wic: 'WIC', bomra: 'BOMRA', desktopGirn: 'D.GIRN', handheldGirn: 'H.GIRN',
+                vehicularGirn: 'V.GIRN', internet: 'INET', handphone: 'HP' };
+            const icons = { cad: 'fa-desktop', wic: 'fa-globe', bomra: 'fa-mobile-screen-button',
+                desktopGirn: 'fa-laptop', handheldGirn: 'fa-walkie-talkie', vehicularGirn: 'fa-car',
+                internet: 'fa-wifi', handphone: 'fa-phone-volume' };
+            const colors = { cad: 'text-purple-500', wic: 'text-blue-500', bomra: 'text-emerald-500',
+                desktopGirn: 'text-slate-500', handheldGirn: 'text-amber-500', vehicularGirn: 'text-bomba-red',
+                internet: 'text-cyan-500', handphone: 'text-indigo-500' };
+
+            let h =
+                `<table class="w-full text-left text-[8px] md:text-[9px]"><thead class="sticky top-0 bg-white shadow-sm z-10"><tr class="text-slate-400 font-bold uppercase tracking-wider border-b-2 border-slate-100">
+            <th class="py-1.5 px-1 w-6">#</th><th class="py-1.5 px-1.5 min-w-[80px]">Balai / Shif</th>`;
+            itemKeys.forEach(k => {
+                h +=
+                    `<th class="py-1.5 px-0.5 text-center"><i class="fa-solid ${icons[k]} ${colors[k]} text-[8px] md:text-[10px]"></i><span class="block text-[5px] md:text-[6px]">${labels[k]}</span></th>`;
+            });
+            h += `</tr></thead><tbody class="divide-y divide-slate-100">`;
+
+            filtered.forEach((c, i) => {
+                const balai = getVal(c, 'balai', 'Balai', 'BALAI');
+                const shift = getVal(c, 'shiftType', 'shift_type', 'ShiftType');
+                const shiftTime = getVal(c, 'shiftTime', 'shift_time', 'ShiftTime');
+                h += `<tr class="hover:bg-slate-50 transition-colors">
+              <td class="py-1.5 px-1 text-slate-400 font-mono text-[8px] md:text-[9px]">${i+1}</td>
+              <td class="py-1.5 px-1.5">
+                <div class="font-bold text-slate-700 text-[8px] md:text-[10px]">${escapeHtml(balai)}</div>
+                <div class="text-[6px] md:text-[7px] text-slate-500 uppercase mt-0.5 font-bold tracking-wide">${escapeHtml(shift)} | ${escapeHtml(shiftTime)}</div>
+              </td>`;
+                itemKeys.forEach(k => {
+                    const p = parseChecklistItem(c, k);
+                    h += `<td class="py-1.5 px-0.5 text-center">${renderCheckBadge(p)}</td>`;
+                });
+                h += `</tr>`;
+            });
+            document.getElementById('checklistTable').innerHTML = h + '</tbody></table>';
+            const container = document.getElementById('checklistScroll');
+            if (container && container.scrollHeight > container.clientHeight) {
+                setTimeout(() => startAutoScroll('checklistScroll', 'checklistScrollIndicator'), 300);
+            }
+        }
+
+        // ===== START =====
+        fetchData();
+        initRealtime();
+    </script>
+
+</body>
+</html>

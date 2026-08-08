@@ -1685,6 +1685,41 @@
       body.mobile-mode .stats-bar {
         grid-template-columns: repeat(2, 1fr);
       }
+
+      /* ===== MINI STATS UNTUK KAD ANGGOTA ===== */
+      .anggota-mini-stats {
+        display: flex;
+        gap: 0.75rem;
+        flex-wrap: wrap;
+        margin: 0.25rem 0 0.75rem 0;
+        font-size: 0.7rem;
+        color: #94a3b8;
+      }
+      .anggota-mini-stats span {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.25rem;
+        background: rgba(255,255,255,0.05);
+        padding: 0.1rem 0.5rem;
+        border-radius: 1rem;
+      }
+      .anggota-mini-stats .num {
+        font-weight: 800;
+        color: #fff;
+      }
+      .anggota-mini-stats .num.green { color: #4ade80; }
+      .anggota-mini-stats .num.amber { color: #fbbf24; }
+      .anggota-mini-stats .num.red { color: #f87171; }
+      .anggota-mini-stats .num.purple { color: #a78bfa; }
+      body.mode-siang .anggota-mini-stats span {
+        background: rgba(0,0,0,0.05);
+        color: #475569;
+      }
+      body.mode-siang .anggota-mini-stats .num { color: #0f172a; }
+      body.mode-siang .anggota-mini-stats .num.green { color: #16a34a; }
+      body.mode-siang .anggota-mini-stats .num.amber { color: #d97706; }
+      body.mode-siang .anggota-mini-stats .num.red { color: #dc2626; }
+      body.mode-siang .anggota-mini-stats .num.purple { color: #7c3aed; }
     </style>
   </head>
 
@@ -2534,7 +2569,7 @@
           LIVE <span class="status-badge live">● LIVE</span>
         </div>
         <div class="apps-grid">
-          <!-- KAD DASHOPS – card-wide REMOVED to match other card sizes -->
+          <!-- KAD DASHOPS -->
           <a
             href="dashops.html"
             class="app-card"
@@ -2547,6 +2582,33 @@
                 <span class="highlight">(DASH-OPS)</span>
               </h3>
               <p>Statistik masa nyata panggilan, lokasi & mangsa operasi.</p>
+            </div>
+            <div class="card-footer">
+              <span class="badge live">● LIVE</span
+              ><span class="arrow"><i class="fas fa-arrow-right"></i></span>
+            </div>
+          </a>
+
+          <!-- ===== KAD KEKUATAN ANGGOTA 12 JAM (SEKARANG PAUTAN KE dbanggota.html) ===== -->
+          <a
+            href="dbanggota.html"
+            class="app-card"
+            rel="noopener noreferrer"
+          >
+            <div class="icon"><i class="fas fa-user-shield"></i></div>
+            <div>
+              <h3>
+                Kekuatan Anggota <span class="highlight">12 Jam</span>
+              </h3>
+              <p>Status anggota, syif, cuti & tugasan khas.</p>
+              <!-- Mini stats ringkas (akan diisi melalui JS) -->
+              <div class="anggota-mini-stats" id="anggotaMiniStats">
+                <span><i class="fas fa-users"></i> Jumlah: <span class="num" id="miniTotal">--</span></span>
+                <span><i class="fas fa-circle-check green"></i> Bertugas: <span class="num green" id="miniBertugas">--</span></span>
+                <span><i class="fas fa-moon amber"></i> Cuti: <span class="num amber" id="miniCuti">--</span></span>
+                <span><i class="fas fa-kit-medical red"></i> Sakit: <span class="num red" id="miniSakit">--</span></span>
+                <span><i class="fas fa-bullseye purple"></i> Tugas Khas: <span class="num purple" id="miniTugasKhas">--</span></span>
+              </div>
             </div>
             <div class="card-footer">
               <span class="badge live">● LIVE</span
@@ -2636,17 +2698,8 @@
           DALAM PEMBANGUNAN <span class="status-badge dev">● DEV</span>
         </div>
         <div class="apps-grid">
-          <a href="#" class="app-card" onclick="return false;">
-            <div class="icon"><i class="fas fa-user-shield"></i></div>
-            <div>
-              <h3>Kekuatan Anggota <span class="highlight">12 Jam</span></h3>
-              <p>Status anggota, syif, cuti & tugasan khas.</p>
-            </div>
-            <div class="card-footer">
-              <span class="badge dev">● DEV</span
-              ><span class="arrow"><i class="fas fa-arrow-right"></i></span>
-            </div>
-          </a>
+          <!-- Kad Kekuatan Anggota 12 Jam telah dipindahkan ke bahagian LIVE di atas, 
+               jadi kita boleh letak kad pembangunan lain atau biarkan kosong -->
           <a href="#" class="app-card" onclick="return false;">
             <div class="icon"><i class="fas fa-map-location-dot"></i></div>
             <div>
@@ -2988,6 +3041,39 @@
           },
           { passive: true }
         );
+
+        // ===== FETCH DATA UNTUK MINI STATS ANGGOTA =====
+        async function fetchAnggotaMiniStats() {
+          try {
+            const SUPABASE_URL = 'https://hglmbrqweijpguxfeloq.supabase.co';
+            const SUPABASE_ANON_KEY =
+              'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhnbG1icnF3ZWlqcGd1eGZlbG9xIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODU1NDcyNDAsImV4cCI6MjEwMTEyMzI0MH0.xBuhxHVmkuIPC34421QfuCERIpBPFiyVi1sSC-PQAiQ';
+            const resp = await fetch(`${SUPABASE_URL}/rest/v1/jbpm_data?id=eq.1&select=rekodAnggota`, {
+              headers: { 'apikey': SUPABASE_ANON_KEY, 'Authorization': 'Bearer ' + SUPABASE_ANON_KEY }
+            });
+            if (!resp.ok) throw new Error('Gagal fetch data');
+            const data = await resp.json();
+            if (data && data.length > 0 && data[0].rekodAnggota) {
+              const anggota = data[0].rekodAnggota;
+              const total = anggota.length;
+              const bertugas = anggota.filter(a => a.status === 'BERTUGAS').length;
+              const cuti = anggota.filter(a => a.status === 'CUTI').length;
+              const sakit = anggota.filter(a => a.status === 'CUTI SAKIT').length;
+              const tugasKhas = anggota.filter(a => a.status === 'TUGAS KHAS').length;
+
+              document.getElementById('miniTotal').textContent = total;
+              document.getElementById('miniBertugas').textContent = bertugas;
+              document.getElementById('miniCuti').textContent = cuti;
+              document.getElementById('miniSakit').textContent = sakit;
+              document.getElementById('miniTugasKhas').textContent = tugasKhas;
+            }
+          } catch (e) {
+            // Biarkan nilai '--' jika gagal
+          }
+        }
+        fetchAnggotaMiniStats();
+        // Kemaskini setiap 60 saat
+        setInterval(fetchAnggotaMiniStats, 60000);
 
         // ===== SERVICE WORKER =====
         if ('serviceWorker' in navigator) {
