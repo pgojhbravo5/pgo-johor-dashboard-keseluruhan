@@ -303,6 +303,45 @@
             border-color: #3b82f6;
             color: #3b82f6;
         }
+        /* Sistem panel mode siang */
+        body.mode-siang .sistem-panel {
+            background: rgba(245, 247, 250, 0.92);
+            border-color: #e2e8f0;
+            color: #1e293b;
+        }
+        body.mode-siang .sistem-panel .panel-title {
+            color: #0f172a;
+        }
+        body.mode-siang .sistem-panel .app-card {
+            background: #ffffff;
+            border-color: #e2e8f0;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+        }
+        body.mode-siang .sistem-panel .app-card h3 {
+            color: #0f172a;
+        }
+        body.mode-siang .sistem-panel .app-card p {
+            color: #475569;
+        }
+        body.mode-siang .sistem-panel .password-box {
+            background: #f1f5f9;
+            border-color: #cbd5e1;
+        }
+        body.mode-siang .sistem-panel .password-box input {
+            background: #ffffff;
+            border-color: #cbd5e1;
+            color: #0f172a;
+        }
+        body.mode-siang .sistem-panel .password-box input::placeholder {
+            color: #94a3b8;
+        }
+        body.mode-siang .sistem-panel .password-box button {
+            background: #b3223f;
+            color: #fff;
+        }
+        body.mode-siang .sistem-panel .password-box .error-msg {
+            color: #dc2626;
+        }
 
         /* ===== HEADER FULL-BLEED ===== */
         .header {
@@ -1558,6 +1597,185 @@
             color: #fb923c;
         }
 
+        /* ===== SISTEM PANEL (baru) ===== */
+        .sistem-panel {
+            width: 100%;
+            margin-top: 1.5rem;
+            background: var(--hud-bg);
+            border-radius: 1.75rem;
+            padding: 1.5rem 1.5rem;
+            border: 1px solid var(--hud-border);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            transition: all 0.5s ease;
+            animation: dashboardEntrance 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .sistem-panel .panel-title {
+            font-size: 0.875rem;
+            font-weight: 800;
+            letter-spacing: 0.09375rem;
+            color: #ffffff;
+            text-transform: uppercase;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding-bottom: 0.625rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            margin-bottom: 1rem;
+        }
+        .sistem-panel .panel-title i {
+            color: var(--hazard-gold);
+        }
+
+        .sistem-panel .password-box {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            flex-wrap: wrap;
+            background: rgba(255, 255, 255, 0.03);
+            padding: 0.75rem 1rem;
+            border-radius: 1rem;
+            border: 1px solid var(--hud-border);
+            margin-bottom: 1rem;
+        }
+        .sistem-panel .password-box input {
+            flex: 1;
+            background: rgba(255, 255, 255, 0.06);
+            border: 1px solid var(--hud-border);
+            border-radius: 2rem;
+            padding: 0.5rem 1rem;
+            color: #ffffff;
+            font-size: 0.875rem;
+            outline: none;
+            min-width: 10rem;
+        }
+        .sistem-panel .password-box input::placeholder {
+            color: var(--text-secondary);
+        }
+        .sistem-panel .password-box input:focus {
+            border-color: var(--hazard-gold);
+        }
+        .sistem-panel .password-box button {
+            background: var(--fire-red);
+            border: none;
+            color: #fff;
+            padding: 0.5rem 1.25rem;
+            border-radius: 2rem;
+            font-weight: 700;
+            font-size: 0.875rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            white-space: nowrap;
+        }
+        @media (hover: hover) {
+            .sistem-panel .password-box button:hover {
+                background: var(--hazard-gold);
+                color: #000;
+                transform: scale(1.02);
+            }
+        }
+        .sistem-panel .password-box .error-msg {
+            color: #ef4444;
+            font-size: 0.75rem;
+            font-weight: 600;
+            width: 100%;
+            display: none;
+        }
+        .sistem-panel .password-box .error-msg.show {
+            display: block;
+        }
+
+        .sistem-panel .sistem-content {
+            display: none;
+            flex-direction: column;
+            gap: 0.625rem;
+        }
+        .sistem-panel .sistem-content.show {
+            display: flex;
+        }
+        .sistem-panel .sistem-content .app-card {
+            background: var(--hud-card-bg);
+            border-radius: 1rem;
+            padding: 0.875rem 1.25rem;
+            border: 1px solid var(--hud-border);
+            text-decoration: none;
+            color: #ffffff;
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            gap: 1rem;
+            position: relative;
+            overflow: hidden;
+            backdrop-filter: blur(14px);
+            touch-action: manipulation;
+            transition: background 0.3s ease, border-color 0.3s ease,
+                transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.3s ease;
+        }
+        @media (hover: hover) {
+            .sistem-panel .sistem-content .app-card:hover {
+                background: var(--glass-highlight);
+                border-color: var(--hud-border-red);
+                transform: translateX(0.25rem);
+                box-shadow: 0 0.5rem 1.5rem rgba(0, 0, 0, 0.25);
+            }
+            .sistem-panel .sistem-content .app-card:hover .icon {
+                transform: scale(1.08);
+                color: #ffffff;
+                border-color: var(--fire-red);
+            }
+            .sistem-panel .sistem-content .app-card:hover .arrow {
+                color: var(--hazard-gold);
+                transform: translateX(0.3rem);
+            }
+        }
+        .sistem-panel .sistem-content .app-card .icon {
+            font-size: 1.125rem;
+            color: var(--hazard-gold);
+            width: 2.75rem;
+            height: 2.75rem;
+            min-width: 2.75rem;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid var(--hud-border);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), color 0.3s ease, border-color 0.3s ease;
+        }
+        .sistem-panel .sistem-content .app-card .icon+div {
+            flex: 1;
+            min-width: 0;
+        }
+        .sistem-panel .sistem-content .app-card h3 {
+            font-size: 0.9375rem;
+            font-weight: 700;
+            margin-bottom: 0.125rem;
+            color: #ffffff;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .sistem-panel .sistem-content .app-card h3 .highlight {
+            color: var(--hazard-gold);
+            font-weight: 800;
+        }
+        .sistem-panel .sistem-content .app-card p {
+            color: var(--text-secondary);
+            font-size: 0.75rem;
+            line-height: 1.4;
+            font-weight: 400;
+            margin-bottom: 0;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .sistem-panel .sistem-content .app-card .badge.sistem {
+            background: rgba(59, 130, 246, 0.15);
+            color: #60a5fa;
+            border: 1px solid rgba(59, 130, 246, 0.3);
+        }
+
         /* ===== FOOTER (full width, sticky bottom) ===== */
         .footer {
             width: 100%;
@@ -1732,6 +1950,19 @@
             .links-panel .panel-title {
                 font-size: 0.75rem;
             }
+            .sistem-panel {
+                padding: 1rem 0.75rem;
+            }
+            .sistem-panel .panel-title {
+                font-size: 0.75rem;
+            }
+            .sistem-panel .password-box {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            .sistem-panel .password-box input {
+                min-width: auto;
+            }
             .footer {
                 flex-direction: column;
                 text-align: center;
@@ -1857,7 +2088,7 @@
                         </div>
                     </section>
 
-                    <!-- KATEGORI (accordion) -->
+                    <!-- KATEGORI (accordion) - TANPA SISTEM -->
                     <div class="cat-accordion">
                         <!-- LIVE -->
                         <div class="cat-group">
@@ -1917,44 +2148,6 @@
                                             </div>
                                             <div class="card-footer">
                                                 <span class="badge online">● ONLINE</span>
-                                                <span class="arrow"><i class="fas fa-arrow-right"></i></span>
-                                            </div>
-                                        </a>
-                                    </div>
-                                </section>
-                            </div>
-                        </div>
-
-                        <!-- SISTEM -->
-                        <div class="cat-group">
-                            <button type="button" class="cat-toggle" data-cat-target="catPanelSistem" aria-expanded="false">
-                                <span class="cat-toggle-label">
-                                    <i class="fas fa-server"></i> PAUTAN SISTEM
-                                </span>
-                                <i class="fas fa-chevron-down cat-arrow"></i>
-                            </button>
-                            <div class="cat-panel" id="catPanelSistem">
-                                <section class="section-status">
-                                    <div class="apps-grid">
-                                        <a href="https://po1teknologia2.vercel.app/" target="_blank" class="app-card" rel="noopener noreferrer">
-                                            <div class="icon"><i class="fas fa-boxes-stacked"></i></div>
-                                            <div>
-                                                <h3>Sistem Inventori <span class="highlight">(DID)</span></h3>
-                                                <p>Pengurusan storan, peralatan & aset logistik.</p>
-                                            </div>
-                                            <div class="card-footer">
-                                                <span class="badge sistem">● SISTEM</span>
-                                                <span class="arrow"><i class="fas fa-arrow-right"></i></span>
-                                            </div>
-                                        </a>
-                                        <a href="https://daftar-masuk-pelawat.vercel.app/" target="_blank" class="app-card" rel="noopener noreferrer">
-                                            <div class="icon"><i class="fas fa-id-card-clip"></i></div>
-                                            <div>
-                                                <h3>Sistem Daftar Masuk Pelawat <span class="highlight">(ENTRY)</span></h3>
-                                                <p>Sistem daftar masuk dengan pendaftaran ID digital.</p>
-                                            </div>
-                                            <div class="card-footer">
-                                                <span class="badge sistem">● SISTEM</span>
                                                 <span class="arrow"><i class="fas fa-arrow-right"></i></span>
                                             </div>
                                         </a>
@@ -2162,6 +2355,45 @@
             </div>
 
         </div><!-- /content-row -->
+
+        <!-- ===== PANEL SISTEM (baru, di bawah content-row) ===== -->
+        <div class="sistem-panel" id="sistemPanel">
+            <div class="panel-title"><i class="fas fa-server"></i> PAUTAN SISTEM PGO JOHOR</div>
+
+            <!-- Borang password -->
+            <div class="password-box" id="passwordBox">
+                <input type="password" id="sistemPassword" placeholder="Masukkan kata laluan..." aria-label="Kata laluan sistem" />
+                <button id="sistemAuthBtn">Akses</button>
+                <div class="error-msg" id="sistemError">Kata laluan salah. Sila cuba lagi.</div>
+            </div>
+
+            <!-- Kandungan sistem (dilindungi) -->
+            <div class="sistem-content" id="sistemContent">
+                <a href="https://po1teknologia2.vercel.app/" target="_blank" class="app-card" rel="noopener noreferrer">
+                    <div class="icon"><i class="fas fa-boxes-stacked"></i></div>
+                    <div>
+                        <h3>Sistem Inventori <span class="highlight">(DID)</span></h3>
+                        <p>Pengurusan storan, peralatan & aset logistik.</p>
+                    </div>
+                    <div class="card-footer">
+                        <span class="badge sistem">● SISTEM</span>
+                        <span class="arrow"><i class="fas fa-arrow-right"></i></span>
+                    </div>
+                </a>
+                <a href="https://daftar-masuk-pelawat.vercel.app/" target="_blank" class="app-card" rel="noopener noreferrer">
+                    <div class="icon"><i class="fas fa-id-card-clip"></i></div>
+                    <div>
+                        <h3>Sistem Daftar Masuk Pelawat <span class="highlight">(ENTRY)</span></h3>
+                        <p>Sistem daftar masuk dengan pendaftaran ID digital.</p>
+                    </div>
+                    <div class="card-footer">
+                        <span class="badge sistem">● SISTEM</span>
+                        <span class="arrow"><i class="fas fa-arrow-right"></i></span>
+                    </div>
+                </a>
+            </div>
+        </div>
+
     </div><!-- /main-wrapper -->
 
     <!-- ===== FOOTER (full width, sticky bottom) ===== -->
@@ -2293,7 +2525,6 @@
                     const target = document.getElementById(this.getAttribute('data-target'));
                     const arrow = this.querySelector('.arrow');
                     const isOpen = target.classList.contains('open');
-                    // Tutup semua dalam panel ini sahaja
                     const panel = this.closest('.links-panel');
                     panel.querySelectorAll('.accordion-content.open').forEach((c) => {
                         if (c !== target) c.classList.remove('open');
@@ -2630,6 +2861,42 @@
             }
             fetchAnggotaMiniStats();
             setInterval(fetchAnggotaMiniStats, 60000);
+
+            // ===== SISTEM PANEL PASSWORD =====
+            const PASSWORD = 'pgo1234';
+            const passwordInput = document.getElementById('sistemPassword');
+            const authBtn = document.getElementById('sistemAuthBtn');
+            const errorMsg = document.getElementById('sistemError');
+            const sistemContent = document.getElementById('sistemContent');
+            const passwordBox = document.getElementById('passwordBox');
+
+            // Cek sessionStorage
+            if (sessionStorage.getItem('sistemAccess') === 'granted') {
+                passwordBox.style.display = 'none';
+                sistemContent.classList.add('show');
+            }
+
+            function authenticate() {
+                const entered = passwordInput.value.trim();
+                if (entered === PASSWORD) {
+                    sessionStorage.setItem('sistemAccess', 'granted');
+                    passwordBox.style.display = 'none';
+                    sistemContent.classList.add('show');
+                    errorMsg.classList.remove('show');
+                } else {
+                    errorMsg.classList.add('show');
+                    passwordInput.value = '';
+                    passwordInput.focus();
+                }
+            }
+
+            authBtn.addEventListener('click', authenticate);
+            passwordInput.addEventListener('keydown', function(e) {
+                if (e.key === 'Enter') {
+                    e.preventDefault();
+                    authenticate();
+                }
+            });
 
             // ===== SERVICE WORKER =====
             if ('serviceWorker' in navigator) {
