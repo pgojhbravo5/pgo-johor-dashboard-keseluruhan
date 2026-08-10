@@ -1851,7 +1851,7 @@
         color: var(--text-secondary);
       }
 
-      /* ===== RESPONSIVE ===== */
+      /* ===== RESPONSIVE: DESKTOP & TABLET ===== */
       @media (max-width: 768px) {
         .dashboard-grid { flex-direction: column; }
         .dashboard-right { max-width: 100%; width: 100%; }
@@ -1882,159 +1882,159 @@
         .kes-list-item .kl-info .kl-location { max-width: 80px; }
       }
 
-      /* ===== TAMBAHAN KHUSUS UNTUK TELEFON (MAX-WIDTH: 480px) - SAIZ FON LEBIH KECIL ===== */
+      /* ===== TELEFON (≤480px) - SAIZ SANGAT KECIL DAN PADAT ===== */
       @media (max-width: 480px) {
-        body { padding: 0.3rem 0.2rem; }
-        .dashboard { padding: 0.5rem 0.2rem; border-radius: 0.75rem; }
+        body { padding: 0.2rem 0.1rem; }
+        .dashboard { padding: 0.3rem 0.15rem; border-radius: 0.5rem; }
         .header {
-          margin-top: -0.5rem;
-          margin-left: -0.2rem;
-          margin-right: -0.2rem;
-          padding: 0.5rem 0.2rem 0.3rem;
-          border-top-left-radius: 0.75rem;
-          border-top-right-radius: 0.75rem;
+          margin-top: -0.3rem;
+          margin-left: -0.15rem;
+          margin-right: -0.15rem;
+          padding: 0.3rem 0.15rem 0.2rem;
+          border-top-left-radius: 0.5rem;
+          border-top-right-radius: 0.5rem;
         }
-        .header::before { border-top-left-radius: 0.75rem; border-top-right-radius: 0.75rem; }
+        .header::before { border-top-left-radius: 0.5rem; border-top-right-radius: 0.5rem; }
 
-        .logo { gap: 0.3rem; flex-wrap: nowrap; }
-        .logo-img-wrapper { padding: 0.1rem; border-radius: 0.3rem; }
-        .logo-img { height: 1.5rem; }
-        .logo-text h1 { font-size: 0.45rem; gap: 0.1rem; letter-spacing: 0; }
-        .logo-text .sub { font-size: 0.35rem; letter-spacing: 0.03rem; margin-top: 0; }
+        .logo { gap: 0.2rem; flex-wrap: nowrap; }
+        .logo-img-wrapper { padding: 0.1rem; border-radius: 0.2rem; }
+        .logo-img { height: 1.2rem; }
+        .logo-text h1 { font-size: 0.4rem; gap: 0.05rem; letter-spacing: 0; }
+        .logo-text .sub { font-size: 0.3rem; letter-spacing: 0.02rem; margin-top: 0; }
 
         .header-top-controls {
-          gap: 0.2rem;
-          margin-bottom: 0.2rem;
-          padding-bottom: 0.2rem;
+          gap: 0.15rem;
+          margin-bottom: 0.15rem;
+          padding-bottom: 0.15rem;
           justify-content: center;
         }
         .header-top-controls button,
         .header-top-controls .refresh-btn {
-          width: 1.5rem;
-          height: 1.5rem;
-          font-size: 0.55rem;
+          width: 1.2rem;
+          height: 1.2rem;
+          font-size: 0.45rem;
         }
         .header-top-controls .analog-clock {
-          width: 1.5rem;
-          height: 1.5rem;
+          width: 1.2rem;
+          height: 1.2rem;
           margin-left: 0;
         }
         .header-top-controls .digital-time {
-          min-width: 2.8rem;
+          min-width: 2.2rem;
           margin-right: 0;
           text-align: center;
           line-height: 1;
         }
         .header-top-controls .digital-time .time {
-          font-size: 0.5rem;
+          font-size: 0.4rem;
         }
         .header-top-controls .digital-time .date {
-          font-size: 0.3rem;
+          font-size: 0.25rem;
         }
         .hamburger-fixed-btn {
-          top: 0.2rem;
-          left: 0.2rem;
-          padding: 0.2rem 0.35rem;
-          border-radius: 0.4rem;
-          gap: 0.2rem;
+          top: 0.15rem;
+          left: 0.15rem;
+          padding: 0.15rem 0.25rem;
+          border-radius: 0.3rem;
+          gap: 0.15rem;
         }
-        .hamburger-fixed-btn .menu-title-text { font-size: 0.35rem; }
-        .hamburger-fixed-btn .hamburger-bars { gap: 0.1rem; width: 0.6rem; }
-        .hamburger-fixed-btn .hamburger-bars span { height: 0.08rem; }
+        .hamburger-fixed-btn .menu-title-text { font-size: 0.3rem; }
+        .hamburger-fixed-btn .hamburger-bars { gap: 0.08rem; width: 0.5rem; }
+        .hamburger-fixed-btn .hamburger-bars span { height: 0.06rem; }
 
         .stats-bar {
           grid-template-columns: repeat(2, 1fr);
-          gap: 0.2rem;
-          border-radius: 0.5rem;
+          gap: 0.15rem;
+          border-radius: 0.4rem;
         }
         .stat-item {
-          padding: 0.25rem 0.1rem;
+          padding: 0.2rem 0.05rem;
         }
-        .stat-item .icon-badge { font-size: 0.7rem; margin-bottom: 0.05rem; }
-        .stat-item .num { font-size: 0.8rem; }
-        .stat-item .label { font-size: 0.35rem; letter-spacing: 0.02rem; margin-top: 0.05rem; }
+        .stat-item .icon-badge { font-size: 0.6rem; margin-bottom: 0.03rem; }
+        .stat-item .num { font-size: 0.65rem; }
+        .stat-item .label { font-size: 0.3rem; letter-spacing: 0.01rem; margin-top: 0.03rem; }
         .stat-item:not(:first-child)::before { display: none; }
 
         .section-title {
-          font-size: 0.45rem;
-          margin-bottom: 0.3rem;
-          padding-bottom: 0.2rem;
-          gap: 0.3rem;
-        }
-        .status-badge { font-size: 0.35rem; padding: 0.05rem 0.3rem; }
-
-        .app-card {
-          padding: 0.25rem 0.4rem;
-          gap: 0.3rem;
-          border-radius: 0.4rem;
-        }
-        .app-card .icon {
-          width: 1.5rem;
-          height: 1.5rem;
-          min-width: 1.5rem;
-          font-size: 0.6rem;
-        }
-        .app-card h3 { font-size: 0.5rem; }
-        .app-card p { font-size: 0.4rem; }
-        .app-card .badge { font-size: 0.35rem; padding: 0.03rem 0.25rem; }
-        .app-card .arrow { font-size: 0.5rem; }
-        .app-card .card-footer { gap: 0.2rem; }
-
-        .bulletin-card {
-          padding: 0.3rem 0.3rem;
-          border-radius: 0.5rem;
-          min-height: 120px;
-        }
-        .bulletin-header h4 { font-size: 0.45rem; gap: 0.2rem; }
-        .bulletin-header .badge-count { font-size: 0.35rem; padding: 0.03rem 0.3rem; }
-        .bulletin-slide-container { min-height: 90px; }
-        .bulletin-slide .slide-icon { font-size: 1.2rem; margin-bottom: 0.1rem; }
-        .bulletin-slide .slide-type { font-size: 0.55rem; }
-        .bulletin-slide .slide-time { font-size: 0.4rem; }
-        .bulletin-slide .slide-location { font-size: 0.45rem; }
-        .bulletin-slide .slide-desc { font-size: 0.4rem; -webkit-line-clamp: 1; }
-        .bulletin-slide .slide-status { font-size: 0.35rem; padding: 0.03rem 0.3rem; }
-        .bulletin-nav { margin-top: 0.2rem; padding-top: 0.2rem; gap: 0.3rem; }
-        .bulletin-dots .dot { width: 0.3rem; height: 0.3rem; }
-        .bulletin-arrows button { width: 1.3rem; height: 1.3rem; font-size: 0.45rem; }
-
-        .kes-list-card {
-          padding: 0.25rem 0.3rem;
-          border-radius: 0.5rem;
-        }
-        .kes-list-header { font-size: 0.4rem; margin-bottom: 0.1rem; padding-bottom: 0.15rem; }
-        .kes-list-scroll { max-height: 90px; }
-        .kes-list-item {
-          padding: 0.1rem 0.1rem 0.1rem 0.2rem;
           font-size: 0.4rem;
+          margin-bottom: 0.2rem;
+          padding-bottom: 0.15rem;
           gap: 0.2rem;
         }
-        .kes-list-item .kl-icon { font-size: 0.45rem; width: 0.8rem; }
-        .kes-list-item .kl-info .kl-time { font-size: 0.35rem; }
-        .kes-list-item .kl-info .kl-location { max-width: 45px; font-size: 0.35rem; }
-        .kes-list-item .kl-info .kl-balai,
-        .kes-list-item .kl-info .kl-jenis { font-size: 0.3rem; padding: 0.02rem 0.2rem; }
+        .status-badge { font-size: 0.3rem; padding: 0.03rem 0.2rem; }
 
-        .anggota-mini-stats {
-          font-size: 0.4rem;
+        .app-card {
+          padding: 0.2rem 0.3rem;
+          gap: 0.2rem;
+          border-radius: 0.3rem;
+        }
+        .app-card .icon {
+          width: 1.2rem;
+          height: 1.2rem;
+          min-width: 1.2rem;
+          font-size: 0.5rem;
+        }
+        .app-card h3 { font-size: 0.4rem; }
+        .app-card p { font-size: 0.32rem; }
+        .app-card .badge { font-size: 0.3rem; padding: 0.02rem 0.2rem; }
+        .app-card .arrow { font-size: 0.4rem; }
+        .app-card .card-footer { gap: 0.15rem; }
+
+        .bulletin-card {
+          padding: 0.2rem 0.2rem;
+          border-radius: 0.4rem;
+          min-height: 100px;
+        }
+        .bulletin-header h4 { font-size: 0.4rem; gap: 0.15rem; }
+        .bulletin-header .badge-count { font-size: 0.3rem; padding: 0.02rem 0.2rem; }
+        .bulletin-slide-container { min-height: 70px; }
+        .bulletin-slide .slide-icon { font-size: 0.9rem; margin-bottom: 0.05rem; }
+        .bulletin-slide .slide-type { font-size: 0.45rem; }
+        .bulletin-slide .slide-time { font-size: 0.35rem; }
+        .bulletin-slide .slide-location { font-size: 0.38rem; }
+        .bulletin-slide .slide-desc { font-size: 0.33rem; -webkit-line-clamp: 1; }
+        .bulletin-slide .slide-status { font-size: 0.3rem; padding: 0.02rem 0.2rem; }
+        .bulletin-nav { margin-top: 0.15rem; padding-top: 0.15rem; gap: 0.2rem; }
+        .bulletin-dots .dot { width: 0.25rem; height: 0.25rem; }
+        .bulletin-arrows button { width: 1.1rem; height: 1.1rem; font-size: 0.4rem; }
+
+        .kes-list-card {
+          padding: 0.2rem 0.2rem;
+          border-radius: 0.4rem;
+        }
+        .kes-list-header { font-size: 0.35rem; margin-bottom: 0.1rem; padding-bottom: 0.1rem; }
+        .kes-list-scroll { max-height: 80px; }
+        .kes-list-item {
+          padding: 0.08rem 0.08rem 0.08rem 0.15rem;
+          font-size: 0.35rem;
           gap: 0.15rem;
         }
-        .anggota-mini-stats span { padding: 0.02rem 0.2rem; }
+        .kes-list-item .kl-icon { font-size: 0.4rem; width: 0.6rem; }
+        .kes-list-item .kl-info .kl-time { font-size: 0.3rem; }
+        .kes-list-item .kl-info .kl-location { max-width: 40px; font-size: 0.3rem; }
+        .kes-list-item .kl-info .kl-balai,
+        .kes-list-item .kl-info .kl-jenis { font-size: 0.25rem; padding: 0.01rem 0.15rem; }
+
+        .anggota-mini-stats {
+          font-size: 0.35rem;
+          gap: 0.1rem;
+        }
+        .anggota-mini-stats span { padding: 0.01rem 0.15rem; }
 
         .footer {
           flex-direction: column;
-          gap: 0.3rem;
-          margin-top: 0.6rem;
-          padding-top: 0.3rem;
+          gap: 0.2rem;
+          margin-top: 0.5rem;
+          padding-top: 0.2rem;
+          font-size: 0.4rem;
+        }
+        .footer .brand { font-size: 0.4rem; }
+        .footer .social-links a {
+          width: 1.2rem;
+          height: 1.2rem;
           font-size: 0.45rem;
         }
-        .footer .brand { font-size: 0.45rem; }
-        .footer .social-links a {
-          width: 1.4rem;
-          height: 1.4rem;
-          font-size: 0.5rem;
-        }
-        .footer .last-updated { font-size: 0.4rem; }
+        .footer .last-updated { font-size: 0.35rem; }
       }
 
       body.mobile-mode .dashboard { max-width: 30rem; }
@@ -2805,7 +2805,7 @@
         // ================================================================
         // FUNGSI FETCH DATA - DIPORT DARI KOD RUJUKAN
         // ================================================================
-        const CSV_URLS = {
+                const CSV_URLS = {
           syifA: 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRqq7kIOrESSTIiuwPXR-LfsmMu_NaJnWSr2qOyCrnUK4QDqP2DNQy8io0jJIysZQ6Nc6DCZr9YrrW-/pub?gid=1671240510&single=true&output=csv',
           syifB: 'https://docs.google.com/spreadsheets/d/e/2PACX-1vToFUGdZ63m5oOjUMMYKta_aJ9cQlP3Bxz8QxjTxshfySACV1zqOQVwHBo6ptNyrk1mcw_yuvhIhbcH/pub?gid=1671240510&single=true&output=csv',
           syifC: 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRgdRVgrUyuMX5IocMXA6g1yM5e0gU1qg3YpazTpmvFhgkl9KCPX02hn-0epm40SCxeHFQ125xCJN2T/pub?gid=1671240510&single=true&output=csv'
