@@ -855,29 +855,6 @@
             color: var(--text-secondary);
             margin-top: 0.25rem;
         }
-        .jentera-pecahan {
-            font-size: 0.6rem;
-            margin-top: 0.2rem;
-            display: flex;
-            gap: 0.5rem;
-            justify-content: center;
-            color: var(--text-secondary);
-            flex-wrap: wrap;
-        }
-        .jentera-pecahan span {
-            display: inline-flex;
-            align-items: center;
-            gap: 0.2rem;
-            background: rgba(255, 255, 255, 0.05);
-            padding: 0.05rem 0.4rem;
-            border-radius: 1rem;
-            border: 1px solid var(--hud-border);
-            font-weight: 600;
-        }
-        body.mode-siang .jentera-pecahan span {
-            background: rgba(0, 0, 0, 0.05);
-            border-color: #e2e8f0;
-        }
 
         /* ===== SECTIONS ===== */
         .section-status {
@@ -1597,34 +1574,71 @@
             color: #fb923c;
         }
 
-        /* ===== SISTEM PANEL (baru) ===== */
+        /* ===== SISTEM PANEL (accordion + password) ===== */
         .sistem-panel {
             width: 100%;
             margin-top: 1.5rem;
             background: var(--hud-bg);
             border-radius: 1.75rem;
-            padding: 1.5rem 1.5rem;
             border: 1px solid var(--hud-border);
             backdrop-filter: blur(20px);
             -webkit-backdrop-filter: blur(20px);
             transition: all 0.5s ease;
             animation: dashboardEntrance 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+            overflow: hidden;
         }
-        .sistem-panel .panel-title {
-            font-size: 0.875rem;
-            font-weight: 800;
-            letter-spacing: 0.09375rem;
+        .sistem-panel .panel-toggle {
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 1.25rem 1.5rem;
+            background: transparent;
+            border: none;
+            cursor: pointer;
             color: #ffffff;
+            font-family: var(--font-main);
+            font-weight: 800;
+            font-size: 0.875rem;
+            letter-spacing: 0.09375rem;
             text-transform: uppercase;
+            text-align: left;
+            transition: background 0.3s ease;
+            gap: 1rem;
+        }
+        .sistem-panel .panel-toggle:hover {
+            background: var(--glass-highlight);
+        }
+        .sistem-panel .panel-toggle .panel-title {
             display: flex;
             align-items: center;
             gap: 0.75rem;
-            padding-bottom: 0.625rem;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-            margin-bottom: 1rem;
+            color: #ffffff;
         }
-        .sistem-panel .panel-title i {
+        .sistem-panel .panel-toggle .panel-title i {
             color: var(--hazard-gold);
+        }
+        .sistem-panel .panel-toggle .panel-arrow {
+            color: var(--text-secondary);
+            font-size: 0.875rem;
+            transition: transform 0.35s ease, color 0.35s ease;
+            flex-shrink: 0;
+        }
+        .sistem-panel .panel-toggle .panel-arrow.open {
+            transform: rotate(180deg);
+            color: var(--hazard-gold);
+        }
+
+        .sistem-panel .panel-body {
+            max-height: 0;
+            overflow: hidden;
+            padding: 0 1.5rem;
+            transition: max-height 0.45s cubic-bezier(0.16, 1, 0.3, 1),
+                padding 0.45s ease;
+        }
+        .sistem-panel .panel-body.open {
+            max-height: 4000px;
+            padding: 0 1.5rem 1.5rem 1.5rem;
         }
 
         .sistem-panel .password-box {
@@ -1950,11 +1964,15 @@
             .links-panel .panel-title {
                 font-size: 0.75rem;
             }
-            .sistem-panel {
-                padding: 1rem 0.75rem;
-            }
-            .sistem-panel .panel-title {
+            .sistem-panel .panel-toggle {
+                padding: 1rem 1rem;
                 font-size: 0.75rem;
+            }
+            .sistem-panel .panel-body {
+                padding: 0 1rem;
+            }
+            .sistem-panel .panel-body.open {
+                padding: 0 1rem 1rem 1rem;
             }
             .sistem-panel .password-box {
                 flex-direction: column;
@@ -2081,10 +2099,6 @@
                             <i class="fas fa-truck-field icon-badge"></i>
                             <div class="num" id="statJenteraSedia">--</div>
                             <div class="label">Jentera Sedia</div>
-                            <div class="jentera-pecahan">
-                                <span><i class="fas fa-circle-check" style="color:#4ade80;"></i> <span id="cfrtBaik">--</span></span>
-                                <span><i class="fas fa-circle-exclamation" style="color:#fbbf24;"></i> <span id="cfrtMinor">--</span></span>
-                            </div>
                         </div>
                     </section>
 
@@ -2356,41 +2370,48 @@
 
         </div><!-- /content-row -->
 
-        <!-- ===== PANEL SISTEM (baru, di bawah content-row) ===== -->
+        <!-- ===== PANEL SISTEM (accordion + password) ===== -->
         <div class="sistem-panel" id="sistemPanel">
-            <div class="panel-title"><i class="fas fa-server"></i> PAUTAN SISTEM PGO JOHOR</div>
+            <button class="panel-toggle" id="sistemPanelToggle" aria-expanded="false">
+                <span class="panel-title">
+                    <i class="fas fa-server"></i> PAUTAN SISTEM PGO JOHOR
+                </span>
+                <i class="fas fa-chevron-down panel-arrow"></i>
+            </button>
 
-            <!-- Borang password -->
-            <div class="password-box" id="passwordBox">
-                <input type="password" id="sistemPassword" placeholder="Masukkan kata laluan..." aria-label="Kata laluan sistem" />
-                <button id="sistemAuthBtn">Akses</button>
-                <div class="error-msg" id="sistemError">Kata laluan salah. Sila cuba lagi.</div>
-            </div>
+            <div class="panel-body" id="sistemPanelBody">
+                <!-- Borang password -->
+                <div class="password-box" id="passwordBox">
+                    <input type="password" id="sistemPassword" placeholder="Masukkan kata laluan..." aria-label="Kata laluan sistem" />
+                    <button id="sistemAuthBtn">Akses</button>
+                    <div class="error-msg" id="sistemError">Kata laluan salah. Sila cuba lagi.</div>
+                </div>
 
-            <!-- Kandungan sistem (dilindungi) -->
-            <div class="sistem-content" id="sistemContent">
-                <a href="https://po1teknologia2.vercel.app/" target="_blank" class="app-card" rel="noopener noreferrer">
-                    <div class="icon"><i class="fas fa-boxes-stacked"></i></div>
-                    <div>
-                        <h3>Sistem Inventori <span class="highlight">(DID)</span></h3>
-                        <p>Pengurusan storan, peralatan & aset logistik.</p>
-                    </div>
-                    <div class="card-footer">
-                        <span class="badge sistem">● SISTEM</span>
-                        <span class="arrow"><i class="fas fa-arrow-right"></i></span>
-                    </div>
-                </a>
-                <a href="https://daftar-masuk-pelawat.vercel.app/" target="_blank" class="app-card" rel="noopener noreferrer">
-                    <div class="icon"><i class="fas fa-id-card-clip"></i></div>
-                    <div>
-                        <h3>Sistem Daftar Masuk Pelawat <span class="highlight">(ENTRY)</span></h3>
-                        <p>Sistem daftar masuk dengan pendaftaran ID digital.</p>
-                    </div>
-                    <div class="card-footer">
-                        <span class="badge sistem">● SISTEM</span>
-                        <span class="arrow"><i class="fas fa-arrow-right"></i></span>
-                    </div>
-                </a>
+                <!-- Kandungan sistem (dilindungi) -->
+                <div class="sistem-content" id="sistemContent">
+                    <a href="https://po1teknologia2.vercel.app/" target="_blank" class="app-card" rel="noopener noreferrer">
+                        <div class="icon"><i class="fas fa-boxes-stacked"></i></div>
+                        <div>
+                            <h3>Sistem Inventori <span class="highlight">(DID)</span></h3>
+                            <p>Pengurusan storan, peralatan & aset logistik.</p>
+                        </div>
+                        <div class="card-footer">
+                            <span class="badge sistem">● SISTEM</span>
+                            <span class="arrow"><i class="fas fa-arrow-right"></i></span>
+                        </div>
+                    </a>
+                    <a href="https://daftar-masuk-pelawat.vercel.app/" target="_blank" class="app-card" rel="noopener noreferrer">
+                        <div class="icon"><i class="fas fa-id-card-clip"></i></div>
+                        <div>
+                            <h3>Sistem Daftar Masuk Pelawat <span class="highlight">(ENTRY)</span></h3>
+                            <p>Sistem daftar masuk dengan pendaftaran ID digital.</p>
+                        </div>
+                        <div class="card-footer">
+                            <span class="badge sistem">● SISTEM</span>
+                            <span class="arrow"><i class="fas fa-arrow-right"></i></span>
+                        </div>
+                    </a>
+                </div>
             </div>
         </div>
 
@@ -2566,6 +2587,24 @@
                         this.setAttribute('aria-expanded', 'false');
                     }
                 });
+            });
+
+            // ===== SISTEM PANEL TOGGLE (accordion) =====
+            const sistemToggle = document.getElementById('sistemPanelToggle');
+            const sistemBody = document.getElementById('sistemPanelBody');
+            const sistemArrow = sistemToggle.querySelector('.panel-arrow');
+
+            sistemToggle.addEventListener('click', function() {
+                const isOpen = sistemBody.classList.contains('open');
+                if (!isOpen) {
+                    sistemBody.classList.add('open');
+                    sistemArrow.classList.add('open');
+                    this.setAttribute('aria-expanded', 'true');
+                } else {
+                    sistemBody.classList.remove('open');
+                    sistemArrow.classList.remove('open');
+                    this.setAttribute('aria-expanded', 'false');
+                }
             });
 
             // ===== SCROLL-TRIGGERED CARD ANIMATIONS =====
@@ -2789,14 +2828,12 @@
             fetchKesHariIni();
             setInterval(fetchKesHariIni, 60000);
 
-            // ===== JENTERA BERSEDIA (CFRT) =====
+            // ===== JENTERA BERSEDIA (CFRT) - KEMASKINI: hanya jumlah =====
             const CFRT_CSV_URL =
                 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQt0JkN2yWW_0FeY5GKpmIvs1uI6si89JcqNmSTO3f--rM8FhQZe1Q97YQd8tiAsmaMQdTXO5TQWedy/pub?gid=0&single=true&output=csv';
 
             async function fetchJenteraBersedia() {
                 const elJumlah = document.getElementById('statJenteraSedia');
-                const elBaik = document.getElementById('cfrtBaik');
-                const elMinor = document.getElementById('cfrtMinor');
                 try {
                     const response = await fetch(CFRT_CSV_URL, { cache: 'no-cache' });
                     if (!response.ok) throw new Error('Gagal memuat turun CSV CFRT');
@@ -2817,12 +2854,8 @@
                     }
                     const jumlah = baik + rosakMinor;
                     if (elJumlah) elJumlah.textContent = jumlah;
-                    if (elBaik) elBaik.textContent = baik;
-                    if (elMinor) elMinor.textContent = rosakMinor;
                 } catch (e) {
                     if (elJumlah) elJumlah.textContent = '--';
-                    if (elBaik) elBaik.textContent = '--';
-                    if (elMinor) elMinor.textContent = '--';
                 }
             }
             fetchJenteraBersedia();
