@@ -826,6 +826,31 @@
         margin-top: 0.25rem;
       }
 
+      /* Pecahan jentera dalam stats-bar */
+      .jentera-pecahan {
+        font-size: 0.6rem;
+        margin-top: 0.2rem;
+        display: flex;
+        gap: 0.5rem;
+        justify-content: center;
+        color: var(--text-secondary);
+        flex-wrap: wrap;
+      }
+      .jentera-pecahan span {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.2rem;
+        background: rgba(255, 255, 255, 0.05);
+        padding: 0.05rem 0.4rem;
+        border-radius: 1rem;
+        border: 1px solid var(--hud-border);
+        font-weight: 600;
+      }
+      body.mode-siang .jentera-pecahan span {
+        background: rgba(0, 0, 0, 0.05);
+        border-color: #e2e8f0;
+      }
+
       /* SECTIONS */
       .section-status {
         margin-bottom: 2.5rem;
@@ -2615,7 +2640,12 @@
         <div class="stat-item">
           <i class="fas fa-truck-field icon-badge"></i>
           <div class="num" id="statJenteraSedia">--</div>
-          <div class="label">Jentera Bersedia</div>
+          <div class="label">Jentera Sedia (CFRT)</div>
+          <!-- Pecahan kecil -->
+          <div class="jentera-pecahan">
+            <span><i class="fas fa-circle-check" style="color:#4ade80;"></i> <span id="cfrtBaik">--</span></span>
+            <span><i class="fas fa-circle-exclamation" style="color:#fbbf24;"></i> <span id="cfrtMinor">--</span></span>
+          </div>
         </div>
       </section>
 
@@ -3243,43 +3273,56 @@
         fetchKesHariIni();
         setInterval(fetchKesHariIni, 60000);
 
-        // ----- JENTERA BERSEDIA (sumber sama dgn jentera.html: CFRT/EMRS/Water) -----
-        const JENTERA_CSV_URLS = [
-          'https://docs.google.com/spreadsheets/d/e/2PACX-1vQt0JkN2yWW_0FeY5GKpmIvs1uI6si89JcqNmSTO3f--rM8FhQZe1Q97YQd8tiAsmaMQdTXO5TQWedy/pub?gid=0&single=true&output=csv',
-          'https://docs.google.com/spreadsheets/d/e/2PACX-1vQt0JkN2yWW_0FeY5GKpmIvs1uI6si89JcqNmSTO3f--rM8FhQZe1Q97YQd8tiAsmaMQdTXO5TQWedy/pub?gid=795399708&single=true&output=csv',
-          'https://docs.google.com/spreadsheets/d/e/2PACX-1vQt0JkN2yWW_0FeY5GKpmIvs1uI6si89JcqNmSTO3f--rM8FhQZe1Q97YQd8tiAsmaMQdTXO5TQWedy/pub?gid=290336578&single=true&output=csv',
-        ];
+        // ===== JENTERA BERSEDIA (CFRT sahaja, kira BAIK + ROSAK MINOR) =====
+        const CFRT_CSV_URL =
+          'https://docs.google.com/spreadsheets/d/e/2PACX-1vQt0JkN2yWW_0FeY5GKpmIvs1uI6si89JcqNmSTO3f--rM8FhQZe1Q97YQd8tiAsmaMQdTXO5TQWedy/pub?gid=0&single=true&output=csv';
 
         async function fetchJenteraBersedia() {
-          const el = document.getElementById('statJenteraSedia');
+          const elJumlah = document.getElementById('statJenteraSedia');
+          const elBaik = document.getElementById('cfrtBaik');
+          const elMinor = document.getElementById('cfrtMinor');
+
           try {
-            const texts = await Promise.all(
-              JENTERA_CSV_URLS.map((u) =>
-                fetch(u, { cache: 'no-cache' }).then((r) => r.text())
-              )
-            );
-            let bersedia = 0;
-            texts.forEach((text) => {
-              const rows = pgoParseCSV(text);
-              if (rows.length < 2) return;
-              const headers = rows[0];
-              const idxStatus = pgoColIdx(headers, 'STATUS JENTERA');
-              for (let i = 1; i < rows.length; i++) {
-                const row = rows[i];
-                if (!row || row.length === 0) continue;
-                const status = (
-                  idxStatus >= 0 ? row[idxStatus] || '' : ''
-                ).toUpperCase();
-                // Kategori 'BAIK & BEROPERASI' = jentera bersedia (sama logik dgn jentera.html)
-                if (status.includes('BAIK') && status.includes('BEROPERASI'))
-                  bersedia++;
+            const response = await fetch(CFRT_CSV_URL, { cache: 'no-cache' });
+            if (!response.ok) throw new Error('Gagal memuat turun CSV CFRT');
+            const text = await response.text();
+            const rows = pgoParseCSV(text);
+            if (rows.length < 2) throw new Error('Data CFRT kosong');
+
+            const headers = rows[0];
+            const idxStatus = pgoColIdx(headers, 'STATUS JENTERA');
+            if (idxStatus === -1) throw new Error('Column STATUS JENTERA tidak dijumpai');
+
+            let baik = 0;
+            let rosakMinor = 0;
+
+            for (let i = 1; i < rows.length; i++) {
+              const row = rows[i];
+              if (!row || row.length === 0) continue;
+              const status = (idxStatus >= 0 ? row[idxStatus] || '' : '').toUpperCase();
+
+              if (status.includes('BAIK')) {
+                baik++;
+              } else if (status.includes('ROSAK MINOR')) {
+                rosakMinor++;
               }
-            });
-            if (el) el.textContent = bersedia;
+              // Abaikan status lain (rosak teruk, dalam servis, dsb.)
+            }
+
+            const jumlah = baik + rosakMinor;
+
+            if (elJumlah) elJumlah.textContent = jumlah;
+            if (elBaik) elBaik.textContent = baik;
+            if (elMinor) elMinor.textContent = rosakMinor;
+
           } catch (e) {
-            if (el) el.textContent = '--';
+            console.warn('Gagal dapatkan data jentera bersedia:', e.message);
+            if (elJumlah) elJumlah.textContent = '--';
+            if (elBaik) elBaik.textContent = '--';
+            if (elMinor) elMinor.textContent = '--';
           }
         }
+
         fetchJenteraBersedia();
         setInterval(fetchJenteraBersedia, 60000);
 
