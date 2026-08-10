@@ -749,6 +749,9 @@
             flex: 1 1 0;
             min-width: 0;
             max-width: 28rem;
+            display: flex;
+            flex-direction: column;
+            gap: 1.25rem;
         }
 
         /* ===== DASHBOARD ===== */
@@ -1737,7 +1740,6 @@
         /* ===== SISTEM PANEL ===== */
         .sistem-panel {
             width: 100%;
-            margin-top: 1.5rem;
             background: var(--hud-bg);
             border-radius: 1.75rem;
             border: 1px solid var(--hud-border);
@@ -2030,6 +2032,7 @@
             .content-col-right {
                 flex: 1 1 auto;
                 max-width: 100%;
+                gap: 1rem;
             }
             .links-panel {
                 max-height: 60vh;
@@ -2572,52 +2575,52 @@
                         </div>
                     </div><!-- /links-scroll -->
                 </aside>
+
+                <!-- ===== PANEL SISTEM (diletakkan di bawah PAUTAN PENTING) ===== -->
+                <div class="sistem-panel" id="sistemPanel">
+                    <button class="panel-toggle" id="sistemPanelToggle" aria-expanded="false">
+                        <span class="panel-title">
+                            <i class="fas fa-server"></i> PAUTAN SISTEM PGO JOHOR
+                        </span>
+                        <i class="fas fa-chevron-down panel-arrow"></i>
+                    </button>
+
+                    <div class="panel-body" id="sistemPanelBody">
+                        <div class="password-box" id="passwordBox">
+                            <input type="password" id="sistemPassword" placeholder="Masukkan kata laluan..." aria-label="Kata laluan sistem" />
+                            <button id="sistemAuthBtn">Akses</button>
+                            <div class="error-msg" id="sistemError">Kata laluan salah. Sila cuba lagi.</div>
+                        </div>
+
+                        <div class="sistem-content" id="sistemContent">
+                            <a href="https://po1teknologia2.vercel.app/" target="_blank" class="app-card" rel="noopener noreferrer">
+                                <div class="icon"><i class="fas fa-boxes-stacked"></i></div>
+                                <div>
+                                    <h3>Sistem Inventori <span class="highlight">(DID)</span></h3>
+                                    <p>Pengurusan storan, peralatan & aset logistik.</p>
+                                </div>
+                                <div class="card-footer">
+                                    <span class="badge sistem">● SISTEM</span>
+                                    <span class="arrow"><i class="fas fa-arrow-right"></i></span>
+                                </div>
+                            </a>
+                            <a href="https://daftar-masuk-pelawat.vercel.app/" target="_blank" class="app-card" rel="noopener noreferrer">
+                                <div class="icon"><i class="fas fa-id-card-clip"></i></div>
+                                <div>
+                                    <h3>Sistem Daftar Masuk Pelawat <span class="highlight">(ENTRY)</span></h3>
+                                    <p>Sistem daftar masuk dengan pendaftaran ID digital.</p>
+                                </div>
+                                <div class="card-footer">
+                                    <span class="badge sistem">● SISTEM</span>
+                                    <span class="arrow"><i class="fas fa-arrow-right"></i></span>
+                                </div>
+                            </a>
+                        </div>
+                    </div>
+                </div>
             </div>
 
         </div><!-- /content-row -->
-
-        <!-- ===== PANEL SISTEM ===== -->
-        <div class="sistem-panel" id="sistemPanel">
-            <button class="panel-toggle" id="sistemPanelToggle" aria-expanded="false">
-                <span class="panel-title">
-                    <i class="fas fa-server"></i> PAUTAN SISTEM PGO JOHOR
-                </span>
-                <i class="fas fa-chevron-down panel-arrow"></i>
-            </button>
-
-            <div class="panel-body" id="sistemPanelBody">
-                <div class="password-box" id="passwordBox">
-                    <input type="password" id="sistemPassword" placeholder="Masukkan kata laluan..." aria-label="Kata laluan sistem" />
-                    <button id="sistemAuthBtn">Akses</button>
-                    <div class="error-msg" id="sistemError">Kata laluan salah. Sila cuba lagi.</div>
-                </div>
-
-                <div class="sistem-content" id="sistemContent">
-                    <a href="https://po1teknologia2.vercel.app/" target="_blank" class="app-card" rel="noopener noreferrer">
-                        <div class="icon"><i class="fas fa-boxes-stacked"></i></div>
-                        <div>
-                            <h3>Sistem Inventori <span class="highlight">(DID)</span></h3>
-                            <p>Pengurusan storan, peralatan & aset logistik.</p>
-                        </div>
-                        <div class="card-footer">
-                            <span class="badge sistem">● SISTEM</span>
-                            <span class="arrow"><i class="fas fa-arrow-right"></i></span>
-                        </div>
-                    </a>
-                    <a href="https://daftar-masuk-pelawat.vercel.app/" target="_blank" class="app-card" rel="noopener noreferrer">
-                        <div class="icon"><i class="fas fa-id-card-clip"></i></div>
-                        <div>
-                            <h3>Sistem Daftar Masuk Pelawat <span class="highlight">(ENTRY)</span></h3>
-                            <p>Sistem daftar masuk dengan pendaftaran ID digital.</p>
-                        </div>
-                        <div class="card-footer">
-                            <span class="badge sistem">● SISTEM</span>
-                            <span class="arrow"><i class="fas fa-arrow-right"></i></span>
-                        </div>
-                    </a>
-                </div>
-            </div>
-        </div>
 
     </div><!-- /main-wrapper -->
 
