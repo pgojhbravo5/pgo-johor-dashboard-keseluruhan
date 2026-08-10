@@ -44,7 +44,8 @@
 
         /* ===== SCROLL ANIMATION ===== */
         .app-card,
-        .stat-item {
+        .stat-item,
+        .carousel-slide {
             opacity: 0;
             transform: translateY(50px) scale(0.96);
             transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1),
@@ -53,7 +54,8 @@
                 border-color 0.4s ease;
         }
         .app-card.visible,
-        .stat-item.visible {
+        .stat-item.visible,
+        .carousel-slide.visible {
             opacity: 1;
             transform: translateY(0) scale(1);
         }
@@ -69,24 +71,16 @@
             opacity: 1;
             transform: translateY(0) scale(1);
         }
-        .stat-item:nth-child(1) {
-            transition-delay: 0.05s;
-        }
-        .stat-item:nth-child(2) {
-            transition-delay: 0.1s;
-        }
-        .stat-item:nth-child(3) {
-            transition-delay: 0.15s;
-        }
-        .stat-item:nth-child(4) {
-            transition-delay: 0.2s;
-        }
+        .stat-item:nth-child(1) { transition-delay: 0.05s; }
+        .stat-item:nth-child(2) { transition-delay: 0.1s; }
+        .stat-item:nth-child(3) { transition-delay: 0.15s; }
+        .stat-item:nth-child(4) { transition-delay: 0.2s; }
         .app-card,
-        .stat-item {
-            opacity: 0;
-        }
+        .stat-item,
+        .carousel-slide { opacity: 0; }
         .no-js .app-card,
-        .no-js .stat-item {
+        .no-js .stat-item,
+        .no-js .carousel-slide {
             opacity: 1;
             transform: translateY(0) scale(1);
         }
@@ -159,12 +153,8 @@
                 0 0 30px rgba(255, 107, 0, 0.15);
             color: #1e293b;
         }
-        body.mode-siang .logo-text h1 {
-            color: #0f172a;
-        }
-        body.mode-siang .logo-text .sub {
-            color: #475569;
-        }
+        body.mode-siang .logo-text h1 { color: #0f172a; }
+        body.mode-siang .logo-text .sub { color: #475569; }
         body.mode-siang .stats-bar {
             background: rgba(255, 255, 255, 0.55);
             border-color: #e2e8f0;
@@ -173,23 +163,15 @@
             color: #0f172a;
             text-shadow: none;
         }
-        body.mode-siang .stat-item .label {
-            color: #475569;
-        }
-        body.mode-siang .stat-item .icon-badge {
-            color: #b3223f;
-        }
+        body.mode-siang .stat-item .label { color: #475569; }
+        body.mode-siang .stat-item .icon-badge { color: #b3223f; }
         body.mode-siang .app-card {
             background: #ffffff;
             border-color: #e2e8f0;
             box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
         }
-        body.mode-siang .app-card h3 {
-            color: #0f172a;
-        }
-        body.mode-siang .app-card p {
-            color: #475569;
-        }
+        body.mode-siang .app-card h3 { color: #0f172a; }
+        body.mode-siang .app-card p { color: #475569; }
         body.mode-siang .section-title {
             color: #0f172a;
             border-bottom-color: #cbd5e1;
@@ -231,17 +213,13 @@
         body.mode-siang .search-bar-wrap input::placeholder {
             color: #94a3b8;
         }
-        body.mode-siang .search-bar-wrap button {
-            color: #b3223f;
-        }
+        body.mode-siang .search-bar-wrap button { color: #b3223f; }
         body.mode-siang .links-panel {
             background: rgba(245, 247, 250, 0.92);
             border-color: #e2e8f0;
             color: #1e293b;
         }
-        body.mode-siang .links-panel .panel-title {
-            color: #0f172a;
-        }
+        body.mode-siang .links-panel .panel-title { color: #0f172a; }
         body.mode-siang .links-panel .popular-item {
             background: #ffffff;
             border-color: #e2e8f0;
@@ -258,9 +236,7 @@
         body.mode-siang .links-panel .accordion-content {
             background: #f1f5f9;
         }
-        body.mode-siang .links-panel .sidebar-link {
-            color: #334155;
-        }
+        body.mode-siang .links-panel .sidebar-link { color: #334155; }
         body.mode-siang .links-panel .sidebar-link:hover {
             background: #ffffff;
             border-color: #cbd5e1;
@@ -280,9 +256,7 @@
             background: #f1f5f9;
             border-color: #cbd5e1;
         }
-        body.mode-siang .links-panel .update-timestamp {
-            color: #64748b;
-        }
+        body.mode-siang .links-panel .update-timestamp { color: #64748b; }
         body.mode-siang .links-panel .accordion-header .accordion-title {
             color: #cc5500;
         }
@@ -303,26 +277,19 @@
             border-color: #3b82f6;
             color: #3b82f6;
         }
-        /* Sistem panel mode siang */
         body.mode-siang .sistem-panel {
             background: rgba(245, 247, 250, 0.92);
             border-color: #e2e8f0;
             color: #1e293b;
         }
-        body.mode-siang .sistem-panel .panel-title {
-            color: #0f172a;
-        }
+        body.mode-siang .sistem-panel .panel-title { color: #0f172a; }
         body.mode-siang .sistem-panel .app-card {
             background: #ffffff;
             border-color: #e2e8f0;
             box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
         }
-        body.mode-siang .sistem-panel .app-card h3 {
-            color: #0f172a;
-        }
-        body.mode-siang .sistem-panel .app-card p {
-            color: #475569;
-        }
+        body.mode-siang .sistem-panel .app-card h3 { color: #0f172a; }
+        body.mode-siang .sistem-panel .app-card p { color: #475569; }
         body.mode-siang .sistem-panel .password-box {
             background: #f1f5f9;
             border-color: #cbd5e1;
@@ -342,8 +309,51 @@
         body.mode-siang .sistem-panel .password-box .error-msg {
             color: #dc2626;
         }
+        /* Carousel mode siang */
+        body.mode-siang .carousel-container {
+            background: rgba(255, 255, 255, 0.5);
+            border-color: #e2e8f0;
+        }
+        body.mode-siang .carousel-slide {
+            background: #ffffff;
+            border-color: #e2e8f0;
+        }
+        body.mode-siang .carousel-slide .case-type {
+            color: #b3223f;
+        }
+        body.mode-siang .carousel-slide .case-address,
+        body.mode-siang .carousel-slide .case-time,
+        body.mode-siang .carousel-slide .case-detail {
+            color: #1e293b;
+        }
+        body.mode-siang .carousel-slide .case-detail {
+            color: #475569;
+        }
+        body.mode-siang .carousel-dot {
+            background: #cbd5e1;
+        }
+        body.mode-siang .carousel-dot.active {
+            background: #b3223f;
+        }
+        body.mode-siang .carousel-btn {
+            background: #ffffff;
+            border-color: #e2e8f0;
+            color: #1e293b;
+        }
+        body.mode-siang .carousel-btn:hover {
+            background: #b3223f;
+            color: #fff;
+        }
+        body.mode-siang .carousel-notice {
+            background: rgba(179, 34, 63, 0.06);
+            border-color: rgba(179, 34, 63, 0.2);
+            color: #475569;
+        }
+        body.mode-siang .carousel-notice strong {
+            color: #b3223f;
+        }
 
-        /* ===== HEADER FULL-BLEED ===== */
+        /* ===== HEADER ===== */
         .header {
             width: 100%;
             position: sticky;
@@ -377,12 +387,8 @@
             pointer-events: none;
         }
         @keyframes stripeMove {
-            0% {
-                background-position: 0% 0%;
-            }
-            100% {
-                background-position: 300% 0%;
-            }
+            0% { background-position: 0% 0%; }
+            100% { background-position: 300% 0%; }
         }
         body.mode-siang .header {
             background: rgba(245, 247, 250, 0.96);
@@ -537,15 +543,8 @@
             display: block;
         }
         @keyframes pulseIndicator {
-            0%,
-            100% {
-                transform: scale(1);
-                opacity: 1;
-            }
-            50% {
-                transform: scale(1.4);
-                opacity: 0.4;
-            }
+            0%, 100% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.4); opacity: 0.4; }
         }
 
         .header-top-controls .analog-clock {
@@ -634,13 +633,8 @@
             animation: blinkColon 1s infinite;
         }
         @keyframes blinkColon {
-            0%,
-            100% {
-                opacity: 1;
-            }
-            50% {
-                opacity: 0.2;
-            }
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.2; }
         }
         .header-top-controls .digital-time .date {
             color: var(--text-secondary);
@@ -650,7 +644,7 @@
             margin-top: 0.125rem;
         }
 
-        /* ===== SEARCH BAR (di bawah header, di atas statistik) ===== */
+        /* ===== SEARCH BAR ===== */
         .search-bar-wrap {
             width: 100%;
             max-width: 73.75rem;
@@ -727,7 +721,7 @@
             color: #94a3b8;
         }
 
-        /* ===== MAIN WRAPPER (flex 1 untuk tolak footer ke bawah) ===== */
+        /* ===== MAIN WRAPPER ===== */
         .main-wrapper {
             width: 100%;
             max-width: 73.75rem;
@@ -740,7 +734,7 @@
             box-sizing: border-box;
         }
 
-        /* ===== CONTENT ROW: dua lajur ===== */
+        /* ===== CONTENT ROW ===== */
         .content-row {
             display: flex;
             gap: 1.25rem;
@@ -792,7 +786,7 @@
             display: grid;
             grid-template-columns: repeat(4, 1fr);
             gap: 0;
-            margin-bottom: 2rem;
+            margin-bottom: 1.5rem;
             background: var(--hud-card-bg);
             border: 1px solid var(--hud-border);
             border-radius: 1.25rem;
@@ -856,8 +850,8 @@
             margin-top: 0.25rem;
         }
 
-        /* ===== SECTIONS ===== */
-        .section-status {
+        /* ===== CAROUSEL SECTION ===== */
+        .section-carousel {
             margin-bottom: 1.5rem;
         }
         .section-title {
@@ -872,6 +866,7 @@
             display: flex;
             align-items: center;
             gap: 0.75rem;
+            flex-wrap: wrap;
         }
         .status-badge {
             font-size: 0.6875rem;
@@ -887,15 +882,253 @@
             animation: pulseLive 1.5s infinite;
         }
         @keyframes pulseLive {
-            0%,
-            100% {
-                opacity: 1;
-            }
-            50% {
-                opacity: 0.5;
-            }
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
         }
 
+        /* ===== CAROUSEL STYLES ===== */
+        .carousel-container {
+            position: relative;
+            border-radius: 1.25rem;
+            background: var(--hud-card-bg);
+            border: 1px solid var(--hud-border);
+            backdrop-filter: blur(14px);
+            -webkit-backdrop-filter: blur(14px);
+            overflow: hidden;
+            padding: 0.25rem;
+            transition: border-color 0.3s ease;
+            min-height: 200px;
+        }
+        .carousel-container:hover {
+            border-color: var(--hud-border-red);
+        }
+
+        .carousel-track-wrap {
+            overflow: hidden;
+            border-radius: 1rem;
+            position: relative;
+            min-height: 200px;
+        }
+
+        .carousel-track {
+            display: flex;
+            transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+            will-change: transform;
+            min-height: 200px;
+            height: 100%;
+        }
+
+        .carousel-slide {
+            flex: 0 0 100%;
+            padding: 1.2rem 1.5rem;
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 1rem;
+            border: 1px solid transparent;
+            transition: border-color 0.3s ease, background 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            gap: 0.3rem;
+            min-height: 200px;
+            justify-content: flex-start;
+            opacity: 0;
+            transform: translateY(30px) scale(0.97);
+            transition: opacity 0.6s ease, transform 0.6s ease, border-color 0.3s ease, background 0.3s ease;
+            height: 100%;
+            overflow: hidden; /* prevent content from spilling out */
+        }
+        .carousel-slide.active {
+            opacity: 1;
+            transform: translateY(0) scale(1);
+        }
+        .carousel-slide:hover {
+            border-color: var(--hud-border-red);
+            background: var(--glass-highlight);
+        }
+
+        .carousel-slide .case-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.65rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.05rem;
+            padding: 0.15rem 0.7rem;
+            border-radius: 1.25rem;
+            background: rgba(179, 34, 63, 0.12);
+            border: 1px solid rgba(179, 34, 63, 0.25);
+            color: #ef4444;
+            width: fit-content;
+            margin-bottom: 0.1rem;
+            flex-shrink: 0;
+        }
+        .carousel-slide .case-type {
+            font-size: 1rem;
+            font-weight: 800;
+            color: #ffffff;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            flex-shrink: 0;
+        }
+        .carousel-slide .case-type i {
+            color: var(--hazard-gold);
+            font-size: 0.9rem;
+        }
+        .carousel-slide .case-address {
+            font-size: 0.8rem;
+            font-weight: 500;
+            color: var(--text-secondary);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            flex-shrink: 0;
+        }
+        .carousel-slide .case-address i {
+            color: var(--hazard-gold);
+            width: 1rem;
+            font-size: 0.7rem;
+        }
+        .carousel-slide .case-time {
+            font-size: 0.7rem;
+            font-weight: 600;
+            color: var(--hazard-gold);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            flex-shrink: 0;
+        }
+        .carousel-slide .case-time i {
+            color: var(--hazard-gold);
+            width: 1rem;
+            font-size: 0.7rem;
+        }
+        .carousel-slide .case-detail {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            line-height: 1.5;
+            margin-top: 0.2rem;
+            padding: 0.4rem 0.7rem;
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 0.75rem;
+            border-left: 3px solid var(--fire-red);
+            flex: 1;
+            overflow-y: auto;
+            max-height: 120px; /* allow scrolling if text exceeds */
+            min-height: 50px;
+        }
+        .carousel-slide .case-detail i {
+            color: var(--hazard-gold);
+            margin-right: 0.4rem;
+        }
+
+        /* Scrollbar styling for case-detail */
+        .carousel-slide .case-detail::-webkit-scrollbar {
+            width: 4px;
+        }
+        .carousel-slide .case-detail::-webkit-scrollbar-track {
+            background: rgba(255,255,255,0.05);
+            border-radius: 10px;
+        }
+        .carousel-slide .case-detail::-webkit-scrollbar-thumb {
+            background: var(--hazard-gold);
+            border-radius: 10px;
+        }
+
+        .carousel-btn {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 2.25rem;
+            height: 2.25rem;
+            border-radius: 50%;
+            background: rgba(0, 0, 0, 0.6);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: #ffffff;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.875rem;
+            transition: all 0.3s ease;
+            z-index: 5;
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+        }
+        .carousel-btn:hover {
+            background: var(--fire-red);
+            border-color: var(--fire-red);
+            transform: translateY(-50%) scale(1.1);
+        }
+        .carousel-btn.prev { left: 0.5rem; }
+        .carousel-btn.next { right: 0.5rem; }
+
+        .carousel-dots {
+            display: flex;
+            justify-content: center;
+            gap: 0.5rem;
+            padding: 0.75rem 0 0.25rem 0;
+            flex-wrap: wrap;
+        }
+        .carousel-dot {
+            width: 0.625rem;
+            height: 0.625rem;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            padding: 0;
+            flex-shrink: 0;
+        }
+        .carousel-dot:hover {
+            background: rgba(255, 255, 255, 0.4);
+            transform: scale(1.2);
+        }
+        .carousel-dot.active {
+            background: var(--hazard-gold);
+            width: 1.5rem;
+            border-radius: 0.5rem;
+            box-shadow: 0 0 0.625rem var(--hazard-gold-glow);
+        }
+
+        .carousel-notice {
+            margin-top: 0.75rem;
+            padding: 0.6rem 1rem;
+            background: rgba(179, 34, 63, 0.06);
+            border: 1px solid rgba(179, 34, 63, 0.15);
+            border-radius: 0.75rem;
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+            text-align: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+            transition: all 0.3s ease;
+        }
+        .carousel-notice:hover {
+            border-color: var(--hazard-gold);
+            background: rgba(217, 169, 105, 0.06);
+        }
+        .carousel-notice i {
+            color: var(--hazard-gold);
+            font-size: 0.875rem;
+        }
+        .carousel-notice strong {
+            color: var(--hazard-gold);
+            font-weight: 700;
+            cursor: pointer;
+        }
+        .carousel-notice strong:hover {
+            text-decoration: underline;
+        }
+
+        /* ===== APPS GRID ===== */
+        .section-status {
+            margin-bottom: 1.5rem;
+        }
         .apps-grid {
             display: flex;
             flex-direction: column;
@@ -935,9 +1168,7 @@
             pointer-events: none;
         }
         @media (hover: hover) {
-            .app-card:hover::before {
-                left: 100%;
-            }
+            .app-card:hover::before { left: 100%; }
             .app-card:hover {
                 background: var(--glass-highlight);
                 border-color: var(--hud-border-red);
@@ -1048,9 +1279,7 @@
             font-size: 0.65rem;
             color: #94a3b8;
         }
-        .anggota-mini-stats::-webkit-scrollbar {
-            display: none;
-        }
+        .anggota-mini-stats::-webkit-scrollbar { display: none; }
         .anggota-mini-stats span {
             display: inline-flex;
             align-items: center;
@@ -1066,39 +1295,21 @@
             font-weight: 800;
             color: #fff;
         }
-        .anggota-mini-stats .num.green {
-            color: #4ade80;
-        }
-        .anggota-mini-stats .num.amber {
-            color: #fbbf24;
-        }
-        .anggota-mini-stats .num.red {
-            color: #f87171;
-        }
-        .anggota-mini-stats .num.purple {
-            color: #a78bfa;
-        }
+        .anggota-mini-stats .num.green { color: #4ade80; }
+        .anggota-mini-stats .num.amber { color: #fbbf24; }
+        .anggota-mini-stats .num.red { color: #f87171; }
+        .anggota-mini-stats .num.purple { color: #a78bfa; }
         body.mode-siang .anggota-mini-stats span {
             background: rgba(0, 0, 0, 0.05);
             color: #475569;
         }
-        body.mode-siang .anggota-mini-stats .num {
-            color: #0f172a;
-        }
-        body.mode-siang .anggota-mini-stats .num.green {
-            color: #16a34a;
-        }
-        body.mode-siang .anggota-mini-stats .num.amber {
-            color: #d97706;
-        }
-        body.mode-siang .anggota-mini-stats .num.red {
-            color: #dc2626;
-        }
-        body.mode-siang .anggota-mini-stats .num.purple {
-            color: #7c3aed;
-        }
+        body.mode-siang .anggota-mini-stats .num { color: #0f172a; }
+        body.mode-siang .anggota-mini-stats .num.green { color: #16a34a; }
+        body.mode-siang .anggota-mini-stats .num.amber { color: #d97706; }
+        body.mode-siang .anggota-mini-stats .num.red { color: #dc2626; }
+        body.mode-siang .anggota-mini-stats .num.purple { color: #7c3aed; }
 
-        /* ===== CATEGORY ACCORDION (dalam dashboard) ===== */
+        /* ===== CATEGORY ACCORDION ===== */
         .cat-accordion {
             display: flex;
             flex-direction: column;
@@ -1184,7 +1395,7 @@
             background: rgba(0, 0, 0, 0.03);
         }
 
-        /* ===== LINKS PANEL (lajur kanan) ===== */
+        /* ===== LINKS PANEL ===== */
         .links-panel {
             background: var(--hud-bg);
             border-radius: 1.75rem;
@@ -1414,7 +1625,7 @@
             flex-shrink: 0;
         }
 
-        /* Emergency items dalam links panel */
+        /* Emergency items */
         .links-panel .emergency-group-title {
             color: var(--hazard-gold);
             font-size: 0.625rem;
@@ -1492,14 +1703,8 @@
             font-size: 0.7rem;
         }
         @keyframes radarPing {
-            0% {
-                transform: scale(1);
-                opacity: 0.8;
-            }
-            100% {
-                transform: scale(2);
-                opacity: 0;
-            }
+            0% { transform: scale(1); opacity: 0.8; }
+            100% { transform: scale(2); opacity: 0; }
         }
         .links-panel .info-box {
             background: rgba(255, 204, 0, 0.05);
@@ -1513,68 +1718,23 @@
         }
 
         /* Link icon colours */
-        .link-icon.weather {
-            background: rgba(59, 130, 246, 0.15);
-            color: #3b82f6;
-        }
-        .link-icon.tide {
-            background: rgba(6, 182, 212, 0.15);
-            color: #06b6d4;
-        }
-        .link-icon.disaster {
-            background: rgba(239, 68, 68, 0.15);
-            color: #ef4444;
-        }
-        .link-icon.road {
-            background: rgba(245, 158, 11, 0.15);
-            color: #f59e0b;
-        }
-        .link-icon.flood {
-            background: rgba(99, 102, 241, 0.15);
-            color: #6366f1;
-        }
-        .link-icon.quake {
-            background: rgba(168, 85, 247, 0.15);
-            color: #a855f7;
-        }
-        .link-icon.radar {
-            background: rgba(34, 197, 94, 0.15);
-            color: #22c55e;
-        }
-        .link-icon.fire {
-            background: rgba(249, 115, 22, 0.15);
-            color: #f97316;
-        }
-        .link-icon.emergency {
-            background: rgba(239, 68, 68, 0.15);
-            color: #ef4444;
-        }
-        .link-icon.info {
-            background: rgba(148, 163, 184, 0.15);
-            color: #94a3b8;
-        }
-        .link-icon.hospital {
-            background: rgba(16, 185, 129, 0.15);
-            color: #10b981;
-        }
-        .link-icon.civil {
-            background: rgba(251, 191, 36, 0.15);
-            color: #fbbf24;
-        }
-        .link-icon.maritime {
-            background: rgba(14, 165, 233, 0.15);
-            color: #0ea5e9;
-        }
-        .link-icon.international {
-            background: rgba(168, 85, 247, 0.15);
-            color: #a855f7;
-        }
-        .link-icon.gov {
-            background: rgba(251, 146, 60, 0.15);
-            color: #fb923c;
-        }
+        .link-icon.weather { background: rgba(59, 130, 246, 0.15); color: #3b82f6; }
+        .link-icon.tide { background: rgba(6, 182, 212, 0.15); color: #06b6d4; }
+        .link-icon.disaster { background: rgba(239, 68, 68, 0.15); color: #ef4444; }
+        .link-icon.road { background: rgba(245, 158, 11, 0.15); color: #f59e0b; }
+        .link-icon.flood { background: rgba(99, 102, 241, 0.15); color: #6366f1; }
+        .link-icon.quake { background: rgba(168, 85, 247, 0.15); color: #a855f7; }
+        .link-icon.radar { background: rgba(34, 197, 94, 0.15); color: #22c55e; }
+        .link-icon.fire { background: rgba(249, 115, 22, 0.15); color: #f97316; }
+        .link-icon.emergency { background: rgba(239, 68, 68, 0.15); color: #ef4444; }
+        .link-icon.info { background: rgba(148, 163, 184, 0.15); color: #94a3b8; }
+        .link-icon.hospital { background: rgba(16, 185, 129, 0.15); color: #10b981; }
+        .link-icon.civil { background: rgba(251, 191, 36, 0.15); color: #fbbf24; }
+        .link-icon.maritime { background: rgba(14, 165, 233, 0.15); color: #0ea5e9; }
+        .link-icon.international { background: rgba(168, 85, 247, 0.15); color: #a855f7; }
+        .link-icon.gov { background: rgba(251, 146, 60, 0.15); color: #fb923c; }
 
-        /* ===== SISTEM PANEL (accordion + password) ===== */
+        /* ===== SISTEM PANEL ===== */
         .sistem-panel {
             width: 100%;
             margin-top: 1.5rem;
@@ -1790,7 +1950,7 @@
             border: 1px solid rgba(59, 130, 246, 0.3);
         }
 
-        /* ===== FOOTER (full width, sticky bottom) ===== */
+        /* ===== FOOTER ===== */
         .footer {
             width: 100%;
             padding: 0.75rem 1.5rem;
@@ -1826,15 +1986,8 @@
             animation: pulseDot 2s infinite;
         }
         @keyframes pulseDot {
-            0%,
-            100% {
-                transform: scale(1);
-                opacity: 1;
-            }
-            50% {
-                transform: scale(0.7);
-                opacity: 0.4;
-            }
+            0%, 100% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(0.7); opacity: 0.4; }
         }
         .footer .social-links {
             display: flex;
@@ -1990,6 +2143,37 @@
             .footer .social-links {
                 justify-content: center;
             }
+            .carousel-slide {
+                padding: 0.8rem 1rem;
+            }
+            .carousel-slide .case-type {
+                font-size: 0.9rem;
+            }
+            .carousel-slide .case-address {
+                font-size: 0.75rem;
+            }
+            .carousel-slide .case-detail {
+                font-size: 0.7rem;
+                max-height: 80px;
+            }
+            .carousel-btn {
+                width: 1.8rem;
+                height: 1.8rem;
+                font-size: 0.7rem;
+            }
+            .carousel-btn.prev { left: 0.25rem; }
+            .carousel-btn.next { right: 0.25rem; }
+            .carousel-dot {
+                width: 0.5rem;
+                height: 0.5rem;
+            }
+            .carousel-dot.active {
+                width: 1.2rem;
+            }
+            .carousel-notice {
+                font-size: 0.65rem;
+                padding: 0.4rem 0.75rem;
+            }
         }
 
         body.mobile-mode .stats-bar {
@@ -2062,7 +2246,7 @@
         </div>
     </header>
 
-    <!-- ===== SEARCH BAR (di bawah header, di atas statistik) ===== -->
+    <!-- ===== SEARCH BAR ===== -->
     <div class="search-bar-wrap">
         <div class="search-bar-inner">
             <i class="fas fa-search"></i>
@@ -2075,7 +2259,7 @@
     <div class="main-wrapper">
         <div class="content-row">
 
-            <!-- ===== LAJUR KIRI: DASHBOARD (statistik + kategori) ===== -->
+            <!-- ===== LAJUR KIRI ===== -->
             <div class="content-col-left">
                 <main class="dashboard">
                     <!-- STATS BAR -->
@@ -2102,7 +2286,33 @@
                         </div>
                     </section>
 
-                    <!-- KATEGORI (accordion) - TANPA SISTEM -->
+                    <!-- ===== CAROUSEL KES KEBAKARAN & PENYELAMATAN ===== -->
+                    <section class="section-carousel">
+                        <div class="section-title">
+                            <i class="fas fa-fire" style="color:var(--hazard-gold)"></i> Kes Kebakaran & Penyelamatan
+                            <span class="status-badge live">● LIVE</span>
+                            <span style="font-size:0.6rem; font-weight:400; color:var(--text-secondary); margin-left:auto;" id="carouselCount">0 kes</span>
+                        </div>
+
+                        <div class="carousel-container" id="carouselContainer">
+                            <div class="carousel-track-wrap">
+                                <div class="carousel-track" id="carouselTrack">
+                                    <!-- Slaid akan dijana oleh JavaScript -->
+                                </div>
+                                <button class="carousel-btn prev" id="carouselPrev" aria-label="Sebelum"><i class="fas fa-chevron-left"></i></button>
+                                <button class="carousel-btn next" id="carouselNext" aria-label="Seterusnya"><i class="fas fa-chevron-right"></i></button>
+                            </div>
+                            <div class="carousel-dots" id="carouselDots"></div>
+                        </div>
+
+                        <!-- Notis -->
+                        <div class="carousel-notice">
+                            <i class="fas fa-info-circle"></i>
+                            Sila buka <strong id="noticeDashOpsLink">Live Statistik Kes 24 Jam (DASH-OPS)</strong> untuk maklumat penuh.
+                        </div>
+                    </section>
+
+                    <!-- KATEGORI (accordion) -->
                     <div class="cat-accordion">
                         <!-- LIVE -->
                         <div class="cat-group">
@@ -2116,7 +2326,7 @@
                             <div class="cat-panel" id="catPanelLive">
                                 <section class="section-status">
                                     <div class="apps-grid">
-                                        <a href="dashops.html" class="app-card" rel="noopener noreferrer">
+                                        <a href="dashops.html" class="app-card" rel="noopener noreferrer" id="dashOpsLink">
                                             <div class="icon"><i class="fas fa-chart-column"></i></div>
                                             <div>
                                                 <h3>Live Statistik Kes 24 Jam <span class="highlight">(DASH-OPS)</span></h3>
@@ -2218,12 +2428,11 @@
                 </main>
             </div>
 
-            <!-- ===== LAJUR KANAN: PAUTAN PENTING ===== -->
+            <!-- ===== LAJUR KANAN ===== -->
             <div class="content-col-right">
                 <aside class="links-panel" id="linksPanel">
                     <div class="panel-title"><i class="fas fa-satellite-dish"></i> PAUTAN PENTING</div>
 
-                    <!-- Popular Links -->
                     <div class="popular-links">
                         <div class="popular-title"><i class="fas fa-star" style="color: var(--hazard-gold)"></i> Pautan Popular</div>
                         <div class="popular-grid">
@@ -2237,9 +2446,7 @@
 
                     <div class="update-timestamp"><i class="fas fa-sync-alt"></i> Pautan dikemaskini: <span id="linkUpdateDate">--</span></div>
 
-                    <!-- Scrollable accordions -->
                     <div class="links-scroll" id="linksScroll">
-
                         <!-- 1: Cuaca & Laut -->
                         <div class="accordion-item">
                             <button class="accordion-header" data-target="linkAcc1" aria-expanded="false">
@@ -2363,14 +2570,13 @@
                                 <a href="https://www.johor.gov.my/" target="_blank" class="sidebar-link"><span class="link-icon gov"><i class="fas fa-landmark"></i></span><span class="link-text"><span class="link-name">Laman Web Rasmi Kerajaan Negeri Johor</span><span class="link-desc">Portal rasmi kerajaan negeri</span></span><i class="fas fa-external-link-alt"></i></a>
                             </div>
                         </div>
-
                     </div><!-- /links-scroll -->
                 </aside>
             </div>
 
         </div><!-- /content-row -->
 
-        <!-- ===== PANEL SISTEM (accordion + password) ===== -->
+        <!-- ===== PANEL SISTEM ===== -->
         <div class="sistem-panel" id="sistemPanel">
             <button class="panel-toggle" id="sistemPanelToggle" aria-expanded="false">
                 <span class="panel-title">
@@ -2380,14 +2586,12 @@
             </button>
 
             <div class="panel-body" id="sistemPanelBody">
-                <!-- Borang password -->
                 <div class="password-box" id="passwordBox">
                     <input type="password" id="sistemPassword" placeholder="Masukkan kata laluan..." aria-label="Kata laluan sistem" />
                     <button id="sistemAuthBtn">Akses</button>
                     <div class="error-msg" id="sistemError">Kata laluan salah. Sila cuba lagi.</div>
                 </div>
 
-                <!-- Kandungan sistem (dilindungi) -->
                 <div class="sistem-content" id="sistemContent">
                     <a href="https://po1teknologia2.vercel.app/" target="_blank" class="app-card" rel="noopener noreferrer">
                         <div class="icon"><i class="fas fa-boxes-stacked"></i></div>
@@ -2417,7 +2621,7 @@
 
     </div><!-- /main-wrapper -->
 
-    <!-- ===== FOOTER (full width, sticky bottom) ===== -->
+    <!-- ===== FOOTER ===== -->
     <footer class="footer">
         <div class="brand"><span class="dot"></span><span>© 2026 PGO Johor</span></div>
         <div class="last-updated"><i class="fas fa-clock"></i> Kemaskini: <span id="updateTime">--</span></div>
@@ -2431,6 +2635,7 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {
+
             // ===== JAM =====
             const hourHand = document.getElementById('hourHand');
             const minuteHand = document.getElementById('minuteHand');
@@ -2520,7 +2725,7 @@
             // ===== REFRESH =====
             document.getElementById('refreshBtn').addEventListener('click', function() { location.reload(); });
 
-            // ===== SEARCH BAR (Google) =====
+            // ===== SEARCH BAR =====
             const searchInput = document.getElementById('googleSearchInput');
             const searchBtn = document.getElementById('googleSearchBtn');
 
@@ -2538,7 +2743,7 @@
                 }
             });
 
-            // ===== ACCORDION (dalam links panel) =====
+            // ===== ACCORDION (links panel) =====
             let animationLock = false;
             document.querySelectorAll('.links-panel .accordion-header').forEach((header) => {
                 header.addEventListener('click', function() {
@@ -2567,7 +2772,7 @@
                 });
             });
 
-            // ===== CATEGORY ACCORDION (dalam dashboard) =====
+            // ===== CATEGORY ACCORDION =====
             document.querySelectorAll('.cat-toggle').forEach((btn) => {
                 btn.addEventListener('click', function() {
                     const panel = document.getElementById(this.getAttribute('data-cat-target'));
@@ -2589,7 +2794,7 @@
                 });
             });
 
-            // ===== SISTEM PANEL TOGGLE (accordion) =====
+            // ===== SISTEM PANEL TOGGLE =====
             const sistemToggle = document.getElementById('sistemPanelToggle');
             const sistemBody = document.getElementById('sistemPanelBody');
             const sistemArrow = sistemToggle.querySelector('.panel-arrow');
@@ -2607,8 +2812,8 @@
                 }
             });
 
-            // ===== SCROLL-TRIGGERED CARD ANIMATIONS =====
-            const animElements = document.querySelectorAll('.app-card, .stat-item');
+            // ===== SCROLL ANIMATIONS =====
+            const animElements = document.querySelectorAll('.app-card, .stat-item, .carousel-slide');
             document.querySelectorAll('.apps-grid').forEach((grid, gridIdx) => {
                 const cards = grid.querySelectorAll('.app-card');
                 cards.forEach((card, idx) => {
@@ -2620,6 +2825,8 @@
                 const baseDelay = 0.05 + idx * 0.06;
                 item.style.transitionDelay = baseDelay + 's';
             });
+            // Carousel slides will be handled by carousel logic
+
             const observerOptions = { root: null, rootMargin: '0px 0px -60px 0px', threshold: 0.12 };
             const observer = new IntersectionObserver((entries) => {
                 entries.forEach((entry) => {
@@ -2630,6 +2837,7 @@
                 });
             }, observerOptions);
             animElements.forEach(el => { observer.observe(el); });
+
             setTimeout(() => {
                 animElements.forEach(el => {
                     const rect = el.getBoundingClientRect();
@@ -2640,6 +2848,7 @@
                     }
                 });
             }, 300);
+
             window.addEventListener('scroll', function() {
                 animElements.forEach(el => {
                     if (el.classList.contains('visible')) return;
@@ -2652,58 +2861,15 @@
                 });
             }, { passive: true });
 
-            // ===== STATS ANIMATION =====
-            function animateValue(id, start, end, duration, suffix = '') {
-                const el = document.getElementById(id);
-                if (!el) return;
-                let startTime = null;
-                const step = (timestamp) => {
-                    if (!startTime) startTime = timestamp;
-                    const progress = Math.min((timestamp - startTime) / duration, 1);
-                    const val = Math.floor(progress * (end - start) + start);
-                    el.textContent = val + suffix;
-                    if (progress < 1) requestAnimationFrame(step);
-                };
-                requestAnimationFrame(step);
-            }
+            // ===== CAROUSEL DATA FETCH & RENDER =====
+            // --- Gunakan URL yang sama seperti dashops ---
+            const CAROUSEL_CSV_URLS = {
+                syifA: 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRqq7kIOrESSTIiuwPXR-LfsmMu_NaJnWSr2qOyCrnUK4QDqP2DNQy8io0jJIysZQ6Nc6DCZr9YrrW-/pub?gid=1671240510&single=true&output=csv',
+                syifB: 'https://docs.google.com/spreadsheets/d/e/2PACX-1vToFUGdZ63m5oOjUMMYKta_aJ9cQlP3Bxz8QxjTxshfySACV1zqOQVwHBo6ptNyrk1mcw_yuvhIhbcH/pub?gid=1671240510&single=true&output=csv',
+                syifC: 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRgdRVgrUyuMX5IocMXA6g1yM5e0gU1qg3YpazTpmvFhgkl9KCPX02hn-0epm40SCxeHFQ125xCJN2T/pub?gid=1671240510&single=true&output=csv'
+            };
 
-            // ===== CUACA JOHOR BAHRU =====
-            const CUACA_ICON_MAP = [
-                { codes: [0], icon: 'fa-sun', label: 'Cerah' },
-                { codes: [1, 2], icon: 'fa-cloud-sun', label: 'Berawan' },
-                { codes: [3], icon: 'fa-cloud', label: 'Mendung' },
-                { codes: [45, 48], icon: 'fa-smog', label: 'Berjerebu' },
-                { codes: [51, 53, 55, 56, 57, 61, 63, 65, 66, 67, 80, 81, 82], icon: 'fa-cloud-rain',
-                label: 'Hujan' },
-                { codes: [95, 96, 99], icon: 'fa-cloud-bolt', label: 'Ribut Petir' }
-            ];
-
-            function getCuacaIcon(code) {
-                const match = CUACA_ICON_MAP.find(m => m.codes.includes(code));
-                return match || { icon: 'fa-cloud-sun', label: 'Cuaca' };
-            }
-
-            async function fetchCuacaJB() {
-                const cuacaEl = document.getElementById('statCuaca');
-                const iconEl = document.getElementById('statCuacaIcon');
-                try {
-                    const resp = await fetch(
-                        'https://api.open-meteo.com/v1/forecast?latitude=1.4927&longitude=103.7414&current=temperature_2m,weather_code&timezone=Asia%2FSingapore'
-                        );
-                    if (!resp.ok) throw new Error('Gagal fetch cuaca');
-                    const data = await resp.json();
-                    const temp = Math.round(data.current.temperature_2m);
-                    const cuaca = getCuacaIcon(data.current.weather_code);
-                    if (cuacaEl) cuacaEl.textContent = temp + '°C';
-                    if (iconEl) iconEl.className = 'fas ' + cuaca.icon + ' icon-badge';
-                } catch (e) {
-                    if (cuacaEl) cuacaEl.textContent = '--°C';
-                }
-            }
-            fetchCuacaJB();
-            setInterval(fetchCuacaJB, 900000);
-
-            // ===== KES HARI INI (DASH-OPS) =====
+            // --- Fungsi parse CSV (sama seperti yang sedia ada) ---
             function pgoParseCSV(text) {
                 text = text.replace(/^\uFEFF/, '').replace(/\r\n/g, '\n').replace(/\r/g, '\n');
                 const rows = [];
@@ -2769,6 +2935,372 @@
                 return parseInt(parts[0]) || 0;
             }
 
+            // --- Fetch satu CSV dan kembalikan array objek ---
+            async function fetchSingleCarouselCSV(url, label) {
+                try {
+                    const resp = await fetch(url, { cache: 'no-cache' });
+                    if (!resp.ok) throw new Error('HTTP ' + resp.status);
+                    const text = await resp.text();
+                    const rows = pgoParseCSV(text);
+                    if (rows.length < 2) return [];
+
+                    const headers = rows[0];
+                    const idxCall = pgoColIdx(headers, 'CALL CARD');
+                    const idxJenis = pgoColIdx(headers, 'Jenis Panggilan Operasi');
+                    const idxAlamat = pgoColIdx(headers, 'Alamat Tempat Kejadian');
+                    const idxMasa = pgoColIdx(headers, 'TERIMA PANGGILAN');
+                    const idxMaklumat = pgoColIdx(headers, 'MAKLUMAT KEJADIAN');
+                    const idxTarikh = pgoColIdx(headers, 'Tarikh \n Kejadian \n (q)');
+                    const idxBalai = pgoColIdx(headers, 'Balai');
+                    const idxShif = pgoColIdx(headers, 'SHIF');
+
+                    const data = [];
+                    for (let i = 1; i < rows.length; i++) {
+                        const row = rows[i];
+                        if (!row || row.length === 0) continue;
+                        const callCard = (idxCall >= 0 ? (row[idxCall] || '').trim() : '');
+                        if (!callCard.includes('JBPM') || callCard.includes('XXXXXX') || callCard.length <= 5) continue;
+
+                        data.push({
+                            jenis: idxJenis >= 0 ? (row[idxJenis] || '').trim() : '-',
+                            alamat: idxAlamat >= 0 ? (row[idxAlamat] || '').trim() : '-',
+                            masa: idxMasa >= 0 ? (row[idxMasa] || '').trim() : '-',
+                            tarikh: idxTarikh >= 0 ? (row[idxTarikh] || '').trim() : '-',
+                            maklumat: idxMaklumat >= 0 ? (row[idxMaklumat] || '').trim() : '',
+                            balai: idxBalai >= 0 ? (row[idxBalai] || '').trim() : '-',
+                            shif: idxShif >= 0 ? (row[idxShif] || '').trim() : '-',
+                            source: label
+                        });
+                    }
+                    return data;
+                } catch (e) {
+                    console.warn('Carousel fetch error for ' + label + ':', e.message);
+                    return [];
+                }
+            }
+
+            // --- Gabung semua syif dan tentukan hari operasi terkini ---
+            function findLatestOperatingDay(cases) {
+                let latest = null;
+                cases.forEach(d => {
+                    const t = pgoParseTarikh(d.tarikh);
+                    if (!t) return;
+                    const jam = pgoParseJam(d.masa);
+                    let opDate = new Date(t);
+                    if (jam < 6) opDate.setDate(opDate.getDate() - 1);
+                    if (!latest || opDate > latest) latest = opDate;
+                });
+                return latest;
+            }
+
+            // --- Fungsi utama untuk fetch data carousel ---
+            let carouselData = [];
+
+            async function fetchCarouselData() {
+                try {
+                    const [dataA, dataB, dataC] = await Promise.all([
+                        fetchSingleCarouselCSV(CAROUSEL_CSV_URLS.syifA, 'Syif A'),
+                        fetchSingleCarouselCSV(CAROUSEL_CSV_URLS.syifB, 'Syif B'),
+                        fetchSingleCarouselCSV(CAROUSEL_CSV_URLS.syifC, 'Syif C')
+                    ]);
+                    const all = [...dataA, ...dataB, ...dataC];
+                    const latestDay = findLatestOperatingDay(all);
+                    if (!latestDay) {
+                        carouselData = [];
+                        renderCarouselSlides([]);
+                        return;
+                    }
+                    // Filter untuk hari operasi terkini
+                    const filtered = all.filter(d => {
+                        const t = pgoParseTarikh(d.tarikh);
+                        if (!t) return false;
+                        const jam = pgoParseJam(d.masa);
+                        let opDate = new Date(t);
+                        if (jam < 6) opDate.setDate(opDate.getDate() - 1);
+                        return opDate.getTime() === latestDay.getTime();
+                    });
+                    carouselData = filtered;
+                    renderCarouselSlides(filtered);
+                } catch (e) {
+                    console.error('Carousel fetch error:', e);
+                    renderCarouselSlides([]);
+                }
+            }
+
+            // --- Render slaid carousel ---
+            function renderCarouselSlides(cases) {
+                const track = document.getElementById('carouselTrack');
+                const dotsContainer = document.getElementById('carouselDots');
+                const countEl = document.getElementById('carouselCount');
+
+                if (!track) return;
+
+                // Kosongkan track
+                track.innerHTML = '';
+
+                if (!cases || cases.length === 0) {
+                    track.innerHTML = `
+                        <div class="carousel-slide active" style="display:flex;align-items:center;justify-content:center;min-height:180px;color:var(--text-secondary);">
+                            <div style="text-align:center;">
+                                <i class="fas fa-inbox" style="font-size:2rem;margin-bottom:0.5rem;display:block;opacity:0.3;"></i>
+                                Tiada kes untuk hari ini
+                            </div>
+                        </div>
+                    `;
+                    if (countEl) countEl.textContent = '0 kes';
+                    setupCarouselControls(1);
+                    return;
+                }
+
+                // Hadkan kepada 10 slaid untuk prestasi
+                const maxSlides = Math.min(cases.length, 10);
+                const sliced = cases.slice(0, maxSlides);
+
+                sliced.forEach((d, index) => {
+                    const slide = document.createElement('div');
+                    slide.className = 'carousel-slide' + (index === 0 ? ' active' : '');
+                    slide.dataset.index = index;
+
+                    // Emoji berdasarkan jenis (ringkas)
+                    const emoji = d.jenis.toLowerCase().includes('kebakaran') ? '🔥' :
+                        d.jenis.toLowerCase().includes('kemalangan') ? '🚗' :
+                        d.jenis.toLowerCase().includes('banjir') ? '🌊' :
+                        d.jenis.toLowerCase().includes('menyelamat') ? '🚑' : '📍';
+
+                    // Badge kategori ringkas
+                    let badgeText = 'Kejadian';
+                    if (d.jenis.toLowerCase().includes('kebakaran')) badgeText = '🔥 Kebakaran';
+                    else if (d.jenis.toLowerCase().includes('kemalangan')) badgeText = '🚗 Kemalangan';
+                    else if (d.jenis.toLowerCase().includes('banjir')) badgeText = '🌊 Banjir';
+                    else if (d.jenis.toLowerCase().includes('menyelamat')) badgeText = '🚑 Penyelamatan';
+
+                    // Tarikh + masa
+                    const timeDisplay = d.masa && d.masa !== '-' ? d.masa : '';
+                    const dateDisplay = d.tarikh && d.tarikh !== '-' ? d.tarikh : '';
+
+                    slide.innerHTML = `
+                        <span class="case-badge"><i class="fas fa-${badgeText.includes('Kebakaran') ? 'fire' : badgeText.includes('Kemalangan') ? 'car-crash' : badgeText.includes('Banjir') ? 'water' : 'info-circle'}"></i> ${badgeText}</span>
+                        <div class="case-type"><i class="fas fa-${badgeText.includes('Kebakaran') ? 'fire-extinguisher' : badgeText.includes('Kemalangan') ? 'truck-fast' : badgeText.includes('Banjir') ? 'house-flood-water' : 'info-circle'}"></i> ${d.jenis || 'Kejadian'}</div>
+                        <div class="case-address"><i class="fas fa-location-dot"></i> ${d.alamat || 'Alamat tidak tersedia'}</div>
+                        <div class="case-time"><i class="fas fa-clock"></i> ${timeDisplay ? timeDisplay : dateDisplay}</div>
+                        <div class="case-detail"><i class="fas fa-info-circle"></i> ${d.maklumat && d.maklumat.length > 0 ? d.maklumat : 'Tiada maklumat lanjut'}</div>
+                    `;
+                    track.appendChild(slide);
+                });
+
+                if (countEl) countEl.textContent = sliced.length + ' kes';
+
+                // Setup dots dan controls
+                setupCarouselControls(sliced.length);
+                // Aktifkan slaid pertama
+                goToCarouselSlide(0, false);
+            }
+
+            // --- Carousel navigation state ---
+            let carouselCurrentIndex = 0;
+            let carouselTotalSlides = 0;
+            let carouselAutoInterval = null;
+            const CAROUSEL_AUTO_DELAY = 5000;
+
+            function setupCarouselControls(total) {
+                carouselTotalSlides = total;
+                const dotsContainer = document.getElementById('carouselDots');
+                if (!dotsContainer) return;
+
+                dotsContainer.innerHTML = '';
+                for (let i = 0; i < total; i++) {
+                    const dot = document.createElement('button');
+                    dot.className = 'carousel-dot' + (i === 0 ? ' active' : '');
+                    dot.dataset.index = i;
+                    dot.addEventListener('click', function() {
+                        goToCarouselSlide(parseInt(this.dataset.index));
+                        resetCarouselAuto();
+                    });
+                    dotsContainer.appendChild(dot);
+                }
+
+                // Reset index jika lebih dari total
+                if (carouselCurrentIndex >= total) carouselCurrentIndex = 0;
+
+                // Event listeners untuk butang prev/next
+                const prevBtn = document.getElementById('carouselPrev');
+                const nextBtn = document.getElementById('carouselNext');
+                if (prevBtn) {
+                    prevBtn.onclick = function(e) {
+                        e.stopPropagation();
+                        goToCarouselSlide(carouselCurrentIndex - 1);
+                        resetCarouselAuto();
+                    };
+                }
+                if (nextBtn) {
+                    nextBtn.onclick = function(e) {
+                        e.stopPropagation();
+                        goToCarouselSlide(carouselCurrentIndex + 1);
+                        resetCarouselAuto();
+                    };
+                }
+
+                // Pause on hover
+                const container = document.getElementById('carouselContainer');
+                if (container) {
+                    container.onmouseenter = function() {
+                        if (carouselAutoInterval) {
+                            clearInterval(carouselAutoInterval);
+                            carouselAutoInterval = null;
+                        }
+                    };
+                    container.onmouseleave = function() {
+                        startCarouselAuto();
+                    };
+                }
+
+                // Touch swipe support
+                let touchStartX = 0,
+                    isSwiping = false;
+                if (container) {
+                    container.addEventListener('touchstart', function(e) {
+                        touchStartX = e.changedTouches[0].screenX;
+                        isSwiping = true;
+                    }, { passive: true });
+                    container.addEventListener('touchmove', function(e) {
+                        if (isSwiping) {
+                            const deltaX = e.changedTouches[0].screenX - touchStartX;
+                            if (Math.abs(deltaX) > 20) e.preventDefault();
+                        }
+                    }, { passive: false });
+                    container.addEventListener('touchend', function(e) {
+                        if (!isSwiping) return;
+                        const diff = touchStartX - e.changedTouches[0].screenX;
+                        if (Math.abs(diff) > 30) {
+                            if (diff > 0) goToCarouselSlide(carouselCurrentIndex + 1);
+                            else goToCarouselSlide(carouselCurrentIndex - 1);
+                            resetCarouselAuto();
+                        }
+                        isSwiping = false;
+                    }, { passive: true });
+                }
+
+                // Mulakan auto-slide jika ada lebih dari 1 slaid
+                if (total > 1) startCarouselAuto();
+                else if (carouselAutoInterval) {
+                    clearInterval(carouselAutoInterval);
+                    carouselAutoInterval = null;
+                }
+            }
+
+            function goToCarouselSlide(index, animate = true) {
+                const track = document.getElementById('carouselTrack');
+                const slides = track ? track.querySelectorAll('.carousel-slide') : [];
+                const dots = document.querySelectorAll('.carousel-dot');
+
+                if (!slides.length) return;
+                if (index < 0) index = slides.length - 1;
+                if (index >= slides.length) index = 0;
+
+                carouselCurrentIndex = index;
+
+                // Animate track
+                if (animate) {
+                    track.style.transition = 'transform 0.6s cubic-bezier(0.16, 1, 0.3, 1)';
+                } else {
+                    track.style.transition = 'none';
+                }
+                track.style.transform = 'translateX(-' + (index * 100) + '%)';
+
+                // Update active class
+                slides.forEach((slide, i) => {
+                    slide.classList.toggle('active', i === index);
+                });
+
+                // Update dots
+                dots.forEach((dot, i) => {
+                    dot.classList.toggle('active', i === index);
+                });
+            }
+
+            function startCarouselAuto() {
+                if (carouselAutoInterval) clearInterval(carouselAutoInterval);
+                if (carouselTotalSlides <= 1) return;
+                carouselAutoInterval = setInterval(() => {
+                    goToCarouselSlide(carouselCurrentIndex + 1);
+                }, CAROUSEL_AUTO_DELAY);
+            }
+
+            function resetCarouselAuto() {
+                if (carouselAutoInterval) {
+                    clearInterval(carouselAutoInterval);
+                    carouselAutoInterval = null;
+                }
+                startCarouselAuto();
+            }
+
+            // --- Panggil fetch carousel ---
+            fetchCarouselData();
+            setInterval(fetchCarouselData, 60000);
+
+            // ===== NOTICE CLICK -> DASH-OPS =====
+            const noticeLink = document.getElementById('noticeDashOpsLink');
+            const dashOpsLink = document.getElementById('dashOpsLink');
+            if (noticeLink && dashOpsLink) {
+                noticeLink.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    window.location.href = dashOpsLink.href;
+                });
+                noticeLink.style.cursor = 'pointer';
+            }
+
+            // ===== STATS ANIMATION =====
+            function animateValue(id, start, end, duration, suffix = '') {
+                const el = document.getElementById(id);
+                if (!el) return;
+                let startTime = null;
+                const step = (timestamp) => {
+                    if (!startTime) startTime = timestamp;
+                    const progress = Math.min((timestamp - startTime) / duration, 1);
+                    const val = Math.floor(progress * (end - start) + start);
+                    el.textContent = val + suffix;
+                    if (progress < 1) requestAnimationFrame(step);
+                };
+                requestAnimationFrame(step);
+            }
+
+            // ===== CUACA =====
+            const CUACA_ICON_MAP = [
+                { codes: [0], icon: 'fa-sun', label: 'Cerah' },
+                { codes: [1, 2], icon: 'fa-cloud-sun', label: 'Berawan' },
+                { codes: [3], icon: 'fa-cloud', label: 'Mendung' },
+                { codes: [45, 48], icon: 'fa-smog', label: 'Berjerebu' },
+                { codes: [51, 53, 55, 56, 57, 61, 63, 65, 66, 67, 80, 81, 82], icon: 'fa-cloud-rain',
+                label: 'Hujan' },
+                { codes: [95, 96, 99], icon: 'fa-cloud-bolt', label: 'Ribut Petir' }
+            ];
+
+            function getCuacaIcon(code) {
+                const match = CUACA_ICON_MAP.find(m => m.codes.includes(code));
+                return match || { icon: 'fa-cloud-sun', label: 'Cuaca' };
+            }
+
+            async function fetchCuacaJB() {
+                const cuacaEl = document.getElementById('statCuaca');
+                const iconEl = document.getElementById('statCuacaIcon');
+                try {
+                    const resp = await fetch(
+                        'https://api.open-meteo.com/v1/forecast?latitude=1.4927&longitude=103.7414&current=temperature_2m,weather_code&timezone=Asia%2FSingapore'
+                        );
+                    if (!resp.ok) throw new Error('Gagal fetch cuaca');
+                    const data = await resp.json();
+                    const temp = Math.round(data.current.temperature_2m);
+                    const cuaca = getCuacaIcon(data.current.weather_code);
+                    if (cuacaEl) cuacaEl.textContent = temp + '°C';
+                    if (iconEl) iconEl.className = 'fas ' + cuaca.icon + ' icon-badge';
+                } catch (e) {
+                    if (cuacaEl) cuacaEl.textContent = '--°C';
+                }
+            }
+            fetchCuacaJB();
+            setInterval(fetchCuacaJB, 900000);
+
+            // ===== KES HARI INI (DASH-OPS) =====
             const DASHOPS_CSV_URLS = [
                 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRqq7kIOrESSTIiuwPXR-LfsmMu_NaJnWSr2qOyCrnUK4QDqP2DNQy8io0jJIysZQ6Nc6DCZr9YrrW-/pub?gid=1671240510&single=true&output=csv',
                 'https://docs.google.com/spreadsheets/d/e/2PACX-1vToFUGdZ63m5oOjUMMYKta_aJ9cQlP3Bxz8QxjTxshfySACV1zqOQVwHBo6ptNyrk1mcw_yuvhIhbcH/pub?gid=1671240510&single=true&output=csv',
@@ -2828,7 +3360,7 @@
             fetchKesHariIni();
             setInterval(fetchKesHariIni, 60000);
 
-            // ===== JENTERA BERSEDIA (CFRT) - KEMASKINI: hanya jumlah =====
+            // ===== JENTERA BERSEDIA =====
             const CFRT_CSV_URL =
                 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQt0JkN2yWW_0FeY5GKpmIvs1uI6si89JcqNmSTO3f--rM8FhQZe1Q97YQd8tiAsmaMQdTXO5TQWedy/pub?gid=0&single=true&output=csv';
 
@@ -2861,7 +3393,7 @@
             fetchJenteraBersedia();
             setInterval(fetchJenteraBersedia, 60000);
 
-            // ===== FETCH DATA UNTUK MINI STATS ANGGOTA =====
+            // ===== FETCH ANGGOTA MINI STATS =====
             async function fetchAnggotaMiniStats() {
                 try {
                     const SUPABASE_URL = 'https://hglmbrqweijpguxfeloq.supabase.co';
@@ -2903,7 +3435,6 @@
             const sistemContent = document.getElementById('sistemContent');
             const passwordBox = document.getElementById('passwordBox');
 
-            // Cek sessionStorage
             if (sessionStorage.getItem('sistemAccess') === 'granted') {
                 passwordBox.style.display = 'none';
                 sistemContent.classList.add('show');
@@ -2935,6 +3466,7 @@
             if ('serviceWorker' in navigator) {
                 navigator.serviceWorker.register('sw.js').catch(() => {});
             }
+
         });
     </script>
 </body>
