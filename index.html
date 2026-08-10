@@ -2598,24 +2598,24 @@
 
       <section class="stats-bar">
         <div class="stat-item">
-          <i class="fas fa-cubes icon-badge"></i>
-          <div class="num" id="appCount" data-target="0">0</div>
-          <div class="label">Aplikasi</div>
+          <i class="fas fa-user-shield icon-badge"></i>
+          <div class="num" id="statBertugas">--</div>
+          <div class="label">Anggota Bertugas</div>
         </div>
         <div class="stat-item">
-          <i class="fas fa-network-wired icon-badge"></i>
-          <div class="num" id="onlinePercent" data-target="0">0%</div>
-          <div class="label">Online</div>
+          <i class="fas fa-cloud-sun icon-badge" id="statCuacaIcon"></i>
+          <div class="num" id="statCuaca">--°C</div>
+          <div class="label">Cuaca JB</div>
         </div>
         <div class="stat-item">
-          <i class="fas fa-bolt icon-badge"></i>
-          <div class="num" id="liveCount" data-target="0">0</div>
-          <div class="label">Live Updates</div>
+          <i class="fas fa-chart-column icon-badge"></i>
+          <div class="num" id="statKesHariIni">--</div>
+          <div class="label">Kes Hari Ini</div>
         </div>
         <div class="stat-item">
-          <i class="fas fa-building-shield icon-badge"></i>
-          <div class="num">PGO</div>
-          <div class="label">Johor</div>
+          <i class="fas fa-truck-field icon-badge"></i>
+          <div class="num" id="statJenteraSedia">--</div>
+          <div class="label">Jentera Bersedia</div>
         </div>
       </section>
 
@@ -3018,14 +3018,6 @@
         });
 
         // ===== STATS ANIMATION =====
-        const total = document.querySelectorAll('.app-card').length;
-        const online = document.querySelectorAll(
-          '.app-card .badge.online'
-        ).length;
-        const live = document.querySelectorAll('.app-card .badge.live').length;
-        const percent =
-          total > 0 ? Math.round(((online + live) / total) * 100) : 0;
-
         function animateValue(id, start, end, duration, suffix = '') {
           const el = document.getElementById(id);
           if (!el) return;
@@ -3039,11 +3031,257 @@
           };
           requestAnimationFrame(step);
         }
-        setTimeout(() => {
-          animateValue('appCount', 0, total, 1200);
-          animateValue('onlinePercent', 0, percent, 1400, '%');
-          animateValue('liveCount', 0, live, 1000);
-        }, 300);
+
+        // ===== CUACA JOHOR BAHRU (Open-Meteo, tiada API key diperlukan) =====
+        const CUACA_ICON_MAP = [
+          { codes: [0], icon: 'fa-sun', label: 'Cerah' },
+          { codes: [1, 2], icon: 'fa-cloud-sun', label: 'Berawan' },
+          { codes: [3], icon: 'fa-cloud', label: 'Mendung' },
+          { codes: [45, 48], icon: 'fa-smog', label: 'Berjerebu' },
+          {
+            codes: [51, 53, 55, 56, 57, 61, 63, 65, 66, 67, 80, 81, 82],
+            icon: 'fa-cloud-rain',
+            label: 'Hujan',
+          },
+          {
+            codes: [95, 96, 99],
+            icon: 'fa-cloud-bolt',
+            label: 'Ribut Petir',
+          },
+        ];
+        function getCuacaIcon(code) {
+          const match = CUACA_ICON_MAP.find((m) => m.codes.includes(code));
+          return match || { icon: 'fa-cloud-sun', label: 'Cuaca' };
+        }
+        async function fetchCuacaJB() {
+          const cuacaEl = document.getElementById('statCuaca');
+          const iconEl = document.getElementById('statCuacaIcon');
+          try {
+            const resp = await fetch(
+              'https://api.open-meteo.com/v1/forecast?latitude=1.4927&longitude=103.7414&current=temperature_2m,weather_code&timezone=Asia%2FSingapore'
+            );
+            if (!resp.ok) throw new Error('Gagal fetch cuaca');
+            const data = await resp.json();
+            const temp = Math.round(data.current.temperature_2m);
+            const cuaca = getCuacaIcon(data.current.weather_code);
+            if (cuacaEl) cuacaEl.textContent = temp + '°C';
+            if (iconEl) iconEl.className = 'fas ' + cuaca.icon + ' icon-badge';
+          } catch (e) {
+            if (cuacaEl) cuacaEl.textContent = '--°C';
+          }
+        }
+        fetchCuacaJB();
+        // Kemaskini cuaca setiap 15 minit
+        setInterval(fetchCuacaJB, 900000);
+
+        // ===== KES HARI INI (DASH-OPS) & JENTERA BERSEDIA =====
+        // Guna sumber CSV (Google Sheets published) yang sama seperti
+        // dashops.html dan jentera.html, supaya angka konsisten dgn dashboard asal.
+
+        function pgoParseCSV(text) {
+          text = text
+            .replace(/^\uFEFF/, '')
+            .replace(/\r\n/g, '\n')
+            .replace(/\r/g, '\n');
+          const rows = [];
+          let row = [],
+            field = '',
+            inQ = false,
+            i = 0;
+          while (i < text.length) {
+            const c = text[i],
+              n = text[i + 1];
+            if (inQ) {
+              if (c === '"') {
+                if (n === '"') {
+                  field += '"';
+                  i += 2;
+                } else {
+                  inQ = false;
+                  i++;
+                }
+              } else {
+                field += c;
+                i++;
+              }
+            } else {
+              if (c === '"') {
+                inQ = true;
+                i++;
+              } else if (c === ',') {
+                row.push(field.trim());
+                field = '';
+                i++;
+              } else if (c === '\n') {
+                row.push(field.trim());
+                if (row.length > 1 || row[0] !== '') rows.push(row);
+                row = [];
+                field = '';
+                i++;
+              } else {
+                field += c;
+                i++;
+              }
+            }
+          }
+          if (field || row.length) {
+            row.push(field.trim());
+            if (row.length > 1 || row[0] !== '') rows.push(row);
+          }
+          return rows;
+        }
+
+        function pgoColIdx(headers, key) {
+          const norm = (s) =>
+            (s || '')
+              .replace(/[\n\r]+/g, ' ')
+              .replace(/\s+/g, ' ')
+              .trim()
+              .toUpperCase();
+          const nk = norm(key);
+          for (let i = 0; i < headers.length; i++)
+            if (norm(headers[i]) === nk) return i;
+          for (let i = 0; i < headers.length; i++) {
+            const h = norm(headers[i]);
+            if (h.includes(nk) || nk.includes(h)) return i;
+          }
+          return -1;
+        }
+
+        function pgoParseTarikh(str) {
+          if (!str || str === '-') return null;
+          const cleaned = str.replace(/[\n\r]/g, '').trim();
+          const parts = cleaned.split('.');
+          if (parts.length === 3) {
+            const d = parseInt(parts[0]),
+              m = parseInt(parts[1]) - 1,
+              y = parseInt(parts[2]);
+            if (!isNaN(d) && !isNaN(m) && !isNaN(y)) return new Date(y, m, d);
+          }
+          const dt = new Date(cleaned);
+          return isNaN(dt.getTime()) ? null : dt;
+        }
+
+        function pgoParseJam(str) {
+          if (!str || str === '-') return 0;
+          const parts = str
+            .replace(/[\n\r]/g, '')
+            .trim()
+            .split(':');
+          return parseInt(parts[0]) || 0;
+        }
+
+        // ----- KES HARI INI (sumber sama dgn dashops.html: CSV_URLS syif A/B/C) -----
+        const DASHOPS_CSV_URLS = [
+          'https://docs.google.com/spreadsheets/d/e/2PACX-1vRqq7kIOrESSTIiuwPXR-LfsmMu_NaJnWSr2qOyCrnUK4QDqP2DNQy8io0jJIysZQ6Nc6DCZr9YrrW-/pub?gid=1671240510&single=true&output=csv',
+          'https://docs.google.com/spreadsheets/d/e/2PACX-1vToFUGdZ63m5oOjUMMYKta_aJ9cQlP3Bxz8QxjTxshfySACV1zqOQVwHBo6ptNyrk1mcw_yuvhIhbcH/pub?gid=1671240510&single=true&output=csv',
+          'https://docs.google.com/spreadsheets/d/e/2PACX-1vRgdRVgrUyuMX5IocMXA6g1yM5e0gU1qg3YpazTpmvFhgkl9KCPX02hn-0epm40SCxeHFQ125xCJN2T/pub?gid=1671240510&single=true&output=csv',
+        ];
+
+        async function fetchKesHariIni() {
+          const el = document.getElementById('statKesHariIni');
+          try {
+            const texts = await Promise.all(
+              DASHOPS_CSV_URLS.map((u) =>
+                fetch(u, { cache: 'no-cache' }).then((r) => r.text())
+              )
+            );
+            let allCases = [];
+            texts.forEach((text) => {
+              const rows = pgoParseCSV(text);
+              if (rows.length < 2) return;
+              const headers = rows[0];
+              const idxCall = pgoColIdx(headers, 'CALL CARD');
+              const idxTarikh = pgoColIdx(headers, 'Tarikh \n Kejadian \n (q)');
+              const idxMasa = pgoColIdx(headers, 'TERIMA PANGGILAN');
+              for (let i = 1; i < rows.length; i++) {
+                const row = rows[i];
+                if (!row || row.length === 0) continue;
+                const callCard = idxCall >= 0 ? (row[idxCall] || '').trim() : '';
+                if (
+                  !callCard.includes('JBPM') ||
+                  callCard.includes('XXXXXX') ||
+                  callCard.length <= 5
+                )
+                  continue;
+                allCases.push({
+                  tarikh: idxTarikh >= 0 ? (row[idxTarikh] || '').trim() : '-',
+                  masa: idxMasa >= 0 ? (row[idxMasa] || '').trim() : '-',
+                });
+              }
+            });
+
+            // Hari operasi = 24 jam bermula 6 pagi (sama logik dgn dashops.html)
+            let latestOpDate = null;
+            const opDateOf = (d) => {
+              const t = pgoParseTarikh(d.tarikh);
+              if (!t) return null;
+              const jam = pgoParseJam(d.masa);
+              const opDate = new Date(t);
+              if (jam < 6) opDate.setDate(opDate.getDate() - 1);
+              return opDate;
+            };
+            allCases.forEach((d) => {
+              const opDate = opDateOf(d);
+              if (opDate && (!latestOpDate || opDate > latestOpDate))
+                latestOpDate = opDate;
+            });
+
+            let total = 0;
+            if (latestOpDate) {
+              allCases.forEach((d) => {
+                const opDate = opDateOf(d);
+                if (opDate && opDate.getTime() === latestOpDate.getTime())
+                  total++;
+              });
+            }
+            if (el) el.textContent = total;
+          } catch (e) {
+            if (el) el.textContent = '--';
+          }
+        }
+        fetchKesHariIni();
+        setInterval(fetchKesHariIni, 60000);
+
+        // ----- JENTERA BERSEDIA (sumber sama dgn jentera.html: CFRT/EMRS/Water) -----
+        const JENTERA_CSV_URLS = [
+          'https://docs.google.com/spreadsheets/d/e/2PACX-1vQt0JkN2yWW_0FeY5GKpmIvs1uI6si89JcqNmSTO3f--rM8FhQZe1Q97YQd8tiAsmaMQdTXO5TQWedy/pub?gid=0&single=true&output=csv',
+          'https://docs.google.com/spreadsheets/d/e/2PACX-1vQt0JkN2yWW_0FeY5GKpmIvs1uI6si89JcqNmSTO3f--rM8FhQZe1Q97YQd8tiAsmaMQdTXO5TQWedy/pub?gid=795399708&single=true&output=csv',
+          'https://docs.google.com/spreadsheets/d/e/2PACX-1vQt0JkN2yWW_0FeY5GKpmIvs1uI6si89JcqNmSTO3f--rM8FhQZe1Q97YQd8tiAsmaMQdTXO5TQWedy/pub?gid=290336578&single=true&output=csv',
+        ];
+
+        async function fetchJenteraBersedia() {
+          const el = document.getElementById('statJenteraSedia');
+          try {
+            const texts = await Promise.all(
+              JENTERA_CSV_URLS.map((u) =>
+                fetch(u, { cache: 'no-cache' }).then((r) => r.text())
+              )
+            );
+            let bersedia = 0;
+            texts.forEach((text) => {
+              const rows = pgoParseCSV(text);
+              if (rows.length < 2) return;
+              const headers = rows[0];
+              const idxStatus = pgoColIdx(headers, 'STATUS JENTERA');
+              for (let i = 1; i < rows.length; i++) {
+                const row = rows[i];
+                if (!row || row.length === 0) continue;
+                const status = (
+                  idxStatus >= 0 ? row[idxStatus] || '' : ''
+                ).toUpperCase();
+                // Kategori 'BAIK & BEROPERASI' = jentera bersedia (sama logik dgn jentera.html)
+                if (status.includes('BAIK') && status.includes('BEROPERASI'))
+                  bersedia++;
+              }
+            });
+            if (el) el.textContent = bersedia;
+          } catch (e) {
+            if (el) el.textContent = '--';
+          }
+        }
+        fetchJenteraBersedia();
+        setInterval(fetchJenteraBersedia, 60000);
 
         // ===== SCROLL-TRIGGERED CARD ANIMATIONS =====
         const animElements = document.querySelectorAll('.app-card, .stat-item');
@@ -3142,6 +3380,10 @@
               document.getElementById('miniCuti').textContent = cuti;
               document.getElementById('miniSakit').textContent = sakit;
               document.getElementById('miniTugasKhas').textContent = tugasKhas;
+
+              // Kemaskini juga statistik "Anggota Bertugas" di stats-bar utama
+              const statBertugasEl = document.getElementById('statBertugas');
+              if (statBertugasEl) statBertugasEl.textContent = bertugas;
             }
           } catch (e) {
             // Biarkan nilai '--' jika gagal
