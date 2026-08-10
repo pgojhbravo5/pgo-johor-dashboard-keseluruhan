@@ -777,21 +777,6 @@
             border: 1px solid rgba(239, 68, 68, 0.4);
             animation: pulseLive 1.5s infinite;
         }
-        .status-badge.online {
-            background: rgba(74, 222, 128, 0.15);
-            color: var(--status-green);
-            border: 1px solid rgba(74, 222, 128, 0.4);
-        }
-        .status-badge.dev {
-            background: rgba(245, 158, 11, 0.15);
-            color: #f59e0b;
-            border: 1px solid rgba(245, 158, 11, 0.4);
-        }
-        .status-badge.sistem {
-            background: rgba(59, 130, 246, 0.15);
-            color: #60a5fa;
-            border: 1px solid rgba(59, 130, 246, 0.4);
-        }
         @keyframes pulseLive {
             0%,
             100% { opacity: 1; }
@@ -1840,7 +1825,6 @@
                         <button type="button" class="cat-toggle" data-cat-target="catPanelOnline" aria-expanded="false">
                             <span class="cat-toggle-label">
                                 <i class="fas fa-signal"></i> ONLINE
-                                <span class="status-badge online">● ONLINE</span>
                             </span>
                             <i class="fas fa-chevron-down cat-arrow"></i>
                         </button>
@@ -1879,7 +1863,6 @@
                         <button type="button" class="cat-toggle" data-cat-target="catPanelSistem" aria-expanded="false">
                             <span class="cat-toggle-label">
                                 <i class="fas fa-server"></i> PAUTAN SISTEM
-                                <span class="status-badge sistem">● SISTEM</span>
                             </span>
                             <i class="fas fa-chevron-down cat-arrow"></i>
                         </button>
@@ -1918,7 +1901,6 @@
                         <button type="button" class="cat-toggle" data-cat-target="catPanelDev" aria-expanded="false">
                             <span class="cat-toggle-label">
                                 <i class="fas fa-helmet-safety"></i> DALAM PEMBANGUNAN
-                                <span class="status-badge dev">● DEV</span>
                             </span>
                             <i class="fas fa-chevron-down cat-arrow"></i>
                         </button>
