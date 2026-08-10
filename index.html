@@ -290,25 +290,6 @@
         }
         body.mode-siang .sistem-panel .app-card h3 { color: #0f172a; }
         body.mode-siang .sistem-panel .app-card p { color: #475569; }
-        body.mode-siang .sistem-panel .password-box {
-            background: #f1f5f9;
-            border-color: #cbd5e1;
-        }
-        body.mode-siang .sistem-panel .password-box input {
-            background: #ffffff;
-            border-color: #cbd5e1;
-            color: #0f172a;
-        }
-        body.mode-siang .sistem-panel .password-box input::placeholder {
-            color: #94a3b8;
-        }
-        body.mode-siang .sistem-panel .password-box button {
-            background: #b3223f;
-            color: #fff;
-        }
-        body.mode-siang .sistem-panel .password-box .error-msg {
-            color: #dc2626;
-        }
         /* Carousel mode siang */
         body.mode-siang .carousel-container {
             background: rgba(255, 255, 255, 0.5);
@@ -937,7 +918,7 @@
             transform: translateY(30px) scale(0.97);
             transition: opacity 0.6s ease, transform 0.6s ease, border-color 0.3s ease, background 0.3s ease;
             height: 100%;
-            overflow: hidden; /* prevent content from spilling out */
+            overflow: hidden;
         }
         .carousel-slide.active {
             opacity: 1;
@@ -1017,7 +998,7 @@
             border-left: 3px solid var(--fire-red);
             flex: 1;
             overflow-y: auto;
-            max-height: 120px; /* allow scrolling if text exceeds */
+            max-height: 120px;
             min-height: 50px;
         }
         .carousel-slide .case-detail i {
@@ -1025,7 +1006,6 @@
             margin-right: 0.4rem;
         }
 
-        /* Scrollbar styling for case-detail */
         .carousel-slide .case-detail::-webkit-scrollbar {
             width: 4px;
         }
@@ -1737,7 +1717,7 @@
         .link-icon.international { background: rgba(168, 85, 247, 0.15); color: #a855f7; }
         .link-icon.gov { background: rgba(251, 146, 60, 0.15); color: #fb923c; }
 
-        /* ===== SISTEM PANEL ===== */
+        /* ===== SISTEM PANEL (tanpa password) ===== */
         .sistem-panel {
             width: 100%;
             background: var(--hud-bg);
@@ -1803,71 +1783,11 @@
             padding: 0 1.5rem 1.5rem 1.5rem;
         }
 
-        .sistem-panel .password-box {
-            display: flex;
-            align-items: center;
-            gap: 0.75rem;
-            flex-wrap: wrap;
-            background: rgba(255, 255, 255, 0.03);
-            padding: 0.75rem 1rem;
-            border-radius: 1rem;
-            border: 1px solid var(--hud-border);
-            margin-bottom: 1rem;
-        }
-        .sistem-panel .password-box input {
-            flex: 1;
-            background: rgba(255, 255, 255, 0.06);
-            border: 1px solid var(--hud-border);
-            border-radius: 2rem;
-            padding: 0.5rem 1rem;
-            color: #ffffff;
-            font-size: 0.875rem;
-            outline: none;
-            min-width: 10rem;
-        }
-        .sistem-panel .password-box input::placeholder {
-            color: var(--text-secondary);
-        }
-        .sistem-panel .password-box input:focus {
-            border-color: var(--hazard-gold);
-        }
-        .sistem-panel .password-box button {
-            background: var(--fire-red);
-            border: none;
-            color: #fff;
-            padding: 0.5rem 1.25rem;
-            border-radius: 2rem;
-            font-weight: 700;
-            font-size: 0.875rem;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            white-space: nowrap;
-        }
-        @media (hover: hover) {
-            .sistem-panel .password-box button:hover {
-                background: var(--hazard-gold);
-                color: #000;
-                transform: scale(1.02);
-            }
-        }
-        .sistem-panel .password-box .error-msg {
-            color: #ef4444;
-            font-size: 0.75rem;
-            font-weight: 600;
-            width: 100%;
-            display: none;
-        }
-        .sistem-panel .password-box .error-msg.show {
-            display: block;
-        }
-
+        /* Sistem content – pautan terus tanpa password */
         .sistem-panel .sistem-content {
-            display: none;
+            display: flex;
             flex-direction: column;
             gap: 0.625rem;
-        }
-        .sistem-panel .sistem-content.show {
-            display: flex;
         }
         .sistem-panel .sistem-content .app-card {
             background: var(--hud-card-bg);
@@ -2130,13 +2050,6 @@
             .sistem-panel .panel-body.open {
                 padding: 0 1rem 1rem 1rem;
             }
-            .sistem-panel .password-box {
-                flex-direction: column;
-                align-items: stretch;
-            }
-            .sistem-panel .password-box input {
-                min-width: auto;
-            }
             .footer {
                 flex-direction: column;
                 text-align: center;
@@ -2176,6 +2089,183 @@
             .carousel-notice {
                 font-size: 0.65rem;
                 padding: 0.4rem 0.75rem;
+            }
+        }
+
+        /* ===== PENYESUAIAN UNTUK MOBILE (skrin < 480px) ===== */
+        @media (max-width: 480px) {
+            /* Kecilkan saiz asas kepada 15px */
+            html {
+                font-size: 15px;
+            }
+
+            /* Kurangkan padding/margin pada banyak elemen */
+            .dashboard {
+                padding: 1rem 0.6rem;
+            }
+            .header-inner {
+                padding: 0.5rem 0.5rem;
+            }
+            .main-wrapper {
+                padding: 0 0.25rem 0.5rem 0.25rem;
+            }
+            .links-panel {
+                padding: 0.75rem 0.6rem;
+            }
+            .sistem-panel .panel-toggle {
+                padding: 0.75rem 0.8rem;
+            }
+            .sistem-panel .panel-body.open {
+                padding: 0 0.8rem 0.8rem 0.8rem;
+            }
+            .carousel-slide {
+                padding: 0.6rem 0.8rem;
+            }
+            .app-card {
+                padding: 0.7rem 0.9rem;
+                gap: 0.7rem;
+            }
+            .cat-toggle {
+                padding: 0.7rem 0.8rem;
+                font-size: 0.7rem;
+            }
+            .cat-panel.open {
+                padding: 0 0.6rem 0.6rem;
+            }
+
+            /* Saiz teks khusus */
+            .stat-item .num {
+                font-size: 1.4rem; /* ~21px */
+            }
+            .stat-item .label {
+                font-size: 0.6rem;
+            }
+            .stat-item .icon-badge {
+                font-size: 1.25rem;
+            }
+            .logo-text h1 {
+                font-size: 1.2rem; /* ~18px */
+            }
+            .logo-text .sub {
+                font-size: 0.6rem;
+            }
+            .logo-img {
+                height: 2rem;
+            }
+            .app-card h3 {
+                font-size: 0.85rem; /* ~12.75px */
+            }
+            .app-card p {
+                font-size: 0.7rem;
+            }
+            .app-card .badge {
+                font-size: 0.55rem;
+            }
+            .section-title {
+                font-size: 0.75rem;
+            }
+            .carousel-slide .case-type {
+                font-size: 0.9rem;
+            }
+            .carousel-slide .case-address {
+                font-size: 0.7rem;
+            }
+            .carousel-slide .case-time {
+                font-size: 0.65rem;
+            }
+            .carousel-slide .case-detail {
+                font-size: 0.7rem;
+                max-height: 70px;
+                padding: 0.3rem 0.5rem;
+            }
+            .carousel-slide .case-badge {
+                font-size: 0.55rem;
+                padding: 0.1rem 0.5rem;
+            }
+            .carousel-notice {
+                font-size: 0.65rem;
+                padding: 0.3rem 0.6rem;
+            }
+            .links-panel .panel-title {
+                font-size: 0.75rem;
+            }
+            .links-panel .popular-item {
+                font-size: 0.6rem;
+                padding: 0.15rem 0.5rem;
+            }
+            .links-panel .accordion-header {
+                font-size: 0.65rem;
+                padding: 0.5rem 0.7rem;
+            }
+            .links-panel .sidebar-link .link-text .link-name {
+                font-size: 0.7rem;
+            }
+            .links-panel .sidebar-link .link-text .link-desc {
+                font-size: 0.55rem;
+            }
+            .links-panel .sidebar-link {
+                padding: 0.4rem 0.6rem;
+            }
+            .links-panel .emergency-item .e-info .e-name {
+                font-size: 0.65rem;
+            }
+            .links-panel .emergency-item .e-info .e-number {
+                font-size: 0.7rem;
+            }
+            .sistem-panel .panel-toggle {
+                font-size: 0.75rem;
+            }
+            .sistem-panel .sistem-content .app-card h3 {
+                font-size: 0.85rem;
+            }
+            .sistem-panel .sistem-content .app-card p {
+                font-size: 0.7rem;
+            }
+            .footer {
+                font-size: 0.65rem;
+            }
+            .footer .last-updated {
+                font-size: 0.6rem;
+            }
+            /* Butang dan kawalan sentuh minimum 44px */
+            .header-top-controls button,
+            .header-top-controls .refresh-btn,
+            .search-bar-inner button,
+            .carousel-btn,
+            .sistem-panel .password-box button {
+                min-width: 2.75rem;
+                min-height: 2.75rem;
+            }
+            .carousel-btn {
+                width: 2rem;
+                height: 2rem;
+            }
+            .carousel-dot {
+                width: 0.5rem;
+                height: 0.5rem;
+            }
+            .carousel-dot.active {
+                width: 1.2rem;
+            }
+            /* Kurangkan ruang antara elemen */
+            .stats-bar {
+                gap: 0.25rem;
+                margin-bottom: 1rem;
+            }
+            .stat-item {
+                padding: 0.7rem 0.4rem;
+            }
+            .carousel-container {
+                min-height: 160px;
+            }
+            .carousel-track-wrap {
+                min-height: 160px;
+            }
+            .carousel-slide {
+                min-height: 160px;
+            }
+            .anggota-mini-stats {
+                font-size: 0.55rem;
             }
         }
 
@@ -2289,7 +2379,7 @@
                         </div>
                     </section>
 
-                    <!-- ===== CAROUSEL KES KEBAKARAN & PENYELAMATAN ===== -->
+                    <!-- ===== CAROUSEL KES KEBAKARAN & MANGSA ===== -->
                     <section class="section-carousel">
                         <div class="section-title">
                             <i class="fas fa-fire" style="color:var(--hazard-gold)"></i> RINGKASAN KES RAWAK
@@ -2576,7 +2666,7 @@
                     </div><!-- /links-scroll -->
                 </aside>
 
-                <!-- ===== PANEL SISTEM (diletakkan di bawah PAUTAN PENTING) ===== -->
+                <!-- ===== PANEL SISTEM (tanpa password) ===== -->
                 <div class="sistem-panel" id="sistemPanel">
                     <button class="panel-toggle" id="sistemPanelToggle" aria-expanded="false">
                         <span class="panel-title">
@@ -2586,13 +2676,8 @@
                     </button>
 
                     <div class="panel-body" id="sistemPanelBody">
-                        <div class="password-box" id="passwordBox">
-                            <input type="password" id="sistemPassword" placeholder="Masukkan kata laluan..." aria-label="Kata laluan sistem" />
-                            <button id="sistemAuthBtn">Akses</button>
-                            <div class="error-msg" id="sistemError">Kata laluan salah. Sila cuba lagi.</div>
-                        </div>
-
-                        <div class="sistem-content" id="sistemContent">
+                        <!-- ===== PAUTAN SISTEM LANGSUNG (tanpa password) ===== -->
+                        <div class="sistem-content">
                             <a href="https://po1teknologia2.vercel.app/" target="_blank" class="app-card" rel="noopener noreferrer">
                                 <div class="icon"><i class="fas fa-boxes-stacked"></i></div>
                                 <div>
@@ -2627,7 +2712,7 @@
     <!-- ===== FOOTER ===== -->
     <footer class="footer">
         <div class="last-updated"><i class="fas fa-clock"></i> Kemaskini: <span id="updateTime">--</span></div>
-        <div class="brand"><span class="dot"></span><span>© 2026 PGO Johor</span></div>
+        <div class="brand"><span class="dot"></span><span>©2026 PGO JOHOR | Hak Cipta Terpelihara</span></div>
         <div class="social-links">
             <a href="https://wa.me/60196717865" target="_blank" title="WhatsApp" rel="noopener noreferrer"><i class="fab fa-whatsapp"></i></a>
             <a href="https://t.me/+60196717865" target="_blank" title="Telegram" rel="noopener noreferrer"><i class="fab fa-telegram-plane"></i></a>
@@ -2797,7 +2882,7 @@
                 });
             });
 
-            // ===== SISTEM PANEL TOGGLE =====
+            // ===== SISTEM PANEL TOGGLE (tanpa password) =====
             const sistemToggle = document.getElementById('sistemPanelToggle');
             const sistemBody = document.getElementById('sistemPanelBody');
             const sistemArrow = sistemToggle.querySelector('.panel-arrow');
@@ -2828,7 +2913,6 @@
                 const baseDelay = 0.05 + idx * 0.06;
                 item.style.transitionDelay = baseDelay + 's';
             });
-            // Carousel slides will be handled by carousel logic
 
             const observerOptions = { root: null, rootMargin: '0px 0px -60px 0px', threshold: 0.12 };
             const observer = new IntersectionObserver((entries) => {
@@ -2865,6 +2949,20 @@
             }, { passive: true });
 
             // ===== CAROUSEL DATA FETCH & RENDER =====
+            // --- Konfigurasi penapis: hanya kes kebakaran & melibatkan mangsa ---
+            const ALLOWED_KEYWORDS = [
+                // Kebakaran
+                'kebakaran', 'api', 'fire',
+                // Mangsa / kecederaan / kemalangan / penyelamatan
+                'mangsa', 'terperangkap', 'kecederaan', 'cedera',
+                'kemalangan', 'penyelamatan', 'rescue', 'trapped', 'injured'
+            ];
+
+            function isCaseAllowed(item) {
+                const combined = (item.jenis + ' ' + item.maklumat).toLowerCase();
+                return ALLOWED_KEYWORDS.some(kw => combined.includes(kw));
+            }
+
             // --- Gunakan URL yang sama seperti dashops ---
             const CAROUSEL_CSV_URLS = {
                 syifA: 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRqq7kIOrESSTIiuwPXR-LfsmMu_NaJnWSr2qOyCrnUK4QDqP2DNQy8io0jJIysZQ6Nc6DCZr9YrrW-/pub?gid=1671240510&single=true&output=csv',
@@ -3014,7 +3112,7 @@
                         return;
                     }
                     // Filter untuk hari operasi terkini
-                    const filtered = all.filter(d => {
+                    let filtered = all.filter(d => {
                         const t = pgoParseTarikh(d.tarikh);
                         if (!t) return false;
                         const jam = pgoParseJam(d.masa);
@@ -3022,6 +3120,10 @@
                         if (jam < 6) opDate.setDate(opDate.getDate() - 1);
                         return opDate.getTime() === latestDay.getTime();
                     });
+
+                    // === PENAPIS TAMBAHAN: hanya kes kebakaran atau melibatkan mangsa ===
+                    filtered = filtered.filter(isCaseAllowed);
+
                     carouselData = filtered;
                     renderCarouselSlides(filtered);
                 } catch (e) {
@@ -3046,7 +3148,7 @@
                         <div class="carousel-slide active" style="display:flex;align-items:center;justify-content:center;min-height:180px;color:var(--text-secondary);">
                             <div style="text-align:center;">
                                 <i class="fas fa-inbox" style="font-size:2rem;margin-bottom:0.5rem;display:block;opacity:0.3;"></i>
-                                Tiada kes untuk hari ini
+                                Tiada kes kebakaran atau mangsa untuk hari ini
                             </div>
                         </div>
                     `;
@@ -3055,8 +3157,8 @@
                     return;
                 }
 
-                // Hadkan kepada 10 slaid untuk prestasi
-                const maxSlides = Math.min(cases.length, 10);
+                // === TINGKATKAN BILANGAN MAKSIMUM SLAID KEPADA 20 ===
+                const maxSlides = Math.min(cases.length, 20);
                 const sliced = cases.slice(0, maxSlides);
 
                 sliced.forEach((d, index) => {
@@ -3064,18 +3166,18 @@
                     slide.className = 'carousel-slide' + (index === 0 ? ' active' : '');
                     slide.dataset.index = index;
 
-                    // Emoji berdasarkan jenis (ringkas)
-                    const emoji = d.jenis.toLowerCase().includes('kebakaran') ? '🔥' :
-                        d.jenis.toLowerCase().includes('kemalangan') ? '🚗' :
-                        d.jenis.toLowerCase().includes('banjir') ? '🌊' :
-                        d.jenis.toLowerCase().includes('menyelamat') ? '🚑' : '📍';
-
                     // Badge kategori ringkas
                     let badgeText = 'Kejadian';
-                    if (d.jenis.toLowerCase().includes('kebakaran')) badgeText = '🔥 Kebakaran';
-                    else if (d.jenis.toLowerCase().includes('kemalangan')) badgeText = '🚗 Kemalangan';
-                    else if (d.jenis.toLowerCase().includes('banjir')) badgeText = '🌊 Banjir';
-                    else if (d.jenis.toLowerCase().includes('menyelamat')) badgeText = '🚑 Penyelamatan';
+                    const lowerJenis = d.jenis.toLowerCase();
+                    const lowerMaklumat = d.maklumat.toLowerCase();
+                    if (lowerJenis.includes('kebakaran') || lowerMaklumat.includes('kebakaran')) badgeText =
+                    '🔥 Kebakaran';
+                    else if (lowerJenis.includes('kemalangan') || lowerMaklumat.includes('kemalangan')) badgeText =
+                        '🚗 Kemalangan';
+                    else if (lowerJenis.includes('banjir') || lowerMaklumat.includes('banjir')) badgeText =
+                    '🌊 Banjir';
+                    else if (lowerJenis.includes('penyelamatan') || lowerMaklumat.includes('rescue') || lowerMaklumat
+                        .includes('mangsa')) badgeText = '🚑 Penyelamatan';
 
                     // Tarikh + masa
                     const timeDisplay = d.masa && d.masa !== '-' ? d.masa : '';
@@ -3429,41 +3531,6 @@
             }
             fetchAnggotaMiniStats();
             setInterval(fetchAnggotaMiniStats, 60000);
-
-            // ===== SISTEM PANEL PASSWORD =====
-            const PASSWORD = 'pgo1234';
-            const passwordInput = document.getElementById('sistemPassword');
-            const authBtn = document.getElementById('sistemAuthBtn');
-            const errorMsg = document.getElementById('sistemError');
-            const sistemContent = document.getElementById('sistemContent');
-            const passwordBox = document.getElementById('passwordBox');
-
-            if (sessionStorage.getItem('sistemAccess') === 'granted') {
-                passwordBox.style.display = 'none';
-                sistemContent.classList.add('show');
-            }
-
-            function authenticate() {
-                const entered = passwordInput.value.trim();
-                if (entered === PASSWORD) {
-                    sessionStorage.setItem('sistemAccess', 'granted');
-                    passwordBox.style.display = 'none';
-                    sistemContent.classList.add('show');
-                    errorMsg.classList.remove('show');
-                } else {
-                    errorMsg.classList.add('show');
-                    passwordInput.value = '';
-                    passwordInput.focus();
-                }
-            }
-
-            authBtn.addEventListener('click', authenticate);
-            passwordInput.addEventListener('keydown', function(e) {
-                if (e.key === 'Enter') {
-                    e.preventDefault();
-                    authenticate();
-                }
-            });
 
             // ===== SERVICE WORKER =====
             if ('serviceWorker' in navigator) {
