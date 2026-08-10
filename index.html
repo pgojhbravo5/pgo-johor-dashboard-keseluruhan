@@ -1328,9 +1328,10 @@
         border-top: 0px solid transparent;
       }
       .accordion-content.open {
-        max-height: 1000px;
+        max-height: 5000px; /* increased for emergency contacts */
         padding: 0.625rem;
         border-top: 1px solid rgba(255, 255, 255, 0.05);
+        overflow-y: auto; /* allow scrolling inside accordion */
       }
 
       .sidebar-link {
@@ -1659,6 +1660,11 @@
         .sidebar.active {
           left: 0;
         }
+        /* ensure emergency accordion content is scrollable on mobile */
+        .accordion-content.open {
+          max-height: 5000px;
+          overflow-y: auto;
+        }
       }
       body.mobile-mode .dashboard {
         max-width: 30rem;
@@ -1685,6 +1691,11 @@
       body.mobile-mode .stats-bar {
         grid-template-columns: repeat(2, 1fr);
       }
+      /* mobile emergency accordion scroll fix */
+      body.mobile-mode .accordion-content.open {
+        max-height: 5000px;
+        overflow-y: auto;
+      }
 
       /* ===== MINI STATS UNTUK KAD ANGGOTA ===== */
       .anggota-mini-stats {
@@ -1699,7 +1710,7 @@
         display: inline-flex;
         align-items: center;
         gap: 0.25rem;
-        background: rgba(255,255,255,0.05);
+        background: rgba(255, 255, 255, 0.05);
         padding: 0.1rem 0.5rem;
         border-radius: 1rem;
       }
@@ -1707,19 +1718,37 @@
         font-weight: 800;
         color: #fff;
       }
-      .anggota-mini-stats .num.green { color: #4ade80; }
-      .anggota-mini-stats .num.amber { color: #fbbf24; }
-      .anggota-mini-stats .num.red { color: #f87171; }
-      .anggota-mini-stats .num.purple { color: #a78bfa; }
+      .anggota-mini-stats .num.green {
+        color: #4ade80;
+      }
+      .anggota-mini-stats .num.amber {
+        color: #fbbf24;
+      }
+      .anggota-mini-stats .num.red {
+        color: #f87171;
+      }
+      .anggota-mini-stats .num.purple {
+        color: #a78bfa;
+      }
       body.mode-siang .anggota-mini-stats span {
-        background: rgba(0,0,0,0.05);
+        background: rgba(0, 0, 0, 0.05);
         color: #475569;
       }
-      body.mode-siang .anggota-mini-stats .num { color: #0f172a; }
-      body.mode-siang .anggota-mini-stats .num.green { color: #16a34a; }
-      body.mode-siang .anggota-mini-stats .num.amber { color: #d97706; }
-      body.mode-siang .anggota-mini-stats .num.red { color: #dc2626; }
-      body.mode-siang .anggota-mini-stats .num.purple { color: #7c3aed; }
+      body.mode-siang .anggota-mini-stats .num {
+        color: #0f172a;
+      }
+      body.mode-siang .anggota-mini-stats .num.green {
+        color: #16a34a;
+      }
+      body.mode-siang .anggota-mini-stats .num.amber {
+        color: #d97706;
+      }
+      body.mode-siang .anggota-mini-stats .num.red {
+        color: #dc2626;
+      }
+      body.mode-siang .anggota-mini-stats .num.purple {
+        color: #7c3aed;
+      }
     </style>
   </head>
 
@@ -2570,11 +2599,7 @@
         </div>
         <div class="apps-grid">
           <!-- KAD DASHOPS -->
-          <a
-            href="dashops.html"
-            class="app-card"
-            rel="noopener noreferrer"
-          >
+          <a href="dashops.html" class="app-card" rel="noopener noreferrer">
             <div class="icon"><i class="fas fa-chart-column"></i></div>
             <div>
               <h3>
@@ -2605,6 +2630,18 @@
             <div>
               <h3>Data <span class="highlight">Jentera</span> JBPM Johor</h3>
               <p>Pemantauan status jentera & kenderaan operasi bomba.</p>
+            </div>
+            <div class="card-footer">
+              <span class="badge online">● ONLINE</span
+              ><span class="arrow"><i class="fas fa-arrow-right"></i></span>
+            </div>
+          </a>
+          <!-- ===== KAD DASHBOARD ASET GIRN (DIPINDAHKAN KE ONLINE) ===== -->
+          <a href="/dashboard-radio" class="app-card">
+            <div class="icon"><i class="fas fa-tower-cell"></i></div>
+            <div>
+              <h3>Data Aset <span class="highlight">GIRN</span></h3>
+              <p>Pemantauan aset komunikasi GIRN Negeri Johor.</p>
             </div>
             <div class="card-footer">
               <span class="badge online">● ONLINE</span
@@ -2659,21 +2696,6 @@
               ><span class="arrow"><i class="fas fa-arrow-right"></i></span>
             </div>
           </a>
-          <!-- ===== KAD DASHBOARD ASET GIRN (DIPINDAHKAN KE SINI) ===== -->
-          <a
-            href="/dashboard-radio"
-            class="app-card"
-          >
-            <div class="icon"><i class="fas fa-tower-cell"></i></div>
-            <div>
-              <h3>Dashboard Aset <span class="highlight">GIRN</span></h3>
-              <p>Pemantauan aset komunikasi GIRN Negeri Johor.</p>
-            </div>
-            <div class="card-footer">
-              <span class="badge sistem">● SISTEM</span
-              ><span class="arrow"><i class="fas fa-arrow-right"></i></span>
-            </div>
-          </a>
         </div>
       </section>
 
@@ -2699,11 +2721,7 @@
             </div>
           </a>
           <!-- ===== KAD KEKUATAN ANGGOTA 12 JAM ===== -->
-          <a
-            href="dbanggota.html"
-            class="app-card"
-            rel="noopener noreferrer"
-          >
+          <a href="dbanggota.html" class="app-card" rel="noopener noreferrer">
             <div class="icon"><i class="fas fa-user-shield"></i></div>
             <div>
               <h3>
@@ -2712,11 +2730,26 @@
               <p>Status anggota, syif, cuti & tugasan khas.</p>
               <!-- Mini stats ringkas (akan diisi melalui JS) -->
               <div class="anggota-mini-stats" id="anggotaMiniStats">
-                <span><i class="fas fa-users"></i> Jumlah: <span class="num" id="miniTotal">--</span></span>
-                <span><i class="fas fa-circle-check green"></i> Bertugas: <span class="num green" id="miniBertugas">--</span></span>
-                <span><i class="fas fa-moon amber"></i> Cuti: <span class="num amber" id="miniCuti">--</span></span>
-                <span><i class="fas fa-kit-medical red"></i> Sakit: <span class="num red" id="miniSakit">--</span></span>
-                <span><i class="fas fa-bullseye purple"></i> Tugas Khas: <span class="num purple" id="miniTugasKhas">--</span></span>
+                <span
+                  ><i class="fas fa-users"></i> Jumlah:
+                  <span class="num" id="miniTotal">--</span></span
+                >
+                <span
+                  ><i class="fas fa-circle-check green"></i> Bertugas:
+                  <span class="num green" id="miniBertugas">--</span></span
+                >
+                <span
+                  ><i class="fas fa-moon amber"></i> Cuti:
+                  <span class="num amber" id="miniCuti">--</span></span
+                >
+                <span
+                  ><i class="fas fa-kit-medical red"></i> Sakit:
+                  <span class="num red" id="miniSakit">--</span></span
+                >
+                <span
+                  ><i class="fas fa-bullseye purple"></i> Tugas Khas:
+                  <span class="num purple" id="miniTugasKhas">--</span></span
+                >
               </div>
             </div>
             <div class="card-footer">
@@ -3050,18 +3083,29 @@
             const SUPABASE_URL = 'https://hglmbrqweijpguxfeloq.supabase.co';
             const SUPABASE_ANON_KEY =
               'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhnbG1icnF3ZWlqcGd1eGZlbG9xIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODU1NDcyNDAsImV4cCI6MjEwMTEyMzI0MH0.xBuhxHVmkuIPC34421QfuCERIpBPFiyVi1sSC-PQAiQ';
-            const resp = await fetch(`${SUPABASE_URL}/rest/v1/jbpm_data?id=eq.1&select=rekodAnggota`, {
-              headers: { 'apikey': SUPABASE_ANON_KEY, 'Authorization': 'Bearer ' + SUPABASE_ANON_KEY }
-            });
+            const resp = await fetch(
+              `${SUPABASE_URL}/rest/v1/jbpm_data?id=eq.1&select=rekodAnggota`,
+              {
+                headers: {
+                  apikey: SUPABASE_ANON_KEY,
+                  Authorization: 'Bearer ' + SUPABASE_ANON_KEY,
+                },
+              }
+            );
             if (!resp.ok) throw new Error('Gagal fetch data');
             const data = await resp.json();
             if (data && data.length > 0 && data[0].rekodAnggota) {
               const anggota = data[0].rekodAnggota;
               const total = anggota.length;
-              const bertugas = anggota.filter(a => a.status === 'BERTUGAS').length;
-              const cuti = anggota.filter(a => a.status === 'CUTI').length;
-              const sakit = anggota.filter(a => a.status === 'CUTI SAKIT').length;
-              const tugasKhas = anggota.filter(a => a.status === 'TUGAS KHAS').length;
+              const bertugas = anggota.filter(
+                (a) => a.status === 'BERTUGAS'
+              ).length;
+              const cuti = anggota.filter((a) => a.status === 'CUTI').length;
+              const sakit = anggota.filter((a) => a.status === 'CUTI SAKIT')
+                .length;
+              const tugasKhas = anggota.filter(
+                (a) => a.status === 'TUGAS KHAS'
+              ).length;
 
               document.getElementById('miniTotal').textContent = total;
               document.getElementById('miniBertugas').textContent = bertugas;
