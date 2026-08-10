@@ -355,27 +355,22 @@
 
       .hamburger-fixed-btn {
         position: fixed;
-        top: 0;
-        left: 0;
-        padding: 0.75rem 1rem;
-        border-bottom-right-radius: 1.125rem;
+        top: 0.5rem;
+        left: 0.5rem;
+        padding: 0.5rem 0.75rem;
+        border-radius: 0.75rem;
         background: var(--hud-bg);
         border: 1px solid var(--fire-red);
-        border-top: none;
-        border-left: none;
         color: var(--fire-red);
         cursor: pointer;
         display: flex;
         align-items: center;
-        gap: 0.625rem;
+        gap: 0.5rem;
         z-index: 1000;
         backdrop-filter: blur(20px);
         -webkit-backdrop-filter: blur(20px);
-        box-shadow: 0 0.625rem 1.875rem rgba(0, 0, 0, 0.8),
-          0 0 0.9375rem var(--fire-red-glow);
-        transition: opacity 0.35s cubic-bezier(0.16, 1, 0.3, 1),
-          transform 0.35s cubic-bezier(0.16, 1, 0.3, 1), background 0.3s ease,
-          border-color 0.3s ease, box-shadow 0.3s ease;
+        box-shadow: 0 0.25rem 1rem rgba(0, 0, 0, 0.6), 0 0 0.5rem var(--fire-red-glow);
+        transition: all 0.3s ease;
         user-select: none;
         -webkit-tap-highlight-color: transparent;
       }
@@ -383,8 +378,8 @@
         display: flex;
         flex-direction: column;
         justify-content: center;
-        gap: 0.25rem;
-        width: 1.125rem;
+        gap: 0.2rem;
+        width: 1rem;
       }
       .hamburger-fixed-btn .hamburger-bars span {
         display: block;
@@ -395,26 +390,23 @@
         transition: all 0.3s ease;
       }
       .hamburger-fixed-btn .menu-title-text {
-        font-size: 0.6875rem;
+        font-size: 0.6rem;
         font-weight: 800;
-        letter-spacing: 0.0625rem;
+        letter-spacing: 0.05rem;
         text-transform: uppercase;
-        white-space: nowrap;
         color: inherit;
-        transition: color 0.3s ease;
       }
       .hamburger-fixed-btn.active {
         opacity: 0;
         pointer-events: none;
-        transform: translateX(-100%);
+        transform: scale(0.8);
       }
       @media (hover: hover) {
         .hamburger-fixed-btn:hover {
           background: var(--fire-red);
           color: #fff;
-          box-shadow: 0 0 1.5625rem var(--fire-red-glow),
-            0 0.625rem 1.5625rem rgba(0, 0, 0, 0.6);
-          transform: translateY(0.125rem);
+          box-shadow: 0 0 1rem var(--fire-red-glow);
+          transform: translateY(0.1rem);
         }
       }
 
@@ -762,7 +754,7 @@
         display: grid;
         grid-template-columns: repeat(4, 1fr);
         gap: 0;
-        margin-bottom: 2.1875rem;
+        margin-bottom: 0;
         background: var(--hud-card-bg);
         border: 1px solid var(--hud-border);
         border-radius: 1.25rem;
@@ -826,32 +818,377 @@
         margin-top: 0.25rem;
       }
 
-      /* Pecahan jentera dalam stats-bar */
-      .jentera-pecahan {
-        font-size: 0.6rem;
-        margin-top: 0.2rem;
+      /* ===== LAYOUT DUA LAJUR ===== */
+      .dashboard-grid {
         display: flex;
-        gap: 0.5rem;
-        justify-content: center;
-        color: var(--text-secondary);
-        flex-wrap: wrap;
+        gap: 1.5rem;
+        align-items: flex-start;
+        margin-top: 0;
       }
-      .jentera-pecahan span {
-        display: inline-flex;
-        align-items: center;
-        gap: 0.2rem;
-        background: rgba(255, 255, 255, 0.05);
-        padding: 0.05rem 0.4rem;
-        border-radius: 1rem;
-        border: 1px solid var(--hud-border);
-        font-weight: 600;
+      .dashboard-left {
+        flex: 2;
+        min-width: 0;
       }
-      body.mode-siang .jentera-pecahan span {
-        background: rgba(0, 0, 0, 0.05);
-        border-color: #e2e8f0;
+      .dashboard-right {
+        flex: 1;
+        min-width: 0;
+        max-width: 33.333%;
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
       }
 
-      /* SECTIONS */
+      /* ===== BULETIN KES (CAROUSEL) ===== */
+      .bulletin-card {
+        background: var(--hud-card-bg);
+        border: 1px solid var(--hud-border);
+        border-radius: 1.25rem;
+        padding: 1.25rem 1rem;
+        backdrop-filter: blur(18px);
+        -webkit-backdrop-filter: blur(18px);
+        display: flex;
+        flex-direction: column;
+        position: relative;
+        overflow: hidden;
+        min-height: 280px;
+      }
+      .bulletin-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 0.75rem;
+        padding-bottom: 0.5rem;
+        border-bottom: 1px solid var(--hud-border);
+      }
+      .bulletin-header h4 {
+        font-size: 0.75rem;
+        font-weight: 800;
+        text-transform: uppercase;
+        letter-spacing: 0.0625rem;
+        color: var(--hazard-gold);
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+      }
+      .bulletin-header .badge-count {
+        font-size: 0.625rem;
+        background: var(--fire-red);
+        color: #fff;
+        padding: 0.1rem 0.5rem;
+        border-radius: 1rem;
+        font-weight: 700;
+      }
+
+      .bulletin-slide-container {
+        flex: 1;
+        position: relative;
+        overflow: hidden;
+        min-height: 180px;
+      }
+      .bulletin-slide {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        opacity: 0;
+        transform: translateX(30px);
+        transition: opacity 0.6s cubic-bezier(0.16, 1, 0.3, 1),
+                    transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+        pointer-events: none;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        padding: 0.25rem 0;
+      }
+      .bulletin-slide.active {
+        opacity: 1;
+        transform: translateX(0);
+        pointer-events: auto;
+      }
+      .bulletin-slide .slide-icon {
+        font-size: 2rem;
+        margin-bottom: 0.5rem;
+        color: var(--hazard-gold);
+      }
+      .bulletin-slide .slide-type {
+        font-size: 0.875rem;
+        font-weight: 700;
+        color: #ffffff;
+        margin-bottom: 0.25rem;
+        line-height: 1.3;
+      }
+      .bulletin-slide .slide-time {
+        font-size: 0.6875rem;
+        color: var(--text-secondary);
+        margin-bottom: 0.25rem;
+      }
+      .bulletin-slide .slide-location {
+        font-size: 0.75rem;
+        color: #cbd5e1;
+        margin-bottom: 0.25rem;
+      }
+      .bulletin-slide .slide-desc {
+        font-size: 0.6875rem;
+        color: var(--text-secondary);
+        margin-bottom: 0.5rem;
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+      }
+      .bulletin-slide .slide-status {
+        display: inline-block;
+        font-size: 0.5625rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        padding: 0.1rem 0.6rem;
+        border-radius: 1rem;
+        letter-spacing: 0.03125rem;
+        align-self: flex-start;
+      }
+      .slide-status.aktif {
+        background: rgba(239, 68, 68, 0.2);
+        color: #ef4444;
+        border: 1px solid rgba(239, 68, 68, 0.3);
+      }
+      .slide-status.selesai {
+        background: rgba(74, 222, 128, 0.15);
+        color: #4ade80;
+        border: 1px solid rgba(74, 222, 128, 0.3);
+      }
+
+      .bulletin-nav {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-top: 0.75rem;
+        padding-top: 0.5rem;
+        border-top: 1px solid var(--hud-border);
+        flex-wrap: wrap;
+        gap: 0.5rem;
+      }
+      .bulletin-dots {
+        display: flex;
+        gap: 0.4rem;
+        flex: 1;
+        justify-content: center;
+      }
+      .bulletin-dots .dot {
+        width: 0.5rem;
+        height: 0.5rem;
+        border-radius: 50%;
+        background: var(--text-secondary);
+        border: none;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        padding: 0;
+        flex-shrink: 0;
+      }
+      .bulletin-dots .dot.active {
+        background: var(--hazard-gold);
+        transform: scale(1.3);
+        box-shadow: 0 0 0.625rem var(--hazard-gold-glow);
+      }
+      .bulletin-dots .dot:hover {
+        transform: scale(1.2);
+      }
+      .bulletin-arrows {
+        display: flex;
+        gap: 0.25rem;
+      }
+      .bulletin-arrows button {
+        width: 2rem;
+        height: 2rem;
+        border-radius: 50%;
+        border: 1px solid var(--hud-border);
+        background: rgba(255, 255, 255, 0.04);
+        color: var(--text-secondary);
+        cursor: pointer;
+        transition: all 0.3s ease;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 0.75rem;
+      }
+      .bulletin-arrows button:hover {
+        background: var(--hazard-gold);
+        color: #000;
+        border-color: var(--hazard-gold);
+        box-shadow: 0 0 0.625rem var(--hazard-gold-glow);
+      }
+      .bulletin-empty {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        height: 100%;
+        color: var(--text-secondary);
+        text-align: center;
+        gap: 0.5rem;
+      }
+      .bulletin-empty i {
+        font-size: 2.5rem;
+        opacity: 0.4;
+      }
+
+      /* ===== SENARAI KES TERKINI (RINGKASAN) ===== */
+      .kes-list-card {
+        background: var(--hud-card-bg);
+        border: 1px solid var(--hud-border);
+        border-radius: 1.25rem;
+        padding: 0.75rem 1rem;
+        backdrop-filter: blur(18px);
+        -webkit-backdrop-filter: blur(18px);
+        display: flex;
+        flex-direction: column;
+      }
+      .kes-list-header {
+        font-size: 0.65rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.0625rem;
+        color: var(--text-secondary);
+        margin-bottom: 0.4rem;
+        padding-bottom: 0.3rem;
+        border-bottom: 1px solid var(--hud-border);
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        flex-shrink: 0;
+      }
+      .kes-list-scroll {
+        overflow-y: auto;
+        max-height: 200px;
+        scroll-behavior: smooth;
+      }
+      .kes-list-scroll::-webkit-scrollbar {
+        width: 4px;
+      }
+      .kes-list-scroll::-webkit-scrollbar-track {
+        background: transparent;
+      }
+      .kes-list-scroll::-webkit-scrollbar-thumb {
+        background: var(--hud-border);
+        border-radius: 4px;
+      }
+      .kes-list-items {
+        display: flex;
+        flex-direction: column;
+      }
+      .kes-list-item {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        padding: 0.25rem 0.25rem 0.25rem 0.5rem;
+        border-radius: 0.5rem;
+        transition: background 0.2s ease;
+        font-size: 0.7rem;
+        border-left: 2px solid transparent;
+        margin-bottom: 0.15rem;
+        flex-shrink: 0;
+      }
+      .kes-list-item:hover {
+        background: var(--glass-highlight);
+      }
+      .kes-list-item .kl-icon {
+        font-size: 0.75rem;
+        width: 1.2rem;
+        text-align: center;
+        flex-shrink: 0;
+      }
+      .kes-list-item .kl-info {
+        flex: 1;
+        min-width: 0;
+        display: flex;
+        flex-direction: column;
+        gap: 0.1rem;
+      }
+      .kes-list-item .kl-info .kl-top {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        flex-wrap: wrap;
+      }
+      .kes-list-item .kl-info .kl-time {
+        color: var(--text-secondary);
+        font-size: 0.6rem;
+        white-space: nowrap;
+        flex-shrink: 0;
+      }
+      .kes-list-item .kl-info .kl-location {
+        color: #cbd5e1;
+        font-weight: 500;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        max-width: 120px;
+      }
+      .kes-list-item .kl-info .kl-balai {
+        font-size: 0.55rem;
+        padding: 0.05rem 0.4rem;
+        border-radius: 0.75rem;
+        background: rgba(255,255,255,0.05);
+        color: var(--text-secondary);
+        white-space: nowrap;
+        flex-shrink: 0;
+      }
+      .kes-list-item .kl-info .kl-jenis {
+        font-size: 0.55rem;
+        padding: 0.05rem 0.4rem;
+        border-radius: 0.75rem;
+        background: rgba(255,255,255,0.05);
+        color: var(--text-secondary);
+        white-space: nowrap;
+        flex-shrink: 0;
+      }
+      .kes-list-empty {
+        color: var(--text-secondary);
+        font-size: 0.7rem;
+        text-align: center;
+        padding: 0.5rem 0;
+      }
+
+      body.mode-siang .bulletin-card,
+      body.mode-siang .kes-list-card {
+        background: #ffffff;
+        border-color: #e2e8f0;
+      }
+      body.mode-siang .bulletin-header,
+      body.mode-siang .kes-list-header {
+        border-bottom-color: #e2e8f0;
+      }
+      body.mode-siang .bulletin-slide .slide-type {
+        color: #0f172a;
+      }
+      body.mode-siang .bulletin-slide .slide-location {
+        color: #334155;
+      }
+      body.mode-siang .bulletin-nav {
+        border-top-color: #e2e8f0;
+      }
+      body.mode-siang .bulletin-arrows button {
+        background: #f1f5f9;
+        border-color: #e2e8f0;
+        color: #475569;
+      }
+      body.mode-siang .bulletin-arrows button:hover {
+        background: var(--hazard-gold);
+        color: #000;
+      }
+      body.mode-siang .kes-list-item .kl-info .kl-location {
+        color: #334155;
+      }
+      body.mode-siang .kes-list-item .kl-info .kl-balai,
+      body.mode-siang .kes-list-item .kl-info .kl-jenis {
+        background: rgba(0,0,0,0.05);
+        color: #475569;
+      }
+      body.mode-siang .kes-list-scroll::-webkit-scrollbar-thumb {
+        background: #cbd5e1;
+      }
+
+      /* SECTIONS (sedia ada) */
       .section-status {
         margin-bottom: 2.5rem;
       }
@@ -897,13 +1234,8 @@
         border: 1px solid rgba(59, 130, 246, 0.4);
       }
       @keyframes pulseLive {
-        0%,
-        100% {
-          opacity: 1;
-        }
-        50% {
-          opacity: 0.5;
-        }
+        0%, 100% { opacity: 1; }
+        50% { opacity: 0.5; }
       }
 
       .apps-grid {
@@ -930,11 +1262,7 @@
           transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.3s ease;
       }
       .app-card.card-wide {
-        background: linear-gradient(
-          90deg,
-          rgba(179, 34, 63, 0.14),
-          var(--hud-card-bg)
-        );
+        background: linear-gradient(90deg, rgba(179,34,63,0.14), var(--hud-card-bg));
         border-color: var(--hud-border-red);
       }
       .app-card.card-wide .icon {
@@ -942,7 +1270,7 @@
         border-color: var(--fire-red);
       }
       .app-card.card-wide .badge.live {
-        background: rgba(239, 68, 68, 0.3);
+        background: rgba(239,68,68,0.3);
       }
       .app-card::before {
         content: '';
@@ -951,24 +1279,17 @@
         left: -100%;
         width: 100%;
         height: 100%;
-        background: linear-gradient(
-          90deg,
-          transparent,
-          rgba(255, 255, 255, 0.05),
-          transparent
-        );
+        background: linear-gradient(90deg, transparent, rgba(255,255,255,0.05), transparent);
         transition: left 0.6s ease;
         pointer-events: none;
       }
       @media (hover: hover) {
-        .app-card:hover::before {
-          left: 100%;
-        }
+        .app-card:hover::before { left: 100%; }
         .app-card:hover {
           background: var(--glass-highlight);
           border-color: var(--hud-border-red);
           transform: translateX(0.25rem);
-          box-shadow: 0 0.5rem 1.5rem rgba(0, 0, 0, 0.25);
+          box-shadow: 0 0.5rem 1.5rem rgba(0,0,0,0.25);
         }
         .app-card:hover .icon {
           transform: scale(1.08);
@@ -980,9 +1301,6 @@
           transform: translateX(0.3rem);
         }
       }
-      .app-card::after {
-        display: none;
-      }
       .app-card .icon {
         font-size: 1.125rem;
         color: var(--hazard-gold);
@@ -991,14 +1309,13 @@
         height: 2.75rem;
         min-width: 2.75rem;
         border-radius: 50%;
-        background: rgba(255, 255, 255, 0.04);
+        background: rgba(255,255,255,0.04);
         border: 1px solid var(--hud-border);
         display: flex;
         align-items: center;
         justify-content: center;
         flex-shrink: 0;
-        transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1),
-          color 0.3s ease, border-color 0.3s ease;
+        transition: transform 0.3s cubic-bezier(0.16,1,0.3,1), color 0.3s ease, border-color 0.3s ease;
       }
       .app-card .icon + div {
         flex: 1;
@@ -1044,24 +1361,24 @@
         white-space: nowrap;
       }
       .app-card .badge.online {
-        background: rgba(74, 222, 128, 0.15);
+        background: rgba(74,222,128,0.15);
         color: var(--status-green);
-        border: 1px solid rgba(74, 222, 128, 0.3);
+        border: 1px solid rgba(74,222,128,0.3);
       }
       .app-card .badge.live {
-        background: rgba(239, 68, 68, 0.15);
+        background: rgba(239,68,68,0.15);
         color: #ef4444;
-        border: 1px solid rgba(239, 68, 68, 0.3);
+        border: 1px solid rgba(239,68,68,0.3);
       }
       .app-card .badge.dev {
-        background: rgba(245, 158, 11, 0.15);
+        background: rgba(245,158,11,0.15);
         color: #f59e0b;
-        border: 1px solid rgba(245, 158, 11, 0.3);
+        border: 1px solid rgba(245,158,11,0.3);
       }
       .app-card .badge.sistem {
-        background: rgba(59, 130, 246, 0.15);
+        background: rgba(59,130,246,0.15);
         color: #60a5fa;
-        border: 1px solid rgba(59, 130, 246, 0.3);
+        border: 1px solid rgba(59,130,246,0.3);
       }
       .app-card .arrow {
         color: #64748b;
@@ -1073,7 +1390,7 @@
       .footer {
         margin-top: 2.1875rem;
         padding-top: 1.25rem;
-        border-top: 1px solid rgba(255, 255, 255, 0.1);
+        border-top: 1px solid rgba(255,255,255,0.1);
         display: flex;
         justify-content: space-between;
         align-items: center;
@@ -1099,15 +1416,8 @@
         animation: pulseDot 2s infinite;
       }
       @keyframes pulseDot {
-        0%,
-        100% {
-          transform: scale(1);
-          opacity: 1;
-        }
-        50% {
-          transform: scale(0.7);
-          opacity: 0.4;
-        }
+        0%, 100% { transform: scale(1); opacity: 1; }
+        50% { transform: scale(0.7); opacity: 0.4; }
       }
       .footer .social-links {
         display: flex;
@@ -1118,12 +1428,12 @@
         width: 2.25rem;
         height: 2.25rem;
         border-radius: 50%;
-        background: rgba(255, 255, 255, 0.04);
+        background: rgba(255,255,255,0.04);
         display: flex;
         align-items: center;
         justify-content: center;
         transition: all 0.3s ease;
-        border: 1px solid rgba(255, 255, 255, 0.08);
+        border: 1px solid rgba(255,255,255,0.08);
       }
       @media (hover: hover) {
         .footer .social-links a:hover {
@@ -1156,18 +1466,16 @@
         border-left: none;
         display: flex;
         flex-direction: column;
-        box-shadow: 0.9375rem 0 3.125rem rgba(0, 0, 0, 0.9);
+        box-shadow: 0.9375rem 0 3.125rem rgba(0,0,0,0.9);
       }
-      .sidebar.active {
-        left: 0;
-      }
+      .sidebar.active { left: 0; }
       .sidebar-header {
         display: flex;
         justify-content: space-between;
         align-items: center;
         padding: 1.375rem 1.5rem;
-        background: rgba(20, 0, 0, 0.6);
-        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        background: rgba(20,0,0,0.6);
+        border-bottom: 1px solid rgba(255,255,255,0.1);
         flex-shrink: 0;
       }
       .sidebar-header h3 {
@@ -1183,8 +1491,8 @@
         width: 2.375rem;
         height: 2.375rem;
         border-radius: 50%;
-        background: rgba(239, 68, 68, 0.15);
-        border: 1px solid rgba(239, 68, 68, 0.4);
+        background: rgba(239,68,68,0.15);
+        border: 1px solid rgba(239,68,68,0.4);
         color: #ef4444;
         font-size: 1rem;
         cursor: pointer;
@@ -1206,7 +1514,7 @@
       /* SEARCH */
       .search-box {
         padding: 0.75rem 1rem;
-        border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+        border-bottom: 1px solid rgba(255,255,255,0.08);
         flex-shrink: 0;
       }
       .search-box form {
@@ -1218,8 +1526,8 @@
         flex: 1;
         padding: 0.5rem 2.5rem 0.5rem 2.25rem;
         border-radius: 2rem;
-        border: 1px solid rgba(255, 255, 255, 0.15);
-        background: rgba(255, 255, 255, 0.06);
+        border: 1px solid rgba(255,255,255,0.15);
+        background: rgba(255,255,255,0.06);
         color: #fff;
         font-size: 0.8125rem;
         outline: none;
@@ -1229,12 +1537,8 @@
         background-position: 0.75rem center;
         background-size: 1rem;
       }
-      .search-box input::placeholder {
-        color: #94a3b8;
-      }
-      .search-box input:focus {
-        border-color: var(--hazard-gold);
-      }
+      .search-box input::placeholder { color: #94a3b8; }
+      .search-box input:focus { border-color: var(--hazard-gold); }
       .search-box button {
         position: absolute;
         right: 0.25rem;
@@ -1248,15 +1552,13 @@
         transition: background 0.2s ease;
       }
       @media (hover: hover) {
-        .search-box button:hover {
-          background: rgba(255, 204, 0, 0.15);
-        }
+        .search-box button:hover { background: rgba(255,204,0,0.15); }
       }
 
       /* PAUTAN POPULAR */
       .popular-links {
         padding: 0.75rem 1rem;
-        border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+        border-bottom: 1px solid rgba(255,255,255,0.08);
         flex-shrink: 0;
       }
       .popular-links .popular-title {
@@ -1277,9 +1579,9 @@
         align-items: center;
         gap: 0.375rem;
         padding: 0.25rem 0.75rem;
-        background: rgba(255, 255, 255, 0.06);
+        background: rgba(255,255,255,0.06);
         border-radius: 1.25rem;
-        border: 1px solid rgba(255, 255, 255, 0.08);
+        border: 1px solid rgba(255,255,255,0.08);
         color: #cbd5e1;
         font-size: 0.6875rem;
         text-decoration: none;
@@ -1294,21 +1596,17 @@
           transform: translateY(-1px);
         }
       }
-      .popular-links .popular-item i {
-        font-size: 0.75rem;
-      }
+      .popular-links .popular-item i { font-size: 0.75rem; }
 
       .update-timestamp {
         padding: 0.5rem 1rem;
         font-size: 0.625rem;
         color: var(--text-secondary);
         text-align: center;
-        border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+        border-bottom: 1px solid rgba(255,255,255,0.06);
         flex-shrink: 0;
       }
-      .update-timestamp i {
-        margin-right: 0.375rem;
-      }
+      .update-timestamp i { margin-right: 0.375rem; }
 
       .sidebar-content {
         flex: 1;
@@ -1320,21 +1618,19 @@
         margin-bottom: 0.625rem;
         border-radius: 0.875rem;
         overflow: hidden;
-        border: 1px solid rgba(255, 255, 255, 0.08);
-        background: rgba(20, 20, 28, 0.5);
+        border: 1px solid rgba(255,255,255,0.08);
+        background: rgba(20,20,28,0.5);
         transition: border-color 0.3s ease;
       }
       @media (hover: hover) {
-        .accordion-item:hover {
-          border-color: rgba(255, 204, 0, 0.3);
-        }
+        .accordion-item:hover { border-color: rgba(255,204,0,0.3); }
       }
       .accordion-header {
         display: flex;
         align-items: center;
         justify-content: space-between;
         padding: 0.875rem 1.125rem;
-        background: rgba(255, 255, 255, 0.02);
+        background: rgba(255,255,255,0.02);
         cursor: pointer;
         user-select: none;
         width: 100%;
@@ -1347,9 +1643,7 @@
         transition: all 0.3s ease;
       }
       @media (hover: hover) {
-        .accordion-header:hover {
-          background: rgba(255, 204, 0, 0.08);
-        }
+        .accordion-header:hover { background: rgba(255,204,0,0.08); }
       }
       .accordion-header .accordion-title {
         display: flex;
@@ -1368,17 +1662,16 @@
       .accordion-content {
         max-height: 0;
         overflow: hidden;
-        transition: max-height 0.4s cubic-bezier(0.4, 0, 0.2, 1),
-          padding 0.4s ease, border-top 0.4s ease;
-        background: rgba(5, 5, 10, 0.6);
+        transition: max-height 0.4s cubic-bezier(0.4,0,0.2,1), padding 0.4s ease, border-top 0.4s ease;
+        background: rgba(5,5,10,0.6);
         padding: 0 0.625rem;
         border-top: 0px solid transparent;
       }
       .accordion-content.open {
-        max-height: 5000px; /* increased for emergency contacts */
+        max-height: 5000px;
         padding: 0.625rem;
-        border-top: 1px solid rgba(255, 255, 255, 0.05);
-        overflow-y: auto; /* allow scrolling inside accordion */
+        border-top: 1px solid rgba(255,255,255,0.05);
+        overflow-y: auto;
       }
 
       .sidebar-link {
@@ -1397,14 +1690,12 @@
       }
       @media (hover: hover) {
         .sidebar-link:hover {
-          background: rgba(255, 255, 255, 0.05);
+          background: rgba(255,255,255,0.05);
           color: #ffffff;
-          border-color: rgba(255, 204, 0, 0.2);
+          border-color: rgba(255,204,0,0.2);
           transform: translateX(0.25rem);
         }
-        .sidebar-link:hover .link-icon {
-          transform: scale(1.15);
-        }
+        .sidebar-link:hover .link-icon { transform: scale(1.15); }
       }
       .sidebar-link .link-icon {
         width: 2rem;
@@ -1421,9 +1712,9 @@
         font-size: 0.5625rem;
         padding: 0.125rem 0.5rem;
         border-radius: 0.75rem;
-        background: rgba(239, 68, 68, 0.15);
+        background: rgba(239,68,68,0.15);
         color: #ef4444;
-        border: 1px solid rgba(239, 68, 68, 0.3);
+        border: 1px solid rgba(239,68,68,0.3);
         font-weight: 700;
         letter-spacing: 0.03125rem;
         text-transform: uppercase;
@@ -1431,70 +1722,23 @@
         flex-shrink: 0;
         display: none;
       }
-      .sidebar-link.down .status-badge.down {
-        display: inline-block;
-      }
+      .sidebar-link.down .status-badge.down { display: inline-block; }
 
-      .link-icon.weather {
-        background: rgba(59, 130, 246, 0.15);
-        color: #3b82f6;
-      }
-      .link-icon.tide {
-        background: rgba(6, 182, 212, 0.15);
-        color: #06b6d4;
-      }
-      .link-icon.disaster {
-        background: rgba(239, 68, 68, 0.15);
-        color: #ef4444;
-      }
-      .link-icon.road {
-        background: rgba(245, 158, 11, 0.15);
-        color: #f59e0b;
-      }
-      .link-icon.flood {
-        background: rgba(99, 102, 241, 0.15);
-        color: #6366f1;
-      }
-      .link-icon.quake {
-        background: rgba(168, 85, 247, 0.15);
-        color: #a855f7;
-      }
-      .link-icon.radar {
-        background: rgba(34, 197, 94, 0.15);
-        color: #22c55e;
-      }
-      .link-icon.fire {
-        background: rgba(249, 115, 22, 0.15);
-        color: #f97316;
-      }
-      .link-icon.emergency {
-        background: rgba(239, 68, 68, 0.15);
-        color: #ef4444;
-      }
-      .link-icon.info {
-        background: rgba(148, 163, 184, 0.15);
-        color: #94a3b8;
-      }
-      .link-icon.hospital {
-        background: rgba(16, 185, 129, 0.15);
-        color: #10b981;
-      }
-      .link-icon.civil {
-        background: rgba(251, 191, 36, 0.15);
-        color: #fbbf24;
-      }
-      .link-icon.maritime {
-        background: rgba(14, 165, 233, 0.15);
-        color: #0ea5e9;
-      }
-      .link-icon.international {
-        background: rgba(168, 85, 247, 0.15);
-        color: #a855f7;
-      }
-      .link-icon.gov {
-        background: rgba(251, 146, 60, 0.15);
-        color: #fb923c;
-      }
+      .link-icon.weather { background: rgba(59,130,246,0.15); color: #3b82f6; }
+      .link-icon.tide { background: rgba(6,182,212,0.15); color: #06b6d4; }
+      .link-icon.disaster { background: rgba(239,68,68,0.15); color: #ef4444; }
+      .link-icon.road { background: rgba(245,158,11,0.15); color: #f59e0b; }
+      .link-icon.flood { background: rgba(99,102,241,0.15); color: #6366f1; }
+      .link-icon.quake { background: rgba(168,85,247,0.15); color: #a855f7; }
+      .link-icon.radar { background: rgba(34,197,94,0.15); color: #22c55e; }
+      .link-icon.fire { background: rgba(249,115,22,0.15); color: #f97316; }
+      .link-icon.emergency { background: rgba(239,68,68,0.15); color: #ef4444; }
+      .link-icon.info { background: rgba(148,163,184,0.15); color: #94a3b8; }
+      .link-icon.hospital { background: rgba(16,185,129,0.15); color: #10b981; }
+      .link-icon.civil { background: rgba(251,191,36,0.15); color: #fbbf24; }
+      .link-icon.maritime { background: rgba(14,165,233,0.15); color: #0ea5e9; }
+      .link-icon.international { background: rgba(168,85,247,0.15); color: #a855f7; }
+      .link-icon.gov { background: rgba(251,146,60,0.15); color: #fb923c; }
 
       .sidebar-link .link-text {
         flex: 1;
@@ -1516,7 +1760,7 @@
 
       .sidebar-footer {
         padding: 1rem;
-        border-top: 1px solid rgba(255, 255, 255, 0.1);
+        border-top: 1px solid rgba(255,255,255,0.1);
         text-align: center;
         font-size: 0.6875rem;
         font-weight: 600;
@@ -1541,20 +1785,16 @@
         align-items: center;
         gap: 0.75rem;
         padding: 0.625rem 0.75rem;
-        background: rgba(255, 255, 255, 0.03);
+        background: rgba(255,255,255,0.03);
         border-radius: 0.75rem;
         margin-bottom: 0.375rem;
-        border: 1px solid rgba(255, 255, 255, 0.05);
+        border: 1px solid rgba(255,255,255,0.05);
         transition: border-color 0.3s ease;
       }
       @media (hover: hover) {
-        .emergency-item:hover {
-          border-color: rgba(179, 34, 63, 0.4);
-        }
+        .emergency-item:hover { border-color: rgba(179,34,63,0.4); }
       }
-      .emergency-item .e-info {
-        flex: 1;
-      }
+      .emergency-item .e-info { flex: 1; }
       .emergency-item .e-info .e-name {
         font-size: 0.75rem;
         font-weight: 600;
@@ -1582,9 +1822,7 @@
         transition: transform 0.3s ease;
       }
       @media (hover: hover) {
-        .emergency-item .e-actions .call-btn:hover {
-          transform: scale(1.15);
-        }
+        .emergency-item .e-actions .call-btn:hover { transform: scale(1.15); }
       }
       .emergency-item .e-actions .call-btn::before {
         content: '';
@@ -1596,24 +1834,15 @@
         animation: radarPing 2s infinite;
         z-index: 0;
       }
-      .emergency-item .e-actions .call-btn i {
-        position: relative;
-        z-index: 1;
-      }
+      .emergency-item .e-actions .call-btn i { position: relative; z-index: 1; }
       @keyframes radarPing {
-        0% {
-          transform: scale(1);
-          opacity: 0.8;
-        }
-        100% {
-          transform: scale(2);
-          opacity: 0;
-        }
+        0% { transform: scale(1); opacity: 0.8; }
+        100% { transform: scale(2); opacity: 0; }
       }
 
       .info-box {
-        background: rgba(255, 204, 0, 0.05);
-        border: 1px solid rgba(255, 204, 0, 0.2);
+        background: rgba(255,204,0,0.05);
+        border: 1px solid rgba(255,204,0,0.2);
         border-radius: 0.75rem;
         padding: 0.75rem;
         margin-top: 0.75rem;
@@ -1623,10 +1852,14 @@
       }
 
       /* ===== RESPONSIVE ===== */
-      @media (max-width: 42.5rem) {
-        .dashboard {
-          padding: 1.25rem 0.75rem;
-        }
+      @media (max-width: 768px) {
+        .dashboard-grid { flex-direction: column; }
+        .dashboard-right { max-width: 100%; width: 100%; }
+        .bulletin-card { min-height: 200px; }
+        .bulletin-slide-container { min-height: 140px; }
+        .kes-list-card { max-height: 180px; }
+        .stats-bar { grid-template-columns: repeat(2, 1fr); gap: 0.625rem; }
+        .dashboard { padding: 1.25rem 0.75rem; }
         .header {
           margin-top: -1.25rem;
           margin-left: -0.75rem;
@@ -1635,116 +1868,24 @@
           padding-left: 0.75rem;
           padding-right: 0.75rem;
         }
-        .hamburger-fixed-btn {
-          padding: 0.625rem 0.875rem 0.625rem 0.625rem;
-        }
-        .hamburger-fixed-btn .menu-title-text {
-          font-size: 0.625rem;
-        }
-        .logo {
-          flex-direction: row;
-          align-items: center;
-          justify-content: center;
-          gap: 0.5rem;
-          flex-wrap: wrap;
-        }
-        .logo-img-wrapper {
-          padding: 0.375rem;
-        }
-        .logo-img {
-          height: 2.375rem;
-        }
-        .logo-text h1 {
-          font-size: 0.75rem;
-          line-height: 1.25;
-          gap: 0.25rem;
-        }
-        .logo-text .sub {
-          font-size: 0.5rem;
-          letter-spacing: 0.0625rem;
-          margin-top: 0.125rem;
-        }
-        .apps-grid {
-          grid-template-columns: 1fr;
-        }
-        .app-card.card-wide {
-          grid-column: 1;
-        }
-        .stats-bar {
-          grid-template-columns: repeat(2, 1fr);
-          gap: 0.625rem;
-        }
-        .header-top-controls {
-          gap: 0.5rem;
-          margin-bottom: 1rem;
-          padding-bottom: 0.625rem;
-          justify-content: center;
-        }
-        .header-top-controls .analog-clock {
-          width: 2.25rem;
-          height: 2.25rem;
-          margin-left: 0;
-        }
+        .logo-text h1 { font-size: 0.75rem; }
+        .logo-img { height: 2.375rem; }
+        .header-top-controls .analog-clock { width: 2.25rem; height: 2.25rem; margin-left: 0; }
         .header-top-controls button,
-        .header-top-controls .refresh-btn {
-          width: 2.25rem;
-          height: 2.25rem;
-          font-size: 0.875rem;
-        }
-        .header-top-controls .digital-time .time {
-          font-size: 0.8125rem;
-        }
-        .header-top-controls .digital-time {
-          min-width: 4.5rem;
-          margin-right: 0;
-          text-align: center;
-        }
-        .sidebar {
-          width: 100%;
-          max-width: 100vw;
-          left: -100%;
-        }
-        .sidebar.active {
-          left: 0;
-        }
-        /* ensure emergency accordion content is scrollable on mobile */
-        .accordion-content.open {
-          max-height: 5000px;
-          overflow-y: auto;
-        }
+        .header-top-controls .refresh-btn { width: 2.25rem; height: 2.25rem; font-size: 0.875rem; }
+        .header-top-controls .digital-time .time { font-size: 0.8125rem; }
+        .header-top-controls .digital-time { min-width: 4.5rem; margin-right: 0; text-align: center; }
+        .sidebar { width: 100%; max-width: 100vw; left: -100%; }
+        .sidebar.active { left: 0; }
+        .accordion-content.open { max-height: 5000px; overflow-y: auto; }
+        .kes-list-scroll { max-height: 150px; }
+        .kes-list-item .kl-info .kl-location { max-width: 80px; }
       }
-      body.mobile-mode .dashboard {
-        max-width: 30rem;
-      }
-      body.mobile-mode .header {
-        margin-top: -1.25rem;
-        margin-left: -0.75rem;
-        margin-right: -0.75rem;
-        padding-top: 1.25rem;
-        padding-left: 0.75rem;
-        padding-right: 0.75rem;
-      }
-      body.mobile-mode .logo-text h1 {
-        font-size: 0.8125rem;
-        line-height: 1.25;
-        gap: 0.25rem;
-      }
-      body.mobile-mode .apps-grid {
-        grid-template-columns: 1fr;
-      }
-      body.mobile-mode .app-card.card-wide {
-        grid-column: 1;
-      }
-      body.mobile-mode .stats-bar {
-        grid-template-columns: repeat(2, 1fr);
-      }
-      /* mobile emergency accordion scroll fix */
-      body.mobile-mode .accordion-content.open {
-        max-height: 5000px;
-        overflow-y: auto;
-      }
+      body.mobile-mode .dashboard { max-width: 30rem; }
+      body.mobile-mode .logo-text h1 { font-size: 0.8125rem; }
+      body.mobile-mode .stats-bar { grid-template-columns: repeat(2, 1fr); }
 
-      /* ===== MINI STATS UNTUK KAD ANGGOTA ===== */
+      /* ===== MINI STATS ANGGOTA ===== */
       .anggota-mini-stats {
         display: flex;
         gap: 0.35rem;
@@ -1755,55 +1896,32 @@
         font-size: 0.65rem;
         color: #94a3b8;
       }
-      .anggota-mini-stats::-webkit-scrollbar {
-        display: none;
-      }
+      .anggota-mini-stats::-webkit-scrollbar { display: none; }
       .anggota-mini-stats span {
         display: inline-flex;
         align-items: center;
         gap: 0.2rem;
-        background: rgba(255, 255, 255, 0.04);
+        background: rgba(255,255,255,0.04);
         border: 1px solid var(--hud-border);
         padding: 0.05rem 0.45rem;
         border-radius: 1rem;
         flex-shrink: 0;
         white-space: nowrap;
       }
-      .anggota-mini-stats .num {
-        font-weight: 800;
-        color: #fff;
-      }
-      .anggota-mini-stats .num.green {
-        color: #4ade80;
-      }
-      .anggota-mini-stats .num.amber {
-        color: #fbbf24;
-      }
-      .anggota-mini-stats .num.red {
-        color: #f87171;
-      }
-      .anggota-mini-stats .num.purple {
-        color: #a78bfa;
-      }
+      .anggota-mini-stats .num { font-weight: 800; color: #fff; }
+      .anggota-mini-stats .num.green { color: #4ade80; }
+      .anggota-mini-stats .num.amber { color: #fbbf24; }
+      .anggota-mini-stats .num.red { color: #f87171; }
+      .anggota-mini-stats .num.purple { color: #a78bfa; }
       body.mode-siang .anggota-mini-stats span {
-        background: rgba(0, 0, 0, 0.05);
+        background: rgba(0,0,0,0.05);
         color: #475569;
       }
-      body.mode-siang .anggota-mini-stats .num {
-        color: #0f172a;
-      }
-      body.mode-siang .anggota-mini-stats .num.green {
-        color: #16a34a;
-      }
-      body.mode-siang .anggota-mini-stats .num.amber {
-        color: #d97706;
-      }
-      body.mode-siang .anggota-mini-stats .num.red {
-        color: #dc2626;
-      }
-      body.mode-siang .anggota-mini-stats .num.purple {
-        color: #7c3aed;
-      }
+      body.mode-siang .anggota-mini-stats .num { color: #0f172a; }
+      body.mode-siang .anggota-mini-stats .num.green { color: #16a34a; }
+      body.mode-siang .anggota-mini-stats .num.amber { color: #d97706; }
+      body.mode-siang .anggota-mini-stats .num.red { color: #dc2626; }
+      body.mode-siang .anggota-mini-stats .num.purple { color: #7c3aed; }
     </style>
   </head>
 
@@ -1827,684 +1945,106 @@
     <nav class="sidebar" id="sidebar" aria-label="Menu Pautan Penting">
       <div class="sidebar-header">
         <h3><i class="fas fa-satellite-dish"></i> PAUTAN PENTING</h3>
-        <button
-          class="sidebar-close"
-          id="sidebarClose"
-          title="Tutup Menu"
-          aria-label="Tutup menu"
-        >
+        <button class="sidebar-close" id="sidebarClose" title="Tutup Menu" aria-label="Tutup menu">
           <i class="fas fa-times"></i>
         </button>
       </div>
-
-      <!-- SEARCH -->
       <div class="search-box">
-        <form
-          action="https://www.google.com/search"
-          method="get"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <input
-            type="text"
-            name="q"
-            placeholder="Cari di Google..."
-            aria-label="Cari di Google"
-          />
-          <button type="submit" aria-label="Cari">
-            <i class="fas fa-arrow-right"></i>
-          </button>
+        <form action="https://www.google.com/search" method="get" target="_blank" rel="noopener noreferrer">
+          <input type="text" name="q" placeholder="Cari di Google..." aria-label="Cari di Google" />
+          <button type="submit" aria-label="Cari"><i class="fas fa-arrow-right"></i></button>
         </form>
       </div>
-
-      <!-- PAUTAN POPULAR -->
       <div class="popular-links">
-        <div class="popular-title">
-          <i class="fas fa-star" style="color: var(--hazard-gold)"></i> Pautan
-          Popular
-        </div>
+        <div class="popular-title"><i class="fas fa-star" style="color:var(--hazard-gold);"></i> Pautan Popular</div>
         <div class="popular-grid">
-          <a
-            href="https://infobencanajkmv2.jkm.gov.my/landing/index.php?b=0&a=0"
-            target="_blank"
-            class="popular-item"
-            rel="noopener noreferrer"
-            ><i class="fas fa-hand-holding-heart"></i> Info Bencana JKM</a
-          >
-          <a
-            href="https://myclimate.met.gov.my/fdrsWmsObsMsiaMetPortal"
-            target="_blank"
-            class="popular-item"
-            rel="noopener noreferrer"
-            ><i class="fas fa-fire"></i> FDRS</a
-          >
-          <a
-            href="https://bencana.jkr.gov.my/"
-            target="_blank"
-            class="popular-item"
-            rel="noopener noreferrer"
-            ><i class="fas fa-road"></i> Bencana JKR</a
-          >
-          <a
-            href="https://www.nadma.gov.my/"
-            target="_blank"
-            class="popular-item"
-            rel="noopener noreferrer"
-            ><i class="fas fa-triangle-exclamation"></i> NADMA</a
-          >
-          <a
-            href="https://www.johor.gov.my/"
-            target="_blank"
-            class="popular-item"
-            rel="noopener noreferrer"
-            ><i class="fas fa-landmark"></i> Kerajaan Johor</a
-          >
+          <a href="https://infobencanajkmv2.jkm.gov.my/landing/index.php?b=0&a=0" target="_blank" class="popular-item" rel="noopener noreferrer"><i class="fas fa-hand-holding-heart"></i> Info Bencana JKM</a>
+          <a href="https://myclimate.met.gov.my/fdrsWmsObsMsiaMetPortal" target="_blank" class="popular-item" rel="noopener noreferrer"><i class="fas fa-fire"></i> FDRS</a>
+          <a href="https://bencana.jkr.gov.my/" target="_blank" class="popular-item" rel="noopener noreferrer"><i class="fas fa-road"></i> Bencana JKR</a>
+          <a href="https://www.nadma.gov.my/" target="_blank" class="popular-item" rel="noopener noreferrer"><i class="fas fa-triangle-exclamation"></i> NADMA</a>
+          <a href="https://www.johor.gov.my/" target="_blank" class="popular-item" rel="noopener noreferrer"><i class="fas fa-landmark"></i> Kerajaan Johor</a>
         </div>
       </div>
-
       <div class="update-timestamp">
-        <i class="fas fa-sync-alt"></i> Pautan dikemaskini:
-        <span id="linkUpdateDate">--</span>
+        <i class="fas fa-sync-alt"></i> Pautan dikemaskini: <span id="linkUpdateDate">--</span>
       </div>
-
       <div class="sidebar-content" id="sidebarContent">
-        <!-- Accordion 1: Cuaca & Laut -->
-        <div class="accordion-item">
-          <button
-            class="accordion-header"
-            data-target="accordion1"
-            aria-expanded="false"
-          >
-            <span class="accordion-title"
-              ><i class="fas fa-cloud-sun"></i> Cuaca & Laut</span
-            >
-            <span class="arrow"><i class="fas fa-chevron-down"></i></span>
-          </button>
+        <!-- Accordion 1-7 (sama seperti asal) -->
+        <div class="accordion-item"><button class="accordion-header" data-target="accordion1" aria-expanded="false"><span class="accordion-title"><i class="fas fa-cloud-sun"></i> Cuaca & Laut</span><span class="arrow"><i class="fas fa-chevron-down"></i></span></button>
           <div class="accordion-content" id="accordion1">
-            <a
-              href="https://www.met.gov.my/"
-              target="_blank"
-              class="sidebar-link"
-              ><span class="link-icon weather"
-                ><i class="fas fa-cloud-sun-rain"></i></span
-              ><span class="link-text"
-                ><span class="link-name">MetMalaysia - Cuaca</span
-                ><span class="link-desc"
-                  >Ramalan & amaran cuaca rasmi</span
-                ></span
-              ><i class="fas fa-external-link-alt"></i
-            ></a>
-            <a
-              href="https://www.jupem.gov.my/ms/staps"
-              target="_blank"
-              class="sidebar-link"
-              ><span class="link-icon tide"><i class="fas fa-water"></i></span
-              ><span class="link-text"
-                ><span class="link-name">Pasang Surut Laut</span
-                ><span class="link-desc"
-                  >Jadual air pasang surut Malaysia</span
-                ></span
-              ><i class="fas fa-external-link-alt"></i
-            ></a>
-            <a
-              href="https://www.accuweather.com/ms/my/national/weather-radar"
-              target="_blank"
-              class="sidebar-link"
-              ><span class="link-icon radar"
-                ><i class="fas fa-satellite-dish"></i></span
-              ><span class="link-text"
-                ><span class="link-name">Radar Hujan</span
-                ><span class="link-desc"
-                  >Imej radar hujan masa nyata</span
-                ></span
-              ><i class="fas fa-external-link-alt"></i
-            ></a>
-            <a
-              href="https://apims.doe.gov.my/"
-              target="_blank"
-              class="sidebar-link"
-              ><span class="link-icon fire"
-                ><i class="fas fa-fire-flame-curved"></i></span
-              ><span class="link-text"
-                ><span class="link-name">Indeks Cuaca Api (API)</span
-                ><span class="link-desc">IPU & status jerebu semasa</span></span
-              ><i class="fas fa-external-link-alt"></i
-            ></a>
-            <a
-              href="https://myclimate.met.gov.my/fdrsWmsObsMsiaMetPortal"
-              target="_blank"
-              class="sidebar-link"
-              ><span class="link-icon fire"><i class="fas fa-fire"></i></span
-              ><span class="link-text"
-                ><span class="link-name">Fire Danger Rating System (FDRS)</span
-                ><span class="link-desc"
-                  >Sistem penarafan bahaya kebakaran</span
-                ></span
-              ><i class="fas fa-external-link-alt"></i
-            ></a>
-            <a
-              href="https://mywater.gov.my/Portal/Modules/Internal/GIS.aspx?mi=22&ug=38&t=Station%20Hydrology%20JPS"
-              target="_blank"
-              class="sidebar-link"
-              ><span class="link-icon tide"><i class="fas fa-droplet"></i></span
-              ><span class="link-text"
-                ><span class="link-name">JPS - Data Hidrologi</span
-                ><span class="link-desc"
-                  >Data kualiti air & hidrologi</span
-                ></span
-              ><i class="fas fa-external-link-alt"></i
-            ></a>
-            <a
-              href="https://eqms.doe.gov.my/"
-              target="_blank"
-              class="sidebar-link"
-              rel="noopener noreferrer"
-            >
-              <span
-                class="link-icon"
-                style="background: rgba(16, 185, 129, 0.15); color: #10b981"
-                ><i class="fas fa-leaf"></i
-              ></span>
-              <span class="link-text"
-                ><span class="link-name">MyEQMS - Kualiti Alam Sekitar</span
-                ><span class="link-desc"
-                  >Indeks Kualiti Udara, Sungai & Marin (DOE)</span
-                ></span
-              >
-              <i class="fas fa-external-link-alt"></i>
-            </a>
+            <a href="https://www.met.gov.my/" target="_blank" class="sidebar-link"><span class="link-icon weather"><i class="fas fa-cloud-sun-rain"></i></span><span class="link-text"><span class="link-name">MetMalaysia - Cuaca</span><span class="link-desc">Ramalan & amaran cuaca rasmi</span></span><i class="fas fa-external-link-alt"></i></a>
+            <a href="https://www.jupem.gov.my/ms/staps" target="_blank" class="sidebar-link"><span class="link-icon tide"><i class="fas fa-water"></i></span><span class="link-text"><span class="link-name">Pasang Surut Laut</span><span class="link-desc">Jadual air pasang surut Malaysia</span></span><i class="fas fa-external-link-alt"></i></a>
+            <a href="https://www.accuweather.com/ms/my/national/weather-radar" target="_blank" class="sidebar-link"><span class="link-icon radar"><i class="fas fa-satellite-dish"></i></span><span class="link-text"><span class="link-name">Radar Hujan</span><span class="link-desc">Imej radar hujan masa nyata</span></span><i class="fas fa-external-link-alt"></i></a>
+            <a href="https://apims.doe.gov.my/" target="_blank" class="sidebar-link"><span class="link-icon fire"><i class="fas fa-fire-flame-curved"></i></span><span class="link-text"><span class="link-name">Indeks Cuaca Api (API)</span><span class="link-desc">IPU & status jerebu semasa</span></span><i class="fas fa-external-link-alt"></i></a>
+            <a href="https://myclimate.met.gov.my/fdrsWmsObsMsiaMetPortal" target="_blank" class="sidebar-link"><span class="link-icon fire"><i class="fas fa-fire"></i></span><span class="link-text"><span class="link-name">Fire Danger Rating System (FDRS)</span><span class="link-desc">Sistem penarafan bahaya kebakaran</span></span><i class="fas fa-external-link-alt"></i></a>
+            <a href="https://mywater.gov.my/Portal/Modules/Internal/GIS.aspx?mi=22&ug=38&t=Station%20Hydrology%20JPS" target="_blank" class="sidebar-link"><span class="link-icon tide"><i class="fas fa-droplet"></i></span><span class="link-text"><span class="link-name">JPS - Data Hidrologi</span><span class="link-desc">Data kualiti air & hidrologi</span></span><i class="fas fa-external-link-alt"></i></a>
+            <a href="https://eqms.doe.gov.my/" target="_blank" class="sidebar-link" rel="noopener noreferrer"><span class="link-icon" style="background:rgba(16,185,129,0.15);color:#10b981;"><i class="fas fa-leaf"></i></span><span class="link-text"><span class="link-name">MyEQMS - Kualiti Alam Sekitar</span><span class="link-desc">Indeks Kualiti Udara, Sungai & Marin (DOE)</span></span><i class="fas fa-external-link-alt"></i></a>
           </div>
         </div>
-
-        <!-- Accordion 2: Bencana & Amaran -->
-        <div class="accordion-item">
-          <button
-            class="accordion-header"
-            data-target="accordion2"
-            aria-expanded="false"
-          >
-            <span class="accordion-title"
-              ><i class="fas fa-triangle-exclamation"></i> Bencana &
-              Amaran</span
-            >
-            <span class="arrow"><i class="fas fa-chevron-down"></i></span>
-          </button>
+        <div class="accordion-item"><button class="accordion-header" data-target="accordion2" aria-expanded="false"><span class="accordion-title"><i class="fas fa-triangle-exclamation"></i> Bencana & Amaran</span><span class="arrow"><i class="fas fa-chevron-down"></i></span></button>
           <div class="accordion-content" id="accordion2">
-            <a
-              href="https://www.nadma.gov.my/"
-              target="_blank"
-              class="sidebar-link"
-              ><span class="link-icon disaster"
-                ><i class="fas fa-house-chimney-crack"></i></span
-              ><span class="link-text"
-                ><span class="link-name">NADMA - Agensi Pengurusan Bencana</span
-                ><span class="link-desc"
-                  >Info & respons bencana negara</span
-                ></span
-              ><i class="fas fa-external-link-alt"></i
-            ></a>
-            <a
-              href="https://publicinfobanjir.water.gov.my/"
-              target="_blank"
-              class="sidebar-link"
-              ><span class="link-icon flood"
-                ><i class="fas fa-house-flood-water"></i></span
-              ><span class="link-text"
-                ><span class="link-name">Public Infobanjir</span
-                ><span class="link-desc"
-                  >Peta & status banjir semasa</span
-                ></span
-              ><i class="fas fa-external-link-alt"></i
-            ></a>
-            <a
-              href="http://mygempa.met.gov.my/docroot/view/index.php"
-              target="_blank"
-              class="sidebar-link"
-              ><span class="link-icon quake"
-                ><i class="fas fa-earth-asia"></i></span
-              ><span class="link-text"
-                ><span class="link-name">Info Gempa Bumi</span
-                ><span class="link-desc"
-                  >Aktiviti seismik Malaysia & antarabangsa</span
-                ></span
-              ><i class="fas fa-external-link-alt"></i
-            ></a>
-            <a
-              href="https://infobencanajkmv2.jkm.gov.my/landing/index.php?b=0&a=0"
-              target="_blank"
-              class="sidebar-link"
-              rel="noopener noreferrer"
-            >
-              <span
-                class="link-icon"
-                style="background: rgba(239, 68, 68, 0.15); color: #ef4444"
-                ><i class="fas fa-hand-holding-heart"></i
-              ></span>
-              <span class="link-text"
-                ><span class="link-name">InfoBencana JKM</span
-                ><span class="link-desc"
-                  >Maklumat bencana & bantuan mangsa (Jabatan Kebajikan
-                  Masyarakat)</span
-                ></span
-              >
-              <i class="fas fa-external-link-alt"></i>
-            </a>
+            <a href="https://www.nadma.gov.my/" target="_blank" class="sidebar-link"><span class="link-icon disaster"><i class="fas fa-house-chimney-crack"></i></span><span class="link-text"><span class="link-name">NADMA - Agensi Pengurusan Bencana</span><span class="link-desc">Info & respons bencana negara</span></span><i class="fas fa-external-link-alt"></i></a>
+            <a href="https://publicinfobanjir.water.gov.my/" target="_blank" class="sidebar-link"><span class="link-icon flood"><i class="fas fa-house-flood-water"></i></span><span class="link-text"><span class="link-name">Public Infobanjir</span><span class="link-desc">Peta & status banjir semasa</span></span><i class="fas fa-external-link-alt"></i></a>
+            <a href="http://mygempa.met.gov.my/docroot/view/index.php" target="_blank" class="sidebar-link"><span class="link-icon quake"><i class="fas fa-earth-asia"></i></span><span class="link-text"><span class="link-name">Info Gempa Bumi</span><span class="link-desc">Aktiviti seismik Malaysia & antarabangsa</span></span><i class="fas fa-external-link-alt"></i></a>
+            <a href="https://infobencanajkmv2.jkm.gov.my/landing/index.php?b=0&a=0" target="_blank" class="sidebar-link" rel="noopener noreferrer"><span class="link-icon" style="background:rgba(239,68,68,0.15);color:#ef4444;"><i class="fas fa-hand-holding-heart"></i></span><span class="link-text"><span class="link-name">InfoBencana JKM</span><span class="link-desc">Maklumat bencana & bantuan mangsa (Jabatan Kebajikan Masyarakat)</span></span><i class="fas fa-external-link-alt"></i></a>
           </div>
         </div>
-
-        <!-- Accordion 3: Jalan Raya & Logistik -->
-        <div class="accordion-item">
-          <button
-            class="accordion-header"
-            data-target="accordion3"
-            aria-expanded="false"
-          >
-            <span class="accordion-title"
-              ><i class="fas fa-road"></i> Jalan Raya & Logistik</span
-            >
-            <span class="arrow"><i class="fas fa-chevron-down"></i></span>
-          </button>
+        <div class="accordion-item"><button class="accordion-header" data-target="accordion3" aria-expanded="false"><span class="accordion-title"><i class="fas fa-road"></i> Jalan Raya & Logistik</span><span class="arrow"><i class="fas fa-chevron-down"></i></span></button>
           <div class="accordion-content" id="accordion3">
-            <a
-              href="https://www.llm.gov.my/"
-              target="_blank"
-              class="sidebar-link"
-              ><span class="link-icon road"><i class="fas fa-road"></i></span
-              ><span class="link-text"
-                ><span class="link-name">LLM - Lebuhraya Malaysia</span
-                ><span class="link-desc"
-                  >Status & laporan trafik lebuh raya</span
-                ></span
-              ><i class="fas fa-external-link-alt"></i
-            ></a>
-            <a
-              href="https://www.jpj.gov.my/"
-              target="_blank"
-              class="sidebar-link"
-              ><span class="link-icon road"
-                ><i class="fas fa-car-side"></i></span
-              ><span class="link-text"
-                ><span class="link-name">JPJ - Jabatan Pengangkutan Jalan</span
-                ><span class="link-desc"
-                  >Maklumat jalan tutup & notis</span
-                ></span
-              ><i class="fas fa-external-link-alt"></i
-            ></a>
-            <a
-              href="https://bencana.jkr.gov.my/"
-              target="_blank"
-              class="sidebar-link"
-              ><span class="link-icon road"
-                ><i class="fas fa-helmet-safety"></i></span
-              ><span class="link-text"
-                ><span class="link-name">JKR - Jabatan Kerja Raya</span
-                ><span class="link-desc"
-                  >Infrastruktur & jalan persekutuan</span
-                ></span
-              ><i class="fas fa-external-link-alt"></i
-            ></a>
+            <a href="https://www.llm.gov.my/" target="_blank" class="sidebar-link"><span class="link-icon road"><i class="fas fa-road"></i></span><span class="link-text"><span class="link-name">LLM - Lebuhraya Malaysia</span><span class="link-desc">Status & laporan trafik lebuh raya</span></span><i class="fas fa-external-link-alt"></i></a>
+            <a href="https://www.jpj.gov.my/" target="_blank" class="sidebar-link"><span class="link-icon road"><i class="fas fa-car-side"></i></span><span class="link-text"><span class="link-name">JPJ - Jabatan Pengangkutan Jalan</span><span class="link-desc">Maklumat jalan tutup & notis</span></span><i class="fas fa-external-link-alt"></i></a>
+            <a href="https://bencana.jkr.gov.my/" target="_blank" class="sidebar-link"><span class="link-icon road"><i class="fas fa-helmet-safety"></i></span><span class="link-text"><span class="link-name">JKR - Jabatan Kerja Raya</span><span class="link-desc">Infrastruktur & jalan persekutuan</span></span><i class="fas fa-external-link-alt"></i></a>
           </div>
         </div>
-
-        <!-- Accordion 4: Direktori Agensi -->
-        <div class="accordion-item">
-          <button
-            class="accordion-header"
-            data-target="accordion4"
-            aria-expanded="false"
-          >
-            <span class="accordion-title"
-              ><i class="fas fa-building-columns"></i> Direktori Agensi</span
-            >
-            <span class="arrow"><i class="fas fa-chevron-down"></i></span>
-          </button>
+        <div class="accordion-item"><button class="accordion-header" data-target="accordion4" aria-expanded="false"><span class="accordion-title"><i class="fas fa-building-columns"></i> Direktori Agensi</span><span class="arrow"><i class="fas fa-chevron-down"></i></span></button>
           <div class="accordion-content" id="accordion4">
-            <a
-              href="https://www.bomba.gov.my/en/"
-              target="_blank"
-              class="sidebar-link"
-              ><span class="link-icon emergency"
-                ><i class="fas fa-fire-extinguisher"></i></span
-              ><span class="link-text"
-                ><span class="link-name">JBPM Malaysia</span
-                ><span class="link-desc">Jabatan Bomba & Penyelamat</span></span
-              ><i class="fas fa-external-link-alt"></i
-            ></a>
-            <a
-              href="https://www.mmea.gov.my/"
-              target="_blank"
-              class="sidebar-link"
-              ><span class="link-icon maritime"
-                ><i class="fas fa-ship"></i></span
-              ><span class="link-text"
-                ><span class="link-name">APMM Maritim Malaysia</span
-                ><span class="link-desc"
-                  >Agensi Penguatkuasaan Maritim</span
-                ></span
-              ><i class="fas fa-external-link-alt"></i
-            ></a>
-            <a
-              href="https://www.civildefence.gov.my/"
-              target="_blank"
-              class="sidebar-link"
-              ><span class="link-icon civil"
-                ><i class="fas fa-shield-halved"></i></span
-              ><span class="link-text"
-                ><span class="link-name">APM Pertahanan Awam</span
-                ><span class="link-desc">Pengurusan Bencana</span></span
-              ><i class="fas fa-external-link-alt"></i
-            ></a>
-            <a
-              href="https://www.rmp.gov.my/"
-              target="_blank"
-              class="sidebar-link"
-              ><span class="link-icon emergency"
-                ><i class="fas fa-shield-cat"></i></span
-              ><span class="link-text"
-                ><span class="link-name">PDRM Polis Diraja</span
-                ><span class="link-desc">Keselamatan Awam</span></span
-              ><i class="fas fa-external-link-alt"></i
-            ></a>
-            <a
-              href="https://www.moh.gov.my/"
-              target="_blank"
-              class="sidebar-link"
-              ><span class="link-icon hospital"
-                ><i class="fas fa-hospital-user"></i></span
-              ><span class="link-text"
-                ><span class="link-name">KKM Kesihatan</span
-                ><span class="link-desc">Perkhidmatan Perubatan</span></span
-              ><i class="fas fa-external-link-alt"></i
-            ></a>
+            <a href="https://www.bomba.gov.my/en/" target="_blank" class="sidebar-link"><span class="link-icon emergency"><i class="fas fa-fire-extinguisher"></i></span><span class="link-text"><span class="link-name">JBPM Malaysia</span><span class="link-desc">Jabatan Bomba & Penyelamat</span></span><i class="fas fa-external-link-alt"></i></a>
+            <a href="https://www.mmea.gov.my/" target="_blank" class="sidebar-link"><span class="link-icon maritime"><i class="fas fa-ship"></i></span><span class="link-text"><span class="link-name">APMM Maritim Malaysia</span><span class="link-desc">Agensi Penguatkuasaan Maritim</span></span><i class="fas fa-external-link-alt"></i></a>
+            <a href="https://www.civildefence.gov.my/" target="_blank" class="sidebar-link"><span class="link-icon civil"><i class="fas fa-shield-halved"></i></span><span class="link-text"><span class="link-name">APM Pertahanan Awam</span><span class="link-desc">Pengurusan Bencana</span></span><i class="fas fa-external-link-alt"></i></a>
+            <a href="https://www.rmp.gov.my/" target="_blank" class="sidebar-link"><span class="link-icon emergency"><i class="fas fa-shield-cat"></i></span><span class="link-text"><span class="link-name">PDRM Polis Diraja</span><span class="link-desc">Keselamatan Awam</span></span><i class="fas fa-external-link-alt"></i></a>
+            <a href="https://www.moh.gov.my/" target="_blank" class="sidebar-link"><span class="link-icon hospital"><i class="fas fa-hospital-user"></i></span><span class="link-text"><span class="link-name">KKM Kesihatan</span><span class="link-desc">Perkhidmatan Perubatan</span></span><i class="fas fa-external-link-alt"></i></a>
           </div>
         </div>
-
-        <!-- Accordion 5: Talian Kecemasan -->
-        <div class="accordion-item">
-          <button
-            class="accordion-header"
-            data-target="accordion5"
-            aria-expanded="false"
-          >
-            <span class="accordion-title"
-              ><i class="fas fa-phone-volume"></i> Talian Kecemasan 24/7</span
-            >
-            <span class="arrow"><i class="fas fa-chevron-down"></i></span>
-          </button>
+        <div class="accordion-item"><button class="accordion-header" data-target="accordion5" aria-expanded="false"><span class="accordion-title"><i class="fas fa-phone-volume"></i> Talian Kecemasan 24/7</span><span class="arrow"><i class="fas fa-chevron-down"></i></span></button>
           <div class="accordion-content" id="accordion5">
-            <div class="emergency-group-title">
-              <i class="fas fa-flag"></i> TALIAN KECEMASAN NASIONAL
-            </div>
-            <div class="emergency-item">
-              <div class="e-info">
-                <span class="e-name">MERS 999</span
-                ><span class="e-number">999</span>
-              </div>
-              <div class="e-actions">
-                <a href="tel:999" class="call-btn"
-                  ><i class="fas fa-phone"></i
-                ></a>
-              </div>
-            </div>
-
-            <div class="emergency-group-title">
-              <i class="fas fa-fire-extinguisher"></i> BOMBA (JBPM)
-            </div>
-            <div class="emergency-item">
-              <div class="e-info">
-                <span class="e-name">HQ Negeri Johor</span
-                ><span class="e-number">07-340 9999</span>
-              </div>
-              <div class="e-actions">
-                <a href="tel:073409999" class="call-btn"
-                  ><i class="fas fa-phone"></i
-                ></a>
-              </div>
-            </div>
-            <div class="emergency-item">
-              <div class="e-info">
-                <span class="e-name">Hotline Kebangsaan</span
-                ><span class="e-number">1-800-888-994</span>
-              </div>
-              <div class="e-actions">
-                <a href="tel:1800888994" class="call-btn"
-                  ><i class="fas fa-phone"></i
-                ></a>
-              </div>
-            </div>
-
-            <div class="emergency-group-title">
-              <i class="fas fa-shield-cat"></i> POLIS (PDRM)
-            </div>
-            <div class="emergency-item">
-              <div class="e-info">
-                <span class="e-name">IPK Johor (Hotline Operasi)</span
-                ><span class="e-number">07-225 4422</span>
-              </div>
-              <div class="e-actions">
-                <a href="tel:072254422" class="call-btn"
-                  ><i class="fas fa-phone"></i
-                ></a>
-              </div>
-            </div>
-            <div class="emergency-item">
-              <div class="e-info">
-                <span class="e-name">IPK Johor (Talian Am)</span
-                ><span class="e-number">07-221 2999</span>
-              </div>
-              <div class="e-actions">
-                <a href="tel:072212999" class="call-btn"
-                  ><i class="fas fa-phone"></i
-                ></a>
-              </div>
-            </div>
-
-            <div class="emergency-group-title">
-              <i class="fas fa-ship"></i> MARITIM (APMM)
-            </div>
-            <div class="emergency-item">
-              <div class="e-info">
-                <span class="e-name">MRSC Johor (24 jam)</span
-                ><span class="e-number">07-219 9401</span>
-              </div>
-              <div class="e-actions">
-                <a href="tel:072199401" class="call-btn"
-                  ><i class="fas fa-phone"></i
-                ></a>
-              </div>
-            </div>
-            <div class="emergency-item">
-              <div class="e-info">
-                <span class="e-name">Hotline 24 jam (Johor)</span
-                ><span class="e-number">07-219 9404</span>
-              </div>
-              <div class="e-actions">
-                <a href="tel:072199404" class="call-btn"
-                  ><i class="fas fa-phone"></i
-                ></a>
-              </div>
-            </div>
-            <div class="emergency-item">
-              <div class="e-info">
-                <span class="e-name">ZM Tanjung Sedili (24 jam)</span
-                ><span class="e-number">07-891 6595</span>
-              </div>
-              <div class="e-actions">
-                <a href="tel:078916595" class="call-btn"
-                  ><i class="fas fa-phone"></i
-                ></a>
-              </div>
-            </div>
-
-            <div class="emergency-group-title">
-              <i class="fas fa-shield-halved"></i> PERTAHANAN AWAM (APM)
-            </div>
-            <div class="emergency-item">
-              <div class="e-info">
-                <span class="e-name">APM Negeri Johor</span
-                ><span class="e-number">07-221 1991</span>
-              </div>
-              <div class="e-actions">
-                <a href="tel:072211991" class="call-btn"
-                  ><i class="fas fa-phone"></i
-                ></a>
-              </div>
-            </div>
-
-            <div class="emergency-group-title">
-              <i class="fas fa-hospital"></i> HOSPITAL SULTANAH AMINAH (HSA)
-            </div>
-            <div class="emergency-item">
-              <div class="e-info">
-                <span class="e-name">Talian Utama</span
-                ><span class="e-number">07-225 7000</span>
-              </div>
-              <div class="e-actions">
-                <a href="tel:072257000" class="call-btn"
-                  ><i class="fas fa-phone"></i
-                ></a>
-              </div>
-            </div>
-            <div class="emergency-item">
-              <div class="e-info">
-                <span class="e-name">MECC (Samb. 3248)</span
-                ><span class="e-number">07-225 7000 samb. 3248</span>
-              </div>
-              <div class="e-actions">
-                <a href="tel:072257000,3248" class="call-btn"
-                  ><i class="fas fa-phone"></i
-                ></a>
-              </div>
-            </div>
-            <div class="emergency-item">
-              <div class="e-info">
-                <span class="e-name">Perhubungan Awam (Samb. 2722 / 3456)</span
-                ><span class="e-number">07-225 7000 samb. 2722/3456</span>
-              </div>
-              <div class="e-actions">
-                <a href="tel:072257000,2722" class="call-btn"
-                  ><i class="fas fa-phone"></i
-                ></a>
-              </div>
-            </div>
-            <div class="emergency-item">
-              <div class="e-info">
-                <span class="e-name">Alternatif</span
-                ><span class="e-number">07-223 1666</span>
-              </div>
-              <div class="e-actions">
-                <a href="tel:072231666" class="call-btn"
-                  ><i class="fas fa-phone"></i
-                ></a>
-              </div>
-            </div>
-
-            <div class="emergency-group-title">
-              <i class="fas fa-hospital"></i> HOSPITAL SULTAN ISMAIL (HSI)
-            </div>
-            <div class="emergency-item">
-              <div class="e-info">
-                <span class="e-name">Talian Utama</span
-                ><span class="e-number">07-356 5000</span>
-              </div>
-              <div class="e-actions">
-                <a href="tel:073565000" class="call-btn"
-                  ><i class="fas fa-phone"></i
-                ></a>
-              </div>
-            </div>
-
-            <div class="emergency-group-title">
-              <i class="fas fa-hospital"></i> HEBHK KLUANG
-            </div>
-            <div class="emergency-item">
-              <div class="e-info">
-                <span class="e-name">Talian Utama</span
-                ><span class="e-number">07-234 5333</span>
-              </div>
-              <div class="e-actions">
-                <a href="tel:072345333" class="call-btn"
-                  ><i class="fas fa-phone"></i
-                ></a>
-              </div>
-            </div>
-
-            <div class="info-box">
-              <i class="fas fa-info-circle"></i> <strong>999</strong> talian
-              kecemasan bersepadu (PDRM, JBPM, KKM, APM, APMM).<br />Untuk
-              sambungan dalaman, hubungi talian am.
-            </div>
+            <div class="emergency-group-title"><i class="fas fa-flag"></i> TALIAN KECEMASAN NASIONAL</div>
+            <div class="emergency-item"><div class="e-info"><span class="e-name">MERS 999</span><span class="e-number">999</span></div><div class="e-actions"><a href="tel:999" class="call-btn"><i class="fas fa-phone"></i></a></div></div>
+            <div class="emergency-group-title"><i class="fas fa-fire-extinguisher"></i> BOMBA (JBPM)</div>
+            <div class="emergency-item"><div class="e-info"><span class="e-name">HQ Negeri Johor</span><span class="e-number">07-340 9999</span></div><div class="e-actions"><a href="tel:073409999" class="call-btn"><i class="fas fa-phone"></i></a></div></div>
+            <div class="emergency-item"><div class="e-info"><span class="e-name">Hotline Kebangsaan</span><span class="e-number">1-800-888-994</span></div><div class="e-actions"><a href="tel:1800888994" class="call-btn"><i class="fas fa-phone"></i></a></div></div>
+            <div class="emergency-group-title"><i class="fas fa-shield-cat"></i> POLIS (PDRM)</div>
+            <div class="emergency-item"><div class="e-info"><span class="e-name">IPK Johor (Hotline Operasi)</span><span class="e-number">07-225 4422</span></div><div class="e-actions"><a href="tel:072254422" class="call-btn"><i class="fas fa-phone"></i></a></div></div>
+            <div class="emergency-item"><div class="e-info"><span class="e-name">IPK Johor (Talian Am)</span><span class="e-number">07-221 2999</span></div><div class="e-actions"><a href="tel:072212999" class="call-btn"><i class="fas fa-phone"></i></a></div></div>
+            <div class="emergency-group-title"><i class="fas fa-ship"></i> MARITIM (APMM)</div>
+            <div class="emergency-item"><div class="e-info"><span class="e-name">MRSC Johor (24 jam)</span><span class="e-number">07-219 9401</span></div><div class="e-actions"><a href="tel:072199401" class="call-btn"><i class="fas fa-phone"></i></a></div></div>
+            <div class="emergency-item"><div class="e-info"><span class="e-name">Hotline 24 jam (Johor)</span><span class="e-number">07-219 9404</span></div><div class="e-actions"><a href="tel:072199404" class="call-btn"><i class="fas fa-phone"></i></a></div></div>
+            <div class="emergency-item"><div class="e-info"><span class="e-name">ZM Tanjung Sedili (24 jam)</span><span class="e-number">07-891 6595</span></div><div class="e-actions"><a href="tel:078916595" class="call-btn"><i class="fas fa-phone"></i></a></div></div>
+            <div class="emergency-group-title"><i class="fas fa-shield-halved"></i> PERTAHANAN AWAM (APM)</div>
+            <div class="emergency-item"><div class="e-info"><span class="e-name">APM Negeri Johor</span><span class="e-number">07-221 1991</span></div><div class="e-actions"><a href="tel:072211991" class="call-btn"><i class="fas fa-phone"></i></a></div></div>
+            <div class="emergency-group-title"><i class="fas fa-hospital"></i> HOSPITAL SULTANAH AMINAH (HSA)</div>
+            <div class="emergency-item"><div class="e-info"><span class="e-name">Talian Utama</span><span class="e-number">07-225 7000</span></div><div class="e-actions"><a href="tel:072257000" class="call-btn"><i class="fas fa-phone"></i></a></div></div>
+            <div class="emergency-item"><div class="e-info"><span class="e-name">MECC (Samb. 3248)</span><span class="e-number">07-225 7000 samb. 3248</span></div><div class="e-actions"><a href="tel:072257000,3248" class="call-btn"><i class="fas fa-phone"></i></a></div></div>
+            <div class="emergency-item"><div class="e-info"><span class="e-name">Perhubungan Awam (Samb. 2722 / 3456)</span><span class="e-number">07-225 7000 samb. 2722/3456</span></div><div class="e-actions"><a href="tel:072257000,2722" class="call-btn"><i class="fas fa-phone"></i></a></div></div>
+            <div class="emergency-item"><div class="e-info"><span class="e-name">Alternatif</span><span class="e-number">07-223 1666</span></div><div class="e-actions"><a href="tel:072231666" class="call-btn"><i class="fas fa-phone"></i></a></div></div>
+            <div class="emergency-group-title"><i class="fas fa-hospital"></i> HOSPITAL SULTAN ISMAIL (HSI)</div>
+            <div class="emergency-item"><div class="e-info"><span class="e-name">Talian Utama</span><span class="e-number">07-356 5000</span></div><div class="e-actions"><a href="tel:073565000" class="call-btn"><i class="fas fa-phone"></i></a></div></div>
+            <div class="emergency-group-title"><i class="fas fa-hospital"></i> HEBHK KLUANG</div>
+            <div class="emergency-item"><div class="e-info"><span class="e-name">Talian Utama</span><span class="e-number">07-234 5333</span></div><div class="e-actions"><a href="tel:072345333" class="call-btn"><i class="fas fa-phone"></i></a></div></div>
+            <div class="info-box"><i class="fas fa-info-circle"></i> <strong>999</strong> talian kecemasan bersepadu (PDRM, JBPM, KKM, APM, APMM).<br />Untuk sambungan dalaman, hubungi talian am.</div>
           </div>
         </div>
-
-        <!-- Accordion 6: Antarabangsa -->
-        <div class="accordion-item">
-          <button
-            class="accordion-header"
-            data-target="accordion6"
-            aria-expanded="false"
-          >
-            <span class="accordion-title"
-              ><i class="fas fa-globe-asia"></i> Antarabangsa</span
-            >
-            <span class="arrow"><i class="fas fa-chevron-down"></i></span>
-          </button>
+        <div class="accordion-item"><button class="accordion-header" data-target="accordion6" aria-expanded="false"><span class="accordion-title"><i class="fas fa-globe-asia"></i> Antarabangsa</span><span class="arrow"><i class="fas fa-chevron-down"></i></span></button>
           <div class="accordion-content" id="accordion6">
-            <a
-              href="https://ahacentre.org/"
-              target="_blank"
-              class="sidebar-link"
-              ><span class="link-icon international"
-                ><i class="fas fa-handshake"></i></span
-              ><span class="link-text"
-                ><span class="link-name">AHA Centre</span
-                ><span class="link-desc"
-                  >ASEAN Coordinating Centre for Humanitarian Assistance</span
-                ></span
-              ><i class="fas fa-external-link-alt"></i
-            ></a>
-            <a href="https://wmo.int/" target="_blank" class="sidebar-link"
-              ><span class="link-icon international"
-                ><i class="fas fa-cloud"></i></span
-              ><span class="link-text"
-                ><span class="link-name"
-                  >World Meteorological Organization (WMO)</span
-                ><span class="link-desc">Data cuaca global</span></span
-              ><i class="fas fa-external-link-alt"></i
-            ></a>
+            <a href="https://ahacentre.org/" target="_blank" class="sidebar-link"><span class="link-icon international"><i class="fas fa-handshake"></i></span><span class="link-text"><span class="link-name">AHA Centre</span><span class="link-desc">ASEAN Coordinating Centre for Humanitarian Assistance</span></span><i class="fas fa-external-link-alt"></i></a>
+            <a href="https://wmo.int/" target="_blank" class="sidebar-link"><span class="link-icon international"><i class="fas fa-cloud"></i></span><span class="link-text"><span class="link-name">World Meteorological Organization (WMO)</span><span class="link-desc">Data cuaca global</span></span><i class="fas fa-external-link-alt"></i></a>
           </div>
         </div>
-
-        <!-- Accordion 7: Kerajaan Negeri -->
-        <div class="accordion-item">
-          <button
-            class="accordion-header"
-            data-target="accordion7"
-            aria-expanded="false"
-          >
-            <span class="accordion-title"
-              ><i class="fas fa-landmark"></i> Kerajaan Negeri</span
-            >
-            <span class="arrow"><i class="fas fa-chevron-down"></i></span>
-          </button>
+        <div class="accordion-item"><button class="accordion-header" data-target="accordion7" aria-expanded="false"><span class="accordion-title"><i class="fas fa-landmark"></i> Kerajaan Negeri</span><span class="arrow"><i class="fas fa-chevron-down"></i></span></button>
           <div class="accordion-content" id="accordion7">
-            <a
-              href="https://www.johor.gov.my/"
-              target="_blank"
-              class="sidebar-link"
-              ><span class="link-icon gov"><i class="fas fa-landmark"></i></span
-              ><span class="link-text"
-                ><span class="link-name"
-                  >Laman Web Rasmi Kerajaan Negeri Johor</span
-                ><span class="link-desc"
-                  >Portal rasmi kerajaan negeri</span
-                ></span
-              ><i class="fas fa-external-link-alt"></i
-            ></a>
+            <a href="https://www.johor.gov.my/" target="_blank" class="sidebar-link"><span class="link-icon gov"><i class="fas fa-landmark"></i></span><span class="link-text"><span class="link-name">Laman Web Rasmi Kerajaan Negeri Johor</span><span class="link-desc">Portal rasmi kerajaan negeri</span></span><i class="fas fa-external-link-alt"></i></a>
           </div>
         </div>
       </div>
-
       <div class="sidebar-footer">PGO Johor · Pusat Gerakan Operasi</div>
     </nav>
 
@@ -2512,337 +2052,242 @@
     <main class="dashboard">
       <header class="header">
         <div class="header-top-controls" role="toolbar">
-          <button
-            class="mode-toggle-btn"
-            id="modeToggleBtn"
-            aria-label="Tukar mod siang malam"
-          >
+          <button class="mode-toggle-btn" id="modeToggleBtn" aria-label="Tukar mod siang malam">
             <i class="fas fa-moon"></i>
           </button>
-          <button
-            class="switch-mode-btn"
-            id="switchModeBtn"
-            aria-label="Tukar paparan desktop mobile"
-          >
-            <i class="fas fa-mobile-alt"></i
-            ><span class="mode-indicator-dot"></span>
+          <button class="switch-mode-btn" id="switchModeBtn" aria-label="Tukar paparan desktop mobile">
+            <i class="fas fa-mobile-alt"></i><span class="mode-indicator-dot"></span>
           </button>
-          <button
-            class="refresh-btn"
-            id="refreshBtn"
-            aria-label="Muat semula halaman"
-          >
+          <button class="refresh-btn" id="refreshBtn" aria-label="Muat semula halaman">
             <i class="fas fa-sync-alt"></i>
           </button>
           <div class="analog-clock" id="analogClock" aria-label="Jam analog">
-            <div
-              class="marker main"
-              style="transform: rotate(0deg) translateX(-50%)"
-            ></div>
-            <div
-              class="marker"
-              style="transform: rotate(30deg) translateX(-50%)"
-            ></div>
-            <div
-              class="marker"
-              style="transform: rotate(60deg) translateX(-50%)"
-            ></div>
-            <div
-              class="marker main"
-              style="transform: rotate(90deg) translateX(-50%)"
-            ></div>
-            <div
-              class="marker"
-              style="transform: rotate(120deg) translateX(-50%)"
-            ></div>
-            <div
-              class="marker"
-              style="transform: rotate(150deg) translateX(-50%)"
-            ></div>
-            <div
-              class="marker main"
-              style="transform: rotate(180deg) translateX(-50%)"
-            ></div>
-            <div
-              class="marker"
-              style="transform: rotate(210deg) translateX(-50%)"
-            ></div>
-            <div
-              class="marker"
-              style="transform: rotate(240deg) translateX(-50%)"
-            ></div>
-            <div
-              class="marker main"
-              style="transform: rotate(270deg) translateX(-50%)"
-            ></div>
-            <div
-              class="marker"
-              style="transform: rotate(300deg) translateX(-50%)"
-            ></div>
-            <div
-              class="marker"
-              style="transform: rotate(330deg) translateX(-50%)"
-            ></div>
+            <div class="marker main" style="transform:rotate(0deg) translateX(-50%);"></div>
+            <div class="marker" style="transform:rotate(30deg) translateX(-50%);"></div>
+            <div class="marker" style="transform:rotate(60deg) translateX(-50%);"></div>
+            <div class="marker main" style="transform:rotate(90deg) translateX(-50%);"></div>
+            <div class="marker" style="transform:rotate(120deg) translateX(-50%);"></div>
+            <div class="marker" style="transform:rotate(150deg) translateX(-50%);"></div>
+            <div class="marker main" style="transform:rotate(180deg) translateX(-50%);"></div>
+            <div class="marker" style="transform:rotate(210deg) translateX(-50%);"></div>
+            <div class="marker" style="transform:rotate(240deg) translateX(-50%);"></div>
+            <div class="marker main" style="transform:rotate(270deg) translateX(-50%);"></div>
+            <div class="marker" style="transform:rotate(300deg) translateX(-50%);"></div>
+            <div class="marker" style="transform:rotate(330deg) translateX(-50%);"></div>
             <div class="hand hour" id="hourHand"></div>
             <div class="hand minute" id="minuteHand"></div>
             <div class="hand second" id="secondHand"></div>
             <div class="center-dot"></div>
           </div>
           <div class="digital-time" aria-label="Masa dan tarikh semasa">
-            <div class="time" id="clock">
-              12<span class="time-colon">:</span>00<span class="time-colon"
-                >:</span
-              >00
-            </div>
+            <div class="time" id="clock">12<span class="time-colon">:</span>00<span class="time-colon">:</span>00</div>
             <div class="date" id="date">29 JULAI 2026</div>
           </div>
         </div>
         <div class="logo">
           <div class="logo-img-wrapper">
-            <img
-              src="https://i.ibb.co/fGtPXjpc/500px-Logo-of-the-Malaysian-Fire-and-Rescue-Department-svg.webp"
-              alt="Logo JBPM"
-              class="logo-img"
-              loading="lazy"
-            />
+            <img src="https://i.ibb.co/fGtPXjpc/500px-Logo-of-the-Malaysian-Fire-and-Rescue-Department-svg.webp" alt="Logo JBPM" class="logo-img" loading="lazy" />
           </div>
           <div class="logo-text">
             <h1>PUSAT GERAKAN OPERASI <span>JOHOR</span></h1>
             <span class="sub">Dashboard Utama</span>
           </div>
           <div class="logo-img-wrapper">
-            <img
-              src="https://i.ibb.co/fdXsyrBX/logo-unit-komunikasi-1.png"
-              alt="Logo Unit Komunikasi"
-              class="logo-img"
-              loading="lazy"
-            />
+            <img src="https://i.ibb.co/fdXsyrBX/logo-unit-komunikasi-1.png" alt="Logo Unit Komunikasi" class="logo-img" loading="lazy" />
           </div>
         </div>
       </header>
 
-      <section class="stats-bar">
-        <div class="stat-item">
-          <i class="fas fa-user-shield icon-badge"></i>
-          <div class="num" id="statBertugas">--</div>
-          <div class="label">Anggota Bertugas</div>
-        </div>
-        <div class="stat-item">
-          <i class="fas fa-cloud-sun icon-badge" id="statCuacaIcon"></i>
-          <div class="num" id="statCuaca">--°C</div>
-          <div class="label">Cuaca JB</div>
-        </div>
-        <div class="stat-item">
-          <i class="fas fa-chart-column icon-badge"></i>
-          <div class="num" id="statKesHariIni">--</div>
-          <div class="label">Kes Hari Ini</div>
-        </div>
-        <div class="stat-item">
-          <i class="fas fa-truck-field icon-badge"></i>
-          <div class="num" id="statJenteraSedia">--</div>
-          <div class="label">Jentera Sedia</div>
-          <!-- Pecahan kecil -->
-          <div class="jentera-pecahan">
-            <span><i class="fas fa-circle-check" style="color:#4ade80;"></i> <span id="cfrtBaik">--</span></span>
-            <span><i class="fas fa-circle-exclamation" style="color:#fbbf24;"></i> <span id="cfrtMinor">--</span></span>
-          </div>
-        </div>
-      </section>
+      <!-- ===== DASHBOARD GRID (2 Lajur) ===== -->
+      <div class="dashboard-grid">
+        <!-- LAJUR KIRI (2/3) -->
+        <div class="dashboard-left">
+          <section class="stats-bar">
+            <div class="stat-item">
+              <i class="fas fa-user-shield icon-badge"></i>
+              <div class="num" id="statBertugas">--</div>
+              <div class="label">Anggota Bertugas</div>
+            </div>
+            <div class="stat-item">
+              <i class="fas fa-cloud-sun icon-badge" id="statCuacaIcon"></i>
+              <div class="num" id="statCuaca">--°C</div>
+              <div class="label">Cuaca JB</div>
+            </div>
+            <div class="stat-item">
+              <i class="fas fa-chart-column icon-badge"></i>
+              <div class="num" id="statKesHariIni">--</div>
+              <div class="label">Kes Hari Ini</div>
+            </div>
+            <div class="stat-item">
+              <i class="fas fa-truck-field icon-badge"></i>
+              <div class="num" id="statJenteraSedia">--</div>
+              <div class="label">Jentera Sedia</div>
+            </div>
+          </section>
 
-      <section class="section-status">
-        <div class="section-title">
-          <i
-            class="fas fa-circle"
-            style="color: #ef4444; font-size: 0.625rem"
-          ></i>
-          LIVE <span class="status-badge live">● LIVE</span>
-        </div>
-        <div class="apps-grid">
-          <!-- KAD DASHOPS -->
-          <a href="dashops.html" class="app-card" rel="noopener noreferrer">
-            <div class="icon"><i class="fas fa-chart-column"></i></div>
-            <div>
-              <h3>
-                Live Statistik Kes 24 Jam
-                <span class="highlight">(DASH-OPS)</span>
-              </h3>
-              <p>Statistik masa nyata panggilan, lokasi & mangsa operasi.</p>
+          <!-- Kad-kad sedia ada -->
+          <section class="section-status">
+            <div class="section-title">
+              <i class="fas fa-circle" style="color:#ef4444; font-size:0.625rem;"></i>
+              LIVE <span class="status-badge live">● LIVE</span>
             </div>
-            <div class="card-footer">
-              <span class="badge live">● LIVE</span
-              ><span class="arrow"><i class="fas fa-arrow-right"></i></span>
+            <div class="apps-grid">
+              <a href="dashops.html" class="app-card" rel="noopener noreferrer">
+                <div class="icon"><i class="fas fa-chart-column"></i></div>
+                <div>
+                  <h3>Live Statistik Kes 24 Jam <span class="highlight">(DASH-OPS)</span></h3>
+                  <p>Statistik masa nyata panggilan, lokasi & mangsa operasi.</p>
+                </div>
+                <div class="card-footer">
+                  <span class="badge live">● LIVE</span><span class="arrow"><i class="fas fa-arrow-right"></i></span>
+                </div>
+              </a>
             </div>
-          </a>
-        </div>
-      </section>
+          </section>
 
-      <section class="section-status">
-        <div class="section-title">
-          <i
-            class="fas fa-circle"
-            style="color: var(--status-green); font-size: 0.625rem"
-          ></i>
-          ONLINE <span class="status-badge online">● ONLINE</span>
-        </div>
-        <div class="apps-grid">
-          <a href="jentera.html" class="app-card" rel="noopener noreferrer">
-            <div class="icon"><i class="fas fa-truck-field"></i></div>
-            <div>
-              <h3>Data <span class="highlight">Jentera</span> JBPM Johor</h3>
-              <p>Pemantauan status jentera & kenderaan operasi bomba.</p>
+          <section class="section-status">
+            <div class="section-title">
+              <i class="fas fa-circle" style="color:var(--status-green); font-size:0.625rem;"></i>
+              ONLINE <span class="status-badge online">● ONLINE</span>
             </div>
-            <div class="card-footer">
-              <span class="badge online">● ONLINE</span
-              ><span class="arrow"><i class="fas fa-arrow-right"></i></span>
+            <div class="apps-grid">
+              <a href="jentera.html" class="app-card" rel="noopener noreferrer">
+                <div class="icon"><i class="fas fa-truck-field"></i></div>
+                <div>
+                  <h3>Data <span class="highlight">Jentera</span> JBPM Johor</h3>
+                  <p>Pemantauan status jentera & kenderaan operasi bomba.</p>
+                </div>
+                <div class="card-footer">
+                  <span class="badge online">● ONLINE</span><span class="arrow"><i class="fas fa-arrow-right"></i></span>
+                </div>
+              </a>
+              <a href="/dashboard-radio" class="app-card">
+                <div class="icon"><i class="fas fa-tower-cell"></i></div>
+                <div>
+                  <h3>Data Aset <span class="highlight">GIRN</span></h3>
+                  <p>Pemantauan aset komunikasi GIRN Negeri Johor.</p>
+                </div>
+                <div class="card-footer">
+                  <span class="badge online">● ONLINE</span><span class="arrow"><i class="fas fa-arrow-right"></i></span>
+                </div>
+              </a>
             </div>
-          </a>
-          <!-- ===== KAD DASHBOARD ASET GIRN (DIPINDAHKAN KE ONLINE) ===== -->
-          <a href="/dashboard-radio" class="app-card">
-            <div class="icon"><i class="fas fa-tower-cell"></i></div>
-            <div>
-              <h3>Data Aset <span class="highlight">GIRN</span></h3>
-              <p>Pemantauan aset komunikasi GIRN Negeri Johor.</p>
-            </div>
-            <div class="card-footer">
-              <span class="badge online">● ONLINE</span
-              ><span class="arrow"><i class="fas fa-arrow-right"></i></span>
-            </div>
-          </a>
-        </div>
-      </section>
+          </section>
 
-      <!-- ===== SECTION PAUTAN SISTEM ===== -->
-      <section class="section-status">
-        <div class="section-title">
-          <i
-            class="fas fa-circle"
-            style="color: #60a5fa; font-size: 0.625rem"
-          ></i>
-          PAUTAN SISTEM <span class="status-badge sistem">● SISTEM</span>
-        </div>
-        <div class="apps-grid">
-          <a
-            href="https://po1teknologia2.vercel.app/"
-            target="_blank"
-            class="app-card"
-            rel="noopener noreferrer"
-          >
-            <div class="icon"><i class="fas fa-boxes-stacked"></i></div>
-            <div>
-              <h3>Sistem Inventori <span class="highlight">(DID)</span></h3>
-              <p>Pengurusan storan, peralatan & aset logistik.</p>
+          <section class="section-status">
+            <div class="section-title">
+              <i class="fas fa-circle" style="color:#60a5fa; font-size:0.625rem;"></i>
+              PAUTAN SISTEM <span class="status-badge sistem">● SISTEM</span>
             </div>
-            <div class="card-footer">
-              <span class="badge sistem">● SISTEM</span
-              ><span class="arrow"><i class="fas fa-arrow-right"></i></span>
+            <div class="apps-grid">
+              <a href="https://po1teknologia2.vercel.app/" target="_blank" class="app-card" rel="noopener noreferrer">
+                <div class="icon"><i class="fas fa-boxes-stacked"></i></div>
+                <div>
+                  <h3>Sistem Inventori <span class="highlight">(DID)</span></h3>
+                  <p>Pengurusan storan, peralatan & aset logistik.</p>
+                </div>
+                <div class="card-footer">
+                  <span class="badge sistem">● SISTEM</span><span class="arrow"><i class="fas fa-arrow-right"></i></span>
+                </div>
+              </a>
+              <a href="https://daftar-masuk-pelawat.vercel.app/" target="_blank" class="app-card" rel="noopener noreferrer">
+                <div class="icon"><i class="fas fa-id-card-clip"></i></div>
+                <div>
+                  <h3>Sistem Daftar Masuk Pelawat <span class="highlight">(ENTRY)</span></h3>
+                  <p>Sistem daftar masuk dengan pendaftaran ID digital.</p>
+                </div>
+                <div class="card-footer">
+                  <span class="badge sistem">● SISTEM</span><span class="arrow"><i class="fas fa-arrow-right"></i></span>
+                </div>
+              </a>
             </div>
-          </a>
-          <a
-            href="https://daftar-masuk-pelawat.vercel.app/"
-            target="_blank"
-            class="app-card"
-            rel="noopener noreferrer"
-          >
-            <div class="icon"><i class="fas fa-id-card-clip"></i></div>
-            <div>
-              <h3>
-                Sistem Daftar Masuk Pelawat
-                <span class="highlight">(ENTRY)</span>
-              </h3>
-              <p>Sistem daftar masuk dengan pendaftaran ID digital.</p>
-            </div>
-            <div class="card-footer">
-              <span class="badge sistem">● SISTEM</span
-              ><span class="arrow"><i class="fas fa-arrow-right"></i></span>
-            </div>
-          </a>
-        </div>
-      </section>
+          </section>
 
-      <section class="section-status">
-        <div class="section-title">
-          <i
-            class="fas fa-circle"
-            style="color: #f59e0b; font-size: 0.625rem"
-          ></i>
-          DALAM PEMBANGUNAN <span class="status-badge dev">● DEV</span>
+          <section class="section-status">
+            <div class="section-title">
+              <i class="fas fa-circle" style="color:#f59e0b; font-size:0.625rem;"></i>
+              DALAM PEMBANGUNAN <span class="status-badge dev">● DEV</span>
+            </div>
+            <div class="apps-grid">
+              <a href="#" class="app-card" onclick="return false;">
+                <div class="icon"><i class="fas fa-map-location-dot"></i></div>
+                <div>
+                  <h3>Peta Kawasan <span class="highlight">Jagaan Balai</span></h3>
+                  <p>Peta interaktif kawasan jagaan balai bomba.</p>
+                </div>
+                <div class="card-footer">
+                  <span class="badge dev">● DEV</span><span class="arrow"><i class="fas fa-arrow-right"></i></span>
+                </div>
+              </a>
+              <a href="dbanggota.html" class="app-card" rel="noopener noreferrer">
+                <div class="icon"><i class="fas fa-user-shield"></i></div>
+                <div>
+                  <h3>Kekuatan Anggota <span class="highlight">12 Jam</span></h3>
+                  <p>Status anggota, syif, cuti & tugasan khas.</p>
+                  <div class="anggota-mini-stats" id="anggotaMiniStats">
+                    <span><i class="fas fa-users"></i> Jumlah: <span class="num" id="miniTotal">--</span></span>
+                    <span><i class="fas fa-circle-check green"></i> Bertugas: <span class="num green" id="miniBertugas">--</span></span>
+                    <span><i class="fas fa-moon amber"></i> Cuti: <span class="num amber" id="miniCuti">--</span></span>
+                    <span><i class="fas fa-kit-medical red"></i> Sakit: <span class="num red" id="miniSakit">--</span></span>
+                    <span><i class="fas fa-bullseye purple"></i> Tugas Khas: <span class="num purple" id="miniTugasKhas">--</span></span>
+                  </div>
+                </div>
+                <div class="card-footer">
+                  <span class="badge dev">● DEV</span><span class="arrow"><i class="fas fa-arrow-right"></i></span>
+                </div>
+              </a>
+            </div>
+          </section>
         </div>
-        <div class="apps-grid">
-          <!-- Kad Peta Kawasan Jagaan Balai -->
-          <a href="#" class="app-card" onclick="return false;">
-            <div class="icon"><i class="fas fa-map-location-dot"></i></div>
-            <div>
-              <h3>Peta Kawasan <span class="highlight">Jagaan Balai</span></h3>
-              <p>Peta interaktif kawasan jagaan balai bomba.</p>
+
+        <!-- LAJUR KANAN (1/3) - BULETIN & SENARAI KES -->
+        <div class="dashboard-right">
+          <!-- BULETIN KES (Carousel) -->
+          <div class="bulletin-card">
+            <div class="bulletin-header">
+              <h4><i class="fas fa-bullhorn"></i> Buletin Kes</h4>
+              <span class="badge-count" id="bulletinCount">0</span>
             </div>
-            <div class="card-footer">
-              <span class="badge dev">● DEV</span
-              ><span class="arrow"><i class="fas fa-arrow-right"></i></span>
-            </div>
-          </a>
-          <!-- ===== KAD KEKUATAN ANGGOTA 12 JAM ===== -->
-          <a href="dbanggota.html" class="app-card" rel="noopener noreferrer">
-            <div class="icon"><i class="fas fa-user-shield"></i></div>
-            <div>
-              <h3>
-                Kekuatan Anggota <span class="highlight">12 Jam</span>
-              </h3>
-              <p>Status anggota, syif, cuti & tugasan khas.</p>
-              <!-- Mini stats ringkas (akan diisi melalui JS) -->
-              <div class="anggota-mini-stats" id="anggotaMiniStats">
-                <span
-                  ><i class="fas fa-users"></i> Jumlah:
-                  <span class="num" id="miniTotal">--</span></span
-                >
-                <span
-                  ><i class="fas fa-circle-check green"></i> Bertugas:
-                  <span class="num green" id="miniBertugas">--</span></span
-                >
-                <span
-                  ><i class="fas fa-moon amber"></i> Cuti:
-                  <span class="num amber" id="miniCuti">--</span></span
-                >
-                <span
-                  ><i class="fas fa-kit-medical red"></i> Sakit:
-                  <span class="num red" id="miniSakit">--</span></span
-                >
-                <span
-                  ><i class="fas fa-bullseye purple"></i> Tugas Khas:
-                  <span class="num purple" id="miniTugasKhas">--</span></span
-                >
+            <div class="bulletin-slide-container" id="bulletinContainer">
+              <div class="bulletin-empty" id="bulletinEmpty">
+                <i class="fas fa-inbox"></i>
+                <span>Tiada kes terkini</span>
               </div>
             </div>
-            <div class="card-footer">
-              <span class="badge dev">● DEV</span
-              ><span class="arrow"><i class="fas fa-arrow-right"></i></span>
+            <div class="bulletin-nav" id="bulletinNav" style="display:none;">
+              <div class="bulletin-dots" id="bulletinDots"></div>
+              <div class="bulletin-arrows">
+                <button id="bulletinPrev" aria-label="Kes sebelumnya"><i class="fas fa-chevron-left"></i></button>
+                <button id="bulletinNext" aria-label="Kes seterusnya"><i class="fas fa-chevron-right"></i></button>
+              </div>
             </div>
-          </a>
+          </div>
+
+          <!-- SENARAI 8 KES TERKINI (Ringkasan) -->
+          <div class="kes-list-card" id="kesListCard">
+            <div class="kes-list-header">
+              <span><i class="fas fa-list"></i> 8 Kes Terkini</span>
+              <span id="kesListCount" style="font-weight:400;font-size:0.6rem;">0</span>
+            </div>
+            <div class="kes-list-scroll" id="kesListScroll">
+              <div class="kes-list-items" id="kesListItems">
+                <!-- diisi oleh JavaScript -->
+              </div>
+            </div>
+          </div>
         </div>
-      </section>
+      </div>
 
       <footer class="footer">
         <div class="brand">
           <span class="dot"></span><span>© 2026 PGO Johor</span>
         </div>
         <div class="last-updated">
-          <i class="fas fa-clock"></i> Kemaskini:
-          <span id="updateTime">--</span>
+          <i class="fas fa-clock"></i> Kemaskini: <span id="updateTime">--</span>
         </div>
         <div class="social-links">
-          <a
-            href="https://wa.me/60196717865"
-            target="_blank"
-            title="WhatsApp"
-            rel="noopener noreferrer"
-            ><i class="fab fa-whatsapp"></i
-          ></a>
-          <a
-            href="https://t.me/+60196717865"
-            target="_blank"
-            title="Telegram"
-            rel="noopener noreferrer"
-            ><i class="fab fa-telegram-plane"></i
-          ></a>
+          <a href="https://wa.me/60196717865" target="_blank" title="WhatsApp" rel="noopener noreferrer"><i class="fab fa-whatsapp"></i></a>
+          <a href="https://t.me/+60196717865" target="_blank" title="Telegram" rel="noopener noreferrer"><i class="fab fa-telegram-plane"></i></a>
           <a href="#" title="Instagram"><i class="fab fa-instagram"></i></a>
           <a href="#" title="YouTube"><i class="fab fa-youtube"></i></a>
         </div>
@@ -2859,63 +2304,31 @@
         const dateEl = document.getElementById('date');
         const updateSpan = document.getElementById('updateTime');
         const bulan = [
-          'JANUARI',
-          'FEBRUARI',
-          'MAC',
-          'APRIL',
-          'MEI',
-          'JUNI',
-          'JULAI',
-          'OGOS',
-          'SEPTEMBER',
-          'OKTOBER',
-          'NOVEMBER',
-          'DISEMBER',
+          'JANUARI','FEBRUARI','MAC','APRIL','MEI','JUNI','JULAI','OGOS','SEPTEMBER','OKTOBER','NOVEMBER','DISEMBER'
         ];
 
         function setInitialUpdateTime() {
           const now = new Date();
-          updateSpan.textContent = now.toLocaleTimeString('ms-MY', {
-            hour: '2-digit',
-            minute: '2-digit',
-            second: '2-digit',
-          });
+          updateSpan.textContent = now.toLocaleTimeString('ms-MY', { hour:'2-digit', minute:'2-digit', second:'2-digit' });
         }
 
         function updateClocks() {
           const now = new Date();
-          const h = now.getHours(),
-            m = now.getMinutes(),
-            s = now.getSeconds();
-          if (hourHand)
-            hourHand.style.transform = `rotate(${(h % 12) * 30 + m * 0.5}deg)`;
-          if (minuteHand) minuteHand.style.transform = `rotate(${m * 6}deg)`;
-          if (secondHand) secondHand.style.transform = `rotate(${s * 6}deg)`;
+          const h = now.getHours(), m = now.getMinutes(), s = now.getSeconds();
+          if (hourHand) hourHand.style.transform = `rotate(${(h%12)*30 + m*0.5}deg)`;
+          if (minuteHand) minuteHand.style.transform = `rotate(${m*6}deg)`;
+          if (secondHand) secondHand.style.transform = `rotate(${s*6}deg)`;
           if (clockEl) {
-            clockEl.innerHTML = `${String(h).padStart(
-              2,
-              '0'
-            )}<span class="time-colon">:</span>${String(m).padStart(
-              2,
-              '0'
-            )}<span class="time-colon">:</span>${String(s).padStart(2, '0')}`;
+            clockEl.innerHTML = `${String(h).padStart(2,'0')}<span class="time-colon">:</span>${String(m).padStart(2,'0')}<span class="time-colon">:</span>${String(s).padStart(2,'0')}`;
           }
           if (dateEl) {
-            dateEl.textContent = `${now.getDate()} ${
-              bulan[now.getMonth()]
-            } ${now.getFullYear()}`;
+            dateEl.textContent = `${now.getDate()} ${bulan[now.getMonth()]} ${now.getFullYear()}`;
           }
         }
-
         function setLinkUpdateDate() {
           const now = new Date();
-          document.getElementById(
-            'linkUpdateDate'
-          ).textContent = `${now.getDate()} ${
-            bulan[now.getMonth()]
-          } ${now.getFullYear()}`;
+          document.getElementById('linkUpdateDate').textContent = `${now.getDate()} ${bulan[now.getMonth()]} ${now.getFullYear()}`;
         }
-
         setInitialUpdateTime();
         updateClocks();
         setLinkUpdateDate();
@@ -2930,8 +2343,7 @@
             document.querySelector('#modeToggleBtn i').className = 'fas fa-sun';
           } else {
             document.body.classList.remove('mode-siang');
-            document.querySelector('#modeToggleBtn i').className =
-              'fas fa-moon';
+            document.querySelector('#modeToggleBtn i').className = 'fas fa-moon';
           }
           if (displayMode === 'mobile') {
             document.body.classList.add('mobile-mode');
@@ -2944,54 +2356,41 @@
         loadState();
 
         // ===== MODE TOGGLE =====
-        document
-          .getElementById('modeToggleBtn')
-          .addEventListener('click', function () {
-            document.body.classList.toggle('mode-siang');
-            const icon = this.querySelector('i');
-            if (document.body.classList.contains('mode-siang')) {
-              icon.className = 'fas fa-sun';
-              localStorage.setItem('pgoTheme', 'siang');
-            } else {
-              icon.className = 'fas fa-moon';
-              localStorage.setItem('pgoTheme', 'malam');
-            }
-          });
+        document.getElementById('modeToggleBtn').addEventListener('click', function () {
+          document.body.classList.toggle('mode-siang');
+          const icon = this.querySelector('i');
+          if (document.body.classList.contains('mode-siang')) {
+            icon.className = 'fas fa-sun';
+            localStorage.setItem('pgoTheme', 'siang');
+          } else {
+            icon.className = 'fas fa-moon';
+            localStorage.setItem('pgoTheme', 'malam');
+          }
+        });
 
         // ===== SWITCH MODE =====
-        document
-          .getElementById('switchModeBtn')
-          .addEventListener('click', function () {
-            document.body.classList.toggle('mobile-mode');
-            document.body.classList.toggle('desktop-mode');
-            localStorage.setItem(
-              'pgoDisplayMode',
-              document.body.classList.contains('mobile-mode')
-                ? 'mobile'
-                : 'desktop'
-            );
-          });
+        document.getElementById('switchModeBtn').addEventListener('click', function () {
+          document.body.classList.toggle('mobile-mode');
+          document.body.classList.toggle('desktop-mode');
+          localStorage.setItem('pgoDisplayMode', document.body.classList.contains('mobile-mode') ? 'mobile' : 'desktop');
+        });
 
         // ===== REFRESH =====
-        document
-          .getElementById('refreshBtn')
-          .addEventListener('click', function () {
-            location.reload();
-          });
+        document.getElementById('refreshBtn').addEventListener('click', function () {
+          location.reload();
+        });
 
         // ===== SIDEBAR =====
         const hamburger = document.getElementById('hamburgerBtn');
         const sidebar = document.getElementById('sidebar');
         const closeBtn = document.getElementById('sidebarClose');
         const overlay = document.getElementById('sidebarOverlay');
-
         function openSidebar() {
           sidebar.classList.add('active');
           overlay.classList.add('active');
           hamburger.classList.add('active');
           hamburger.setAttribute('aria-expanded', 'true');
         }
-
         function closeSidebar() {
           sidebar.classList.remove('active');
           overlay.classList.remove('active');
@@ -3005,8 +2404,7 @@
         closeBtn.addEventListener('click', closeSidebar);
         overlay.addEventListener('click', closeSidebar);
         document.addEventListener('keydown', function (e) {
-          if (e.key === 'Escape' && sidebar.classList.contains('active'))
-            closeSidebar();
+          if (e.key === 'Escape' && sidebar.classList.contains('active')) closeSidebar();
         });
 
         // ===== ACCORDION =====
@@ -3014,31 +2412,17 @@
         document.querySelectorAll('.accordion-header').forEach((header) => {
           header.addEventListener('click', function () {
             if (animationLock) return;
-            const target = document.getElementById(
-              this.getAttribute('data-target')
-            );
+            const target = document.getElementById(this.getAttribute('data-target'));
             const arrow = this.querySelector('.arrow');
             const isOpen = target.classList.contains('open');
-
-            document
-              .querySelectorAll('.accordion-content.open')
-              .forEach((c) => {
-                if (c !== target) c.classList.remove('open');
-              });
-            document
-              .querySelectorAll('.accordion-header .arrow.open')
-              .forEach((a) => {
-                if (a !== arrow) a.classList.remove('open');
-              });
-
+            document.querySelectorAll('.accordion-content.open').forEach((c) => { if (c !== target) c.classList.remove('open'); });
+            document.querySelectorAll('.accordion-header .arrow.open').forEach((a) => { if (a !== arrow) a.classList.remove('open'); });
             if (!isOpen) {
               animationLock = true;
               target.classList.add('open');
               arrow.classList.add('open');
               this.setAttribute('aria-expanded', 'true');
-              setTimeout(() => {
-                animationLock = false;
-              }, 420);
+              setTimeout(() => { animationLock = false; }, 420);
             } else {
               target.classList.remove('open');
               arrow.classList.remove('open');
@@ -3047,288 +2431,832 @@
           });
         });
 
-        // ===== STATS ANIMATION =====
-        function animateValue(id, start, end, duration, suffix = '') {
-          const el = document.getElementById(id);
-          if (!el) return;
-          let startTime = null;
-          const step = (timestamp) => {
-            if (!startTime) startTime = timestamp;
-            const progress = Math.min((timestamp - startTime) / duration, 1);
-            const val = Math.floor(progress * (end - start) + start);
-            el.textContent = val + suffix;
-            if (progress < 1) requestAnimationFrame(step);
-          };
-          requestAnimationFrame(step);
-        }
+        // ================================================================
+        // FUNGSI BANTUAN (CSV) - DIPORT DARI KOD RUJUKAN
+        // ================================================================
+        function parseCSV(text) {
+          text = text.replace(/^\uFEFF/, '');
+          text = text.replace(/\r\n/g, '\n');
+          text = text.replace(/\r/g, '\n');
 
-        // ===== CUACA JOHOR BAHRU (Open-Meteo, tiada API key diperlukan) =====
-        const CUACA_ICON_MAP = [
-          { codes: [0], icon: 'fa-sun', label: 'Cerah' },
-          { codes: [1, 2], icon: 'fa-cloud-sun', label: 'Berawan' },
-          { codes: [3], icon: 'fa-cloud', label: 'Mendung' },
-          { codes: [45, 48], icon: 'fa-smog', label: 'Berjerebu' },
-          {
-            codes: [51, 53, 55, 56, 57, 61, 63, 65, 66, 67, 80, 81, 82],
-            icon: 'fa-cloud-rain',
-            label: 'Hujan',
-          },
-          {
-            codes: [95, 96, 99],
-            icon: 'fa-cloud-bolt',
-            label: 'Ribut Petir',
-          },
-        ];
-        function getCuacaIcon(code) {
-          const match = CUACA_ICON_MAP.find((m) => m.codes.includes(code));
-          return match || { icon: 'fa-cloud-sun', label: 'Cuaca' };
-        }
-        async function fetchCuacaJB() {
-          const cuacaEl = document.getElementById('statCuaca');
-          const iconEl = document.getElementById('statCuacaIcon');
-          try {
-            const resp = await fetch(
-              'https://api.open-meteo.com/v1/forecast?latitude=1.4927&longitude=103.7414&current=temperature_2m,weather_code&timezone=Asia%2FSingapore'
-            );
-            if (!resp.ok) throw new Error('Gagal fetch cuaca');
-            const data = await resp.json();
-            const temp = Math.round(data.current.temperature_2m);
-            const cuaca = getCuacaIcon(data.current.weather_code);
-            if (cuacaEl) cuacaEl.textContent = temp + '°C';
-            if (iconEl) iconEl.className = 'fas ' + cuaca.icon + ' icon-badge';
-          } catch (e) {
-            if (cuacaEl) cuacaEl.textContent = '--°C';
-          }
-        }
-        fetchCuacaJB();
-        // Kemaskini cuaca setiap 15 minit
-        setInterval(fetchCuacaJB, 900000);
-
-        // ===== KES HARI INI (DASH-OPS) & JENTERA BERSEDIA =====
-        // Guna sumber CSV (Google Sheets published) yang sama seperti
-        // dashops.html dan jentera.html, supaya angka konsisten dgn dashboard asal.
-
-        function pgoParseCSV(text) {
-          text = text
-            .replace(/^\uFEFF/, '')
-            .replace(/\r\n/g, '\n')
-            .replace(/\r/g, '\n');
           const rows = [];
-          let row = [],
-            field = '',
-            inQ = false,
-            i = 0;
+          let currentRow = [];
+          let currentField = '';
+          let insideQuotes = false;
+          let i = 0;
+
           while (i < text.length) {
-            const c = text[i],
-              n = text[i + 1];
-            if (inQ) {
-              if (c === '"') {
-                if (n === '"') {
-                  field += '"';
+            const char = text[i];
+            const nextChar = text[i + 1];
+
+            if (insideQuotes) {
+              if (char === '"') {
+                if (nextChar === '"') {
+                  currentField += '"';
                   i += 2;
                 } else {
-                  inQ = false;
+                  insideQuotes = false;
                   i++;
                 }
               } else {
-                field += c;
+                currentField += char;
                 i++;
               }
             } else {
-              if (c === '"') {
-                inQ = true;
+              if (char === '"') {
+                insideQuotes = true;
                 i++;
-              } else if (c === ',') {
-                row.push(field.trim());
-                field = '';
+              } else if (char === ',') {
+                currentRow.push(currentField.trim());
+                currentField = '';
                 i++;
-              } else if (c === '\n') {
-                row.push(field.trim());
-                if (row.length > 1 || row[0] !== '') rows.push(row);
-                row = [];
-                field = '';
+              } else if (char === '\n') {
+                currentRow.push(currentField.trim());
+                if (currentRow.length > 1 || currentRow[0] !== '') {
+                  rows.push(currentRow);
+                }
+                currentRow = [];
+                currentField = '';
                 i++;
               } else {
-                field += c;
+                currentField += char;
                 i++;
               }
             }
           }
-          if (field || row.length) {
-            row.push(field.trim());
-            if (row.length > 1 || row[0] !== '') rows.push(row);
+
+          if (currentField || currentRow.length > 0) {
+            currentRow.push(currentField.trim());
+            if (currentRow.length > 1 || currentRow[0] !== '') {
+              rows.push(currentRow);
+            }
           }
+
           return rows;
         }
 
-        function pgoColIdx(headers, key) {
-          const norm = (s) =>
-            (s || '')
+        function detectColumnIndex(headers, key) {
+          for (let i = 0; i < headers.length; i++) {
+            if ((headers[i] || '').trim() === key) return i;
+          }
+          const normalizedKey = key
+            .replace(/[\n\r]+/g, ' ')
+            .replace(/\s+/g, ' ')
+            .trim()
+            .toUpperCase();
+          for (let i = 0; i < headers.length; i++) {
+            const h = (headers[i] || '')
               .replace(/[\n\r]+/g, ' ')
               .replace(/\s+/g, ' ')
               .trim()
               .toUpperCase();
-          const nk = norm(key);
-          for (let i = 0; i < headers.length; i++)
-            if (norm(headers[i]) === nk) return i;
+            if (h === normalizedKey) return i;
+          }
           for (let i = 0; i < headers.length; i++) {
-            const h = norm(headers[i]);
-            if (h.includes(nk) || nk.includes(h)) return i;
+            const h = (headers[i] || '')
+              .replace(/[\n\r]+/g, ' ')
+              .replace(/\s+/g, ' ')
+              .trim()
+              .toUpperCase();
+            if (h.includes(normalizedKey) || normalizedKey.includes(h)) return i;
           }
           return -1;
         }
 
-        function pgoParseTarikh(str) {
-          if (!str || str === '-') return null;
-          const cleaned = str.replace(/[\n\r]/g, '').trim();
-          const parts = cleaned.split('.');
-          if (parts.length === 3) {
-            const d = parseInt(parts[0]),
-              m = parseInt(parts[1]) - 1,
-              y = parseInt(parts[2]);
-            if (!isNaN(d) && !isNaN(m) && !isNaN(y)) return new Date(y, m, d);
-          }
-          const dt = new Date(cleaned);
-          return isNaN(dt.getTime()) ? null : dt;
+        // ================================================================
+        // FUNGSI KATEGORI - DIPORT DARI KOD RUJUKAN
+        // ================================================================
+        function getCaseCategory(d) {
+          const j = (d.jenis || '').toLowerCase();
+          const adaMangsa = d.mangsa_mati > 0 || d.mangsa_cedera > 0 || d.mangsa_selamat > 0;
+
+          // Kebakaran Bangunan
+          if (
+            j.includes('kebakaran bangunan') || j.includes('kebakaran rumah') ||
+            j.includes('kebakaran kilang') || j.includes('kebakaran kedai') ||
+            j.includes('kebakaran pejabat') || j.includes('kebakaran premis') ||
+            j.includes('kebakaran sekolah') || j.includes('kebakaran gudang') ||
+            j.includes('kebakaran bengkel') || j.includes('kebakaran restoran') ||
+            j.includes('kebakaran surau') || j.includes('kebakaran masjid') ||
+            (j.includes('kebakaran') && (j.includes('bangunan') || j.includes('rumah') || j.includes('kilang')))
+          ) return 'kebakaran_bangunan';
+
+          // Kebakaran Terbuka
+          if (
+            j.includes('kebakaran terbuka') || j.includes('kebakaran hutan') ||
+            j.includes('kebakaran belukar') || j.includes('kebakaran tanah') ||
+            j.includes('kebakaran semak') || j.includes('kebakaran ladang') ||
+            j.includes('kebakaran kebun') || j.includes('kebakaran sampah')
+          ) return 'kebakaran_terbuka';
+
+          // Kebakaran Perkakas
+          if (
+            j.includes('kebakaran perkakas') || j.includes('pendawaian') ||
+            j.includes('tiang elektrik') || j.includes('kabel elektrik') ||
+            j.includes('papan suis') || j.includes('meter elektrik') ||
+            j.includes('tnb') || j.includes('fius') || j.includes('transformer') ||
+            j.includes('pencawang') || j.includes('dapur') || j.includes('periuk') ||
+            j.includes('kuali') || j.includes('tong gas')
+          ) return 'kebakaran_perkakas';
+
+          // Kebakaran Kenderaan
+          if (
+            j.includes('kebakaran kenderaan') || j.includes('kebakaran kereta') ||
+            j.includes('kebakaran motorsikal') || j.includes('kebakaran lori') ||
+            j.includes('kebakaran bas') || j.includes('kebakaran van')
+          ) return 'kebakaran_kenderaan';
+
+          // Menyelamat
+          if (
+            j.includes('menyelamat') || j.includes('mangsa') ||
+            j.includes('kemalangan') || j.includes('langgar') ||
+            j.includes('terbabas') || j.includes('terbalik') ||
+            j.includes('rempuh') || j.includes('kjr') ||
+            j.includes('buka pintu') || j.includes('terkunci') ||
+            j.includes('terperangkap') || j.includes('angkat mayat')
+          ) return 'menyelamat';
+
+          // Banjir
+          if (
+            j.includes('banjir') || j.includes('air naik') ||
+            j.includes('air pasang') || j.includes('limpahan air')
+          ) return 'banjir';
+
+          // Bencana Alam
+          if (
+            j.includes('tanah runtuh') || j.includes('ribut') ||
+            j.includes('bencana') || j.includes('pokok tumbang')
+          ) return 'bencana_alam';
+
+          // Tumpahan Bahan
+          if (
+            j.includes('tumpahan') || j.includes('kebocoran') ||
+            j.includes('bahan kimia') || j.includes('gas') ||
+            j.includes('minyak')
+          ) return 'tumpahan_bahan';
+
+          // Menangkap Binatang
+          if (
+            j.includes('ular') || j.includes('sawa') || j.includes('tedung') ||
+            j.includes('musang') || j.includes('biawak') ||
+            j.includes('kucing') || j.includes('anjing') ||
+            j.includes('binatang') || j.includes('haiwan')
+          ) return 'menangkap_binatang';
+
+          // Serangga
+          if (j.includes('lebah') || j.includes('serangga') || j.includes('tebuan'))
+            return 'serangga';
+
+          // Tugas Khas
+          if (
+            j.includes('standby') || j.includes('stand by') ||
+            j.includes('bantuan agensi') || j.includes('pengiring') ||
+            j.includes('rondaan') || j.includes('helikopter') ||
+            j.includes('eksesais') || j.includes('latihan') ||
+            j.includes('tugas khas')
+          ) return 'tugas_khas';
+
+          return 'lain_lain';
         }
 
-        function pgoParseJam(str) {
-          if (!str || str === '-') return 0;
-          const parts = str
-            .replace(/[\n\r]/g, '')
-            .trim()
-            .split(':');
-          return parseInt(parts[0]) || 0;
+        function classifyCase(d) {
+          const c = getCaseCategory(d);
+          if (c === 'kebakaran_bangunan' || c === 'kebakaran_terbuka' || c === 'kebakaran_perkakas' || c === 'kebakaran_kenderaan') return 'kebakaran';
+          if (c === 'menyelamat') return 'menyelamat';
+          if (c === 'tugas_khas') return 'tugaskhas';
+          if (c === 'lain_lain') return 'lain';
+          return 'khidmat';
         }
 
-        // ----- KES HARI INI (sumber sama dgn dashops.html: CSV_URLS syif A/B/C) -----
-        const DASHOPS_CSV_URLS = [
-          'https://docs.google.com/spreadsheets/d/e/2PACX-1vRqq7kIOrESSTIiuwPXR-LfsmMu_NaJnWSr2qOyCrnUK4QDqP2DNQy8io0jJIysZQ6Nc6DCZr9YrrW-/pub?gid=1671240510&single=true&output=csv',
-          'https://docs.google.com/spreadsheets/d/e/2PACX-1vToFUGdZ63m5oOjUMMYKta_aJ9cQlP3Bxz8QxjTxshfySACV1zqOQVwHBo6ptNyrk1mcw_yuvhIhbcH/pub?gid=1671240510&single=true&output=csv',
-          'https://docs.google.com/spreadsheets/d/e/2PACX-1vRgdRVgrUyuMX5IocMXA6g1yM5e0gU1qg3YpazTpmvFhgkl9KCPX02hn-0epm40SCxeHFQ125xCJN2T/pub?gid=1671240510&single=true&output=csv',
-        ];
+        function getCaseEmoji(j) {
+          const l = (j || '').toLowerCase();
+          if (l.includes('kebakaran bangunan') || l.includes('kebakaran rumah') || l.includes('api') || l.includes('terbakar')) return '🔥';
+          if (l.includes('kebakaran terbuka') || l.includes('lalang') || l.includes('belukar')) return '🍂';
+          if (l.includes('kebakaran perkakas') || l.includes('elektrik') || l.includes('tnb') || l.includes('dapur')) return '⚡️';
+          if (l.includes('kebakaran kereta') || l.includes('kenderaan') || l.includes('motorsikal')) return '🚗';
+          if (l.includes('menyelamat') || l.includes('mangsa') || l.includes('kemalangan')) return '🚑';
+          if (l.includes('banjir') || l.includes('air naik')) return '🌊';
+          if (l.includes('tanah runtuh') || l.includes('ribut') || l.includes('pokok tumbang')) return '🌪️';
+          if (l.includes('tumpahan') || l.includes('gas') || l.includes('minyak')) return '🛢️';
+          if (l.includes('ular') || l.includes('sawa') || l.includes('tedung')) return '🐍';
+          if (l.includes('lebah') || l.includes('serangga') || l.includes('tebuan')) return '🐝';
+          if (l.includes('kucing')) return '🐱';
+          if (l.includes('anjing')) return '🐶';
+          if (l.includes('standby') || l.includes('tugas khas')) return '🎯';
+          return '📍';
+        }
 
-        async function fetchKesHariIni() {
-          const el = document.getElementById('statKesHariIni');
+        // ================================================================
+        // FUNGSI FETCH DATA - DIPORT DARI KOD RUJUKAN
+        // ================================================================
+        const CSV_URLS = {
+          syifA: 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRqq7kIOrESSTIiuwPXR-LfsmMu_NaJnWSr2qOyCrnUK4QDqP2DNQy8io0jJIysZQ6Nc6DCZr9YrrW-/pub?gid=1671240510&single=true&output=csv',
+          syifB: 'https://docs.google.com/spreadsheets/d/e/2PACX-1vToFUGdZ63m5oOjUMMYKta_aJ9cQlP3Bxz8QxjTxshfySACV1zqOQVwHBo6ptNyrk1mcw_yuvhIhbcH/pub?gid=1671240510&single=true&output=csv',
+          syifC: 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRgdRVgrUyuMX5IocMXA6g1yM5e0gU1qg3YpazTpmvFhgkl9KCPX02hn-0epm40SCxeHFQ125xCJN2T/pub?gid=1671240510&single=true&output=csv'
+        };
+
+        async function fetchSingleCSV(url, label) {
           try {
-            const texts = await Promise.all(
-              DASHOPS_CSV_URLS.map((u) =>
-                fetch(u, { cache: 'no-cache' }).then((r) => r.text())
-              )
-            );
-            let allCases = [];
-            texts.forEach((text) => {
-              const rows = pgoParseCSV(text);
-              if (rows.length < 2) return;
-              const headers = rows[0];
-              const idxCall = pgoColIdx(headers, 'CALL CARD');
-              const idxTarikh = pgoColIdx(headers, 'Tarikh \n Kejadian \n (q)');
-              const idxMasa = pgoColIdx(headers, 'TERIMA PANGGILAN');
-              for (let i = 1; i < rows.length; i++) {
-                const row = rows[i];
-                if (!row || row.length === 0) continue;
-                const callCard = idxCall >= 0 ? (row[idxCall] || '').trim() : '';
-                if (
-                  !callCard.includes('JBPM') ||
-                  callCard.includes('XXXXXX') ||
-                  callCard.length <= 5
-                )
-                  continue;
-                allCases.push({
-                  tarikh: idxTarikh >= 0 ? (row[idxTarikh] || '').trim() : '-',
-                  masa: idxMasa >= 0 ? (row[idxMasa] || '').trim() : '-',
-                });
-              }
-            });
-
-            // Hari operasi = 24 jam bermula 6 pagi (sama logik dgn dashops.html)
-            let latestOpDate = null;
-            const opDateOf = (d) => {
-              const t = pgoParseTarikh(d.tarikh);
-              if (!t) return null;
-              const jam = pgoParseJam(d.masa);
-              const opDate = new Date(t);
-              if (jam < 6) opDate.setDate(opDate.getDate() - 1);
-              return opDate;
-            };
-            allCases.forEach((d) => {
-              const opDate = opDateOf(d);
-              if (opDate && (!latestOpDate || opDate > latestOpDate))
-                latestOpDate = opDate;
-            });
-
-            let total = 0;
-            if (latestOpDate) {
-              allCases.forEach((d) => {
-                const opDate = opDateOf(d);
-                if (opDate && opDate.getTime() === latestOpDate.getTime())
-                  total++;
-              });
-            }
-            if (el) el.textContent = total;
-          } catch (e) {
-            if (el) el.textContent = '--';
-          }
-        }
-        fetchKesHariIni();
-        setInterval(fetchKesHariIni, 60000);
-
-        // ===== JENTERA BERSEDIA (CFRT sahaja, kira BAIK + ROSAK MINOR) =====
-        const CFRT_CSV_URL =
-          'https://docs.google.com/spreadsheets/d/e/2PACX-1vQt0JkN2yWW_0FeY5GKpmIvs1uI6si89JcqNmSTO3f--rM8FhQZe1Q97YQd8tiAsmaMQdTXO5TQWedy/pub?gid=0&single=true&output=csv';
-
-        async function fetchJenteraBersedia() {
-          const elJumlah = document.getElementById('statJenteraSedia');
-          const elBaik = document.getElementById('cfrtBaik');
-          const elMinor = document.getElementById('cfrtMinor');
-
-          try {
-            const response = await fetch(CFRT_CSV_URL, { cache: 'no-cache' });
-            if (!response.ok) throw new Error('Gagal memuat turun CSV CFRT');
+            const response = await fetch(url, { cache: 'no-cache' });
             const text = await response.text();
-            const rows = pgoParseCSV(text);
-            if (rows.length < 2) throw new Error('Data CFRT kosong');
+            const rows = parseCSV(text);
+
+            if (rows.length < 2) {
+              console.warn(`⚠️ ${label}: No data rows found`);
+              return [];
+            }
 
             const headers = rows[0];
-            const idxStatus = pgoColIdx(headers, 'STATUS JENTERA');
-            if (idxStatus === -1) throw new Error('Column STATUS JENTERA tidak dijumpai');
 
-            let baik = 0;
-            let rosakMinor = 0;
+            const idx = {
+              callCard: detectColumnIndex(headers, 'CALL CARD'),
+              balai: detectColumnIndex(headers, 'Balai'),
+              jenis: detectColumnIndex(headers, 'Jenis Panggilan Operasi'),
+              alamat: detectColumnIndex(headers, 'Alamat Tempat Kejadian'),
+              masa: detectColumnIndex(headers, 'TERIMA PANGGILAN'),
+              sampai: detectColumnIndex(headers, 'SAMPAI LOKASI'),
+              respon: detectColumnIndex(headers, 'TEMPOH MASA SAMPAI LOKASI'),
+              tempoh: detectColumnIndex(headers, 'TEMPOH OPERASI'),
+              lat: detectColumnIndex(headers, 'LAT'),
+              lng: detectColumnIndex(headers, 'LONG'),
+              latLong: detectColumnIndex(headers, 'LAT LONG'),
+              mati: detectColumnIndex(headers, 'MATI'),
+              cedera: detectColumnIndex(headers, 'CEDERA'),
+              selamat: detectColumnIndex(headers, 'SELAMAT'),
+              maklumat: detectColumnIndex(headers, 'MAKLUMAT KEJADIAN'),
+              tarikh: detectColumnIndex(headers, 'Tarikh \n Kejadian \n (q)'),
+              operasiTamat: detectColumnIndex(headers, 'OPERASI TAMAT O/T'),
+              pko: detectColumnIndex(headers, 'LIST BALAI SELAIN BALAI SG'),
+              kiraRT: detectColumnIndex(headers, 'KES YANG TIDAK DIKIRA SEBAGAI RT'),
+              shif: detectColumnIndex(headers, 'SHIF'),
+              keluasanTerbuka: detectColumnIndex(headers, 'KELUASAN KEBAKARAN TERBUKA (HEKTAR)'),
+              keluasanDipadam: detectColumnIndex(headers, 'KELUASAN DIPADAMKAN (HEKTAR)')
+            };
+
+            const data = [];
 
             for (let i = 1; i < rows.length; i++) {
               const row = rows[i];
-              if (!row || row.length === 0) continue;
-              const status = (idxStatus >= 0 ? row[idxStatus] || '' : '').toUpperCase();
+              if (!row || row.length === 0 || (row.length === 1 && !row[0].trim())) continue;
 
-              if (status.includes('BAIK')) {
-                baik++;
-              } else if (status.includes('ROSAK MINOR')) {
-                rosakMinor++;
+              const callCard = idx.callCard >= 0 ? (row[idx.callCard] || '').trim() : '';
+
+              if (!callCard.includes('JBPM') || callCard.includes('XXXXXX') || callCard.length <= 5) continue;
+
+              let lat = 0, lng = 0;
+
+              if (idx.lat >= 0 && idx.lng >= 0) {
+                const latStr = (row[idx.lat] || '').trim();
+                const lngStr = (row[idx.lng] || '').trim();
+                if (latStr && lngStr) {
+                  const latVal = parseFloat(latStr);
+                  const lngVal = parseFloat(lngStr);
+                  if (!isNaN(latVal) && !isNaN(lngVal)) {
+                    lat = latVal;
+                    lng = lngVal;
+                  }
+                }
               }
-              // Abaikan status lain (rosak teruk, dalam servis, dsb.)
+
+              if (lat === 0 && lng === 0 && idx.latLong >= 0) {
+                const latLongStr = (row[idx.latLong] || '').trim();
+                if (latLongStr && latLongStr.includes(',')) {
+                  const parts = latLongStr.split(',');
+                  if (parts.length >= 2) {
+                    const latVal = parseFloat(parts[0].trim());
+                    const lngVal = parseFloat(parts[1].trim());
+                    if (!isNaN(latVal) && !isNaN(lngVal)) {
+                      lat = latVal;
+                      lng = lngVal;
+                    }
+                  }
+                }
+              }
+
+              let kiraRT = 'YA';
+              if (idx.kiraRT >= 0) {
+                const val = (row[idx.kiraRT] || '').trim().toUpperCase();
+                if (val === 'YA' || val === 'TIDAK') kiraRT = val;
+              }
+
+              let responTime = '-';
+              if (idx.respon >= 0) responTime = (row[idx.respon] || '').trim();
+              if ((responTime === '-' || responTime === '') && idx.tempoh >= 0) {
+                responTime = (row[idx.tempoh] || '').trim();
+              }
+
+              const caseData = {
+                callCard: callCard,
+                balai: idx.balai >= 0 ? (row[idx.balai] || '').trim() : '-',
+                jenis: idx.jenis >= 0 ? (row[idx.jenis] || '').trim() : '-',
+                alamat: idx.alamat >= 0 ? (row[idx.alamat] || '').trim() : '-',
+                masa: idx.masa >= 0 ? (row[idx.masa] || '').trim() : '-',
+                respon_time: responTime,
+                tempoh_operasi: idx.tempoh >= 0 ? (row[idx.tempoh] || '').trim() : '-',
+                sampai_lokasi: idx.sampai >= 0 ? (row[idx.sampai] || '').trim() : '-',
+                lat: lat,
+                long: lng,
+                mangsa_mati: idx.mati >= 0 ? parseInt(row[idx.mati]) || 0 : 0,
+                mangsa_cedera: idx.cedera >= 0 ? parseInt(row[idx.cedera]) || 0 : 0,
+                mangsa_selamat: idx.selamat >= 0 ? parseInt(row[idx.selamat]) || 0 : 0,
+                maklumat_kejadian: idx.maklumat >= 0 ? (row[idx.maklumat] || '').trim() : '',
+                tarikh: idx.tarikh >= 0 ? (row[idx.tarikh] || '').trim() : '-',
+                operasi_tamat: idx.operasiTamat >= 0 ? (row[idx.operasiTamat] || '').trim() : '-',
+                pko: idx.pko >= 0 ? (row[idx.pko] || '').trim() : '-',
+                kira_respon_time: kiraRT,
+                shif: idx.shif >= 0 ? (row[idx.shif] || '').trim() : '-',
+                source: label,
+                keluasan_terbuka: idx.keluasanTerbuka >= 0 ? parseFloat(row[idx.keluasanTerbuka]) || 0 : 0,
+                keluasan_dipadam: idx.keluasanDipadam >= 0 ? parseFloat(row[idx.keluasanDipadam]) || 0 : 0
+              };
+
+              data.push(caseData);
             }
 
-            const jumlah = baik + rosakMinor;
-
-            if (elJumlah) elJumlah.textContent = jumlah;
-            if (elBaik) elBaik.textContent = baik;
-            if (elMinor) elMinor.textContent = rosakMinor;
-
-          } catch (e) {
-            console.warn('Gagal dapatkan data jentera bersedia:', e.message);
-            if (elJumlah) elJumlah.textContent = '--';
-            if (elBaik) elBaik.textContent = '--';
-            if (elMinor) elMinor.textContent = '--';
+            return data;
+          } catch (error) {
+            console.error(`❌ Error fetching ${label}:`, error.message);
+            return [];
           }
         }
+
+        // ================================================================
+        // FUNGSI UTAMA DASHBOARD
+        // ================================================================
+        let allData = [];
+        let allCaseData = [];
+        let currentDay = null;
+        let bulletinCases = [];
+        let currentBulletinIndex = 0;
+        let bulletinInterval = null;
+        const BULLETIN_INTERVAL_MS = 5000;
+
+        // ===== AUTO-SCROLL KES =====
+        let kesScrollInterval = null;
+        let isKesScrolling = true;
+
+        function startKesAutoScroll() {
+          stopKesAutoScroll();
+          const scrollEl = document.getElementById('kesListScroll');
+          if (!scrollEl) return;
+          const items = scrollEl.querySelector('.kes-list-items');
+          if (!items) return;
+          // scroll kelajuan (px per 50ms)
+          const speed = 0.8;
+          kesScrollInterval = setInterval(() => {
+            if (!isKesScrolling) return;
+            const maxScroll = items.scrollHeight - scrollEl.clientHeight;
+            if (maxScroll <= 0) return;
+            let current = scrollEl.scrollTop;
+            current += speed;
+            if (current >= maxScroll) {
+              current = 0;
+            }
+            scrollEl.scrollTop = current;
+          }, 50);
+        }
+
+        function stopKesAutoScroll() {
+          if (kesScrollInterval) {
+            clearInterval(kesScrollInterval);
+            kesScrollInterval = null;
+          }
+        }
+
+        function resetKesAutoScroll() {
+          stopKesAutoScroll();
+          startKesAutoScroll();
+        }
+
+        // ================================================================
+        // BULETIN KES (CAROUSEL)
+        // ================================================================
+        function updateBulletin(data) {
+          // Tapis untuk kes kebakaran bangunan & melibatkan mangsa
+          const filtered = data.filter((d) => {
+            const category = getCaseCategory(d);
+            const hasVictim = d.mangsa_mati > 0 || d.mangsa_cedera > 0 || d.mangsa_selamat > 0;
+            return category === 'kebakaran_bangunan' || hasVictim;
+          });
+
+          // Ambil 10 kes teratas
+          bulletinCases = filtered.slice(0, 10);
+
+          // Kemaskini kiraan
+          document.getElementById('bulletinCount').textContent = bulletinCases.length;
+
+          renderBulletin();
+        }
+
+        function renderBulletin() {
+          const container = document.getElementById('bulletinContainer');
+          const empty = document.getElementById('bulletinEmpty');
+          const nav = document.getElementById('bulletinNav');
+          const dots = document.getElementById('bulletinDots');
+
+          if (!container) return;
+
+          // Kosongkan slide lama
+          const slides = container.querySelectorAll('.bulletin-slide');
+          slides.forEach(s => s.remove());
+
+          if (bulletinCases.length === 0) {
+            if (empty) empty.style.display = 'flex';
+            if (nav) nav.style.display = 'none';
+            return;
+          }
+
+          if (empty) empty.style.display = 'none';
+          if (nav) nav.style.display = 'flex';
+
+          // Reset index jika melebihi
+          if (currentBulletinIndex >= bulletinCases.length) currentBulletinIndex = 0;
+
+          // Bina slide
+          bulletinCases.forEach((item, index) => {
+            const emoji = getCaseEmoji(item.jenis);
+            const category = getCaseCategory(item);
+            const typeMap = {
+              kebakaran_bangunan: 'Kebakaran Bangunan',
+              menyelamat: 'Melibatkan Mangsa',
+              kebakaran_terbuka: 'Kebakaran Terbuka',
+              kebakaran_perkakas: 'Kebakaran Perkakas',
+              kebakaran_kenderaan: 'Kebakaran Kenderaan',
+              banjir: 'Banjir',
+              bencana_alam: 'Bencana Alam',
+              tumpahan_bahan: 'Tumpahan Bahan',
+              menangkap_binatang: 'Menangkap Binatang',
+              serangga: 'Serangga',
+              tugas_khas: 'Tugas Khas',
+              lain_lain: 'Lain-lain'
+            };
+            const typeLabel = typeMap[category] || 'Lain-lain';
+
+            // Tentukan status (anggap 3 kes pertama aktif)
+            const isAktif = index < 3;
+            const statusClass = isAktif ? 'aktif' : 'selesai';
+            const statusText = isAktif ? 'AKTIF' : 'SELESAI';
+
+            // Format tarikh & masa
+            let waktu = item.tarikh + ' · ' + item.masa;
+            if (item.tarikh !== '-' && item.masa !== '-') {
+              const t = parseTarikhKejadian(item.tarikh);
+              if (t) {
+                const hari = t.getDate().toString().padStart(2, '0');
+                const bulanSingkat = ['Jan','Feb','Mac','Apr','Mei','Jun','Jul','Ogos','Sep','Okt','Nov','Dis'][t.getMonth()];
+                const tahun = t.getFullYear();
+                waktu = `${hari} ${bulanSingkat} ${tahun} · ${item.masa}`;
+              }
+            }
+
+            const slide = document.createElement('div');
+            slide.className = 'bulletin-slide' + (index === currentBulletinIndex ? ' active' : '');
+            slide.dataset.index = index;
+
+            slide.innerHTML = `
+              <div class="slide-icon">${emoji}</div>
+              <div class="slide-type">${typeLabel}</div>
+              <div class="slide-time"><i class="fas fa-clock" style="margin-right:0.3rem;"></i>${waktu}</div>
+              <div class="slide-location"><i class="fas fa-location-dot" style="margin-right:0.3rem;"></i>${item.alamat || 'Lokasi tidak diketahui'}</div>
+              <div class="slide-desc">${item.jenis || ''}</div>
+              <span class="slide-status ${statusClass}">● ${statusText}</span>
+            `;
+            container.appendChild(slide);
+          });
+
+          // Bina dots
+          dots.innerHTML = '';
+          bulletinCases.forEach((_, index) => {
+            const dot = document.createElement('button');
+            dot.className = 'dot' + (index === currentBulletinIndex ? ' active' : '');
+            dot.setAttribute('data-index', index);
+            dot.setAttribute('aria-label', 'Pergi ke kes ' + (index + 1));
+            dot.addEventListener('click', function() {
+              goToBulletinSlide(parseInt(this.dataset.index));
+            });
+            dots.appendChild(dot);
+          });
+
+          updateBulletinSlide(currentBulletinIndex);
+          startBulletinAutoSlide();
+        }
+
+        function updateBulletinSlide(index) {
+          const container = document.getElementById('bulletinContainer');
+          if (!container) return;
+          const slides = container.querySelectorAll('.bulletin-slide');
+          const dots = document.querySelectorAll('.bulletin-dots .dot');
+
+          slides.forEach((slide, i) => {
+            slide.classList.toggle('active', i === index);
+          });
+          dots.forEach((dot, i) => {
+            dot.classList.toggle('active', i === index);
+          });
+          currentBulletinIndex = index;
+        }
+
+        function goToBulletinSlide(index) {
+          if (bulletinCases.length === 0) return;
+          if (index < 0) index = bulletinCases.length - 1;
+          if (index >= bulletinCases.length) index = 0;
+          updateBulletinSlide(index);
+          resetBulletinAutoSlide();
+        }
+
+        function startBulletinAutoSlide() {
+          stopBulletinAutoSlide();
+          if (bulletinCases.length <= 1) return;
+          bulletinInterval = setInterval(() => {
+            let next = currentBulletinIndex + 1;
+            if (next >= bulletinCases.length) next = 0;
+            updateBulletinSlide(next);
+          }, BULLETIN_INTERVAL_MS);
+        }
+
+        function stopBulletinAutoSlide() {
+          if (bulletinInterval) {
+            clearInterval(bulletinInterval);
+            bulletinInterval = null;
+          }
+        }
+
+        function resetBulletinAutoSlide() {
+          stopBulletinAutoSlide();
+          startBulletinAutoSlide();
+        }
+
+        // Event listener untuk navigasi
+        document.addEventListener('DOMContentLoaded', function() {
+          const prevBtn = document.getElementById('bulletinPrev');
+          const nextBtn = document.getElementById('bulletinNext');
+          if (prevBtn) prevBtn.addEventListener('click', () => goToBulletinSlide(currentBulletinIndex - 1));
+          if (nextBtn) nextBtn.addEventListener('click', () => goToBulletinSlide(currentBulletinIndex + 1));
+
+          const bulletinCard = document.querySelector('.bulletin-card');
+          if (bulletinCard) {
+            bulletinCard.addEventListener('mouseenter', stopBulletinAutoSlide);
+            bulletinCard.addEventListener('mouseleave', startBulletinAutoSlide);
+          }
+        });
+
+        // ================================================================
+        // SENARAI 8 KES TERKINI (dengan auto-scroll dan info balai & jenis)
+        // ================================================================
+        function updateKesList(data) {
+          const container = document.getElementById('kesListItems');
+          const countEl = document.getElementById('kesListCount');
+
+          // Ambil 8 kes teratas (semua jenis)
+          const top8 = data.slice(0, 8);
+          if (countEl) countEl.textContent = top8.length;
+
+          if (!container) return;
+
+          if (top8.length === 0) {
+            container.innerHTML = '<div class="kes-list-empty">Tiada kes</div>';
+            stopKesAutoScroll();
+            return;
+          }
+
+          // Bina item kes
+          let html = '';
+          top8.forEach((item) => {
+            const emoji = getCaseEmoji(item.jenis);
+            const masa = item.masa !== '-' ? item.masa : '--:--';
+            const lokasi = item.alamat || 'Lokasi tidak diketahui';
+            const balai = item.balai || '-';
+            const jenis = item.jenis || '-';
+
+            html += `
+              <div class="kes-list-item">
+                <span class="kl-icon">${emoji}</span>
+                <div class="kl-info">
+                  <div class="kl-top">
+                    <span class="kl-time">${masa}</span>
+                    <span class="kl-location" title="${lokasi}">${lokasi.substring(0, 30)}${lokasi.length > 30 ? '...' : ''}</span>
+                  </div>
+                  <div class="kl-top" style="gap:0.3rem;font-size:0.6rem;">
+                    <span class="kl-balai"><i class="fas fa-flag"></i> ${balai}</span>
+                    <span class="kl-jenis"><i class="fas fa-tag"></i> ${jenis.substring(0, 25)}${jenis.length > 25 ? '...' : ''}</span>
+                  </div>
+                </div>
+              </div>
+            `;
+          });
+
+          // Untuk kesan looping tanpa henti, kita clone item-item
+          const doubleHtml = html + html;
+          container.innerHTML = doubleHtml;
+
+          // Mulakan auto-scroll
+          startKesAutoScroll();
+        }
+
+        // ================================================================
+        // FUNGSI TARIKH & MASA
+        // ================================================================
+        function parseTarikhKejadian(tarikhStr) {
+          if (!tarikhStr || tarikhStr === '-') return null;
+          try {
+            const cleaned = tarikhStr.replace(/[\n\r]/g, '').trim();
+            const parts = cleaned.split('.');
+            if (parts.length === 3) {
+              const day = parseInt(parts[0]);
+              const month = parseInt(parts[1]) - 1;
+              const year = parseInt(parts[2]);
+              if (!isNaN(day) && !isNaN(month) && !isNaN(year)) {
+                return new Date(year, month, day);
+              }
+            }
+            const d = new Date(cleaned);
+            if (!isNaN(d.getTime())) return d;
+          } catch (e) {}
+          return null;
+        }
+
+        function parseJamDariMasa(masaStr) {
+          if (!masaStr || masaStr === '-') return 0;
+          try {
+            const cleaned = masaStr.replace(/[\n\r]/g, '').trim();
+            const parts = cleaned.split(':');
+            if (parts.length >= 1) {
+              return parseInt(parts[0]) || 0;
+            }
+          } catch (e) {}
+          return 0;
+        }
+
+        function findLatestOperatingDayFromData(data) {
+          let latestOperatingDate = null;
+          data.forEach((d) => {
+            const t = parseTarikhKejadian(d.tarikh);
+            if (!t) return;
+            const jam = parseJamDariMasa(d.masa);
+            let operatingDate = new Date(t);
+            if (jam < 6) {
+              operatingDate.setDate(operatingDate.getDate() - 1);
+            }
+            if (!latestOperatingDate || operatingDate > latestOperatingDate) {
+              latestOperatingDate = operatingDate;
+            }
+          });
+          if (latestOperatingDate) {
+            return 'DAY ' + latestOperatingDate.getDate();
+          }
+          const now = new Date();
+          const jam = now.getHours();
+          let operatingDate = new Date(now);
+          if (jam < 6) {
+            operatingDate.setDate(operatingDate.getDate() - 1);
+          }
+          return 'DAY ' + operatingDate.getDate();
+        }
+
+        // ================================================================
+        // FETCH DATA UTAMA
+        // ================================================================
+        async function fetchAllData() {
+          try {
+            const [dataA, dataB, dataC] = await Promise.all([
+              fetchSingleCSV(CSV_URLS.syifA, 'Syif A'),
+              fetchSingleCSV(CSV_URLS.syifB, 'Syif B'),
+              fetchSingleCSV(CSV_URLS.syifC, 'Syif C')
+            ]);
+
+            allData = [...dataA, ...dataB, ...dataC];
+
+            // Tentukan hari operasi terkini
+            currentDay = findLatestOperatingDayFromData(allData);
+
+            // Tapis data mengikut hari operasi
+            allCaseData = allData.filter((d) => {
+              const t = parseTarikhKejadian(d.tarikh);
+              if (!t) return false;
+              const jam = parseJamDariMasa(d.masa);
+              let operatingDate = new Date(t);
+              if (jam < 6) {
+                operatingDate.setDate(operatingDate.getDate() - 1);
+              }
+              const dayFromDateTime = 'DAY ' + operatingDate.getDate();
+              return dayFromDateTime === currentDay;
+            });
+
+            // Kemaskini statistik kes hari ini
+            document.getElementById('statKesHariIni').textContent = allCaseData.length;
+
+            // Kemaskini buletin dan senarai kes
+            updateBulletin(allCaseData);
+            updateKesList(allCaseData);
+
+            console.log(`✅ Data dimuat: ${allData.length} kes keseluruhan, ${allCaseData.length} kes untuk ${currentDay}`);
+          } catch (error) {
+            console.error('❌ Error fetching all data:', error.message);
+          }
+        }
+
+        // ================================================================
+        // CUACA & STATISTIK LAIN
+        // ================================================================
+        async function fetchCuacaJB() {
+          const cuacaEl = document.getElementById('statCuaca');
+          const iconEl = document.getElementById('statCuacaIcon');
+          try {
+            const resp = await fetch('https://api.open-meteo.com/v1/forecast?latitude=1.4927&longitude=103.7414&current=temperature_2m,weather_code&timezone=Asia%2FSingapore');
+            if (!resp.ok) throw new Error('Gagal');
+            const data = await resp.json();
+            const temp = Math.round(data.current.temperature_2m);
+            const code = data.current.weather_code;
+            const iconMap = {
+              0: 'fa-sun', 1: 'fa-cloud-sun', 2: 'fa-cloud-sun', 3: 'fa-cloud',
+              45: 'fa-smog', 48: 'fa-smog',
+              51: 'fa-cloud-rain', 53: 'fa-cloud-rain', 55: 'fa-cloud-rain',
+              61: 'fa-cloud-rain', 63: 'fa-cloud-rain', 65: 'fa-cloud-rain',
+              80: 'fa-cloud-rain', 81: 'fa-cloud-rain', 82: 'fa-cloud-rain',
+              95: 'fa-cloud-bolt', 96: 'fa-cloud-bolt', 99: 'fa-cloud-bolt'
+            };
+            const icon = iconMap[code] || 'fa-cloud-sun';
+            if (cuacaEl) cuacaEl.textContent = temp + '°C';
+            if (iconEl) iconEl.className = 'fas ' + icon + ' icon-badge';
+          } catch (e) {
+            if (cuacaEl) cuacaEl.textContent = '--°C';
+          }
+        }
+
+        // ===== JENTERA CFRT (hanya jumlah) =====
+        const CFRT_CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQt0JkN2yWW_0FeY5GKpmIvs1uI6si89JcqNmSTO3f--rM8FhQZe1Q97YQd8tiAsmaMQdTXO5TQWedy/pub?gid=0&single=true&output=csv';
+        async function fetchJenteraBersedia() {
+          const elJumlah = document.getElementById('statJenteraSedia');
+          try {
+            const resp = await fetch(CFRT_CSV_URL, { cache:'no-cache' });
+            if (!resp.ok) throw new Error('Gagal');
+            const text = await resp.text();
+            const rows = parseCSV(text);
+            if (rows.length < 2) throw new Error('Data kosong');
+            const headers = rows[0];
+            const idxStatus = detectColumnIndex(headers, 'STATUS JENTERA');
+            if (idxStatus === -1) throw new Error('Column tidak dijumpai');
+            let baik = 0, rosakMinor = 0;
+            for (let i=1; i<rows.length; i++) {
+              const row = rows[i];
+              if (!row || row.length === 0) continue;
+              const status = (idxStatus >=0 ? row[idxStatus]||'' : '').toUpperCase();
+              if (status.includes('BAIK')) baik++;
+              else if (status.includes('ROSAK MINOR')) rosakMinor++;
+            }
+            const jumlah = baik + rosakMinor;
+            if (elJumlah) elJumlah.textContent = jumlah;
+          } catch (e) {
+            console.warn('Jentera error:', e.message);
+            if (elJumlah) elJumlah.textContent = '--';
+          }
+        }
+
+        // ===== ANGGOTA =====
+        async function fetchAnggotaMiniStats() {
+          try {
+            const SUPABASE_URL = 'https://hglmbrqweijpguxfeloq.supabase.co';
+            const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhnbG1icnF3ZWlqcGd1eGZlbG9xIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODU1NDcyNDAsImV4cCI6MjEwMTEyMzI0MH0.xBuhxHVmkuIPC34421QfuCERIpBPFiyVi1sSC-PQAiQ';
+            const resp = await fetch(`${SUPABASE_URL}/rest/v1/jbpm_data?id=eq.1&select=rekodAnggota`, {
+              headers: { apikey: SUPABASE_ANON_KEY, Authorization: 'Bearer ' + SUPABASE_ANON_KEY }
+            });
+            if (!resp.ok) throw new Error('Gagal');
+            const data = await resp.json();
+            if (data && data.length > 0 && data[0].rekodAnggota) {
+              const anggota = data[0].rekodAnggota;
+              const total = anggota.length;
+              const bertugas = anggota.filter(a => a.status === 'BERTUGAS').length;
+              const cuti = anggota.filter(a => a.status === 'CUTI').length;
+              const sakit = anggota.filter(a => a.status === 'CUTI SAKIT').length;
+              const tugasKhas = anggota.filter(a => a.status === 'TUGAS KHAS').length;
+              document.getElementById('miniTotal').textContent = total;
+              document.getElementById('miniBertugas').textContent = bertugas;
+              document.getElementById('miniCuti').textContent = cuti;
+              document.getElementById('miniSakit').textContent = sakit;
+              document.getElementById('miniTugasKhas').textContent = tugasKhas;
+              const statBertugasEl = document.getElementById('statBertugas');
+              if (statBertugasEl) statBertugasEl.textContent = bertugas;
+            }
+          } catch (e) {}
+        }
+
+        // ================================================================
+        // INITIALISASI
+        // ================================================================
+        fetchAllData();
+        setInterval(fetchAllData, 60000);
+
+        fetchCuacaJB();
+        setInterval(fetchCuacaJB, 900000);
 
         fetchJenteraBersedia();
         setInterval(fetchJenteraBersedia, 60000);
 
-        // ===== SCROLL-TRIGGERED CARD ANIMATIONS =====
-        const animElements = document.querySelectorAll('.app-card, .stat-item');
+        fetchAnggotaMiniStats();
+        setInterval(fetchAnggotaMiniStats, 60000);
 
+        // ===== SCROLL ANIMATION =====
+        const animElements = document.querySelectorAll('.app-card, .stat-item');
         document.querySelectorAll('.apps-grid').forEach((grid, gridIdx) => {
           const cards = grid.querySelectorAll('.app-card');
           cards.forEach((card, idx) => {
@@ -3336,105 +3264,41 @@
             card.style.transitionDelay = delay + 's';
           });
         });
-
         document.querySelectorAll('.stat-item').forEach((item, idx) => {
-          const baseDelay = 0.05 + idx * 0.06;
-          item.style.transitionDelay = baseDelay + 's';
+          item.style.transitionDelay = (0.05 + idx * 0.06) + 's';
         });
 
-        const observerOptions = {
-          root: null,
-          rootMargin: '0px 0px -60px 0px',
-          threshold: 0.12,
-        };
-
+        const observerOptions = { root: null, rootMargin: '0px 0px -60px 0px', threshold: 0.12 };
         const observer = new IntersectionObserver((entries) => {
-          entries.forEach((entry) => {
+          entries.forEach(entry => {
             if (entry.isIntersecting) {
               entry.target.classList.add('visible');
               observer.unobserve(entry.target);
             }
           });
         }, observerOptions);
-
-        animElements.forEach((el) => {
-          observer.observe(el);
-        });
+        animElements.forEach(el => observer.observe(el));
 
         setTimeout(() => {
-          animElements.forEach((el) => {
+          animElements.forEach(el => {
             const rect = el.getBoundingClientRect();
-            const windowHeight = window.innerHeight;
-            if (rect.top < windowHeight - 60 && rect.bottom > 0) {
+            if (rect.top < window.innerHeight - 60 && rect.bottom > 0) {
               el.classList.add('visible');
               observer.unobserve(el);
             }
           });
         }, 300);
 
-        window.addEventListener(
-          'scroll',
-          function () {
-            animElements.forEach((el) => {
-              if (el.classList.contains('visible')) return;
-              const rect = el.getBoundingClientRect();
-              const windowHeight = window.innerHeight;
-              if (rect.top < windowHeight - 60 && rect.bottom > 0) {
-                el.classList.add('visible');
-                observer.unobserve(el);
-              }
-            });
-          },
-          { passive: true }
-        );
-
-        // ===== FETCH DATA UNTUK MINI STATS ANGGOTA =====
-        async function fetchAnggotaMiniStats() {
-          try {
-            const SUPABASE_URL = 'https://hglmbrqweijpguxfeloq.supabase.co';
-            const SUPABASE_ANON_KEY =
-              'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhnbG1icnF3ZWlqcGd1eGZlbG9xIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODU1NDcyNDAsImV4cCI6MjEwMTEyMzI0MH0.xBuhxHVmkuIPC34421QfuCERIpBPFiyVi1sSC-PQAiQ';
-            const resp = await fetch(
-              `${SUPABASE_URL}/rest/v1/jbpm_data?id=eq.1&select=rekodAnggota`,
-              {
-                headers: {
-                  apikey: SUPABASE_ANON_KEY,
-                  Authorization: 'Bearer ' + SUPABASE_ANON_KEY,
-                },
-              }
-            );
-            if (!resp.ok) throw new Error('Gagal fetch data');
-            const data = await resp.json();
-            if (data && data.length > 0 && data[0].rekodAnggota) {
-              const anggota = data[0].rekodAnggota;
-              const total = anggota.length;
-              const bertugas = anggota.filter(
-                (a) => a.status === 'BERTUGAS'
-              ).length;
-              const cuti = anggota.filter((a) => a.status === 'CUTI').length;
-              const sakit = anggota.filter((a) => a.status === 'CUTI SAKIT')
-                .length;
-              const tugasKhas = anggota.filter(
-                (a) => a.status === 'TUGAS KHAS'
-              ).length;
-
-              document.getElementById('miniTotal').textContent = total;
-              document.getElementById('miniBertugas').textContent = bertugas;
-              document.getElementById('miniCuti').textContent = cuti;
-              document.getElementById('miniSakit').textContent = sakit;
-              document.getElementById('miniTugasKhas').textContent = tugasKhas;
-
-              // Kemaskini juga statistik "Anggota Bertugas" di stats-bar utama
-              const statBertugasEl = document.getElementById('statBertugas');
-              if (statBertugasEl) statBertugasEl.textContent = bertugas;
+        window.addEventListener('scroll', function() {
+          animElements.forEach(el => {
+            if (el.classList.contains('visible')) return;
+            const rect = el.getBoundingClientRect();
+            if (rect.top < window.innerHeight - 60 && rect.bottom > 0) {
+              el.classList.add('visible');
+              observer.unobserve(el);
             }
-          } catch (e) {
-            // Biarkan nilai '--' jika gagal
-          }
-        }
-        fetchAnggotaMiniStats();
-        // Kemaskini setiap 60 saat
-        setInterval(fetchAnggotaMiniStats, 60000);
+          });
+        }, { passive: true });
 
         // ===== SERVICE WORKER =====
         if ('serviceWorker' in navigator) {
