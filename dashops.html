@@ -47,7 +47,16 @@
         box-sizing: border-box;
       }
       body {
-        background: var(--bg-primary);
+        /* BACKGROUND IMAGE WITH DARK OVERLAY */
+        background-color: var(--bg-primary);
+        background-image:
+          linear-gradient(rgba(11, 14, 26, 0.88), rgba(11, 14, 26, 0.88)),
+          url('https://raw.githubusercontent.com/pgojhbravo5/pgo-johor-dashboard-keseluruhan/3c1b568398651e5e9612730038c9d189a673be48/firetruck-BG.png');
+        background-size: cover;
+        background-position: center;
+        background-attachment: fixed;
+        background-repeat: no-repeat;
+
         color: var(--text-primary);
         font-family: 'Segoe UI', Arial, sans-serif;
         padding: 10px;
@@ -1389,6 +1398,7 @@
           height: auto;
           min-height: 100vh;
           min-height: 100dvh;
+          background-attachment: scroll;
         }
         .grid {
           grid-template-columns: 1fr;
@@ -1710,15 +1720,19 @@
 
       /* LIGHT MODE */
       body.light-mode {
-        background: #f0f2f5;
+        background-color: #f0f2f5;
+        background-image:
+          linear-gradient(rgba(240, 242, 245, 0.90), rgba(240, 242, 245, 0.90)),
+          url('https://raw.githubusercontent.com/pgojhbravo5/pgo-johor-dashboard-keseluruhan/3c1b568398651e5e9612730038c9d189a673be48/firetruck-BG.png');
         color: #1a1a1a;
       }
       body.light-mode .panel {
-        background: #fff;
+        background: rgba(255, 255, 255, 0.92);
         border-color: #d1d5db;
+        backdrop-filter: blur(4px);
       }
       body.light-mode .panel-header {
-        background: #fff;
+        background: rgba(255, 255, 255, 0.92);
         border-bottom-color: #e5e7eb;
       }
       body.light-mode .panel-header h2 {
