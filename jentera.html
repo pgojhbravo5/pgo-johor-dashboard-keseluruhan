@@ -7,16 +7,19 @@
       content="width=device-width, initial-scale=1.0, minimum-scale=0.5, maximum-scale=3.0, user-scalable=yes"
     />
     <title>DASHBOARD JENTERA BOMBA NEGERI JOHOR</title>
-    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.tailwindcss.com">
+    </script>
     <link
-      rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
+    rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
     />
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js">
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2">
+    </script>
     <link
-      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Orbitron:wght@600;800;900&display=swap"
-      rel="stylesheet"
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Orbitron:wght@600;800;900&display=swap"
+    rel="stylesheet"
     />
 
     <style>
@@ -289,11 +292,11 @@
         height: 0.875rem;
         cursor: pointer;
       }
-      .ms-option input[type='checkbox']:not(:checked) ~ span {
+      .ms-option input[type='checkbox']:not(:checked)~span {
         text-decoration: line-through;
         opacity: 0.5;
       }
-      .ms-option input[type='checkbox']:checked ~ span {
+      .ms-option input[type='checkbox']:checked~span {
         text-decoration: none;
         opacity: 1;
       }
@@ -460,22 +463,18 @@
 
       .vehicle-illustration {
         position: relative;
-        background: linear-gradient(
-          180deg,
-          rgba(30, 41, 59, 0.9) 0%,
-          rgba(15, 23, 42, 0.95) 100%
-        );
+        background: linear-gradient(180deg,
+            rgba(30, 41, 59, 0.9) 0%,
+            rgba(15, 23, 42, 0.95) 100%);
         border-radius: 1rem;
         padding: 1rem;
         border: 1px solid rgba(148, 163, 184, 0.2);
       }
       .vehicle-body {
-        background: linear-gradient(
-          180deg,
-          #cbd5e1 0%,
-          #64748b 50%,
-          #334155 100%
-        );
+        background: linear-gradient(180deg,
+            #cbd5e1 0%,
+            #64748b 50%,
+            #334155 100%);
         border-radius: 0.75rem 0.75rem 0.25rem 0.25rem;
         position: relative;
         min-height: 60px;
@@ -749,34 +748,44 @@
           overflow-x: visible !important;
         }
       }
+
+      /* Sticky header for zone panels - ensures title stays at top */
+      .zone-card .zone-header {
+        position: sticky;
+        top: 0;
+        z-index: 10;
+        background-color: var(--bg-card);
+      }
+      .zone-card .zone-body {
+        overflow-y: auto;
+        flex: 1 1 auto;
+      }
+      /* Keep the card height constrained for scroll to work */
+      .zone-card {
+        max-height: 500px;
+        overflow: hidden;
+        display: flex;
+        flex-direction: column;
+      }
     </style>
   </head>
   <body class="min-h-screen flex flex-col">
     <!-- LOADING OVERLAY -->
-    <div
-      id="loadingOverlay"
-      class="fixed inset-0 bg-slate-950/95 z-[110] flex flex-col items-center justify-center gap-6 overflow-hidden select-none"
-    >
-      <div
-        class="relative w-80 h-36 bg-slate-900/90 rounded-2xl border border-slate-800 p-4 flex flex-col items-center justify-center shadow-2xl overflow-hidden"
-      >
+    <div id="loadingOverlay" class="fixed inset-0 bg-slate-950/95 z-[110] flex flex-col items-center justify-center gap-6 overflow-hidden select-none">
+      <div class="relative w-80 h-36 bg-slate-900/90 rounded-2xl border border-slate-800 p-4 flex flex-col items-center justify-center shadow-2xl overflow-hidden">
         <div class="absolute bottom-4 left-0 w-full h-1 bg-slate-700/60"></div>
         <div class="relative flex flex-col items-center">
           <div class="absolute -top-3 flex gap-2 z-20">
             <span class="w-3.5 h-3.5 rounded-full siren-red"></span>
             <span class="w-3.5 h-3.5 rounded-full siren-blue"></span>
           </div>
-          <div
-            class="text-6xl text-red-600 drop-shadow-[0_4px_16px_rgba(239,68,68,0.6)]"
-          >
+          <div class="text-6xl text-red-600 drop-shadow-[0_4px_16px_rgba(239,68,68,0.6)]">
             <i class="fa-solid fa-truck-field"></i>
           </div>
         </div>
       </div>
       <div class="flex flex-col items-center gap-1 text-center">
-        <div
-          class="text-xs font-black tracking-widest text-red-500 uppercase animate-pulse"
-        >
+        <div class="text-xs font-black tracking-widest text-red-500 uppercase animate-pulse">
           Memuatkan Data Jentera Bomba...
         </div>
         <p class="text-[11px] text-slate-400 font-medium">
@@ -786,76 +795,42 @@
     </div>
 
     <!-- HEADER -->
-    <header
-      class="header-bg border-b px-4 py-2.5 flex flex-wrap items-center justify-between gap-3 sticky top-0 z-40 transition-colors duration-300"
-    >
+    <header class="header-bg border-b px-4 py-2.5 flex flex-wrap items-center justify-between gap-3 sticky top-0 z-40 transition-colors duration-300">
       <div class="flex items-center gap-3">
-        <div
-          class="w-9 h-9 bg-red-600 rounded-lg flex items-center justify-center text-lg shadow-lg shadow-red-600/30"
-        >
+        <div class="w-9 h-9 bg-red-600 rounded-lg flex items-center justify-center text-lg shadow-lg shadow-red-600/30">
           <i class="fa-solid fa-fire-extinguisher text-white bell-animate"></i>
         </div>
         <div>
-          <h1
-            class="text-sm sm:text-base font-extrabold tracking-wide uppercase leading-tight"
-            style="color: var(--text-primary)"
-          >
+          <h1 class="text-sm sm:text-base font-extrabold tracking-wide uppercase leading-tight" style="color: var(--text-primary)">
             Dashboard Jentera Bomba Johor
           </h1>
-          <p
-            class="text-[11px] font-medium flex items-center gap-2 text-secondary-custom"
-          >
-            <span
-              class="w-2 h-2 rounded-full bg-emerald-500 animate-ping"
-            ></span
-            >Sistem Pemantauan Logistik & Fit View Balai
+          <p class="text-[11px] font-medium flex items-center gap-2 text-secondary-custom">
+            <span class="w-2 h-2 rounded-full bg-emerald-500 animate-ping"></span>Sistem Pemantauan Logistik & Fit View Balai
           </p>
         </div>
       </div>
-      <div
-        class="flex items-center gap-2 text-xs font-medium sub-header-controls"
-      >
-        <div
-          class="hidden sm:flex flex-col items-end text-[11px] text-secondary-custom"
-        >
+      <div class="flex items-center gap-2 text-xs font-medium sub-header-controls">
+        <div class="hidden sm:flex flex-col items-end text-[11px] text-secondary-custom">
           <span id="lastUpdate">Dikemaskini: -</span>
           <span id="countdown" class="text-muted-custom">Auto Refresh: -</span>
         </div>
         <div class="flex items-center gap-1.5">
-          <button
-            onclick="loadAllData()"
-            id="refreshBtn"
-            class="px-2.5 py-1.5 bg-red-600 hover:bg-red-700 text-white font-semibold rounded-lg shadow-md shadow-red-600/20 transition flex items-center gap-1 text-xs"
-          >
-            <i class="fa-solid fa-arrows-rotate refresh-icon"></i
-            ><span class="hidden sm:inline">Kemaskini</span>
+          <button onclick="loadAllData()" id="refreshBtn" class="px-2.5 py-1.5 bg-red-600 hover:bg-red-700 text-white font-semibold rounded-lg shadow-md shadow-red-600/20 transition flex items-center gap-1 text-xs">
+            <i class="fa-solid fa-arrows-rotate refresh-icon"></i><span class="hidden sm:inline">Kemaskini</span>
           </button>
-          <button
-            onclick="toggleTheme()"
-            id="themeToggleBtn"
-            class="p-2 bg-slate-700 hover:bg-slate-600 text-slate-200 rounded-lg border border-slate-600 transition text-xs"
-            title="Tukar Mod Siang/Malam"
-          >
+          <button onclick="toggleTheme()" id="themeToggleBtn" class="p-2 bg-slate-700 hover:bg-slate-600 text-slate-200 rounded-lg border border-slate-600 transition text-xs" title="Tukar Mod Siang/Malam">
             <i class="fa-solid fa-moon" id="themeIcon"></i>
           </button>
-          <button
-            onclick="printDashboard()"
-            id="printBtn"
-            class="p-2 bg-slate-700 hover:bg-slate-600 text-slate-200 rounded-lg border border-slate-600 transition text-xs"
-            title="Cetak Dashboard"
-          >
+          <button onclick="printDashboard()" id="printBtn" class="p-2 bg-slate-700 hover:bg-slate-600 text-slate-200 rounded-lg border border-slate-600 transition text-xs" title="Cetak Dashboard">
             <i class="fa-solid fa-print"></i>
           </button>
-          <a
-            href="index.html"
-            class="btn-back"
-            style="
+          <a href="index.html" class="btn-back" style="
     display: inline-flex;
     align-items: center;
     gap: 0.4rem;
     padding: 0.4rem 0.9rem;
     border-radius: 0.5rem;
-    background: #FFD700; /* GOLD / KUNING EMAS */
+    background: #FFD700;
     color: #000;
     border: 1px solid #FFD700;
     font-size: 0.7rem;
@@ -864,8 +839,7 @@
     cursor: pointer;
     transition: all 0.2s ease;
     font-family: var(--font-main);
-            "
-          >
+            ">
             <i class="fas fa-arrow-left"></i> KEMBALI
           </a>
         </div>
@@ -879,31 +853,17 @@
     </div>
 
     <!-- TABS -->
-    <nav
-      class="nav-bg backdrop-blur border-b px-4 flex gap-1 overflow-x-auto tab-nav-header sticky top-[57px] z-30 transition-colors duration-300"
-    >
-      <button
-        onclick="switchTab('cfrt')"
-        class="tab-btn tab-cfrt active py-2.5 px-3 text-xs font-bold border-b-2 border-red-500 text-red-400 whitespace-nowrap transition flex items-center gap-1.5"
-      >
+    <nav class="nav-bg backdrop-blur border-b px-4 flex gap-1 overflow-x-auto tab-nav-header sticky top-[57px] z-30 transition-colors duration-300">
+      <button onclick="switchTab('cfrt')" class="tab-btn tab-cfrt active py-2.5 px-3 text-xs font-bold border-b-2 border-red-500 text-red-400 whitespace-nowrap transition flex items-center gap-1.5">
         <i class="fa-solid fa-fire-extinguisher"></i> RESCUE TENDER (FRT)
       </button>
-      <button
-        onclick="switchTab('emrs')"
-        class="tab-btn tab-emrs py-2.5 px-3 text-xs font-bold border-b-2 border-transparent text-slate-400 hover:text-slate-200 whitespace-nowrap transition flex items-center gap-1.5"
-      >
+      <button onclick="switchTab('emrs')" class="tab-btn tab-emrs py-2.5 px-3 text-xs font-bold border-b-2 border-transparent text-slate-400 hover:text-slate-200 whitespace-nowrap transition flex items-center gap-1.5">
         <i class="fa-solid fa-truck-medical"></i> EMRS
       </button>
-      <button
-        onclick="switchTab('water')"
-        class="tab-btn tab-water py-2.5 px-3 text-xs font-bold border-b-2 border-transparent text-slate-400 hover:text-slate-200 whitespace-nowrap transition flex items-center gap-1.5"
-      >
+      <button onclick="switchTab('water')" class="tab-btn tab-water py-2.5 px-3 text-xs font-bold border-b-2 border-transparent text-slate-400 hover:text-slate-200 whitespace-nowrap transition flex items-center gap-1.5">
         <i class="fa-solid fa-truck-droplet"></i> WATER TANKER
       </button>
-      <button
-        onclick="switchTab('dashboard')"
-        class="tab-btn tab-dashboard py-2.5 px-3 text-xs font-bold border-b-2 border-transparent text-slate-400 hover:text-slate-200 whitespace-nowrap transition flex items-center gap-1.5"
-      >
+      <button onclick="switchTab('dashboard')" class="tab-btn tab-dashboard py-2.5 px-3 text-xs font-bold border-b-2 border-transparent text-slate-400 hover:text-slate-200 whitespace-nowrap transition flex items-center gap-1.5">
         <i class="fa-solid fa-chart-column"></i> DASHBOARD UTAMA (FIT VIEW)
       </button>
     </nav>
@@ -912,46 +872,25 @@
     <main class="flex-1 p-2.5 sm:p-4 space-y-4 max-w-[1700px] w-full mx-auto">
       <!-- TAB CFRT -->
       <section id="tab-cfrt" class="tab-content">
-        <div
-          id="statsRow-cfrt"
-          class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-2.5 mb-4"
-        ></div>
+        <div id="statsRow-cfrt" class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-2.5 mb-4"></div>
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-3 mb-4">
-          <div
-            class="card-bg border-custom rounded-xl p-3 transition-colors duration-300"
-            style="border-width: 1px"
-          >
+          <div class="card-bg border-custom rounded-xl p-3 transition-colors duration-300" style="border-width: 1px">
             <div class="flex items-center justify-between mb-2">
-              <h3
-                class="text-xs font-bold uppercase tracking-wider flex items-center gap-2 text-secondary-custom"
-              >
-                <i class="fa-solid fa-chart-pie text-red-500"></i> Status
-                Jentera FRT
+              <h3 class="text-xs font-bold uppercase tracking-wider flex items-center gap-2 text-secondary-custom">
+                <i class="fa-solid fa-chart-pie text-red-500"></i> Status Jentera FRT
               </h3>
-              <span
-                class="text-[9px] bg-red-500/20 text-red-400 border border-red-500/30 px-1.5 py-0.5 rounded font-bold"
-                >Doughnut</span
-              >
+              <span class="text-[9px] bg-red-500/20 text-red-400 border border-red-500/30 px-1.5 py-0.5 rounded font-bold">Doughnut</span>
             </div>
             <div class="h-48 relative">
               <canvas id="chartStatus-cfrt"></canvas>
             </div>
           </div>
-          <div
-            class="card-bg border-custom rounded-xl p-3 transition-colors duration-300"
-            style="border-width: 1px"
-          >
+          <div class="card-bg border-custom rounded-xl p-3 transition-colors duration-300" style="border-width: 1px">
             <div class="flex items-center justify-between mb-2">
-              <h3
-                class="text-xs font-bold uppercase tracking-wider flex items-center gap-2 text-secondary-custom"
-              >
+              <h3 class="text-xs font-bold uppercase tracking-wider flex items-center gap-2 text-secondary-custom">
                 <i class="fa-solid fa-truck text-red-500"></i> Model Jentera FRT
               </h3>
-              <button
-                onclick="toggleChartType('cfrt')"
-                class="text-[9px] bg-slate-700 hover:bg-slate-600 text-slate-200 border border-slate-600 px-2 py-0.5 rounded font-bold transition flex items-center gap-1"
-                id="chartTypeBtn-cfrt"
-              >
+              <button onclick="toggleChartType('cfrt')" class="text-[9px] bg-slate-700 hover:bg-slate-600 text-slate-200 border border-slate-600 px-2 py-0.5 rounded font-bold transition flex items-center gap-1" id="chartTypeBtn-cfrt">
                 <i class="fa-solid fa-chart-bar"></i> Tukar Carta Bar
               </button>
             </div>
@@ -959,21 +898,12 @@
               <canvas id="chartModel-cfrt"></canvas>
             </div>
           </div>
-          <div
-            class="card-bg border-custom rounded-xl p-3 transition-colors duration-300"
-            style="border-width: 1px"
-          >
+          <div class="card-bg border-custom rounded-xl p-3 transition-colors duration-300" style="border-width: 1px">
             <div class="flex items-center justify-between mb-2">
-              <h3
-                class="text-xs font-bold uppercase tracking-wider flex items-center gap-2 text-secondary-custom"
-              >
-                <i class="fa-solid fa-location-dot text-red-500"></i> Agihan
-                Mengikut Zon (Combo)
+              <h3 class="text-xs font-bold uppercase tracking-wider flex items-center gap-2 text-secondary-custom">
+                <i class="fa-solid fa-location-dot text-red-500"></i> Agihan Mengikut Zon (Combo)
               </h3>
-              <span
-                class="text-[9px] bg-red-500/20 text-red-400 border border-red-500/30 px-1.5 py-0.5 rounded font-bold"
-                >Bar + Liner</span
-              >
+              <span class="text-[9px] bg-red-500/20 text-red-400 border border-red-500/30 px-1.5 py-0.5 rounded font-bold">Bar + Liner</span>
             </div>
             <div class="h-48 relative">
               <canvas id="chartZon-cfrt"></canvas>
@@ -981,112 +911,53 @@
           </div>
         </div>
         <!-- TABLE CFRT -->
-        <div
-          class="card-bg border-custom rounded-xl p-3 space-y-3 transition-colors duration-300"
-          style="border-width: 1px"
-        >
+        <div class="card-bg border-custom rounded-xl p-3 space-y-3 transition-colors duration-300" style="border-width: 1px">
           <div class="flex flex-wrap items-center justify-between gap-2">
-            <h3
-              class="text-xs font-bold uppercase tracking-wider flex items-center gap-2"
-              style="color: var(--text-primary)"
-            >
-              <i class="fa-solid fa-list-check text-red-500"></i> Senarai
-              Jentera FRT
+            <h3 class="text-xs font-bold uppercase tracking-wider flex items-center gap-2" style="color: var(--text-primary)">
+              <i class="fa-solid fa-list-check text-red-500"></i> Senarai Jentera FRT
             </h3>
             <div class="flex items-center gap-2">
-              <button
-                onclick="copyAllTableData('cfrt')"
-                class="px-2.5 py-1 bg-emerald-700 hover:bg-emerald-600 text-xs font-semibold rounded-lg text-emerald-100 transition flex items-center gap-1"
-              >
+              <button onclick="copyAllTableData('cfrt')" class="px-2.5 py-1 bg-emerald-700 hover:bg-emerald-600 text-xs font-semibold rounded-lg text-emerald-100 transition flex items-center gap-1">
                 <i class="fa-solid fa-copy"></i> Salin Semua
               </button>
-              <button
-                onclick="eksportKeExcel('cfrt')"
-                class="px-2.5 py-1 bg-slate-700 hover:bg-slate-600 text-xs font-semibold rounded-lg text-slate-200 transition flex items-center gap-1"
-              >
+              <button onclick="eksportKeExcel('cfrt')" class="px-2.5 py-1 bg-slate-700 hover:bg-slate-600 text-xs font-semibold rounded-lg text-slate-200 transition flex items-center gap-1">
                 <i class="fa-solid fa-file-export"></i> CSV
               </button>
             </div>
           </div>
           <div class="flex flex-wrap items-center gap-2">
             <div class="relative flex-1 min-w-[180px]">
-              <i
-                class="fa-solid fa-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-slate-500 text-xs"
-              ></i>
-              <input
-                type="text"
-                id="searchInput-cfrt"
-                placeholder="Cari Callsign, Plat, Lokasi..."
-                class="w-full input-bg border rounded-lg pl-8 pr-8 py-1.5 outline-none focus:border-slate-500 text-xs transition-colors duration-300"
-              />
-              <button
-                onclick="clearSearch('cfrt')"
-                class="absolute right-2 top-1/2 -translate-y-1/2 text-slate-400 hover:text-white text-xs p-1 rounded transition"
-                title="Padam carian"
-              >
+              <i class="fa-solid fa-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-slate-500 text-xs"></i>
+              <input type="text" id="searchInput-cfrt" placeholder="Cari Callsign, Plat, Lokasi..." class="w-full input-bg border rounded-lg pl-8 pr-8 py-1.5 outline-none focus:border-slate-500 text-xs transition-colors duration-300" />
+              <button onclick="clearSearch('cfrt')" class="absolute right-2 top-1/2 -translate-y-1/2 text-slate-400 hover:text-white text-xs p-1 rounded transition" title="Padam carian">
                 <i class="fa-solid fa-xmark"></i>
               </button>
             </div>
-            <button
-              onclick="doSearch('cfrt')"
-              class="px-3 py-1.5 bg-red-600 hover:bg-red-700 text-white text-xs font-semibold rounded-lg shadow-md transition flex items-center gap-1.5"
-            >
+            <button onclick="doSearch('cfrt')" class="px-3 py-1.5 bg-red-600 hover:bg-red-700 text-white text-xs font-semibold rounded-lg shadow-md transition flex items-center gap-1.5">
               <i class="fa-solid fa-search"></i> Cari
             </button>
             <div class="ms-dropdown" id="msDropdown-cfrt">
               <button class="ms-select-btn" onclick="toggleMsDropdown('cfrt')">
-                <span id="msText-cfrt"
-                  ><i class="fa-solid fa-filter mr-1"></i> Semua Status</span
-                ><span
-                  class="text-[10px] bg-red-600 text-white px-1.5 py-0.2 rounded font-bold"
-                  id="msCount-cfrt"
-                  style="display: none"
-                  >0</span
-                ><span class="text-[9px]">▼</span>
+                <span id="msText-cfrt"><i class="fa-solid fa-filter mr-1"></i> Semua Status</span><span class="text-[10px] bg-red-600 text-white px-1.5 py-0.2 rounded font-bold" id="msCount-cfrt" style="display: none">0</span><span class="text-[9px]">▼</span>
               </button>
               <div class="ms-options" id="msOptions-cfrt"></div>
             </div>
             <div class="ms-dropdown" id="msDropdownModel-cfrt">
-              <button
-                class="ms-select-btn"
-                onclick="toggleMsModelDropdown('cfrt')"
-              >
-                <span id="msTextModel-cfrt"
-                  ><i class="fa-solid fa-truck mr-1"></i> Semua Model</span
-                ><span
-                  class="text-[10px] bg-red-600 text-white px-1.5 py-0.2 rounded font-bold"
-                  id="msCountModel-cfrt"
-                  style="display: none"
-                  >0</span
-                ><span class="text-[9px]">▼</span>
+              <button class="ms-select-btn" onclick="toggleMsModelDropdown('cfrt')">
+                <span id="msTextModel-cfrt"><i class="fa-solid fa-truck mr-1"></i> Semua Model</span><span class="text-[10px] bg-red-600 text-white px-1.5 py-0.2 rounded font-bold" id="msCountModel-cfrt" style="display: none">0</span><span class="text-[9px]">▼</span>
               </button>
               <div class="ms-options" id="msOptionsModel-cfrt"></div>
             </div>
             <div class="ms-dropdown" id="msDropdownZon-cfrt">
-              <button
-                class="ms-select-btn"
-                onclick="toggleMsZonDropdown('cfrt')"
-              >
-                <span id="msTextZon-cfrt"
-                  ><i class="fa-solid fa-location-dot mr-1"></i> Semua Zon</span
-                ><span
-                  class="text-[10px] bg-red-600 text-white px-1.5 py-0.2 rounded font-bold"
-                  id="msCountZon-cfrt"
-                  style="display: none"
-                  >0</span
-                ><span class="text-[9px]">▼</span>
+              <button class="ms-select-btn" onclick="toggleMsZonDropdown('cfrt')">
+                <span id="msTextZon-cfrt"><i class="fa-solid fa-location-dot mr-1"></i> Semua Zon</span><span class="text-[10px] bg-red-600 text-white px-1.5 py-0.2 rounded font-bold" id="msCountZon-cfrt" style="display: none">0</span><span class="text-[9px]">▼</span>
               </button>
               <div class="ms-options" id="msOptionsZon-cfrt"></div>
             </div>
           </div>
-          <div
-            class="overflow-x-auto rounded-lg border-custom"
-            style="border-width: 1px"
-          >
+          <div class="overflow-x-auto rounded-lg border-custom" style="border-width: 1px">
             <table class="w-full text-left border-collapse text-xs">
-              <thead
-                class="table-header-bg text-secondary-custom font-semibold uppercase border-b border-custom text-[11px]"
-              >
+              <thead class="table-header-bg text-secondary-custom font-semibold uppercase border-b border-custom text-[11px]">
                 <tr>
                   <th class="p-2">Bil</th>
                   <th class="p-2">Callsign</th>
@@ -1100,11 +971,7 @@
                   <th class="p-2 w-8">Salin</th>
                 </tr>
               </thead>
-              <tbody
-                id="tableBody-cfrt"
-                class="divide-y divide-slate-700/40 text-[11px]"
-                style="color: var(--text-secondary)"
-              ></tbody>
+              <tbody id="tableBody-cfrt" class="divide-y divide-slate-700/40 text-[11px]" style="color: var(--text-secondary)"></tbody>
             </table>
           </div>
           <div class="text-[11px] text-muted-custom" id="rowCount-cfrt">-</div>
@@ -1113,46 +980,25 @@
 
       <!-- TAB EMRS -->
       <section id="tab-emrs" class="tab-content hidden">
-        <div
-          id="statsRow-emrs"
-          class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-2.5 mb-4"
-        ></div>
+        <div id="statsRow-emrs" class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-2.5 mb-4"></div>
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-3 mb-4">
-          <div
-            class="card-bg border-custom rounded-xl p-3 transition-colors duration-300"
-            style="border-width: 1px"
-          >
+          <div class="card-bg border-custom rounded-xl p-3 transition-colors duration-300" style="border-width: 1px">
             <div class="flex items-center justify-between mb-2">
-              <h3
-                class="text-xs font-bold uppercase tracking-wider flex items-center gap-2 text-secondary-custom"
-              >
+              <h3 class="text-xs font-bold uppercase tracking-wider flex items-center gap-2 text-secondary-custom">
                 <i class="fa-solid fa-chart-pie text-blue-500"></i> Status EMRS
               </h3>
-              <span
-                class="text-[9px] bg-blue-500/20 text-blue-400 border border-blue-500/30 px-1.5 py-0.5 rounded font-bold"
-                >Doughnut</span
-              >
+              <span class="text-[9px] bg-blue-500/20 text-blue-400 border border-blue-500/30 px-1.5 py-0.5 rounded font-bold">Doughnut</span>
             </div>
             <div class="h-48 relative">
               <canvas id="chartStatus-emrs"></canvas>
             </div>
           </div>
-          <div
-            class="card-bg border-custom rounded-xl p-3 transition-colors duration-300"
-            style="border-width: 1px"
-          >
+          <div class="card-bg border-custom rounded-xl p-3 transition-colors duration-300" style="border-width: 1px">
             <div class="flex items-center justify-between mb-2">
-              <h3
-                class="text-xs font-bold uppercase tracking-wider flex items-center gap-2 text-secondary-custom"
-              >
-                <i class="fa-solid fa-truck-medical text-blue-500"></i> Model
-                Jentera EMRS
+              <h3 class="text-xs font-bold uppercase tracking-wider flex items-center gap-2 text-secondary-custom">
+                <i class="fa-solid fa-truck-medical text-blue-500"></i> Model Jentera EMRS
               </h3>
-              <button
-                onclick="toggleChartType('emrs')"
-                class="text-[9px] bg-slate-700 hover:bg-slate-600 text-slate-200 border border-slate-600 px-2 py-0.5 rounded font-bold transition flex items-center gap-1"
-                id="chartTypeBtn-emrs"
-              >
+              <button onclick="toggleChartType('emrs')" class="text-[9px] bg-slate-700 hover:bg-slate-600 text-slate-200 border border-slate-600 px-2 py-0.5 rounded font-bold transition flex items-center gap-1" id="chartTypeBtn-emrs">
                 <i class="fa-solid fa-chart-bar"></i> Tukar Carta Bar
               </button>
             </div>
@@ -1160,21 +1006,12 @@
               <canvas id="chartModel-emrs"></canvas>
             </div>
           </div>
-          <div
-            class="card-bg border-custom rounded-xl p-3 transition-colors duration-300"
-            style="border-width: 1px"
-          >
+          <div class="card-bg border-custom rounded-xl p-3 transition-colors duration-300" style="border-width: 1px">
             <div class="flex items-center justify-between mb-2">
-              <h3
-                class="text-xs font-bold uppercase tracking-wider flex items-center gap-2 text-secondary-custom"
-              >
-                <i class="fa-solid fa-location-dot text-blue-500"></i> Agihan
-                Mengikut Zon (Combo)
+              <h3 class="text-xs font-bold uppercase tracking-wider flex items-center gap-2 text-secondary-custom">
+                <i class="fa-solid fa-location-dot text-blue-500"></i> Agihan Mengikut Zon (Combo)
               </h3>
-              <span
-                class="text-[9px] bg-blue-500/20 text-blue-400 border border-blue-500/30 px-1.5 py-0.5 rounded font-bold"
-                >Bar + Liner</span
-              >
+              <span class="text-[9px] bg-blue-500/20 text-blue-400 border border-blue-500/30 px-1.5 py-0.5 rounded font-bold">Bar + Liner</span>
             </div>
             <div class="h-48 relative">
               <canvas id="chartZon-emrs"></canvas>
@@ -1182,113 +1019,53 @@
           </div>
         </div>
         <!-- TABLE EMRS -->
-        <div
-          class="card-bg border-custom rounded-xl p-3 space-y-3 transition-colors duration-300"
-          style="border-width: 1px"
-        >
+        <div class="card-bg border-custom rounded-xl p-3 space-y-3 transition-colors duration-300" style="border-width: 1px">
           <div class="flex flex-wrap items-center justify-between gap-2">
-            <h3
-              class="text-xs font-bold uppercase tracking-wider flex items-center gap-2"
-              style="color: var(--text-primary)"
-            >
-              <i class="fa-solid fa-list-check text-blue-500"></i> Senarai
-              Jentera EMRS
+            <h3 class="text-xs font-bold uppercase tracking-wider flex items-center gap-2" style="color: var(--text-primary)">
+              <i class="fa-solid fa-list-check text-blue-500"></i> Senarai Jentera EMRS
             </h3>
             <div class="flex items-center gap-2">
-              <button
-                onclick="copyAllTableData('emrs')"
-                class="px-2.5 py-1 bg-emerald-700 hover:bg-emerald-600 text-xs font-semibold rounded-lg text-emerald-100 transition flex items-center gap-1"
-              >
+              <button onclick="copyAllTableData('emrs')" class="px-2.5 py-1 bg-emerald-700 hover:bg-emerald-600 text-xs font-semibold rounded-lg text-emerald-100 transition flex items-center gap-1">
                 <i class="fa-solid fa-copy"></i> Salin Semua
               </button>
-              <button
-                onclick="eksportKeExcel('emrs')"
-                class="px-2.5 py-1 bg-slate-700 hover:bg-slate-600 text-xs font-semibold rounded-lg text-slate-200 transition flex items-center gap-1"
-              >
+              <button onclick="eksportKeExcel('emrs')" class="px-2.5 py-1 bg-slate-700 hover:bg-slate-600 text-xs font-semibold rounded-lg text-slate-200 transition flex items-center gap-1">
                 <i class="fa-solid fa-file-export"></i> CSV
               </button>
             </div>
           </div>
           <div class="flex flex-wrap items-center gap-2">
             <div class="relative flex-1 min-w-[180px]">
-              <i
-                class="fa-solid fa-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-slate-500 text-xs"
-              ></i>
-              <input
-                type="text"
-                id="searchInput-emrs"
-                placeholder="Cari Callsign, Plat, Lokasi..."
-                class="w-full input-bg border rounded-lg pl-8 pr-8 py-1.5 outline-none focus:border-slate-500 text-xs transition-colors duration-300"
-              />
-              <button
-                onclick="clearSearch('emrs')"
-                class="absolute right-2 top-1/2 -translate-y-1/2 text-slate-400 hover:text-white text-xs p-1 rounded transition"
-                title="Padam carian"
-              >
+              <i class="fa-solid fa-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-slate-500 text-xs"></i>
+              <input type="text" id="searchInput-emrs" placeholder="Cari Callsign, Plat, Lokasi..." class="w-full input-bg border rounded-lg pl-8 pr-8 py-1.5 outline-none focus:border-slate-500 text-xs transition-colors duration-300" />
+              <button onclick="clearSearch('emrs')" class="absolute right-2 top-1/2 -translate-y-1/2 text-slate-400 hover:text-white text-xs p-1 rounded transition" title="Padam carian">
                 <i class="fa-solid fa-xmark"></i>
               </button>
             </div>
-            <button
-              onclick="doSearch('emrs')"
-              class="px-3 py-1.5 bg-blue-600 hover:bg-blue-700 text-white text-xs font-semibold rounded-lg shadow-md transition flex items-center gap-1.5"
-            >
+            <button onclick="doSearch('emrs')" class="px-3 py-1.5 bg-blue-600 hover:bg-blue-700 text-white text-xs font-semibold rounded-lg shadow-md transition flex items-center gap-1.5">
               <i class="fa-solid fa-search"></i> Cari
             </button>
             <div class="ms-dropdown" id="msDropdown-emrs">
               <button class="ms-select-btn" onclick="toggleMsDropdown('emrs')">
-                <span id="msText-emrs"
-                  ><i class="fa-solid fa-filter mr-1"></i> Semua Status</span
-                ><span
-                  class="text-[10px] bg-blue-600 text-white px-1.5 py-0.2 rounded font-bold"
-                  id="msCount-emrs"
-                  style="display: none"
-                  >0</span
-                ><span class="text-[9px]">▼</span>
+                <span id="msText-emrs"><i class="fa-solid fa-filter mr-1"></i> Semua Status</span><span class="text-[10px] bg-blue-600 text-white px-1.5 py-0.2 rounded font-bold" id="msCount-emrs" style="display: none">0</span><span class="text-[9px]">▼</span>
               </button>
               <div class="ms-options" id="msOptions-emrs"></div>
             </div>
             <div class="ms-dropdown" id="msDropdownModel-emrs">
-              <button
-                class="ms-select-btn"
-                onclick="toggleMsModelDropdown('emrs')"
-              >
-                <span id="msTextModel-emrs"
-                  ><i class="fa-solid fa-truck-medical mr-1"></i> Semua
-                  Model</span
-                ><span
-                  class="text-[10px] bg-blue-600 text-white px-1.5 py-0.2 rounded font-bold"
-                  id="msCountModel-emrs"
-                  style="display: none"
-                  >0</span
-                ><span class="text-[9px]">▼</span>
+              <button class="ms-select-btn" onclick="toggleMsModelDropdown('emrs')">
+                <span id="msTextModel-emrs"><i class="fa-solid fa-truck-medical mr-1"></i> Semua Model</span><span class="text-[10px] bg-blue-600 text-white px-1.5 py-0.2 rounded font-bold" id="msCountModel-emrs" style="display: none">0</span><span class="text-[9px]">▼</span>
               </button>
               <div class="ms-options" id="msOptionsModel-emrs"></div>
             </div>
             <div class="ms-dropdown" id="msDropdownZon-emrs">
-              <button
-                class="ms-select-btn"
-                onclick="toggleMsZonDropdown('emrs')"
-              >
-                <span id="msTextZon-emrs"
-                  ><i class="fa-solid fa-location-dot mr-1"></i> Semua Zon</span
-                ><span
-                  class="text-[10px] bg-blue-600 text-white px-1.5 py-0.2 rounded font-bold"
-                  id="msCountZon-emrs"
-                  style="display: none"
-                  >0</span
-                ><span class="text-[9px]">▼</span>
+              <button class="ms-select-btn" onclick="toggleMsZonDropdown('emrs')">
+                <span id="msTextZon-emrs"><i class="fa-solid fa-location-dot mr-1"></i> Semua Zon</span><span class="text-[10px] bg-blue-600 text-white px-1.5 py-0.2 rounded font-bold" id="msCountZon-emrs" style="display: none">0</span><span class="text-[9px]">▼</span>
               </button>
               <div class="ms-options" id="msOptionsZon-emrs"></div>
             </div>
           </div>
-          <div
-            class="overflow-x-auto rounded-lg border-custom"
-            style="border-width: 1px"
-          >
+          <div class="overflow-x-auto rounded-lg border-custom" style="border-width: 1px">
             <table class="w-full text-left border-collapse text-xs">
-              <thead
-                class="table-header-bg text-secondary-custom font-semibold uppercase border-b border-custom text-[11px]"
-              >
+              <thead class="table-header-bg text-secondary-custom font-semibold uppercase border-b border-custom text-[11px]">
                 <tr>
                   <th class="p-2">Bil</th>
                   <th class="p-2">Callsign</th>
@@ -1302,11 +1079,7 @@
                   <th class="p-2 w-8">Salin</th>
                 </tr>
               </thead>
-              <tbody
-                id="tableBody-emrs"
-                class="divide-y divide-slate-700/40 text-[11px]"
-                style="color: var(--text-secondary)"
-              ></tbody>
+              <tbody id="tableBody-emrs" class="divide-y divide-slate-700/40 text-[11px]" style="color: var(--text-secondary)"></tbody>
             </table>
           </div>
           <div class="text-[11px] text-muted-custom" id="rowCount-emrs">-</div>
@@ -1315,47 +1088,25 @@
 
       <!-- TAB WATER -->
       <section id="tab-water" class="tab-content hidden">
-        <div
-          id="statsRow-water"
-          class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-2.5 mb-4"
-        ></div>
+        <div id="statsRow-water" class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-2.5 mb-4"></div>
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-3 mb-4">
-          <div
-            class="card-bg border-custom rounded-xl p-3 transition-colors duration-300"
-            style="border-width: 1px"
-          >
+          <div class="card-bg border-custom rounded-xl p-3 transition-colors duration-300" style="border-width: 1px">
             <div class="flex items-center justify-between mb-2">
-              <h3
-                class="text-xs font-bold uppercase tracking-wider flex items-center gap-2 text-secondary-custom"
-              >
-                <i class="fa-solid fa-chart-pie text-cyan-500"></i> Status Water
-                Tanker
+              <h3 class="text-xs font-bold uppercase tracking-wider flex items-center gap-2 text-secondary-custom">
+                <i class="fa-solid fa-chart-pie text-cyan-500"></i> Status Water Tanker
               </h3>
-              <span
-                class="text-[9px] bg-cyan-500/20 text-cyan-400 border border-cyan-500/30 px-1.5 py-0.5 rounded font-bold"
-                >Doughnut</span
-              >
+              <span class="text-[9px] bg-cyan-500/20 text-cyan-400 border border-cyan-500/30 px-1.5 py-0.5 rounded font-bold">Doughnut</span>
             </div>
             <div class="h-48 relative">
               <canvas id="chartStatus-water"></canvas>
             </div>
           </div>
-          <div
-            class="card-bg border-custom rounded-xl p-3 transition-colors duration-300"
-            style="border-width: 1px"
-          >
+          <div class="card-bg border-custom rounded-xl p-3 transition-colors duration-300" style="border-width: 1px">
             <div class="flex items-center justify-between mb-2">
-              <h3
-                class="text-xs font-bold uppercase tracking-wider flex items-center gap-2 text-secondary-custom"
-              >
-                <i class="fa-solid fa-truck-droplet text-cyan-500"></i> Model
-                Water Tanker
+              <h3 class="text-xs font-bold uppercase tracking-wider flex items-center gap-2 text-secondary-custom">
+                <i class="fa-solid fa-truck-droplet text-cyan-500"></i> Model Water Tanker
               </h3>
-              <button
-                onclick="toggleChartType('water')"
-                class="text-[9px] bg-slate-700 hover:bg-slate-600 text-slate-200 border border-slate-600 px-2 py-0.5 rounded font-bold transition flex items-center gap-1"
-                id="chartTypeBtn-water"
-              >
+              <button onclick="toggleChartType('water')" class="text-[9px] bg-slate-700 hover:bg-slate-600 text-slate-200 border border-slate-600 px-2 py-0.5 rounded font-bold transition flex items-center gap-1" id="chartTypeBtn-water">
                 <i class="fa-solid fa-chart-bar"></i> Tukar Carta Bar
               </button>
             </div>
@@ -1363,21 +1114,12 @@
               <canvas id="chartModel-water"></canvas>
             </div>
           </div>
-          <div
-            class="card-bg border-custom rounded-xl p-3 transition-colors duration-300"
-            style="border-width: 1px"
-          >
+          <div class="card-bg border-custom rounded-xl p-3 transition-colors duration-300" style="border-width: 1px">
             <div class="flex items-center justify-between mb-2">
-              <h3
-                class="text-xs font-bold uppercase tracking-wider flex items-center gap-2 text-secondary-custom"
-              >
-                <i class="fa-solid fa-location-dot text-cyan-500"></i> Agihan
-                Mengikut Zon (Combo)
+              <h3 class="text-xs font-bold uppercase tracking-wider flex items-center gap-2 text-secondary-custom">
+                <i class="fa-solid fa-location-dot text-cyan-500"></i> Agihan Mengikut Zon (Combo)
               </h3>
-              <span
-                class="text-[9px] bg-cyan-500/20 text-cyan-400 border border-cyan-500/30 px-1.5 py-0.5 rounded font-bold"
-                >Bar + Liner</span
-              >
+              <span class="text-[9px] bg-cyan-500/20 text-cyan-400 border border-cyan-500/30 px-1.5 py-0.5 rounded font-bold">Bar + Liner</span>
             </div>
             <div class="h-48 relative">
               <canvas id="chartZon-water"></canvas>
@@ -1385,113 +1127,53 @@
           </div>
         </div>
         <!-- TABLE WATER -->
-        <div
-          class="card-bg border-custom rounded-xl p-3 space-y-3 transition-colors duration-300"
-          style="border-width: 1px"
-        >
+        <div class="card-bg border-custom rounded-xl p-3 space-y-3 transition-colors duration-300" style="border-width: 1px">
           <div class="flex flex-wrap items-center justify-between gap-2">
-            <h3
-              class="text-xs font-bold uppercase tracking-wider flex items-center gap-2"
-              style="color: var(--text-primary)"
-            >
-              <i class="fa-solid fa-list-check text-cyan-500"></i> Senarai Water
-              Tanker
+            <h3 class="text-xs font-bold uppercase tracking-wider flex items-center gap-2" style="color: var(--text-primary)">
+              <i class="fa-solid fa-list-check text-cyan-500"></i> Senarai Water Tanker
             </h3>
             <div class="flex items-center gap-2">
-              <button
-                onclick="copyAllTableData('water')"
-                class="px-2.5 py-1 bg-emerald-700 hover:bg-emerald-600 text-xs font-semibold rounded-lg text-emerald-100 transition flex items-center gap-1"
-              >
+              <button onclick="copyAllTableData('water')" class="px-2.5 py-1 bg-emerald-700 hover:bg-emerald-600 text-xs font-semibold rounded-lg text-emerald-100 transition flex items-center gap-1">
                 <i class="fa-solid fa-copy"></i> Salin Semua
               </button>
-              <button
-                onclick="eksportKeExcel('water')"
-                class="px-2.5 py-1 bg-slate-700 hover:bg-slate-600 text-xs font-semibold rounded-lg text-slate-200 transition flex items-center gap-1"
-              >
+              <button onclick="eksportKeExcel('water')" class="px-2.5 py-1 bg-slate-700 hover:bg-slate-600 text-xs font-semibold rounded-lg text-slate-200 transition flex items-center gap-1">
                 <i class="fa-solid fa-file-export"></i> CSV
               </button>
             </div>
           </div>
           <div class="flex flex-wrap items-center gap-2">
             <div class="relative flex-1 min-w-[180px]">
-              <i
-                class="fa-solid fa-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-slate-500 text-xs"
-              ></i>
-              <input
-                type="text"
-                id="searchInput-water"
-                placeholder="Cari Callsign, Plat, Lokasi..."
-                class="w-full input-bg border rounded-lg pl-8 pr-8 py-1.5 outline-none focus:border-slate-500 text-xs transition-colors duration-300"
-              />
-              <button
-                onclick="clearSearch('water')"
-                class="absolute right-2 top-1/2 -translate-y-1/2 text-slate-400 hover:text-white text-xs p-1 rounded transition"
-                title="Padam carian"
-              >
+              <i class="fa-solid fa-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-slate-500 text-xs"></i>
+              <input type="text" id="searchInput-water" placeholder="Cari Callsign, Plat, Lokasi..." class="w-full input-bg border rounded-lg pl-8 pr-8 py-1.5 outline-none focus:border-slate-500 text-xs transition-colors duration-300" />
+              <button onclick="clearSearch('water')" class="absolute right-2 top-1/2 -translate-y-1/2 text-slate-400 hover:text-white text-xs p-1 rounded transition" title="Padam carian">
                 <i class="fa-solid fa-xmark"></i>
               </button>
             </div>
-            <button
-              onclick="doSearch('water')"
-              class="px-3 py-1.5 bg-cyan-600 hover:bg-cyan-700 text-white text-xs font-semibold rounded-lg shadow-md transition flex items-center gap-1.5"
-            >
+            <button onclick="doSearch('water')" class="px-3 py-1.5 bg-cyan-600 hover:bg-cyan-700 text-white text-xs font-semibold rounded-lg shadow-md transition flex items-center gap-1.5">
               <i class="fa-solid fa-search"></i> Cari
             </button>
             <div class="ms-dropdown" id="msDropdown-water">
               <button class="ms-select-btn" onclick="toggleMsDropdown('water')">
-                <span id="msText-water"
-                  ><i class="fa-solid fa-filter mr-1"></i> Semua Status</span
-                ><span
-                  class="text-[10px] bg-cyan-600 text-white px-1.5 py-0.2 rounded font-bold"
-                  id="msCount-water"
-                  style="display: none"
-                  >0</span
-                ><span class="text-[9px]">▼</span>
+                <span id="msText-water"><i class="fa-solid fa-filter mr-1"></i> Semua Status</span><span class="text-[10px] bg-cyan-600 text-white px-1.5 py-0.2 rounded font-bold" id="msCount-water" style="display: none">0</span><span class="text-[9px]">▼</span>
               </button>
               <div class="ms-options" id="msOptions-water"></div>
             </div>
             <div class="ms-dropdown" id="msDropdownModel-water">
-              <button
-                class="ms-select-btn"
-                onclick="toggleMsModelDropdown('water')"
-              >
-                <span id="msTextModel-water"
-                  ><i class="fa-solid fa-truck-droplet mr-1"></i> Semua
-                  Model</span
-                ><span
-                  class="text-[10px] bg-cyan-600 text-white px-1.5 py-0.2 rounded font-bold"
-                  id="msCountModel-water"
-                  style="display: none"
-                  >0</span
-                ><span class="text-[9px]">▼</span>
+              <button class="ms-select-btn" onclick="toggleMsModelDropdown('water')">
+                <span id="msTextModel-water"><i class="fa-solid fa-truck-droplet mr-1"></i> Semua Model</span><span class="text-[10px] bg-cyan-600 text-white px-1.5 py-0.2 rounded font-bold" id="msCountModel-water" style="display: none">0</span><span class="text-[9px]">▼</span>
               </button>
               <div class="ms-options" id="msOptionsModel-water"></div>
             </div>
             <div class="ms-dropdown" id="msDropdownZon-water">
-              <button
-                class="ms-select-btn"
-                onclick="toggleMsZonDropdown('water')"
-              >
-                <span id="msTextZon-water"
-                  ><i class="fa-solid fa-location-dot mr-1"></i> Semua Zon</span
-                ><span
-                  class="text-[10px] bg-cyan-600 text-white px-1.5 py-0.2 rounded font-bold"
-                  id="msCountZon-water"
-                  style="display: none"
-                  >0</span
-                ><span class="text-[9px]">▼</span>
+              <button class="ms-select-btn" onclick="toggleMsZonDropdown('water')">
+                <span id="msTextZon-water"><i class="fa-solid fa-location-dot mr-1"></i> Semua Zon</span><span class="text-[10px] bg-cyan-600 text-white px-1.5 py-0.2 rounded font-bold" id="msCountZon-water" style="display: none">0</span><span class="text-[9px]">▼</span>
               </button>
               <div class="ms-options" id="msOptionsZon-water"></div>
             </div>
           </div>
-          <div
-            class="overflow-x-auto rounded-lg border-custom"
-            style="border-width: 1px"
-          >
+          <div class="overflow-x-auto rounded-lg border-custom" style="border-width: 1px">
             <table class="w-full text-left border-collapse text-xs">
-              <thead
-                class="table-header-bg text-secondary-custom font-semibold uppercase border-b border-custom text-[11px]"
-              >
+              <thead class="table-header-bg text-secondary-custom font-semibold uppercase border-b border-custom text-[11px]">
                 <tr>
                   <th class="p-2">Bil</th>
                   <th class="p-2">Callsign</th>
@@ -1505,11 +1187,7 @@
                   <th class="p-2 w-8">Salin</th>
                 </tr>
               </thead>
-              <tbody
-                id="tableBody-water"
-                class="divide-y divide-slate-700/40 text-[11px]"
-                style="color: var(--text-secondary)"
-              ></tbody>
+              <tbody id="tableBody-water" class="divide-y divide-slate-700/40 text-[11px]" style="color: var(--text-secondary)"></tbody>
             </table>
           </div>
           <div class="text-[11px] text-muted-custom" id="rowCount-water">-</div>
@@ -1518,210 +1196,68 @@
 
       <!-- TAB DASHBOARD UTAMA -->
       <section id="tab-dashboard" class="tab-content hidden space-y-3">
-        <div
-          class="card-bg border-custom rounded-xl p-2.5 flex flex-wrap items-center justify-between gap-2 transition-colors duration-300"
-          id="dashboardFilters"
-          style="border-width: 1px"
-        >
+        <div class="card-bg border-custom rounded-xl p-2.5 flex flex-wrap items-center justify-between gap-2 transition-colors duration-300" id="dashboardFilters" style="border-width: 1px">
           <div class="flex flex-wrap items-center gap-2">
-            <span class="text-[11px] font-bold uppercase text-secondary-custom"
-              >Jenis:</span
-            >
+            <span class="text-[11px] font-bold uppercase text-secondary-custom">Jenis:</span>
             <div class="ms-dropdown" id="jenisFilterDropdown">
-              <button
-                onclick="toggleJenisFilter()"
-                class="ms-select-btn text-[11px]"
-                style="padding: 0.25rem 0.5rem"
-              >
-                <span id="jenisFilterText"
-                  ><i class="fa-solid fa-layer-group mr-1"></i> Semua
-                  Jenis</span
-                >
-                <span
-                  class="text-[10px] bg-red-600 text-white px-1.5 py-0.2 rounded font-bold"
-                  id="jenisFilterCount"
-                  >3</span
-                >
+              <button onclick="toggleJenisFilter()" class="ms-select-btn text-[11px]" style="padding: 0.25rem 0.5rem">
+                <span id="jenisFilterText"><i class="fa-solid fa-layer-group mr-1"></i> Semua Jenis</span>
+                <span class="text-[10px] bg-red-600 text-white px-1.5 py-0.2 rounded font-bold" id="jenisFilterCount">3</span>
                 <span class="text-[8px]">▼</span>
               </button>
               <div class="ms-options" id="jenisFilterOptions">
-                <label class="ms-option"
-                  ><input
-                    type="checkbox"
-                    value="cfrt"
-                    checked
-                    onchange="applyJenisFilter()"
-                  /><span
-                    ><i
-                      class="fa-solid fa-fire-extinguisher text-red-500 mr-1"
-                    ></i
-                    >Rescue Tender (FRT)</span
-                  ><span
-                    class="ml-auto text-[9px] bg-slate-700 px-1 rounded font-bold"
-                    id="countCfrt"
-                    >0</span
-                  ></label
-                >
-                <label class="ms-option"
-                  ><input
-                    type="checkbox"
-                    value="emrs"
-                    checked
-                    onchange="applyJenisFilter()"
-                  /><span
-                    ><i class="fa-solid fa-truck-medical text-blue-500 mr-1"></i
-                    >EMRS</span
-                  ><span
-                    class="ml-auto text-[9px] bg-slate-700 px-1 rounded font-bold"
-                    id="countEmrs"
-                    >0</span
-                  ></label
-                >
-                <label class="ms-option"
-                  ><input
-                    type="checkbox"
-                    value="water"
-                    checked
-                    onchange="applyJenisFilter()"
-                  /><span
-                    ><i class="fa-solid fa-truck-droplet text-cyan-500 mr-1"></i
-                    >Water Tanker</span
-                  ><span
-                    class="ml-auto text-[9px] bg-slate-700 px-1 rounded font-bold"
-                    id="countWater"
-                    >0</span
-                  ></label
-                >
+                <label class="ms-option"><input type="checkbox" value="cfrt" checked onchange="applyJenisFilter()" /><span><i class="fa-solid fa-fire-extinguisher text-red-500 mr-1"></i>Rescue Tender (FRT)</span><span class="ml-auto text-[9px] bg-slate-700 px-1 rounded font-bold" id="countCfrt">0</span></label>
+                <label class="ms-option"><input type="checkbox" value="emrs" checked onchange="applyJenisFilter()" /><span><i class="fa-solid fa-truck-medical text-blue-500 mr-1"></i>EMRS</span><span class="ml-auto text-[9px] bg-slate-700 px-1 rounded font-bold" id="countEmrs">0</span></label>
+                <label class="ms-option"><input type="checkbox" value="water" checked onchange="applyJenisFilter()" /><span><i class="fa-solid fa-truck-droplet text-cyan-500 mr-1"></i>Water Tanker</span><span class="ml-auto text-[9px] bg-slate-700 px-1 rounded font-bold" id="countWater">0</span></label>
               </div>
             </div>
-            <span
-              class="text-[11px] font-bold uppercase text-secondary-custom ml-1"
-              >Status:</span
-            >
+            <span class="text-[11px] font-bold uppercase text-secondary-custom ml-1">Status:</span>
             <div class="ms-dropdown" id="statusFilterDropdown">
-              <button
-                onclick="toggleStatusFilter()"
-                class="ms-select-btn text-[11px]"
-                style="padding: 0.25rem 0.5rem"
-              >
+              <button onclick="toggleStatusFilter()" class="ms-select-btn text-[11px]" style="padding: 0.25rem 0.5rem">
                 <span id="statusFilterText">Semua</span>
-                <span
-                  class="text-[10px] bg-red-600 text-white px-1.5 py-0.2 rounded font-bold"
-                  id="statusFilterCount"
-                  style="display: none"
-                  >0</span
-                >
+                <span class="text-[10px] bg-red-600 text-white px-1.5 py-0.2 rounded font-bold" id="statusFilterCount" style="display: none">0</span>
                 <span class="text-[8px]">▼</span>
               </button>
               <div class="ms-options" id="statusFilterOptions">
-                <label class="ms-option"
-                  ><input
-                    type="checkbox"
-                    value="BAIK"
-                    onchange="applyStatusFilter()"
-                  /><span class="w-2 h-2 rounded-full bg-emerald-500"></span
-                  ><span>BAIK</span></label
-                >
-                <label class="ms-option"
-                  ><input
-                    type="checkbox"
-                    value="ROSAK MINOR"
-                    onchange="applyStatusFilter()"
-                  /><span class="w-2 h-2 rounded-full bg-yellow-500"></span
-                  ><span>ROSAK MINOR</span></label
-                >
-                <label class="ms-option"
-                  ><input
-                    type="checkbox"
-                    value="ROSAK"
-                    onchange="applyStatusFilter()"
-                  /><span class="w-2 h-2 rounded-full bg-red-500"></span
-                  ><span>ROSAK</span></label
-                >
-                <label class="ms-option"
-                  ><input
-                    type="checkbox"
-                    value="DIPULANGKAN"
-                    onchange="applyStatusFilter()"
-                  /><span class="w-2 h-2 rounded-full bg-blue-500"></span
-                  ><span>DIPULANGKAN</span></label
-                >
-                <label class="ms-option"
-                  ><input
-                    type="checkbox"
-                    value="LAIN"
-                    onchange="applyStatusFilter()"
-                  /><span class="w-2 h-2 rounded-full bg-slate-400"></span
-                  ><span>LAIN-LAIN</span></label
-                >
+                <label class="ms-option"><input type="checkbox" value="BAIK" onchange="applyStatusFilter()" /><span class="w-2 h-2 rounded-full bg-emerald-500"></span><span>BAIK</span></label>
+                <label class="ms-option"><input type="checkbox" value="ROSAK MINOR" onchange="applyStatusFilter()" /><span class="w-2 h-2 rounded-full bg-yellow-500"></span><span>ROSAK MINOR</span></label>
+                <label class="ms-option"><input type="checkbox" value="ROSAK" onchange="applyStatusFilter()" /><span class="w-2 h-2 rounded-full bg-red-500"></span><span>ROSAK</span></label>
+                <label class="ms-option"><input type="checkbox" value="DIPULANGKAN" onchange="applyStatusFilter()" /><span class="w-2 h-2 rounded-full bg-blue-500"></span><span>DIPULANGKAN</span></label>
+                <label class="ms-option"><input type="checkbox" value="LAIN" onchange="applyStatusFilter()" /><span class="w-2 h-2 rounded-full bg-slate-400"></span><span>LAIN-LAIN</span></label>
               </div>
             </div>
           </div>
           <div class="flex items-center gap-2">
-            <button
-              onclick="toggleSlideshow()"
-              class="px-2.5 py-1 bg-purple-600 hover:bg-purple-700 text-white text-xs font-semibold rounded-lg shadow-md transition flex items-center gap-1"
-            >
+            <button onclick="toggleSlideshow()" class="px-2.5 py-1 bg-purple-600 hover:bg-purple-700 text-white text-xs font-semibold rounded-lg shadow-md transition flex items-center gap-1">
               <i class="fa-solid fa-play"></i> Slideshow
             </button>
-            <button
-              onclick="toggleFullscreenDashboard()"
-              id="zoomInBtn"
-              class="px-2.5 py-1 bg-slate-700 hover:bg-slate-600 text-white text-xs font-semibold rounded-lg transition flex items-center gap-1"
-            >
+            <button onclick="toggleFullscreenDashboard()" id="zoomInBtn" class="px-2.5 py-1 bg-slate-700 hover:bg-slate-600 text-white text-xs font-semibold rounded-lg transition flex items-center gap-1">
               <i class="fa-solid fa-expand"></i> Skrin Penuh Fit
             </button>
           </div>
         </div>
-        <div
-          id="slideshowNav"
-          class="hidden bg-slate-800 border border-slate-700 rounded-xl p-2 flex items-center justify-center gap-3 flex-wrap"
-        >
-          <button
-            onclick="prevZone()"
-            class="px-2.5 py-1 bg-slate-700 hover:bg-slate-600 text-white rounded text-xs font-bold"
-          >
+        <div id="slideshowNav" class="hidden bg-slate-800 border border-slate-700 rounded-xl p-2 flex items-center justify-center gap-3 flex-wrap">
+          <button onclick="prevZone()" class="px-2.5 py-1 bg-slate-700 hover:bg-slate-600 text-white rounded text-xs font-bold">
             <i class="fa-solid fa-chevron-left"></i>
           </button>
-          <span id="slideshowCounter" class="text-xs font-bold text-slate-200"
-            >ZON 1 / 5</span
-          >
-          <button
-            onclick="nextZone()"
-            class="px-3 py-1 bg-slate-700 hover:bg-slate-600 text-white rounded text-xs font-bold"
-          >
+          <span id="slideshowCounter" class="text-xs font-bold text-slate-200">ZON 1 / 5</span>
+          <button onclick="nextZone()" class="px-3 py-1 bg-slate-700 hover:bg-slate-600 text-white rounded text-xs font-bold">
             <i class="fa-solid fa-chevron-right"></i>
           </button>
-          <button
-            onclick="toggleAutoSlideshow()"
-            id="slideshowAutoBtn"
-            class="px-3 py-1 bg-purple-600 hover:bg-purple-700 text-white rounded text-xs font-bold flex items-center gap-1"
-          >
-            <i class="fa-solid fa-circle-play"></i
-            ><span id="autoPlayLabel">Auto Play</span>
+          <button onclick="toggleAutoSlideshow()" id="slideshowAutoBtn" class="px-3 py-1 bg-purple-600 hover:bg-purple-700 text-white rounded text-xs font-bold flex items-center gap-1">
+            <i class="fa-solid fa-circle-play"></i><span id="autoPlayLabel">Auto Play</span>
           </button>
-          <button
-            onclick="stopSlideshow()"
-            class="px-3 py-1 bg-red-600 hover:bg-red-700 text-white rounded text-xs font-bold flex items-center gap-1"
-          >
+          <button onclick="stopSlideshow()" class="px-3 py-1 bg-red-600 hover:bg-red-700 text-white rounded text-xs font-bold flex items-center gap-1">
             <i class="fa-solid fa-square-stop"></i> Stop
           </button>
         </div>
-        <div
-          id="dashStats"
-          class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-2"
-        ></div>
-        <div
-          id="zoneContainer"
-          class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-2.5 items-start"
-        ></div>
+        <div id="dashStats" class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-2"></div>
+        <div id="zoneContainer" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-2.5 items-start"></div>
       </section>
     </main>
 
     <!-- FOOTER -->
-    <footer
-      class="mt-auto py-3 px-4 bg-slate-950/90 border-t border-slate-800/80 text-center text-slate-500 text-xs font-medium backdrop-blur select-none"
-    >
+    <footer class="mt-auto py-3 px-4 bg-slate-950/90 border-t border-slate-800/80 text-center text-slate-500 text-xs font-medium backdrop-blur select-none">
       <div class="flex items-center justify-center gap-2 tracking-wide">
         <span>&copy; 2026 PGO JOHOR | Hak Cipta Terpelihara.</span>
       </div>
@@ -1729,33 +1265,17 @@
 
     <!-- MODAL -->
     <div id="modalOverlay" class="modal-overlay" onclick="closeModal(event)">
-      <div
-        class="bg-slate-900 border border-slate-600 rounded-2xl max-w-2xl w-full p-0 shadow-2xl relative text-left overflow-hidden"
-        onclick="event.stopPropagation()"
-        style="max-height: 90vh"
-      >
-        <button
-          onclick="closeModal()"
-          class="absolute top-3 right-3 text-slate-400 hover:text-white w-8 h-8 flex items-center justify-center rounded-full bg-slate-800 hover:bg-slate-700 z-20 transition"
-        >
+      <div class="bg-slate-900 border border-slate-600 rounded-2xl max-w-2xl w-full p-0 shadow-2xl relative text-left overflow-hidden" onclick="event.stopPropagation()" style="max-height: 90vh">
+        <button onclick="closeModal()" class="absolute top-3 right-3 text-slate-400 hover:text-white w-8 h-8 flex items-center justify-center rounded-full bg-slate-800 hover:bg-slate-700 z-20 transition">
           <i class="fa-solid fa-xmark"></i>
         </button>
-        <div
-          id="modalVehicleShape"
-          class="w-full overflow-y-auto"
-          style="max-height: 85vh"
-        ></div>
+        <div id="modalVehicleShape" class="w-full overflow-y-auto" style="max-height: 85vh"></div>
       </div>
     </div>
 
     <!-- TOAST -->
-    <div
-      id="toastNotification"
-      class="fixed bottom-4 right-4 z-[120] bg-slate-800 border border-slate-700 text-slate-100 text-xs font-medium px-3.5 py-2.5 rounded-lg shadow-xl translate-x-full transition-transform duration-300 flex items-center gap-2"
-    >
-      <span id="toastIcon"
-        ><i class="fa-solid fa-circle-info text-blue-400"></i
-      ></span>
+    <div id="toastNotification" class="fixed bottom-4 right-4 z-[120] bg-slate-800 border border-slate-700 text-slate-100 text-xs font-medium px-3.5 py-2.5 rounded-lg shadow-xl translate-x-full transition-transform duration-300 flex items-center gap-2">
+      <span id="toastIcon"><i class="fa-solid fa-circle-info text-blue-400"></i></span>
       <span id="toastMessage">Log mesej</span>
     </div>
 
@@ -1766,8 +1286,7 @@
       const U = {
         cfrt: 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQt0JkN2yWW_0FeY5GKpmIvs1uI6si89JcqNmSTO3f--rM8FhQZe1Q97YQd8tiAsmaMQdTXO5TQWedy/pub?gid=0&single=true&output=csv',
         emrs: 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQt0JkN2yWW_0FeY5GKpmIvs1uI6si89JcqNmSTO3f--rM8FhQZe1Q97YQd8tiAsmaMQdTXO5TQWedy/pub?gid=795399708&single=true&output=csv',
-        water:
-          'https://docs.google.com/spreadsheets/d/e/2PACX-1vQt0JkN2yWW_0FeY5GKpmIvs1uI6si89JcqNmSTO3f--rM8FhQZe1Q97YQd8tiAsmaMQdTXO5TQWedy/pub?gid=290336578&single=true&output=csv',
+        water: 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQt0JkN2yWW_0FeY5GKpmIvs1uI6si89JcqNmSTO3f--rM8FhQZe1Q97YQd8tiAsmaMQdTXO5TQWedy/pub?gid=290336578&single=true&output=csv',
       };
 
       const REFRESH_INTERVAL_SEC = 43200;
@@ -1812,8 +1331,8 @@
           if (
             T === tab ||
             document
-              .getElementById(`tab-${tab}`)
-              ?.classList.contains('hidden') === false
+            .getElementById(`tab-${tab}`)
+            ?.classList.contains('hidden') === false
           ) {
             Rt(tab);
           }
@@ -1908,7 +1427,7 @@
         </html>
         `);
         printWindow.document.close();
-        printWindow.onload = function () {
+        printWindow.onload = function() {
           const printContent =
             printWindow.document.getElementById('printContent');
           printContent.appendChild(contentClone);
@@ -2029,8 +1548,7 @@
           if (
             coreB &&
             (coreLokasi.includes(coreB) || coreB.includes(coreLokasi))
-          )
-            return b;
+          ) return b;
         }
         return null;
       }
@@ -2052,8 +1570,7 @@
           if (
             coreB &&
             (coreLokasi.includes(coreB) || coreB.includes(coreLokasi))
-          )
-            return b;
+          ) return b;
         }
         return null;
       }
@@ -2063,8 +1580,7 @@
         const icons = {
           success: '<i class="fa-solid fa-circle-check text-emerald-400"></i>',
           error: '<i class="fa-solid fa-circle-xmark text-red-400"></i>',
-          warning:
-            '<i class="fa-solid fa-triangle-exclamation text-yellow-400"></i>',
+          warning: '<i class="fa-solid fa-triangle-exclamation text-yellow-400"></i>',
           info: '<i class="fa-solid fa-circle-info text-blue-400"></i>',
         };
         document.getElementById('toastIcon').innerHTML =
@@ -2185,9 +1701,8 @@
           .sort()
           .map(
             (st) =>
-              `<label class="ms-option"><input type="checkbox" value="${st.replace(
-                /"/g,
-                '&quot;'
+            `<label class="ms-option"><input type="checkbox" value="${st.replace(
+                /"/g, '&quot;'
               )}" onchange="updateSubTabMultiSelect('${tab}')"><span>${st}</span></label>`
           )
           .join('');
@@ -2207,9 +1722,8 @@
           .sort()
           .map(
             (md) =>
-              `<label class="ms-option"><input type="checkbox" value="${md.replace(
-                /"/g,
-                '&quot;'
+            `<label class="ms-option"><input type="checkbox" value="${md.replace(
+                /"/g, '&quot;'
               )}" onchange="updateSubTabModelMultiSelect('${tab}')"><span>${md}</span></label>`
           )
           .join('');
@@ -2228,9 +1742,8 @@
           .sort()
           .map(
             (zn) =>
-              `<label class="ms-option"><input type="checkbox" value="${zn.replace(
-                /"/g,
-                '&quot;'
+            `<label class="ms-option"><input type="checkbox" value="${zn.replace(
+                /"/g, '&quot;'
               )}" onchange="updateSubTabZonMultiSelect('${tab}')"><span>${zn}</span></label>`
           )
           .join('');
@@ -2393,17 +1906,15 @@
         const btn = document.getElementById(`chartTypeBtn-${tab}`);
         if (btn) {
           btn.innerHTML =
-            chartTypeConfig[tab] === 'pie'
-              ? '<i class="fa-solid fa-chart-bar"></i> Tukar Carta Bar'
-              : '<i class="fa-solid fa-chart-pie"></i> Tukar Carta Pie';
+            chartTypeConfig[tab] === 'pie' ?
+            '<i class="fa-solid fa-chart-bar"></i> Tukar Carta Bar' :
+            '<i class="fa-solid fa-chart-pie"></i> Tukar Carta Pie';
         }
         Rt(tab);
       }
 
       // ============================================================
-      // RENDER CHARTS (Rc) — dengan penambahbaikan:
-      // - Legend status pie: paparkan SEMUA status (tanpa penapisan)
-      // - Warna legend zon: bar biru, garis hijau/kuning/merah
+      // RENDER CHARTS (Rc)
       // ============================================================
       function Rc(tab, currentList) {
         const list = currentList || D[tab] || [];
@@ -2413,7 +1924,7 @@
         const axisTextColor = isLight ? '#475569' : '#f8fafc';
         const gridColor = isLight ? '#e2e8f0' : '#334155';
 
-        // ---------- 1. Status Doughnut (label = %, saiz 8, tiada bold) ----------
+        // Status Doughnut
         const sc = {};
         list.forEach((i) => {
           const s = (G(i, 'STATUS JENTERA') || 'LAIN-LAIN')
@@ -2453,14 +1964,12 @@
             type: 'doughnut',
             data: {
               labels: labels,
-              datasets: [
-                {
-                  data: dataValues,
-                  backgroundColor: backgroundColors,
-                  borderWidth: 2,
-                  borderColor: isLight ? '#e2e8f0' : '#1e293b',
-                },
-              ],
+              datasets: [{
+                data: dataValues,
+                backgroundColor: backgroundColors,
+                borderWidth: 2,
+                borderColor: isLight ? '#e2e8f0' : '#1e293b',
+              }, ],
             },
             options: {
               responsive: true,
@@ -2474,10 +1983,9 @@
                     font: { size: 8 },
                     padding: 8,
                     textAlign: 'center',
-                    generateLabels: function (chart) {
+                    generateLabels: function(chart) {
                       const data = chart.data;
                       if (data.labels.length && data.datasets.length) {
-                        // Paparkan SEMUA status tanpa penapisan
                         return data.labels.map((label, i) => {
                           const isHidden =
                             legendHiddenStatus[tab] &&
@@ -2496,7 +2004,7 @@
                       return [];
                     },
                   },
-                  onClick: function (e, legendItem, legend) {
+                  onClick: function(e, legendItem, legend) {
                     const index = legendItem.index;
                     const chart = legend.chart;
                     if (!legendHiddenStatus[tab]) legendHiddenStatus[tab] = [];
@@ -2511,15 +2019,14 @@
                 },
                 tooltip: {
                   callbacks: {
-                    label: function (context) {
+                    label: function(context) {
                       const val = context.raw || 0;
                       const pct =
-                        totalCount > 0
-                          ? ((val / totalCount) * 100).toFixed(1)
-                          : 0;
+                        totalCount > 0 ?
+                        ((val / totalCount) * 100).toFixed(1) :
+                        0;
                       return ` ${context.label.replace(
-                        /~~/g,
-                        ''
+                        /~~/g, ''
                       )}: ${val} unit (${pct}%)`;
                     },
                   },
@@ -2529,8 +2036,7 @@
                   font: { weight: 'normal', size: 8 },
                   formatter: (value, context) => {
                     const total = context.dataset.data.reduce(
-                      (a, b) => a + b,
-                      0
+                      (a, b) => a + b, 0
                     );
                     const pct =
                       total > 0 ? ((value / total) * 100).toFixed(1) : 0;
@@ -2557,7 +2063,7 @@
           });
         }
 
-        // ---------- 2. Model Chart (pie/bar) - label % saiz 8, tiada bold ----------
+        // Model Chart
         const mc = {};
         list.forEach((i) => {
           const m = (G(i, 'MODEL JENTERA') || 'LAIN-LAIN').trim().toUpperCase();
@@ -2593,16 +2099,14 @@
             type: isPie ? 'pie' : 'bar',
             data: {
               labels: modelLabels,
-              datasets: [
-                {
-                  label: 'Unit Jentera',
-                  data: modelData,
-                  backgroundColor: palette.slice(0, modelLabels.length),
-                  borderWidth: isPie ? 2 : 1,
-                  borderColor: isLight ? '#e2e8f0' : '#1e293b',
-                  borderRadius: isPie ? 0 : 4,
-                },
-              ],
+              datasets: [{
+                label: 'Unit Jentera',
+                data: modelData,
+                backgroundColor: palette.slice(0, modelLabels.length),
+                borderWidth: isPie ? 2 : 1,
+                borderColor: isLight ? '#e2e8f0' : '#1e293b',
+                borderRadius: isPie ? 0 : 4,
+              }, ],
             },
             options: {
               responsive: true,
@@ -2620,7 +2124,7 @@
                     font: { size: 8 },
                     padding: 8,
                     textAlign: 'center',
-                    generateLabels: function (chart) {
+                    generateLabels: function(chart) {
                       const data = chart.data;
                       if (data.labels.length && data.datasets.length) {
                         return data.labels.map((label, i) => {
@@ -2642,7 +2146,7 @@
                       return [];
                     },
                   },
-                  onClick: function (e, legendItem, legend) {
+                  onClick: function(e, legendItem, legend) {
                     if (!isPie) return;
                     const index = legendItem.index;
                     const chart = legend.chart;
@@ -2660,15 +2164,14 @@
                 },
                 tooltip: {
                   callbacks: {
-                    label: function (context) {
+                    label: function(context) {
                       const val = context.raw || 0;
                       const pct =
-                        totalCount > 0
-                          ? ((val / totalCount) * 100).toFixed(1)
-                          : 0;
+                        totalCount > 0 ?
+                        ((val / totalCount) * 100).toFixed(1) :
+                        0;
                       return ` ${(context.label || 'Model').replace(
-                        /~~/g,
-                        ''
+                        /~~/g, ''
                       )}: ${val} (${pct}%)`;
                     },
                   },
@@ -2681,8 +2184,7 @@
                   formatter: (value, context) => {
                     if (isPie) {
                       const total = context.dataset.data.reduce(
-                        (a, b) => a + b,
-                        0
+                        (a, b) => a + b, 0
                       );
                       const pct =
                         total > 0 ? ((value / total) * 100).toFixed(1) : 0;
@@ -2705,31 +2207,30 @@
                   offset: 2,
                 },
               },
-              scales: isPie
-                ? {}
-                : {
-                    y: {
-                      ticks: { color: axisTextColor, stepSize: 1 },
-                      grid: { color: gridColor },
-                      beginAtZero: true,
-                      grace: '18%',
-                    },
-                    x: {
-                      ticks: {
-                        color: axisTextColor,
-                        maxRotation: 25,
-                        minRotation: 0,
-                        font: { size: 7 },
-                      },
+              scales: isPie ?
+                {} : {
+                  y: {
+                    ticks: { color: axisTextColor, stepSize: 1 },
+                    grid: { color: gridColor },
+                    beginAtZero: true,
+                    grace: '18%',
+                  },
+                  x: {
+                    ticks: {
+                      color: axisTextColor,
+                      maxRotation: 25,
+                      minRotation: 0,
+                      font: { size: 7 },
                     },
                   },
+                },
               animation: { duration: 800 },
             },
             plugins: [ChartDataLabels],
           });
         }
 
-        // ---------- 3. ZONE COMBO CHART (BAR + LINE) - UPPERCASE, WARNA TERANG ----------
+        // ZONE COMBO CHART
         const zoneData = {};
         list.forEach((item) => {
           const zon = (G(item, 'ZON') || 'LAIN').trim().toUpperCase();
@@ -2772,72 +2273,67 @@
             type: 'bar',
             data: {
               labels: sortedZoneLabels,
-              datasets: [
-                {
-                  label: 'JUMLAH JENTERA',
-                  data: sortedTotal,
-                  type: 'bar',
-                  backgroundColor: 'rgba(59, 130, 246, 0.6)', // biru terang
-                  borderColor: '#3b82f6',
-                  borderWidth: 1,
-                  borderRadius: 4,
-                  order: 2,
-                  yAxisID: 'y',
-                  barPercentage: 0.6,
-                  categoryPercentage: 0.7,
-                },
-                {
-                  label: 'BAIK & BEROPERASI',
-                  data: sortedB,
-                  type: 'line',
-                  borderColor: '#22c55e',
-                  backgroundColor: 'rgba(34, 197, 94, 0.1)',
-                  pointBackgroundColor: '#22c55e',
-                  pointBorderColor: '#ffffff',
-                  pointBorderWidth: 1.5,
-                  pointRadius: 4,
-                  pointHoverRadius: 6,
-                  tension: 0.3,
-                  fill: true,
-                  borderWidth: 2.5,
-                  order: 1,
-                  yAxisID: 'y',
-                },
-                {
-                  label: 'ROSAK MINOR',
-                  data: sortedRM,
-                  type: 'line',
-                  borderColor: '#eab308',
-                  backgroundColor: 'rgba(234, 179, 8, 0.1)',
-                  pointBackgroundColor: '#eab308',
-                  pointBorderColor: '#ffffff',
-                  pointBorderWidth: 1.5,
-                  pointRadius: 4,
-                  pointHoverRadius: 6,
-                  tension: 0.3,
-                  fill: true,
-                  borderWidth: 2.5,
-                  order: 1,
-                  yAxisID: 'y',
-                },
-                {
-                  label: 'ROSAK',
-                  data: sortedR,
-                  type: 'line',
-                  borderColor: '#ef4444',
-                  backgroundColor: 'rgba(239, 68, 68, 0.1)',
-                  pointBackgroundColor: '#ef4444',
-                  pointBorderColor: '#ffffff',
-                  pointBorderWidth: 1.5,
-                  pointRadius: 4,
-                  pointHoverRadius: 6,
-                  tension: 0.3,
-                  fill: true,
-                  borderWidth: 2.5,
-                  order: 1,
-                  yAxisID: 'y',
-                },
-              ],
+              datasets: [{
+                label: 'JUMLAH JENTERA',
+                data: sortedTotal,
+                type: 'bar',
+                backgroundColor: 'rgba(59, 130, 246, 0.6)',
+                borderColor: '#3b82f6',
+                borderWidth: 1,
+                borderRadius: 4,
+                order: 2,
+                yAxisID: 'y',
+                barPercentage: 0.6,
+                categoryPercentage: 0.7,
+              }, {
+                label: 'BAIK & BEROPERASI',
+                data: sortedB,
+                type: 'line',
+                borderColor: '#22c55e',
+                backgroundColor: 'rgba(34, 197, 94, 0.1)',
+                pointBackgroundColor: '#22c55e',
+                pointBorderColor: '#ffffff',
+                pointBorderWidth: 1.5,
+                pointRadius: 4,
+                pointHoverRadius: 6,
+                tension: 0.3,
+                fill: true,
+                borderWidth: 2.5,
+                order: 1,
+                yAxisID: 'y',
+              }, {
+                label: 'ROSAK MINOR',
+                data: sortedRM,
+                type: 'line',
+                borderColor: '#eab308',
+                backgroundColor: 'rgba(234, 179, 8, 0.1)',
+                pointBackgroundColor: '#eab308',
+                pointBorderColor: '#ffffff',
+                pointBorderWidth: 1.5,
+                pointRadius: 4,
+                pointHoverRadius: 6,
+                tension: 0.3,
+                fill: true,
+                borderWidth: 2.5,
+                order: 1,
+                yAxisID: 'y',
+              }, {
+                label: 'ROSAK',
+                data: sortedR,
+                type: 'line',
+                borderColor: '#ef4444',
+                backgroundColor: 'rgba(239, 68, 68, 0.1)',
+                pointBackgroundColor: '#ef4444',
+                pointBorderColor: '#ffffff',
+                pointBorderWidth: 1.5,
+                pointRadius: 4,
+                pointHoverRadius: 6,
+                tension: 0.3,
+                fill: true,
+                borderWidth: 2.5,
+                order: 1,
+                yAxisID: 'y',
+              }, ],
             },
             options: {
               responsive: true,
@@ -2855,7 +2351,7 @@
                     boxWidth: 14,
                     boxHeight: 10,
                     usePointStyle: false,
-                    generateLabels: function (chart) {
+                    generateLabels: function(chart) {
                       const data = chart.data;
                       if (data.datasets.length) {
                         return data.datasets.map((ds, i) => ({
@@ -2873,13 +2369,13 @@
                 },
                 tooltip: {
                   callbacks: {
-                    label: function (context) {
+                    label: function(context) {
                       const val = context.raw || 0;
                       const totalZone = sortedTotal[context.dataIndex] || 0;
                       const pct =
-                        totalZone > 0
-                          ? ((val / totalZone) * 100).toFixed(1)
-                          : 0;
+                        totalZone > 0 ?
+                        ((val / totalZone) * 100).toFixed(1) :
+                        0;
                       return ` ${context.dataset.label.toUpperCase()}: ${val} (${pct}%)`;
                     },
                   },
@@ -2889,13 +2385,13 @@
                   anchor: 'end',
                   align: 'top',
                   font: { weight: 'bold', size: 8 },
-                  display: function (context) {
+                  display: function(context) {
                     return (
                       context.datasetIndex === 0 &&
                       context.dataset.data[context.dataIndex] > 0
                     );
                   },
-                  formatter: function (value) {
+                  formatter: function(value) {
                     return value;
                   },
                 },
@@ -2907,11 +2403,11 @@
                     maxRotation: 25,
                     minRotation: 0,
                     font: { size: 8, weight: '500' },
-                    callback: function (value, index, ticks) {
+                    callback: function(value, index, ticks) {
                       const label = this.getLabelForValue(value);
-                      return typeof label === 'string'
-                        ? label.toUpperCase()
-                        : label;
+                      return typeof label === 'string' ?
+                        label.toUpperCase() :
+                        label;
                     },
                   },
                   grid: { display: false },
@@ -2964,8 +2460,7 @@
               !zon.includes(searchVal) &&
               !status.includes(searchVal) &&
               !kerosakan.includes(searchVal)
-            )
-              return false;
+            ) return false;
           }
           if (selectedZones.length > 0) {
             const zoneVal = (G(item, 'ZON') || '').trim();
@@ -2986,24 +2481,24 @@
         const tbody = document.getElementById(`tableBody-${tab}`);
         if (!tbody) return;
         tbody.innerHTML =
-          filtered.length === 0
-            ? `<tr><td colspan="10" class="p-3 text-center text-slate-500">Tiada jentera dijumpai.</td></tr>`
-            : filtered
-                .map((item, idx) => {
-                  const itemWithType = { ...item, _j: tab };
-                  const callsign = (G(item, 'CALLSIGN') || '-').toUpperCase(),
-                    plate = (G(item, 'PLATE') || '-').toUpperCase(),
-                    statusRaw = G(item, 'STATUS JENTERA') || 'TIADA',
-                    cat = getStatusCategory(statusRaw);
-                  let badgeClass = 'badge-unknown';
-                  if (cat === 'B') badgeClass = 'badge-baik';
-                  else if (cat === 'RM') badgeClass = 'badge-minor';
-                  else if (cat === 'R') badgeClass = 'badge-rosak';
-                  else if (cat === 'D') badgeClass = 'badge-pulang';
-                  const itemJson = encodeURIComponent(
-                    JSON.stringify(itemWithType)
-                  );
-                  return `<tr class="hover:bg-slate-700/30 cursor-pointer transition relative" onclick="showVehicleModal('${itemJson}')">
+          filtered.length === 0 ?
+          `<tr><td colspan="10" class="p-3 text-center text-slate-500">Tiada jentera dijumpai.</td></tr>` :
+          filtered
+          .map((item, idx) => {
+            const itemWithType = { ...item, _j: tab };
+            const callsign = (G(item, 'CALLSIGN') || '-').toUpperCase(),
+              plate = (G(item, 'PLATE') || '-').toUpperCase(),
+              statusRaw = G(item, 'STATUS JENTERA') || 'TIADA',
+              cat = getStatusCategory(statusRaw);
+            let badgeClass = 'badge-unknown';
+            if (cat === 'B') badgeClass = 'badge-baik';
+            else if (cat === 'RM') badgeClass = 'badge-minor';
+            else if (cat === 'R') badgeClass = 'badge-rosak';
+            else if (cat === 'D') badgeClass = 'badge-pulang';
+            const itemJson = encodeURIComponent(
+              JSON.stringify(itemWithType)
+            );
+            return `<tr class="hover:bg-slate-700/30 cursor-pointer transition relative" onclick="showVehicleModal('${itemJson}')">
                   <td class="p-2">${idx + 1}</td>
                   <td class="p-2 font-bold" style="color:var(--text-primary);">${callsign}</td>
                   <td class="p-2"><span class="plate-number">${plate}</span></td>
@@ -3017,15 +2512,15 @@
                   }</td>
                   <td class="p-2 text-center" onclick="event.stopPropagation()"><button onclick="copySingleAssetInfo('${itemJson}', this)" class="copy-btn" title="Salin maklumat"><i class="fa-regular fa-copy"></i></button></td>
                 </tr>`;
-                })
-                .join('');
+          })
+          .join('');
         document.getElementById(
           `rowCount-${tab}`
         ).textContent = `Menunjukkan ${filtered.length} daripada ${list.length} jentera`;
       }
 
       // ============================================================
-      // SEARCH: doSearch() & clearSearch()
+      // SEARCH
       // ============================================================
       function doSearch(tab) {
         Rt(tab);
@@ -3073,9 +2568,7 @@
           showNotification('Tiada data untuk disalin', 'warning');
           return;
         }
-        let text = `=== SENARAI JENTERA ${
-          tab === 'cfrt' ? 'FRT' : tab.toUpperCase()
-        } ===\nJumlah: ${list.length} jentera\n${'='.repeat(40)}\n\n`;
+        let text = `=== SENARAI JENTERA ${tab === 'cfrt' ? 'FRT' : tab.toUpperCase()} ===\nJumlah: ${list.length} jentera\n${'='.repeat(40)}\n\n`;
         list.forEach((item, idx) => {
           const itemWithType = { ...item, _j: tab };
           text += `[${idx + 1}] ${formatAssetInfo(itemWithType)}\n${'-'.repeat(
@@ -3105,13 +2598,13 @@
           status = G(item, 'STATUS JENTERA') || '-',
           kerosakan = G(item, 'STATUS KEROSAKKAN') || '-';
         let typeLabel =
-          item._j === 'cfrt'
-            ? 'RESCUE TENDER (FRT)'
-            : item._j === 'emrs'
-            ? 'EMRS'
-            : item._j === 'water'
-            ? 'WATER TANKER'
-            : 'JENTERA';
+          item._j === 'cfrt' ?
+          'RESCUE TENDER (FRT)' :
+          item._j === 'emrs' ?
+          'EMRS' :
+          item._j === 'water' ?
+          'WATER TANKER' :
+          'JENTERA';
         return `[${typeLabel}] ${callsign} | ${plate} | ${model}\nPenempatan: ${asal}\nLokasi: ${lokasi}\nZon: ${zon}\nStatus: ${status}\nKerosakan: ${kerosakan}`;
       }
 
@@ -3124,20 +2617,18 @@
         let csv =
           '\uFEFFBil,Callsign,Plate,Model,Penempatan Asal,Lokasi Semasa,Zon,Status,Kerosakan\n';
         list.forEach((i, idx) => {
-          csv += `${idx + 1},"${G(i, 'CALLSIGN')}","${G(i, 'PLATE')}","${G(
-            i,
-            'MODEL JENTERA'
-          )}","${G(i, 'PENEMPATAN ASAL')}","${G(i, 'LOKASI SEMASA')}","${G(
-            i,
-            'ZON'
-          )}","${G(i, 'STATUS JENTERA')}","${G(i, 'STATUS KEROSAKKAN')}"\n`;
+          csv +=
+            `${idx + 1},"${G(i, 'CALLSIGN')}","${G(i, 'PLATE')}","${G(
+              i, 'MODEL JENTERA'
+            )}","${G(i, 'PENEMPATAN ASAL')}","${G(i, 'LOKASI SEMASA')}","${G(
+              i, 'ZON'
+            )}","${G(i, 'STATUS JENTERA')}","${G(i, 'STATUS KEROSAKKAN')}"\n`;
         });
         const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
         const link = document.createElement('a');
         link.href = URL.createObjectURL(blob);
-        link.download = `Jentera_${
-          tab === 'cfrt' ? 'FRT' : tab.toUpperCase()
-        }_${new Date().toISOString().split('T')[0]}.csv`;
+        link.download =
+          `Jentera_${tab === 'cfrt' ? 'FRT' : tab.toUpperCase()}_${new Date().toISOString().split('T')[0]}.csv`;
         link.click();
         showNotification('Fail CSV berjaya dimuat turun', 'success');
       }
@@ -3212,118 +2703,112 @@
         renderMainDashboard();
       }
 
-      function renderMainDashboard() {
-        const all = getAllAssets();
-        document.getElementById('countCfrt').textContent = D.cfrt.length;
-        document.getElementById('countEmrs').textContent = D.emrs.length;
-        document.getElementById('countWater').textContent = D.water.length;
-        let filtered = all.filter((item) => F.includes(item._j));
-        if (SF.length > 0) {
-          filtered = filtered.filter((item) => {
-            const cat = getStatusCategory(G(item, 'STATUS JENTERA'));
-            const map = {
-              B: 'BAIK',
-              RM: 'ROSAK MINOR',
-              R: 'ROSAK',
-              D: 'DIPULANGKAN',
-              U: 'LAIN',
-            };
-            return SF.includes(map[cat] || 'LAIN');
-          });
-        }
-        let b = 0,
-          rm = 0,
-          r = 0,
-          d = 0;
-        filtered.forEach((i) => {
-          const c = getStatusCategory(G(i, 'STATUS JENTERA'));
-          if (c === 'B') b++;
-          else if (c === 'RM') rm++;
-          else if (c === 'R') r++;
-          else if (c === 'D') d++;
-        });
-        document.getElementById('dashStats').innerHTML = `
-            <div class="card-bg border-custom p-2 rounded-lg text-center transition-colors duration-300" style="border-width:1px;"><div class="text-base font-extrabold" style="color:var(--text-primary);">${filtered.length}</div><div class="text-[9px] text-secondary-custom">JUMLAH</div></div>
-            <div class="card-bg border border-emerald-500/30 p-2 rounded-lg text-center transition-colors duration-300"><div class="text-base font-extrabold text-emerald-400 pulse-glow-b">${b}</div><div class="text-[9px] text-emerald-500/80">BAIK</div></div>
-            <div class="card-bg border border-yellow-500/30 p-2 rounded-lg text-center transition-colors duration-300"><div class="text-base font-extrabold text-yellow-400 pulse-glow-rm">${rm}</div><div class="text-[9px] text-yellow-500/80">MINOR</div></div>
-            <div class="card-bg border border-red-500/30 p-2 rounded-lg text-center transition-colors duration-300"><div class="text-base font-extrabold text-red-400 pulse-glow-r">${r}</div><div class="text-[9px] text-red-500/80">ROSAK</div></div>
-            <div class="card-bg border border-blue-500/30 p-2 rounded-lg text-center transition-colors duration-300"><div class="text-base font-extrabold text-blue-400 pulse-glow-d">${d}</div><div class="text-[9px] text-blue-500/80">PULANG</div></div>
-          `;
-        const zoneMap = {};
-        filtered.forEach((item) => {
-          const lokasi = (G(item, 'LOKASI SEMASA') || '').trim();
-          let zoneKey = (G(item, 'ZON') || 'LAIN').trim().toUpperCase();
-          if (
-            lokasi.toUpperCase().includes('BENGKEL') ||
-            lokasi.toUpperCase().includes('KJT')
-          )
-            zoneKey = 'BENGKEL KJT BOMBA';
-          if (!zoneMap[zoneKey]) zoneMap[zoneKey] = {};
-          const listBalaiInZone = BALAI_ZON[zoneKey] || [];
-          let matchedBalai = findMatchingBalai(lokasi, listBalaiInZone);
-          if (!matchedBalai && zoneKey !== 'BENGKEL KJT BOMBA')
-            matchedBalai = findMatchingBalaiInAllZones(lokasi);
-          const balaiKey = matchedBalai
-            ? matchedBalai.toUpperCase()
-            : lokasi.toUpperCase() || 'TANPA BALAI';
-          if (!zoneMap[zoneKey][balaiKey]) zoneMap[zoneKey][balaiKey] = [];
-          zoneMap[zoneKey][balaiKey].push(item);
-        });
-        let html = '';
-        zoneOrder.forEach((zoneName) => {
-          const dataZon = zoneMap[zoneName] || {};
-          let totalItemsInZone = 0;
-          Object.values(dataZon).forEach(
-            (arr) => (totalItemsInZone += arr.length)
-          );
-          html += `<div class="card-bg border-custom rounded-xl p-2 flex flex-col space-y-2 h-full transition-colors duration-300" style="border-width:1px;"><div class="flex items-center justify-between pb-1 border-b border-custom"><h3 class="text-xs font-extrabold flex items-center gap-1.5" style="color:var(--text-primary);"><span class="w-2 h-2 rounded-full bg-red-500 siren-red shrink-0"></span>${zoneName}</h3><span class="bg-red-600/20 text-red-400 border border-red-500/30 text-[10px] px-2 py-0.2 rounded-full font-bold">${totalItemsInZone}</span></div><div class="space-y-1.5 flex-1">`;
-          if (zoneName === 'BENGKEL KJT BOMBA') {
-            const sortedBalai = Object.keys(dataZon).sort();
-            if (sortedBalai.length === 0)
-              html += renderBalaiCardGroup('BENGKEL KJT BOMBA', []);
-            else
-              sortedBalai.forEach((balai) => {
-                html += renderBalaiCardGroup(balai, dataZon[balai]);
-              });
-          } else {
-            const listBalai = BALAI_ZON[zoneName] || [];
-            const renderedBalaiKeys = new Set();
-            listBalai.forEach((balaiFullName) => {
-              const balaiUpper = balaiFullName.toUpperCase();
-              renderedBalaiKeys.add(balaiUpper);
-              let items = dataZon[balaiUpper] || [];
-              html += renderBalaiCardGroup(
-                balaiFullName
-                  .replace('BALAI BOMBA DAN PENYELAMAT', 'BBP')
-                  .replace('FIRE POST', 'FP'),
-                items
-              );
-            });
-            Object.keys(dataZon).forEach((extraBalaiKey) => {
-              if (
-                !renderedBalaiKeys.has(extraBalaiKey) &&
-                extraBalaiKey !== 'TANPA BALAI'
-              ) {
-                html += renderBalaiCardGroup(
-                  extraBalaiKey,
-                  dataZon[extraBalaiKey]
-                );
+      // Render balai card group (helper)
+      function renderBalaiCardGroup(balaiName, items) {
+        let cardsHtml = '';
+        if (items.length > 0) {
+          cardsHtml = items
+            .map((item) => {
+              const callsign = G(item, 'CALLSIGN') || '-',
+                plate = G(item, 'PLATE') || '-',
+                model = G(item, 'MODEL JENTERA') || '',
+                status = G(item, 'STATUS JENTERA') || 'TIADA',
+                cat = getStatusCategory(status);
+              let glowClass = 'status-glow-u',
+                statusDotBg = 'bg-slate-400';
+              if (cat === 'B') {
+                glowClass = 'status-glow-b';
+                statusDotBg = 'bg-emerald-500 siren-red';
+              } else if (cat === 'RM') {
+                glowClass = 'status-glow-rm';
+                statusDotBg = 'bg-yellow-500 siren-amber';
+              } else if (cat === 'R') {
+                glowClass = 'status-glow-r';
+                statusDotBg = 'bg-red-500 siren-red';
+              } else if (cat === 'D') {
+                glowClass = 'status-glow-d';
+                statusDotBg = 'bg-blue-500 siren-blue';
               }
-            });
-            if (dataZon['TANPA BALAI'] && dataZon['TANPA BALAI'].length > 0) {
-              html += renderBalaiCardGroup('LAIN-LAIN', dataZon['TANPA BALAI']);
-            }
-          }
-          html += `</div></div>`;
-        });
-        document.getElementById('zoneContainer').innerHTML = html;
+              const modelUpper = model.toUpperCase();
+              let typeTag = 'FRT';
+              if (modelUpper.includes('HINO') && modelUpper.includes('XZC720R'))
+                typeTag = 'CFRT';
+              else if (
+                modelUpper.includes('NISSAN') &&
+                modelUpper.includes('CPB14FHRT')
+              ) typeTag = 'FRT';
+              else if (
+                modelUpper.includes('MERCEDES') &&
+                modelUpper.includes('ATEGO')
+              ) typeTag = 'LFRT';
+              else if (
+                modelUpper.includes('SCANIA') &&
+                modelUpper.includes('P310')
+              ) typeTag = 'FRT';
+              else if (modelUpper.includes('SITRAK')) typeTag = 'FRT';
+              else if (
+                modelUpper.includes('SCANIA') &&
+                modelUpper.includes('P94')
+              ) typeTag = 'FRT';
+              else if (
+                modelUpper.includes('FORD') &&
+                modelUpper.includes('F350')
+              ) typeTag = 'FRT';
+              else if (
+                modelUpper.includes('TOYOTA') &&
+                modelUpper.includes('HIACE')
+              ) typeTag = 'EMRS';
+              else if (
+                modelUpper.includes('SCANIA') &&
+                modelUpper.includes('WT') &&
+                modelUpper.includes('20000')
+              ) typeTag = 'TANKER';
+              else if (
+                modelUpper.includes('MERCEDES') &&
+                modelUpper.includes('WT') &&
+                modelUpper.includes('10000')
+              ) typeTag = 'TANKER';
+              const typeColor =
+                item._j === 'cfrt' ?
+                'bg-red-500/20 text-red-400 border-red-500/30' :
+                item._j === 'emrs' ?
+                'bg-blue-500/20 text-blue-400 border-blue-500/30' :
+                'bg-cyan-500/20 text-cyan-400 border-cyan-500/30';
+              const itemJson = encodeURIComponent(JSON.stringify(item));
+              return `<div class="jentera-card ${glowClass} ${item._tc} relative group" onclick="showVehicleModal('${itemJson}')" title="${callsign} - ${status} (${model})">
+                    <button onclick="event.stopPropagation(); copySingleAssetInfo('${itemJson}', this)" class="copy-btn" title="Salin maklumat"><i class="fa-regular fa-copy"></i></button>
+                    <div class="flex items-center justify-between gap-1 pr-3 min-w-0">
+                      <div class="flex items-center gap-1 min-w-0"><span class="w-1.5 h-1.5 rounded-full ${statusDotBg} shrink-0"></span><span class="text-[10px] font-extrabold tracking-tight leading-none truncate" style="color:var(--text-primary);" title="${callsign}">${callsign}</span></div>
+                      <span class="text-[8px] font-extrabold px-1 py-0.2 rounded border shrink-0 ${typeColor}">${typeTag}</span>
+                    </div>
+                    <div class="flex items-center justify-between gap-1 text-[9px] pt-0.5 min-w-0">
+                      <span class="plate-number shrink-0">${plate}</span>
+                      <span class="text-[8px] truncate font-medium text-right flex-1 text-secondary-custom" title="${model}">${model}</span>
+                    </div>
+                    <div class="flex items-center justify-between pt-0.5 border-t border-custom">
+                      <div class="flex items-center gap-1"><div class="w-3 h-3 rounded-full bg-slate-950 border border-slate-600 flex items-center justify-center wheel-spin"><div class="w-1 h-1 rounded-full bg-slate-500"></div></div><div class="w-3 h-3 rounded-full bg-slate-950 border border-slate-600 flex items-center justify-center wheel-spin"><div class="w-1 h-1 rounded-full bg-slate-500"></div></div></div>
+                    </div>
+                  </div>`;
+            })
+            .join('');
+        } else {
+          const selStatuses = SF || [];
+          cardsHtml = renderEmptyStatusCards(selStatuses);
+        }
+        return `<div class="bg-slate-900/60 border border-custom rounded-lg p-1.5 space-y-1">
+              <div class="flex items-center justify-between text-[10px] font-bold px-0.5" style="color:#fbbf24; text-shadow:-1px -1px 0 #000,1px -1px 0 #000,-1px 1px 0 #000,1px 1px 0 #000,0 0 8px #fbbf24,0 0 16px #fbbf24;">
+                <span class="truncate uppercase tracking-tight flex items-center gap-1"><i class="fa-solid fa-building text-yellow-400 text-[9px]"></i> ${balaiName}</span>
+                <span class="text-slate-500 text-[9px] font-semibold">${items.length}</span>
+              </div>
+              <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-1 gap-1">${cardsHtml}</div>
+            </div>`;
       }
 
       function renderEmptyStatusCards(selectedStatuses) {
         const statusesToDisplay =
-          selectedStatuses.length > 0
-            ? selectedStatuses
-            : ['BAIK', 'ROSAK MINOR', 'ROSAK', 'DIPULANGKAN'];
+          selectedStatuses.length > 0 ?
+          selectedStatuses :
+          ['BAIK', 'ROSAK MINOR', 'ROSAK', 'DIPULANGKAN'];
         const statusConfigs = {
           BAIK: {
             label: 'BAIK',
@@ -3374,112 +2859,121 @@
           .join('')}</div></div>`;
       }
 
-      function renderBalaiCardGroup(balaiName, items) {
-        let cardsHtml = '';
-        if (items.length > 0) {
-          cardsHtml = items
-            .map((item) => {
-              const callsign = G(item, 'CALLSIGN') || '-',
-                plate = G(item, 'PLATE') || '-',
-                model = G(item, 'MODEL JENTERA') || '',
-                status = G(item, 'STATUS JENTERA') || 'TIADA',
-                cat = getStatusCategory(status);
-              let glowClass = 'status-glow-u',
-                statusDotBg = 'bg-slate-400';
-              if (cat === 'B') {
-                glowClass = 'status-glow-b';
-                statusDotBg = 'bg-emerald-500 siren-red';
-              } else if (cat === 'RM') {
-                glowClass = 'status-glow-rm';
-                statusDotBg = 'bg-yellow-500 siren-amber';
-              } else if (cat === 'R') {
-                glowClass = 'status-glow-r';
-                statusDotBg = 'bg-red-500 siren-red';
-              } else if (cat === 'D') {
-                glowClass = 'status-glow-d';
-                statusDotBg = 'bg-blue-500 siren-blue';
-              }
-              const modelUpper = model.toUpperCase();
-              let typeTag = 'FRT';
-              if (modelUpper.includes('HINO') && modelUpper.includes('XZC720R'))
-                typeTag = 'CFRT';
-              else if (
-                modelUpper.includes('NISSAN') &&
-                modelUpper.includes('CPB14FHRT')
-              )
-                typeTag = 'FRT';
-              else if (
-                modelUpper.includes('MERCEDES') &&
-                modelUpper.includes('ATEGO')
-              )
-                typeTag = 'LFRT';
-              else if (
-                modelUpper.includes('SCANIA') &&
-                modelUpper.includes('P310')
-              )
-                typeTag = 'FRT';
-              else if (modelUpper.includes('SITRAK')) typeTag = 'FRT';
-              else if (
-                modelUpper.includes('SCANIA') &&
-                modelUpper.includes('P94')
-              )
-                typeTag = 'FRT';
-              else if (
-                modelUpper.includes('FORD') &&
-                modelUpper.includes('F350')
-              )
-                typeTag = 'FRT';
-              else if (
-                modelUpper.includes('TOYOTA') &&
-                modelUpper.includes('HIACE')
-              )
-                typeTag = 'EMRS';
-              else if (
-                modelUpper.includes('SCANIA') &&
-                modelUpper.includes('WT') &&
-                modelUpper.includes('20000')
-              )
-                typeTag = 'TANKER';
-              else if (
-                modelUpper.includes('MERCEDES') &&
-                modelUpper.includes('WT') &&
-                modelUpper.includes('10000')
-              )
-                typeTag = 'TANKER';
-              const typeColor =
-                item._j === 'cfrt'
-                  ? 'bg-red-500/20 text-red-400 border-red-500/30'
-                  : item._j === 'emrs'
-                  ? 'bg-blue-500/20 text-blue-400 border-blue-500/30'
-                  : 'bg-cyan-500/20 text-cyan-400 border-cyan-500/30';
-              const itemJson = encodeURIComponent(JSON.stringify(item));
-              return `<div class="jentera-card ${glowClass} ${item._tc} relative group" onclick="showVehicleModal('${itemJson}')" title="${callsign} - ${status} (${model})">
-                    <button onclick="event.stopPropagation(); copySingleAssetInfo('${itemJson}', this)" class="copy-btn" title="Salin maklumat"><i class="fa-regular fa-copy"></i></button>
-                    <div class="flex items-center justify-between gap-1 pr-3 min-w-0">
-                      <div class="flex items-center gap-1 min-w-0"><span class="w-1.5 h-1.5 rounded-full ${statusDotBg} shrink-0"></span><span class="text-[10px] font-extrabold tracking-tight leading-none truncate" style="color:var(--text-primary);" title="${callsign}">${callsign}</span></div>
-                      <span class="text-[8px] font-extrabold px-1 py-0.2 rounded border shrink-0 ${typeColor}">${typeTag}</span>
-                    </div>
-                    <div class="flex items-center justify-between gap-1 text-[9px] pt-0.5 min-w-0">
-                      <span class="plate-number shrink-0">${plate}</span>
-                      <span class="text-[8px] truncate font-medium text-right flex-1 text-secondary-custom" title="${model}">${model}</span>
-                    </div>
-                    <div class="flex items-center justify-between pt-0.5 border-t border-custom">
-                      <div class="flex items-center gap-1"><div class="w-3 h-3 rounded-full bg-slate-950 border border-slate-600 flex items-center justify-center wheel-spin"><div class="w-1 h-1 rounded-full bg-slate-500"></div></div><div class="w-3 h-3 rounded-full bg-slate-950 border border-slate-600 flex items-center justify-center wheel-spin"><div class="w-1 h-1 rounded-full bg-slate-500"></div></div></div>
-                    </div>
-                  </div>`;
-            })
-            .join('');
-        } else {
-          const selStatuses = SF || [];
-          cardsHtml = renderEmptyStatusCards(selStatuses);
+      // ============================================================
+      // RENDER MAIN DASHBOARD — UPDATED with manual scroll per zone
+      // ============================================================
+      function renderMainDashboard() {
+        const all = getAllAssets();
+        document.getElementById('countCfrt').textContent = D.cfrt.length;
+        document.getElementById('countEmrs').textContent = D.emrs.length;
+        document.getElementById('countWater').textContent = D.water.length;
+        let filtered = all.filter((item) => F.includes(item._j));
+        if (SF.length > 0) {
+          filtered = filtered.filter((item) => {
+            const cat = getStatusCategory(G(item, 'STATUS JENTERA'));
+            const map = {
+              B: 'BAIK',
+              RM: 'ROSAK MINOR',
+              R: 'ROSAK',
+              D: 'DIPULANGKAN',
+              U: 'LAIN',
+            };
+            return SF.includes(map[cat] || 'LAIN');
+          });
         }
-        return `<div class="bg-slate-900/60 border border-custom rounded-lg p-1.5 space-y-1">
-              <div class="flex items-center justify-between text-[10px] font-bold px-0.5" style="color:#fbbf24; text-shadow:-1px -1px 0 #000,1px -1px 0 #000,-1px 1px 0 #000,1px 1px 0 #000,0 0 8px #fbbf24,0 0 16px #fbbf24;">
-                <span class="truncate uppercase tracking-tight flex items-center gap-1"><i class="fa-solid fa-building text-yellow-400 text-[9px]"></i> ${balaiName}</span>
-                <span class="text-slate-500 text-[9px] font-semibold">${items.length}</span>
+        let b = 0,
+          rm = 0,
+          r = 0,
+          d = 0;
+        filtered.forEach((i) => {
+          const c = getStatusCategory(G(i, 'STATUS JENTERA'));
+          if (c === 'B') b++;
+          else if (c === 'RM') rm++;
+          else if (c === 'R') r++;
+          else if (c === 'D') d++;
+        });
+        document.getElementById('dashStats').innerHTML = `
+            <div class="card-bg border-custom p-2 rounded-lg text-center transition-colors duration-300" style="border-width:1px;"><div class="text-base font-extrabold" style="color:var(--text-primary);">${filtered.length}</div><div class="text-[9px] text-secondary-custom">JUMLAH</div></div>
+            <div class="card-bg border border-emerald-500/30 p-2 rounded-lg text-center transition-colors duration-300"><div class="text-base font-extrabold text-emerald-400 pulse-glow-b">${b}</div><div class="text-[9px] text-emerald-500/80">BAIK</div></div>
+            <div class="card-bg border border-yellow-500/30 p-2 rounded-lg text-center transition-colors duration-300"><div class="text-base font-extrabold text-yellow-400 pulse-glow-rm">${rm}</div><div class="text-[9px] text-yellow-500/80">MINOR</div></div>
+            <div class="card-bg border border-red-500/30 p-2 rounded-lg text-center transition-colors duration-300"><div class="text-base font-extrabold text-red-400 pulse-glow-r">${r}</div><div class="text-[9px] text-red-500/80">ROSAK</div></div>
+            <div class="card-bg border border-blue-500/30 p-2 rounded-lg text-center transition-colors duration-300"><div class="text-base font-extrabold text-blue-400 pulse-glow-d">${d}</div><div class="text-[9px] text-blue-500/80">PULANG</div></div>
+          `;
+        const zoneMap = {};
+        filtered.forEach((item) => {
+          const lokasi = (G(item, 'LOKASI SEMASA') || '').trim();
+          let zoneKey = (G(item, 'ZON') || 'LAIN').trim().toUpperCase();
+          if (
+            lokasi.toUpperCase().includes('BENGKEL') ||
+            lokasi.toUpperCase().includes('KJT')
+          ) zoneKey = 'BENGKEL KJT BOMBA';
+          if (!zoneMap[zoneKey]) zoneMap[zoneKey] = {};
+          const listBalaiInZone = BALAI_ZON[zoneKey] || [];
+          let matchedBalai = findMatchingBalai(lokasi, listBalaiInZone);
+          if (!matchedBalai && zoneKey !== 'BENGKEL KJT BOMBA')
+            matchedBalai = findMatchingBalaiInAllZones(lokasi);
+          const balaiKey = matchedBalai ?
+            matchedBalai.toUpperCase() :
+            lokasi.toUpperCase() || 'TANPA BALAI';
+          if (!zoneMap[zoneKey][balaiKey]) zoneMap[zoneKey][balaiKey] = [];
+          zoneMap[zoneKey][balaiKey].push(item);
+        });
+        let html = '';
+        zoneOrder.forEach((zoneName) => {
+          const dataZon = zoneMap[zoneName] || {};
+          let totalItemsInZone = 0;
+          Object.values(dataZon).forEach(
+            (arr) => (totalItemsInZone += arr.length)
+          );
+          // ZONE CARD with manual scroll: max-height + sticky header + scrollable body
+          html += `<div class="card-bg border-custom rounded-xl p-2 flex flex-col space-y-2 max-h-[500px] transition-colors duration-300" style="border-width:1px; overflow:hidden;">
+              <div class="flex items-center justify-between pb-1 border-b border-custom sticky top-0 z-10 bg-[var(--bg-card)]">
+                <h3 class="text-xs font-extrabold flex items-center gap-1.5" style="color:var(--text-primary);">
+                  <span class="w-2 h-2 rounded-full bg-red-500 siren-red shrink-0"></span>${zoneName}
+                </h3>
+                <span class="bg-red-600/20 text-red-400 border border-red-500/30 text-[10px] px-2 py-0.2 rounded-full font-bold">${totalItemsInZone}</span>
               </div>
-              <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-1 gap-1">${cardsHtml}</div>
-            </div>`;
+              <div class="space-y-1.5 flex-1 overflow-y-auto">`;
+          if (zoneName === 'BENGKEL KJT BOMBA') {
+            const sortedBalai = Object.keys(dataZon).sort();
+            if (sortedBalai.length === 0)
+              html += renderBalaiCardGroup('BENGKEL KJT BOMBA', []);
+            else
+              sortedBalai.forEach((balai) => {
+                html += renderBalaiCardGroup(balai, dataZon[balai]);
+              });
+          } else {
+            const listBalai = BALAI_ZON[zoneName] || [];
+            const renderedBalaiKeys = new Set();
+            listBalai.forEach((balaiFullName) => {
+              const balaiUpper = balaiFullName.toUpperCase();
+              renderedBalaiKeys.add(balaiUpper);
+              let items = dataZon[balaiUpper] || [];
+              html += renderBalaiCardGroup(
+                balaiFullName
+                .replace('BALAI BOMBA DAN PENYELAMAT', 'BBP')
+                .replace('FIRE POST', 'FP'),
+                items
+              );
+            });
+            Object.keys(dataZon).forEach((extraBalaiKey) => {
+              if (
+                !renderedBalaiKeys.has(extraBalaiKey) &&
+                extraBalaiKey !== 'TANPA BALAI'
+              ) {
+                html += renderBalaiCardGroup(
+                  extraBalaiKey,
+                  dataZon[extraBalaiKey]
+                );
+              }
+            });
+            if (dataZon['TANPA BALAI'] && dataZon['TANPA BALAI'].length > 0) {
+              html += renderBalaiCardGroup('LAIN-LAIN', dataZon['TANPA BALAI']);
+            }
+          }
+          html += `</div></div>`;
+        });
+        document.getElementById('zoneContainer').innerHTML = html;
       }
 
       // ============================================================
@@ -3494,7 +2988,7 @@
           zon = G(item, 'ZON') || '-',
           status = G(item, 'STATUS JENTERA') || '-',
           kerosakan =
-            G(item, 'STATUS KEROSAKKAN') || 'Tiada maklumat kerosakan';
+          G(item, 'STATUS KEROSAKKAN') || 'Tiada maklumat kerosakan';
         const cat = getStatusCategory(status);
         let accentColor = 'red',
           accentBg = 'from-red-600 via-red-800 to-slate-900',
@@ -3552,7 +3046,7 @@
           zon = G(item, 'ZON') || '-',
           status = G(item, 'STATUS JENTERA') || '-',
           kerosakan =
-            G(item, 'STATUS KEROSAKKAN') || 'Tiada maklumat kerosakan';
+          G(item, 'STATUS KEROSAKKAN') || 'Tiada maklumat kerosakan';
         const cat = getStatusCategory(status);
         let badgeClass = 'badge-unknown';
         if (cat === 'B') badgeClass = 'badge-baik';
@@ -3594,7 +3088,7 @@
           zon = G(item, 'ZON') || '-',
           status = G(item, 'STATUS JENTERA') || '-',
           kerosakan =
-            G(item, 'STATUS KEROSAKKAN') || 'Tiada maklumat kerosakan';
+          G(item, 'STATUS KEROSAKKAN') || 'Tiada maklumat kerosakan';
         const cat = getStatusCategory(status);
         let badgeClass = 'badge-unknown';
         if (cat === 'B') badgeClass = 'badge-baik';
@@ -3630,9 +3124,9 @@
       function showVehicleModal(itemJson) {
         try {
           const item =
-            typeof itemJson === 'string'
-              ? JSON.parse(decodeURIComponent(itemJson))
-              : itemJson;
+            typeof itemJson === 'string' ?
+            JSON.parse(decodeURIComponent(itemJson)) :
+            itemJson;
           const container = document.getElementById('modalVehicleShape');
           if (!container) return;
           if (!item._j) {
@@ -3709,9 +3203,8 @@
 
       function showSlideZone(idx) {
         currentSlideZone = (idx + zoneOrder.length) % zoneOrder.length;
-        document.getElementById('slideshowCounter').textContent = `${
-          zoneOrder[currentSlideZone]
-        } (${currentSlideZone + 1}/${zoneOrder.length})`;
+        document.getElementById('slideshowCounter').textContent =
+          `${zoneOrder[currentSlideZone]} (${currentSlideZone + 1}/${zoneOrder.length})`;
         const containers = document.querySelectorAll('#zoneContainer > div');
         containers.forEach((c, i) => {
           if (i === currentSlideZone) {
@@ -3757,8 +3250,9 @@
         containers.forEach((c) => {
           c.style.display = 'flex';
           c.className =
-            'card-bg border-custom rounded-xl p-2 flex flex-col space-y-2 h-full transition-colors duration-300';
+            'card-bg border-custom rounded-xl p-2 flex flex-col space-y-2 max-h-[500px] transition-colors duration-300';
           c.style.borderWidth = '1px';
+          c.style.overflow = 'hidden';
         });
       }
 
@@ -3831,7 +3325,7 @@
       // ============================================================
       // EVENT LISTENERS & INIT
       // ============================================================
-      window.addEventListener('click', function (e) {
+      window.addEventListener('click', function(e) {
         if (!e.target.closest('.ms-dropdown')) {
           document
             .querySelectorAll('.ms-options')
@@ -3839,13 +3333,13 @@
         }
       });
 
-      document.addEventListener('keydown', function (e) {
+      document.addEventListener('keydown', function(e) {
         if (e.key === 'Escape') {
           closeModal();
         }
       });
 
-      window.onload = function () {
+      window.onload = function() {
         loadTheme();
         loadAllData();
       };
