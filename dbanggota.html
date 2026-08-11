@@ -186,7 +186,6 @@
             color: #991b1b;
             border-color: #fca5a5;
         }
-        /* Tambahan untuk kategori baharu */
         .badge-status.cyan {
             background: #e0f7fa;
             color: #00695c;
@@ -923,27 +922,26 @@
             return `<span class="badge-status red text-[9px]"><i class="fa-solid fa-circle-exclamation text-[9px] mr-1"></i>ROSAK ${parsed.baik}B/${parsed.rosak}R</span>`;
         }
 
-        // ===================== STATUS JENTERA: KATEGORI BAHARU =====================
+        // ===================== STATUS JENTERA: KATEGORI =====================
         function getStatusKategori(status) {
             if (!status) return 'LAIN';
-            const s = status.toUpperCase();
-            // Mapping tepat seperti diminta
+            const s = status.toUpperCase().trim();
+            // Mapping baru
             if (s === 'BAIK & BOLEH BEROPERASI') return 'BAIK';
             if (s === 'ROSAK MINOR & BOLEH BEROPERASI') return 'BAIK';
             if (s === 'ROSAK & TIDAK BOLEH BEROPERASI') return 'ROSAK';
             if (s === 'DALAM PROSES LUPUS') return 'DALAM PROSES LUPUS';
             if (s === 'LUPUS') return 'TELAH LUPUS';
             if (s === 'TELAH DIPULANGKAN') return 'TELAH DIPULANGKAN';
-            // Fallback untuk data lama jika ada
+            // Fallback untuk data lama (jika masih ada)
             if (s === 'SEDIA BEROPERASI' || s === 'BAIK') return 'BAIK';
             if (s.includes('ROSAK') && s.includes('TIDAK BOLEH')) return 'ROSAK';
-            if (s.includes('ROSAK') || s.includes('MINOR')) return 'BAIK'; // treat as baik? But better to map to BAIK? Actually they want ROSAK MINOR as BAIK.
+            if (s.includes('ROSAK') || s.includes('MINOR')) return 'BAIK'; // treat as baik
             if (s.includes('SELENGGARA') || s.includes('PENYELENGGARAAN')) return 'LAIN';
             if (s === 'LUPUS') return 'TELAH LUPUS';
             return 'LAIN';
         }
 
-        // Fungsi untuk badge mengikut kategori (digunakan dalam renderJentera)
         function getBadgeForKategori(kategori) {
             const base = 'badge-status';
             if (kategori === 'BAIK') return `${base} green`;
@@ -954,7 +952,6 @@
             return `${base} slate`;
         }
 
-        // Fungsi getBadge asal untuk anggota dan lain-lain, tetapi untuk jentera kita guna getBadgeForKategori
         function getBadge(type, val) {
             val = (val || '').toUpperCase();
             const base = 'badge-status';
@@ -964,7 +961,7 @@
                 if (val === 'CUTI') return `${base} amber`;
                 if (val.includes('SAKIT')) return `${base} red`;
                 if (val === 'TUGAS KHAS') return `${base} purple`;
-                // Untuk jentera - guna kategori baharu
+                // Untuk jentera - guna kategori
                 const kat = getStatusKategori(val);
                 return getBadgeForKategori(kat);
             }
@@ -1012,7 +1009,6 @@
             const pC = anggota.filter(a => a.pasukan === 'PASUKAN C').length;
 
             const totalJ = jentera.length;
-            // Kira mengikut kategori baharu
             const jBaik = jentera.filter(j => getStatusKategori(j.status) === 'BAIK').length;
             const jRosak = jentera.filter(j => getStatusKategori(j.status) === 'ROSAK').length;
             const jLain = jentera.filter(j => {
@@ -1401,7 +1397,6 @@
             const labelMap = { cad: 'CAD', wic: 'WIC', bomra: 'BOMRA', desktopGirn: 'D.GIRN', handheldGirn: 'H.GIRN',
                 vehicularGirn: 'V.GIRN', internet: 'INET', handphone: 'HP' };
 
-            // Jentera bermasalah: semua yang tidak berstatus BAIK
             const jBermasalah = jentera.filter(j => getStatusKategori(j.status) !== 'BAIK');
 
             const cBermasalah = [];
@@ -1596,7 +1591,7 @@
             }
         }
 
-        // ===== RENDER JENTERA (filter exact status) =====
+        // ===== RENDER JENTERA (filter berdasarkan KATEGORI, bukan exact) =====
         function renderJentera(data) {
             let d = data || (dataCache ? (dataCache.logistikBertugas || dataCache.logistik_bertugas || []) : []);
             const fCari = (document.getElementById('filterJenteraCari')?.value || '').toUpperCase();
@@ -1607,10 +1602,13 @@
                 const cari = !fCari || (j.callsign || '').toUpperCase().includes(fCari) || (j.plate || '').toUpperCase()
                     .includes(fCari) || (j.jenis || '').toUpperCase().includes(fCari);
                 const balai = fBalai === 'SEMUA' || j.balai === fBalai;
-                // Filter exact status
+
+                // Filter status menggunakan kategori
                 let st = true;
                 if (fStatus !== 'SEMUA') {
-                    st = (j.status === fStatus);
+                    const kategoriPilihan = getStatusKategori(fStatus); // dapatkan kategori dari teks pilihan
+                    const kategoriRekod = getStatusKategori(j.status);
+                    st = (kategoriPilihan === kategoriRekod);
                 }
                 return cari && balai && st;
             });
