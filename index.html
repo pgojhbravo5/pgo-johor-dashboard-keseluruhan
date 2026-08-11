@@ -2117,6 +2117,8 @@
             }
             .sistem-panel .panel-body.open {
                 padding: 0 0.8rem 0.8rem 0.8rem;
+                max-height: 400px;
+                overflow-y: auto;
             }
             .carousel-slide {
                 padding: 0.6rem 0.8rem;
@@ -2267,6 +2269,30 @@
             .anggota-mini-stats {
                 font-size: 0.55rem;
             }
+
+            /* ===== WRAP TEXT UNTUK MOBILE ===== */
+            .app-card h3,
+            .app-card p {
+                white-space: normal;
+                overflow: visible;
+                text-overflow: clip;
+            }
+            .cat-panel .app-card h3,
+            .cat-panel .app-card p {
+                white-space: normal;
+                overflow: visible;
+                text-overflow: clip;
+            }
+            .sistem-panel .sistem-content .app-card h3,
+            .sistem-panel .sistem-content .app-card p {
+                white-space: normal;
+                overflow: visible;
+                text-overflow: clip;
+            }
+            /* Biarkan anggota-mini-stats kekal sekarangrap */
+            .anggota-mini-stats span {
+                white-space: nowrap;
+            }
         }
 
         /* ========== PENAMBAHBAIKAN UNTUK DESKTOP VIEW ========== */
@@ -2291,18 +2317,84 @@
                 padding: 0;
             }
 
-            /* Dashboard dan panel lain kekal di tengah */
+            /* Dashboard dan panel lain – tambah padding dalaman untuk lebih ruang */
             .dashboard {
-                padding: 1.75rem 1.5rem;
+                padding: 2rem 1.75rem;
             }
             .links-panel {
-                padding: 1.5rem 1.5rem;
+                padding: 1.75rem 1.5rem;
             }
             .sistem-panel .panel-toggle {
-                padding: 1.25rem 1.5rem;
+                padding: 1.5rem 1.75rem;
             }
             .sistem-panel .panel-body.open {
-                padding: 0 1.5rem 1.5rem;
+                padding: 0 1.75rem 1.75rem;
+                max-height: 500px;
+                overflow-y: auto;
+                scrollbar-width: thin;
+                scrollbar-color: var(--hazard-gold) transparent;
+            }
+            .sistem-panel .panel-body.open::-webkit-scrollbar {
+                width: 5px;
+            }
+            .sistem-panel .panel-body.open::-webkit-scrollbar-track {
+                background: transparent;
+            }
+            .sistem-panel .panel-body.open::-webkit-scrollbar-thumb {
+                background: var(--hazard-gold);
+                border-radius: 10px;
+            }
+
+            /* Kategori – scroller untuk lebih 3 kad, padding diperluas */
+            .cat-panel.open {
+                padding: 0 1rem 1rem;
+                max-height: 600px;
+                overflow-y: auto;
+                scrollbar-width: thin;
+                scrollbar-color: var(--hazard-gold) transparent;
+            }
+            .cat-panel.open::-webkit-scrollbar {
+                width: 5px;
+            }
+            .cat-panel.open::-webkit-scrollbar-track {
+                background: transparent;
+            }
+            .cat-panel.open::-webkit-scrollbar-thumb {
+                background: var(--hazard-gold);
+                border-radius: 10px;
+            }
+            .cat-panel .app-card {
+                padding: 0.85rem 1rem;
+            }
+
+            /* Wrap text untuk desktop – membolehkan teks melipat */
+            .app-card h3,
+            .app-card p {
+                white-space: normal;
+                overflow: visible;
+                text-overflow: clip;
+            }
+            .cat-panel .app-card h3,
+            .cat-panel .app-card p {
+                white-space: normal;
+                overflow: visible;
+                text-overflow: clip;
+            }
+            .sistem-panel .sistem-content .app-card h3,
+            .sistem-panel .sistem-content .app-card p {
+                white-space: normal;
+                overflow: visible;
+                text-overflow: clip;
+            }
+            /* Biarkan badge dan arrow kekal tidak wrap */
+            .app-card .badge,
+            .app-card .arrow {
+                white-space: nowrap;
+                flex-shrink: 0;
+            }
+            /* Anggota mini stats kekal sekarangrap */
+            .anggota-mini-stats span {
+                white-space: nowrap;
             }
         }
 
