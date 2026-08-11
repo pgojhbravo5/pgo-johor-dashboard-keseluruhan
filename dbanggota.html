@@ -186,6 +186,17 @@
             color: #991b1b;
             border-color: #fca5a5;
         }
+        /* Tambahan untuk kategori baharu */
+        .badge-status.cyan {
+            background: #e0f7fa;
+            color: #00695c;
+            border-color: #80deea;
+        }
+        .badge-status.indigo {
+            background: #e8eaf6;
+            color: #283593;
+            border-color: #9fa8da;
+        }
 
         /* ===== GRID 2 LAJUR (Desktop) ===== */
         .panel-grid-2 {
@@ -317,6 +328,12 @@
         }
         .ticker-item .icon-stat.amber {
             color: #fbbf24;
+        }
+        .ticker-item .icon-stat.cyan {
+            color: #26c6da;
+        }
+        .ticker-item .icon-stat.indigo {
+            color: #7986cb;
         }
         .ticker-badge {
             display: inline-block;
@@ -591,7 +608,6 @@
                 <button class="bg-white/10 hover:bg-white/20 transition-all text-white border border-white/20 px-1.5 py-1 md:px-3 md:py-2 rounded-lg font-semibold text-[8px] md:text-sm flex items-center gap-1 md:gap-2" onclick="fetchData()">
                     <i class="fa-solid fa-rotate"></i> <span class="hidden xs:inline">Refresh</span>
                 </button>
-                <!-- BUTANG KEMBALI KE DASHBOARD UTAMA -->
                 <a href="index.html" class="bg-white/10 hover:bg-white/20 transition-all text-white border border-white/20 px-1.5 py-1 md:px-3 md:py-2 rounded-lg font-semibold text-[8px] md:text-sm flex items-center gap-1 md:gap-2">
                     <i class="fa-solid fa-arrow-left"></i> <span class="hidden xs:inline">Dashboard</span>
                 </a>
@@ -695,9 +711,12 @@
                 </select>
                 <select id="filterJenteraStatus" class="bg-slate-50 border border-slate-200 rounded-lg text-xs md:text-sm px-2 py-1.5 focus:outline-none focus:ring-2 focus:ring-bomba-red/20 focus:border-bomba-red flex-1 font-medium text-slate-700" onchange="renderJentera()">
                     <option value="SEMUA">Semua Status</option>
-                    <option value="BAIK">Sedia Beroperasi</option>
-                    <option value="ROSAK">Rosak</option>
-                    <option value="SELENGGARA">Dlm Selenggara</option>
+                    <option value="BAIK & BOLEH BEROPERASI">Baik &amp; Boleh Beroperasi</option>
+                    <option value="ROSAK MINOR & BOLEH BEROPERASI">Rosak Minor &amp; Boleh Beroperasi</option>
+                    <option value="ROSAK & TIDAK BOLEH BEROPERASI">Rosak &amp; Tidak Boleh Beroperasi</option>
+                    <option value="DALAM PROSES LUPUS">Dalam Proses Lupus</option>
+                    <option value="LUPUS">Lupus</option>
+                    <option value="TELAH DIPULANGKAN">Telah Dipulangkan</option>
                 </select>
             </div>
             <div id="jenteraScroll" class="table-container flex-1">
@@ -706,9 +725,7 @@
         </div>
     </div>
 
-    <!-- ========================================== -->
     <!-- ===== SECTION: CHECKLIST ===== -->
-    <!-- ========================================== -->
     <div id="sectionChecklist" class="bg-white rounded-2xl p-3 md:p-4 shadow-sm border border-slate-100 mb-4 panel-scroll-container" data-scroll="checklistScroll">
         <div class="flex justify-between items-center pb-1.5 mb-2 border-b-2 border-slate-100">
             <h2 class="text-xs md:text-sm font-bold text-bomba-navy flex items-center gap-1.5">
@@ -763,6 +780,7 @@
 
     <!-- ============================================================ -->
     <!-- ===== JAVASCRIPT ===== -->
+    <!-- ============================================================ -->
     <script>
         // ============================================================
         // KONFIGURASI
@@ -905,23 +923,38 @@
             return `<span class="badge-status red text-[9px]"><i class="fa-solid fa-circle-exclamation text-[9px] mr-1"></i>ROSAK ${parsed.baik}B/${parsed.rosak}R</span>`;
         }
 
-        // ===================== STATUS JENTERA: BADGE & KLASIFIKASI =====================
+        // ===================== STATUS JENTERA: KATEGORI BAHARU =====================
         function getStatusKategori(status) {
             if (!status) return 'LAIN';
             const s = status.toUpperCase();
+            // Mapping tepat seperti diminta
             if (s === 'BAIK & BOLEH BEROPERASI') return 'BAIK';
-            if (s === 'ROSAK MINOR & BOLEH BEROPERASI') return 'SELENGGARA';
+            if (s === 'ROSAK MINOR & BOLEH BEROPERASI') return 'BAIK';
             if (s === 'ROSAK & TIDAK BOLEH BEROPERASI') return 'ROSAK';
-            if (s === 'DALAM PROSES LUPUS') return 'SELENGGARA';
-            if (s === 'LUPUS') return 'ROSAK';
-            // Fallback untuk status lama
+            if (s === 'DALAM PROSES LUPUS') return 'DALAM PROSES LUPUS';
+            if (s === 'LUPUS') return 'TELAH LUPUS';
+            if (s === 'TELAH DIPULANGKAN') return 'TELAH DIPULANGKAN';
+            // Fallback untuk data lama jika ada
             if (s === 'SEDIA BEROPERASI' || s === 'BAIK') return 'BAIK';
             if (s.includes('ROSAK') && s.includes('TIDAK BOLEH')) return 'ROSAK';
-            if (s.includes('ROSAK') || s.includes('MINOR')) return 'SELENGGARA';
-            if (s.includes('SELENGGARA') || s.includes('PENYELENGGARAAN')) return 'SELENGGARA';
+            if (s.includes('ROSAK') || s.includes('MINOR')) return 'BAIK'; // treat as baik? But better to map to BAIK? Actually they want ROSAK MINOR as BAIK.
+            if (s.includes('SELENGGARA') || s.includes('PENYELENGGARAAN')) return 'LAIN';
+            if (s === 'LUPUS') return 'TELAH LUPUS';
             return 'LAIN';
         }
 
+        // Fungsi untuk badge mengikut kategori (digunakan dalam renderJentera)
+        function getBadgeForKategori(kategori) {
+            const base = 'badge-status';
+            if (kategori === 'BAIK') return `${base} green`;
+            if (kategori === 'ROSAK') return `${base} red`;
+            if (kategori === 'DALAM PROSES LUPUS') return `${base} cyan`;
+            if (kategori === 'TELAH LUPUS') return `${base} slate`;
+            if (kategori === 'TELAH DIPULANGKAN') return `${base} indigo`;
+            return `${base} slate`;
+        }
+
+        // Fungsi getBadge asal untuk anggota dan lain-lain, tetapi untuk jentera kita guna getBadgeForKategori
         function getBadge(type, val) {
             val = (val || '').toUpperCase();
             const base = 'badge-status';
@@ -931,12 +964,9 @@
                 if (val === 'CUTI') return `${base} amber`;
                 if (val.includes('SAKIT')) return `${base} red`;
                 if (val === 'TUGAS KHAS') return `${base} purple`;
-                // Untuk jentera - guna klasifikasi status baharu
+                // Untuk jentera - guna kategori baharu
                 const kat = getStatusKategori(val);
-                if (kat === 'BAIK') return `${base} green`;
-                if (kat === 'ROSAK') return `${base} red`;
-                if (kat === 'SELENGGARA') return `${base} amber`;
-                return `${base} slate`;
+                return getBadgeForKategori(kat);
             }
             if (type === 'pasukan') {
                 if (val.includes('A')) return `${base} red`;
@@ -982,10 +1012,13 @@
             const pC = anggota.filter(a => a.pasukan === 'PASUKAN C').length;
 
             const totalJ = jentera.length;
-            // Guna klasifikasi status baharu
+            // Kira mengikut kategori baharu
             const jBaik = jentera.filter(j => getStatusKategori(j.status) === 'BAIK').length;
             const jRosak = jentera.filter(j => getStatusKategori(j.status) === 'ROSAK').length;
-            const jSelenggara = jentera.filter(j => getStatusKategori(j.status) === 'SELENGGARA').length;
+            const jLain = jentera.filter(j => {
+                const kat = getStatusKategori(j.status);
+                return kat !== 'BAIK' && kat !== 'ROSAK';
+            }).length;
 
             const itemKeys = ['cad', 'wic', 'bomra', 'desktopGirn', 'handheldGirn', 'vehicularGirn', 'internet',
                 'handphone'
@@ -1032,7 +1065,7 @@
                 `<i class="fa-solid fa-circle-exclamation red icon-stat"></i> <span class="stat-label">Rosak</span> <span class="stat-num">${jRosak}</span> <span class="sep">|</span>`
                 );
             items.push(
-                `<i class="fa-solid fa-wrench amber icon-stat"></i> <span class="stat-label">Selenggara</span> <span class="stat-num">${jSelenggara}</span> <span class="sep" style="margin-right:0.8rem;">|</span>`
+                `<i class="fa-solid fa-triangle-exclamation cyan icon-stat"></i> <span class="stat-label">Lain</span> <span class="stat-num">${jLain}</span> <span class="sep" style="margin-right:0.8rem;">|</span>`
                 );
             items.push(
                 `<span class="ticker-badge" style="background:#10b981;">CHECKLIST</span> <span class="stat-label">Jumlah</span> <span class="stat-num">${totalC}</span> <span class="sep">|</span>`
@@ -1368,11 +1401,8 @@
             const labelMap = { cad: 'CAD', wic: 'WIC', bomra: 'BOMRA', desktopGirn: 'D.GIRN', handheldGirn: 'H.GIRN',
                 vehicularGirn: 'V.GIRN', internet: 'INET', handphone: 'HP' };
 
-            // Jentera bermasalah: ROSAK atau SELENGGARA (termasuk Lupus, Dalam Proses Lupus, Rosak Minor)
-            const jBermasalah = jentera.filter(j => {
-                const kat = getStatusKategori(j.status);
-                return kat === 'ROSAK' || kat === 'SELENGGARA';
-            });
+            // Jentera bermasalah: semua yang tidak berstatus BAIK
+            const jBermasalah = jentera.filter(j => getStatusKategori(j.status) !== 'BAIK');
 
             const cBermasalah = [];
             checklist.forEach(c => {
@@ -1406,9 +1436,10 @@
               <p class="text-[8px] md:text-[10px] font-bold text-slate-500 uppercase tracking-wider mb-1">Jentera (${jBermasalah.length})</p>
               <div class="space-y-0.5 max-h-48 overflow-y-auto pr-0.5">`;
                 jBermasalah.forEach(j => {
+                    const kat = getStatusKategori(j.status);
                     h += `<div class="flex items-center justify-between bg-red-50 border border-red-100 rounded-lg px-2 py-1 text-[8px] md:text-xs">
                 <span class="font-bold text-slate-700">${escapeHtml(j.callsign)||'-'} <span class="text-slate-400 font-normal">(${escapeHtml(j.balai)||'-'})</span></span>
-                <span class="${getBadge('status', j.status)}">${escapeHtml(j.status)}</span>
+                <span class="${getBadgeForKategori(kat)}">${escapeHtml(kat)}</span>
               </div>`;
                 });
                 h += `</div></div>`;
@@ -1461,7 +1492,7 @@
                 <th class="py-1 px-1 text-center font-bold text-slate-500 text-[7px] md:text-[8px] uppercase">Total</th>
                 <th class="py-1 px-1 text-center font-bold text-emerald-600 text-[7px] md:text-[8px] uppercase">Baik</th>
                 <th class="py-1 px-1 text-center font-bold text-red-600 text-[7px] md:text-[8px] uppercase">Rosak</th>
-                <th class="py-1 px-1 text-center font-bold text-amber-600 text-[7px] md:text-[8px] uppercase border-r border-slate-200">Selenggara</th>
+                <th class="py-1 px-1 text-center font-bold text-amber-600 text-[7px] md:text-[8px] uppercase border-r border-slate-200">Lain</th>
                 <th class="py-1 px-1 text-center font-bold text-slate-500 text-[7px] md:text-[8px] uppercase">Total</th>
                 <th class="py-1 px-1 text-center font-bold text-emerald-600 text-[7px] md:text-[8px] uppercase">Baik</th>
                 <th class="py-1 px-1 text-center font-bold text-red-600 text-[7px] md:text-[8px] uppercase">Ada Rosak</th>
@@ -1483,7 +1514,10 @@
                 const jTotal = jBalai.length;
                 const jBaik = jBalai.filter(j => getStatusKategori(j.status) === 'BAIK').length;
                 const jRosak = jBalai.filter(j => getStatusKategori(j.status) === 'ROSAK').length;
-                const jSelenggara = jBalai.filter(j => getStatusKategori(j.status) === 'SELENGGARA').length;
+                const jLain = jBalai.filter(j => {
+                    const kat = getStatusKategori(j.status);
+                    return kat !== 'BAIK' && kat !== 'ROSAK';
+                }).length;
 
                 const cTotal = cBalai.length;
                 const cBaik = cBalai.filter(c => itemKeys.every(k => {
@@ -1502,7 +1536,7 @@
               <td class="py-1.5 px-1 text-center font-bold">${jTotal}</td>
               <td class="py-1.5 px-1 text-center"><span class="badge-status emerald">${jBaik}</span></td>
               <td class="py-1.5 px-1 text-center"><span class="badge-status red">${jRosak}</span></td>
-              <td class="py-1.5 px-1 text-center border-r border-slate-200"><span class="badge-status amber">${jSelenggara}</span></td>
+              <td class="py-1.5 px-1 text-center border-r border-slate-200"><span class="badge-status amber">${jLain}</span></td>
               <td class="py-1.5 px-1 text-center font-bold">${cTotal}</td>
               <td class="py-1.5 px-1 text-center"><span class="badge-status emerald">${cBaik}</span></td>
               <td class="py-1.5 px-1 text-center"><span class="badge-status red">${cRosak}</span></td>
@@ -1522,7 +1556,7 @@
 
             let filtered = d.filter(a =>
                 (!fName || (a.nama || '').toUpperCase().includes(fName) || (a.pangkat || '').toUpperCase().includes(
-                fName)) &&
+                    fName)) &&
                 (fBalai === 'SEMUA' || a.balai === fBalai) &&
                 (fStatus === 'SEMUA' || a.status === fStatus)
             );
@@ -1562,7 +1596,7 @@
             }
         }
 
-        // ===== RENDER JENTERA (dengan status baharu) =====
+        // ===== RENDER JENTERA (filter exact status) =====
         function renderJentera(data) {
             let d = data || (dataCache ? (dataCache.logistikBertugas || dataCache.logistik_bertugas || []) : []);
             const fCari = (document.getElementById('filterJenteraCari')?.value || '').toUpperCase();
@@ -1573,11 +1607,11 @@
                 const cari = !fCari || (j.callsign || '').toUpperCase().includes(fCari) || (j.plate || '').toUpperCase()
                     .includes(fCari) || (j.jenis || '').toUpperCase().includes(fCari);
                 const balai = fBalai === 'SEMUA' || j.balai === fBalai;
-                const kat = getStatusKategori(j.status);
+                // Filter exact status
                 let st = true;
-                if (fStatus === 'BAIK') st = (kat === 'BAIK');
-                else if (fStatus === 'ROSAK') st = (kat === 'ROSAK');
-                else if (fStatus === 'SELENGGARA') st = (kat === 'SELENGGARA');
+                if (fStatus !== 'SEMUA') {
+                    st = (j.status === fStatus);
+                }
                 return cari && balai && st;
             });
 
@@ -1593,13 +1627,17 @@
             <th class="py-1.5 px-1.5 w-6">#</th><th class="py-1.5 px-1.5">Jentera</th><th class="py-1.5 px-1.5">Status</th><th class="py-1.5 px-1.5">Balai</th>
           </tr></thead><tbody class="divide-y divide-slate-100">`;
             filtered.forEach((j, i) => {
+                const kat = getStatusKategori(j.status);
                 h += `<tr class="hover:bg-slate-50 transition-colors">
               <td class="py-1.5 px-1.5 text-slate-400">${i+1}</td>
               <td class="py-1.5 px-1.5">
                 <div class="font-bold text-bomba-darkred text-[9px] md:text-xs">${escapeHtml(j.callsign)||'-'}</div>
                 <div class="flex items-center gap-1 mt-0.5 text-slate-500 font-medium text-[7px] md:text-[9px]"><span>${escapeHtml(j.plate||j.plat)||'-'}</span> <span class="text-slate-300">•</span> <span>${escapeHtml(j.jenis)||'-'}</span></div>
               </td>
-              <td class="py-1.5 px-1.5"><span class="${getBadge('status', j.status)}">${escapeHtml(j.status)||'-'}</span></td>
+              <td class="py-1.5 px-1.5">
+                <span class="${getBadgeForKategori(kat)}">${escapeHtml(kat)}</span>
+                <div class="text-[6px] text-slate-400 mt-0.5">${escapeHtml(j.status)||'-'}</div>
+              </td>
               <td class="py-1.5 px-1.5 font-medium text-slate-600 text-[8px] md:text-[10px]">${escapeHtml(j.balai)||'-'}</td>
             </tr>`;
             });
