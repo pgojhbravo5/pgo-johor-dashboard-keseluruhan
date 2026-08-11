@@ -2537,7 +2537,8 @@
                         </div>
                     </div>
 
-                    <div class="update-timestamp"><i class="fas fa-sync-alt"></i> Pautan dikemaskini: <span id="linkUpdateDate">--</span></div>
+                    <!-- ▼ TARIKH DI-HARDCODE MANUAL ▼ -->
+                    <div class="update-timestamp"><i class="fas fa-sync-alt"></i> Pautan dikemaskini: <span id="linkUpdateDate">11 OGOS 2026</span></div>
 
                     <div class="links-scroll" id="linksScroll">
                         <!-- 1: Cuaca & Laut -->
@@ -2701,7 +2702,7 @@
                                 </div>
                             </a>
 
-                            <!-- ▼ TAMBAHAN: Sistem Kekuatan, Logistik & Checklist -->
+                            <!-- ▼ TAMBAHAN: Sistem Kekuatan, Logistik & Checklist (BARU) ▼ -->
                             <a href="https://kekuatan-anggota-jbpm-johor.vercel.app/" target="_blank" class="app-card" rel="noopener noreferrer">
                                 <div class="icon"><i class="fas fa-clipboard-list"></i></div>
                                 <div>
@@ -2773,14 +2774,16 @@
                 }
             }
 
+            // ===== FUNGSI TARIKH PAUTAN DIKEMASKINI (DIKOSONGKAN - GUNA MANUAL) =====
             function setLinkUpdateDate() {
-                const now = new Date();
-                document.getElementById('linkUpdateDate').textContent =
-                    `${now.getDate()} ${bulan[now.getMonth()]} ${now.getFullYear()}`;
+                // Tarikh pautan dikemaskini kini di-hardcode secara manual dalam HTML.
+                // Fungsi ini dikosongkan supaya tarikh tidak berubah walaupun refresh.
+                return;
             }
+
             setInitialUpdateTime();
             updateClocks();
-            setLinkUpdateDate();
+            setLinkUpdateDate(); // tidak buat apa-apa, tarikh kekal dari HTML
             setInterval(updateClocks, 1000);
 
             // ===== LOCALSTORAGE =====
