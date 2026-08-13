@@ -708,14 +708,14 @@
                 <select id="filterJenteraBalai" class="bg-slate-50 border border-slate-200 rounded-lg text-xs md:text-sm px-2 py-1.5 focus:outline-none focus:ring-2 focus:ring-bomba-red/20 focus:border-bomba-red flex-1 font-medium text-slate-700" onchange="renderJentera()">
                     <option value="SEMUA">Semua Balai</option>
                 </select>
+                <!-- ===== DROPDOWN STATUS DIUBAH DENGAN NOMBOR ===== -->
                 <select id="filterJenteraStatus" class="bg-slate-50 border border-slate-200 rounded-lg text-xs md:text-sm px-2 py-1.5 focus:outline-none focus:ring-2 focus:ring-bomba-red/20 focus:border-bomba-red flex-1 font-medium text-slate-700" onchange="renderJentera()">
                     <option value="SEMUA">Semua Status</option>
-                    <option value="BAIK & BOLEH BEROPERASI">Baik &amp; Boleh Beroperasi</option>
-                    <option value="ROSAK MINOR & BOLEH BEROPERASI">Rosak Minor &amp; Boleh Beroperasi</option>
-                    <option value="ROSAK & TIDAK BOLEH BEROPERASI">Rosak &amp; Tidak Boleh Beroperasi</option>
-                    <option value="DALAM PROSES LUPUS">Dalam Proses Lupus</option>
-                    <option value="LUPUS">Lupus</option>
-                    <option value="TELAH DIPULANGKAN">Telah Dipulangkan</option>
+                    <option value="BAIK & BOLEH BEROPERASI">1. BAIK &amp; BOLEH BEROPERASI</option>
+                    <option value="ROSAK MINOR & BOLEH BEROPERASI">2. ROSAK MINOR &amp; BOLEH BEROPERASI</option>
+                    <option value="ROSAK & TIDAK BOLEH BEROPERASI">3. ROSAK &amp; TIDAK BOLEH BEROPERASI</option>
+                    <option value="DALAM PROSES LUPUS">4. DALAM PROSES LUPUS</option>
+                    <option value="LUPUS">5. LUPUS</option>
                 </select>
             </div>
             <div id="jenteraScroll" class="table-container flex-1">
@@ -792,6 +792,34 @@
         let supabaseClient = null;
         let realtimeChannel = null;
         const FALLBACK_POLL_MS = 60000;
+
+        // ===== FUNGSI BARU: Dapatkan teks status dengan nombor =====
+        function getStatusDisplay(status) {
+            if (!status) return 'TIADA STATUS';
+            const s = status.trim().toUpperCase();
+            // Pemetaan nilai asal kepada teks bernombor
+            const map = {
+                'BAIK & BOLEH BEROPERASI': '1. BAIK & BOLEH BEROPERASI',
+                'ROSAK MINOR & BOLEH BEROPERASI': '2. ROSAK MINOR & BOLEH BEROPERASI',
+                'ROSAK & TIDAK BOLEH BEROPERASI': '3. ROSAK & TIDAK BOLEH BEROPERASI',
+                'DALAM PROSES LUPUS': '4. DALAM PROSES LUPUS',
+                'LUPUS': '5. LUPUS',
+                // Untuk keserasian dengan data lama (jika ada)
+                'SEDIA BEROPERASI': '1. BAIK & BOLEH BEROPERASI',
+                'BAIK': '1. BAIK & BOLEH BEROPERASI',
+                'ROSAK MINOR': '2. ROSAK MINOR & BOLEH BEROPERASI',
+                'ROSAK': '3. ROSAK & TIDAK BOLEH BEROPERASI',
+                'TIDAK BOLEH BEROPERASI': '3. ROSAK & TIDAK BOLEH BEROPERASI',
+                'DALAM PROSES LUPUS': '4. DALAM PROSES LUPUS',
+                'LUPUS': '5. LUPUS',
+            };
+            // Cari padanan tepat (case-insensitive)
+            for (const [key, value] of Object.entries(map)) {
+                if (s === key.toUpperCase()) return value;
+            }
+            // Jika tiada padanan, kembalikan status asal dengan huruf besar
+            return status.toUpperCase();
+        }
 
         // ============================================================
         // MOBILE TAB NAVIGATION
@@ -932,7 +960,6 @@
             if (s === 'ROSAK & TIDAK BOLEH BEROPERASI') return 'ROSAK';
             if (s === 'DALAM PROSES LUPUS') return 'DALAM PROSES LUPUS';
             if (s === 'LUPUS') return 'TELAH LUPUS';
-            if (s === 'TELAH DIPULANGKAN') return 'TELAH DIPULANGKAN';
             // Fallback untuk data lama (jika masih ada)
             if (s === 'SEDIA BEROPERASI' || s === 'BAIK') return 'BAIK';
             if (s.includes('ROSAK') && s.includes('TIDAK BOLEH')) return 'ROSAK';
@@ -948,15 +975,14 @@
             if (kategori === 'ROSAK') return `${base} red`;
             if (kategori === 'DALAM PROSES LUPUS') return `${base} cyan`;
             if (kategori === 'TELAH LUPUS') return `${base} slate`;
-            if (kategori === 'TELAH DIPULANGKAN') return `${base} indigo`;
             return `${base} slate`;
         }
 
+        // ===== Fungsi untuk badge status anggota (tidak diubah) =====
         function getBadge(type, val) {
             val = (val || '').toUpperCase();
             const base = 'badge-status';
             if (type === 'status') {
-                // Untuk anggota
                 if (val.includes('BERTUGAS')) return `${base} green`;
                 if (val === 'CUTI') return `${base} amber`;
                 if (val.includes('SAKIT')) return `${base} red`;
@@ -1432,9 +1458,11 @@
               <div class="space-y-0.5 max-h-48 overflow-y-auto pr-0.5">`;
                 jBermasalah.forEach(j => {
                     const kat = getStatusKategori(j.status);
+                    // Gunakan getStatusDisplay untuk paparan
+                    const displayStatus = getStatusDisplay(j.status);
                     h += `<div class="flex items-center justify-between bg-red-50 border border-red-100 rounded-lg px-2 py-1 text-[8px] md:text-xs">
                 <span class="font-bold text-slate-700">${escapeHtml(j.callsign)||'-'} <span class="text-slate-400 font-normal">(${escapeHtml(j.balai)||'-'})</span></span>
-                <span class="${getBadgeForKategori(kat)}">${escapeHtml(kat)}</span>
+                <span class="${getBadgeForKategori(kat)}">${escapeHtml(displayStatus)}</span>
               </div>`;
                 });
                 h += `</div></div>`;
@@ -1591,7 +1619,7 @@
             }
         }
 
-        // ===== RENDER JENTERA (filter berdasarkan KATEGORI, bukan exact) =====
+        // ===== RENDER JENTERA (filter berdasarkan KATEGORI, paparan dengan nombor) =====
         function renderJentera(data) {
             let d = data || (dataCache ? (dataCache.logistikBertugas || dataCache.logistik_bertugas || []) : []);
             const fCari = (document.getElementById('filterJenteraCari')?.value || '').toUpperCase();
@@ -1603,10 +1631,9 @@
                     .includes(fCari) || (j.jenis || '').toUpperCase().includes(fCari);
                 const balai = fBalai === 'SEMUA' || j.balai === fBalai;
 
-                // Filter status menggunakan kategori
                 let st = true;
                 if (fStatus !== 'SEMUA') {
-                    const kategoriPilihan = getStatusKategori(fStatus); // dapatkan kategori dari teks pilihan
+                    const kategoriPilihan = getStatusKategori(fStatus);
                     const kategoriRekod = getStatusKategori(j.status);
                     st = (kategoriPilihan === kategoriRekod);
                 }
@@ -1626,6 +1653,8 @@
           </tr></thead><tbody class="divide-y divide-slate-100">`;
             filtered.forEach((j, i) => {
                 const kat = getStatusKategori(j.status);
+                // Guna getStatusDisplay untuk paparan badge
+                const displayStatus = getStatusDisplay(j.status);
                 h += `<tr class="hover:bg-slate-50 transition-colors">
               <td class="py-1.5 px-1.5 text-slate-400">${i+1}</td>
               <td class="py-1.5 px-1.5">
@@ -1633,7 +1662,7 @@
                 <div class="flex items-center gap-1 mt-0.5 text-slate-500 font-medium text-[7px] md:text-[9px]"><span>${escapeHtml(j.plate||j.plat)||'-'}</span> <span class="text-slate-300">•</span> <span>${escapeHtml(j.jenis)||'-'}</span></div>
               </td>
               <td class="py-1.5 px-1.5">
-                <span class="${getBadgeForKategori(kat)}">${escapeHtml(kat)}</span>
+                <span class="${getBadgeForKategori(kat)}">${escapeHtml(displayStatus)}</span>
                 <div class="text-[6px] text-slate-400 mt-0.5">${escapeHtml(j.status)||'-'}</div>
               </td>
               <td class="py-1.5 px-1.5 font-medium text-slate-600 text-[8px] md:text-[10px]">${escapeHtml(j.balai)||'-'}</td>
