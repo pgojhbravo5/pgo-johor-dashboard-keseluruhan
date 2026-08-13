@@ -581,161 +581,6 @@
                 padding: 4px 6px !important;
             }
         }
-
-        /* ===== MULTI-SELECT STYLES (Sama seperti halaman utama) ===== */
-        .multi-select-container {
-            position: relative;
-            width: 100%;
-        }
-        .multi-select-trigger {
-            width: 100%;
-            padding: 6px 10px;
-            border: 1.5px solid #e2e8f0;
-            border-radius: 10px;
-            font-size: 0.7rem;
-            font-weight: 700;
-            color: #1e293b;
-            background-color: #fafafa;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            gap: 4px;
-            transition: all 0.2s ease;
-            min-height: 38px;
-            text-transform: uppercase;
-            user-select: none;
-        }
-        .multi-select-trigger:hover, .multi-select-trigger.active {
-            border-color: #b91c1c;
-            background-color: #ffffff;
-        }
-        .multi-select-placeholder {
-            color: #94a3b8;
-            font-weight: 600;
-            font-size: 0.65rem;
-        }
-        .multi-select-tags {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 3px;
-            flex: 1;
-        }
-        .multi-select-tag {
-            background: #fee2e2;
-            color: #991b1b;
-            padding: 1px 5px;
-            border-radius: 4px;
-            font-size: 0.55rem;
-            font-weight: 800;
-            border: 1px solid #fca5a5;
-            display: inline-flex;
-            align-items: center;
-            gap: 3px;
-            white-space: nowrap;
-        }
-        .multi-select-arrow {
-            font-size: 0.6rem;
-            color: #94a3b8;
-            transition: transform 0.2s ease;
-            flex-shrink: 0;
-        }
-        .multi-select-trigger.active .multi-select-arrow {
-            transform: rotate(180deg);
-        }
-        .multi-select-dropdown {
-            position: absolute;
-            top: calc(100% + 4px);
-            left: 0;
-            right: 0;
-            background: white;
-            border: 1.5px solid #e2e8f0;
-            border-radius: 10px;
-            box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1);
-            z-index: 60;
-            max-height: 250px;
-            overflow-y: auto;
-            display: none;
-        }
-        .multi-select-dropdown.show { display: block; }
-        .multi-select-search {
-            padding: 6px;
-            border-bottom: 1px solid #e2e8f0;
-            position: sticky;
-            top: 0;
-            background: white;
-            z-index: 2;
-        }
-        .multi-select-search input {
-            width: 100%;
-            padding: 6px 8px;
-            border: 1px solid #e2e8f0;
-            border-radius: 6px;
-            font-size: 0.65rem;
-            font-weight: 600;
-            outline: none;
-            text-transform: uppercase;
-        }
-        .multi-select-options {
-            padding: 4px 0;
-        }
-        .multi-select-option {
-            padding: 6px 10px;
-            cursor: pointer;
-            font-size: 0.65rem;
-            font-weight: 700;
-            color: #1e293b;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            transition: background 0.15s ease;
-        }
-        .multi-select-option:hover {
-            background: #fef2f2;
-        }
-        .multi-select-option.selected {
-            background: #fee2e2;
-            color: #991b1b;
-            font-weight: 800;
-        }
-        .multi-select-option .check-box {
-            width: 18px;
-            height: 18px;
-            border: 2px solid #e2e8f0;
-            border-radius: 4px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            flex-shrink: 0;
-            font-size: 0.65rem;
-        }
-        .multi-select-option.selected .check-box {
-            background: #b91c1c;
-            border-color: #b91c1c;
-            color: white;
-        }
-        .multi-select-actions {
-            padding: 6px;
-            border-top: 1px solid #e2e8f0;
-            display: flex;
-            gap: 4px;
-            position: sticky;
-            bottom: 0;
-            background: white;
-            z-index: 2;
-        }
-        .multi-select-actions button {
-            flex: 1;
-            padding: 6px 8px;
-            border-radius: 6px;
-            font-size: 0.6rem;
-            font-weight: 800;
-            cursor: pointer;
-            border: none;
-            text-transform: uppercase;
-        }
-        .btn-select-all { background: #eff6ff; color: #1e40af; border: 1px solid #bfdbfe; }
-        .btn-clear-all { background: #fef2f2; color: #991b1b; border: 1px solid #fca5a5; }
     </style>
 </head>
 <body class="text-slate-800 p-2 md:p-4 lg:p-6 max-w-[1600px] mx-auto">
@@ -833,75 +678,31 @@
                 <span class="text-[0.5rem] md:text-[0.6rem] font-bold bg-slate-100 text-slate-500 px-2 py-0.5 rounded-full" id="anggotaCount">0 rekod</span>
                 <span class="scroll-indicator" id="anggotaScrollIndicator"><i class="fa-solid fa-chevron-up"></i> Auto</span>
             </div>
-            <div class="flex flex-col sm:flex-row gap-1.5 mb-2 flex-wrap">
-                <!-- FILTER NAMA -->
-                <div class="relative flex-1 min-w-[120px]">
+            <div class="flex flex-col sm:flex-row gap-1.5 mb-2">
+                <div class="relative flex-1">
                     <i class="fa-solid fa-magnifying-glass absolute left-2.5 top-1/2 -translate-y-1/2 text-slate-400 text-[10px] md:text-xs"></i>
                     <input type="text" id="filterAnggotaNama" placeholder="Cari..." class="w-full pl-7 pr-2 py-1.5 bg-slate-50 border border-slate-200 rounded-lg text-xs md:text-sm focus:outline-none focus:ring-2 focus:ring-bomba-red/20 focus:border-bomba-red transition-all" oninput="renderAnggota()">
                 </div>
-                <!-- FILTER BALAI (Multi-Select) -->
-                <div class="flex-1 min-w-[120px]">
-                    <div class="multi-select-container" id="filterAnggotaBalaiContainer">
-                        <div class="multi-select-trigger" onclick="togolMultiSelect('filterAnggotaBalaiContainer')">
-                            <div class="multi-select-tags" id="filterAnggotaBalaiTags">
-                                <span class="multi-select-placeholder"><i class="fa-solid fa-building mr-1"></i> Semua Balai</span>
-                            </div>
-                            <span class="multi-select-arrow"><i class="fa-solid fa-chevron-down"></i></span>
-                        </div>
-                        <div class="multi-select-dropdown" id="filterAnggotaBalaiDropdown">
-                            <div class="multi-select-search">
-                                <input type="text" placeholder="Cari Balai..." onkeyup="tapisMultiSelect('filterAnggotaBalai')" onclick="event.stopPropagation();" />
-                            </div>
-                            <div class="multi-select-options" id="filterAnggotaBalaiOptions"></div>
-                            <div class="multi-select-actions">
-                                <button class="btn-select-all" onclick="pilihSemuaMultiSelect('filterAnggotaBalai');event.stopPropagation();"><i class="fa-solid fa-check-double mr-1"></i> Pilih Semua</button>
-                                <button class="btn-clear-all" onclick="kosongkanMultiSelect('filterAnggotaBalai');event.stopPropagation();"><i class="fa-solid fa-xmark mr-1"></i> Kosongkan</button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <!-- FILTER STATUS (Multi-Select) -->
-                <div class="flex-1 min-w-[120px]">
-                    <div class="multi-select-container" id="filterAnggotaStatusContainer">
-                        <div class="multi-select-trigger" onclick="togolMultiSelect('filterAnggotaStatusContainer')">
-                            <div class="multi-select-tags" id="filterAnggotaStatusTags">
-                                <span class="multi-select-placeholder"><i class="fa-solid fa-circle mr-1"></i> Semua Status</span>
-                            </div>
-                            <span class="multi-select-arrow"><i class="fa-solid fa-chevron-down"></i></span>
-                        </div>
-                        <div class="multi-select-dropdown" id="filterAnggotaStatusDropdown">
-                            <div class="multi-select-search">
-                                <input type="text" placeholder="Cari Status..." onkeyup="tapisMultiSelect('filterAnggotaStatus')" onclick="event.stopPropagation();" />
-                            </div>
-                            <div class="multi-select-options" id="filterAnggotaStatusOptions"></div>
-                            <div class="multi-select-actions">
-                                <button class="btn-select-all" onclick="pilihSemuaMultiSelect('filterAnggotaStatus');event.stopPropagation();"><i class="fa-solid fa-check-double mr-1"></i> Pilih Semua</button>
-                                <button class="btn-clear-all" onclick="kosongkanMultiSelect('filterAnggotaStatus');event.stopPropagation();"><i class="fa-solid fa-xmark mr-1"></i> Kosongkan</button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <!-- FILTER ZON (Multi-Select) -->
-                <div class="flex-1 min-w-[120px]">
-                    <div class="multi-select-container" id="filterAnggotaZonContainer">
-                        <div class="multi-select-trigger" onclick="togolMultiSelect('filterAnggotaZonContainer')">
-                            <div class="multi-select-tags" id="filterAnggotaZonTags">
-                                <span class="multi-select-placeholder"><i class="fa-solid fa-location-dot mr-1"></i> Semua Zon</span>
-                            </div>
-                            <span class="multi-select-arrow"><i class="fa-solid fa-chevron-down"></i></span>
-                        </div>
-                        <div class="multi-select-dropdown" id="filterAnggotaZonDropdown">
-                            <div class="multi-select-search">
-                                <input type="text" placeholder="Cari Zon..." onkeyup="tapisMultiSelect('filterAnggotaZon')" onclick="event.stopPropagation();" />
-                            </div>
-                            <div class="multi-select-options" id="filterAnggotaZonOptions"></div>
-                            <div class="multi-select-actions">
-                                <button class="btn-select-all" onclick="pilihSemuaMultiSelect('filterAnggotaZon');event.stopPropagation();"><i class="fa-solid fa-check-double mr-1"></i> Pilih Semua</button>
-                                <button class="btn-clear-all" onclick="kosongkanMultiSelect('filterAnggotaZon');event.stopPropagation();"><i class="fa-solid fa-xmark mr-1"></i> Kosongkan</button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+                <select id="filterAnggotaBalai" class="bg-slate-50 border border-slate-200 rounded-lg text-xs md:text-sm px-2 py-1.5 focus:outline-none focus:ring-2 focus:ring-bomba-red/20 focus:border-bomba-red flex-1 font-medium text-slate-700" onchange="renderAnggota()">
+                    <option value="SEMUA">Semua Balai</option>
+                </select>
+                <select id="filterAnggotaStatus" class="bg-slate-50 border border-slate-200 rounded-lg text-xs md:text-sm px-2 py-1.5 focus:outline-none focus:ring-2 focus:ring-bomba-red/20 focus:border-bomba-red flex-1 font-medium text-slate-700" onchange="renderAnggota()">
+                    <option value="SEMUA">Semua Status</option>
+                    <option value="BERTUGAS">Bertugas</option>
+                    <option value="CUTI">Cuti</option>
+                    <option value="CUTI SAKIT">Cuti Sakit</option>
+                    <option value="TUGAS KHAS">Tugas Khas</option>
+                </select>
+                <!-- FILTER ZON ANGGOTA -->
+                <select id="filterZonAnggota" class="bg-slate-50 border border-slate-200 rounded-lg text-xs md:text-sm px-2 py-1.5 focus:outline-none focus:ring-2 focus:ring-bomba-red/20 focus:border-bomba-red flex-1 font-medium text-slate-700" onchange="renderAnggota()">
+                    <option value="SEMUA">Semua Zon</option>
+                    <option value="ZON 1">ZON 1</option>
+                    <option value="ZON 2">ZON 2</option>
+                    <option value="ZON 3">ZON 3</option>
+                    <option value="ZON 4">ZON 4</option>
+                    <option value="BENGKEL">BENGKEL</option>
+                    <option value="PGO JOHOR">PGO JOHOR</option>
+                </select>
             </div>
             <div id="anggotaScroll" class="table-container flex-1">
                 <div id="anggotaTable"><div class="text-center py-6 text-slate-400 font-medium text-sm flex flex-col items-center gap-2"><i class="fa-solid fa-spinner animate-spin text-xl"></i> Memuatkan...</div></div>
@@ -917,75 +718,32 @@
                 <span class="text-[0.5rem] md:text-[0.6rem] font-bold bg-slate-100 text-slate-500 px-2 py-0.5 rounded-full" id="jenteraCount">0 rekod</span>
                 <span class="scroll-indicator" id="jenteraScrollIndicator"><i class="fa-solid fa-chevron-up"></i> Auto</span>
             </div>
-            <div class="flex flex-col sm:flex-row gap-1.5 mb-2 flex-wrap">
-                <!-- FILTER CARI -->
-                <div class="relative flex-1 min-w-[120px]">
+            <div class="flex flex-col sm:flex-row gap-1.5 mb-2">
+                <div class="relative flex-1">
                     <i class="fa-solid fa-magnifying-glass absolute left-2.5 top-1/2 -translate-y-1/2 text-slate-400 text-[10px] md:text-xs"></i>
                     <input type="text" id="filterJenteraCari" placeholder="Cari..." class="w-full pl-7 pr-2 py-1.5 bg-slate-50 border border-slate-200 rounded-lg text-xs md:text-sm focus:outline-none focus:ring-2 focus:ring-bomba-red/20 focus:border-bomba-red transition-all" oninput="renderJentera()">
                 </div>
-                <!-- FILTER BALAI (Multi-Select) -->
-                <div class="flex-1 min-w-[120px]">
-                    <div class="multi-select-container" id="filterJenteraBalaiContainer">
-                        <div class="multi-select-trigger" onclick="togolMultiSelect('filterJenteraBalaiContainer')">
-                            <div class="multi-select-tags" id="filterJenteraBalaiTags">
-                                <span class="multi-select-placeholder"><i class="fa-solid fa-building mr-1"></i> Semua Balai</span>
-                            </div>
-                            <span class="multi-select-arrow"><i class="fa-solid fa-chevron-down"></i></span>
-                        </div>
-                        <div class="multi-select-dropdown" id="filterJenteraBalaiDropdown">
-                            <div class="multi-select-search">
-                                <input type="text" placeholder="Cari Balai..." onkeyup="tapisMultiSelect('filterJenteraBalai')" onclick="event.stopPropagation();" />
-                            </div>
-                            <div class="multi-select-options" id="filterJenteraBalaiOptions"></div>
-                            <div class="multi-select-actions">
-                                <button class="btn-select-all" onclick="pilihSemuaMultiSelect('filterJenteraBalai');event.stopPropagation();"><i class="fa-solid fa-check-double mr-1"></i> Pilih Semua</button>
-                                <button class="btn-clear-all" onclick="kosongkanMultiSelect('filterJenteraBalai');event.stopPropagation();"><i class="fa-solid fa-xmark mr-1"></i> Kosongkan</button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <!-- FILTER ZON (Multi-Select) -->
-                <div class="flex-1 min-w-[120px]">
-                    <div class="multi-select-container" id="filterJenteraZonContainer">
-                        <div class="multi-select-trigger" onclick="togolMultiSelect('filterJenteraZonContainer')">
-                            <div class="multi-select-tags" id="filterJenteraZonTags">
-                                <span class="multi-select-placeholder"><i class="fa-solid fa-location-dot mr-1"></i> Semua Zon</span>
-                            </div>
-                            <span class="multi-select-arrow"><i class="fa-solid fa-chevron-down"></i></span>
-                        </div>
-                        <div class="multi-select-dropdown" id="filterJenteraZonDropdown">
-                            <div class="multi-select-search">
-                                <input type="text" placeholder="Cari Zon..." onkeyup="tapisMultiSelect('filterJenteraZon')" onclick="event.stopPropagation();" />
-                            </div>
-                            <div class="multi-select-options" id="filterJenteraZonOptions"></div>
-                            <div class="multi-select-actions">
-                                <button class="btn-select-all" onclick="pilihSemuaMultiSelect('filterJenteraZon');event.stopPropagation();"><i class="fa-solid fa-check-double mr-1"></i> Pilih Semua</button>
-                                <button class="btn-clear-all" onclick="kosongkanMultiSelect('filterJenteraZon');event.stopPropagation();"><i class="fa-solid fa-xmark mr-1"></i> Kosongkan</button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <!-- FILTER STATUS (Multi-Select) -->
-                <div class="flex-1 min-w-[120px]">
-                    <div class="multi-select-container" id="filterJenteraStatusContainer">
-                        <div class="multi-select-trigger" onclick="togolMultiSelect('filterJenteraStatusContainer')">
-                            <div class="multi-select-tags" id="filterJenteraStatusTags">
-                                <span class="multi-select-placeholder"><i class="fa-solid fa-circle mr-1"></i> Semua Status</span>
-                            </div>
-                            <span class="multi-select-arrow"><i class="fa-solid fa-chevron-down"></i></span>
-                        </div>
-                        <div class="multi-select-dropdown" id="filterJenteraStatusDropdown">
-                            <div class="multi-select-search">
-                                <input type="text" placeholder="Cari Status..." onkeyup="tapisMultiSelect('filterJenteraStatus')" onclick="event.stopPropagation();" />
-                            </div>
-                            <div class="multi-select-options" id="filterJenteraStatusOptions"></div>
-                            <div class="multi-select-actions">
-                                <button class="btn-select-all" onclick="pilihSemuaMultiSelect('filterJenteraStatus');event.stopPropagation();"><i class="fa-solid fa-check-double mr-1"></i> Pilih Semua</button>
-                                <button class="btn-clear-all" onclick="kosongkanMultiSelect('filterJenteraStatus');event.stopPropagation();"><i class="fa-solid fa-xmark mr-1"></i> Kosongkan</button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+                <select id="filterJenteraBalai" class="bg-slate-50 border border-slate-200 rounded-lg text-xs md:text-sm px-2 py-1.5 focus:outline-none focus:ring-2 focus:ring-bomba-red/20 focus:border-bomba-red flex-1 font-medium text-slate-700" onchange="renderJentera()">
+                    <option value="SEMUA">Semua Balai</option>
+                </select>
+                <!-- FILTER ZON JENTERA -->
+                <select id="filterZonJentera" class="bg-slate-50 border border-slate-200 rounded-lg text-xs md:text-sm px-2 py-1.5 focus:outline-none focus:ring-2 focus:ring-bomba-red/20 focus:border-bomba-red flex-1 font-medium text-slate-700" onchange="renderJentera()">
+                    <option value="SEMUA">Semua Zon</option>
+                    <option value="ZON 1">ZON 1</option>
+                    <option value="ZON 2">ZON 2</option>
+                    <option value="ZON 3">ZON 3</option>
+                    <option value="ZON 4">ZON 4</option>
+                    <option value="BENGKEL">BENGKEL</option>
+                    <option value="PGO JOHOR">PGO JOHOR</option>
+                </select>
+                <select id="filterJenteraStatus" class="bg-slate-50 border border-slate-200 rounded-lg text-xs md:text-sm px-2 py-1.5 focus:outline-none focus:ring-2 focus:ring-bomba-red/20 focus:border-bomba-red flex-1 font-medium text-slate-700" onchange="renderJentera()">
+                    <option value="SEMUA">Semua Status</option>
+                    <option value="BAIK & BOLEH BEROPERASI">1. BAIK &amp; BOLEH BEROPERASI</option>
+                    <option value="ROSAK MINOR & BOLEH BEROPERASI">2. ROSAK MINOR &amp; BOLEH BEROPERASI</option>
+                    <option value="ROSAK & TIDAK BOLEH BEROPERASI">3. ROSAK &amp; TIDAK BOLEH BEROPERASI</option>
+                    <option value="DALAM PROSES LUPUS">4. DALAM PROSES LUPUS</option>
+                    <option value="LUPUS">5. LUPUS</option>
+                </select>
             </div>
             <div id="jenteraScroll" class="table-container flex-1">
                 <div id="jenteraTable"><div class="text-center py-6 text-slate-400 font-medium text-sm flex flex-col items-center gap-2"><i class="fa-solid fa-spinner animate-spin text-xl"></i> Memuatkan...</div></div>
@@ -1002,70 +760,25 @@
             <span class="text-[0.5rem] md:text-[0.6rem] font-bold bg-slate-100 text-slate-500 px-2 py-0.5 rounded-full" id="checklistCount">0 rekod</span>
             <span class="scroll-indicator" id="checklistScrollIndicator"><i class="fa-solid fa-chevron-up"></i> Auto</span>
         </div>
-        <div class="flex flex-col sm:flex-row gap-1.5 mb-2 flex-wrap">
-            <!-- FILTER BALAI (Multi-Select) -->
-            <div class="flex-1 min-w-[120px]">
-                <div class="multi-select-container" id="filterChecklistBalaiContainer">
-                    <div class="multi-select-trigger" onclick="togolMultiSelect('filterChecklistBalaiContainer')">
-                        <div class="multi-select-tags" id="filterChecklistBalaiTags">
-                            <span class="multi-select-placeholder"><i class="fa-solid fa-building mr-1"></i> Semua Balai</span>
-                        </div>
-                        <span class="multi-select-arrow"><i class="fa-solid fa-chevron-down"></i></span>
-                    </div>
-                    <div class="multi-select-dropdown" id="filterChecklistBalaiDropdown">
-                        <div class="multi-select-search">
-                            <input type="text" placeholder="Cari Balai..." onkeyup="tapisMultiSelect('filterChecklistBalai')" onclick="event.stopPropagation();" />
-                        </div>
-                        <div class="multi-select-options" id="filterChecklistBalaiOptions"></div>
-                        <div class="multi-select-actions">
-                            <button class="btn-select-all" onclick="pilihSemuaMultiSelect('filterChecklistBalai');event.stopPropagation();"><i class="fa-solid fa-check-double mr-1"></i> Pilih Semua</button>
-                            <button class="btn-clear-all" onclick="kosongkanMultiSelect('filterChecklistBalai');event.stopPropagation();"><i class="fa-solid fa-xmark mr-1"></i> Kosongkan</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <!-- FILTER ZON (Multi-Select) -->
-            <div class="flex-1 min-w-[120px]">
-                <div class="multi-select-container" id="filterChecklistZonContainer">
-                    <div class="multi-select-trigger" onclick="togolMultiSelect('filterChecklistZonContainer')">
-                        <div class="multi-select-tags" id="filterChecklistZonTags">
-                            <span class="multi-select-placeholder"><i class="fa-solid fa-location-dot mr-1"></i> Semua Zon</span>
-                        </div>
-                        <span class="multi-select-arrow"><i class="fa-solid fa-chevron-down"></i></span>
-                    </div>
-                    <div class="multi-select-dropdown" id="filterChecklistZonDropdown">
-                        <div class="multi-select-search">
-                            <input type="text" placeholder="Cari Zon..." onkeyup="tapisMultiSelect('filterChecklistZon')" onclick="event.stopPropagation();" />
-                        </div>
-                        <div class="multi-select-options" id="filterChecklistZonOptions"></div>
-                        <div class="multi-select-actions">
-                            <button class="btn-select-all" onclick="pilihSemuaMultiSelect('filterChecklistZon');event.stopPropagation();"><i class="fa-solid fa-check-double mr-1"></i> Pilih Semua</button>
-                            <button class="btn-clear-all" onclick="kosongkanMultiSelect('filterChecklistZon');event.stopPropagation();"><i class="fa-solid fa-xmark mr-1"></i> Kosongkan</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <!-- FILTER STATUS (Multi-Select) -->
-            <div class="flex-1 min-w-[120px]">
-                <div class="multi-select-container" id="filterChecklistStatusContainer">
-                    <div class="multi-select-trigger" onclick="togolMultiSelect('filterChecklistStatusContainer')">
-                        <div class="multi-select-tags" id="filterChecklistStatusTags">
-                            <span class="multi-select-placeholder"><i class="fa-solid fa-circle mr-1"></i> Semua Status</span>
-                        </div>
-                        <span class="multi-select-arrow"><i class="fa-solid fa-chevron-down"></i></span>
-                    </div>
-                    <div class="multi-select-dropdown" id="filterChecklistStatusDropdown">
-                        <div class="multi-select-search">
-                            <input type="text" placeholder="Cari Status..." onkeyup="tapisMultiSelect('filterChecklistStatus')" onclick="event.stopPropagation();" />
-                        </div>
-                        <div class="multi-select-options" id="filterChecklistStatusOptions"></div>
-                        <div class="multi-select-actions">
-                            <button class="btn-select-all" onclick="pilihSemuaMultiSelect('filterChecklistStatus');event.stopPropagation();"><i class="fa-solid fa-check-double mr-1"></i> Pilih Semua</button>
-                            <button class="btn-clear-all" onclick="kosongkanMultiSelect('filterChecklistStatus');event.stopPropagation();"><i class="fa-solid fa-xmark mr-1"></i> Kosongkan</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
+        <div class="flex flex-col sm:flex-row gap-1.5 mb-2">
+            <select id="filterChecklistBalai" class="bg-slate-50 border border-slate-200 rounded-lg text-xs md:text-sm px-2 py-1.5 focus:outline-none focus:ring-2 focus:ring-bomba-red/20 focus:border-bomba-red flex-1 font-medium text-slate-700" onchange="renderChecklist()">
+                <option value="SEMUA">Semua Balai</option>
+            </select>
+            <!-- FILTER ZON CHECKLIST -->
+            <select id="filterZonChecklist" class="bg-slate-50 border border-slate-200 rounded-lg text-xs md:text-sm px-2 py-1.5 focus:outline-none focus:ring-2 focus:ring-bomba-red/20 focus:border-bomba-red flex-1 font-medium text-slate-700" onchange="renderChecklist()">
+                <option value="SEMUA">Semua Zon</option>
+                <option value="ZON 1">ZON 1</option>
+                <option value="ZON 2">ZON 2</option>
+                <option value="ZON 3">ZON 3</option>
+                <option value="ZON 4">ZON 4</option>
+                <option value="BENGKEL">BENGKEL</option>
+                <option value="PGO JOHOR">PGO JOHOR</option>
+            </select>
+            <select id="filterChecklistStatus" class="bg-slate-50 border border-slate-200 rounded-lg text-xs md:text-sm px-2 py-1.5 focus:outline-none focus:ring-2 focus:ring-bomba-red/20 focus:border-bomba-red flex-1 font-medium text-slate-700" onchange="renderChecklist()">
+                <option value="SEMUA">Semua Status</option>
+                <option value="BAIK">Semua Baik</option>
+                <option value="ROSAK">Ada Rosak</option>
+            </select>
         </div>
         <div id="checklistScroll" class="table-container">
             <div id="checklistTable"><div class="text-center py-6 text-slate-400 font-medium text-sm flex flex-col items-center gap-2"><i class="fa-solid fa-spinner animate-spin text-xl"></i> Memuatkan data...</div></div>
@@ -1118,7 +831,7 @@
         const FALLBACK_POLL_MS = 60000;
 
         // ============================================================
-        // PEMETAAN ZON
+        // PEMETAAN ZON (Sama seperti halaman utama)
         // ============================================================
         const ZON_MAP = {
             'PGO JOHOR': 'PGO JOHOR',
@@ -1232,174 +945,6 @@
                 }
             });
         }
-
-        // ============================================================
-        // MULTI-SELECT ENGINE
-        // ============================================================
-        // State untuk setiap multi-select
-        const multiSelectState = {};
-
-        function initMultiSelect(prefix, options, defaultSelected = null) {
-            if (!multiSelectState[prefix]) {
-                multiSelectState[prefix] = {
-                    selected: defaultSelected ? [...defaultSelected] : [],
-                    allOptions: [...options],
-                    filteredOptions: [...options]
-                };
-            }
-            renderMultiSelect(prefix);
-        }
-
-        function getMultiSelectSelected(prefix) {
-            return multiSelectState[prefix] ? multiSelectState[prefix].selected : [];
-        }
-
-        function setMultiSelectOptions(prefix, options) {
-            if (!multiSelectState[prefix]) {
-                multiSelectState[prefix] = { selected: [], allOptions: [], filteredOptions: [] };
-            }
-            multiSelectState[prefix].allOptions = [...options];
-            multiSelectState[prefix].filteredOptions = [...options];
-            // Remove selected that no longer exist
-            multiSelectState[prefix].selected = multiSelectState[prefix].selected.filter(s => options.includes(s));
-            renderMultiSelect(prefix);
-        }
-
-        function togolMultiSelect(containerId) {
-            const container = document.getElementById(containerId);
-            if (!container) return;
-            const trigger = container.querySelector('.multi-select-trigger');
-            const dropdown = container.querySelector('.multi-select-dropdown');
-            if (trigger && dropdown) {
-                trigger.classList.toggle('active');
-                dropdown.classList.toggle('show');
-            }
-        }
-
-        function tapisMultiSelect(prefix) {
-            const container = document.getElementById(prefix + 'Container');
-            if (!container) return;
-            const searchInput = container.querySelector('.multi-select-search input');
-            if (!searchInput) return;
-            const query = searchInput.value.toUpperCase().trim();
-            const state = multiSelectState[prefix];
-            if (!state) return;
-            state.filteredOptions = state.allOptions.filter(opt => opt.toUpperCase().includes(query));
-            renderMultiSelectOptions(prefix);
-        }
-
-        function pilihSemuaMultiSelect(prefix) {
-            const state = multiSelectState[prefix];
-            if (!state) return;
-            state.selected = [...state.allOptions];
-            renderMultiSelect(prefix);
-            triggerRender(prefix);
-        }
-
-        function kosongkanMultiSelect(prefix) {
-            const state = multiSelectState[prefix];
-            if (!state) return;
-            state.selected = [];
-            renderMultiSelect(prefix);
-            triggerRender(prefix);
-        }
-
-        function toggleOptionMultiSelect(prefix, option) {
-            const state = multiSelectState[prefix];
-            if (!state) return;
-            const idx = state.selected.indexOf(option);
-            if (idx > -1) {
-                state.selected.splice(idx, 1);
-            } else {
-                state.selected.push(option);
-            }
-            renderMultiSelect(prefix);
-            triggerRender(prefix);
-        }
-
-        function renderMultiSelect(prefix) {
-            renderMultiSelectTags(prefix);
-            renderMultiSelectOptions(prefix);
-        }
-
-        function renderMultiSelectTags(prefix) {
-            const container = document.getElementById(prefix + 'Container');
-            if (!container) return;
-            const tagsContainer = container.querySelector('.multi-select-tags');
-            if (!tagsContainer) return;
-            const state = multiSelectState[prefix];
-            if (!state) return;
-            if (state.selected.length === 0) {
-                tagsContainer.innerHTML = `<span class="multi-select-placeholder">${getPlaceholderText(prefix)}</span>`;
-            } else {
-                tagsContainer.innerHTML = state.selected.map(opt =>
-                    `<span class="multi-select-tag">${opt}</span>`
-                ).join('');
-            }
-        }
-
-        function renderMultiSelectOptions(prefix) {
-            const container = document.getElementById(prefix + 'Container');
-            if (!container) return;
-            const optionsContainer = container.querySelector('.multi-select-options');
-            if (!optionsContainer) return;
-            const state = multiSelectState[prefix];
-            if (!state) return;
-            if (state.filteredOptions.length === 0) {
-                optionsContainer.innerHTML = '<div class="multi-select-option" style="justify-content:center;color:#94a3b8;">Tiada pilihan</div>';
-                return;
-            }
-            optionsContainer.innerHTML = state.filteredOptions.map(opt => {
-                const selected = state.selected.includes(opt) ? 'selected' : '';
-                return `<div class="multi-select-option ${selected}" onclick="toggleOptionMultiSelect('${prefix}','${opt.replace(/'/g, "\\'")}')">
-                    <div class="check-box">${selected ? '<i class="fa-solid fa-check"></i>' : ''}</div>
-                    <span>${opt}</span>
-                </div>`;
-            }).join('');
-        }
-
-        function getPlaceholderText(prefix) {
-            const map = {
-                'filterAnggotaBalai': '<i class="fa-solid fa-building mr-1"></i> Semua Balai',
-                'filterAnggotaStatus': '<i class="fa-solid fa-circle mr-1"></i> Semua Status',
-                'filterAnggotaZon': '<i class="fa-solid fa-location-dot mr-1"></i> Semua Zon',
-                'filterJenteraBalai': '<i class="fa-solid fa-building mr-1"></i> Semua Balai',
-                'filterJenteraZon': '<i class="fa-solid fa-location-dot mr-1"></i> Semua Zon',
-                'filterJenteraStatus': '<i class="fa-solid fa-circle mr-1"></i> Semua Status',
-                'filterChecklistBalai': '<i class="fa-solid fa-building mr-1"></i> Semua Balai',
-                'filterChecklistZon': '<i class="fa-solid fa-location-dot mr-1"></i> Semua Zon',
-                'filterChecklistStatus': '<i class="fa-solid fa-circle mr-1"></i> Semua Status'
-            };
-            return map[prefix] || 'Semua';
-        }
-
-        function triggerRender(prefix) {
-            // Map prefix to render function
-            const map = {
-                'filterAnggotaBalai': renderAnggota,
-                'filterAnggotaStatus': renderAnggota,
-                'filterAnggotaZon': renderAnggota,
-                'filterJenteraBalai': renderJentera,
-                'filterJenteraZon': renderJentera,
-                'filterJenteraStatus': renderJentera,
-                'filterChecklistBalai': renderChecklist,
-                'filterChecklistZon': renderChecklist,
-                'filterChecklistStatus': renderChecklist
-            };
-            if (map[prefix]) map[prefix]();
-        }
-
-        // Close dropdowns when clicking outside
-        document.addEventListener('click', function(e) {
-            document.querySelectorAll('.multi-select-container').forEach(container => {
-                if (!container.contains(e.target)) {
-                    const trigger = container.querySelector('.multi-select-trigger');
-                    const dropdown = container.querySelector('.multi-select-dropdown');
-                    if (trigger) trigger.classList.remove('active');
-                    if (dropdown) dropdown.classList.remove('show');
-                }
-            });
-        });
 
         // ============================================================
         // UTILITY
@@ -1528,27 +1073,6 @@
                 return `${base} slate`;
             }
             return `${base} slate`;
-        }
-
-        function getStatusDisplay(status) {
-            if (!status) return 'TIADA STATUS';
-            const s = status.trim().toUpperCase();
-            const map = {
-                'BAIK & BOLEH BEROPERASI': '1. BAIK & BOLEH BEROPERASI',
-                'ROSAK MINOR & BOLEH BEROPERASI': '2. ROSAK MINOR & BOLEH BEROPERASI',
-                'ROSAK & TIDAK BOLEH BEROPERASI': '3. ROSAK & TIDAK BOLEH BEROPERASI',
-                'DALAM PROSES LUPUS': '4. DALAM PROSES LUPUS',
-                'LUPUS': '5. LUPUS',
-                'SEDIA BEROPERASI': '1. BAIK & BOLEH BEROPERASI',
-                'BAIK': '1. BAIK & BOLEH BEROPERASI',
-                'ROSAK MINOR': '2. ROSAK MINOR & BOLEH BEROPERASI',
-                'ROSAK': '3. ROSAK & TIDAK BOLEH BEROPERASI',
-                'TIDAK BOLEH BEROPERASI': '3. ROSAK & TIDAK BOLEH BEROPERASI',
-            };
-            for (const [key, value] of Object.entries(map)) {
-                if (s === key.toUpperCase()) return value;
-            }
-            return status.toUpperCase();
         }
 
         // ============================================================
@@ -1728,6 +1252,7 @@
                 const data = await resp.json();
                 if (data && data.length > 0) {
                     dataCache = data[0];
+                    // Migrasi zon untuk data yang baru dimuat
                     migrateZonData();
                     renderAll();
                     dot.className = 'w-1.5 h-1.5 md:w-2.5 md:h-2.5 rounded-full bg-emerald-400 shadow-[0_0_8px_rgba(52,211,153,0.8)]';
@@ -1750,6 +1275,7 @@
             if (!dataCache) return;
             const p = dataCache;
 
+            // Fungsi untuk mendapatkan zon
             function getZonFromBalai(balai) {
                 if (!balai) return ZON_DEFAULT;
                 const balaiUpper = balai.toUpperCase().trim();
@@ -1761,36 +1287,49 @@
                 return ZON_DEFAULT;
             }
 
+            // Migrasi rekodAnggota
             if (p.rekodAnggota) {
                 p.rekodAnggota = p.rekodAnggota.map(a => {
-                    if (!a.zon) a.zon = getZonFromBalai(a.balai);
+                    if (!a.zon) {
+                        a.zon = getZonFromBalai(a.balai);
+                    }
+                    // Tukar nama zon jika masih guna nama lama
                     if (a.zon === 'ZON BENGKEL') a.zon = 'BENGKEL';
                     if (a.zon === 'ZON PGO JOHOR') a.zon = 'PGO JOHOR';
                     return a;
                 });
             }
 
+            // Migrasi logistikBertugas
             if (p.logistikBertugas) {
                 p.logistikBertugas = p.logistikBertugas.map(j => {
-                    if (!j.zon) j.zon = getZonFromBalai(j.balai);
+                    if (!j.zon) {
+                        j.zon = getZonFromBalai(j.balai);
+                    }
                     if (j.zon === 'ZON BENGKEL') j.zon = 'BENGKEL';
                     if (j.zon === 'ZON PGO JOHOR') j.zon = 'PGO JOHOR';
                     return j;
                 });
             }
 
+            // Migrasi checklist
             const checklist = cariChecklist(p);
             if (checklist) {
                 checklist.forEach(c => {
-                    if (!c.zon) c.zon = getZonFromBalai(c.balai);
+                    if (!c.zon) {
+                        c.zon = getZonFromBalai(c.balai);
+                    }
                     if (c.zon === 'ZON BENGKEL') c.zon = 'BENGKEL';
                     if (c.zon === 'ZON PGO JOHOR') c.zon = 'PGO JOHOR';
                 });
             }
 
+            // Migrasi senaraiNamaMaster
             if (p.senaraiNamaMaster) {
                 p.senaraiNamaMaster = p.senaraiNamaMaster.map(m => {
-                    if (!m.zon) m.zon = getZonFromBalai(m.balai);
+                    if (!m.zon) {
+                        m.zon = getZonFromBalai(m.balai);
+                    }
                     if (m.zon === 'ZON BENGKEL') m.zon = 'BENGKEL';
                     if (m.zon === 'ZON PGO JOHOR') m.zon = 'PGO JOHOR';
                     return m;
@@ -1869,48 +1408,16 @@
             renderSpecialUnits(anggota);
 
             const balaiLive = computeBalaiLive(anggota, jentera, checklist);
-            const statusLiveAnggota = getUniqueStatusAnggota(anggota);
-            const zonLive = getUniqueZon(anggota, jentera, checklist);
-            const statusLiveJentera = getUniqueStatusJentera(jentera);
-            const statusLiveChecklist = ['Semua Baik', 'Ada Rosak'];
+            populateBalaiFilters(balaiLive);
 
-            // Init multi-select filters
-            initMultiSelect('filterAnggotaBalai', balaiLive);
-            initMultiSelect('filterAnggotaStatus', statusLiveAnggota);
-            initMultiSelect('filterAnggotaZon', zonLive);
-            initMultiSelect('filterJenteraBalai', balaiLive);
-            initMultiSelect('filterJenteraZon', zonLive);
-            initMultiSelect('filterJenteraStatus', statusLiveJentera);
-            initMultiSelect('filterChecklistBalai', balaiLive);
-            initMultiSelect('filterChecklistZon', zonLive);
-            initMultiSelect('filterChecklistStatus', statusLiveChecklist);
-
+            renderAlerts(jentera, checklist);
+            renderBreakdownBalai(balaiLive, anggota, jentera, checklist);
             renderAnggota(anggota);
             renderJentera(jentera);
             renderChecklist(checklist);
 
             setTimeout(setupAllScrolls, 400);
             setTimeout(updateActiveTabOnScroll, 600);
-        }
-
-        function getUniqueStatusAnggota(anggota) {
-            const set = new Set();
-            anggota.forEach(a => { if (a.status) set.add(a.status); });
-            return Array.from(set).sort();
-        }
-
-        function getUniqueStatusJentera(jentera) {
-            const set = new Set();
-            jentera.forEach(j => { if (j.status) set.add(j.status); });
-            return Array.from(set).sort();
-        }
-
-        function getUniqueZon(anggota, jentera, checklist) {
-            const set = new Set();
-            anggota.forEach(a => { if (a.zon) set.add(a.zon); });
-            jentera.forEach(j => { if (j.zon) set.add(j.zon); });
-            checklist.forEach(c => { if (c.zon) set.add(c.zon); });
-            return Array.from(set).sort();
         }
 
         function setupAllScrolls() {
@@ -2055,6 +1562,18 @@
             return Array.from(s).sort();
         }
 
+        function populateBalaiFilters(balaiLive) {
+            const opts = balaiLive.map(b => `<option value="${escapeHtml(b)}">${escapeHtml(b)}</option>`).join('');
+            const def = '<option value="SEMUA">Semua Balai</option>';
+            ['filterAnggotaBalai', 'filterJenteraBalai', 'filterChecklistBalai'].forEach(id => {
+                const el = document.getElementById(id);
+                if (!el) return;
+                const cur = el.value;
+                el.innerHTML = def + opts;
+                if ([...el.options].some(o => o.value === cur)) el.value = cur;
+            });
+        }
+
         // ============================================================
         // ALERTS
         // ============================================================
@@ -2124,6 +1643,28 @@
 
             h += `</div></div>`;
             document.getElementById('alertsPanel').innerHTML = h;
+        }
+
+        // ===== Fungsi untuk status display dengan nombor =====
+        function getStatusDisplay(status) {
+            if (!status) return 'TIADA STATUS';
+            const s = status.trim().toUpperCase();
+            const map = {
+                'BAIK & BOLEH BEROPERASI': '1. BAIK & BOLEH BEROPERASI',
+                'ROSAK MINOR & BOLEH BEROPERASI': '2. ROSAK MINOR & BOLEH BEROPERASI',
+                'ROSAK & TIDAK BOLEH BEROPERASI': '3. ROSAK & TIDAK BOLEH BEROPERASI',
+                'DALAM PROSES LUPUS': '4. DALAM PROSES LUPUS',
+                'LUPUS': '5. LUPUS',
+                'SEDIA BEROPERASI': '1. BAIK & BOLEH BEROPERASI',
+                'BAIK': '1. BAIK & BOLEH BEROPERASI',
+                'ROSAK MINOR': '2. ROSAK MINOR & BOLEH BEROPERASI',
+                'ROSAK': '3. ROSAK & TIDAK BOLEH BEROPERASI',
+                'TIDAK BOLEH BEROPERASI': '3. ROSAK & TIDAK BOLEH BEROPERASI',
+            };
+            for (const [key, value] of Object.entries(map)) {
+                if (s === key.toUpperCase()) return value;
+            }
+            return status.toUpperCase();
         }
 
         // ============================================================
@@ -2214,23 +1755,22 @@
         }
 
         // ============================================================
-        // RENDER ANGGOTA (dengan Multi-Select filters)
+        // RENDER ANGGOTA
         // ============================================================
         function renderAnggota(data) {
             let d = data || (dataCache ? (dataCache.rekodAnggota || dataCache.rekod_anggota || []) : []);
             const fName = (document.getElementById('filterAnggotaNama')?.value || '').toUpperCase();
+            const fBalai = document.getElementById('filterAnggotaBalai')?.value || 'SEMUA';
+            const fStatus = document.getElementById('filterAnggotaStatus')?.value || 'SEMUA';
+            const fZon = document.getElementById('filterZonAnggota')?.value || 'SEMUA';
 
-            const selectedBalai = getMultiSelectSelected('filterAnggotaBalai');
-            const selectedStatus = getMultiSelectSelected('filterAnggotaStatus');
-            const selectedZon = getMultiSelectSelected('filterAnggotaZon');
-
-            let filtered = d.filter(a => {
-                const matchNama = !fName || (a.nama || '').toUpperCase().includes(fName) || (a.pangkat || '').toUpperCase().includes(fName);
-                const matchBalai = selectedBalai.length === 0 || selectedBalai.includes(a.balai);
-                const matchStatus = selectedStatus.length === 0 || selectedStatus.includes(a.status);
-                const matchZon = selectedZon.length === 0 || selectedZon.includes(a.zon || '');
-                return matchNama && matchBalai && matchStatus && matchZon;
-            });
+            let filtered = d.filter(a =>
+                (!fName || (a.nama || '').toUpperCase().includes(fName) || (a.pangkat || '').toUpperCase().includes(
+                    fName)) &&
+                (fBalai === 'SEMUA' || a.balai === fBalai) &&
+                (fStatus === 'SEMUA' || a.status === fStatus) &&
+                (fZon === 'SEMUA' || (a.zon || '') === fZon)
+            );
 
             document.getElementById('anggotaCount').innerText = `${filtered.length} rekod`;
             if (filtered.length === 0) {
@@ -2270,23 +1810,27 @@
         }
 
         // ============================================================
-        // RENDER JENTERA (dengan Multi-Select filters + EXACT status match)
+        // RENDER JENTERA
         // ============================================================
         function renderJentera(data) {
             let d = data || (dataCache ? (dataCache.logistikBertugas || dataCache.logistik_bertugas || []) : []);
             const fCari = (document.getElementById('filterJenteraCari')?.value || '').toUpperCase();
-
-            const selectedBalai = getMultiSelectSelected('filterJenteraBalai');
-            const selectedZon = getMultiSelectSelected('filterJenteraZon');
-            const selectedStatus = getMultiSelectSelected('filterJenteraStatus');
+            const fBalai = document.getElementById('filterJenteraBalai')?.value || 'SEMUA';
+            const fZon = document.getElementById('filterZonJentera')?.value || 'SEMUA';
+            const fStatus = document.getElementById('filterJenteraStatus')?.value || 'SEMUA';
 
             let filtered = d.filter(j => {
-                const matchCari = !fCari || (j.callsign || '').toUpperCase().includes(fCari) || (j.plate || '').toUpperCase().includes(fCari) || (j.jenis || '').toUpperCase().includes(fCari);
-                const matchBalai = selectedBalai.length === 0 || selectedBalai.includes(j.balai);
-                const matchZon = selectedZon.length === 0 || selectedZon.includes(j.zon || '');
-                // EXACT match for status (bukan kategori)
-                const matchStatus = selectedStatus.length === 0 || selectedStatus.includes(j.status);
-                return matchCari && matchBalai && matchZon && matchStatus;
+                const cari = !fCari || (j.callsign || '').toUpperCase().includes(fCari) || (j.plate || '').toUpperCase()
+                    .includes(fCari) || (j.jenis || '').toUpperCase().includes(fCari);
+                const balai = fBalai === 'SEMUA' || j.balai === fBalai;
+                const zon = fZon === 'SEMUA' || (j.zon || '') === fZon;
+                let st = true;
+                if (fStatus !== 'SEMUA') {
+                    const kategoriPilihan = getStatusKategori(fStatus);
+                    const kategoriRekod = getStatusKategori(j.status);
+                    st = (kategoriPilihan === kategoriRekod);
+                }
+                return cari && balai && zon && st;
             });
 
             document.getElementById('jenteraCount').innerText = `${filtered.length} rekod`;
@@ -2326,37 +1870,29 @@
         }
 
         // ============================================================
-        // RENDER CHECKLIST (dengan Multi-Select filters)
+        // RENDER CHECKLIST
         // ============================================================
         function renderChecklist(data) {
             let d = data || (dataCache ? cariChecklist(dataCache) : []);
-            const selectedBalai = getMultiSelectSelected('filterChecklistBalai');
-            const selectedZon = getMultiSelectSelected('filterChecklistZon');
-            const selectedStatus = getMultiSelectSelected('filterChecklistStatus');
+            const fBalai = document.getElementById('filterChecklistBalai')?.value || 'SEMUA';
+            const fZon = document.getElementById('filterZonChecklist')?.value || 'SEMUA';
+            const fStatus = document.getElementById('filterChecklistStatus')?.value || 'SEMUA';
             const itemKeys = ['cad', 'wic', 'bomra', 'desktopGirn', 'handheldGirn', 'vehicularGirn', 'internet',
                 'handphone'
             ];
 
             let filtered = d.filter(c => {
-                const balai = getVal(c, 'balai', 'Balai', 'BALAI');
-                const matchBalai = selectedBalai.length === 0 || selectedBalai.includes(balai);
-                const matchZon = selectedZon.length === 0 || selectedZon.includes(c.zon || '');
-
-                let matchStatus = true;
-                if (selectedStatus.length > 0) {
+                const balai = fBalai === 'SEMUA' || getVal(c, 'balai', 'Balai', 'BALAI') === fBalai;
+                const zon = fZon === 'SEMUA' || (c.zon || '') === fZon;
+                let st = true;
+                if (fStatus === 'BAIK' || fStatus === 'ROSAK') {
                     const parsed = itemKeys.map(k => parseChecklistItem(c, k));
                     const totalRosak = parsed.reduce((s, p) => s + p.rosak, 0);
                     const totalUnit = parsed.reduce((s, p) => s + p.baik + p.rosak, 0);
-                    const isBaik = (totalRosak === 0 && totalUnit > 0);
-                    const isRosak = (totalRosak > 0);
-                    // Check if any selected status matches
-                    matchStatus = selectedStatus.some(st => {
-                        if (st === 'Semua Baik') return isBaik;
-                        if (st === 'Ada Rosak') return isRosak;
-                        return false;
-                    });
+                    if (fStatus === 'BAIK') st = (totalRosak === 0 && totalUnit > 0);
+                    else st = (totalRosak > 0);
                 }
-                return matchBalai && matchZon && matchStatus;
+                return balai && zon && st;
             });
 
             document.getElementById('checklistCount').innerText = `${filtered.length} rekod`;
