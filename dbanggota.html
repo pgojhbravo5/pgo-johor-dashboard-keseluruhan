@@ -197,6 +197,14 @@
             border-color: #9fa8da;
         }
 
+        /* Badge ZON - sama seperti halaman utama */
+        .badge-zon-1 { background: #dbeafe; color: #1e40af; border: 1px solid #93c5fd; }
+        .badge-zon-2 { background: #d1fae5; color: #065f46; border: 1px solid #6ee7b7; }
+        .badge-zon-3 { background: #fef3c7; color: #92400e; border: 1px solid #fcd34d; }
+        .badge-zon-4 { background: #fce7f3; color: #9d174d; border: 1px solid #f9a8d4; }
+        .badge-zon-bengkel { background: #e0e7ff; color: #3730a3; border: 1px solid #a5b4fc; }
+        .badge-zon-pgo { background: #fef3c7; color: #78350f; border: 1px solid #fbbf24; }
+
         /* ===== GRID 2 LAJUR (Desktop) ===== */
         .panel-grid-2 {
             display: grid;
@@ -685,6 +693,16 @@
                     <option value="CUTI SAKIT">Cuti Sakit</option>
                     <option value="TUGAS KHAS">Tugas Khas</option>
                 </select>
+                <!-- FILTER ZON ANGGOTA -->
+                <select id="filterZonAnggota" class="bg-slate-50 border border-slate-200 rounded-lg text-xs md:text-sm px-2 py-1.5 focus:outline-none focus:ring-2 focus:ring-bomba-red/20 focus:border-bomba-red flex-1 font-medium text-slate-700" onchange="renderAnggota()">
+                    <option value="SEMUA">Semua Zon</option>
+                    <option value="ZON 1">ZON 1</option>
+                    <option value="ZON 2">ZON 2</option>
+                    <option value="ZON 3">ZON 3</option>
+                    <option value="ZON 4">ZON 4</option>
+                    <option value="BENGKEL">BENGKEL</option>
+                    <option value="PGO JOHOR">PGO JOHOR</option>
+                </select>
             </div>
             <div id="anggotaScroll" class="table-container flex-1">
                 <div id="anggotaTable"><div class="text-center py-6 text-slate-400 font-medium text-sm flex flex-col items-center gap-2"><i class="fa-solid fa-spinner animate-spin text-xl"></i> Memuatkan...</div></div>
@@ -708,7 +726,16 @@
                 <select id="filterJenteraBalai" class="bg-slate-50 border border-slate-200 rounded-lg text-xs md:text-sm px-2 py-1.5 focus:outline-none focus:ring-2 focus:ring-bomba-red/20 focus:border-bomba-red flex-1 font-medium text-slate-700" onchange="renderJentera()">
                     <option value="SEMUA">Semua Balai</option>
                 </select>
-                <!-- ===== DROPDOWN STATUS DIUBAH DENGAN NOMBOR ===== -->
+                <!-- FILTER ZON JENTERA -->
+                <select id="filterZonJentera" class="bg-slate-50 border border-slate-200 rounded-lg text-xs md:text-sm px-2 py-1.5 focus:outline-none focus:ring-2 focus:ring-bomba-red/20 focus:border-bomba-red flex-1 font-medium text-slate-700" onchange="renderJentera()">
+                    <option value="SEMUA">Semua Zon</option>
+                    <option value="ZON 1">ZON 1</option>
+                    <option value="ZON 2">ZON 2</option>
+                    <option value="ZON 3">ZON 3</option>
+                    <option value="ZON 4">ZON 4</option>
+                    <option value="BENGKEL">BENGKEL</option>
+                    <option value="PGO JOHOR">PGO JOHOR</option>
+                </select>
                 <select id="filterJenteraStatus" class="bg-slate-50 border border-slate-200 rounded-lg text-xs md:text-sm px-2 py-1.5 focus:outline-none focus:ring-2 focus:ring-bomba-red/20 focus:border-bomba-red flex-1 font-medium text-slate-700" onchange="renderJentera()">
                     <option value="SEMUA">Semua Status</option>
                     <option value="BAIK & BOLEH BEROPERASI">1. BAIK &amp; BOLEH BEROPERASI</option>
@@ -736,6 +763,16 @@
         <div class="flex flex-col sm:flex-row gap-1.5 mb-2">
             <select id="filterChecklistBalai" class="bg-slate-50 border border-slate-200 rounded-lg text-xs md:text-sm px-2 py-1.5 focus:outline-none focus:ring-2 focus:ring-bomba-red/20 focus:border-bomba-red flex-1 font-medium text-slate-700" onchange="renderChecklist()">
                 <option value="SEMUA">Semua Balai</option>
+            </select>
+            <!-- FILTER ZON CHECKLIST -->
+            <select id="filterZonChecklist" class="bg-slate-50 border border-slate-200 rounded-lg text-xs md:text-sm px-2 py-1.5 focus:outline-none focus:ring-2 focus:ring-bomba-red/20 focus:border-bomba-red flex-1 font-medium text-slate-700" onchange="renderChecklist()">
+                <option value="SEMUA">Semua Zon</option>
+                <option value="ZON 1">ZON 1</option>
+                <option value="ZON 2">ZON 2</option>
+                <option value="ZON 3">ZON 3</option>
+                <option value="ZON 4">ZON 4</option>
+                <option value="BENGKEL">BENGKEL</option>
+                <option value="PGO JOHOR">PGO JOHOR</option>
             </select>
             <select id="filterChecklistStatus" class="bg-slate-50 border border-slate-200 rounded-lg text-xs md:text-sm px-2 py-1.5 focus:outline-none focus:ring-2 focus:ring-bomba-red/20 focus:border-bomba-red flex-1 font-medium text-slate-700" onchange="renderChecklist()">
                 <option value="SEMUA">Semua Status</option>
@@ -793,32 +830,75 @@
         let realtimeChannel = null;
         const FALLBACK_POLL_MS = 60000;
 
-        // ===== FUNGSI BARU: Dapatkan teks status dengan nombor =====
-        function getStatusDisplay(status) {
-            if (!status) return 'TIADA STATUS';
-            const s = status.trim().toUpperCase();
-            // Pemetaan nilai asal kepada teks bernombor
-            const map = {
-                'BAIK & BOLEH BEROPERASI': '1. BAIK & BOLEH BEROPERASI',
-                'ROSAK MINOR & BOLEH BEROPERASI': '2. ROSAK MINOR & BOLEH BEROPERASI',
-                'ROSAK & TIDAK BOLEH BEROPERASI': '3. ROSAK & TIDAK BOLEH BEROPERASI',
-                'DALAM PROSES LUPUS': '4. DALAM PROSES LUPUS',
-                'LUPUS': '5. LUPUS',
-                // Untuk keserasian dengan data lama (jika ada)
-                'SEDIA BEROPERASI': '1. BAIK & BOLEH BEROPERASI',
-                'BAIK': '1. BAIK & BOLEH BEROPERASI',
-                'ROSAK MINOR': '2. ROSAK MINOR & BOLEH BEROPERASI',
-                'ROSAK': '3. ROSAK & TIDAK BOLEH BEROPERASI',
-                'TIDAK BOLEH BEROPERASI': '3. ROSAK & TIDAK BOLEH BEROPERASI',
-                'DALAM PROSES LUPUS': '4. DALAM PROSES LUPUS',
-                'LUPUS': '5. LUPUS',
-            };
-            // Cari padanan tepat (case-insensitive)
-            for (const [key, value] of Object.entries(map)) {
-                if (s === key.toUpperCase()) return value;
+        // ============================================================
+        // PEMETAAN ZON (Sama seperti halaman utama)
+        // ============================================================
+        const ZON_MAP = {
+            'PGO JOHOR': 'PGO JOHOR',
+            'LARKIN': 'ZON 1',
+            'PASIR GUDANG': 'ZON 1',
+            'JOHOR JAYA': 'ZON 1',
+            'SKUDAI': 'ZON 1',
+            'ISKANDAR PUTERI': 'ZON 1',
+            'TEBRAU': 'ZON 1',
+            'PEKAN NENAS': 'ZON 1',
+            'PONTIAN': 'ZON 1',
+            'PONTIAN BARU': 'ZON 1',
+            'KULAI': 'ZON 1',
+            'BANDAR BARU KULAI': 'ZON 1',
+            'KEMPAS': 'ZON 1',
+            'FIRE POST BENUT': 'ZON 1',
+            'KOTA TINGGI': 'ZON 2',
+            'SUNGAI RENGIT': 'ZON 2',
+            'BANDAR PENAWAR': 'ZON 2',
+            'MERSING': 'ZON 2',
+            'ENDAU': 'ZON 2',
+            'SEBANA COVE': 'ZON 2',
+            'PUNGGAI': 'ZON 2',
+            'BANDAR TENGGARA': 'ZON 2',
+            'PENGGARAM': 'ZON 3',
+            'KLUANG': 'ZON 3',
+            'BATU PAHAT': 'ZON 3',
+            'RENGIT': 'ZON 3',
+            'RENGGAM': 'ZON 3',
+            'YONG PENG': 'ZON 3',
+            'AYER HITAM': 'ZON 3',
+            'FIRE POST PARIT SULONG': 'ZON 3',
+            'MUAR': 'ZON 4',
+            'BANDAR BARU SEGAMAT': 'ZON 4',
+            'SEGAMAT': 'ZON 4',
+            'LABIS': 'ZON 4',
+            'BUKIT GAMBIR': 'ZON 4',
+            'TANGKAK': 'ZON 4',
+            'PAGOH': 'ZON 4',
+            'BENGKEL KEJURUTERAAN': 'BENGKEL',
+            'BENGKEL SWASTA': 'BENGKEL'
+        };
+        const ZON_DEFAULT = 'ZON 1';
+
+        function getZon(balai) {
+            if (!balai) return ZON_DEFAULT;
+            const balaiUpper = balai.toUpperCase().trim();
+            for (const [key, value] of Object.entries(ZON_MAP)) {
+                if (balaiUpper === key.toUpperCase().trim()) {
+                    return value;
+                }
             }
-            // Jika tiada padanan, kembalikan status asal dengan huruf besar
-            return status.toUpperCase();
+            return ZON_DEFAULT;
+        }
+
+        function getZonBadge(zon) {
+            if (!zon) return '<span class="badge-status slate">-</span>';
+            const classMap = {
+                'ZON 1': 'badge-zon-1',
+                'ZON 2': 'badge-zon-2',
+                'ZON 3': 'badge-zon-3',
+                'ZON 4': 'badge-zon-4',
+                'BENGKEL': 'badge-zon-bengkel',
+                'PGO JOHOR': 'badge-zon-pgo'
+            };
+            const cls = classMap[zon] || 'badge-status slate';
+            return `<span class="badge-status ${cls}">${zon}</span>`;
         }
 
         // ============================================================
@@ -950,22 +1030,19 @@
             return `<span class="badge-status red text-[9px]"><i class="fa-solid fa-circle-exclamation text-[9px] mr-1"></i>ROSAK ${parsed.baik}B/${parsed.rosak}R</span>`;
         }
 
-        // ===================== STATUS JENTERA: KATEGORI =====================
+        // ===================== STATUS JENTERA =====================
         function getStatusKategori(status) {
             if (!status) return 'LAIN';
             const s = status.toUpperCase().trim();
-            // Mapping baru
             if (s === 'BAIK & BOLEH BEROPERASI') return 'BAIK';
             if (s === 'ROSAK MINOR & BOLEH BEROPERASI') return 'BAIK';
             if (s === 'ROSAK & TIDAK BOLEH BEROPERASI') return 'ROSAK';
             if (s === 'DALAM PROSES LUPUS') return 'DALAM PROSES LUPUS';
             if (s === 'LUPUS') return 'TELAH LUPUS';
-            // Fallback untuk data lama (jika masih ada)
             if (s === 'SEDIA BEROPERASI' || s === 'BAIK') return 'BAIK';
             if (s.includes('ROSAK') && s.includes('TIDAK BOLEH')) return 'ROSAK';
-            if (s.includes('ROSAK') || s.includes('MINOR')) return 'BAIK'; // treat as baik
+            if (s.includes('ROSAK') || s.includes('MINOR')) return 'BAIK';
             if (s.includes('SELENGGARA') || s.includes('PENYELENGGARAAN')) return 'LAIN';
-            if (s === 'LUPUS') return 'TELAH LUPUS';
             return 'LAIN';
         }
 
@@ -978,7 +1055,6 @@
             return `${base} slate`;
         }
 
-        // ===== Fungsi untuk badge status anggota (tidak diubah) =====
         function getBadge(type, val) {
             val = (val || '').toUpperCase();
             const base = 'badge-status';
@@ -987,7 +1063,6 @@
                 if (val === 'CUTI') return `${base} amber`;
                 if (val.includes('SAKIT')) return `${base} red`;
                 if (val === 'TUGAS KHAS') return `${base} purple`;
-                // Untuk jentera - guna kategori
                 const kat = getStatusKategori(val);
                 return getBadgeForKategori(kat);
             }
@@ -1000,7 +1075,9 @@
             return `${base} slate`;
         }
 
-        // ===== SHIFT BERTUGAS SEMASA =====
+        // ============================================================
+        // SHIFT BERTUGAS SEMASA
+        // ============================================================
         function determineCurrentShift(anggota) {
             if (!anggota || anggota.length === 0) return '-';
             const count = {};
@@ -1023,7 +1100,9 @@
             document.getElementById('currentShift').textContent = determineCurrentShift(anggota);
         }
 
-        // ===== BROADCAST TICKER =====
+        // ============================================================
+        // BROADCAST TICKER
+        // ============================================================
         function buildTickerContent(anggota, jentera, checklist) {
             const totalA = anggota.length;
             const bertugas = anggota.filter(a => a.status === 'BERTUGAS').length;
@@ -1112,7 +1191,9 @@
             `;
         }
 
-        // ===== STATUS KESEDIAAN PASUKAN KHAS =====
+        // ============================================================
+        // STATUS KESEDIAAN PASUKAN KHAS
+        // ============================================================
         function renderSpecialUnits(anggota) {
             const container = document.getElementById('specialUnitsContainer');
             if (!container) return;
@@ -1154,7 +1235,9 @@
             container.innerHTML = html;
         }
 
-        // ===== FETCH DATA =====
+        // ============================================================
+        // FETCH DATA
+        // ============================================================
         async function fetchData() {
             try {
                 const dot = document.getElementById('statusDot');
@@ -1169,6 +1252,8 @@
                 const data = await resp.json();
                 if (data && data.length > 0) {
                     dataCache = data[0];
+                    // Migrasi zon untuk data yang baru dimuat
+                    migrateZonData();
                     renderAll();
                     dot.className = 'w-1.5 h-1.5 md:w-2.5 md:h-2.5 rounded-full bg-emerald-400 shadow-[0_0_8px_rgba(52,211,153,0.8)]';
                     document.getElementById('lastUpdate').innerHTML = new Date().toLocaleTimeString('ms-MY', { hour: '2-digit',
@@ -1183,7 +1268,78 @@
             }
         }
 
-        // ===== REALTIME =====
+        // ============================================================
+        // MIGRASI ZON UNTUK DATA YANG DIMUAT
+        // ============================================================
+        function migrateZonData() {
+            if (!dataCache) return;
+            const p = dataCache;
+
+            // Fungsi untuk mendapatkan zon
+            function getZonFromBalai(balai) {
+                if (!balai) return ZON_DEFAULT;
+                const balaiUpper = balai.toUpperCase().trim();
+                for (const [key, value] of Object.entries(ZON_MAP)) {
+                    if (balaiUpper === key.toUpperCase().trim()) {
+                        return value;
+                    }
+                }
+                return ZON_DEFAULT;
+            }
+
+            // Migrasi rekodAnggota
+            if (p.rekodAnggota) {
+                p.rekodAnggota = p.rekodAnggota.map(a => {
+                    if (!a.zon) {
+                        a.zon = getZonFromBalai(a.balai);
+                    }
+                    // Tukar nama zon jika masih guna nama lama
+                    if (a.zon === 'ZON BENGKEL') a.zon = 'BENGKEL';
+                    if (a.zon === 'ZON PGO JOHOR') a.zon = 'PGO JOHOR';
+                    return a;
+                });
+            }
+
+            // Migrasi logistikBertugas
+            if (p.logistikBertugas) {
+                p.logistikBertugas = p.logistikBertugas.map(j => {
+                    if (!j.zon) {
+                        j.zon = getZonFromBalai(j.balai);
+                    }
+                    if (j.zon === 'ZON BENGKEL') j.zon = 'BENGKEL';
+                    if (j.zon === 'ZON PGO JOHOR') j.zon = 'PGO JOHOR';
+                    return j;
+                });
+            }
+
+            // Migrasi checklist
+            const checklist = cariChecklist(p);
+            if (checklist) {
+                checklist.forEach(c => {
+                    if (!c.zon) {
+                        c.zon = getZonFromBalai(c.balai);
+                    }
+                    if (c.zon === 'ZON BENGKEL') c.zon = 'BENGKEL';
+                    if (c.zon === 'ZON PGO JOHOR') c.zon = 'PGO JOHOR';
+                });
+            }
+
+            // Migrasi senaraiNamaMaster
+            if (p.senaraiNamaMaster) {
+                p.senaraiNamaMaster = p.senaraiNamaMaster.map(m => {
+                    if (!m.zon) {
+                        m.zon = getZonFromBalai(m.balai);
+                    }
+                    if (m.zon === 'ZON BENGKEL') m.zon = 'BENGKEL';
+                    if (m.zon === 'ZON PGO JOHOR') m.zon = 'PGO JOHOR';
+                    return m;
+                });
+            }
+        }
+
+        // ============================================================
+        // REALTIME
+        // ============================================================
         function initRealtime() {
             const badge = document.getElementById('realtimeBadge');
             const label = document.getElementById('realtimeLabel');
@@ -1200,6 +1356,7 @@
                     (payload) => {
                         if (!payload.new) return;
                         dataCache = payload.new;
+                        migrateZonData();
                         renderAll();
                         document.getElementById('lastUpdate').innerHTML = new Date().toLocaleTimeString('ms-MY', { hour: '2-digit',
                             minute: '2-digit', second: '2-digit' });
@@ -1236,7 +1393,9 @@
             document.getElementById('statusDot').className = 'w-1.5 h-1.5 md:w-2.5 md:h-2.5 rounded-full bg-red-500 shadow-[0_0_8px_rgba(239,68,68,0.8)]';
         }
 
-        // ===== RENDER UTAMA =====
+        // ============================================================
+        // RENDER UTAMA
+        // ============================================================
         function renderAll() {
             if (!dataCache) return;
             const p = dataCache;
@@ -1415,7 +1574,9 @@
             });
         }
 
-        // ===== ALERTS =====
+        // ============================================================
+        // ALERTS
+        // ============================================================
         function renderAlerts(jentera, checklist) {
             const itemKeys = ['cad', 'wic', 'bomra', 'desktopGirn', 'handheldGirn', 'vehicularGirn', 'internet',
                 'handphone'
@@ -1458,7 +1619,6 @@
               <div class="space-y-0.5 max-h-48 overflow-y-auto pr-0.5">`;
                 jBermasalah.forEach(j => {
                     const kat = getStatusKategori(j.status);
-                    // Gunakan getStatusDisplay untuk paparan
                     const displayStatus = getStatusDisplay(j.status);
                     h += `<div class="flex items-center justify-between bg-red-50 border border-red-100 rounded-lg px-2 py-1 text-[8px] md:text-xs">
                 <span class="font-bold text-slate-700">${escapeHtml(j.callsign)||'-'} <span class="text-slate-400 font-normal">(${escapeHtml(j.balai)||'-'})</span></span>
@@ -1485,7 +1645,31 @@
             document.getElementById('alertsPanel').innerHTML = h;
         }
 
-        // ===== BREAKDOWN IKUT BALAI =====
+        // ===== Fungsi untuk status display dengan nombor =====
+        function getStatusDisplay(status) {
+            if (!status) return 'TIADA STATUS';
+            const s = status.trim().toUpperCase();
+            const map = {
+                'BAIK & BOLEH BEROPERASI': '1. BAIK & BOLEH BEROPERASI',
+                'ROSAK MINOR & BOLEH BEROPERASI': '2. ROSAK MINOR & BOLEH BEROPERASI',
+                'ROSAK & TIDAK BOLEH BEROPERASI': '3. ROSAK & TIDAK BOLEH BEROPERASI',
+                'DALAM PROSES LUPUS': '4. DALAM PROSES LUPUS',
+                'LUPUS': '5. LUPUS',
+                'SEDIA BEROPERASI': '1. BAIK & BOLEH BEROPERASI',
+                'BAIK': '1. BAIK & BOLEH BEROPERASI',
+                'ROSAK MINOR': '2. ROSAK MINOR & BOLEH BEROPERASI',
+                'ROSAK': '3. ROSAK & TIDAK BOLEH BEROPERASI',
+                'TIDAK BOLEH BEROPERASI': '3. ROSAK & TIDAK BOLEH BEROPERASI',
+            };
+            for (const [key, value] of Object.entries(map)) {
+                if (s === key.toUpperCase()) return value;
+            }
+            return status.toUpperCase();
+        }
+
+        // ============================================================
+        // BREAKDOWN IKUT BALAI
+        // ============================================================
         function renderBreakdownBalai(balaiLive, anggota, jentera, checklist) {
             if (balaiLive.length === 0) {
                 document.getElementById('breakdownBalaiTable').innerHTML =
@@ -1570,18 +1754,22 @@
             document.getElementById('breakdownBalaiTable').innerHTML = h;
         }
 
-        // ===== RENDER ANGGOTA =====
+        // ============================================================
+        // RENDER ANGGOTA
+        // ============================================================
         function renderAnggota(data) {
             let d = data || (dataCache ? (dataCache.rekodAnggota || dataCache.rekod_anggota || []) : []);
             const fName = (document.getElementById('filterAnggotaNama')?.value || '').toUpperCase();
             const fBalai = document.getElementById('filterAnggotaBalai')?.value || 'SEMUA';
             const fStatus = document.getElementById('filterAnggotaStatus')?.value || 'SEMUA';
+            const fZon = document.getElementById('filterZonAnggota')?.value || 'SEMUA';
 
             let filtered = d.filter(a =>
                 (!fName || (a.nama || '').toUpperCase().includes(fName) || (a.pangkat || '').toUpperCase().includes(
                     fName)) &&
                 (fBalai === 'SEMUA' || a.balai === fBalai) &&
-                (fStatus === 'SEMUA' || a.status === fStatus)
+                (fStatus === 'SEMUA' || a.status === fStatus) &&
+                (fZon === 'SEMUA' || (a.zon || '') === fZon)
             );
 
             document.getElementById('anggotaCount').innerText = `${filtered.length} rekod`;
@@ -1593,9 +1781,10 @@
 
             let h =
                 `<table class="w-full text-left text-[9px] md:text-[10px]"><thead class="sticky top-0 bg-white shadow-sm z-10"><tr class="text-slate-400 font-bold uppercase tracking-wider border-b-2 border-slate-100">
-            <th class="py-1.5 px-1.5 w-6">#</th><th class="py-1.5 px-1.5">Nama &amp; Info</th><th class="py-1.5 px-1.5">Status</th><th class="py-1.5 px-1.5">Lokasi</th>
+            <th class="py-1.5 px-1.5 w-6">#</th><th class="py-1.5 px-1.5">Nama &amp; Info</th><th class="py-1.5 px-1.5">Status</th><th class="py-1.5 px-1.5">Balai</th><th class="py-1.5 px-1.5">Zon</th>
           </tr></thead><tbody class="divide-y divide-slate-100">`;
             filtered.forEach((a, i) => {
+                const zonBadge = getZonBadge(a.zon);
                 h += `<tr class="hover:bg-slate-50 transition-colors group">
               <td class="py-1.5 px-1.5 text-slate-400">${i+1}</td>
               <td class="py-1.5 px-1.5">
@@ -1610,6 +1799,7 @@
                 </div>
               </td>
               <td class="py-1.5 px-1.5 font-medium text-slate-600 text-[8px] md:text-[10px]">${escapeHtml(a.balai)||'-'}</td>
+              <td class="py-1.5 px-1.5">${zonBadge}</td>
             </tr>`;
             });
             document.getElementById('anggotaTable').innerHTML = h + '</tbody></table>';
@@ -1619,25 +1809,28 @@
             }
         }
 
-        // ===== RENDER JENTERA (filter berdasarkan KATEGORI, paparan dengan nombor) =====
+        // ============================================================
+        // RENDER JENTERA
+        // ============================================================
         function renderJentera(data) {
             let d = data || (dataCache ? (dataCache.logistikBertugas || dataCache.logistik_bertugas || []) : []);
             const fCari = (document.getElementById('filterJenteraCari')?.value || '').toUpperCase();
             const fBalai = document.getElementById('filterJenteraBalai')?.value || 'SEMUA';
+            const fZon = document.getElementById('filterZonJentera')?.value || 'SEMUA';
             const fStatus = document.getElementById('filterJenteraStatus')?.value || 'SEMUA';
 
             let filtered = d.filter(j => {
                 const cari = !fCari || (j.callsign || '').toUpperCase().includes(fCari) || (j.plate || '').toUpperCase()
                     .includes(fCari) || (j.jenis || '').toUpperCase().includes(fCari);
                 const balai = fBalai === 'SEMUA' || j.balai === fBalai;
-
+                const zon = fZon === 'SEMUA' || (j.zon || '') === fZon;
                 let st = true;
                 if (fStatus !== 'SEMUA') {
                     const kategoriPilihan = getStatusKategori(fStatus);
                     const kategoriRekod = getStatusKategori(j.status);
                     st = (kategoriPilihan === kategoriRekod);
                 }
-                return cari && balai && st;
+                return cari && balai && zon && st;
             });
 
             document.getElementById('jenteraCount').innerText = `${filtered.length} rekod`;
@@ -1649,23 +1842,24 @@
 
             let h =
                 `<table class="w-full text-left text-[9px] md:text-[10px]"><thead class="sticky top-0 bg-white shadow-sm z-10"><tr class="text-slate-400 font-bold uppercase tracking-wider border-b-2 border-slate-100">
-            <th class="py-1.5 px-1.5 w-6">#</th><th class="py-1.5 px-1.5">Jentera</th><th class="py-1.5 px-1.5">Status</th><th class="py-1.5 px-1.5">Balai</th>
+            <th class="py-1.5 px-1.5 w-6">#</th><th class="py-1.5 px-1.5">Jentera</th><th class="py-1.5 px-1.5">Balai</th><th class="py-1.5 px-1.5">Zon</th><th class="py-1.5 px-1.5">Status</th>
           </tr></thead><tbody class="divide-y divide-slate-100">`;
             filtered.forEach((j, i) => {
                 const kat = getStatusKategori(j.status);
-                // Guna getStatusDisplay untuk paparan badge
                 const displayStatus = getStatusDisplay(j.status);
+                const zonBadge = getZonBadge(j.zon);
                 h += `<tr class="hover:bg-slate-50 transition-colors">
               <td class="py-1.5 px-1.5 text-slate-400">${i+1}</td>
               <td class="py-1.5 px-1.5">
                 <div class="font-bold text-bomba-darkred text-[9px] md:text-xs">${escapeHtml(j.callsign)||'-'}</div>
                 <div class="flex items-center gap-1 mt-0.5 text-slate-500 font-medium text-[7px] md:text-[9px]"><span>${escapeHtml(j.plate||j.plat)||'-'}</span> <span class="text-slate-300">•</span> <span>${escapeHtml(j.jenis)||'-'}</span></div>
               </td>
+              <td class="py-1.5 px-1.5 font-medium text-slate-600 text-[8px] md:text-[10px]">${escapeHtml(j.balai)||'-'}</td>
+              <td class="py-1.5 px-1.5">${zonBadge}</td>
               <td class="py-1.5 px-1.5">
                 <span class="${getBadgeForKategori(kat)}">${escapeHtml(displayStatus)}</span>
                 <div class="text-[6px] text-slate-400 mt-0.5">${escapeHtml(j.status)||'-'}</div>
               </td>
-              <td class="py-1.5 px-1.5 font-medium text-slate-600 text-[8px] md:text-[10px]">${escapeHtml(j.balai)||'-'}</td>
             </tr>`;
             });
             document.getElementById('jenteraTable').innerHTML = h + '</tbody></table>';
@@ -1675,10 +1869,13 @@
             }
         }
 
-        // ===== RENDER CHECKLIST =====
+        // ============================================================
+        // RENDER CHECKLIST
+        // ============================================================
         function renderChecklist(data) {
             let d = data || (dataCache ? cariChecklist(dataCache) : []);
             const fBalai = document.getElementById('filterChecklistBalai')?.value || 'SEMUA';
+            const fZon = document.getElementById('filterZonChecklist')?.value || 'SEMUA';
             const fStatus = document.getElementById('filterChecklistStatus')?.value || 'SEMUA';
             const itemKeys = ['cad', 'wic', 'bomra', 'desktopGirn', 'handheldGirn', 'vehicularGirn', 'internet',
                 'handphone'
@@ -1686,6 +1883,7 @@
 
             let filtered = d.filter(c => {
                 const balai = fBalai === 'SEMUA' || getVal(c, 'balai', 'Balai', 'BALAI') === fBalai;
+                const zon = fZon === 'SEMUA' || (c.zon || '') === fZon;
                 let st = true;
                 if (fStatus === 'BAIK' || fStatus === 'ROSAK') {
                     const parsed = itemKeys.map(k => parseChecklistItem(c, k));
@@ -1694,7 +1892,7 @@
                     if (fStatus === 'BAIK') st = (totalRosak === 0 && totalUnit > 0);
                     else st = (totalRosak > 0);
                 }
-                return balai && st;
+                return balai && zon && st;
             });
 
             document.getElementById('checklistCount').innerText = `${filtered.length} rekod`;
@@ -1715,7 +1913,7 @@
 
             let h =
                 `<table class="w-full text-left text-[8px] md:text-[9px]"><thead class="sticky top-0 bg-white shadow-sm z-10"><tr class="text-slate-400 font-bold uppercase tracking-wider border-b-2 border-slate-100">
-            <th class="py-1.5 px-1 w-6">#</th><th class="py-1.5 px-1.5 min-w-[80px]">Balai / Shif</th>`;
+            <th class="py-1.5 px-1 w-6">#</th><th class="py-1.5 px-1.5 min-w-[80px]">Balai / Shif</th><th class="py-1.5 px-1.5">Zon</th>`;
             itemKeys.forEach(k => {
                 h +=
                     `<th class="py-1.5 px-0.5 text-center"><i class="fa-solid ${icons[k]} ${colors[k]} text-[8px] md:text-[10px]"></i><span class="block text-[5px] md:text-[6px]">${labels[k]}</span></th>`;
@@ -1726,12 +1924,14 @@
                 const balai = getVal(c, 'balai', 'Balai', 'BALAI');
                 const shift = getVal(c, 'shiftType', 'shift_type', 'ShiftType');
                 const shiftTime = getVal(c, 'shiftTime', 'shift_time', 'ShiftTime');
+                const zonBadge = getZonBadge(c.zon);
                 h += `<tr class="hover:bg-slate-50 transition-colors">
               <td class="py-1.5 px-1 text-slate-400 font-mono text-[8px] md:text-[9px]">${i+1}</td>
               <td class="py-1.5 px-1.5">
                 <div class="font-bold text-slate-700 text-[8px] md:text-[10px]">${escapeHtml(balai)}</div>
                 <div class="text-[6px] md:text-[7px] text-slate-500 uppercase mt-0.5 font-bold tracking-wide">${escapeHtml(shift)} | ${escapeHtml(shiftTime)}</div>
-              </td>`;
+              </td>
+              <td class="py-1.5 px-1.5">${zonBadge}</td>`;
                 itemKeys.forEach(k => {
                     const p = parseChecklistItem(c, k);
                     h += `<td class="py-1.5 px-0.5 text-center">${renderCheckBadge(p)}</td>`;
@@ -1745,7 +1945,9 @@
             }
         }
 
-        // ===== START =====
+        // ============================================================
+        // START
+        // ============================================================
         fetchData();
         initRealtime();
     </script>
