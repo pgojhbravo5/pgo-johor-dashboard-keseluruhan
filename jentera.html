@@ -2634,7 +2634,7 @@
       }
 
       // ============================================================
-      // DASHBOARD UTAMA (FIT VIEW)
+      // DASHBOARD UTAMA (FIT VIEW) — ZON DITENTUKAN BERDASARKAN LOKASI SEMASA
       // ============================================================
       function getAllAssets() {
         const all = [];
@@ -2860,7 +2860,7 @@
       }
 
       // ============================================================
-      // RENDER MAIN DASHBOARD — UPDATED with manual scroll per zone
+      // RENDER MAIN DASHBOARD — ZON DITENTUKAN DARI LOKASI SEMASA
       // ============================================================
       function renderMainDashboard() {
         const all = getAllAssets();
@@ -2899,25 +2899,49 @@
             <div class="card-bg border border-red-500/30 p-2 rounded-lg text-center transition-colors duration-300"><div class="text-base font-extrabold text-red-400 pulse-glow-r">${r}</div><div class="text-[9px] text-red-500/80">ROSAK</div></div>
             <div class="card-bg border border-blue-500/30 p-2 rounded-lg text-center transition-colors duration-300"><div class="text-base font-extrabold text-blue-400 pulse-glow-d">${d}</div><div class="text-[9px] text-blue-500/80">PULANG</div></div>
           `;
+
+        // --- UBATAN UTAMA: TENTUKAN ZON BERDASARKAN LOKASI SEMASA ---
         const zoneMap = {};
         filtered.forEach((item) => {
           const lokasi = (G(item, 'LOKASI SEMASA') || '').trim();
-          let zoneKey = (G(item, 'ZON') || 'LAIN').trim().toUpperCase();
-          if (
-            lokasi.toUpperCase().includes('BENGKEL') ||
-            lokasi.toUpperCase().includes('KJT')
-          ) zoneKey = 'BENGKEL KJT BOMBA';
+          const lokasiUpper = lokasi.toUpperCase();
+
+          let zoneKey = null;
+
+          // 1. Kes khas: Bengkel / KJT
+          if (lokasiUpper.includes('BENGKEL') || lokasiUpper.includes('KJT')) {
+            zoneKey = 'BENGKEL KJT BOMBA';
+          } else {
+            // 2. Cuba cari zon berdasarkan padanan dengan senarai balai dalam BALAI_ZON
+            for (const [zone, balaiList] of Object.entries(BALAI_ZON)) {
+              const found = balaiList.some(balai =>
+                lokasiUpper.includes(balai.toUpperCase()) ||
+                balai.toUpperCase().includes(lokasiUpper)
+              );
+              if (found) {
+                zoneKey = zone;
+                break;
+              }
+            }
+          }
+
+          // 3. Fallback: gunakan medan ZON daripada data jika masih tiada zon
+          if (!zoneKey) {
+            zoneKey = (G(item, 'ZON') || 'LAIN').trim().toUpperCase();
+          }
+
           if (!zoneMap[zoneKey]) zoneMap[zoneKey] = {};
-          const listBalaiInZone = BALAI_ZON[zoneKey] || [];
-          let matchedBalai = findMatchingBalai(lokasi, listBalaiInZone);
-          if (!matchedBalai && zoneKey !== 'BENGKEL KJT BOMBA')
-            matchedBalai = findMatchingBalaiInAllZones(lokasi);
+
+          // Cari balai yang paling sesuai (dari semua zon) untuk menentukan kumpulan balai
+          let matchedBalai = findMatchingBalaiInAllZones(lokasi);
           const balaiKey = matchedBalai ?
             matchedBalai.toUpperCase() :
-            lokasi.toUpperCase() || 'TANPA BALAI';
+            (lokasi.toUpperCase() || 'TANPA BALAI');
+
           if (!zoneMap[zoneKey][balaiKey]) zoneMap[zoneKey][balaiKey] = [];
           zoneMap[zoneKey][balaiKey].push(item);
         });
+
         let html = '';
         zoneOrder.forEach((zoneName) => {
           const dataZon = zoneMap[zoneName] || {};
