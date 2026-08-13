@@ -581,6 +581,127 @@
                 padding: 4px 6px !important;
             }
         }
+
+        /* ===== MULTISELECT DROPDOWN ===== */
+        .multiselect-dropdown {
+            position: relative;
+            width: 100%;
+            min-width: 100px;
+        }
+        .multiselect-dropdown .dropdown-toggle {
+            width: 100%;
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            padding: 0.3rem 0.75rem;
+            font-size: 0.7rem;
+            font-weight: 600;
+            color: #1e293b;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            cursor: pointer;
+            transition: border 0.2s;
+            min-height: 34px;
+            gap: 0.3rem;
+        }
+        .multiselect-dropdown .dropdown-toggle:hover {
+            border-color: #94a3b8;
+        }
+        .multiselect-dropdown .dropdown-toggle .toggle-label {
+            flex: 1;
+            text-align: left;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            font-size: 0.65rem;
+        }
+        .multiselect-dropdown .dropdown-toggle .toggle-arrow {
+            margin-left: auto;
+            font-size: 0.6rem;
+            color: #94a3b8;
+            transition: transform 0.2s;
+        }
+        .multiselect-dropdown.open .dropdown-toggle .toggle-arrow {
+            transform: rotate(180deg);
+        }
+        .multiselect-dropdown .dropdown-menu {
+            position: absolute;
+            top: calc(100% + 4px);
+            left: 0;
+            right: 0;
+            background: white;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+            max-height: 200px;
+            overflow-y: auto;
+            z-index: 30;
+            display: none;
+            padding: 0.25rem 0;
+        }
+        .multiselect-dropdown.open .dropdown-menu {
+            display: block;
+        }
+        .multiselect-dropdown .dropdown-menu .checkbox-item {
+            display: flex;
+            align-items: center;
+            padding: 0.3rem 0.75rem;
+            gap: 0.5rem;
+            cursor: pointer;
+            font-size: 0.7rem;
+            color: #1e293b;
+            transition: background 0.15s;
+        }
+        .multiselect-dropdown .dropdown-menu .checkbox-item:hover {
+            background: #f1f5f9;
+        }
+        .multiselect-dropdown .dropdown-menu .checkbox-item input[type="checkbox"] {
+            width: 14px;
+            height: 14px;
+            accent-color: #b91c1c;
+            cursor: pointer;
+            flex-shrink: 0;
+        }
+        .multiselect-dropdown .dropdown-menu .checkbox-item label {
+            flex: 1;
+            cursor: pointer;
+            margin: 0;
+            font-weight: 500;
+        }
+        .multiselect-dropdown .dropdown-menu .checkbox-item .badge-count {
+            background: #e2e8f0;
+            color: #475569;
+            padding: 0.05rem 0.4rem;
+            border-radius: 10px;
+            font-size: 0.55rem;
+            font-weight: 700;
+        }
+        @media (max-width: 640px) {
+            .multiselect-dropdown .dropdown-toggle {
+                font-size: 0.6rem;
+                padding: 0.2rem 0.5rem;
+                min-height: 28px;
+            }
+            .multiselect-dropdown .dropdown-menu .checkbox-item {
+                font-size: 0.6rem;
+                padding: 0.2rem 0.5rem;
+            }
+            .multiselect-dropdown .dropdown-menu .checkbox-item input[type="checkbox"] {
+                width: 12px;
+                height: 12px;
+            }
+        }
+        .filter-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-bottom: 0.5rem;
+        }
+        .filter-group .multiselect-dropdown {
+            flex: 1 1 120px;
+            min-width: 80px;
+        }
     </style>
 </head>
 <body class="text-slate-800 p-2 md:p-4 lg:p-6 max-w-[1600px] mx-auto">
@@ -678,31 +799,39 @@
                 <span class="text-[0.5rem] md:text-[0.6rem] font-bold bg-slate-100 text-slate-500 px-2 py-0.5 rounded-full" id="anggotaCount">0 rekod</span>
                 <span class="scroll-indicator" id="anggotaScrollIndicator"><i class="fa-solid fa-chevron-up"></i> Auto</span>
             </div>
-            <div class="flex flex-col sm:flex-row gap-1.5 mb-2">
-                <div class="relative flex-1">
-                    <i class="fa-solid fa-magnifying-glass absolute left-2.5 top-1/2 -translate-y-1/2 text-slate-400 text-[10px] md:text-xs"></i>
-                    <input type="text" id="filterAnggotaNama" placeholder="Cari..." class="w-full pl-7 pr-2 py-1.5 bg-slate-50 border border-slate-200 rounded-lg text-xs md:text-sm focus:outline-none focus:ring-2 focus:ring-bomba-red/20 focus:border-bomba-red transition-all" oninput="renderAnggota()">
+            <div class="filter-group">
+                <div class="multiselect-dropdown" id="filterAnggotaNamaWrap">
+                    <div class="dropdown-toggle" onclick="toggleDropdown('filterAnggotaNamaWrap')">
+                        <span class="toggle-label" id="filterAnggotaNamaLabel">Cari Nama</span>
+                        <i class="fa-solid fa-magnifying-glass toggle-arrow"></i>
+                    </div>
+                    <div class="dropdown-menu" id="filterAnggotaNamaMenu">
+                        <div class="checkbox-item">
+                            <input type="text" id="filterAnggotaNamaInput" placeholder="Taip nama atau pangkat..." class="w-full border border-slate-200 rounded px-2 py-1 text-xs" oninput="updateNamaFilter('anggota')">
+                        </div>
+                    </div>
                 </div>
-                <select id="filterAnggotaBalai" class="bg-slate-50 border border-slate-200 rounded-lg text-xs md:text-sm px-2 py-1.5 focus:outline-none focus:ring-2 focus:ring-bomba-red/20 focus:border-bomba-red flex-1 font-medium text-slate-700" onchange="renderAnggota()">
-                    <option value="SEMUA">Semua Balai</option>
-                </select>
-                <select id="filterAnggotaStatus" class="bg-slate-50 border border-slate-200 rounded-lg text-xs md:text-sm px-2 py-1.5 focus:outline-none focus:ring-2 focus:ring-bomba-red/20 focus:border-bomba-red flex-1 font-medium text-slate-700" onchange="renderAnggota()">
-                    <option value="SEMUA">Semua Status</option>
-                    <option value="BERTUGAS">Bertugas</option>
-                    <option value="CUTI">Cuti</option>
-                    <option value="CUTI SAKIT">Cuti Sakit</option>
-                    <option value="TUGAS KHAS">Tugas Khas</option>
-                </select>
-                <!-- FILTER ZON ANGGOTA -->
-                <select id="filterZonAnggota" class="bg-slate-50 border border-slate-200 rounded-lg text-xs md:text-sm px-2 py-1.5 focus:outline-none focus:ring-2 focus:ring-bomba-red/20 focus:border-bomba-red flex-1 font-medium text-slate-700" onchange="renderAnggota()">
-                    <option value="SEMUA">Semua Zon</option>
-                    <option value="ZON 1">ZON 1</option>
-                    <option value="ZON 2">ZON 2</option>
-                    <option value="ZON 3">ZON 3</option>
-                    <option value="ZON 4">ZON 4</option>
-                    <option value="BENGKEL">BENGKEL</option>
-                    <option value="PGO JOHOR">PGO JOHOR</option>
-                </select>
+                <div class="multiselect-dropdown" id="filterAnggotaBalaiWrap">
+                    <div class="dropdown-toggle" onclick="toggleDropdown('filterAnggotaBalaiWrap')">
+                        <span class="toggle-label" id="filterAnggotaBalaiLabel">Semua Balai</span>
+                        <i class="fa-solid fa-chevron-down toggle-arrow"></i>
+                    </div>
+                    <div class="dropdown-menu" id="filterAnggotaBalaiMenu"></div>
+                </div>
+                <div class="multiselect-dropdown" id="filterAnggotaStatusWrap">
+                    <div class="dropdown-toggle" onclick="toggleDropdown('filterAnggotaStatusWrap')">
+                        <span class="toggle-label" id="filterAnggotaStatusLabel">Semua Status</span>
+                        <i class="fa-solid fa-chevron-down toggle-arrow"></i>
+                    </div>
+                    <div class="dropdown-menu" id="filterAnggotaStatusMenu"></div>
+                </div>
+                <div class="multiselect-dropdown" id="filterZonAnggotaWrap">
+                    <div class="dropdown-toggle" onclick="toggleDropdown('filterZonAnggotaWrap')">
+                        <span class="toggle-label" id="filterZonAnggotaLabel">Semua Zon</span>
+                        <i class="fa-solid fa-chevron-down toggle-arrow"></i>
+                    </div>
+                    <div class="dropdown-menu" id="filterZonAnggotaMenu"></div>
+                </div>
             </div>
             <div id="anggotaScroll" class="table-container flex-1">
                 <div id="anggotaTable"><div class="text-center py-6 text-slate-400 font-medium text-sm flex flex-col items-center gap-2"><i class="fa-solid fa-spinner animate-spin text-xl"></i> Memuatkan...</div></div>
@@ -718,32 +847,39 @@
                 <span class="text-[0.5rem] md:text-[0.6rem] font-bold bg-slate-100 text-slate-500 px-2 py-0.5 rounded-full" id="jenteraCount">0 rekod</span>
                 <span class="scroll-indicator" id="jenteraScrollIndicator"><i class="fa-solid fa-chevron-up"></i> Auto</span>
             </div>
-            <div class="flex flex-col sm:flex-row gap-1.5 mb-2">
-                <div class="relative flex-1">
-                    <i class="fa-solid fa-magnifying-glass absolute left-2.5 top-1/2 -translate-y-1/2 text-slate-400 text-[10px] md:text-xs"></i>
-                    <input type="text" id="filterJenteraCari" placeholder="Cari..." class="w-full pl-7 pr-2 py-1.5 bg-slate-50 border border-slate-200 rounded-lg text-xs md:text-sm focus:outline-none focus:ring-2 focus:ring-bomba-red/20 focus:border-bomba-red transition-all" oninput="renderJentera()">
+            <div class="filter-group">
+                <div class="multiselect-dropdown" id="filterJenteraCariWrap">
+                    <div class="dropdown-toggle" onclick="toggleDropdown('filterJenteraCariWrap')">
+                        <span class="toggle-label" id="filterJenteraCariLabel">Cari Jentera</span>
+                        <i class="fa-solid fa-magnifying-glass toggle-arrow"></i>
+                    </div>
+                    <div class="dropdown-menu" id="filterJenteraCariMenu">
+                        <div class="checkbox-item">
+                            <input type="text" id="filterJenteraCariInput" placeholder="Callsign, plat, jenis..." class="w-full border border-slate-200 rounded px-2 py-1 text-xs" oninput="updateNamaFilter('jentera')">
+                        </div>
+                    </div>
                 </div>
-                <select id="filterJenteraBalai" class="bg-slate-50 border border-slate-200 rounded-lg text-xs md:text-sm px-2 py-1.5 focus:outline-none focus:ring-2 focus:ring-bomba-red/20 focus:border-bomba-red flex-1 font-medium text-slate-700" onchange="renderJentera()">
-                    <option value="SEMUA">Semua Balai</option>
-                </select>
-                <!-- FILTER ZON JENTERA -->
-                <select id="filterZonJentera" class="bg-slate-50 border border-slate-200 rounded-lg text-xs md:text-sm px-2 py-1.5 focus:outline-none focus:ring-2 focus:ring-bomba-red/20 focus:border-bomba-red flex-1 font-medium text-slate-700" onchange="renderJentera()">
-                    <option value="SEMUA">Semua Zon</option>
-                    <option value="ZON 1">ZON 1</option>
-                    <option value="ZON 2">ZON 2</option>
-                    <option value="ZON 3">ZON 3</option>
-                    <option value="ZON 4">ZON 4</option>
-                    <option value="BENGKEL">BENGKEL</option>
-                    <option value="PGO JOHOR">PGO JOHOR</option>
-                </select>
-                <select id="filterJenteraStatus" class="bg-slate-50 border border-slate-200 rounded-lg text-xs md:text-sm px-2 py-1.5 focus:outline-none focus:ring-2 focus:ring-bomba-red/20 focus:border-bomba-red flex-1 font-medium text-slate-700" onchange="renderJentera()">
-                    <option value="SEMUA">Semua Status</option>
-                    <option value="BAIK & BOLEH BEROPERASI">1. BAIK &amp; BOLEH BEROPERASI</option>
-                    <option value="ROSAK MINOR & BOLEH BEROPERASI">2. ROSAK MINOR &amp; BOLEH BEROPERASI</option>
-                    <option value="ROSAK & TIDAK BOLEH BEROPERASI">3. ROSAK &amp; TIDAK BOLEH BEROPERASI</option>
-                    <option value="DALAM PROSES LUPUS">4. DALAM PROSES LUPUS</option>
-                    <option value="LUPUS">5. LUPUS</option>
-                </select>
+                <div class="multiselect-dropdown" id="filterJenteraBalaiWrap">
+                    <div class="dropdown-toggle" onclick="toggleDropdown('filterJenteraBalaiWrap')">
+                        <span class="toggle-label" id="filterJenteraBalaiLabel">Semua Balai</span>
+                        <i class="fa-solid fa-chevron-down toggle-arrow"></i>
+                    </div>
+                    <div class="dropdown-menu" id="filterJenteraBalaiMenu"></div>
+                </div>
+                <div class="multiselect-dropdown" id="filterZonJenteraWrap">
+                    <div class="dropdown-toggle" onclick="toggleDropdown('filterZonJenteraWrap')">
+                        <span class="toggle-label" id="filterZonJenteraLabel">Semua Zon</span>
+                        <i class="fa-solid fa-chevron-down toggle-arrow"></i>
+                    </div>
+                    <div class="dropdown-menu" id="filterZonJenteraMenu"></div>
+                </div>
+                <div class="multiselect-dropdown" id="filterJenteraStatusWrap">
+                    <div class="dropdown-toggle" onclick="toggleDropdown('filterJenteraStatusWrap')">
+                        <span class="toggle-label" id="filterJenteraStatusLabel">Semua Status</span>
+                        <i class="fa-solid fa-chevron-down toggle-arrow"></i>
+                    </div>
+                    <div class="dropdown-menu" id="filterJenteraStatusMenu"></div>
+                </div>
             </div>
             <div id="jenteraScroll" class="table-container flex-1">
                 <div id="jenteraTable"><div class="text-center py-6 text-slate-400 font-medium text-sm flex flex-col items-center gap-2"><i class="fa-solid fa-spinner animate-spin text-xl"></i> Memuatkan...</div></div>
@@ -760,25 +896,28 @@
             <span class="text-[0.5rem] md:text-[0.6rem] font-bold bg-slate-100 text-slate-500 px-2 py-0.5 rounded-full" id="checklistCount">0 rekod</span>
             <span class="scroll-indicator" id="checklistScrollIndicator"><i class="fa-solid fa-chevron-up"></i> Auto</span>
         </div>
-        <div class="flex flex-col sm:flex-row gap-1.5 mb-2">
-            <select id="filterChecklistBalai" class="bg-slate-50 border border-slate-200 rounded-lg text-xs md:text-sm px-2 py-1.5 focus:outline-none focus:ring-2 focus:ring-bomba-red/20 focus:border-bomba-red flex-1 font-medium text-slate-700" onchange="renderChecklist()">
-                <option value="SEMUA">Semua Balai</option>
-            </select>
-            <!-- FILTER ZON CHECKLIST -->
-            <select id="filterZonChecklist" class="bg-slate-50 border border-slate-200 rounded-lg text-xs md:text-sm px-2 py-1.5 focus:outline-none focus:ring-2 focus:ring-bomba-red/20 focus:border-bomba-red flex-1 font-medium text-slate-700" onchange="renderChecklist()">
-                <option value="SEMUA">Semua Zon</option>
-                <option value="ZON 1">ZON 1</option>
-                <option value="ZON 2">ZON 2</option>
-                <option value="ZON 3">ZON 3</option>
-                <option value="ZON 4">ZON 4</option>
-                <option value="BENGKEL">BENGKEL</option>
-                <option value="PGO JOHOR">PGO JOHOR</option>
-            </select>
-            <select id="filterChecklistStatus" class="bg-slate-50 border border-slate-200 rounded-lg text-xs md:text-sm px-2 py-1.5 focus:outline-none focus:ring-2 focus:ring-bomba-red/20 focus:border-bomba-red flex-1 font-medium text-slate-700" onchange="renderChecklist()">
-                <option value="SEMUA">Semua Status</option>
-                <option value="BAIK">Semua Baik</option>
-                <option value="ROSAK">Ada Rosak</option>
-            </select>
+        <div class="filter-group">
+            <div class="multiselect-dropdown" id="filterChecklistBalaiWrap">
+                <div class="dropdown-toggle" onclick="toggleDropdown('filterChecklistBalaiWrap')">
+                    <span class="toggle-label" id="filterChecklistBalaiLabel">Semua Balai</span>
+                    <i class="fa-solid fa-chevron-down toggle-arrow"></i>
+                </div>
+                <div class="dropdown-menu" id="filterChecklistBalaiMenu"></div>
+            </div>
+            <div class="multiselect-dropdown" id="filterZonChecklistWrap">
+                <div class="dropdown-toggle" onclick="toggleDropdown('filterZonChecklistWrap')">
+                    <span class="toggle-label" id="filterZonChecklistLabel">Semua Zon</span>
+                    <i class="fa-solid fa-chevron-down toggle-arrow"></i>
+                </div>
+                <div class="dropdown-menu" id="filterZonChecklistMenu"></div>
+            </div>
+            <div class="multiselect-dropdown" id="filterChecklistStatusWrap">
+                <div class="dropdown-toggle" onclick="toggleDropdown('filterChecklistStatusWrap')">
+                    <span class="toggle-label" id="filterChecklistStatusLabel">Semua Status</span>
+                    <i class="fa-solid fa-chevron-down toggle-arrow"></i>
+                </div>
+                <div class="dropdown-menu" id="filterChecklistStatusMenu"></div>
+            </div>
         </div>
         <div id="checklistScroll" class="table-container">
             <div id="checklistTable"><div class="text-center py-6 text-slate-400 font-medium text-sm flex flex-col items-center gap-2"><i class="fa-solid fa-spinner animate-spin text-xl"></i> Memuatkan data...</div></div>
@@ -831,7 +970,7 @@
         const FALLBACK_POLL_MS = 60000;
 
         // ============================================================
-        // PEMETAAN ZON (Sama seperti halaman utama)
+        // PEMETAAN ZON
         // ============================================================
         const ZON_MAP = {
             'PGO JOHOR': 'PGO JOHOR',
@@ -1030,29 +1169,37 @@
             return `<span class="badge-status red text-[9px]"><i class="fa-solid fa-circle-exclamation text-[9px] mr-1"></i>ROSAK ${parsed.baik}B/${parsed.rosak}R</span>`;
         }
 
-        // ===================== STATUS JENTERA =====================
-        function getStatusKategori(status) {
-            if (!status) return 'LAIN';
-            const s = status.toUpperCase().trim();
-            if (s === 'BAIK & BOLEH BEROPERASI') return 'BAIK';
-            if (s === 'ROSAK MINOR & BOLEH BEROPERASI') return 'BAIK';
-            if (s === 'ROSAK & TIDAK BOLEH BEROPERASI') return 'ROSAK';
-            if (s === 'DALAM PROSES LUPUS') return 'DALAM PROSES LUPUS';
-            if (s === 'LUPUS') return 'TELAH LUPUS';
-            if (s === 'SEDIA BEROPERASI' || s === 'BAIK') return 'BAIK';
-            if (s.includes('ROSAK') && s.includes('TIDAK BOLEH')) return 'ROSAK';
-            if (s.includes('ROSAK') || s.includes('MINOR')) return 'BAIK';
-            if (s.includes('SELENGGARA') || s.includes('PENYELENGGARAAN')) return 'LAIN';
-            return 'LAIN';
+        // ===================== STATUS JENTERA (TEPAT) =====================
+        function getStatusDisplay(status) {
+            if (!status) return 'TIADA STATUS';
+            const s = status.trim().toUpperCase();
+            const map = {
+                'BAIK & BOLEH BEROPERASI': '1. BAIK & BOLEH BEROPERASI',
+                'ROSAK MINOR & BOLEH BEROPERASI': '2. ROSAK MINOR & BOLEH BEROPERASI',
+                'ROSAK & TIDAK BOLEH BEROPERASI': '3. ROSAK & TIDAK BOLEH BEROPERASI',
+                'DALAM PROSES LUPUS': '4. DALAM PROSES LUPUS',
+                'LUPUS': '5. LUPUS',
+                'SEDIA BEROPERASI': '1. BAIK & BOLEH BEROPERASI',
+                'BAIK': '1. BAIK & BOLEH BEROPERASI',
+                'ROSAK MINOR': '2. ROSAK MINOR & BOLEH BEROPERASI',
+                'ROSAK': '3. ROSAK & TIDAK BOLEH BEROPERASI',
+                'TIDAK BOLEH BEROPERASI': '3. ROSAK & TIDAK BOLEH BEROPERASI',
+            };
+            for (const [key, value] of Object.entries(map)) {
+                if (s === key.toUpperCase()) return value;
+            }
+            return status.toUpperCase();
         }
 
-        function getBadgeForKategori(kategori) {
-            const base = 'badge-status';
-            if (kategori === 'BAIK') return `${base} green`;
-            if (kategori === 'ROSAK') return `${base} red`;
-            if (kategori === 'DALAM PROSES LUPUS') return `${base} cyan`;
-            if (kategori === 'TELAH LUPUS') return `${base} slate`;
-            return `${base} slate`;
+        function getBadgeForStatus(status) {
+            if (!status) return 'badge-status slate';
+            const s = status.trim().toUpperCase();
+            if (s === 'BAIK & BOLEH BEROPERASI' || s === 'SEDIA BEROPERASI' || s === 'BAIK') return 'badge-status green';
+            if (s === 'ROSAK MINOR & BOLEH BEROPERASI' || s === 'ROSAK MINOR') return 'badge-status amber';
+            if (s === 'ROSAK & TIDAK BOLEH BEROPERASI' || s === 'ROSAK' || s === 'TIDAK BOLEH BEROPERASI') return 'badge-status red';
+            if (s === 'DALAM PROSES LUPUS') return 'badge-status cyan';
+            if (s === 'LUPUS') return 'badge-status slate';
+            return 'badge-status slate';
         }
 
         function getBadge(type, val) {
@@ -1063,8 +1210,7 @@
                 if (val === 'CUTI') return `${base} amber`;
                 if (val.includes('SAKIT')) return `${base} red`;
                 if (val === 'TUGAS KHAS') return `${base} purple`;
-                const kat = getStatusKategori(val);
-                return getBadgeForKategori(kat);
+                return getBadgeForStatus(val);
             }
             if (type === 'pasukan') {
                 if (val.includes('A')) return `${base} red`;
@@ -1073,6 +1219,153 @@
                 return `${base} slate`;
             }
             return `${base} slate`;
+        }
+
+        // ============================================================
+        // MULTISELECT DROPDOWN ENGINE (DIPERBAIKI)
+        // ============================================================
+        const selectedValues = {};
+
+        // Fungsi normalisasi
+        function normalize(str) {
+            return str ? str.trim().toUpperCase() : '';
+        }
+
+        function toggleDropdown(wrapId) {
+            const wrap = document.getElementById(wrapId);
+            if (!wrap) return;
+            const isOpen = wrap.classList.contains('open');
+            document.querySelectorAll('.multiselect-dropdown.open').forEach(el => {
+                if (el.id !== wrapId) el.classList.remove('open');
+            });
+            if (isOpen) {
+                wrap.classList.remove('open');
+            } else {
+                wrap.classList.add('open');
+            }
+        }
+
+        document.addEventListener('click', function(e) {
+            if (!e.target.closest('.multiselect-dropdown')) {
+                document.querySelectorAll('.multiselect-dropdown.open').forEach(el => el.classList.remove('open'));
+            }
+        });
+
+        function initMultiselect(wrapId, options, selectedKey) {
+            const wrap = document.getElementById(wrapId);
+            if (!wrap) return;
+            const menu = wrap.querySelector('.dropdown-menu');
+            const label = wrap.querySelector('.toggle-label');
+            if (!menu) return;
+
+            // Reset
+            selectedValues[selectedKey] = [];
+
+            menu.innerHTML = '';
+            // "Semua" checkbox
+            const allItem = document.createElement('div');
+            allItem.className = 'checkbox-item';
+            allItem.innerHTML = `
+                <input type="checkbox" id="${selectedKey}_all" value="__ALL__" checked>
+                <label for="${selectedKey}_all"><strong>Semua</strong></label>
+            `;
+            const allCb = allItem.querySelector('input');
+            allCb.addEventListener('change', function(e) {
+                if (this.checked) {
+                    // Pilih semua -> kosongkan array
+                    selectedValues[selectedKey] = [];
+                    menu.querySelectorAll('input[type="checkbox"]').forEach(cb => {
+                        if (cb.id !== this.id) cb.checked = false;
+                    });
+                    this.checked = true;
+                } else {
+                    // Nyah tanda "Semua" -> pilih semua pilihan lain
+                    selectedValues[selectedKey] = options.slice();
+                    menu.querySelectorAll('input[type="checkbox"]').forEach(cb => {
+                        if (cb.id !== this.id) cb.checked = true;
+                    });
+                    this.checked = false;
+                }
+                updateLabel(selectedKey, label);
+                triggerRender(selectedKey);
+            });
+            menu.appendChild(allItem);
+
+            // Pilihan individu (simpan nilai asal tanpa ubah)
+            options.forEach(opt => {
+                const item = document.createElement('div');
+                item.className = 'checkbox-item';
+                // Simpan nilai asal (string)
+                const val = opt;
+                item.innerHTML = `
+                    <input type="checkbox" id="${selectedKey}_${val}" value="${val}">
+                    <label for="${selectedKey}_${val}">${val}</label>
+                `;
+                const cb = item.querySelector('input');
+                cb.addEventListener('change', function(e) {
+                    const isChecked = this.checked;
+                    const val = this.value;
+                    if (isChecked) {
+                        if (!selectedValues[selectedKey].includes(val)) {
+                            selectedValues[selectedKey].push(val);
+                        }
+                    } else {
+                        selectedValues[selectedKey] = selectedValues[selectedKey].filter(v => v !== val);
+                    }
+                    // Kemaskini status "Semua"
+                    const allCb2 = document.getElementById(`${selectedKey}_all`);
+                    if (selectedValues[selectedKey].length === 0) {
+                        allCb2.checked = true;
+                    } else {
+                        allCb2.checked = false;
+                    }
+                    updateLabel(selectedKey, label);
+                    triggerRender(selectedKey);
+                });
+                menu.appendChild(item);
+            });
+
+            // Segerakan label
+            updateLabel(selectedKey, label);
+        }
+
+        function updateLabel(selectedKey, labelEl) {
+            const vals = selectedValues[selectedKey] || [];
+            if (vals.length === 0) {
+                labelEl.textContent = 'Semua';
+            } else if (vals.length === 1) {
+                labelEl.textContent = vals[0];
+            } else {
+                labelEl.textContent = `${vals.length} dipilih`;
+            }
+        }
+
+        function triggerRender(key) {
+            if (key.startsWith('anggota')) renderAnggota();
+            else if (key.startsWith('jentera')) renderJentera();
+            else if (key.startsWith('checklist')) renderChecklist();
+            else if (key.startsWith('zon')) {
+                renderAnggota();
+                renderJentera();
+                renderChecklist();
+            }
+        }
+
+        // Fungsi untuk carian teks
+        function updateNamaFilter(type) {
+            if (type === 'anggota') {
+                const input = document.getElementById('filterAnggotaNamaInput');
+                if (input) {
+                    selectedValues['anggotaNama'] = input.value ? [input.value] : [];
+                    renderAnggota();
+                }
+            } else if (type === 'jentera') {
+                const input = document.getElementById('filterJenteraCariInput');
+                if (input) {
+                    selectedValues['jenteraCari'] = input.value ? [input.value] : [];
+                    renderJentera();
+                }
+            }
         }
 
         // ============================================================
@@ -1114,12 +1407,9 @@
             const pC = anggota.filter(a => a.pasukan === 'PASUKAN C').length;
 
             const totalJ = jentera.length;
-            const jBaik = jentera.filter(j => getStatusKategori(j.status) === 'BAIK').length;
-            const jRosak = jentera.filter(j => getStatusKategori(j.status) === 'ROSAK').length;
-            const jLain = jentera.filter(j => {
-                const kat = getStatusKategori(j.status);
-                return kat !== 'BAIK' && kat !== 'ROSAK';
-            }).length;
+            const jBaik = jentera.filter(j => j.status && normalize(j.status) === 'BAIK & BOLEH BEROPERASI').length;
+            const jRosak = jentera.filter(j => j.status && normalize(j.status) === 'ROSAK & TIDAK BOLEH BEROPERASI').length;
+            const jLain = totalJ - jBaik - jRosak;
 
             const itemKeys = ['cad', 'wic', 'bomra', 'desktopGirn', 'handheldGirn', 'vehicularGirn', 'internet',
                 'handphone'
@@ -1252,7 +1542,6 @@
                 const data = await resp.json();
                 if (data && data.length > 0) {
                     dataCache = data[0];
-                    // Migrasi zon untuk data yang baru dimuat
                     migrateZonData();
                     renderAll();
                     dot.className = 'w-1.5 h-1.5 md:w-2.5 md:h-2.5 rounded-full bg-emerald-400 shadow-[0_0_8px_rgba(52,211,153,0.8)]';
@@ -1269,13 +1558,11 @@
         }
 
         // ============================================================
-        // MIGRASI ZON UNTUK DATA YANG DIMUAT
+        // MIGRASI ZON
         // ============================================================
         function migrateZonData() {
             if (!dataCache) return;
             const p = dataCache;
-
-            // Fungsi untuk mendapatkan zon
             function getZonFromBalai(balai) {
                 if (!balai) return ZON_DEFAULT;
                 const balaiUpper = balai.toUpperCase().trim();
@@ -1286,50 +1573,33 @@
                 }
                 return ZON_DEFAULT;
             }
-
-            // Migrasi rekodAnggota
             if (p.rekodAnggota) {
                 p.rekodAnggota = p.rekodAnggota.map(a => {
-                    if (!a.zon) {
-                        a.zon = getZonFromBalai(a.balai);
-                    }
-                    // Tukar nama zon jika masih guna nama lama
+                    if (!a.zon) a.zon = getZonFromBalai(a.balai);
                     if (a.zon === 'ZON BENGKEL') a.zon = 'BENGKEL';
                     if (a.zon === 'ZON PGO JOHOR') a.zon = 'PGO JOHOR';
                     return a;
                 });
             }
-
-            // Migrasi logistikBertugas
             if (p.logistikBertugas) {
                 p.logistikBertugas = p.logistikBertugas.map(j => {
-                    if (!j.zon) {
-                        j.zon = getZonFromBalai(j.balai);
-                    }
+                    if (!j.zon) j.zon = getZonFromBalai(j.balai);
                     if (j.zon === 'ZON BENGKEL') j.zon = 'BENGKEL';
                     if (j.zon === 'ZON PGO JOHOR') j.zon = 'PGO JOHOR';
                     return j;
                 });
             }
-
-            // Migrasi checklist
             const checklist = cariChecklist(p);
             if (checklist) {
                 checklist.forEach(c => {
-                    if (!c.zon) {
-                        c.zon = getZonFromBalai(c.balai);
-                    }
+                    if (!c.zon) c.zon = getZonFromBalai(c.balai);
                     if (c.zon === 'ZON BENGKEL') c.zon = 'BENGKEL';
                     if (c.zon === 'ZON PGO JOHOR') c.zon = 'PGO JOHOR';
                 });
             }
-
-            // Migrasi senaraiNamaMaster
             if (p.senaraiNamaMaster) {
                 p.senaraiNamaMaster = p.senaraiNamaMaster.map(m => {
-                    if (!m.zon) {
-                        m.zon = getZonFromBalai(m.balai);
-                    }
+                    if (!m.zon) m.zon = getZonFromBalai(m.balai);
                     if (m.zon === 'ZON BENGKEL') m.zon = 'BENGKEL';
                     if (m.zon === 'ZON PGO JOHOR') m.zon = 'PGO JOHOR';
                     return m;
@@ -1398,6 +1668,12 @@
         // ============================================================
         function renderAll() {
             if (!dataCache) return;
+
+            // Reset semua pilihan penapis
+            for (const key in selectedValues) {
+                delete selectedValues[key];
+            }
+
             const p = dataCache;
             const anggota = p.rekodAnggota || p.rekod_anggota || [];
             const jentera = p.logistikBertugas || p.logistik_bertugas || [];
@@ -1408,13 +1684,13 @@
             renderSpecialUnits(anggota);
 
             const balaiLive = computeBalaiLive(anggota, jentera, checklist);
-            populateBalaiFilters(balaiLive);
+            populateMultiselectFilters(balaiLive, anggota, jentera, checklist);
 
             renderAlerts(jentera, checklist);
             renderBreakdownBalai(balaiLive, anggota, jentera, checklist);
-            renderAnggota(anggota);
-            renderJentera(jentera);
-            renderChecklist(checklist);
+            renderAnggota();
+            renderJentera();
+            renderChecklist();
 
             setTimeout(setupAllScrolls, 400);
             setTimeout(updateActiveTabOnScroll, 600);
@@ -1562,16 +1838,35 @@
             return Array.from(s).sort();
         }
 
-        function populateBalaiFilters(balaiLive) {
-            const opts = balaiLive.map(b => `<option value="${escapeHtml(b)}">${escapeHtml(b)}</option>`).join('');
-            const def = '<option value="SEMUA">Semua Balai</option>';
-            ['filterAnggotaBalai', 'filterJenteraBalai', 'filterChecklistBalai'].forEach(id => {
-                const el = document.getElementById(id);
-                if (!el) return;
-                const cur = el.value;
-                el.innerHTML = def + opts;
-                if ([...el.options].some(o => o.value === cur)) el.value = cur;
-            });
+        // ============================================================
+        // POPULATE MULTISELECT FILTERS (Reset setiap render)
+        // ============================================================
+        function populateMultiselectFilters(balaiLive, anggota, jentera, checklist) {
+            const balaiOpts = balaiLive;
+            const statusAnggotaOpts = [...new Set(anggota.map(a => a.status).filter(Boolean))].sort();
+            const statusJenteraOpts = ['BAIK & BOLEH BEROPERASI', 'ROSAK MINOR & BOLEH BEROPERASI', 'ROSAK & TIDAK BOLEH BEROPERASI', 'DALAM PROSES LUPUS', 'LUPUS'];
+            const statusChecklistOpts = ['BAIK', 'ROSAK'];
+            const zonOpts = ['ZON 1', 'ZON 2', 'ZON 3', 'ZON 4', 'BENGKEL', 'PGO JOHOR'];
+
+            initMultiselect('filterAnggotaBalaiWrap', balaiOpts, 'anggotaBalai');
+            initMultiselect('filterAnggotaStatusWrap', statusAnggotaOpts, 'anggotaStatus');
+            initMultiselect('filterZonAnggotaWrap', zonOpts, 'zonAnggota');
+
+            initMultiselect('filterJenteraBalaiWrap', balaiOpts, 'jenteraBalai');
+            initMultiselect('filterJenteraStatusWrap', statusJenteraOpts, 'jenteraStatus');
+            initMultiselect('filterZonJenteraWrap', zonOpts, 'zonJentera');
+
+            initMultiselect('filterChecklistBalaiWrap', balaiOpts, 'checklistBalai');
+            initMultiselect('filterChecklistStatusWrap', statusChecklistOpts, 'checklistStatus');
+            initMultiselect('filterZonChecklistWrap', zonOpts, 'zonChecklist');
+
+            // Kosongkan input carian
+            const namaInput = document.getElementById('filterAnggotaNamaInput');
+            if (namaInput) namaInput.value = '';
+            const cariInput = document.getElementById('filterJenteraCariInput');
+            if (cariInput) cariInput.value = '';
+            selectedValues['anggotaNama'] = [];
+            selectedValues['jenteraCari'] = [];
         }
 
         // ============================================================
@@ -1584,7 +1879,10 @@
             const labelMap = { cad: 'CAD', wic: 'WIC', bomra: 'BOMRA', desktopGirn: 'D.GIRN', handheldGirn: 'H.GIRN',
                 vehicularGirn: 'V.GIRN', internet: 'INET', handphone: 'HP' };
 
-            const jBermasalah = jentera.filter(j => getStatusKategori(j.status) !== 'BAIK');
+            const jBermasalah = jentera.filter(j => {
+                const s = normalize(j.status);
+                return s !== 'BAIK & BOLEH BEROPERASI' && s !== 'ROSAK MINOR & BOLEH BEROPERASI';
+            });
 
             const cBermasalah = [];
             checklist.forEach(c => {
@@ -1618,11 +1916,10 @@
               <p class="text-[8px] md:text-[10px] font-bold text-slate-500 uppercase tracking-wider mb-1">Jentera (${jBermasalah.length})</p>
               <div class="space-y-0.5 max-h-48 overflow-y-auto pr-0.5">`;
                 jBermasalah.forEach(j => {
-                    const kat = getStatusKategori(j.status);
                     const displayStatus = getStatusDisplay(j.status);
                     h += `<div class="flex items-center justify-between bg-red-50 border border-red-100 rounded-lg px-2 py-1 text-[8px] md:text-xs">
                 <span class="font-bold text-slate-700">${escapeHtml(j.callsign)||'-'} <span class="text-slate-400 font-normal">(${escapeHtml(j.balai)||'-'})</span></span>
-                <span class="${getBadgeForKategori(kat)}">${escapeHtml(displayStatus)}</span>
+                <span class="${getBadgeForStatus(j.status)}">${escapeHtml(displayStatus)}</span>
               </div>`;
                 });
                 h += `</div></div>`;
@@ -1643,28 +1940,6 @@
 
             h += `</div></div>`;
             document.getElementById('alertsPanel').innerHTML = h;
-        }
-
-        // ===== Fungsi untuk status display dengan nombor =====
-        function getStatusDisplay(status) {
-            if (!status) return 'TIADA STATUS';
-            const s = status.trim().toUpperCase();
-            const map = {
-                'BAIK & BOLEH BEROPERASI': '1. BAIK & BOLEH BEROPERASI',
-                'ROSAK MINOR & BOLEH BEROPERASI': '2. ROSAK MINOR & BOLEH BEROPERASI',
-                'ROSAK & TIDAK BOLEH BEROPERASI': '3. ROSAK & TIDAK BOLEH BEROPERASI',
-                'DALAM PROSES LUPUS': '4. DALAM PROSES LUPUS',
-                'LUPUS': '5. LUPUS',
-                'SEDIA BEROPERASI': '1. BAIK & BOLEH BEROPERASI',
-                'BAIK': '1. BAIK & BOLEH BEROPERASI',
-                'ROSAK MINOR': '2. ROSAK MINOR & BOLEH BEROPERASI',
-                'ROSAK': '3. ROSAK & TIDAK BOLEH BEROPERASI',
-                'TIDAK BOLEH BEROPERASI': '3. ROSAK & TIDAK BOLEH BEROPERASI',
-            };
-            for (const [key, value] of Object.entries(map)) {
-                if (s === key.toUpperCase()) return value;
-            }
-            return status.toUpperCase();
         }
 
         // ============================================================
@@ -1719,12 +1994,9 @@
                 const aTugasKhas = aBalai.filter(a => a.status === 'TUGAS KHAS').length;
 
                 const jTotal = jBalai.length;
-                const jBaik = jBalai.filter(j => getStatusKategori(j.status) === 'BAIK').length;
-                const jRosak = jBalai.filter(j => getStatusKategori(j.status) === 'ROSAK').length;
-                const jLain = jBalai.filter(j => {
-                    const kat = getStatusKategori(j.status);
-                    return kat !== 'BAIK' && kat !== 'ROSAK';
-                }).length;
+                const jBaik = jBalai.filter(j => normalize(j.status) === 'BAIK & BOLEH BEROPERASI').length;
+                const jRosak = jBalai.filter(j => normalize(j.status) === 'ROSAK & TIDAK BOLEH BEROPERASI').length;
+                const jLain = jTotal - jBaik - jRosak;
 
                 const cTotal = cBalai.length;
                 const cBaik = cBalai.filter(c => itemKeys.every(k => {
@@ -1755,22 +2027,22 @@
         }
 
         // ============================================================
-        // RENDER ANGGOTA
+        // RENDER ANGGOTA (dengan multiselect)
         // ============================================================
-        function renderAnggota(data) {
-            let d = data || (dataCache ? (dataCache.rekodAnggota || dataCache.rekod_anggota || []) : []);
-            const fName = (document.getElementById('filterAnggotaNama')?.value || '').toUpperCase();
-            const fBalai = document.getElementById('filterAnggotaBalai')?.value || 'SEMUA';
-            const fStatus = document.getElementById('filterAnggotaStatus')?.value || 'SEMUA';
-            const fZon = document.getElementById('filterZonAnggota')?.value || 'SEMUA';
+        function renderAnggota() {
+            const d = dataCache ? (dataCache.rekodAnggota || dataCache.rekod_anggota || []) : [];
+            const namaSearch = (selectedValues['anggotaNama'] && selectedValues['anggotaNama'][0]) || '';
+            const balaiSelected = selectedValues['anggotaBalai'] || [];
+            const statusSelected = selectedValues['anggotaStatus'] || [];
+            const zonSelected = selectedValues['zonAnggota'] || [];
 
-            let filtered = d.filter(a =>
-                (!fName || (a.nama || '').toUpperCase().includes(fName) || (a.pangkat || '').toUpperCase().includes(
-                    fName)) &&
-                (fBalai === 'SEMUA' || a.balai === fBalai) &&
-                (fStatus === 'SEMUA' || a.status === fStatus) &&
-                (fZon === 'SEMUA' || (a.zon || '') === fZon)
-            );
+            let filtered = d.filter(a => {
+                const matchNama = !namaSearch || normalize(a.nama).includes(normalize(namaSearch)) || normalize(a.pangkat).includes(normalize(namaSearch));
+                const matchBalai = balaiSelected.length === 0 || balaiSelected.some(b => normalize(a.balai) === normalize(b));
+                const matchStatus = statusSelected.length === 0 || statusSelected.some(s => normalize(a.status) === normalize(s));
+                const matchZon = zonSelected.length === 0 || (a.zon && zonSelected.some(z => normalize(a.zon) === normalize(z)));
+                return matchNama && matchBalai && matchStatus && matchZon;
+            });
 
             document.getElementById('anggotaCount').innerText = `${filtered.length} rekod`;
             if (filtered.length === 0) {
@@ -1810,27 +2082,21 @@
         }
 
         // ============================================================
-        // RENDER JENTERA
+        // RENDER JENTERA (dengan multiselect & status tepat)
         // ============================================================
-        function renderJentera(data) {
-            let d = data || (dataCache ? (dataCache.logistikBertugas || dataCache.logistik_bertugas || []) : []);
-            const fCari = (document.getElementById('filterJenteraCari')?.value || '').toUpperCase();
-            const fBalai = document.getElementById('filterJenteraBalai')?.value || 'SEMUA';
-            const fZon = document.getElementById('filterZonJentera')?.value || 'SEMUA';
-            const fStatus = document.getElementById('filterJenteraStatus')?.value || 'SEMUA';
+        function renderJentera() {
+            const d = dataCache ? (dataCache.logistikBertugas || dataCache.logistik_bertugas || []) : [];
+            const cariSearch = (selectedValues['jenteraCari'] && selectedValues['jenteraCari'][0]) || '';
+            const balaiSelected = selectedValues['jenteraBalai'] || [];
+            const statusSelected = selectedValues['jenteraStatus'] || [];
+            const zonSelected = selectedValues['zonJentera'] || [];
 
             let filtered = d.filter(j => {
-                const cari = !fCari || (j.callsign || '').toUpperCase().includes(fCari) || (j.plate || '').toUpperCase()
-                    .includes(fCari) || (j.jenis || '').toUpperCase().includes(fCari);
-                const balai = fBalai === 'SEMUA' || j.balai === fBalai;
-                const zon = fZon === 'SEMUA' || (j.zon || '') === fZon;
-                let st = true;
-                if (fStatus !== 'SEMUA') {
-                    const kategoriPilihan = getStatusKategori(fStatus);
-                    const kategoriRekod = getStatusKategori(j.status);
-                    st = (kategoriPilihan === kategoriRekod);
-                }
-                return cari && balai && zon && st;
+                const matchCari = !cariSearch || normalize(j.callsign).includes(normalize(cariSearch)) || normalize(j.plate).includes(normalize(cariSearch)) || normalize(j.jenis).includes(normalize(cariSearch));
+                const matchBalai = balaiSelected.length === 0 || balaiSelected.some(b => normalize(j.balai) === normalize(b));
+                const matchStatus = statusSelected.length === 0 || statusSelected.some(s => normalize(j.status) === normalize(s));
+                const matchZon = zonSelected.length === 0 || (j.zon && zonSelected.some(z => normalize(j.zon) === normalize(z)));
+                return matchCari && matchBalai && matchStatus && matchZon;
             });
 
             document.getElementById('jenteraCount').innerText = `${filtered.length} rekod`;
@@ -1845,7 +2111,6 @@
             <th class="py-1.5 px-1.5 w-6">#</th><th class="py-1.5 px-1.5">Jentera</th><th class="py-1.5 px-1.5">Balai</th><th class="py-1.5 px-1.5">Zon</th><th class="py-1.5 px-1.5">Status</th>
           </tr></thead><tbody class="divide-y divide-slate-100">`;
             filtered.forEach((j, i) => {
-                const kat = getStatusKategori(j.status);
                 const displayStatus = getStatusDisplay(j.status);
                 const zonBadge = getZonBadge(j.zon);
                 h += `<tr class="hover:bg-slate-50 transition-colors">
@@ -1857,7 +2122,7 @@
               <td class="py-1.5 px-1.5 font-medium text-slate-600 text-[8px] md:text-[10px]">${escapeHtml(j.balai)||'-'}</td>
               <td class="py-1.5 px-1.5">${zonBadge}</td>
               <td class="py-1.5 px-1.5">
-                <span class="${getBadgeForKategori(kat)}">${escapeHtml(displayStatus)}</span>
+                <span class="${getBadgeForStatus(j.status)}">${escapeHtml(displayStatus)}</span>
                 <div class="text-[6px] text-slate-400 mt-0.5">${escapeHtml(j.status)||'-'}</div>
               </td>
             </tr>`;
@@ -1870,29 +2135,42 @@
         }
 
         // ============================================================
-        // RENDER CHECKLIST
+        // RENDER CHECKLIST (dengan multiselect & logik status diperbaiki)
         // ============================================================
-        function renderChecklist(data) {
-            let d = data || (dataCache ? cariChecklist(dataCache) : []);
-            const fBalai = document.getElementById('filterChecklistBalai')?.value || 'SEMUA';
-            const fZon = document.getElementById('filterZonChecklist')?.value || 'SEMUA';
-            const fStatus = document.getElementById('filterChecklistStatus')?.value || 'SEMUA';
+        function renderChecklist() {
+            const d = dataCache ? cariChecklist(dataCache) : [];
+            const balaiSelected = selectedValues['checklistBalai'] || [];
+            const statusSelected = selectedValues['checklistStatus'] || [];
+            const zonSelected = selectedValues['zonChecklist'] || [];
             const itemKeys = ['cad', 'wic', 'bomra', 'desktopGirn', 'handheldGirn', 'vehicularGirn', 'internet',
                 'handphone'
             ];
 
             let filtered = d.filter(c => {
-                const balai = fBalai === 'SEMUA' || getVal(c, 'balai', 'Balai', 'BALAI') === fBalai;
-                const zon = fZon === 'SEMUA' || (c.zon || '') === fZon;
-                let st = true;
-                if (fStatus === 'BAIK' || fStatus === 'ROSAK') {
+                const balai = getVal(c, 'balai', 'Balai', 'BALAI');
+                const matchBalai = balaiSelected.length === 0 || balaiSelected.some(b => normalize(balai) === normalize(b));
+                const matchZon = zonSelected.length === 0 || (c.zon && zonSelected.some(z => normalize(c.zon) === normalize(z)));
+
+                let matchStatus = true;
+                if (statusSelected.length > 0) {
                     const parsed = itemKeys.map(k => parseChecklistItem(c, k));
                     const totalRosak = parsed.reduce((s, p) => s + p.rosak, 0);
                     const totalUnit = parsed.reduce((s, p) => s + p.baik + p.rosak, 0);
-                    if (fStatus === 'BAIK') st = (totalRosak === 0 && totalUnit > 0);
-                    else st = (totalRosak > 0);
+                    const isBaik = (totalRosak === 0 && totalUnit > 0);
+                    const isRosak = (totalRosak > 0);
+
+                    const hasBaik = statusSelected.some(s => normalize(s) === 'BAIK');
+                    const hasRosak = statusSelected.some(s => normalize(s) === 'ROSAK');
+
+                    if (hasBaik && hasRosak) {
+                        matchStatus = true;
+                    } else if (hasBaik) {
+                        matchStatus = isBaik;
+                    } else if (hasRosak) {
+                        matchStatus = isRosak;
+                    }
                 }
-                return balai && zon && st;
+                return matchBalai && matchZon && matchStatus;
             });
 
             document.getElementById('checklistCount').innerText = `${filtered.length} rekod`;
@@ -1953,4 +2231,4 @@
     </script>
 
 </body>
-</html> 
+</html>
