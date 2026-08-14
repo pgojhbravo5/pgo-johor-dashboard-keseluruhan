@@ -928,14 +928,14 @@
           <div class="flex flex-wrap items-center gap-2">
             <div class="relative flex-1 min-w-[180px]">
               <i class="fa-solid fa-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-slate-500 text-xs"></i>
-              <input type="text" id="searchInput-cfrt" placeholder="Cari Callsign, Plat, Lokasi..." class="w-full input-bg border rounded-lg pl-8 pr-8 py-1.5 outline-none focus:border-slate-500 text-xs transition-colors duration-300" />
+              <input type="text" id="searchInput-cfrt" placeholder="Cari Callsign, Plat, Lokasi..." 
+                     class="w-full input-bg border rounded-lg pl-8 pr-8 py-1.5 outline-none focus:border-slate-500 text-xs transition-colors duration-300"
+                     onkeyup="doSearch('cfrt')" />
               <button onclick="clearSearch('cfrt')" class="absolute right-2 top-1/2 -translate-y-1/2 text-slate-400 hover:text-white text-xs p-1 rounded transition" title="Padam carian">
                 <i class="fa-solid fa-xmark"></i>
               </button>
             </div>
-            <button onclick="doSearch('cfrt')" class="px-3 py-1.5 bg-red-600 hover:bg-red-700 text-white text-xs font-semibold rounded-lg shadow-md transition flex items-center gap-1.5">
-              <i class="fa-solid fa-search"></i> Cari
-            </button>
+            <!-- Butang Cari telah dipadamkan -->
             <div class="ms-dropdown" id="msDropdown-cfrt">
               <button class="ms-select-btn" onclick="toggleMsDropdown('cfrt')">
                 <span id="msText-cfrt"><i class="fa-solid fa-filter mr-1"></i> Semua Status</span><span class="text-[10px] bg-red-600 text-white px-1.5 py-0.2 rounded font-bold" id="msCount-cfrt" style="display: none">0</span><span class="text-[9px]">▼</span>
@@ -1036,14 +1036,14 @@
           <div class="flex flex-wrap items-center gap-2">
             <div class="relative flex-1 min-w-[180px]">
               <i class="fa-solid fa-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-slate-500 text-xs"></i>
-              <input type="text" id="searchInput-emrs" placeholder="Cari Callsign, Plat, Lokasi..." class="w-full input-bg border rounded-lg pl-8 pr-8 py-1.5 outline-none focus:border-slate-500 text-xs transition-colors duration-300" />
+              <input type="text" id="searchInput-emrs" placeholder="Cari Callsign, Plat, Lokasi..." 
+                     class="w-full input-bg border rounded-lg pl-8 pr-8 py-1.5 outline-none focus:border-slate-500 text-xs transition-colors duration-300"
+                     onkeyup="doSearch('emrs')" />
               <button onclick="clearSearch('emrs')" class="absolute right-2 top-1/2 -translate-y-1/2 text-slate-400 hover:text-white text-xs p-1 rounded transition" title="Padam carian">
                 <i class="fa-solid fa-xmark"></i>
               </button>
             </div>
-            <button onclick="doSearch('emrs')" class="px-3 py-1.5 bg-blue-600 hover:bg-blue-700 text-white text-xs font-semibold rounded-lg shadow-md transition flex items-center gap-1.5">
-              <i class="fa-solid fa-search"></i> Cari
-            </button>
+            <!-- Butang Cari telah dipadamkan -->
             <div class="ms-dropdown" id="msDropdown-emrs">
               <button class="ms-select-btn" onclick="toggleMsDropdown('emrs')">
                 <span id="msText-emrs"><i class="fa-solid fa-filter mr-1"></i> Semua Status</span><span class="text-[10px] bg-blue-600 text-white px-1.5 py-0.2 rounded font-bold" id="msCount-emrs" style="display: none">0</span><span class="text-[9px]">▼</span>
@@ -1144,14 +1144,14 @@
           <div class="flex flex-wrap items-center gap-2">
             <div class="relative flex-1 min-w-[180px]">
               <i class="fa-solid fa-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-slate-500 text-xs"></i>
-              <input type="text" id="searchInput-water" placeholder="Cari Callsign, Plat, Lokasi..." class="w-full input-bg border rounded-lg pl-8 pr-8 py-1.5 outline-none focus:border-slate-500 text-xs transition-colors duration-300" />
+              <input type="text" id="searchInput-water" placeholder="Cari Callsign, Plat, Lokasi..." 
+                     class="w-full input-bg border rounded-lg pl-8 pr-8 py-1.5 outline-none focus:border-slate-500 text-xs transition-colors duration-300"
+                     onkeyup="doSearch('water')" />
               <button onclick="clearSearch('water')" class="absolute right-2 top-1/2 -translate-y-1/2 text-slate-400 hover:text-white text-xs p-1 rounded transition" title="Padam carian">
                 <i class="fa-solid fa-xmark"></i>
               </button>
             </div>
-            <button onclick="doSearch('water')" class="px-3 py-1.5 bg-cyan-600 hover:bg-cyan-700 text-white text-xs font-semibold rounded-lg shadow-md transition flex items-center gap-1.5">
-              <i class="fa-solid fa-search"></i> Cari
-            </button>
+            <!-- Butang Cari telah dipadamkan -->
             <div class="ms-dropdown" id="msDropdown-water">
               <button class="ms-select-btn" onclick="toggleMsDropdown('water')">
                 <span id="msText-water"><i class="fa-solid fa-filter mr-1"></i> Semua Status</span><span class="text-[10px] bg-cyan-600 text-white px-1.5 py-0.2 rounded font-bold" id="msCount-water" style="display: none">0</span><span class="text-[9px]">▼</span>
