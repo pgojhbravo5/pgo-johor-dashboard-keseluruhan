@@ -582,7 +582,7 @@
             }
         }
 
-        /* ===== MULTISELECT DROPDOWN ===== */
+        /* ===== MULTISELECT DROPDOWN (VERSI TANPA "SEMUA") ===== */
         .multiselect-dropdown {
             position: relative;
             width: 100%;
@@ -634,7 +634,7 @@
             border: 1px solid #e2e8f0;
             border-radius: 8px;
             box-shadow: 0 10px 25px rgba(0,0,0,0.15);
-            max-height: 200px;
+            max-height: 260px;
             overflow-y: auto;
             z-index: 30;
             display: none;
@@ -677,6 +677,38 @@
             font-size: 0.55rem;
             font-weight: 700;
         }
+        .multiselect-dropdown .dropdown-menu .action-buttons {
+            display: flex;
+            gap: 0.4rem;
+            padding: 0.3rem 0.75rem;
+            border-bottom: 1px solid #e2e8f0;
+            margin-bottom: 0.2rem;
+        }
+        .multiselect-dropdown .dropdown-menu .action-buttons button {
+            background: #f1f5f9;
+            border: 1px solid #e2e8f0;
+            padding: 0.15rem 0.6rem;
+            border-radius: 4px;
+            font-size: 0.6rem;
+            font-weight: 700;
+            color: #1e293b;
+            cursor: pointer;
+            transition: all 0.15s;
+        }
+        .multiselect-dropdown .dropdown-menu .action-buttons button:hover {
+            background: #e2e8f0;
+            border-color: #94a3b8;
+        }
+        .multiselect-dropdown .dropdown-menu .action-buttons button.select-all {
+            background: #dbeafe;
+            border-color: #93c5fd;
+            color: #1e40af;
+        }
+        .multiselect-dropdown .dropdown-menu .action-buttons button.clear-all {
+            background: #fee2e2;
+            border-color: #fca5a5;
+            color: #991b1b;
+        }
         @media (max-width: 640px) {
             .multiselect-dropdown .dropdown-toggle {
                 font-size: 0.6rem;
@@ -690,6 +722,10 @@
             .multiselect-dropdown .dropdown-menu .checkbox-item input[type="checkbox"] {
                 width: 12px;
                 height: 12px;
+            }
+            .multiselect-dropdown .dropdown-menu .action-buttons button {
+                font-size: 0.5rem;
+                padding: 0.1rem 0.4rem;
             }
         }
         .filter-group {
@@ -807,7 +843,7 @@
                     </div>
                     <div class="dropdown-menu" id="filterAnggotaNamaMenu">
                         <div class="checkbox-item">
-                            <input type="text" id="filterAnggotaNamaInput" placeholder="Taip nama atau pangkat..." class="w-full border border-slate-200 rounded px-2 py-1 text-xs" oninput="updateNamaFilter('anggota')">
+                            <input type="text" id="filterAnggotaNamaInput" placeholder="Taip nama atau pangkat..." class="w-full border border-slate-200 rounded px-2 py-1 text-xs" onkeyup="updateNamaFilter('anggota')">
                         </div>
                     </div>
                 </div>
@@ -855,7 +891,7 @@
                     </div>
                     <div class="dropdown-menu" id="filterJenteraCariMenu">
                         <div class="checkbox-item">
-                            <input type="text" id="filterJenteraCariInput" placeholder="Callsign, plat, jenis..." class="w-full border border-slate-200 rounded px-2 py-1 text-xs" oninput="updateNamaFilter('jentera')">
+                            <input type="text" id="filterJenteraCariInput" placeholder="Callsign, plat, jenis..." class="w-full border border-slate-200 rounded px-2 py-1 text-xs" onkeyup="updateNamaFilter('jentera')">
                         </div>
                     </div>
                 </div>
@@ -1222,11 +1258,10 @@
         }
 
         // ============================================================
-        // MULTISELECT DROPDOWN ENGINE (DIPERBAIKI)
+        // MULTISELECT GENERIC (TANPA "SEMUA")
         // ============================================================
         const selectedValues = {};
 
-        // Fungsi normalisasi
         function normalize(str) {
             return str ? str.trim().toUpperCase() : '';
         }
@@ -1251,6 +1286,7 @@
             }
         });
 
+        // Fungsi generic untuk inisialisasi multiselect (tanpa checkbox "Semua")
         function initMultiselect(wrapId, options, selectedKey) {
             const wrap = document.getElementById(wrapId);
             if (!wrap) return;
@@ -1258,44 +1294,25 @@
             const label = wrap.querySelector('.toggle-label');
             if (!menu) return;
 
-            // Reset
+            // Reset stored values
             selectedValues[selectedKey] = [];
 
+            // Kosongkan menu
             menu.innerHTML = '';
-            // "Semua" checkbox
-            const allItem = document.createElement('div');
-            allItem.className = 'checkbox-item';
-            allItem.innerHTML = `
-                <input type="checkbox" id="${selectedKey}_all" value="__ALL__" checked>
-                <label for="${selectedKey}_all"><strong>Semua</strong></label>
-            `;
-            const allCb = allItem.querySelector('input');
-            allCb.addEventListener('change', function(e) {
-                if (this.checked) {
-                    // Pilih semua -> kosongkan array
-                    selectedValues[selectedKey] = [];
-                    menu.querySelectorAll('input[type="checkbox"]').forEach(cb => {
-                        if (cb.id !== this.id) cb.checked = false;
-                    });
-                    this.checked = true;
-                } else {
-                    // Nyah tanda "Semua" -> pilih semua pilihan lain
-                    selectedValues[selectedKey] = options.slice();
-                    menu.querySelectorAll('input[type="checkbox"]').forEach(cb => {
-                        if (cb.id !== this.id) cb.checked = true;
-                    });
-                    this.checked = false;
-                }
-                updateLabel(selectedKey, label);
-                triggerRender(selectedKey);
-            });
-            menu.appendChild(allItem);
 
-            // Pilihan individu (simpan nilai asal tanpa ubah)
+            // --- Butang Tindakan ---
+            const actionDiv = document.createElement('div');
+            actionDiv.className = 'action-buttons';
+            actionDiv.innerHTML = `
+                <button class="select-all" data-key="${selectedKey}">Pilih Semua</button>
+                <button class="clear-all" data-key="${selectedKey}">Kosongkan</button>
+            `;
+            menu.appendChild(actionDiv);
+
+            // --- Pilihan individu ---
             options.forEach(opt => {
                 const item = document.createElement('div');
                 item.className = 'checkbox-item';
-                // Simpan nilai asal (string)
                 const val = opt;
                 item.innerHTML = `
                     <input type="checkbox" id="${selectedKey}_${val}" value="${val}">
@@ -1312,17 +1329,36 @@
                     } else {
                         selectedValues[selectedKey] = selectedValues[selectedKey].filter(v => v !== val);
                     }
-                    // Kemaskini status "Semua"
-                    const allCb2 = document.getElementById(`${selectedKey}_all`);
-                    if (selectedValues[selectedKey].length === 0) {
-                        allCb2.checked = true;
-                    } else {
-                        allCb2.checked = false;
-                    }
                     updateLabel(selectedKey, label);
                     triggerRender(selectedKey);
                 });
                 menu.appendChild(item);
+            });
+
+            // --- Sediakan butang Pilih Semua & Kosongkan ---
+            const selectAllBtn = actionDiv.querySelector('.select-all');
+            const clearAllBtn = actionDiv.querySelector('.clear-all');
+
+            selectAllBtn.addEventListener('click', function(e) {
+                e.stopPropagation();
+                // Pilih semua pilihan individu
+                selectedValues[selectedKey] = options.slice();
+                menu.querySelectorAll('input[type="checkbox"]').forEach(cb => {
+                    cb.checked = true;
+                });
+                updateLabel(selectedKey, label);
+                triggerRender(selectedKey);
+            });
+
+            clearAllBtn.addEventListener('click', function(e) {
+                e.stopPropagation();
+                // Kosongkan semua pilihan
+                selectedValues[selectedKey] = [];
+                menu.querySelectorAll('input[type="checkbox"]').forEach(cb => {
+                    cb.checked = false;
+                });
+                updateLabel(selectedKey, label);
+                triggerRender(selectedKey);
             });
 
             // Segerakan label
@@ -1351,7 +1387,7 @@
             }
         }
 
-        // Fungsi untuk carian teks
+        // Fungsi carian teks (dipanggil pada onkeyup)
         function updateNamaFilter(type) {
             if (type === 'anggota') {
                 const input = document.getElementById('filterAnggotaNamaInput');
@@ -1870,7 +1906,7 @@
         }
 
         // ============================================================
-        // ALERTS
+        // ALERTS - VERSI DIPERBAIKI (2 LAJUR SENTIASA ADA)
         // ============================================================
         function renderAlerts(jentera, checklist) {
             const itemKeys = ['cad', 'wic', 'bomra', 'desktopGirn', 'handheldGirn', 'vehicularGirn', 'internet',
@@ -1879,11 +1915,13 @@
             const labelMap = { cad: 'CAD', wic: 'WIC', bomra: 'BOMRA', desktopGirn: 'D.GIRN', handheldGirn: 'H.GIRN',
                 vehicularGirn: 'V.GIRN', internet: 'INET', handphone: 'HP' };
 
+            // Jentera bermasalah (status selain BAIK & ROSAK MINOR)
             const jBermasalah = jentera.filter(j => {
                 const s = normalize(j.status);
                 return s !== 'BAIK & BOLEH BEROPERASI' && s !== 'ROSAK MINOR & BOLEH BEROPERASI';
             });
 
+            // Checklist bermasalah (mana-mana item rosak)
             const cBermasalah = [];
             checklist.forEach(c => {
                 const balai = getVal(c, 'balai', 'Balai', 'BALAI');
@@ -1895,48 +1933,50 @@
                 if (isu.length > 0) cBermasalah.push({ balai, isu });
             });
 
-            if (jBermasalah.length === 0 && cBermasalah.length === 0) {
-                document.getElementById('alertsPanel').innerHTML = `
-              <div class="bg-emerald-50 border border-emerald-200 text-emerald-700 p-2 md:p-3 rounded-xl flex items-center gap-2 shadow-sm">
-                <i class="fa-solid fa-shield-halved text-sm md:text-lg"></i>
-                <span class="font-bold text-xs md:text-sm">Semua jentera &amp; checklist dalam keadaan baik. Tiada isu perlu perhatian sekarang.</span>
-              </div>`;
-                return;
-            }
-
+            // Bina panel dengan dua lajur tetap
             let h = `<div class="bg-white rounded-2xl p-3 md:p-4 shadow-sm border border-red-100">
-            <div class="flex items-center gap-1.5 pb-1.5 mb-2 border-b-2 border-red-50">
-              <i class="fa-solid fa-circle-exclamation text-red-500 text-sm md:text-lg"></i>
-              <h2 class="text-xs md:text-sm font-bold text-red-700">PERLU PERHATIAN SEGERA</h2>
-            </div>
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-3">`;
+                <div class="flex items-center gap-1.5 pb-1.5 mb-2 border-b-2 border-red-50">
+                    <i class="fa-solid fa-circle-exclamation text-red-500 text-sm md:text-lg"></i>
+                    <h2 class="text-xs md:text-sm font-bold text-red-700">PERLU PERHATIAN SEGERA</h2>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-3">`;
 
-            if (jBermasalah.length > 0) {
-                h += `<div>
-              <p class="text-[8px] md:text-[10px] font-bold text-slate-500 uppercase tracking-wider mb-1">Jentera (${jBermasalah.length})</p>
-              <div class="space-y-0.5 max-h-48 overflow-y-auto pr-0.5">`;
+            // --- Lajur Jentera ---
+            h += `<div>
+                    <p class="text-[8px] md:text-[10px] font-bold text-slate-500 uppercase tracking-wider mb-1">Jentera (${jBermasalah.length})</p>
+                    <div class="space-y-0.5 max-h-48 overflow-y-auto pr-0.5">`;
+            if (jBermasalah.length === 0) {
+                h += `<div class="text-emerald-600 font-medium text-[8px] md:text-xs bg-emerald-50 border border-emerald-200 rounded-lg px-2 py-1.5 flex items-center gap-1">
+                            <i class="fa-solid fa-circle-check"></i> Tiada Jentera Bermasalah
+                        </div>`;
+            } else {
                 jBermasalah.forEach(j => {
                     const displayStatus = getStatusDisplay(j.status);
                     h += `<div class="flex items-center justify-between bg-red-50 border border-red-100 rounded-lg px-2 py-1 text-[8px] md:text-xs">
-                <span class="font-bold text-slate-700">${escapeHtml(j.callsign)||'-'} <span class="text-slate-400 font-normal">(${escapeHtml(j.balai)||'-'})</span></span>
-                <span class="${getBadgeForStatus(j.status)}">${escapeHtml(displayStatus)}</span>
-              </div>`;
+                                <span class="font-bold text-slate-700">${escapeHtml(j.callsign)||'-'} <span class="text-slate-400 font-normal">(${escapeHtml(j.balai)||'-'})</span></span>
+                                <span class="${getBadgeForStatus(j.status)}">${escapeHtml(displayStatus)}</span>
+                            </div>`;
                 });
-                h += `</div></div>`;
             }
+            h += `</div></div>`;
 
-            if (cBermasalah.length > 0) {
-                h += `<div>
-              <p class="text-[8px] md:text-[10px] font-bold text-slate-500 uppercase tracking-wider mb-1">Checklist (${cBermasalah.length} balai)</p>
-              <div class="space-y-0.5 max-h-48 overflow-y-auto pr-0.5">`;
+            // --- Lajur Checklist ---
+            h += `<div>
+                    <p class="text-[8px] md:text-[10px] font-bold text-slate-500 uppercase tracking-wider mb-1">Checklist (${cBermasalah.length} balai)</p>
+                    <div class="space-y-0.5 max-h-48 overflow-y-auto pr-0.5">`;
+            if (cBermasalah.length === 0) {
+                h += `<div class="text-emerald-600 font-medium text-[8px] md:text-xs bg-emerald-50 border border-emerald-200 rounded-lg px-2 py-1.5 flex items-center gap-1">
+                            <i class="fa-solid fa-circle-check"></i> Tiada Checklist Bermasalah
+                        </div>`;
+            } else {
                 cBermasalah.forEach(c => {
                     h += `<div class="bg-red-50 border border-red-100 rounded-lg px-2 py-1 text-[8px] md:text-xs">
-                <div class="font-bold text-slate-700 mb-0.5">${escapeHtml(c.balai)}</div>
-                <div class="text-red-600 font-medium text-[8px] md:text-[10px]">${c.isu.map(escapeHtml).join(', ')}</div>
-              </div>`;
+                                <div class="font-bold text-slate-700 mb-0.5">${escapeHtml(c.balai)}</div>
+                                <div class="text-red-600 font-medium text-[8px] md:text-[10px]">${c.isu.map(escapeHtml).join(', ')}</div>
+                            </div>`;
                 });
-                h += `</div></div>`;
             }
+            h += `</div></div>`;
 
             h += `</div></div>`;
             document.getElementById('alertsPanel').innerHTML = h;
