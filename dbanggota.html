@@ -968,7 +968,7 @@
     </nav>
 
     <!-- ============================================================ -->
-    <!-- ===== JAVASCRIPT (Sama seperti asal, tiada perubahan) ===== -->
+    <!-- ===== JAVASCRIPT ===== -->
     <!-- ============================================================ -->
     <script>
         // ============================================================
@@ -1718,24 +1718,32 @@
         }
 
         // ============================================================
-        // POPULATE MULTISELECT FILTERS (Reset setiap render)
+        // POPULATE MULTISELECT FILTERS (DENGAN BALAI KHUSUS SETIAP PANEL)
         // ============================================================
         function populateMultiselectFilters(balaiLive, anggota, jentera, checklist) {
-            const balaiOpts = balaiLive;
+            // Senarai balai khusus untuk setiap panel
+            const balaiAnggota = [...new Set(anggota.map(a => a.balai).filter(Boolean))].sort();
+            const balaiJentera = [...new Set(jentera.map(j => j.balai).filter(Boolean))].sort();
+            const balaiChecklist = [...new Set(checklist.map(c => getVal(c, 'balai', 'Balai', 'BALAI')).filter(b => b && b !== '-'))].sort();
+
+            // Status dan zon (global)
             const statusAnggotaOpts = [...new Set(anggota.map(a => a.status).filter(Boolean))].sort();
             const statusJenteraOpts = ['BAIK & BOLEH BEROPERASI', 'ROSAK MINOR & BOLEH BEROPERASI', 'ROSAK & TIDAK BOLEH BEROPERASI', 'DALAM PROSES LUPUS', 'LUPUS'];
             const statusChecklistOpts = ['BAIK', 'ROSAK'];
             const zonOpts = ['ZON 1', 'ZON 2', 'ZON 3', 'ZON 4', 'BENGKEL', 'PGO JOHOR'];
 
-            initMultiselect('filterAnggotaBalaiWrap', balaiOpts, 'anggotaBalai');
+            // Init filter Balai untuk setiap panel
+            initMultiselect('filterAnggotaBalaiWrap', balaiAnggota, 'anggotaBalai');
+            initMultiselect('filterJenteraBalaiWrap', balaiJentera, 'jenteraBalai');
+            initMultiselect('filterChecklistBalaiWrap', balaiChecklist, 'checklistBalai');
+
+            // Filter status dan zon (kekal sama untuk semua panel)
             initMultiselect('filterAnggotaStatusWrap', statusAnggotaOpts, 'anggotaStatus');
             initMultiselect('filterZonAnggotaWrap', zonOpts, 'zonAnggota');
 
-            initMultiselect('filterJenteraBalaiWrap', balaiOpts, 'jenteraBalai');
             initMultiselect('filterJenteraStatusWrap', statusJenteraOpts, 'jenteraStatus');
             initMultiselect('filterZonJenteraWrap', zonOpts, 'zonJentera');
 
-            initMultiselect('filterChecklistBalaiWrap', balaiOpts, 'checklistBalai');
             initMultiselect('filterChecklistStatusWrap', statusChecklistOpts, 'checklistStatus');
             initMultiselect('filterZonChecklistWrap', zonOpts, 'zonChecklist');
 
