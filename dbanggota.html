@@ -49,8 +49,10 @@
             --sat: env(safe-area-inset-top, 0px);
         }
 
-        /* ===== LATAR BELAKANG ===== */
+        /* ===== OVERFLOW FIX ===== */
         body {
+            overflow-x: hidden;
+            max-width: 100vw;
             background-image: url('https://raw.githubusercontent.com/pgojhbravo5/KEKUATAN-ANGGOTA-JBPM-JOHOR/8c44a756dcbf34a06db7847334a711d6134efbde/firetruck-BG.png?v=3');
             background-size: cover;
             background-position: center;
@@ -80,6 +82,11 @@
             pointer-events: none;
         }
 
+        .max-w-\[1600px\] {
+            max-width: 100%;
+            overflow-x: hidden;
+        }
+
         ::-webkit-scrollbar {
             width: 6px;
             height: 6px;
@@ -103,24 +110,31 @@
         .hide-scroll::-webkit-scrollbar {
             display: none;
         }
+
+        /* ===== CONTAINER JADUAL DENGAN OVERFLOW ===== */
         .table-container {
             max-height: 400px;
             overflow-y: auto;
             overflow-x: auto;
             scroll-behavior: smooth;
+            max-width: 100%;
+            -webkit-overflow-scrolling: touch;
         }
+
         .table-breakdown-wrap {
             max-height: 420px;
             overflow-y: auto;
             overflow-x: auto;
             scroll-behavior: smooth;
+            max-width: 100%;
+            -webkit-overflow-scrolling: touch;
         }
-        .table-breakdown {
-            overflow-x: auto;
-        }
+
         .table-breakdown table {
-            min-width: 900px;
+            min-width: 600px;
+            width: 100%;
         }
+
         .table-breakdown th,
         .table-breakdown td {
             white-space: nowrap;
@@ -199,7 +213,7 @@
             border-color: #9fa8da;
         }
 
-        /* Badge ZON - sama seperti halaman utama */
+        /* Badge ZON */
         .badge-zon-1 { background: #dbeafe; color: #1e40af; border: 1px solid #93c5fd; }
         .badge-zon-2 { background: #d1fae5; color: #065f46; border: 1px solid #6ee7b7; }
         .badge-zon-3 { background: #fef3c7; color: #92400e; border: 1px solid #fcd34d; }
@@ -509,38 +523,34 @@
             line-height: 1.2;
         }
 
-        @media (max-width: 640px) {
-            .card-title {
-                font-size: 0.7rem !important;
+        /* ===== PANEL TIDAK MELEBAR ===== */
+        .bg-white.rounded-2xl {
+            max-width: 100%;
+            overflow: hidden;
+        }
+
+        /* ===== FILTER GROUP MOBILE FIX ===== */
+        .filter-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-bottom: 0.5rem;
+        }
+        .filter-group .multiselect-dropdown {
+            flex: 1 1 120px;
+            min-width: 80px;
+        }
+        @media (max-width: 480px) {
+            .filter-group .multiselect-dropdown {
+                flex: 1 1 100% !important;
+                min-width: 0 !important;
             }
-            .card-title i {
-                font-size: 0.8rem !important;
-            }
-            .text-xs {
-                font-size: 0.65rem !important;
-            }
-            .text-sm {
-                font-size: 0.7rem !important;
-            }
-            .badge-status {
-                font-size: 0.5rem !important;
-                padding: 0.05rem 0.4rem !important;
-            }
-            .roster-table td,
-            .logistik-table td,
-            .checklist-table td {
-                font-size: 0.6rem !important;
-                padding: 4px 6px !important;
-            }
-            .roster-table th,
-            .logistik-table th,
-            .checklist-table th {
-                font-size: 0.55rem !important;
-                padding: 4px 6px !important;
+            .filter-group {
+                gap: 0.3rem;
             }
         }
 
-        /* ===== MULTISELECT DROPDOWN (VERSI TANPA "SEMUA") ===== */
+        /* ===== MULTISELECT DROPDOWN ===== */
         .multiselect-dropdown {
             position: relative;
             width: 100%;
@@ -686,15 +696,29 @@
                 padding: 0.1rem 0.4rem;
             }
         }
-        .filter-group {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 0.5rem;
-            margin-bottom: 0.5rem;
-        }
-        .filter-group .multiselect-dropdown {
-            flex: 1 1 120px;
-            min-width: 80px;
+
+        /* ===== MOBILE TABLE ROW PHONE LINKS ===== */
+        @media (max-width: 480px) {
+            .table-container td,
+            .table-container th {
+                padding-left: 4px !important;
+                padding-right: 4px !important;
+                font-size: 0.6rem !important;
+            }
+            .table-container .badge-status {
+                font-size: 0.5rem !important;
+                padding: 0.05rem 0.3rem !important;
+            }
+            .table-container .flex-col {
+                gap: 0.1rem;
+            }
+            .table-container .mt-1 {
+                margin-top: 0.2rem;
+            }
+            .table-container a {
+                font-size: 0.5rem !important;
+                padding: 0.05rem 0.3rem !important;
+            }
         }
     </style>
 </head>
@@ -944,7 +968,7 @@
     </nav>
 
     <!-- ============================================================ -->
-    <!-- ===== JAVASCRIPT ===== -->
+    <!-- ===== JAVASCRIPT (Sama seperti asal, tiada perubahan) ===== -->
     <!-- ============================================================ -->
     <script>
         // ============================================================
@@ -1654,7 +1678,7 @@
         }
 
         // ============================================================
-        // RENDER UTAMA (Tiada auto-scroll)
+        // RENDER UTAMA
         // ============================================================
         function renderAll() {
             if (!dataCache) return;
@@ -1682,7 +1706,6 @@
             renderJentera();
             renderChecklist();
 
-            // Tiada panggilan setupAllScrolls
             setTimeout(updateActiveTabOnScroll, 600);
         }
 
