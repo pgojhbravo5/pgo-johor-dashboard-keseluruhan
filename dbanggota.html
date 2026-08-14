@@ -355,50 +355,6 @@
             margin-right: 0.2rem;
         }
 
-        /* ===== AUTO-SCROLL INDICATOR ===== */
-        .scroll-indicator {
-            font-size: 0.55rem;
-            color: #94a3b8;
-            font-weight: 500;
-            display: flex;
-            align-items: center;
-            gap: 0.3rem;
-            opacity: 0.6;
-            transition: opacity 0.3s;
-        }
-        .scroll-indicator i {
-            font-size: 0.5rem;
-            animation: bounceUp 1.2s ease-in-out infinite;
-        }
-        @keyframes bounceUp {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-4px); }
-        }
-        .panel-scroll-container {
-            position: relative;
-        }
-        .panel-scroll-container .scroll-indicator {
-            position: absolute;
-            bottom: 0.5rem;
-            right: 0.8rem;
-            background: rgba(15, 23, 42, 0.6);
-            backdrop-filter: blur(4px);
-            padding: 0.15rem 0.6rem;
-            border-radius: 10px;
-            border: 1px solid rgba(255, 255, 255, 0.08);
-            z-index: 20;
-            pointer-events: none;
-        }
-        .panel-scroll-container .scroll-indicator.paused {
-            opacity: 0.3;
-        }
-        .panel-scroll-container .scroll-indicator.paused i {
-            animation: none;
-        }
-        .ticker-wrap:hover .ticker-track {
-            animation-play-state: paused;
-        }
-
         /* ===== LOGO IMG HEADER ===== */
         .logo-img-header {
             width: 44px;
@@ -809,12 +765,11 @@
         </div>
 
         <!-- ===== BARISAN 1: KEKUATAN & KESEDIAAN MENGIKUT BALAI ===== -->
-        <div class="bg-white rounded-2xl p-3 md:p-5 shadow-sm border border-slate-100 mb-4 panel-scroll-container" data-scroll="breakdownScroll">
+        <div class="bg-white rounded-2xl p-3 md:p-5 shadow-sm border border-slate-100 mb-4">
             <div class="flex items-center gap-1.5 pb-1.5 mb-2 border-b-2 border-slate-100 flex-wrap">
                 <i class="fa-solid fa-building text-bomba-navy text-base md:text-lg"></i>
                 <h2 class="text-xs md:text-sm font-bold text-slate-700">KEKUATAN &amp; KESEDIAAN MENGIKUT BALAI</h2>
                 <span class="text-[0.5rem] md:text-[0.6rem] font-medium text-slate-400 ml-auto hidden sm:inline">Dikira terus dari rekod live</span>
-                <span class="scroll-indicator" id="breakdownScrollIndicator"><i class="fa-solid fa-chevron-up"></i> Auto</span>
             </div>
             <div id="breakdownScroll" class="table-breakdown-wrap">
                 <div id="breakdownBalaiTable" class="table-breakdown"><div class="text-center py-4 text-slate-400 font-medium text-sm">Memuatkan...</div></div>
@@ -827,13 +782,12 @@
     <!-- ========================================== -->
     <div class="panel-grid-2 mb-4">
         <!-- PANEL ANGGOTA -->
-        <div id="sectionAnggota" class="bg-white rounded-2xl p-3 md:p-4 shadow-sm border border-slate-100 flex flex-col h-full panel-scroll-container" data-scroll="anggotaScroll">
+        <div id="sectionAnggota" class="bg-white rounded-2xl p-3 md:p-4 shadow-sm border border-slate-100 flex flex-col h-full">
             <div class="flex justify-between items-center pb-1.5 mb-2 border-b-2 border-slate-100">
                 <h2 class="text-xs md:text-sm font-bold text-bomba-navy flex items-center gap-1.5">
                     <i class="fa-solid fa-users text-bomba-red text-base md:text-lg"></i> KEKUATAN ANGGOTA
                 </h2>
                 <span class="text-[0.5rem] md:text-[0.6rem] font-bold bg-slate-100 text-slate-500 px-2 py-0.5 rounded-full" id="anggotaCount">0 rekod</span>
-                <span class="scroll-indicator" id="anggotaScrollIndicator"><i class="fa-solid fa-chevron-up"></i> Auto</span>
             </div>
             <div class="filter-group">
                 <div class="multiselect-dropdown" id="filterAnggotaNamaWrap">
@@ -875,13 +829,12 @@
         </div>
 
         <!-- PANEL JENTERA -->
-        <div id="sectionJentera" class="bg-white rounded-2xl p-3 md:p-4 shadow-sm border border-slate-100 flex flex-col h-full panel-scroll-container" data-scroll="jenteraScroll">
+        <div id="sectionJentera" class="bg-white rounded-2xl p-3 md:p-4 shadow-sm border border-slate-100 flex flex-col h-full">
             <div class="flex justify-between items-center pb-1.5 mb-2 border-b-2 border-slate-100">
                 <h2 class="text-xs md:text-sm font-bold text-bomba-navy flex items-center gap-1.5">
                     <i class="fa-solid fa-truck text-bomba-gold text-base md:text-lg"></i> LOGISTIK JENTERA
                 </h2>
                 <span class="text-[0.5rem] md:text-[0.6rem] font-bold bg-slate-100 text-slate-500 px-2 py-0.5 rounded-full" id="jenteraCount">0 rekod</span>
-                <span class="scroll-indicator" id="jenteraScrollIndicator"><i class="fa-solid fa-chevron-up"></i> Auto</span>
             </div>
             <div class="filter-group">
                 <div class="multiselect-dropdown" id="filterJenteraCariWrap">
@@ -924,13 +877,12 @@
     </div>
 
     <!-- ===== SECTION: CHECKLIST ===== -->
-    <div id="sectionChecklist" class="bg-white rounded-2xl p-3 md:p-4 shadow-sm border border-slate-100 mb-4 panel-scroll-container" data-scroll="checklistScroll">
+    <div id="sectionChecklist" class="bg-white rounded-2xl p-3 md:p-4 shadow-sm border border-slate-100 mb-4">
         <div class="flex justify-between items-center pb-1.5 mb-2 border-b-2 border-slate-100">
             <h2 class="text-xs md:text-sm font-bold text-bomba-navy flex items-center gap-1.5">
                 <i class="fa-solid fa-list-check text-emerald-500 text-base md:text-lg"></i> CHECKLIST PERKAKAS BILIK KAWALAN (8 ITEM)
             </h2>
             <span class="text-[0.5rem] md:text-[0.6rem] font-bold bg-slate-100 text-slate-500 px-2 py-0.5 rounded-full" id="checklistCount">0 rekod</span>
-            <span class="scroll-indicator" id="checklistScrollIndicator"><i class="fa-solid fa-chevron-up"></i> Auto</span>
         </div>
         <div class="filter-group">
             <div class="multiselect-dropdown" id="filterChecklistBalaiWrap">
@@ -1700,7 +1652,7 @@
         }
 
         // ============================================================
-        // RENDER UTAMA
+        // RENDER UTAMA (Tiada auto-scroll)
         // ============================================================
         function renderAll() {
             if (!dataCache) return;
@@ -1728,142 +1680,8 @@
             renderJentera();
             renderChecklist();
 
-            setTimeout(setupAllScrolls, 400);
+            // Tiada panggilan setupAllScrolls
             setTimeout(updateActiveTabOnScroll, 600);
-        }
-
-        function setupAllScrolls() {
-            setupPanelScroll('anggotaScroll', 'anggotaScrollIndicator');
-            setupPanelScroll('jenteraScroll', 'jenteraScrollIndicator');
-            setupPanelScroll('checklistScroll', 'checklistScrollIndicator');
-            setupPanelScroll('breakdownScroll', 'breakdownScrollIndicator');
-        }
-
-        // =============================================================
-        //  ====== AUTO-SCROLL ENGINE ======
-        // =============================================================
-        const scrollAnim = {};
-        const SCROLL_SPEED_PX_PER_SEC = 28;
-
-        function startAutoScroll(containerId, indicatorId) {
-            const container = document.getElementById(containerId);
-            if (!container) return;
-            if (scrollAnim[containerId]) {
-                cancelAnimationFrame(scrollAnim[containerId].frameId);
-                delete scrollAnim[containerId];
-            }
-            if (container.scrollHeight <= container.clientHeight) {
-                return;
-            }
-            const state = {
-                paused: false,
-                frameId: null,
-                speedPerFrame: SCROLL_SPEED_PX_PER_SEC / 60,
-            };
-
-            function step() {
-                if (state.paused) {
-                    state.frameId = requestAnimationFrame(step);
-                    return;
-                }
-                const currentScrollTop = container.scrollTop;
-                const maxScroll = container.scrollHeight - container.clientHeight;
-                if (currentScrollTop >= maxScroll - 1) {
-                    const target = 0;
-                    const startTime = performance.now();
-                    const startPos = currentScrollTop;
-                    const duration = 800;
-
-                    function smoothReset(time) {
-                        const elapsed = time - startTime;
-                        const progress = Math.min(elapsed / duration, 1);
-                        const eased = 1 - Math.pow(1 - progress, 3);
-                        const currentPos = startPos + (target - startPos) * eased;
-                        container.scrollTop = currentPos;
-                        if (progress < 1) {
-                            requestAnimationFrame(smoothReset);
-                        } else {
-                            container.scrollTop = target;
-                            state.frameId = requestAnimationFrame(step);
-                        }
-                    }
-                    state.frameId = requestAnimationFrame(smoothReset);
-                } else {
-                    container.scrollTop = Math.min(currentScrollTop + state.speedPerFrame, maxScroll);
-                    state.frameId = requestAnimationFrame(step);
-                }
-            }
-
-            state.frameId = requestAnimationFrame(step);
-            scrollAnim[containerId] = state;
-
-            const indicator = document.getElementById(indicatorId);
-            if (indicator) {
-                indicator.classList.remove('paused');
-                indicator.innerHTML = '<i class="fa-solid fa-chevron-up"></i> Auto';
-            }
-        }
-
-        function stopAutoScroll(containerId, indicatorId) {
-            if (scrollAnim[containerId]) {
-                scrollAnim[containerId].paused = true;
-                const indicator = document.getElementById(indicatorId);
-                if (indicator) {
-                    indicator.classList.add('paused');
-                    indicator.innerHTML = '<i class="fa-solid fa-pause"></i> Dijeda';
-                }
-            }
-        }
-
-        function resumeAutoScroll(containerId, indicatorId) {
-            const state = scrollAnim[containerId];
-            if (state) {
-                state.paused = false;
-                const indicator = document.getElementById(indicatorId);
-                if (indicator) {
-                    indicator.classList.remove('paused');
-                    indicator.innerHTML = '<i class="fa-solid fa-chevron-up"></i> Auto';
-                }
-            } else {
-                startAutoScroll(containerId, indicatorId);
-            }
-        }
-
-        function setupPanelScroll(containerId, indicatorId) {
-            const container = document.getElementById(containerId);
-            if (!container) return;
-            setTimeout(() => startAutoScroll(containerId, indicatorId), 800);
-
-            container.addEventListener('mouseenter', () => {
-                stopAutoScroll(containerId, indicatorId);
-            });
-            container.addEventListener('mouseleave', () => {
-                if (container.scrollHeight > container.clientHeight) {
-                    resumeAutoScroll(containerId, indicatorId);
-                }
-            });
-
-            container.addEventListener('touchstart', () => {
-                stopAutoScroll(containerId, indicatorId);
-            });
-            container.addEventListener('touchend', () => {
-                setTimeout(() => {
-                    if (container.scrollHeight > container.clientHeight) {
-                        resumeAutoScroll(containerId, indicatorId);
-                    }
-                }, 3000);
-            });
-
-            let scrollTimeout = null;
-            container.addEventListener('scroll', () => {
-                stopAutoScroll(containerId, indicatorId);
-                clearTimeout(scrollTimeout);
-                scrollTimeout = setTimeout(() => {
-                    if (container.scrollHeight > container.clientHeight) {
-                        resumeAutoScroll(containerId, indicatorId);
-                    }
-                }, 4000);
-            });
         }
 
         function computeBalaiLive(anggota, jentera, checklist) {
@@ -2115,10 +1933,6 @@
             </tr>`;
             });
             document.getElementById('anggotaTable').innerHTML = h + '</tbody></table>';
-            const container = document.getElementById('anggotaScroll');
-            if (container && container.scrollHeight > container.clientHeight) {
-                setTimeout(() => startAutoScroll('anggotaScroll', 'anggotaScrollIndicator'), 300);
-            }
         }
 
         // ============================================================
@@ -2168,10 +1982,6 @@
             </tr>`;
             });
             document.getElementById('jenteraTable').innerHTML = h + '</tbody></table>';
-            const container = document.getElementById('jenteraScroll');
-            if (container && container.scrollHeight > container.clientHeight) {
-                setTimeout(() => startAutoScroll('jenteraScroll', 'jenteraScrollIndicator'), 300);
-            }
         }
 
         // ============================================================
@@ -2257,10 +2067,6 @@
                 h += `</tr>`;
             });
             document.getElementById('checklistTable').innerHTML = h + '</tbody></table>';
-            const container = document.getElementById('checklistScroll');
-            if (container && container.scrollHeight > container.clientHeight) {
-                setTimeout(() => startAutoScroll('checklistScroll', 'checklistScrollIndicator'), 300);
-            }
         }
 
         // ============================================================
