@@ -792,6 +792,10 @@
             justify-content: center;
             touch-action: manipulation;
             transition: background 0.3s ease;
+            text-decoration: none;
+            color: inherit;
+            cursor: pointer;
+            -webkit-tap-highlight-color: transparent;
         }
         .stat-item:not(:first-child)::before {
             content: '';
@@ -2486,26 +2490,26 @@
                 <main class="dashboard">
                     <!-- STATS BAR -->
                     <section class="stats-bar">
-                        <div class="stat-item">
+                        <a href="dbanggota.html" class="stat-item" rel="noopener noreferrer">
                             <i class="fas fa-user-shield icon-badge"></i>
                             <div class="num" id="statBertugas">--</div>
                             <div class="label">Anggota Bertugas</div>
-                        </div>
-                        <div class="stat-item">
+                        </a>
+                        <a href="https://www.met.gov.my/" target="_blank" class="stat-item" rel="noopener noreferrer">
                             <i class="fas fa-cloud-sun icon-badge" id="statCuacaIcon"></i>
                             <div class="num" id="statCuaca">--°C</div>
                             <div class="label">Cuaca JB</div>
-                        </div>
-                        <div class="stat-item">
+                        </a>
+                        <a href="dashops.html" class="stat-item" rel="noopener noreferrer">
                             <i class="fas fa-chart-column icon-badge"></i>
                             <div class="num" id="statKesHariIni">--</div>
                             <div class="label">Kes Hari Ini</div>
-                        </div>
-                        <div class="stat-item">
+                        </a>
+                        <a href="jentera.html" class="stat-item" rel="noopener noreferrer">
                             <i class="fas fa-truck-field icon-badge"></i>
                             <div class="num" id="statJenteraSedia">--</div>
                             <div class="label">Jentera Sedia</div>
-                        </div>
+                        </a>
                     </section>
 
                     <!-- ===== CAROUSEL KES KEBAKARAN & MANGSA ===== -->
