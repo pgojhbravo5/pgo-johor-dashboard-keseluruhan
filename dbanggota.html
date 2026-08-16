@@ -1502,13 +1502,24 @@
             const container = document.getElementById('specialUnitsContainer');
             if (!container) return;
             const units = [
-                { key: 'HAZMAT', label: 'HAZMAT', icon: 'fa-flask', field: 'unitBerbayar', value: 'HAZMAT' },
-                { key: 'PPDA', label: 'PPDA', icon: 'fa-helmet-safety', field: 'unitBerbayar', value: 'PPDA' },
-                { key: 'STORM', label: 'STORM', icon: 'fa-bolt', field: 'unitTidakBerbayar', value: 'STOM/MUST' }
+                { key: 'EMRS', label: 'EMRS', icon: 'fa-truck-medical' },
+                { key: 'HAZMAT', label: 'HAZMAT', icon: 'fa-flask' },
+                { key: 'PPDA', label: 'PPDA', icon: 'fa-helmet-safety' },
+                { key: 'RIM', label: 'RIM', icon: 'fa-water' },
+                { key: 'STORM/MUST', label: 'STORM/MUST', icon: 'fa-bolt' }
             ];
+            // Sokong data baharu (a.units = {UNIT: 'YA'/'TIDAK'}) dan data lama
+            // (a.unitBerbayar / a.unitTidakBerbayar) untuk keserasian ke belakang.
+            const isMember = (a, unitKey) => {
+                if (a.units && typeof a.units === 'object') {
+                    return a.units[unitKey] === 'YA';
+                }
+                const legacyValue = unitKey === 'STORM/MUST' ? 'STOM/MUST' : unitKey;
+                return a.unitBerbayar === legacyValue || a.unitTidakBerbayar === legacyValue;
+            };
             let html = '';
             units.forEach(u => {
-                const members = anggota.filter(a => a[u.field] === u.value);
+                const members = anggota.filter(a => isMember(a, u.key));
                 const total = members.length;
                 const bertugas = members.filter(a => a.status === 'BERTUGAS').length;
                 let statusClass = 'notready';
@@ -1944,10 +1955,11 @@
 
             let h =
                 `<table class="w-full text-left text-[9px] md:text-[10px]"><thead class="sticky top-0 bg-white shadow-sm z-10"><tr class="text-slate-400 font-bold uppercase tracking-wider border-b-2 border-slate-100">
-            <th class="py-1.5 px-1.5 w-6">#</th><th class="py-1.5 px-1.5">Nama &amp; Info</th><th class="py-1.5 px-1.5">Status</th><th class="py-1.5 px-1.5">Balai</th><th class="py-1.5 px-1.5">Zon</th>
+            <th class="py-1.5 px-1.5 w-6">#</th><th class="py-1.5 px-1.5">Nama &amp; Info</th><th class="py-1.5 px-1.5">Status</th><th class="py-1.5 px-1.5">Unit</th><th class="py-1.5 px-1.5">Balai</th><th class="py-1.5 px-1.5">Zon</th>
           </tr></thead><tbody class="divide-y divide-slate-100">`;
             filtered.forEach((a, i) => {
                 const zonBadge = getZonBadge(a.zon);
+                const unitBadges = getUnitBadgesDashboard(a);
                 h += `<tr class="hover:bg-slate-50 transition-colors group">
               <td class="py-1.5 px-1.5 text-slate-400">${i+1}</td>
               <td class="py-1.5 px-1.5">
@@ -1961,11 +1973,33 @@
                   <span class="${getBadge('pasukan', a.pasukan)}">${escapeHtml(a.pasukan)||'-'}</span>
                 </div>
               </td>
+              <td class="py-1.5 px-1.5"><div class="flex flex-wrap gap-0.5 max-w-[90px]">${unitBadges}</div></td>
               <td class="py-1.5 px-1.5 font-medium text-slate-600 text-[8px] md:text-[10px]">${escapeHtml(a.balai)||'-'}</td>
               <td class="py-1.5 px-1.5">${zonBadge}</td>
             </tr>`;
             });
             document.getElementById('anggotaTable').innerHTML = h + '</tbody></table>';
+        }
+
+        // Senarai unit rasmi (selaras dengan ALL_UNITS di SISTEM_KEKUATAN_ANGGOTA)
+        const ALL_UNITS_DASHBOARD = ['PEMADAM', 'EMRS', 'HAZMAT', 'PPDA', 'RIM', 'STORM/MUST'];
+
+        // Jana badge unit untuk setiap anggota di jadual dashboard.
+        // Sokong data baharu (a.units = {UNIT:'YA'/'TIDAK'}) dan data lama
+        // (a.unitBerbayar / a.unitTidakBerbayar) untuk keserasian ke belakang.
+        function getUnitBadgesDashboard(a) {
+            let active = [];
+            if (a.units && typeof a.units === 'object') {
+                active = ALL_UNITS_DASHBOARD.filter(u => a.units[u] === 'YA');
+            } else {
+                const ub = a.unitBerbayar || '';
+                const utb = (a.unitTidakBerbayar === 'STOM/MUST') ? 'STORM/MUST' : (a.unitTidakBerbayar || '');
+                active = [ub, utb].filter(Boolean);
+            }
+            if (active.length === 0) {
+                return '<span class="badge-status slate">PEMADAM</span>';
+            }
+            return active.map(u => `<span class="badge-status indigo">${escapeHtml(u)}</span>`).join(' ');
         }
 
         // ============================================================
