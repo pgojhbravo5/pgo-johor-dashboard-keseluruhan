@@ -848,6 +848,13 @@
                     </div>
                     <div class="dropdown-menu" id="filterZonAnggotaMenu"></div>
                 </div>
+                <div class="multiselect-dropdown" id="filterAnggotaUnitWrap">
+                    <div class="dropdown-toggle" onclick="toggleDropdown('filterAnggotaUnitWrap')">
+                        <span class="toggle-label" id="filterAnggotaUnitLabel">Semua Unit</span>
+                        <i class="fa-solid fa-chevron-down toggle-arrow"></i>
+                    </div>
+                    <div class="dropdown-menu" id="filterAnggotaUnitMenu"></div>
+                </div>
             </div>
             <div id="anggotaScroll" class="table-container flex-1">
                 <div id="anggotaTable"><div class="text-center py-6 text-slate-400 font-medium text-sm flex flex-col items-center gap-2"><i class="fa-solid fa-spinner animate-spin text-xl"></i> Memuatkan...</div></div>
@@ -1751,6 +1758,7 @@
             // Filter status dan zon (kekal sama untuk semua panel)
             initMultiselect('filterAnggotaStatusWrap', statusAnggotaOpts, 'anggotaStatus');
             initMultiselect('filterZonAnggotaWrap', zonOpts, 'zonAnggota');
+            initMultiselect('filterAnggotaUnitWrap', ALL_UNITS_DASHBOARD, 'anggotaUnit');
 
             initMultiselect('filterJenteraStatusWrap', statusJenteraOpts, 'jenteraStatus');
             initMultiselect('filterZonJenteraWrap', zonOpts, 'zonJentera');
@@ -1937,13 +1945,16 @@
             const balaiSelected = selectedValues['anggotaBalai'] || [];
             const statusSelected = selectedValues['anggotaStatus'] || [];
             const zonSelected = selectedValues['zonAnggota'] || [];
+            const unitSelected = selectedValues['anggotaUnit'] || [];
 
             let filtered = d.filter(a => {
                 const matchNama = !namaSearch || normalize(a.nama).includes(normalize(namaSearch)) || normalize(a.pangkat).includes(normalize(namaSearch));
                 const matchBalai = balaiSelected.length === 0 || balaiSelected.some(b => normalize(a.balai) === normalize(b));
                 const matchStatus = statusSelected.length === 0 || statusSelected.some(s => normalize(a.status) === normalize(s));
                 const matchZon = zonSelected.length === 0 || (a.zon && zonSelected.some(z => normalize(a.zon) === normalize(z)));
-                return matchNama && matchBalai && matchStatus && matchZon;
+                const anggotaUnits = getActiveUnitsDashboard(a);
+                const matchUnit = unitSelected.length === 0 || unitSelected.some(u => anggotaUnits.some(au => normalize(au) === normalize(u)));
+                return matchNama && matchBalai && matchStatus && matchZon && matchUnit;
             });
 
             document.getElementById('anggotaCount').innerText = `${filtered.length} rekod`;
@@ -1984,10 +1995,9 @@
         // Senarai unit rasmi (selaras dengan ALL_UNITS di SISTEM_KEKUATAN_ANGGOTA)
         const ALL_UNITS_DASHBOARD = ['PEMADAM', 'EMRS', 'HAZMAT', 'PPDA', 'RIM', 'STORM/MUST'];
 
-        // Jana badge unit untuk setiap anggota di jadual dashboard.
-        // Sokong data baharu (a.units = {UNIT:'YA'/'TIDAK'}) dan data lama
-        // (a.unitBerbayar / a.unitTidakBerbayar) untuk keserasian ke belakang.
-        function getUnitBadgesDashboard(a) {
+        // Kembalikan senarai unit aktif seorang anggota (a.units = {UNIT:'YA'/'TIDAK'}),
+        // dengan sokongan data lama (a.unitBerbayar / a.unitTidakBerbayar) untuk keserasian ke belakang.
+        function getActiveUnitsDashboard(a) {
             let active = [];
             if (a.units && typeof a.units === 'object') {
                 active = ALL_UNITS_DASHBOARD.filter(u => a.units[u] === 'YA');
@@ -1996,7 +2006,13 @@
                 const utb = (a.unitTidakBerbayar === 'STOM/MUST') ? 'STORM/MUST' : (a.unitTidakBerbayar || '');
                 active = [ub, utb].filter(Boolean);
             }
-            if (active.length === 0) {
+            return active.length ? active : ['PEMADAM'];
+        }
+
+        // Jana badge unit untuk setiap anggota di jadual dashboard.
+        function getUnitBadgesDashboard(a) {
+            const active = getActiveUnitsDashboard(a);
+            if (active.length === 1 && active[0] === 'PEMADAM' && !(a.units && a.units['PEMADAM'] === 'YA') && !a.unitBerbayar && !a.unitTidakBerbayar) {
                 return '<span class="badge-status slate">PEMADAM</span>';
             }
             return active.map(u => `<span class="badge-status indigo">${escapeHtml(u)}</span>`).join(' ');
