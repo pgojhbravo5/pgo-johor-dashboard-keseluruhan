@@ -875,6 +875,9 @@
       <button onclick="switchTab('utiliti')" class="tab-btn tab-utiliti py-2.5 px-3 text-xs font-bold border-b-2 border-transparent text-slate-400 hover:text-slate-200 whitespace-nowrap transition flex items-center gap-1.5">
         <i class="fa-solid fa-truck-pickup"></i> UTILITI
       </button>
+      <button onclick="switchTab('keseluruhan')" class="tab-btn tab-keseluruhan py-2.5 px-3 text-xs font-bold border-b-2 border-transparent text-slate-400 hover:text-slate-200 whitespace-nowrap transition flex items-center gap-1.5">
+        <i class="fa-solid fa-layer-group"></i> DATA KESELURUHAN
+      </button>
       <button onclick="switchTab('dashboard')" class="tab-btn tab-dashboard py-2.5 px-3 text-xs font-bold border-b-2 border-transparent text-slate-400 hover:text-slate-200 whitespace-nowrap transition flex items-center gap-1.5">
         <i class="fa-solid fa-chart-column"></i> DASHBOARD UTAMA (FIT VIEW)
       </button>
@@ -1631,6 +1634,125 @@
         </div>
       </section>
 
+      <!-- TAB DATA KESELURUHAN (GABUNGAN SEMUA JENTERA) -->
+      <section id="tab-keseluruhan" class="tab-content hidden">
+        <div id="statsRow-keseluruhan" class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-2.5 mb-4"></div>
+        <div class="grid grid-cols-1 lg:grid-cols-4 gap-3 mb-4">
+          <div class="card-bg border-custom rounded-xl p-3 transition-colors duration-300" style="border-width: 1px">
+            <div class="flex items-center justify-between mb-2">
+              <h3 class="text-xs font-bold uppercase tracking-wider flex items-center gap-2 text-secondary-custom">
+                <i class="fa-solid fa-tags text-indigo-500"></i> Agihan Mengikut Jenis
+              </h3>
+              <span class="text-[9px] bg-indigo-500/20 text-indigo-400 border border-indigo-500/30 px-1.5 py-0.5 rounded font-bold">Doughnut</span>
+            </div>
+            <div class="h-48 relative">
+              <canvas id="chartJenis-keseluruhan"></canvas>
+            </div>
+          </div>
+          <div class="card-bg border-custom rounded-xl p-3 transition-colors duration-300" style="border-width: 1px">
+            <div class="flex items-center justify-between mb-2">
+              <h3 class="text-xs font-bold uppercase tracking-wider flex items-center gap-2 text-secondary-custom">
+                <i class="fa-solid fa-chart-pie text-indigo-500"></i> Status Keseluruhan Jentera
+              </h3>
+              <span class="text-[9px] bg-indigo-500/20 text-indigo-400 border border-indigo-500/30 px-1.5 py-0.5 rounded font-bold">Doughnut</span>
+            </div>
+            <div class="h-48 relative">
+              <canvas id="chartStatus-keseluruhan"></canvas>
+            </div>
+          </div>
+          <div class="card-bg border-custom rounded-xl p-3 transition-colors duration-300" style="border-width: 1px">
+            <div class="flex items-center justify-between mb-2">
+              <h3 class="text-xs font-bold uppercase tracking-wider flex items-center gap-2 text-secondary-custom">
+                <i class="fa-solid fa-shapes text-indigo-500"></i> Model Keseluruhan Jentera
+              </h3>
+              <button onclick="toggleChartType('keseluruhan')" class="text-[9px] bg-slate-700 hover:bg-slate-600 text-slate-200 border border-slate-600 px-2 py-0.5 rounded font-bold transition flex items-center gap-1" id="chartTypeBtn-keseluruhan">
+                <i class="fa-solid fa-chart-bar"></i> Tukar Carta Bar
+              </button>
+            </div>
+            <div class="h-48 relative">
+              <canvas id="chartModel-keseluruhan"></canvas>
+            </div>
+          </div>
+          <div class="card-bg border-custom rounded-xl p-3 transition-colors duration-300" style="border-width: 1px">
+            <div class="flex items-center justify-between mb-2">
+              <h3 class="text-xs font-bold uppercase tracking-wider flex items-center gap-2 text-secondary-custom">
+                <i class="fa-solid fa-location-dot text-indigo-500"></i> Agihan Mengikut Zon (Combo)
+              </h3>
+              <span class="text-[9px] bg-indigo-500/20 text-indigo-400 border border-indigo-500/30 px-1.5 py-0.5 rounded font-bold">Bar + Liner</span>
+            </div>
+            <div class="h-48 relative">
+              <canvas id="chartZon-keseluruhan"></canvas>
+            </div>
+          </div>
+        </div>
+        <!-- TABLE KESELURUHAN -->
+        <div class="card-bg border-custom rounded-xl p-3 space-y-3 transition-colors duration-300" style="border-width: 1px">
+          <div class="flex flex-wrap items-center justify-between gap-2">
+            <h3 class="text-xs font-bold uppercase tracking-wider flex items-center gap-2" style="color: var(--text-primary)">
+              <i class="fa-solid fa-list-check text-indigo-500"></i> Senarai Keseluruhan Jentera
+            </h3>
+            <div class="flex items-center gap-2">
+              <button onclick="copyAllTableData('keseluruhan')" class="px-2.5 py-1 bg-emerald-700 hover:bg-emerald-600 text-xs font-semibold rounded-lg text-emerald-100 transition flex items-center gap-1">
+                <i class="fa-solid fa-copy"></i> Salin Semua
+              </button>
+              <button onclick="eksportKeExcel('keseluruhan')" class="px-2.5 py-1 bg-slate-700 hover:bg-slate-600 text-xs font-semibold rounded-lg text-slate-200 transition flex items-center gap-1">
+                <i class="fa-solid fa-file-export"></i> CSV
+              </button>
+            </div>
+          </div>
+          <div class="flex flex-wrap items-center gap-2">
+            <div class="relative flex-1 min-w-[180px]">
+              <i class="fa-solid fa-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-slate-500 text-xs"></i>
+              <input type="text" id="searchInput-keseluruhan" placeholder="Cari Callsign, Plat, Lokasi, Jenis..." 
+                     class="w-full input-bg border rounded-lg pl-8 pr-8 py-1.5 outline-none focus:border-slate-500 text-xs transition-colors duration-300"
+                     onkeyup="doSearch('keseluruhan')" />
+              <button onclick="clearSearch('keseluruhan')" class="absolute right-2 top-1/2 -translate-y-1/2 text-slate-400 hover:text-white text-xs p-1 rounded transition" title="Padam carian">
+                <i class="fa-solid fa-xmark"></i>
+              </button>
+            </div>
+            <div class="ms-dropdown" id="msDropdown-keseluruhan">
+              <button class="ms-select-btn" onclick="toggleMsDropdown('keseluruhan')">
+                <span id="msText-keseluruhan"><i class="fa-solid fa-filter mr-1"></i> Semua Status</span><span class="text-[10px] bg-indigo-600 text-white px-1.5 py-0.2 rounded font-bold" id="msCount-keseluruhan" style="display: none">0</span><span class="text-[9px]">▼</span>
+              </button>
+              <div class="ms-options" id="msOptions-keseluruhan"></div>
+            </div>
+            <div class="ms-dropdown" id="msDropdownModel-keseluruhan">
+              <button class="ms-select-btn" onclick="toggleMsModelDropdown('keseluruhan')">
+                <span id="msTextModel-keseluruhan"><i class="fa-solid fa-truck mr-1"></i> Semua Model</span><span class="text-[10px] bg-indigo-600 text-white px-1.5 py-0.2 rounded font-bold" id="msCountModel-keseluruhan" style="display: none">0</span><span class="text-[9px]">▼</span>
+              </button>
+              <div class="ms-options" id="msOptionsModel-keseluruhan"></div>
+            </div>
+            <div class="ms-dropdown" id="msDropdownZon-keseluruhan">
+              <button class="ms-select-btn" onclick="toggleMsZonDropdown('keseluruhan')">
+                <span id="msTextZon-keseluruhan"><i class="fa-solid fa-location-dot mr-1"></i> Semua Zon</span><span class="text-[10px] bg-indigo-600 text-white px-1.5 py-0.2 rounded font-bold" id="msCountZon-keseluruhan" style="display: none">0</span><span class="text-[9px]">▼</span>
+              </button>
+              <div class="ms-options" id="msOptionsZon-keseluruhan"></div>
+            </div>
+          </div>
+          <div class="overflow-x-auto rounded-lg border-custom" style="border-width: 1px">
+            <table class="w-full text-left border-collapse text-xs">
+              <thead class="table-header-bg text-secondary-custom font-semibold uppercase border-b border-custom text-[11px]">
+                <tr>
+                  <th class="p-2">Bil</th>
+                  <th class="p-2">Callsign</th>
+                  <th class="p-2">Plate</th>
+                  <th class="p-2">Model</th>
+                  <th class="p-2">Jenis</th>
+                  <th class="p-2">Penempatan Asal</th>
+                  <th class="p-2">Lokasi Semasa</th>
+                  <th class="p-2">Zon</th>
+                  <th class="p-2">Status</th>
+                  <th class="p-2">Kerosakan</th>
+                  <th class="p-2 w-8">Salin</th>
+                </tr>
+              </thead>
+              <tbody id="tableBody-keseluruhan" class="divide-y divide-slate-700/40 text-[11px]" style="color: var(--text-secondary)"></tbody>
+            </table>
+          </div>
+          <div class="text-[11px] text-muted-custom" id="rowCount-keseluruhan">-</div>
+        </div>
+      </section>
+
       <!-- TAB DASHBOARD UTAMA -->
       <section id="tab-dashboard" class="tab-content hidden space-y-3">
         <div class="card-bg border-custom rounded-xl p-2.5 flex flex-wrap items-center justify-between gap-2 transition-colors duration-300" id="dashboardFilters" style="border-width: 1px">
@@ -1731,13 +1853,13 @@
       };
 
       const REFRESH_INTERVAL_SEC = 43200;
-      let D = { cfrt: [], emrs: [], water: [], lain: [], marin: [], rim: [], utiliti: [] };
+      let D = { cfrt: [], emrs: [], water: [], lain: [], marin: [], rim: [], utiliti: [], keseluruhan: [] };
       let T = 'cfrt';
       let F = ['cfrt', 'emrs', 'water'];
-      let subTabSelectedStatus = { cfrt: [], emrs: [], water: [], lain: [], marin: [], rim: [], utiliti: [] };
-      let subTabSelectedModel = { cfrt: [], emrs: [], water: [], lain: [], marin: [], rim: [], utiliti: [] };
-      let subTabSelectedZon = { cfrt: [], emrs: [], water: [], lain: [], marin: [], rim: [], utiliti: [] };
-      let chartTypeConfig = { cfrt: 'pie', emrs: 'pie', water: 'pie', lain: 'pie', marin: 'pie', rim: 'pie', utiliti: 'pie' };
+      let subTabSelectedStatus = { cfrt: [], emrs: [], water: [], lain: [], marin: [], rim: [], utiliti: [], keseluruhan: [] };
+      let subTabSelectedModel = { cfrt: [], emrs: [], water: [], lain: [], marin: [], rim: [], utiliti: [], keseluruhan: [] };
+      let subTabSelectedZon = { cfrt: [], emrs: [], water: [], lain: [], marin: [], rim: [], utiliti: [], keseluruhan: [] };
+      let chartTypeConfig = { cfrt: 'pie', emrs: 'pie', water: 'pie', lain: 'pie', marin: 'pie', rim: 'pie', utiliti: 'pie', keseluruhan: 'pie' };
       let SF = [];
       let intervalTimer = null;
       let remainingSeconds = REFRESH_INTERVAL_SEC;
@@ -1749,14 +1871,15 @@
         marin: { s: null, z: null, m: null },
         rim: { s: null, z: null, m: null },
         utiliti: { s: null, z: null, m: null },
+        keseluruhan: { s: null, z: null, m: null, j: null },
       };
       let slideshowActive = false,
         slideshowAuto = false,
         slideshowInterval = null,
         currentSlideZone = 0;
-      let legendHiddenStatus = { cfrt: [], emrs: [], water: [], lain: [], marin: [], rim: [], utiliti: [] };
-      let legendHiddenStatusModel = { cfrt: [], emrs: [], water: [], lain: [], marin: [], rim: [], utiliti: [] };
-      let legendHiddenStatusZon = { cfrt: [], emrs: [], water: [], lain: [], marin: [], rim: [], utiliti: [] };
+      let legendHiddenStatus = { cfrt: [], emrs: [], water: [], lain: [], marin: [], rim: [], utiliti: [], keseluruhan: [] };
+      let legendHiddenStatusModel = { cfrt: [], emrs: [], water: [], lain: [], marin: [], rim: [], utiliti: [], keseluruhan: [] };
+      let legendHiddenStatusZon = { cfrt: [], emrs: [], water: [], lain: [], marin: [], rim: [], utiliti: [], keseluruhan: [] };
 
       // ============================================================
       // THEME
@@ -2873,6 +2996,96 @@
             plugins: [ChartDataLabels],
           });
         }
+
+        // Jenis Breakdown Doughnut (only for combined "keseluruhan" view)
+        if (tab === 'keseluruhan') {
+          const jc = {};
+          list.forEach((i) => {
+            const j = i._jenisLabel || 'LAIN-LAIN';
+            jc[j] = (jc[j] || 0) + 1;
+          });
+          if (CC[tab].j) CC[tab].j.destroy();
+          const cj = document.getElementById(`chartJenis-${tab}`);
+          if (cj) {
+            const jenisPalette = {
+              'FRT': '#ef4444',
+              'EMRS': '#3b82f6',
+              'WATER TANKER': '#06b6d4',
+              'LAIN-LAIN JENTERA': '#a855f7',
+              'MARIN': '#14b8a6',
+              'RIM': '#f59e0b',
+              'UTILITI': '#22c55e',
+            };
+            const jenisLabels = Object.keys(jc);
+            const jenisData = Object.values(jc);
+            const jenisColors = jenisLabels.map(
+              (l) => jenisPalette[l] || '#64748b'
+            );
+            CC[tab].j = new Chart(cj.getContext('2d'), {
+              type: 'doughnut',
+              data: {
+                labels: jenisLabels,
+                datasets: [{
+                  data: jenisData,
+                  backgroundColor: jenisColors,
+                  borderWidth: 2,
+                  borderColor: isLight ? '#e2e8f0' : '#1e293b',
+                }, ],
+              },
+              options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                  legend: {
+                    position: 'bottom',
+                    align: 'center',
+                    labels: {
+                      color: legendTextColor,
+                      font: { size: 8 },
+                      padding: 8,
+                      textAlign: 'center',
+                    },
+                  },
+                  tooltip: {
+                    callbacks: {
+                      label: function(context) {
+                        const val = context.raw || 0;
+                        const pct =
+                          totalCount > 0 ?
+                          ((val / totalCount) * 100).toFixed(1) :
+                          0;
+                        return ` ${context.label}: ${val} unit (${pct}%)`;
+                      },
+                    },
+                  },
+                  datalabels: {
+                    color: isLight ? '#1e293b' : '#ffffff',
+                    font: { weight: 'normal', size: 8 },
+                    formatter: (value, context) => {
+                      const total = context.dataset.data.reduce(
+                        (a, b) => a + b, 0
+                      );
+                      const pct =
+                        total > 0 ? ((value / total) * 100).toFixed(1) : 0;
+                      return `${pct}%`;
+                    },
+                    display: (context) =>
+                      context.dataset.data[context.dataIndex] > 0,
+                    offset: 2,
+                    anchor: 'center',
+                    align: 'center',
+                  },
+                },
+                animation: {
+                  animateScale: true,
+                  animateRotate: true,
+                  duration: 800,
+                },
+              },
+              plugins: [ChartDataLabels],
+            });
+          }
+        }
       }
 
       // ============================================================
@@ -2880,6 +3093,7 @@
       // ============================================================
       function Rt(tab) {
         const list = D[tab] || [];
+        const isCombined = tab === 'keseluruhan';
         const searchVal = (
           document.getElementById(`searchInput-${tab}`)?.value || ''
         ).toLowerCase();
@@ -2895,7 +3109,8 @@
               asal = (G(item, 'PENEMPATAN ASAL') || '').toLowerCase(),
               zon = (G(item, 'ZON') || '').toLowerCase(),
               status = (G(item, 'STATUS JENTERA') || '').toLowerCase(),
-              kerosakan = (G(item, 'STATUS KEROSAKKAN') || '').toLowerCase();
+              kerosakan = (G(item, 'STATUS KEROSAKKAN') || '').toLowerCase(),
+              jenis = (item._jenisLabel || '').toLowerCase();
             if (
               !callsign.includes(searchVal) &&
               !plate.includes(searchVal) &&
@@ -2904,7 +3119,8 @@
               !asal.includes(searchVal) &&
               !zon.includes(searchVal) &&
               !status.includes(searchVal) &&
-              !kerosakan.includes(searchVal)
+              !kerosakan.includes(searchVal) &&
+              !jenis.includes(searchVal)
             ) return false;
           }
           if (selectedZones.length > 0) {
@@ -2927,10 +3143,10 @@
         if (!tbody) return;
         tbody.innerHTML =
           filtered.length === 0 ?
-          `<tr><td colspan="10" class="p-3 text-center text-slate-500">Tiada jentera dijumpai.</td></tr>` :
+          `<tr><td colspan="${isCombined ? 11 : 10}" class="p-3 text-center text-slate-500">Tiada jentera dijumpai.</td></tr>` :
           filtered
           .map((item, idx) => {
-            const itemWithType = { ...item, _j: tab };
+            const itemWithType = { ...item, _j: item._jenisTab || tab };
             const callsign = (G(item, 'CALLSIGN') || '-').toUpperCase(),
               plate = (G(item, 'PLATE') || '-').toUpperCase(),
               statusRaw = G(item, 'STATUS JENTERA') || 'TIADA',
@@ -2948,13 +3164,14 @@
                   <td class="p-2 font-bold" style="color:var(--text-primary);">${callsign}</td>
                   <td class="p-2"><span class="plate-number">${plate}</span></td>
                   <td class="p-2">${G(item, 'MODEL JENTERA') || '-'}</td>
+                  ${isCombined ? `<td class="p-2"><span class="text-[9px] font-bold uppercase px-1.5 py-0.5 rounded bg-indigo-500/20 text-indigo-400 border border-indigo-500/30">${item._jenisLabel || '-'}</span></td>` : ''}
                   <td class="p-2">${G(item, 'PENEMPATAN ASAL') || '-'}</td>
                   <td class="p-2">${G(item, 'LOKASI SEMASA') || '-'}</td>
                   <td class="p-2">${G(item, 'ZON') || '-'}</td>
                   <td class="p-2"><span class="badge-status ${badgeClass}">${statusRaw}</span></td>
-                  <td class="p-2 max-w-[140px] truncate" style="color:var(--text-secondary);">${
+                  <td class="p-2 max-w-[140px] truncate" style="color:var(--text-secondary);">${(
                     G(item, 'STATUS KEROSAKKAN') || '-'
-                  }</td>
+                  )}</td>
                   <td class="p-2 text-center" onclick="event.stopPropagation()"><button onclick="copySingleAssetInfo('${itemJson}', this)" class="copy-btn" title="Salin maklumat"><i class="fa-regular fa-copy"></i></button></td>
                 </tr>`;
           })
@@ -3015,7 +3232,7 @@
         }
         let text = `=== SENARAI JENTERA ${tab === 'cfrt' ? 'FRT' : tab.toUpperCase()} ===\nJumlah: ${list.length} jentera\n${'='.repeat(40)}\n\n`;
         list.forEach((item, idx) => {
-          const itemWithType = { ...item, _j: tab };
+          const itemWithType = { ...item, _j: item._jenisTab || tab };
           text += `[${idx + 1}] ${formatAssetInfo(itemWithType)}\n${'-'.repeat(
             30
           )}\n`;
@@ -3059,11 +3276,13 @@
           showNotification('Tiada data untuk dieksport', 'warning');
           return;
         }
-        let csv =
+        const isCombined = tab === 'keseluruhan';
+        let csv = isCombined ?
+          '\uFEFFBil,Jenis,Callsign,Plate,Model,Penempatan Asal,Lokasi Semasa,Zon,Status,Kerosakan\n' :
           '\uFEFFBil,Callsign,Plate,Model,Penempatan Asal,Lokasi Semasa,Zon,Status,Kerosakan\n';
         list.forEach((i, idx) => {
           csv +=
-            `${idx + 1},"${G(i, 'CALLSIGN')}","${G(i, 'PLATE')}","${G(
+            `${idx + 1},${isCombined ? `"${i._jenisLabel || ''}",` : ''}"${G(i, 'CALLSIGN')}","${G(i, 'PLATE')}","${G(
               i, 'MODEL JENTERA'
             )}","${G(i, 'PENEMPATAN ASAL')}","${G(i, 'LOKASI SEMASA')}","${G(
               i, 'ZON'
@@ -3742,12 +3961,46 @@
           fetchTabData('rim'),
           fetchTabData('utiliti'),
         ]).then(() => {
+          combineAllData();
           renderMainDashboard();
+          // === PEMBETULAN BUG TAB FRT ===
+          // Paksa tab FRT aktif selepas data dimuat untuk elakkan tab lain kelihatan pada muatan pertama (terutamanya di telefon)
+          switchTab('cfrt');
+
           document.getElementById('loadingOverlay').classList.add('hidden');
           if (refreshBtn) refreshBtn.classList.remove('animate-pulse');
           showNotification('Data berjaya dikemaskini', 'success');
           resetCountdown();
         });
+      }
+
+      // ============================================================
+      // DATA KESELURUHAN — GABUNGAN SEMUA TAB
+      // ============================================================
+      const JENIS_SOURCE_TABS = [
+        { tab: 'cfrt', label: 'FRT' },
+        { tab: 'emrs', label: 'EMRS' },
+        { tab: 'water', label: 'WATER TANKER' },
+        { tab: 'lain', label: 'LAIN-LAIN JENTERA' },
+        { tab: 'marin', label: 'MARIN' },
+        { tab: 'rim', label: 'RIM' },
+        { tab: 'utiliti', label: 'UTILITI' },
+      ];
+
+      function combineAllData() {
+        const merged = [];
+        JENIS_SOURCE_TABS.forEach(({ tab, label }) => {
+          (D[tab] || []).forEach((item) => {
+            merged.push({ ...item, _jenisLabel: label, _jenisTab: tab });
+          });
+        });
+        D.keseluruhan = merged;
+        populateMultiSelectOptions('keseluruhan');
+        populateModelOptions('keseluruhan');
+        populateZonOptions('keseluruhan');
+        UU('keseluruhan');
+        Rt('keseluruhan');
+        updateSubTabMultiSelect('keseluruhan', true);
       }
 
       function updateTimestamp() {
