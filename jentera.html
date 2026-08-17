@@ -410,6 +410,18 @@
         transition: all 0.15s ease;
         z-index: 5;
       }
+      /* FIX BUG #3: Tampakkan butang salin di telefon */
+      @media (max-width: 768px) {
+        .copy-btn {
+          opacity: 0.7 !important;
+          width: 22px;
+          height: 22px;
+          font-size: 11px;
+        }
+        .copy-btn:hover {
+          opacity: 1 !important;
+        }
+      }
       .jentera-card:hover .copy-btn,
       tr:hover .copy-btn {
         opacity: 1;
@@ -1209,7 +1221,8 @@
         </div>
       </section>
 
-      <section id="tab-lain" class="tab-content">
+      <!-- FIX BUG #2: Tambah hidden pada tab lain -->
+      <section id="tab-lain" class="tab-content hidden">
         <div id="statsRow-lain" class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-2.5 mb-4"></div>
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-3 mb-4">
           <div class="card-bg border-custom rounded-xl p-3 transition-colors duration-300" style="border-width: 1px">
@@ -1315,7 +1328,7 @@
           <div class="text-[11px] text-muted-custom" id="rowCount-lain">-</div>
         </div>
       </section>
-      <section id="tab-marin" class="tab-content">
+      <section id="tab-marin" class="tab-content hidden">
         <div id="statsRow-marin" class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-2.5 mb-4"></div>
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-3 mb-4">
           <div class="card-bg border-custom rounded-xl p-3 transition-colors duration-300" style="border-width: 1px">
@@ -1421,7 +1434,7 @@
           <div class="text-[11px] text-muted-custom" id="rowCount-marin">-</div>
         </div>
       </section>
-      <section id="tab-rim" class="tab-content">
+      <section id="tab-rim" class="tab-content hidden">
         <div id="statsRow-rim" class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-2.5 mb-4"></div>
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-3 mb-4">
           <div class="card-bg border-custom rounded-xl p-3 transition-colors duration-300" style="border-width: 1px">
@@ -1527,7 +1540,7 @@
           <div class="text-[11px] text-muted-custom" id="rowCount-rim">-</div>
         </div>
       </section>
-      <section id="tab-utiliti" class="tab-content">
+      <section id="tab-utiliti" class="tab-content hidden">
         <div id="statsRow-utiliti" class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-2.5 mb-4"></div>
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-3 mb-4">
           <div class="card-bg border-custom rounded-xl p-3 transition-colors duration-300" style="border-width: 1px">
@@ -3850,13 +3863,11 @@
         }
       }
 
+      // FIX BUG #4: Perbaiki fungsi closeModal
       function closeModal(e) {
-        if (
-          !e ||
-          e.target === document.getElementById('modalOverlay') ||
-          e.currentTarget
-        ) {
-          document.getElementById('modalOverlay').classList.remove('show');
+        const overlay = document.getElementById('modalOverlay');
+        if (!e || e.target === overlay) {
+          overlay.classList.remove('show');
         }
       }
 
@@ -3963,8 +3974,7 @@
         ]).then(() => {
           combineAllData();
           renderMainDashboard();
-          // === PEMBETULAN BUG TAB FRT ===
-          // Paksa tab FRT aktif selepas data dimuat untuk elakkan tab lain kelihatan pada muatan pertama (terutamanya di telefon)
+          // === FIX BUG #1: Paksa tab FRT aktif ===
           switchTab('cfrt');
 
           document.getElementById('loadingOverlay').classList.add('hidden');
