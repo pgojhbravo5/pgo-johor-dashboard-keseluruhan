@@ -548,6 +548,42 @@
         border-color: var(--border-color);
       }
 
+      /* ============================================================
+         BUTANG HEADER (Kemaskini, Siang/Malam, Print, Kembali)
+         Saiz seragam di desktop & mobile
+      ============================================================ */
+      .header-btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.35rem;
+        height: 34px;
+        min-width: 34px;
+        padding: 0 0.75rem;
+        border-radius: 0.5rem;
+        font-size: 0.75rem;
+        font-weight: 700;
+        line-height: 1;
+        white-space: nowrap;
+        text-decoration: none;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        box-sizing: border-box;
+      }
+      .header-btn.header-btn-icon {
+        width: 34px;
+        padding: 0;
+      }
+      @media (max-width: 639px) {
+        .header-btn {
+          width: 34px;
+          padding: 0;
+        }
+        .header-btn .btn-label {
+          display: none;
+        }
+      }
+
       @page {
         margin: 1.5cm 1cm 2cm 1cm;
         size: A4 landscape;
@@ -827,32 +863,17 @@
           <span id="countdown" class="text-muted-custom">Auto Refresh: -</span>
         </div>
         <div class="flex items-center gap-1.5">
-          <button onclick="loadAllData()" id="refreshBtn" class="px-2.5 py-1.5 bg-red-600 hover:bg-red-700 text-white font-semibold rounded-lg shadow-md shadow-red-600/20 transition flex items-center gap-1 text-xs">
-            <i class="fa-solid fa-arrows-rotate refresh-icon"></i><span class="hidden sm:inline">Kemaskini</span>
+          <button onclick="loadAllData()" id="refreshBtn" class="header-btn bg-red-600 hover:bg-red-700 text-white shadow-md shadow-red-600/20 transition" title="Kemaskini">
+            <i class="fa-solid fa-arrows-rotate refresh-icon"></i><span class="btn-label">Kemaskini</span>
           </button>
-          <button onclick="toggleTheme()" id="themeToggleBtn" class="p-2 bg-slate-700 hover:bg-slate-600 text-slate-200 rounded-lg border border-slate-600 transition text-xs" title="Tukar Mod Siang/Malam">
+          <button onclick="toggleTheme()" id="themeToggleBtn" class="header-btn header-btn-icon bg-slate-700 hover:bg-slate-600 text-slate-200 border border-slate-600 transition" title="Tukar Mod Siang/Malam">
             <i class="fa-solid fa-moon" id="themeIcon"></i>
           </button>
-          <button onclick="printDashboard()" id="printBtn" class="p-2 bg-slate-700 hover:bg-slate-600 text-slate-200 rounded-lg border border-slate-600 transition text-xs" title="Cetak Dashboard">
+          <button onclick="printDashboard()" id="printBtn" class="header-btn header-btn-icon bg-slate-700 hover:bg-slate-600 text-slate-200 border border-slate-600 transition" title="Cetak Dashboard">
             <i class="fa-solid fa-print"></i>
           </button>
-          <a href="index.html" class="btn-back" style="
-    display: inline-flex;
-    align-items: center;
-    gap: 0.4rem;
-    padding: 0.4rem 0.9rem;
-    border-radius: 0.5rem;
-    background: #FFD700;
-    color: #000;
-    border: 1px solid #FFD700;
-    font-size: 0.7rem;
-    font-weight: 700;
-    text-decoration: none;
-    cursor: pointer;
-    transition: all 0.2s ease;
-    font-family: var(--font-main);
-            ">
-            <i class="fas fa-arrow-left"></i> KEMBALI
+          <a href="index.html" id="backBtn" class="header-btn" style="background:#FFD700;color:#000;border:1px solid #FFD700;" title="Kembali">
+            <i class="fas fa-arrow-left"></i><span class="btn-label">KEMBALI</span>
           </a>
         </div>
       </div>
