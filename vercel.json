@@ -1,8 +1,10 @@
 {
+  "trailingSlash": false,
   "rewrites": [
     { "source": "/dashboard-radio", "destination": "https://data-girn-jbpm-johor.vercel.app/dashboard-radio" },
     { "source": "/dashboard-radio/:path*", "destination": "https://data-girn-jbpm-johor.vercel.app/dashboard-radio/:path*" },
     { "source": "/peta-bomba", "destination": "https://peta-kawasan-jagaan-balai-jbpm-joho-three.vercel.app/peta-bomba" },
-    { "source": "/peta-bomba/:path*", "destination": "https://peta-kawasan-jagaan-balai-jbpm-joho-three.vercel.app/peta-bomba/:path*" }
+    { "source": "/peta-bomba/:path*", "destination": "https://peta-kawasan-jagaan-balai-jbpm-joho-three.vercel.app/peta-bomba/:path*" },
+    { "source": "/peta-bomba/api/:path*", "destination": "https://peta-kawasan-jagaan-balai-jbpm-joho-three.vercel.app/api/:path*" }
   ]
 }
