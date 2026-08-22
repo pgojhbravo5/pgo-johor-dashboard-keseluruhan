@@ -20,6 +20,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css" />
 
     <style>
         /* ===== RESET & VARIABEL ===== */
@@ -1164,6 +1165,276 @@
         }
         .carousel-notice strong:hover {
             text-decoration: underline;
+        }
+
+        /* ===== PETA JENTERA ===== */
+        .section-peta-jentera {
+            margin-bottom: 1.5rem;
+        }
+        .peta-jentera-card {
+            border-radius: 1.25rem;
+            background: var(--hud-card-bg);
+            border: 1px solid var(--hud-border);
+            backdrop-filter: blur(14px);
+            -webkit-backdrop-filter: blur(14px);
+            padding: 1rem;
+        }
+        .peta-overall-stats {
+            display: flex;
+            gap: 0.6rem;
+            margin-bottom: 0.75rem;
+            flex-wrap: wrap;
+        }
+        .pos-item {
+            flex: 1;
+            min-width: 6rem;
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid var(--hud-border);
+            border-radius: 0.75rem;
+            padding: 0.5rem 0.6rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.15rem;
+        }
+        .pos-num {
+            font-size: 1.15rem;
+            font-weight: 800;
+            color: #fff;
+        }
+        .pos-item.baik .pos-num { color: #4ade80; }
+        .pos-item.minor .pos-num { color: #d9a969; }
+        .pos-item.rosak .pos-num { color: #ef4444; }
+        .pos-label {
+            font-size: 0.6rem;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.04rem;
+        }
+        body.mode-siang .pos-item {
+            background: rgba(255,255,255,0.6);
+            border-color: #e2e8f0;
+        }
+        body.mode-siang .pos-num { color: #0f172a; }
+        .peta-legend-dot {
+            width: 0.65rem;
+            height: 0.65rem;
+            border-radius: 50%;
+            flex-shrink: 0;
+            box-shadow: 0 0 0.35rem currentColor;
+        }
+        .peta-legend-dot.baik { background: #4ade80; color: #4ade80; }
+        .peta-legend-dot.minor { background: #d9a969; color: #d9a969; }
+        .peta-legend-dot.rosak { background: #ef4444; color: #ef4444; }
+        .peta-legend-dot.na { background: #64748b; color: #64748b; }
+
+        /* ===== PETA FILTER BAR (MULTISELECT CHECKBOX) ===== */
+        .peta-filter-bar {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 0.85rem;
+            padding: 0.5rem 0.75rem;
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid var(--hud-border);
+            border-radius: 0.75rem;
+        }
+        .peta-filter-label {
+            font-size: 0.7rem;
+            font-weight: 700;
+            color: var(--text-secondary);
+            display: flex;
+            align-items: center;
+            gap: 0.3rem;
+            margin-right: 0.15rem;
+        }
+        .peta-filter-chip {
+            display: flex;
+            align-items: center;
+            gap: 0.35rem;
+            font-size: 0.7rem;
+            font-weight: 600;
+            color: var(--text-secondary);
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid var(--hud-border);
+            border-radius: 1.1rem;
+            padding: 0.25rem 0.7rem 0.25rem 0.55rem;
+            cursor: pointer;
+            user-select: none;
+            transition: all 0.2s ease;
+        }
+        .peta-filter-chip:hover {
+            border-color: rgba(255,255,255,0.25);
+            background: rgba(255, 255, 255, 0.06);
+        }
+        .peta-filter-check {
+            width: 0.85rem;
+            height: 0.85rem;
+            cursor: pointer;
+            accent-color: var(--hazard-gold);
+            flex-shrink: 0;
+        }
+        .peta-filter-chip:has(.peta-filter-check:checked) {
+            color: var(--text-primary);
+        }
+        .peta-filter-chip.baik:has(.peta-filter-check:checked) { border-color: rgba(74, 222, 128, 0.45); background: rgba(74, 222, 128, 0.08); }
+        .peta-filter-chip.minor:has(.peta-filter-check:checked) { border-color: rgba(217, 169, 105, 0.45); background: rgba(217, 169, 105, 0.08); }
+        .peta-filter-chip.rosak:has(.peta-filter-check:checked) { border-color: rgba(239, 68, 68, 0.45); background: rgba(239, 68, 68, 0.08); }
+        .peta-filter-chip.na:has(.peta-filter-check:checked) { border-color: rgba(100, 116, 139, 0.45); background: rgba(100, 116, 139, 0.1); }
+        .peta-filter-chip:not(:has(.peta-filter-check:checked)) {
+            opacity: 0.5;
+        }
+        .peta-filter-reset {
+            margin-left: auto;
+            font-size: 0.65rem;
+            font-weight: 700;
+            color: var(--hazard-gold);
+            background: transparent;
+            border: 1px solid var(--hud-border-red);
+            border-radius: 1rem;
+            padding: 0.25rem 0.7rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        .peta-filter-reset:hover {
+            background: rgba(217, 169, 105, 0.1);
+        }
+        body.mode-siang .peta-filter-bar {
+            background: rgba(255,255,255,0.6);
+            border-color: #e2e8f0;
+        }
+        body.mode-siang .peta-filter-chip {
+            background: rgba(255,255,255,0.7);
+            border-color: #e2e8f0;
+            color: #475569;
+        }
+        #petaJenteraMap {
+            width: 100%;
+            height: 30rem;
+            border-radius: 0.85rem;
+            overflow: hidden;
+            border: 1px solid var(--hud-border);
+            background: #0b1220;
+        }
+        .peta-jentera-status {
+            font-size: 0.7rem;
+            color: var(--text-secondary);
+            text-align: center;
+            margin-top: 0.5rem;
+        }
+        /* Leaflet dark theme adjustments */
+        .leaflet-container {
+            background: #0b1220 !important;
+            font-family: var(--font-main) !important;
+        }
+        .leaflet-popup-content-wrapper {
+            background: rgba(18, 18, 24, 0.96);
+            color: var(--text-primary);
+            border: 1px solid var(--hud-border);
+            border-radius: 0.75rem;
+            box-shadow: 0 0.5rem 1.5rem rgba(0,0,0,0.5);
+        }
+        .leaflet-popup-tip {
+            background: rgba(18, 18, 24, 0.96);
+        }
+        .leaflet-popup-content {
+            margin: 0.75rem 0.9rem;
+            min-width: 12.5rem;
+        }
+        .popup-balai-title {
+            font-weight: 800;
+            font-size: 0.85rem;
+            color: #fff;
+            margin-bottom: 0.5rem;
+            padding-bottom: 0.4rem;
+            border-bottom: 1px solid var(--hud-border);
+        }
+        .popup-jentera-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 0.5rem;
+            font-size: 0.72rem;
+            padding: 0.2rem 0;
+            color: var(--text-secondary);
+        }
+        .popup-jentera-row .jrow-name {
+            color: var(--text-primary);
+            font-weight: 600;
+        }
+        .popup-jentera-badge {
+            font-size: 0.6rem;
+            font-weight: 700;
+            padding: 0.1rem 0.5rem;
+            border-radius: 0.6rem;
+            white-space: nowrap;
+        }
+        .popup-jentera-badge.baik { background: rgba(74, 222, 128, 0.15); color: #4ade80; }
+        .popup-jentera-badge.minor { background: rgba(217, 169, 105, 0.18); color: #d9a969; }
+        .popup-jentera-badge.rosak { background: rgba(239, 68, 68, 0.15); color: #ef4444; }
+        .popup-jentera-empty {
+            font-size: 0.72rem;
+            color: var(--text-secondary);
+            font-style: italic;
+        }
+        .peta-marker-wrap {
+            position: relative;
+            width: 1.9rem;
+            height: 1.9rem;
+        }
+        .peta-marker-dot {
+            width: 1.9rem;
+            height: 1.9rem;
+            border-radius: 50%;
+            border: 2px solid rgba(255,255,255,0.9);
+            box-shadow: 0 0.15rem 0.5rem rgba(0,0,0,0.6);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            font-size: 0.85rem;
+        }
+        .peta-marker-count {
+            position: absolute;
+            top: -0.35rem;
+            right: -0.35rem;
+            min-width: 1.1rem;
+            height: 1.1rem;
+            padding: 0 0.2rem;
+            border-radius: 0.6rem;
+            background: #121218;
+            border: 1.5px solid rgba(255,255,255,0.85);
+            color: #fff;
+            font-size: 0.6rem;
+            font-weight: 800;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            line-height: 1;
+        }
+        .popup-summary {
+            display: flex;
+            gap: 0.4rem;
+            flex-wrap: wrap;
+            margin-bottom: 0.55rem;
+        }
+        .popup-summary-item {
+            font-size: 0.62rem;
+            font-weight: 700;
+            padding: 0.15rem 0.5rem;
+            border-radius: 0.6rem;
+            display: flex;
+            align-items: center;
+            gap: 0.25rem;
+        }
+        .popup-summary-item.baik { background: rgba(74, 222, 128, 0.15); color: #4ade80; }
+        .popup-summary-item.minor { background: rgba(217, 169, 105, 0.18); color: #d9a969; }
+        .popup-summary-item.rosak { background: rgba(239, 68, 68, 0.15); color: #ef4444; }
+        .popup-summary-item.jumlah { background: rgba(255,255,255,0.08); color: var(--text-primary); }
+        body.mode-siang .peta-jentera-card {
+            background: rgba(255, 255, 255, 0.55);
+            border-color: #e2e8f0;
         }
 
         /* ===== APPS GRID ===== */
@@ -2605,7 +2876,7 @@
                 </div>
                 <div class="logo-text">
                     <h1>PUSAT GERAKAN OPERASI <span>JOHOR</span></h1>
-                    <span class="sub">Tactical Dashboard </span>
+                    <span class="sub">Dashboard Utama</span>
                 </div>
                 <div class="logo-img-wrapper">
                     <img src="https://i.ibb.co/fdXsyrBX/logo-unit-komunikasi-1.png" alt="Logo Unit Komunikasi" class="logo-img" loading="lazy" />
@@ -2685,6 +2956,45 @@
                         <div class="carousel-notice">
                             <i class="fas fa-info-circle"></i>
                             Sila buka <strong id="noticeDashOpsLink">Live Statistik Kes 24 Jam (DASH-OPS)</strong> untuk maklumat penuh.
+                        </div>
+                    </section>
+
+                    <!-- ===== PETA KETERSEDIAAN JENTERA SELURUH JOHOR ===== -->
+                    <section class="section-peta-jentera">
+                        <div class="section-title">
+                            <i class="fas fa-map-location-dot" style="color:var(--hazard-gold)"></i> PETA KETERSEDIAAN JENTERA
+                            <span class="status-badge live">● LIVE</span>
+                            <span style="font-size:0.6rem; font-weight:400; color:var(--text-secondary); margin-left:auto;" id="petaJenteraCount">-- balai</span>
+                        </div>
+                        <div class="peta-jentera-card">
+                            <div class="peta-overall-stats" id="petaOverallStats">
+                                <div class="pos-item"><span class="pos-num" id="posJumlah">--</span><span class="pos-label">Jumlah Jentera</span></div>
+                                <div class="pos-item baik"><span class="pos-num" id="posBaik">--</span><span class="pos-label">Baik</span></div>
+                                <div class="pos-item minor"><span class="pos-num" id="posMinor">--</span><span class="pos-label">Rosak Minor</span></div>
+                                <div class="pos-item rosak"><span class="pos-num" id="posRosak">--</span><span class="pos-label">Rosak</span></div>
+                            </div>
+                            <div class="peta-filter-bar">
+                                <span class="peta-filter-label"><i class="fas fa-filter"></i> Tapis:</span>
+                                <label class="peta-filter-chip baik">
+                                    <input type="checkbox" class="peta-filter-check" data-kelas="baik" checked />
+                                    <span class="peta-legend-dot baik"></span> Baik
+                                </label>
+                                <label class="peta-filter-chip minor">
+                                    <input type="checkbox" class="peta-filter-check" data-kelas="minor" checked />
+                                    <span class="peta-legend-dot minor"></span> Rosak Minor
+                                </label>
+                                <label class="peta-filter-chip rosak">
+                                    <input type="checkbox" class="peta-filter-check" data-kelas="rosak" checked />
+                                    <span class="peta-legend-dot rosak"></span> Rosak
+                                </label>
+                                <label class="peta-filter-chip na">
+                                    <input type="checkbox" class="peta-filter-check" data-kelas="na" checked />
+                                    <span class="peta-legend-dot na"></span> Tiada Data
+                                </label>
+                                <button type="button" class="peta-filter-reset" id="petaFilterReset">Nyahpilih Semua</button>
+                            </div>
+                            <div id="petaJenteraMap"></div>
+                            <div class="peta-jentera-status" id="petaJenteraStatusText">Memuatkan data jentera...</div>
                         </div>
                     </section>
 
@@ -3023,6 +3333,7 @@
         </div>
     </footer>
 
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
 
@@ -3884,6 +4195,294 @@
             }
             fetchJenteraBersedia();
             setInterval(fetchJenteraBersedia, 60000);
+
+            // ===== PETA KETERSEDIAAN JENTERA (LEAFLET + OPENSTREETMAP) =====
+            const SENARAI_BALAI_JOHOR = [
+                // ZON 1 - JOHOR BAHRU (13)
+                { nama: 'BBP Larkin (JB)', zon: 1, daerah: 'Johor Bahru', lat: 1.4854561788224945, lng: 103.75081990820912, tel: '07-2243444' },
+                { nama: 'BBP Pasir Gudang', zon: 1, daerah: 'Johor Bahru', lat: 1.4643416318507871, lng: 103.89600906588159, tel: '07-2513444' },
+                { nama: 'BBP Johor Jaya', zon: 1, daerah: 'Johor Bahru', lat: 1.531594273562039, lng: 103.79519160820901, tel: '07-3511444' },
+                { nama: 'BBP Skudai', zon: 1, daerah: 'Johor Bahru', lat: 1.5384054976029675, lng: 103.62618860820908, tel: '07-5205144' },
+                { nama: 'BBP Iskandar Puteri', zon: 1, daerah: 'Johor Bahru', lat: 1.4527885824622484, lng: 103.6205641217007, tel: '07-5099550' },
+                { nama: 'BBP Tebrau', zon: 1, daerah: 'Johor Bahru', lat: 1.5237283247173334, lng: 103.75913396799398, tel: '07-3317523' },
+                { nama: 'BBP Pekan Nenas', zon: 1, daerah: 'Pontian', lat: 1.5070458758702345, lng: 103.51421908078062, tel: '07-6994444' },
+                { nama: 'BBP Pontian', zon: 1, daerah: 'Pontian', lat: 1.4921952528635996, lng: 103.38700343660228, tel: '07-6864444' },
+                { nama: 'BBP Pontian Baru', zon: 1, daerah: 'Pontian', lat: 1.4850292041041675, lng: 103.40415745239008, tel: '07-6864044' },
+                { nama: 'BBP Kulai', zon: 1, daerah: 'Kulai', lat: 1.658456457889051, lng: 103.60583249429396, tel: '07-6634444' },
+                { nama: 'BBP Bandar Baru Kulai', zon: 1, daerah: 'Kulai', lat: 1.6579859203880312, lng: 103.62661719424169, tel: '07-5908711' },
+                { nama: 'BBP Kempas', zon: 1, daerah: 'Johor Bahru', lat: 1.5271427241141524, lng: 103.73291787937283, tel: '07-2325474' },
+                { nama: 'BBP Fire Post Benut', zon: 1, daerah: 'Pontian', lat: 1.63813001403506, lng: 103.25906880820891, tel: '07-6905839' },
+                // ZON 2 - KOTA TINGGI (8)
+                { nama: 'BBP Kota Tinggi', zon: 2, daerah: 'Kota Tinggi', lat: 1.7400726715952255, lng: 103.89888355053641, tel: '07-8831444' },
+                { nama: 'BBP Sungai Rengit', zon: 2, daerah: 'Pengerang', lat: 1.3586296957880815, lng: 104.23142533704556, tel: '07-8246770' },
+                { nama: 'BBP Bandar Penawar', zon: 2, daerah: 'Kota Tinggi', lat: 1.5584240268894343, lng: 104.22836464004762, tel: '07-8223692' },
+                { nama: 'BBP Mersing', zon: 2, daerah: 'Mersing', lat: 2.4281597008384166, lng: 103.83968525238902, tel: '07-7994444' },
+                { nama: 'BBP Endau', zon: 2, daerah: 'Mersing', lat: 2.6511667138213197, lng: 103.622388079372, tel: '07-7945444' },
+                { nama: 'BBP Sebana Cove', zon: 2, daerah: 'Kota Tinggi', lat: 1.4111942637295485, lng: 104.20702710820935, tel: '07-8861641' },
+                { nama: 'BBP Punggai', zon: 2, daerah: 'Kota Tinggi', lat: 1.42940813601492, lng: 104.27036571006252, tel: '07-8861952' },
+                { nama: 'BBP Bandar Tenggara', zon: 2, daerah: 'Kulai', lat: 1.8512117790715301, lng: 103.61435888307892, tel: '07-8964498' },
+                // ZON 3 - KLUANG (8)
+                { nama: 'BBP Penggaram', zon: 3, daerah: 'Batu Pahat', lat: 1.8587485315341812, lng: 102.94072309627684, tel: '07-4345757' },
+                { nama: 'BBP Kluang', zon: 3, daerah: 'Kluang', lat: 2.0342273939975697, lng: 103.31953787937219, tel: '07-7724444' },
+                { nama: 'BBP Batu Pahat', zon: 3, daerah: 'Batu Pahat', lat: 1.85005904680567, lng: 102.92981160780664, tel: '07-4338444' },
+                { nama: 'BBP Rengit', zon: 3, daerah: 'Batu Pahat', lat: 1.6801605554662105, lng: 103.15820093475241, tel: '07-4243444' },
+                { nama: 'BBP Renggam', zon: 3, daerah: 'Kluang', lat: 1.8839022510131862, lng: 103.3999346812256, tel: '07-7535444' },
+                { nama: 'BBP Yong Peng', zon: 3, daerah: 'Batu Pahat', lat: 2.01254932009085, lng: 103.06322993660169, tel: '07-4674444' },
+                { nama: 'BBP Ayer Hitam', zon: 3, daerah: 'Batu Pahat', lat: 1.9046398311946404, lng: 103.16580533704466, tel: '07-7582206' },
+                { nama: 'BBP Fire Post Parit Sulong', zon: 3, daerah: 'Batu Pahat', lat: 1.9734098250147893, lng: 102.86930995238934, tel: 'n/a' },
+                // ZON 4 - MUAR (7)
+                { nama: 'BBP Muar', zon: 4, daerah: 'Muar', lat: 2.0536025587250952, lng: 102.57234047937226, tel: '06-9555994' },
+                { nama: 'BBP Bandar Baru Segamat', zon: 4, daerah: 'Segamat', lat: 2.498693444757604, lng: 102.87045925238905, tel: '07-9435844' },
+                { nama: 'BBP Segamat', zon: 4, daerah: 'Segamat', lat: 2.5097396869375945, lng: 102.81377777937195, tel: '07-9314444' },
+                { nama: 'BBP Labis', zon: 4, daerah: 'Segamat', lat: 2.380060008820531, lng: 103.01796330820825, tel: '07-9254444' },
+                { nama: 'BBP Bukit Gambir', zon: 4, daerah: 'Tangkak', lat: 2.217126038710606, lng: 102.65990143704445, tel: '06-9765144' },
+                { nama: 'BBP Tangkak', zon: 4, daerah: 'Tangkak', lat: 2.2709401263413143, lng: 102.54347515009461, tel: '06-9783444' },
+                { nama: 'BBP Pagoh', zon: 4, daerah: 'Muar', lat: 2.136905853626598, lng: 102.73936700820836, tel: '06-9741955' }
+            ];
+
+            // Normalisasi nama balai: buang "BBP", "FIRE POST", kurungan, ruang berlebih, uppercase
+            function normalisasiNamaBalai(str) {
+                if (!str) return '';
+                return str
+                    .toUpperCase()
+                    .replace(/\(.*?\)/g, '')
+                    .replace(/\bBBP\b/g, '')
+                    .replace(/\bFIRE POST\b/g, '')
+                    .replace(/\bBALAI BOMBA\b/g, '')
+                    .replace(/[^A-Z0-9 ]/g, '')
+                    .replace(/\s+/g, ' ')
+                    .trim();
+            }
+
+            // Bina lookup map: nama ternormalisasi -> objek balai
+            const PETA_BALAI_LOOKUP = {};
+            SENARAI_BALAI_JOHOR.forEach(b => {
+                PETA_BALAI_LOOKUP[normalisasiNamaBalai(b.nama)] = b;
+            });
+
+            function klasifikasiStatusJentera(status, kerosakan) {
+                const s = (status || '').toUpperCase();
+                if (s.includes('BAIK')) return 'baik';
+                if (s.includes('ROSAK MINOR')) return 'minor';
+                if (s.includes('ROSAK')) return 'rosak';
+                return 'rosak';
+            }
+
+            let petaJenteraMapInstance = null;
+            let petaJenteraMarkers = {};
+            let petaFilterAktif = new Set(['baik', 'minor', 'rosak', 'na']);
+
+            function initPetaJenteraMap() {
+                const mapEl = document.getElementById('petaJenteraMap');
+                if (!mapEl || petaJenteraMapInstance || typeof L === 'undefined') return;
+
+                petaJenteraMapInstance = L.map('petaJenteraMap', {
+                    zoomControl: true,
+                    scrollWheelZoom: false
+                }).setView([1.85, 103.55], 9);
+
+                L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                    attribution: '&copy; OpenStreetMap contributors',
+                    maxZoom: 18
+                }).addTo(petaJenteraMapInstance);
+
+                const warnaStatus = { baik: '#4ade80', minor: '#d9a969', rosak: '#ef4444', na: '#64748b' };
+
+                SENARAI_BALAI_JOHOR.forEach(balai => {
+                    const icon = L.divIcon({
+                        className: '',
+                        html: `<div class="peta-marker-wrap"><div class="peta-marker-dot" style="background:${warnaStatus.na}"><i class="fas fa-truck-field"></i></div></div>`,
+                        iconSize: [30, 30],
+                        iconAnchor: [15, 15],
+                        popupAnchor: [0, -14]
+                    });
+                    const marker = L.marker([balai.lat, balai.lng], { icon }).addTo(petaJenteraMapInstance);
+                    marker.bindPopup(buatKandunganPopup(balai, []));
+                    petaJenteraMarkers[normalisasiNamaBalai(balai.nama)] = { marker, balai, icon, kelasSemasa: 'na' };
+                });
+
+                const countEl = document.getElementById('petaJenteraCount');
+                if (countEl) countEl.textContent = SENARAI_BALAI_JOHOR.length + ' balai';
+            }
+
+            function buatKandunganPopup(balai, senaraiJentera) {
+                let baris = '';
+                let bilBaik = 0, bilMinor = 0, bilRosak = 0;
+                senaraiJentera.forEach(j => {
+                    if (j.kelas === 'baik') bilBaik++;
+                    else if (j.kelas === 'minor') bilMinor++;
+                    else bilRosak++;
+                });
+
+                let ringkasan = `<div class="popup-summary">
+                    <span class="popup-summary-item jumlah"><i class="fas fa-truck-field"></i> ${senaraiJentera.length} Jumlah</span>`;
+                if (bilBaik > 0) ringkasan += `<span class="popup-summary-item baik">${bilBaik} Baik</span>`;
+                if (bilMinor > 0) ringkasan += `<span class="popup-summary-item minor">${bilMinor} Minor</span>`;
+                if (bilRosak > 0) ringkasan += `<span class="popup-summary-item rosak">${bilRosak} Rosak</span>`;
+                ringkasan += `</div>`;
+
+                if (senaraiJentera.length === 0) {
+                    baris = '<div class="popup-jentera-empty">Tiada data jentera direkodkan.</div>';
+                    ringkasan = '';
+                } else {
+                    senaraiJentera.forEach(j => {
+                        const kelas = j.kelas;
+                        const label = kelas === 'baik' ? 'BAIK' : kelas === 'minor' ? 'ROSAK MINOR' : 'ROSAK';
+                        baris += `<div class="popup-jentera-row">
+                            <span class="jrow-name">${j.callsign || j.plate || '-'}</span>
+                            <span class="popup-jentera-badge ${kelas}">${label}</span>
+                        </div>`;
+                    });
+                }
+                return `<div class="popup-balai-title"><i class="fas fa-house-fire" style="margin-right:0.35rem;color:var(--hazard-gold)"></i>${balai.nama}</div>${ringkasan}${baris}`;
+            }
+
+            async function fetchDanPaparPetaJentera() {
+                const statusTextEl = document.getElementById('petaJenteraStatusText');
+                try {
+                    if (typeof L === 'undefined') { if (statusTextEl) statusTextEl.textContent = 'Ralat: Leaflet tidak dimuat.'; return; }
+                    initPetaJenteraMap();
+
+                    const response = await fetch(CFRT_CSV_URL, { cache: 'no-cache' });
+                    if (!response.ok) throw new Error('Gagal memuat turun CSV CFRT');
+                    const text = await response.text();
+                    const rows = pgoParseCSV(text);
+                    if (rows.length < 2) throw new Error('Data CFRT kosong');
+
+                    const headers = rows[0];
+                    const idxLokasiSemasa = pgoColIdx(headers, 'LOKASI SEMASA');
+                    const idxStatus = pgoColIdx(headers, 'STATUS JENTERA');
+                    const idxKerosakan = pgoColIdx(headers, 'STATUS KEROSAKKAN');
+                    const idxCallsign = pgoColIdx(headers, 'CALLSIGN');
+                    const idxPlate = pgoColIdx(headers, 'PLATE');
+
+                    // Kumpul jentera ikut balai (ternormalisasi)
+                    const jenteraIkutBalai = {};
+                    for (let i = 1; i < rows.length; i++) {
+                        const row = rows[i];
+                        if (!row || row.length === 0) continue;
+                        const lokasiRaw = idxLokasiSemasa >= 0 ? (row[idxLokasiSemasa] || '').trim() : '';
+                        if (!lokasiRaw) continue;
+                        const kunci = normalisasiNamaBalai(lokasiRaw);
+                        const status = idxStatus >= 0 ? (row[idxStatus] || '').trim() : '';
+                        const kerosakan = idxKerosakan >= 0 ? (row[idxKerosakan] || '').trim() : '';
+                        const kelas = klasifikasiStatusJentera(status, kerosakan);
+                        const item = {
+                            callsign: idxCallsign >= 0 ? (row[idxCallsign] || '').trim() : '',
+                            plate: idxPlate >= 0 ? (row[idxPlate] || '').trim() : '',
+                            status,
+                            kelas
+                        };
+                        if (!jenteraIkutBalai[kunci]) jenteraIkutBalai[kunci] = [];
+                        jenteraIkutBalai[kunci].push(item);
+                    }
+
+                    const warnaStatus = { baik: '#4ade80', minor: '#d9a969', rosak: '#ef4444', na: '#64748b' };
+                    let balaiTakDipadan = 0;
+                    let jumlahKeseluruhan = 0, jumlahBaik = 0, jumlahMinor = 0, jumlahRosak = 0;
+
+                    Object.keys(petaJenteraMarkers).forEach(kunci => {
+                        const markerInfo = petaJenteraMarkers[kunci];
+                        const { marker, balai } = markerInfo;
+                        const senarai = jenteraIkutBalai[kunci] || [];
+
+                        let kelasBalai = 'na';
+                        if (senarai.length > 0) {
+                            if (senarai.some(j => j.kelas === 'rosak')) kelasBalai = 'rosak';
+                            else if (senarai.some(j => j.kelas === 'minor')) kelasBalai = 'minor';
+                            else kelasBalai = 'baik';
+                        }
+
+                        senarai.forEach(j => {
+                            jumlahKeseluruhan++;
+                            if (j.kelas === 'baik') jumlahBaik++;
+                            else if (j.kelas === 'minor') jumlahMinor++;
+                            else jumlahRosak++;
+                        });
+
+                        const newIcon = L.divIcon({
+                            className: '',
+                            html: `<div class="peta-marker-wrap"><div class="peta-marker-dot" style="background:${warnaStatus[kelasBalai]}"><i class="fas fa-truck-field"></i></div>${senarai.length > 0 ? `<div class="peta-marker-count">${senarai.length}</div>` : ''}</div>`,
+                            iconSize: [30, 30],
+                            iconAnchor: [15, 15],
+                            popupAnchor: [0, -14]
+                        });
+                        marker.setIcon(newIcon);
+                        marker.setPopupContent(buatKandunganPopup(balai, senarai));
+                        markerInfo.kelasSemasa = kelasBalai;
+                    });
+
+                    // Kesan lokasi dalam CSV yang tidak match mana-mana balai (untuk debug/log sahaja)
+                    Object.keys(jenteraIkutBalai).forEach(kunci => {
+                        if (!petaJenteraMarkers[kunci]) balaiTakDipadan++;
+                    });
+
+                    const posJumlahEl = document.getElementById('posJumlah');
+                    const posBaikEl = document.getElementById('posBaik');
+                    const posMinorEl = document.getElementById('posMinor');
+                    const posRosakEl = document.getElementById('posRosak');
+                    if (posJumlahEl) posJumlahEl.textContent = jumlahKeseluruhan;
+                    if (posBaikEl) posBaikEl.textContent = jumlahBaik;
+                    if (posMinorEl) posMinorEl.textContent = jumlahMinor;
+                    if (posRosakEl) posRosakEl.textContent = jumlahRosak;
+
+                    const now = new Date();
+                    const masaKini = now.toLocaleTimeString('ms-MY', { hour: '2-digit', minute: '2-digit' });
+                    if (statusTextEl) {
+                        statusTextEl.textContent = `Dikemaskini ${masaKini}` +
+                            (balaiTakDipadan > 0 ? ` — ${balaiTakDipadan} lokasi CSV tidak sepadan dgn senarai balai` : '');
+                    }
+
+                    terapFilterPeta();
+                } catch (e) {
+                    console.warn('Peta Jentera fetch error:', e.message);
+                    if (statusTextEl) statusTextEl.textContent = 'Gagal memuatkan data jentera.';
+                }
+            }
+
+            // ===== FILTER MULTISELECT (TICKBOX) UNTUK PAPARAN JENTERA =====
+            function terapFilterPeta() {
+                if (!petaJenteraMapInstance) return;
+                let dipaparkan = 0;
+                Object.values(petaJenteraMarkers).forEach(info => {
+                    const tunjuk = petaFilterAktif.has(info.kelasSemasa || 'na');
+                    const sudahAdaDalamPeta = petaJenteraMapInstance.hasLayer(info.marker);
+                    if (tunjuk && !sudahAdaDalamPeta) {
+                        info.marker.addTo(petaJenteraMapInstance);
+                    } else if (!tunjuk && sudahAdaDalamPeta) {
+                        petaJenteraMapInstance.removeLayer(info.marker);
+                    }
+                    if (tunjuk) dipaparkan++;
+                });
+                const countEl = document.getElementById('petaJenteraCount');
+                if (countEl) countEl.textContent = `${dipaparkan} / ${SENARAI_BALAI_JOHOR.length} balai dipaparkan`;
+            }
+
+            document.querySelectorAll('.peta-filter-check').forEach(cb => {
+                cb.addEventListener('change', function() {
+                    const kelas = this.getAttribute('data-kelas');
+                    if (this.checked) petaFilterAktif.add(kelas);
+                    else petaFilterAktif.delete(kelas);
+                    terapFilterPeta();
+                });
+            });
+
+            const petaFilterResetBtn = document.getElementById('petaFilterReset');
+            if (petaFilterResetBtn) {
+                petaFilterResetBtn.addEventListener('click', function() {
+                    const semuaTerpilih = petaFilterAktif.size === 4;
+                    document.querySelectorAll('.peta-filter-check').forEach(cb => {
+                        cb.checked = semuaTerpilih ? false : true;
+                    });
+                    petaFilterAktif = semuaTerpilih ? new Set() : new Set(['baik', 'minor', 'rosak', 'na']);
+                    this.textContent = semuaTerpilih ? 'Pilih Semua' : 'Nyahpilih Semua';
+                    terapFilterPeta();
+                });
+            }
+
+            initPetaJenteraMap();
+            fetchDanPaparPetaJentera();
+            setInterval(fetchDanPaparPetaJentera, 60000);
 
             // ===== FETCH ANGGOTA MINI STATS =====
             async function fetchAnggotaMiniStats() {
