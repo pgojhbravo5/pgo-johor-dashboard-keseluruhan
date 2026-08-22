@@ -639,6 +639,47 @@
         }
 
         /* ===== SEARCH BAR ===== */
+        /* ===== BREADCRUMB ===== */
+        .breadcrumb-bar {
+            width: 100%;
+            flex-shrink: 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+            background: rgba(15, 15, 20, 0.6);
+            transition: background 0.5s ease, border-color 0.5s ease;
+        }
+        .breadcrumb-inner {
+            width: 100%;
+            max-width: 73.75rem;
+            margin: 0 auto;
+            padding: 0.5rem 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+        }
+        .breadcrumb-inner i {
+            font-size: 0.75rem;
+            color: var(--hazard-gold);
+        }
+        .breadcrumb-inner .crumb.current {
+            color: #ffffff;
+            font-weight: 600;
+        }
+        body.mode-siang .breadcrumb-bar {
+            background: rgba(255, 255, 255, 0.7);
+            border-bottom-color: #e2e8f0;
+        }
+        body.mode-siang .breadcrumb-inner {
+            color: #64748b;
+        }
+        body.mode-siang .breadcrumb-inner i {
+            color: #8a6a24;
+        }
+        body.mode-siang .breadcrumb-inner .crumb.current {
+            color: #0f172a;
+        }
+
         .search-bar-wrap {
             width: 100%;
             max-width: 73.75rem;
@@ -1900,16 +1941,62 @@
             -webkit-backdrop-filter: blur(20px);
             border-top: 1px solid rgba(255, 255, 255, 0.08);
             display: flex;
-            justify-content: space-between;
-            align-items: center;
-            flex-wrap: wrap;
-            gap: 0.75rem;
+            flex-direction: column;
+            gap: 0.625rem;
             color: var(--text-secondary);
             font-size: 0.75rem;
             font-weight: 500;
             flex-shrink: 0;
             margin-top: auto;
             transition: background 0.5s ease, border-color 0.5s ease;
+        }
+        .footer-address {
+            display: flex;
+            align-items: flex-start;
+            gap: 0.5rem;
+            font-size: 0.6875rem;
+            line-height: 1.5;
+            color: var(--text-secondary);
+            padding-bottom: 0.625rem;
+            border-bottom: 1px dashed rgba(255, 255, 255, 0.1);
+        }
+        .footer-address i {
+            color: var(--hazard-gold);
+            margin-top: 0.125rem;
+            flex-shrink: 0;
+        }
+        body.mode-siang .footer-address {
+            color: #64748b;
+            border-bottom-color: #e2e8f0;
+        }
+        body.mode-siang .footer-address i { color: #8a6a24; }
+        .footer-top {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+            padding-bottom: 0.625rem;
+            border-bottom: 1px dashed rgba(255, 255, 255, 0.1);
+        }
+        .footer-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: var(--hazard-gold);
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.75rem;
+            transition: color 0.3s ease;
+        }
+        .footer-link:hover { color: var(--fire-red); }
+        body.mode-siang .footer-top { border-bottom-color: #e2e8f0; }
+        body.mode-siang .footer-link { color: #8a6a24; }
+        body.mode-siang .footer-link:hover { color: #b3223f; }
+        .footer-bottom {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 0.75rem;
         }
         .footer .last-updated {
             font-size: 0.6875rem;
@@ -2487,6 +2574,14 @@
         </div>
     </header>
 
+    <!-- ===== BREADCRUMB ===== -->
+    <nav class="breadcrumb-bar" aria-label="Anda di sini">
+        <div class="breadcrumb-inner">
+            <i class="fas fa-house"></i>
+            <span class="crumb current" aria-current="page">Laman Utama</span>
+        </div>
+    </nav>
+
     <!-- ===== SEARCH BAR ===== -->
     <div class="search-bar-wrap">
         <div class="search-bar-inner">
@@ -2876,13 +2971,23 @@
 
     <!-- ===== FOOTER ===== -->
     <footer class="footer">
-        <div class="last-updated"><i class="fas fa-clock"></i> Kemaskini: <span id="updateTime">--</span></div>
-        <div class="brand"><span class="dot"></span><span>©2026 PGO JOHOR | Hak Cipta Terpelihara</span></div>
-        <div class="social-links">
-            <a href="https://wa.me/60196717865" target="_blank" title="WhatsApp" rel="noopener noreferrer"><i class="fab fa-whatsapp"></i></a>
-            <a href="https://t.me/+60196717865" target="_blank" title="Telegram" rel="noopener noreferrer"><i class="fab fa-telegram-plane"></i></a>
-            <a href="#" title="Instagram"><i class="fab fa-instagram"></i></a>
-            <a href="#" title="YouTube"><i class="fab fa-youtube"></i></a>
+        <div class="footer-address">
+            <i class="fas fa-location-dot"></i>
+            <span>Aras 4, Pusat Gerakan Operasi Negeri Johor, Ibu Pejabat Jabatan Bomba dan Penyelamat Malaysia Negeri Johor, 81100 Jalan Kangkar Terbrau, Johor Bahru, Johor</span>
+        </div>
+        <div class="footer-top">
+            <a href="https://www.bomba.gov.my/ms/direktori-jbpm/johor" target="_blank" rel="noopener noreferrer" class="footer-link"><i class="fas fa-building-columns"></i> Direktori Rasmi JBPM Johor</a>
+            <a href="https://www.google.com/maps/search/?api=1&query=Ibu+Pejabat+Jabatan+Bomba+dan+Penyelamat+Malaysia+Negeri+Johor%2C+81100+Jalan+Kangkar+Terbrau%2C+Johor+Bahru%2C+Johor" target="_blank" rel="noopener noreferrer" class="footer-link"><i class="fas fa-map-location-dot"></i> Lihat di Peta</a>
+        </div>
+        <div class="footer-bottom">
+            <div class="last-updated"><i class="fas fa-clock"></i> Kemaskini: <span id="updateTime">--</span></div>
+            <div class="brand"><span class="dot"></span><span>©2026 PGO JOHOR | Hak Cipta Terpelihara</span></div>
+            <div class="social-links">
+                <a href="https://wa.me/60196717865" target="_blank" title="WhatsApp" rel="noopener noreferrer"><i class="fab fa-whatsapp"></i></a>
+                <a href="https://t.me/+60196717865" target="_blank" title="Telegram" rel="noopener noreferrer"><i class="fab fa-telegram-plane"></i></a>
+                <a href="#" title="Instagram"><i class="fab fa-instagram"></i></a>
+                <a href="#" title="YouTube"><i class="fab fa-youtube"></i></a>
+            </div>
         </div>
     </footer>
 
