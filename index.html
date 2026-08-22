@@ -646,6 +646,12 @@
             border-bottom: 1px solid rgba(255, 255, 255, 0.08);
             background: rgba(15, 15, 20, 0.6);
             transition: background 0.5s ease, border-color 0.5s ease;
+            /* FIX: tanpa "position + z-index" bar ini terletak di lapisan bawah
+               body::before (fixed, z-index:0). Dalam mod siang latar itu pekat solid
+               (bukan lutsinar seperti mod malam) jadi ia menutup terus perkataan
+               "Laman Utama" & ikon rumah di sini. Angkat ke atas supaya jelas di kedua-dua mod. */
+            position: relative;
+            z-index: 1;
         }
         .breadcrumb-inner {
             width: 100%;
@@ -686,6 +692,10 @@
             margin: 0.5rem auto 0.75rem auto;
             padding: 0 0.75rem;
             flex-shrink: 0;
+            /* FIX: sama seperti .breadcrumb-bar - perlu diangkat atas body::before
+               supaya kotak carian & ikonnya tidak tenggelam/pudar dalam mod siang. */
+            position: relative;
+            z-index: 1;
         }
         .search-bar-inner {
             background: var(--hud-bg);
@@ -1972,6 +1982,157 @@
             border: 1px solid rgba(59, 130, 246, 0.3);
         }
 
+        /* ===== PANEL INFO KORPORAT JBPM ===== */
+        .info-jbpm-content {
+            display: flex;
+            flex-direction: column;
+            gap: 0.625rem;
+            padding-top: 0.5rem;
+        }
+        .info-jbpm-content .accordion-item {
+            margin-bottom: 0;
+            border-radius: 0.875rem;
+            overflow: hidden;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            background: rgba(20, 20, 28, 0.5);
+            transition: border-color 0.3s ease;
+        }
+        @media (hover: hover) {
+            .info-jbpm-content .accordion-item:hover {
+                border-color: rgba(255, 204, 0, 0.3);
+            }
+        }
+        .info-jbpm-content .accordion-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0.75rem 1rem;
+            background: rgba(255, 255, 255, 0.02);
+            cursor: pointer;
+            user-select: none;
+            width: 100%;
+            border: none;
+            color: #ffffff;
+            font-size: 0.75rem;
+            font-weight: 700;
+            letter-spacing: 0.05rem;
+            text-transform: uppercase;
+            transition: all 0.3s ease;
+        }
+        @media (hover: hover) {
+            .info-jbpm-content .accordion-header:hover {
+                background: rgba(255, 204, 0, 0.08);
+            }
+        }
+        .info-jbpm-content .accordion-header .accordion-title {
+            display: flex;
+            align-items: center;
+            gap: 0.625rem;
+            color: var(--alert-orange);
+        }
+        .info-jbpm-content .accordion-header .arrow {
+            color: #64748b;
+            transition: transform 0.3s ease;
+            flex-shrink: 0;
+        }
+        .info-jbpm-content .accordion-header .arrow.open {
+            transform: rotate(180deg);
+            color: var(--hazard-gold);
+        }
+        .info-jbpm-content .accordion-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.4s cubic-bezier(0.4, 0, 0.2, 1),
+                padding 0.4s ease, border-top 0.4s ease;
+            background: rgba(5, 5, 10, 0.6);
+            padding: 0 0.625rem;
+            border-top: 0px solid transparent;
+        }
+        .info-jbpm-content .accordion-content.open {
+            max-height: 5000px;
+            padding: 0.875rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+        }
+        .info-jbpm-content .accordion-content p {
+            color: #cbd5e1;
+            font-size: 0.8125rem;
+            line-height: 1.65;
+            margin-bottom: 0.625rem;
+        }
+        .info-jbpm-content .accordion-content p:last-of-type {
+            margin-bottom: 0.75rem;
+        }
+        .info-jbpm-content .accordion-content ul {
+            margin: 0 0 0.75rem 1.125rem;
+            padding: 0;
+            color: #cbd5e1;
+            font-size: 0.8125rem;
+            line-height: 1.6;
+        }
+        .info-jbpm-content .accordion-content ul li {
+            margin-bottom: 0.375rem;
+        }
+        .info-jbpm-content .accordion-content ul li strong {
+            color: #ffffff;
+        }
+        .info-jbpm-content .info-source-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+            font-size: 0.6875rem;
+            font-weight: 700;
+            letter-spacing: 0.03rem;
+            text-transform: uppercase;
+            color: var(--hazard-gold);
+            text-decoration: none;
+            padding: 0.375rem 0.75rem;
+            border: 1px solid rgba(217, 169, 105, 0.35);
+            border-radius: 1.25rem;
+            transition: all 0.25s ease;
+        }
+        @media (hover: hover) {
+            .info-jbpm-content .info-source-link:hover {
+                background: rgba(217, 169, 105, 0.12);
+                border-color: var(--hazard-gold);
+            }
+        }
+        .info-jbpm-content .info-note {
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+            padding: 0 1rem 1rem 1rem;
+            line-height: 1.5;
+        }
+        body.mode-siang .info-jbpm-content .accordion-item {
+            background: #ffffff;
+            border-color: #e2e8f0;
+        }
+        body.mode-siang .info-jbpm-content .accordion-header {
+            background: rgba(15, 23, 42, 0.02);
+            color: #0f172a;
+        }
+        body.mode-siang .info-jbpm-content .accordion-header .accordion-title {
+            color: #b3223f;
+        }
+        body.mode-siang .info-jbpm-content .accordion-header .arrow {
+            color: #94a3b8;
+        }
+        body.mode-siang .info-jbpm-content .accordion-header .arrow.open {
+            color: #8a6a24;
+        }
+        body.mode-siang .info-jbpm-content .accordion-content {
+            background: rgba(15, 23, 42, 0.02);
+        }
+        body.mode-siang .info-jbpm-content .accordion-content p,
+        body.mode-siang .info-jbpm-content .accordion-content ul {
+            color: #334155;
+        }
+        body.mode-siang .info-jbpm-content .accordion-content ul li strong {
+            color: #0f172a;
+        }
+        body.mode-siang .info-jbpm-content .info-note {
+            color: #64748b;
+        }
+
         /* ===== FOOTER ===== */
         .footer {
             width: 100%;
@@ -2995,6 +3156,113 @@
                         </div>
                     </div>
                 </div>
+
+                <!-- ===== PANEL INFO KORPORAT JBPM ===== -->
+                <div class="sistem-panel" id="infoJbpmPanel">
+                    <button class="panel-toggle" id="infoJbpmPanelToggle" aria-expanded="false">
+                        <span class="panel-title">
+                            <i class="fas fa-landmark"></i> INFO KORPORAT JBPM
+                        </span>
+                        <i class="fas fa-chevron-down panel-arrow"></i>
+                    </button>
+
+                    <div class="panel-body" id="infoJbpmPanelBody">
+                        <div class="info-jbpm-content">
+
+                            <!-- 1: Latar Belakang -->
+                            <div class="accordion-item">
+                                <button class="accordion-header" data-target="infoAcc1" aria-expanded="false">
+                                    <span class="accordion-title"><i class="fas fa-clock-rotate-left"></i> Latar Belakang</span>
+                                    <span class="arrow"><i class="fas fa-chevron-down"></i></span>
+                                </button>
+                                <div class="accordion-content" id="infoAcc1">
+                                    <p>Perkhidmatan bomba di Tanah Melayu bermula seawal tahun 1883 apabila Skuad Bomba dan Penyelamat Negeri Selangor ditubuhkan di bawah pimpinan H.F. Bellamy. Perkhidmatan ini terus berkembang mengikut negeri masing-masing sehinggalah diselaraskan di bawah Kementerian Perumahan dan Kerajaan Tempatan.</p>
+                                    <p>Pada 8 Januari 1997, Jemaah Menteri bersetuju menukar nama Jabatan Perkhidmatan Bomba Malaysia kepada Jabatan Bomba dan Penyelamat, Malaysia (JBPM). Pertukaran nama, logo dan bendera baharu ini dilancarkan secara rasmi oleh YAB Perdana Menteri di Genting Highlands pada 21 Februari 1997. Unit Udara Bomba pula bermula pada 1998 apabila Jabatan memiliki dua buah helikopter, dan pada 2005 JBPM menerima pengiktirafan MS ISO 9001:2000 dalam bidang operasi kebombaan dan penyelamatan.</p>
+                                    <a href="https://www.bomba.gov.my/latar-belakang/" target="_blank" rel="noopener noreferrer" class="info-source-link">Portal Rasmi JBPM <i class="fas fa-arrow-up-right-from-square"></i></a>
+                                </div>
+                            </div>
+
+                            <!-- 2: Visi dan Misi -->
+                            <div class="accordion-item">
+                                <button class="accordion-header" data-target="infoAcc2" aria-expanded="false">
+                                    <span class="accordion-title"><i class="fas fa-eye"></i> Visi dan Misi</span>
+                                    <span class="arrow"><i class="fas fa-chevron-down"></i></span>
+                                </button>
+                                <div class="accordion-content" id="infoAcc2">
+                                    <p><strong style="color:#fff">Visi:</strong> Menjadi sebuah organisasi kebombaan dan penyelamatan yang bertaraf antarabangsa.</p>
+                                    <p><strong style="color:#fff">Misi:</strong> JBPM komited memberikan perkhidmatan kebombaan dan penyelamatan yang profesional bagi menyelamatkan nyawa, harta benda dan alam sekitar dengan menggunakan sumber secara berkesan serta teknologi terkini.</p>
+                                    <a href="https://www.bomba.gov.my/visi-dan-mis9-2/" target="_blank" rel="noopener noreferrer" class="info-source-link">Portal Rasmi JBPM <i class="fas fa-arrow-up-right-from-square"></i></a>
+                                </div>
+                            </div>
+
+                            <!-- 3: Objektif dan Fungsi -->
+                            <div class="accordion-item">
+                                <button class="accordion-header" data-target="infoAcc3" aria-expanded="false">
+                                    <span class="accordion-title"><i class="fas fa-bullseye"></i> Objektif dan Fungsi</span>
+                                    <span class="arrow"><i class="fas fa-chevron-down"></i></span>
+                                </button>
+                                <div class="accordion-content" id="infoAcc3">
+                                    <p>Objektif JBPM adalah memberi khidmat pencegahan dan pemadaman kebakaran, menguatkuasakan undang-undang berkaitan keselamatan kebakaran, serta menyediakan khidmat kemanusiaan yang cekap dan berkesan, selari dengan usaha jabatan mencapai kecemerlangan menerusi inovasi dan piawaian MS ISO 9001:2015.</p>
+                                    <p>Fungsi-fungsi utama jabatan digariskan di bawah Seksyen 5(1) &amp; (2), Akta Perkhidmatan Bomba 1988 (Akta 341), antaranya:</p>
+                                    <ul>
+                                        <li>Memadam, menentang, mencegah dan mengawal kebakaran;</li>
+                                        <li>Melindungi nyawa dan harta benda sekiranya berlaku kebakaran;</li>
+                                        <li>Menentukan kecukupan dan penyelenggaraan jalan keluar kebakaran di premis-premis;</li>
+                                        <li>Menjalankan penyiasatan tentang sebab, punca dan hal kebakaran; dan</li>
+                                        <li>Melaksanakan khidmat kemanusiaan, termasuk menyelamatkan nyawa dan harta benda semasa berlakunya bencana.</li>
+                                    </ul>
+                                    <a href="https://www.bomba.gov.my/objektif-dan-fungsi/" target="_blank" rel="noopener noreferrer" class="info-source-link">Portal Rasmi JBPM <i class="fas fa-arrow-up-right-from-square"></i></a>
+                                </div>
+                            </div>
+
+                            <!-- 6: Etika -->
+                            <div class="accordion-item">
+                                <button class="accordion-header" data-target="infoAcc6" aria-expanded="false">
+                                    <span class="accordion-title"><i class="fas fa-scale-balanced"></i> Etika</span>
+                                    <span class="arrow"><i class="fas fa-chevron-down"></i></span>
+                                </button>
+                                <div class="accordion-content" id="infoAcc6">
+                                    <p>Etika Bomba menggariskan nilai kerja setiap anggota JBPM, antaranya:</p>
+                                    <ul>
+                                        <li>Menyedari tanggungjawab kepada Negara, Bangsa dan Agama;</li>
+                                        <li>Berpegang teguh kepada teras Perkhidmatan Cemerlang;</li>
+                                        <li>Bekerja dengan ikhlas, penuh tanggungjawab dan amanah;</li>
+                                        <li>Tidak menyalahgunakan kedudukan jawatan untuk kepentingan diri; dan</li>
+                                        <li>Meninggikan disiplin, produktiviti dan kualiti perkhidmatan awam.</li>
+                                    </ul>
+                                    <a href="https://www.bomba.gov.my/dasar-jbpm/" target="_blank" rel="noopener noreferrer" class="info-source-link">Portal Rasmi JBPM <i class="fas fa-arrow-up-right-from-square"></i></a>
+                                </div>
+                            </div>
+
+                            <!-- 7: Dasar -->
+                            <div class="accordion-item">
+                                <button class="accordion-header" data-target="infoAcc7" aria-expanded="false">
+                                    <span class="accordion-title"><i class="fas fa-file-contract"></i> Dasar</span>
+                                    <span class="arrow"><i class="fas fa-chevron-down"></i></span>
+                                </button>
+                                <div class="accordion-content" id="infoAcc7">
+                                    <p>Antara dasar rasmi yang menjadi tunjang pentadbiran dan operasi JBPM ialah Dasar Kebombaan dan Penyelamatan Negara (DKPN) 2021–2030, Dasar Kualiti JBPM, Dasar Keselamatan dan Kesihatan Pekerjaan, Dasar Latihan Sumber Manusia, serta Dasar Keselamatan ICT.</p>
+                                    <p>Menerusi Dasar Kualiti, JBPM komited menjadi organisasi berprestasi tinggi dalam aspek kebombaan dan penyelamatan, membudayakan penambahbaikan berterusan, serta memastikan jentera bomba pertama dapat bergerak keluar dari bay dalam masa tidak melebihi 60 saat selepas menerima panggilan.</p>
+                                    <a href="https://www.bomba.gov.my/dasar-jbpm/" target="_blank" rel="noopener noreferrer" class="info-source-link">Portal Rasmi JBPM <i class="fas fa-arrow-up-right-from-square"></i></a>
+                                </div>
+                            </div>
+
+                            <!-- 8: Slogan -->
+                            <div class="accordion-item">
+                                <button class="accordion-header" data-target="infoAcc8" aria-expanded="false">
+                                    <span class="accordion-title"><i class="fas fa-bullhorn"></i> Slogan</span>
+                                    <span class="arrow"><i class="fas fa-chevron-down"></i></span>
+                                </button>
+                                <div class="accordion-content" id="infoAcc8">
+                                    <p>JBPM memegang dua slogan rasmi: <strong style="color:#fff">"Sedia Menyelamat"</strong> yang menjadi hasrat asas jabatan, dan <strong style="color:#fff">"Cepat Dan Mesra"</strong> (Fast and Friendly) yang diperkenalkan oleh Ketua Pengarah JBPM ketika itu pada 4 November 2010.</p>
+                                    <p>Slogan "Cepat Dan Mesra" bertujuan mengubah budaya kerja ke arah lebih pragmatik, pantas dan mesra pelanggan, sejajar dengan usaha memperkasakan Sistem Penyampaian Perkhidmatan Kerajaan.</p>
+                                    <a href="https://www.bomba.gov.my/slogan/" target="_blank" rel="noopener noreferrer" class="info-source-link">Portal Rasmi JBPM <i class="fas fa-arrow-up-right-from-square"></i></a>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
             </div>
 
         </div><!-- /content-row -->
@@ -3285,6 +3553,69 @@
                     this.setAttribute('aria-expanded', 'false');
                     localStorage.setItem(sistemStorageKey, 'closed');
                 }
+            });
+
+            // ===== PANEL INFO KORPORAT JBPM TOGGLE =====
+            const infoJbpmToggle = document.getElementById('infoJbpmPanelToggle');
+            const infoJbpmBody = document.getElementById('infoJbpmPanelBody');
+            if (infoJbpmToggle && infoJbpmBody) {
+                const infoJbpmArrow = infoJbpmToggle.querySelector('.panel-arrow');
+                const infoJbpmStorageKey = DRAWER_STORAGE_PREFIX + 'infoJbpmPanelBody';
+
+                // Default TERTUTUP — buka hanya jika pengguna pernah buka manual (tersimpan di localStorage)
+                if (localStorage.getItem(infoJbpmStorageKey) === 'open') {
+                    infoJbpmBody.classList.add('open');
+                    infoJbpmArrow.classList.add('open');
+                    infoJbpmToggle.setAttribute('aria-expanded', 'true');
+                } else {
+                    infoJbpmBody.classList.remove('open');
+                    infoJbpmArrow.classList.remove('open');
+                    infoJbpmToggle.setAttribute('aria-expanded', 'false');
+                }
+
+                infoJbpmToggle.addEventListener('click', function() {
+                    const isOpen = infoJbpmBody.classList.contains('open');
+                    if (!isOpen) {
+                        infoJbpmBody.classList.add('open');
+                        infoJbpmArrow.classList.add('open');
+                        this.setAttribute('aria-expanded', 'true');
+                        localStorage.setItem(infoJbpmStorageKey, 'open');
+                    } else {
+                        infoJbpmBody.classList.remove('open');
+                        infoJbpmArrow.classList.remove('open');
+                        this.setAttribute('aria-expanded', 'false');
+                        localStorage.setItem(infoJbpmStorageKey, 'closed');
+                    }
+                });
+            }
+
+            // ===== ACCORDION (info korporat JBPM - slot latar belakang, visi misi, dll) =====
+            let infoJbpmAnimationLock = false;
+            document.querySelectorAll('.info-jbpm-content .accordion-header').forEach((header) => {
+                header.addEventListener('click', function() {
+                    if (infoJbpmAnimationLock) return;
+                    const target = document.getElementById(this.getAttribute('data-target'));
+                    const arrow = this.querySelector('.arrow');
+                    const isOpen = target.classList.contains('open');
+                    const wrap = this.closest('.info-jbpm-content');
+                    wrap.querySelectorAll('.accordion-content.open').forEach((c) => {
+                        if (c !== target) c.classList.remove('open');
+                    });
+                    wrap.querySelectorAll('.accordion-header .arrow.open').forEach((a) => {
+                        if (a !== arrow) a.classList.remove('open');
+                    });
+                    if (!isOpen) {
+                        infoJbpmAnimationLock = true;
+                        target.classList.add('open');
+                        arrow.classList.add('open');
+                        this.setAttribute('aria-expanded', 'true');
+                        setTimeout(() => { infoJbpmAnimationLock = false; }, 420);
+                    } else {
+                        target.classList.remove('open');
+                        arrow.classList.remove('open');
+                        this.setAttribute('aria-expanded', 'false');
+                    }
+                });
             });
 
             // ===== SCROLL ANIMATIONS =====
