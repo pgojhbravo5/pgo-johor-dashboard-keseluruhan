@@ -3606,17 +3606,23 @@
 
           let zoneKey = null;
 
+          // Cari balai yang paling sesuai (dari semua zon) DAHULU — supaya zon
+          // dan kad balai sentiasa guna padanan yang SAMA (elak bug kad balai
+          // "melompat" ke zon lain bila nama balai bertindih, cth. ZON 2
+          // "SUNGAI RENGIT" vs ZON 3 "RENGIT").
+          let matchedBalai = findMatchingBalaiInAllZones(lokasi);
+
           // 1. Kes khas: Bengkel / KJT
           if (lokasiUpper.includes('BENGKEL') || lokasiUpper.includes('KJT')) {
             zoneKey = 'BENGKEL KJT BOMBA';
-          } else {
-            // 2. Cuba cari zon berdasarkan padanan dengan senarai balai dalam BALAI_ZON
+          } else if (matchedBalai) {
+            // 2. Tentukan zon berdasarkan zon MILIK balai yang telah dipadan
             for (const [zone, balaiList] of Object.entries(BALAI_ZON)) {
-              const found = balaiList.some(balai =>
-                lokasiUpper.includes(balai.toUpperCase()) ||
-                balai.toUpperCase().includes(lokasiUpper)
-              );
-              if (found) {
+              if (
+                balaiList.some(
+                  (balai) => balai.toUpperCase() === matchedBalai.toUpperCase()
+                )
+              ) {
                 zoneKey = zone;
                 break;
               }
@@ -3630,8 +3636,6 @@
 
           if (!zoneMap[zoneKey]) zoneMap[zoneKey] = {};
 
-          // Cari balai yang paling sesuai (dari semua zon) untuk menentukan kumpulan balai
-          let matchedBalai = findMatchingBalaiInAllZones(lokasi);
           const balaiKey = matchedBalai ?
             matchedBalai.toUpperCase() :
             (lokasi.toUpperCase() || 'TANPA BALAI');
