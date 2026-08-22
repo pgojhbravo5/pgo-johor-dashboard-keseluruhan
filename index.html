@@ -1398,6 +1398,11 @@
             color: var(--text-primary);
             font-weight: 600;
         }
+        .popup-jentera-row .jrow-plate {
+            color: var(--text-secondary);
+            font-weight: 500;
+            font-size: 0.65rem;
+        }
         .popup-jentera-badge {
             font-size: 0.6rem;
             font-weight: 700;
@@ -4387,7 +4392,7 @@
                         const kelas = j.kelas;
                         const label = kelas === 'baik' ? 'BAIK' : kelas === 'minor' ? 'ROSAK MINOR' : 'ROSAK';
                         baris += `<div class="popup-jentera-row">
-                            <span class="jrow-name">${j.callsign || j.plate || '-'}</span>
+                            <span class="jrow-name">${j.callsign || j.plate || '-'}${j.callsign && j.plate ? ` <span class="jrow-plate">${j.plate}</span>` : ''}</span>
                             <span class="popup-jentera-badge ${kelas}">${label}</span>
                         </div>`;
                     });
