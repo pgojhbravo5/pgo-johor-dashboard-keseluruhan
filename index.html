@@ -3012,32 +3012,69 @@
                 });
             });
 
-            // ===== CATEGORY ACCORDION =====
+            // ===== DRAWER PANEL STATE (LIVE, ONLINE, DALAM PEMBANGUNAN, PAUTAN SISTEM PGO) =====
+            // Default: SEMUA drawer TERBUKA bila pengguna buka Laman Utama.
+            // Pengguna boleh tutup manual, dan status tutup itu disimpan pada localStorage SAHAJA.
+            // Jika tiada status tersimpan (pengguna baharu / storan dikosongkan), default kekal SEMUA TERBUKA.
+            const DRAWER_STORAGE_PREFIX = 'pgoDrawer_';
+
+            function openCatPanel(panel, arrow, btn) {
+                panel.classList.add('open');
+                if (arrow) arrow.classList.add('open');
+                if (btn) btn.setAttribute('aria-expanded', 'true');
+                panel.querySelectorAll('.app-card, .stat-item').forEach(el => {
+                    el.classList.add('visible');
+                });
+            }
+            function closeCatPanel(panel, arrow, btn) {
+                panel.classList.remove('open');
+                if (arrow) arrow.classList.remove('open');
+                if (btn) btn.setAttribute('aria-expanded', 'false');
+            }
+
+            // ===== CATEGORY ACCORDION (LIVE / ONLINE / DALAM PEMBANGUNAN) =====
             document.querySelectorAll('.cat-toggle').forEach((btn) => {
+                const targetId = btn.getAttribute('data-cat-target');
+                const panel = document.getElementById(targetId);
+                const arrow = btn.querySelector('.cat-arrow');
+                if (!panel) return;
+                const storageKey = DRAWER_STORAGE_PREFIX + targetId;
+
+                // Default TERBUKA — tutup hanya jika pengguna pernah tutup manual (tersimpan di localStorage)
+                if (localStorage.getItem(storageKey) === 'closed') {
+                    closeCatPanel(panel, arrow, btn);
+                } else {
+                    openCatPanel(panel, arrow, btn);
+                }
+
                 btn.addEventListener('click', function() {
-                    const panel = document.getElementById(this.getAttribute('data-cat-target'));
-                    const arrow = this.querySelector('.cat-arrow');
-                    if (!panel) return;
                     const isOpen = panel.classList.contains('open');
                     if (!isOpen) {
-                        panel.classList.add('open');
-                        if (arrow) arrow.classList.add('open');
-                        this.setAttribute('aria-expanded', 'true');
-                        panel.querySelectorAll('.app-card, .stat-item').forEach(el => {
-                            el.classList.add('visible');
-                        });
+                        openCatPanel(panel, arrow, btn);
+                        localStorage.setItem(storageKey, 'open');
                     } else {
-                        panel.classList.remove('open');
-                        if (arrow) arrow.classList.remove('open');
-                        this.setAttribute('aria-expanded', 'false');
+                        closeCatPanel(panel, arrow, btn);
+                        localStorage.setItem(storageKey, 'closed');
                     }
                 });
             });
 
-            // ===== SISTEM PANEL TOGGLE (tanpa password) =====
+            // ===== SISTEM PANEL TOGGLE (PAUTAN SISTEM PGO JOHOR - tanpa password) =====
             const sistemToggle = document.getElementById('sistemPanelToggle');
             const sistemBody = document.getElementById('sistemPanelBody');
             const sistemArrow = sistemToggle.querySelector('.panel-arrow');
+            const sistemStorageKey = DRAWER_STORAGE_PREFIX + 'sistemPanelBody';
+
+            // Default TERBUKA — tutup hanya jika pengguna pernah tutup manual (tersimpan di localStorage)
+            if (localStorage.getItem(sistemStorageKey) === 'closed') {
+                sistemBody.classList.remove('open');
+                sistemArrow.classList.remove('open');
+                sistemToggle.setAttribute('aria-expanded', 'false');
+            } else {
+                sistemBody.classList.add('open');
+                sistemArrow.classList.add('open');
+                sistemToggle.setAttribute('aria-expanded', 'true');
+            }
 
             sistemToggle.addEventListener('click', function() {
                 const isOpen = sistemBody.classList.contains('open');
@@ -3045,10 +3082,12 @@
                     sistemBody.classList.add('open');
                     sistemArrow.classList.add('open');
                     this.setAttribute('aria-expanded', 'true');
+                    localStorage.setItem(sistemStorageKey, 'open');
                 } else {
                     sistemBody.classList.remove('open');
                     sistemArrow.classList.remove('open');
                     this.setAttribute('aria-expanded', 'false');
+                    localStorage.setItem(sistemStorageKey, 'closed');
                 }
             });
 
