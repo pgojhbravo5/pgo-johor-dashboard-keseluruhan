@@ -35,6 +35,9 @@
             --hud-border: rgba(255, 255, 255, 0.09);
             --hud-border-red: rgba(179, 34, 63, 0.28);
             --glass-highlight: rgba(255, 255, 255, 0.06);
+            --navy: #0b2a4d;
+            --navy-deep: #071b33;
+            --gold-deep: #8a6a24;
             --font-main: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
             --font-size-base: 16px;
             --text-primary: #e2e8f0;
@@ -47,9 +50,9 @@
         .stat-item,
         .carousel-slide {
             opacity: 0;
-            transform: translateY(50px) scale(0.96);
-            transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1),
-                transform 0.8s cubic-bezier(0.16, 1, 0.3, 1),
+            transform: translateY(0.9375rem);
+            transition: opacity 0.5s ease,
+                transform 0.5s ease,
                 box-shadow 0.4s ease,
                 border-color 0.4s ease;
         }
@@ -61,9 +64,9 @@
         }
         .app-card.card-wide {
             opacity: 0;
-            transform: translateY(50px) scale(0.96);
-            transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1),
-                transform 0.8s cubic-bezier(0.16, 1, 0.3, 1),
+            transform: translateY(0.9375rem);
+            transition: opacity 0.5s ease,
+                transform 0.5s ease,
                 box-shadow 0.4s ease,
                 border-color 0.4s ease;
         }
@@ -134,23 +137,19 @@
             pointer-events: none;
         }
 
-        /* MOD SIANG */
+        /* MOD SIANG — rasmi & bersih */
         body.mode-siang {
-            background-image: url('https://images.unsplash.com/photo-1504384308090-c894fdcc538d?w=1600');
+            background-image: none;
+            background-color: #eef1f5;
         }
         body.mode-siang::before {
-            background: radial-gradient(circle at 50% 50%,
-                    rgba(240, 242, 245, 0.85),
-                    rgba(220, 225, 230, 0.95)),
-                linear-gradient(rgba(0, 0, 0, 0.03) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(0, 0, 0, 0.03) 1px, transparent 1px);
-            background-size: 100% 100%, 1.875rem 1.875rem, 1.875rem 1.875rem;
+            background: linear-gradient(180deg, #f6f7f9 0%, #eceef2 100%);
+            background-size: 100% 100%;
         }
         body.mode-siang .dashboard {
-            background: rgba(245, 247, 250, 0.92);
-            border-color: rgba(179, 34, 63, 0.3);
-            box-shadow: 0 25px 60px rgba(0, 0, 0, 0.15),
-                0 0 30px rgba(255, 107, 0, 0.15);
+            background: rgba(255, 255, 255, 0.85);
+            border-color: rgba(179, 34, 63, 0.2);
+            box-shadow: 0 25px 60px rgba(15, 23, 42, 0.08);
             color: #1e293b;
         }
         body.mode-siang .logo-text h1 { color: #0f172a; }
@@ -172,9 +171,17 @@
         }
         body.mode-siang .app-card h3 { color: #0f172a; }
         body.mode-siang .app-card p { color: #475569; }
+        body.mode-siang .app-card .icon {
+            background: rgba(179, 34, 63, 0.08);
+            border-color: rgba(179, 34, 63, 0.18);
+            color: #8a6a24;
+        }
+        body.mode-siang .app-card .arrow { color: #94a3b8; }
         body.mode-siang .section-title {
             color: #0f172a;
-            border-bottom-color: #cbd5e1;
+            border-bottom: 0.1875rem solid;
+            border-image: linear-gradient(90deg, #b3223f, #d9a969, #0b2a4d) 1;
+            padding-bottom: 0.5rem;
         }
         body.mode-siang .footer {
             border-top-color: #cbd5e1;
@@ -183,20 +190,20 @@
         }
         body.mode-siang .header-top-controls .mode-toggle-btn {
             background: #f1f5f9;
-            border-color: #ff6b00;
-            color: #ff6b00;
+            border-color: #b3223f;
+            color: #b3223f;
         }
         body.mode-siang .header-top-controls .switch-mode-btn {
             background: #f1f5f9;
-            border-color: #059669;
-            color: #059669;
+            border-color: #0b2a4d;
+            color: #0b2a4d;
         }
         body.mode-siang .header-top-controls .analog-clock {
             background: #ffffff;
-            border-color: #ff6b00;
+            border-color: #b3223f;
         }
         body.mode-siang .header-top-controls .digital-time .time {
-            color: #cc5500;
+            color: #0b2a4d;
         }
         body.mode-siang .header-top-controls .digital-time .date {
             color: #475569;
@@ -219,7 +226,13 @@
             border-color: #e2e8f0;
             color: #1e293b;
         }
-        body.mode-siang .links-panel .panel-title { color: #0f172a; }
+        body.mode-siang .links-panel .panel-title {
+            color: #0f172a;
+            border-bottom: 0.1875rem solid;
+            border-image: linear-gradient(90deg, #b3223f, #d9a969, #0b2a4d) 1;
+            padding-bottom: 0.5rem;
+        }
+        body.mode-siang .links-panel .panel-title i { color: #8a6a24; }
         body.mode-siang .links-panel .popular-item {
             background: #ffffff;
             border-color: #e2e8f0;
@@ -258,10 +271,10 @@
         }
         body.mode-siang .links-panel .update-timestamp { color: #64748b; }
         body.mode-siang .links-panel .accordion-header .accordion-title {
-            color: #cc5500;
+            color: #b3223f;
         }
         body.mode-siang .links-panel .emergency-group-title {
-            color: #cc5500;
+            color: #b3223f;
         }
         body.mode-siang .footer .social-links a {
             background: #f1f5f9;
@@ -274,15 +287,21 @@
         }
         body.mode-siang .refresh-btn {
             background: #f1f5f9;
-            border-color: #3b82f6;
-            color: #3b82f6;
+            border-color: #8a6a24;
+            color: #8a6a24;
         }
         body.mode-siang .sistem-panel {
             background: rgba(245, 247, 250, 0.92);
             border-color: #e2e8f0;
             color: #1e293b;
         }
-        body.mode-siang .sistem-panel .panel-title { color: #0f172a; }
+        body.mode-siang .sistem-panel .panel-title {
+            color: #0f172a;
+            border-bottom: 0.1875rem solid;
+            border-image: linear-gradient(90deg, #b3223f, #d9a969, #0b2a4d) 1;
+            padding-bottom: 0.5rem;
+        }
+        body.mode-siang .sistem-panel .panel-title i { color: #8a6a24; }
         body.mode-siang .sistem-panel .app-card {
             background: #ffffff;
             border-color: #e2e8f0;
@@ -353,23 +372,17 @@
             top: 0;
             left: 0;
             right: 0;
-            height: 0.125rem;
+            height: 0.1875rem;
             background: linear-gradient(90deg,
-                    transparent,
-                    var(--fire-red),
-                    var(--hazard-gold),
-                    var(--fire-red),
-                    transparent);
-            background-size: 250% 100%;
-            opacity: 0.6;
-            animation: stripeMove 16s linear infinite;
+                    var(--fire-red) 0%,
+                    var(--fire-red) 33.33%,
+                    var(--hazard-gold) 33.33%,
+                    var(--hazard-gold) 66.66%,
+                    var(--navy) 66.66%,
+                    var(--navy) 100%);
             z-index: 102;
             border-radius: 0;
             pointer-events: none;
-        }
-        @keyframes stripeMove {
-            0% { background-position: 0% 0%; }
-            100% { background-position: 300% 0%; }
         }
         body.mode-siang .header {
             background: rgba(245, 247, 250, 0.96);
@@ -1381,6 +1394,8 @@
         body.mode-siang .cat-toggle[aria-expanded="true"] {
             background: rgba(0, 0, 0, 0.03);
         }
+        body.mode-siang .cat-toggle-label { color: #8a6a24; }
+        body.mode-siang .cat-arrow.open { color: #b3223f; }
 
         /* ===== LINKS PANEL ===== */
         .links-panel {
@@ -2924,12 +2939,14 @@
             function loadState() {
                 const theme = localStorage.getItem('pgoTheme');
                 const displayMode = localStorage.getItem('pgoDisplayMode');
-                if (theme === 'siang') {
-                    document.body.classList.add('mode-siang');
-                    document.querySelector('#modeToggleBtn i').className = 'fas fa-sun';
-                } else {
+                // Default rasmi: mod SIANG (terang & profesional). Mod malam hanya jika
+                // pengguna pernah pilih secara manual (tersimpan di localStorage).
+                if (theme === 'malam') {
                     document.body.classList.remove('mode-siang');
                     document.querySelector('#modeToggleBtn i').className = 'fas fa-moon';
+                } else {
+                    document.body.classList.add('mode-siang');
+                    document.querySelector('#modeToggleBtn i').className = 'fas fa-sun';
                 }
                 if (displayMode === 'mobile') {
                     document.body.classList.add('mobile-mode');
