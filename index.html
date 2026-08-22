@@ -4217,7 +4217,9 @@
                         if (!row || row.length === 0) continue;
                         const status = idxStatus >= 0 ? (row[idxStatus] || '').trim() : '';
                         if (statusJenteraDikecualikan(status)) continue; // lupus / proses lupus / telah dipulangkan
-                        if (klasifikasiStatusJentera(status) === 'baik') jumlah++;
+                        const s = status.toUpperCase();
+                        const bolehBeroperasi = s.includes('BOLEH BEROPERASI') && !s.includes('TIDAK BOLEH BEROPERASI');
+                        if (bolehBeroperasi) jumlah++;
                     }
                     if (elJumlah) elJumlah.textContent = jumlah;
                 } catch (e) {
@@ -4308,17 +4310,13 @@
                 return s.includes('LUPUS') || s.includes('DIPULANGKAN');
             }
 
-            // Logik klasifikasi (guna lajur STATUS JENTERA yang mengandungi status + boleh/tidak boleh beroperasi):
-            //   BAIK & BOLEH BEROPERASI              -> baik
-            //   ROSAK MINOR & BOLEH BEROPERASI       -> baik
-            //   ROSAK MINOR (tidak boleh beroperasi) -> minor
-            //   ROSAK & TIDAK BOLEH BEROPERASI       -> rosak
+            // Logik klasifikasi - paparkan ikut status SEBENAR (untuk statistik & warna ikon):
+            //   BAIK & BOLEH BEROPERASI        -> baik   (hijau)
+            //   ROSAK MINOR & BOLEH BEROPERASI -> minor  (jingga)
+            //   ROSAK & TIDAK BOLEH BEROPERASI -> rosak  (merah)
             function klasifikasiStatusJentera(status, kerosakan) {
                 const s = (status || '').toUpperCase();
-                const bolehBeroperasi = s.includes('BOLEH BEROPERASI') && !s.includes('TIDAK BOLEH BEROPERASI');
-
-                if (s.includes('BAIK') && bolehBeroperasi) return 'baik';
-                if (s.includes('ROSAK MINOR') && bolehBeroperasi) return 'baik';
+                if (s.includes('BAIK')) return 'baik';
                 if (s.includes('ROSAK MINOR')) return 'minor';
                 if (s.includes('ROSAK')) return 'rosak';
                 return 'rosak';
@@ -4449,9 +4447,9 @@
 
                         let kelasBalai = 'na';
                         if (senarai.length > 0) {
-                            if (senarai.some(j => j.kelas === 'rosak')) kelasBalai = 'rosak';
+                            if (senarai.some(j => j.kelas === 'baik')) kelasBalai = 'baik';
                             else if (senarai.some(j => j.kelas === 'minor')) kelasBalai = 'minor';
-                            else kelasBalai = 'baik';
+                            else kelasBalai = 'rosak';
                         }
 
                         senarai.forEach(j => {
