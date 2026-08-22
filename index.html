@@ -1201,11 +1201,8 @@
         .pos-num {
             font-size: 1.15rem;
             font-weight: 800;
-            color: #fff;
+            color: var(--hazard-gold);
         }
-        .pos-item.baik .pos-num { color: #4ade80; }
-        .pos-item.minor .pos-num { color: #d9a969; }
-        .pos-item.rosak .pos-num { color: #ef4444; }
         .pos-label {
             font-size: 0.6rem;
             color: var(--hazard-gold);
@@ -1216,19 +1213,21 @@
             background: rgba(255,255,255,0.6);
             border-color: #e2e8f0;
         }
-        body.mode-siang .pos-num { color: #0f172a; }
-        body.mode-siang .pos-label { color: #0f172a; }
+        body.mode-siang .pos-num { color: #000; }
+        body.mode-siang .pos-label { color: #000; }
         .peta-legend-dot {
             width: 0.65rem;
             height: 0.65rem;
             border-radius: 50%;
             flex-shrink: 0;
             box-shadow: 0 0 0.35rem currentColor;
+            background: var(--hazard-gold);
+            color: var(--hazard-gold);
         }
-        .peta-legend-dot.baik { background: #4ade80; color: #4ade80; }
-        .peta-legend-dot.minor { background: #d9a969; color: #d9a969; }
-        .peta-legend-dot.rosak { background: #ef4444; color: #ef4444; }
-        .peta-legend-dot.na { background: #64748b; color: #64748b; }
+        body.mode-siang .peta-legend-dot {
+            background: #000;
+            color: #000;
+        }
 
         /* ===== PETA FILTER BAR (MULTISELECT CHECKBOX) ===== */
         .peta-filter-bar {
@@ -1257,7 +1256,7 @@
             gap: 0.35rem;
             font-size: 0.7rem;
             font-weight: 600;
-            color: var(--text-secondary);
+            color: var(--hazard-gold);
             background: rgba(255, 255, 255, 0.03);
             border: 1px solid var(--hud-border);
             border-radius: 1.1rem;
@@ -1278,12 +1277,9 @@
             flex-shrink: 0;
         }
         .peta-filter-chip:has(.peta-filter-check:checked) {
-            color: var(--text-primary);
+            border-color: rgba(217, 169, 105, 0.45);
+            background: rgba(217, 169, 105, 0.08);
         }
-        .peta-filter-chip.baik:has(.peta-filter-check:checked) { border-color: rgba(74, 222, 128, 0.45); background: rgba(74, 222, 128, 0.08); }
-        .peta-filter-chip.minor:has(.peta-filter-check:checked) { border-color: rgba(217, 169, 105, 0.45); background: rgba(217, 169, 105, 0.08); }
-        .peta-filter-chip.rosak:has(.peta-filter-check:checked) { border-color: rgba(239, 68, 68, 0.45); background: rgba(239, 68, 68, 0.08); }
-        .peta-filter-chip.na:has(.peta-filter-check:checked) { border-color: rgba(100, 116, 139, 0.45); background: rgba(100, 116, 139, 0.1); }
         .peta-filter-chip:not(:has(.peta-filter-check:checked)) {
             opacity: 0.5;
         }
@@ -1306,11 +1302,11 @@
             background: rgba(255,255,255,0.6);
             border-color: #e2e8f0;
         }
-        body.mode-siang .peta-filter-label { color: #0f172a; }
+        body.mode-siang .peta-filter-label { color: #000; }
         body.mode-siang .peta-filter-chip {
             background: rgba(255,255,255,0.7);
             border-color: #e2e8f0;
-            color: #475569;
+            color: #000;
         }
         #petaJenteraMap {
             width: 100%;
@@ -4340,13 +4336,18 @@
 
                 petaJenteraMapInstance = L.map('petaJenteraMap', {
                     zoomControl: true,
-                    scrollWheelZoom: false
+                    scrollWheelZoom: false,
+                    minZoom: 8,
+                    maxBounds: [[1.15, 102.45], [2.85, 104.55]],
+                    maxBoundsViscosity: 1.0
                 }).setView([1.85, 103.55], 9);
 
                 L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
                     attribution: '&copy; OpenStreetMap contributors',
                     maxZoom: 18
                 }).addTo(petaJenteraMapInstance);
+
+                petaJenteraMapInstance.setMaxBounds([[1.15, 102.45], [2.85, 104.55]]);
 
                 const warnaStatus = { baik: '#4ade80', minor: '#d9a969', rosak: '#ef4444', na: '#64748b' };
 
