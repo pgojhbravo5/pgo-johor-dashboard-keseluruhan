@@ -1323,6 +1323,38 @@
             text-align: center;
             margin-top: 0.5rem;
         }
+        .peta-unmatched-toggle {
+            color: var(--hazard-gold);
+            font-weight: 700;
+            cursor: pointer;
+            text-decoration: underline dotted;
+        }
+        .peta-unmatched-box {
+            margin-top: 0.6rem;
+            background: rgba(217, 169, 105, 0.06);
+            border: 1px solid rgba(217, 169, 105, 0.25);
+            border-radius: 0.75rem;
+            padding: 0.6rem 0.75rem;
+            max-height: 12rem;
+            overflow-y: auto;
+        }
+        .peta-unmatched-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 0.5rem;
+            font-size: 0.72rem;
+            padding: 0.25rem 0;
+            border-bottom: 1px dashed rgba(255,255,255,0.08);
+            color: var(--text-primary);
+        }
+        .peta-unmatched-row:last-child { border-bottom: none; }
+        .peta-unmatched-count {
+            font-size: 0.65rem;
+            font-weight: 700;
+            color: var(--hazard-gold);
+            white-space: nowrap;
+        }
         /* Leaflet dark theme adjustments */
         .leaflet-container {
             background: #0b1220 !important;
@@ -2995,6 +3027,7 @@
                             </div>
                             <div id="petaJenteraMap"></div>
                             <div class="peta-jentera-status" id="petaJenteraStatusText">Memuatkan data jentera...</div>
+                            <div class="peta-unmatched-box" id="petaUnmatchedBox" style="display:none;"></div>
                         </div>
                     </section>
 
@@ -4237,7 +4270,10 @@
                 { nama: 'BBP Labis', zon: 4, daerah: 'Segamat', lat: 2.380060008820531, lng: 103.01796330820825, tel: '07-9254444' },
                 { nama: 'BBP Bukit Gambir', zon: 4, daerah: 'Tangkak', lat: 2.217126038710606, lng: 102.65990143704445, tel: '06-9765144' },
                 { nama: 'BBP Tangkak', zon: 4, daerah: 'Tangkak', lat: 2.2709401263413143, lng: 102.54347515009461, tel: '06-9783444' },
-                { nama: 'BBP Pagoh', zon: 4, daerah: 'Muar', lat: 2.136905853626598, lng: 102.73936700820836, tel: '06-9741955' }
+                { nama: 'BBP Pagoh', zon: 4, daerah: 'Muar', lat: 2.136905853626598, lng: 102.73936700820836, tel: '06-9741955' },
+                // BENGKEL / LOKASI SOKONGAN (bukan balai operasi)
+                { nama: 'Bengkel Kejuruteraan', jenis: 'bengkel', zon: 0, daerah: 'Johor Bahru', lat: 1.485846, lng: 103.751072, tel: 'n/a' },
+                { nama: 'Bengkel Swasta', jenis: 'bengkel', zon: 0, daerah: 'Johor Bahru', lat: 1.485841, lng: 103.751169, tel: 'n/a' }
             ];
 
             // Normalisasi nama balai: buang "BBP", "FIRE POST", kurungan, ruang berlebih, uppercase
@@ -4289,9 +4325,10 @@
                 const warnaStatus = { baik: '#4ade80', minor: '#d9a969', rosak: '#ef4444', na: '#64748b' };
 
                 SENARAI_BALAI_JOHOR.forEach(balai => {
+                    const faIcon = balai.jenis === 'bengkel' ? 'fa-screwdriver-wrench' : 'fa-truck-field';
                     const icon = L.divIcon({
                         className: '',
-                        html: `<div class="peta-marker-wrap"><div class="peta-marker-dot" style="background:${warnaStatus.na}"><i class="fas fa-truck-field"></i></div></div>`,
+                        html: `<div class="peta-marker-wrap"><div class="peta-marker-dot" style="background:${warnaStatus.na}"><i class="fas ${faIcon}"></i></div></div>`,
                         iconSize: [30, 30],
                         iconAnchor: [15, 15],
                         popupAnchor: [0, -14]
@@ -4334,7 +4371,8 @@
                         </div>`;
                     });
                 }
-                return `<div class="popup-balai-title"><i class="fas fa-house-fire" style="margin-right:0.35rem;color:var(--hazard-gold)"></i>${balai.nama}</div>${ringkasan}${baris}`;
+                const iconPopup = balai.jenis === 'bengkel' ? 'fa-screwdriver-wrench' : 'fa-house-fire';
+                return `<div class="popup-balai-title"><i class="fas ${iconPopup}" style="margin-right:0.35rem;color:var(--hazard-gold)"></i>${balai.nama}</div>${ringkasan}${baris}`;
             }
 
             async function fetchDanPaparPetaJentera() {
@@ -4358,12 +4396,14 @@
 
                     // Kumpul jentera ikut balai (ternormalisasi)
                     const jenteraIkutBalai = {};
+                    const namaAsalIkutKunci = {};
                     for (let i = 1; i < rows.length; i++) {
                         const row = rows[i];
                         if (!row || row.length === 0) continue;
                         const lokasiRaw = idxLokasiSemasa >= 0 ? (row[idxLokasiSemasa] || '').trim() : '';
                         if (!lokasiRaw) continue;
                         const kunci = normalisasiNamaBalai(lokasiRaw);
+                        namaAsalIkutKunci[kunci] = lokasiRaw;
                         const status = idxStatus >= 0 ? (row[idxStatus] || '').trim() : '';
                         const kerosakan = idxKerosakan >= 0 ? (row[idxKerosakan] || '').trim() : '';
                         const kelas = klasifikasiStatusJentera(status, kerosakan);
@@ -4400,9 +4440,10 @@
                             else jumlahRosak++;
                         });
 
+                        const faIconUpdate = balai.jenis === 'bengkel' ? 'fa-screwdriver-wrench' : 'fa-truck-field';
                         const newIcon = L.divIcon({
                             className: '',
-                            html: `<div class="peta-marker-wrap"><div class="peta-marker-dot" style="background:${warnaStatus[kelasBalai]}"><i class="fas fa-truck-field"></i></div>${senarai.length > 0 ? `<div class="peta-marker-count">${senarai.length}</div>` : ''}</div>`,
+                            html: `<div class="peta-marker-wrap"><div class="peta-marker-dot" style="background:${warnaStatus[kelasBalai]}"><i class="fas ${faIconUpdate}"></i></div>${senarai.length > 0 ? `<div class="peta-marker-count">${senarai.length}</div>` : ''}</div>`,
                             iconSize: [30, 30],
                             iconAnchor: [15, 15],
                             popupAnchor: [0, -14]
@@ -4412,9 +4453,16 @@
                         markerInfo.kelasSemasa = kelasBalai;
                     });
 
-                    // Kesan lokasi dalam CSV yang tidak match mana-mana balai (untuk debug/log sahaja)
+                    // Kesan lokasi dalam CSV yang tidak match mana-mana balai
+                    const senaraiTakPadan = [];
                     Object.keys(jenteraIkutBalai).forEach(kunci => {
-                        if (!petaJenteraMarkers[kunci]) balaiTakDipadan++;
+                        if (!petaJenteraMarkers[kunci]) {
+                            balaiTakDipadan++;
+                            senaraiTakPadan.push({
+                                nama: namaAsalIkutKunci[kunci] || kunci,
+                                bil: jenteraIkutBalai[kunci].length
+                            });
+                        }
                     });
 
                     const posJumlahEl = document.getElementById('posJumlah');
@@ -4428,9 +4476,31 @@
 
                     const now = new Date();
                     const masaKini = now.toLocaleTimeString('ms-MY', { hour: '2-digit', minute: '2-digit' });
+                    const unmatchedBoxEl = document.getElementById('petaUnmatchedBox');
                     if (statusTextEl) {
-                        statusTextEl.textContent = `Dikemaskini ${masaKini}` +
-                            (balaiTakDipadan > 0 ? ` — ${balaiTakDipadan} lokasi CSV tidak sepadan dgn senarai balai` : '');
+                        if (senaraiTakPadan.length > 0) {
+                            statusTextEl.innerHTML = `Dikemaskini ${masaKini} — <span class="peta-unmatched-toggle" id="petaUnmatchedToggle">${senaraiTakPadan.length} lokasi CSV tidak sepadan dgn senarai balai (klik untuk lihat)</span>`;
+                        } else {
+                            statusTextEl.textContent = `Dikemaskini ${masaKini}`;
+                        }
+                    }
+                    if (unmatchedBoxEl) {
+                        if (senaraiTakPadan.length > 0) {
+                            senaraiTakPadan.sort((a, b) => b.bil - a.bil);
+                            unmatchedBoxEl.innerHTML = senaraiTakPadan.map(u =>
+                                `<div class="peta-unmatched-row"><span>${u.nama}</span><span class="peta-unmatched-count">${u.bil} jentera</span></div>`
+                            ).join('');
+                            console.warn('Lokasi CSV tidak sepadan dengan senarai balai:', senaraiTakPadan);
+                        } else {
+                            unmatchedBoxEl.innerHTML = '';
+                            unmatchedBoxEl.style.display = 'none';
+                        }
+                    }
+                    const toggleEl = document.getElementById('petaUnmatchedToggle');
+                    if (toggleEl && unmatchedBoxEl) {
+                        toggleEl.onclick = function() {
+                            unmatchedBoxEl.style.display = unmatchedBoxEl.style.display === 'none' ? 'block' : 'none';
+                        };
                     }
 
                     terapFilterPeta();
