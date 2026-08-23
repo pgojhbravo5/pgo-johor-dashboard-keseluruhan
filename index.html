@@ -3400,7 +3400,7 @@
                         <!-- 1: Talian Kecemasan (diutamakan untuk ops) -->
                         <div class="accordion-item">
                             <button class="accordion-header" data-target="linkAcc1" aria-expanded="false">
-                                <span class="accordion-title" data-ms="&lt;i class=&quot;fas fa-phone-volume&quot;&gt;&lt;/i&gt; Talian Kecemasan 24/7" data-en="&lt;i class=&quot;fas fa-phone-volume&quot;&gt;&lt;/i&gt; 24/7 Emergency Hotline"><i class="fas fa-phone-volume"></i> Talian Kecemasan 24/7</span>
+                                <span class="accordion-title"><i class="fas fa-phone-volume"></i> Talian Kecemasan 24/7</span>
                                 <span class="arrow"><i class="fas fa-chevron-down"></i></span>
                             </button>
                             <div class="accordion-content" id="linkAcc1">
@@ -3434,7 +3434,7 @@
                         <!-- 2: Cuaca & Laut -->
                         <div class="accordion-item">
                             <button class="accordion-header" data-target="linkAcc2" aria-expanded="false">
-                                <span class="accordion-title" data-ms="&lt;i class=&quot;fas fa-cloud-sun&quot;&gt;&lt;/i&gt; Cuaca & Laut" data-en="&lt;i class=&quot;fas fa-cloud-sun&quot;&gt;&lt;/i&gt; Weather & Sea"><i class="fas fa-cloud-sun"></i> Cuaca & Laut</span>
+                                <span class="accordion-title"><i class="fas fa-cloud-sun"></i> Cuaca & Laut</span>
                                 <span class="arrow"><i class="fas fa-chevron-down"></i></span>
                             </button>
                             <div class="accordion-content" id="linkAcc2">
@@ -3460,7 +3460,7 @@
                         <!-- 3: Bencana & Amaran -->
                         <div class="accordion-item">
                             <button class="accordion-header" data-target="linkAcc3" aria-expanded="false">
-                                <span class="accordion-title" data-ms="&lt;i class=&quot;fas fa-triangle-exclamation&quot;&gt;&lt;/i&gt; Bencana & Amaran" data-en="&lt;i class=&quot;fas fa-triangle-exclamation&quot;&gt;&lt;/i&gt; Disaster & Warnings"><i class="fas fa-triangle-exclamation"></i> Bencana & Amaran</span>
+                                <span class="accordion-title"><i class="fas fa-triangle-exclamation"></i> Bencana & Amaran</span>
                                 <span class="arrow"><i class="fas fa-chevron-down"></i></span>
                             </button>
                             <div class="accordion-content" id="linkAcc3">
@@ -3483,7 +3483,7 @@
                         <!-- 4: Jalan Raya & Logistik -->
                         <div class="accordion-item">
                             <button class="accordion-header" data-target="linkAcc4" aria-expanded="false">
-                                <span class="accordion-title" data-ms="&lt;i class=&quot;fas fa-road&quot;&gt;&lt;/i&gt; Jalan Raya & Logistik" data-en="&lt;i class=&quot;fas fa-road&quot;&gt;&lt;/i&gt; Roads & Logistics"><i class="fas fa-road"></i> Jalan Raya & Logistik</span>
+                                <span class="accordion-title"><i class="fas fa-road"></i> Jalan Raya & Logistik</span>
                                 <span class="arrow"><i class="fas fa-chevron-down"></i></span>
                             </button>
                             <div class="accordion-content" id="linkAcc4">
@@ -3496,7 +3496,7 @@
                         <!-- 5: Direktori Agensi -->
                         <div class="accordion-item">
                             <button class="accordion-header" data-target="linkAcc5" aria-expanded="false">
-                                <span class="accordion-title" data-ms="&lt;i class=&quot;fas fa-building-columns&quot;&gt;&lt;/i&gt; Direktori Agensi" data-en="&lt;i class=&quot;fas fa-building-columns&quot;&gt;&lt;/i&gt; Agency Directory"><i class="fas fa-building-columns"></i> Direktori Agensi</span>
+                                <span class="accordion-title"><i class="fas fa-building-columns"></i> Direktori Agensi</span>
                                 <span class="arrow"><i class="fas fa-chevron-down"></i></span>
                             </button>
                             <div class="accordion-content" id="linkAcc5">
@@ -3686,8 +3686,6 @@
                         ? (semuaTerpilih ? 'Deselect All' : 'Select All')
                         : (semuaTerpilih ? 'Nyahpilih Semua' : 'Pilih Semua');
                 }
-                if (typeof renderPetaStatusText === 'function') renderPetaStatusText();
-                if (typeof terapFilterPeta === 'function') terapFilterPeta();
             }
 
             document.getElementById('langToggleBtn').addEventListener('click', function() {
@@ -4454,66 +4452,18 @@
             const PETA_SUMBER_CSV = {
                 jentera: {
                     label: 'Jentera',
-                    labelEn: 'Vehicles',
                     url: 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQt0JkN2yWW_0FeY5GKpmIvs1uI6si89JcqNmSTO3f--rM8FhQZe1Q97YQd8tiAsmaMQdTXO5TQWedy/pub?gid=0&single=true&output=csv'
                 },
                 emrs: {
                     label: 'EMRS',
-                    labelEn: 'EMRS',
                     url: 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQt0JkN2yWW_0FeY5GKpmIvs1uI6si89JcqNmSTO3f--rM8FhQZe1Q97YQd8tiAsmaMQdTXO5TQWedy/pub?gid=795399708&single=true&output=csv'
                 },
                 water: {
                     label: 'Water Tanker',
-                    labelEn: 'Water Tanker',
                     url: 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQt0JkN2yWW_0FeY5GKpmIvs1uI6si89JcqNmSTO3f--rM8FhQZe1Q97YQd8tiAsmaMQdTXO5TQWedy/pub?gid=290336578&single=true&output=csv'
                 }
             };
             let petaSumberAktif = 'jentera';
-
-            // Label sumber ikut bahasa aktif semasa (guna window.bahasaAktif yang ditetapkan oleh terapBahasa())
-            function labelSumberPeta(objSumber) {
-                if (!objSumber) return '';
-                return window.bahasaAktif === 'en' ? (objSumber.labelEn || objSumber.label) : objSumber.label;
-            }
-
-            // Simpan status terkini peta jentera supaya teks boleh dibina semula bila bahasa ditukar
-            let petaStatusState = null; // { jenis: 'loading'|'ok'|'ralat', sumberObj, masaKini, senaraiTakPadan }
-
-            function renderPetaStatusText() {
-                const statusTextEl = document.getElementById('petaJenteraStatusText');
-                const unmatchedBoxEl = document.getElementById('petaUnmatchedBox');
-                if (!statusTextEl || !petaStatusState) return;
-                const enAktif = window.bahasaAktif === 'en';
-                const labelSumber = labelSumberPeta(petaStatusState.sumberObj);
-
-                if (petaStatusState.jenis === 'loading') {
-                    statusTextEl.textContent = enAktif ? `Loading ${labelSumber} data...` : `Memuatkan data ${labelSumber}...`;
-                } else if (petaStatusState.jenis === 'ralat') {
-                    statusTextEl.textContent = enAktif ? `Failed to load ${labelSumber} data.` : `Gagal memuatkan data ${labelSumber}.`;
-                } else if (petaStatusState.jenis === 'ok') {
-                    const senaraiTakPadan = petaStatusState.senaraiTakPadan || [];
-                    if (senaraiTakPadan.length > 0) {
-                        const teksTakPadan = enAktif
-                            ? `${senaraiTakPadan.length} CSV locations do not match the station list (click to view)`
-                            : `${senaraiTakPadan.length} lokasi CSV tidak sepadan dgn senarai balai (klik untuk lihat)`;
-                        statusTextEl.innerHTML = `${labelSumber} — ${enAktif ? 'Updated' : 'Dikemaskini'} ${petaStatusState.masaKini} — <span class="peta-unmatched-toggle" id="petaUnmatchedToggle">${teksTakPadan}</span>`;
-                        const toggleEl = document.getElementById('petaUnmatchedToggle');
-                        if (toggleEl && unmatchedBoxEl) {
-                            toggleEl.onclick = function() {
-                                unmatchedBoxEl.style.display = unmatchedBoxEl.style.display === 'none' ? 'block' : 'none';
-                            };
-                        }
-                    } else {
-                        statusTextEl.textContent = `${labelSumber} — ${enAktif ? 'Updated' : 'Dikemaskini'} ${petaStatusState.masaKini}`;
-                    }
-                }
-
-                if (unmatchedBoxEl && petaStatusState.senaraiTakPadan && petaStatusState.senaraiTakPadan.length > 0) {
-                    unmatchedBoxEl.innerHTML = petaStatusState.senaraiTakPadan.map(u =>
-                        `<div class="peta-unmatched-row"><span>${u.nama}</span><span class="peta-unmatched-count">${u.bil} ${enAktif ? 'vehicles' : 'jentera'}</span></div>`
-                    ).join('');
-                }
-            }
 
             async function fetchJenteraBersedia() {
                 const elJumlah = document.getElementById('statJenteraSedia');
@@ -4818,21 +4768,37 @@
                     const now = new Date();
                     const masaKini = now.toLocaleTimeString('ms-MY', { hour: '2-digit', minute: '2-digit' });
                     const unmatchedBoxEl = document.getElementById('petaUnmatchedBox');
-                    if (senaraiTakPadan.length > 0) {
-                        senaraiTakPadan.sort((a, b) => b.bil - a.bil);
-                        console.warn('Lokasi CSV tidak sepadan dengan senarai balai:', senaraiTakPadan);
-                    } else if (unmatchedBoxEl) {
-                        unmatchedBoxEl.innerHTML = '';
-                        unmatchedBoxEl.style.display = 'none';
+                    if (statusTextEl) {
+                        if (senaraiTakPadan.length > 0) {
+                            statusTextEl.innerHTML = `${sumberAktifObj.label} — Dikemaskini ${masaKini} — <span class="peta-unmatched-toggle" id="petaUnmatchedToggle">${senaraiTakPadan.length} lokasi CSV tidak sepadan dgn senarai balai (klik untuk lihat)</span>`;
+                        } else {
+                            statusTextEl.textContent = `${sumberAktifObj.label} — Dikemaskini ${masaKini}`;
+                        }
                     }
-                    petaStatusState = { jenis: 'ok', sumberObj: sumberAktifObj, masaKini, senaraiTakPadan };
-                    renderPetaStatusText();
+                    if (unmatchedBoxEl) {
+                        if (senaraiTakPadan.length > 0) {
+                            senaraiTakPadan.sort((a, b) => b.bil - a.bil);
+                            unmatchedBoxEl.innerHTML = senaraiTakPadan.map(u =>
+                                `<div class="peta-unmatched-row"><span>${u.nama}</span><span class="peta-unmatched-count">${u.bil} jentera</span></div>`
+                            ).join('');
+                            console.warn('Lokasi CSV tidak sepadan dengan senarai balai:', senaraiTakPadan);
+                        } else {
+                            unmatchedBoxEl.innerHTML = '';
+                            unmatchedBoxEl.style.display = 'none';
+                        }
+                    }
+                    const toggleEl = document.getElementById('petaUnmatchedToggle');
+                    if (toggleEl && unmatchedBoxEl) {
+                        toggleEl.onclick = function() {
+                            unmatchedBoxEl.style.display = unmatchedBoxEl.style.display === 'none' ? 'block' : 'none';
+                        };
+                    }
 
                     terapFilterPeta();
                 } catch (e) {
                     console.warn('Peta Jentera fetch error:', e.message);
-                    petaStatusState = { jenis: 'ralat', sumberObj: (PETA_SUMBER_CSV[petaSumberAktif] || null) };
-                    renderPetaStatusText();
+                    const sumberLabelRalat = (PETA_SUMBER_CSV[petaSumberAktif] || {}).label || '';
+                    if (statusTextEl) statusTextEl.textContent = `Gagal memuatkan data ${sumberLabelRalat}.`;
                 }
             }
 
@@ -4851,12 +4817,7 @@
                     if (tunjuk) dipaparkan++;
                 });
                 const countEl = document.getElementById('petaJenteraCount');
-                if (countEl) {
-                    const enAktif = window.bahasaAktif === 'en';
-                    countEl.textContent = enAktif
-                        ? `${dipaparkan} / ${SENARAI_BALAI_JOHOR.length} stations displayed`
-                        : `${dipaparkan} / ${SENARAI_BALAI_JOHOR.length} balai dipaparkan`;
-                }
+                if (countEl) countEl.textContent = `${dipaparkan} / ${SENARAI_BALAI_JOHOR.length} balai dipaparkan`;
             }
 
             document.querySelectorAll('.peta-filter-check').forEach(cb => {
@@ -4903,8 +4864,9 @@
                     const el = document.getElementById(id);
                     if (el) el.textContent = '--';
                 });
-                petaStatusState = { jenis: 'loading', sumberObj: (PETA_SUMBER_CSV[petaSumberAktif] || null) };
-                renderPetaStatusText();
+                const statusTextEl = document.getElementById('petaJenteraStatusText');
+                const sumberLabel = (PETA_SUMBER_CSV[petaSumberAktif] || {}).label || '';
+                if (statusTextEl) statusTextEl.textContent = `Memuatkan data ${sumberLabel}...`;
                 const unmatchedBoxEl = document.getElementById('petaUnmatchedBox');
                 if (unmatchedBoxEl) { unmatchedBoxEl.innerHTML = ''; unmatchedBoxEl.style.display = 'none'; }
                 terapFilterPeta();
