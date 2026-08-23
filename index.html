@@ -1962,11 +1962,10 @@
             backdrop-filter: blur(20px);
             -webkit-backdrop-filter: blur(20px);
             transition: all 0.5s ease;
-            height: 100%;
-            max-height: 80vh;
+            height: auto;
             display: flex;
             flex-direction: column;
-            overflow: hidden;
+            overflow: visible;
             animation: dashboardEntrance 0.8s cubic-bezier(0.16, 1, 0.3, 1);
         }
         .links-panel .panel-title {
@@ -2081,21 +2080,8 @@
         .links-panel .emergency-item.filter-hidden { display: none; }
 
         .links-panel .links-scroll {
-            flex: 1;
-            overflow-y: auto;
+            overflow-y: visible;
             padding: 0.5rem 0 0 0;
-            scrollbar-width: thin;
-            scrollbar-color: rgba(255, 255, 255, 0.15) transparent;
-        }
-        .links-panel .links-scroll::-webkit-scrollbar {
-            width: 0.3rem;
-        }
-        .links-panel .links-scroll::-webkit-scrollbar-track {
-            background: transparent;
-        }
-        .links-panel .links-scroll::-webkit-scrollbar-thumb {
-            background: rgba(255, 255, 255, 0.15);
-            border-radius: 0.5rem;
         }
 
         /* Accordion dalam links panel */
@@ -2615,9 +2601,6 @@
                 max-width: 100%;
                 gap: 1rem;
             }
-            .links-panel {
-                max-height: 60vh;
-            }
             .stats-bar {
                 grid-template-columns: repeat(2, 1fr);
             }
@@ -2695,7 +2678,6 @@
                 gap: 0.75rem;
             }
             .links-panel {
-                max-height: 50vh;
                 padding: 1rem 0.75rem;
             }
             .links-panel .panel-title {
@@ -2793,8 +2775,6 @@
             }
             .sistem-panel .panel-body.open {
                 padding: 0 0.8rem 0.8rem 0.8rem;
-                max-height: 400px;
-                overflow-y: auto;
             }
             .carousel-slide {
                 padding: 0.6rem 0.8rem;
@@ -3005,20 +2985,6 @@
             }
             .sistem-panel .panel-body.open {
                 padding: 0 1.75rem 1.75rem;
-                max-height: 500px;
-                overflow-y: auto;
-                scrollbar-width: thin;
-                scrollbar-color: var(--hazard-gold) transparent;
-            }
-            .sistem-panel .panel-body.open::-webkit-scrollbar {
-                width: 5px;
-            }
-            .sistem-panel .panel-body.open::-webkit-scrollbar-track {
-                background: transparent;
-            }
-            .sistem-panel .panel-body.open::-webkit-scrollbar-thumb {
-                background: var(--hazard-gold);
-                border-radius: 10px;
             }
 
             /* Kategori – scroller untuk lebih 3 kad, padding diperluas */
