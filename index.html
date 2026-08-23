@@ -1367,10 +1367,44 @@
         }
 
         /* ===== BUTANG & MOD SKRIN PENUH PETA JENTERA ===== */
-        .peta-card-toolbar {
+        .peta-card-header {
             display: flex;
-            justify-content: flex-end;
-            margin-bottom: 0.6rem;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 0.75rem;
+            font-size: 0.875rem;
+            font-weight: 800;
+            letter-spacing: 0.09375rem;
+            color: #ffffff;
+            text-transform: uppercase;
+            margin-bottom: 1rem;
+            padding-bottom: 0.625rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .peta-card-header-title {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+        .peta-card-header-right {
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+            margin-left: auto;
+        }
+        .peta-card-header-count {
+            font-size: 0.6rem;
+            font-weight: 400;
+            color: var(--text-secondary);
+            text-transform: none;
+            letter-spacing: normal;
+            white-space: nowrap;
+        }
+        body.mode-siang .peta-card-header {
+            color: #0f172a;
+            border-bottom: 0.1875rem solid;
+            border-image: linear-gradient(90deg, #b3223f, #d9a969, #0b2a4d) 1;
+            padding-bottom: 0.5rem;
         }
         .peta-fullscreen-btn {
             width: 1.7rem;
@@ -3121,16 +3155,18 @@
 
                     <!-- ===== PETA KETERSEDIAAN JENTERA SELURUH JOHOR ===== -->
                     <section class="section-peta-jentera">
-                        <div class="section-title">
-                            <i class="fas fa-map-location-dot" style="color:var(--hazard-gold)"></i> PETA KETERSEDIAAN JENTERA
-                            <span class="status-badge live">● LIVE</span>
-                            <span style="font-size:0.6rem; font-weight:400; color:var(--text-secondary); margin-left:auto;" id="petaJenteraCount">-- balai</span>
-                        </div>
                         <div class="peta-jentera-card" id="petaJenteraCard">
-                            <div class="peta-card-toolbar">
-                                <button type="button" class="peta-fullscreen-btn" id="petaJenteraFullscreenBtn" aria-label="Skrin Penuh" title="Skrin Penuh">
-                                    <i class="fas fa-expand"></i>
-                                </button>
+                            <div class="peta-card-header">
+                                <div class="peta-card-header-title">
+                                    <i class="fas fa-map-location-dot" style="color:var(--hazard-gold)"></i> PETA KETERSEDIAAN JENTERA
+                                    <span class="status-badge live">● LIVE</span>
+                                </div>
+                                <div class="peta-card-header-right">
+                                    <span class="peta-card-header-count" id="petaJenteraCount">-- balai</span>
+                                    <button type="button" class="peta-fullscreen-btn" id="petaJenteraFullscreenBtn" aria-label="Skrin Penuh" title="Skrin Penuh">
+                                        <i class="fas fa-expand"></i>
+                                    </button>
+                                </div>
                             </div>
                             <div class="peta-sumber-switch" id="petaSumberSwitch">
                                 <button type="button" class="peta-sumber-pill active" data-sumber="jentera"><i class="fas fa-truck-field"></i> Jentera</button>
