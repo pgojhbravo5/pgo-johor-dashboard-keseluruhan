@@ -194,11 +194,6 @@
             border-color: #b3223f;
             color: #b3223f;
         }
-        body.mode-siang .header-top-controls .switch-mode-btn {
-            background: #f1f5f9;
-            border-color: #0b2a4d;
-            color: #0b2a4d;
-        }
         body.mode-siang .header-top-controls .analog-clock {
             background: #ffffff;
             border-color: #b3223f;
@@ -510,37 +505,12 @@
                 box-shadow: 0 0 1.25rem var(--hazard-gold-glow);
                 border-color: var(--hazard-gold);
             }
-            .header-top-controls .switch-mode-btn:hover {
-                background: var(--status-green);
-                color: #000;
-                box-shadow: 0 0 1.25rem rgba(74, 222, 128, 0.4);
-                border-color: var(--status-green);
-            }
             .header-top-controls .refresh-btn:hover {
                 background: #3b82f6;
                 color: #000;
                 box-shadow: 0 0 1.25rem rgba(59, 130, 246, 0.4);
                 border-color: #3b82f6;
             }
-        }
-        .switch-mode-btn .mode-indicator-dot {
-            position: absolute;
-            bottom: 0px;
-            right: 0px;
-            width: 0.625rem;
-            height: 0.625rem;
-            background: var(--status-green);
-            border-radius: 50%;
-            border: 2px solid #000;
-            display: none;
-            animation: pulseIndicator 2s infinite;
-        }
-        body.mobile-mode .switch-mode-btn .mode-indicator-dot {
-            display: block;
-        }
-        @keyframes pulseIndicator {
-            0%, 100% { transform: scale(1); opacity: 1; }
-            50% { transform: scale(1.4); opacity: 0.4; }
         }
         .lang-toggle-btn .lang-indicator-badge {
             position: absolute;
@@ -3102,22 +3072,9 @@
             }
         }
 
-        body.mobile-mode .stats-bar {
-            grid-template-columns: repeat(2, 1fr);
-        }
-        body.mobile-mode .content-row {
-            flex-direction: column;
-        }
-        body.mobile-mode .content-col-left {
-            flex: 1 1 auto;
-        }
-        body.mobile-mode .content-col-right {
-            flex: 1 1 auto;
-            max-width: 100%;
-        }
     </style>
 </head>
-<body class="desktop-mode">
+<body>
 
     <!-- ===== HEADER ===== -->
     <header class="header">
@@ -3125,10 +3082,6 @@
             <div class="header-top-controls" role="toolbar">
                 <button class="mode-toggle-btn" id="modeToggleBtn" aria-label="Tukar mod siang malam">
                     <i class="fas fa-moon"></i>
-                </button>
-                <button class="switch-mode-btn" id="switchModeBtn" aria-label="Tukar paparan desktop mobile">
-                    <i class="fas fa-mobile-alt"></i>
-                    <span class="mode-indicator-dot"></span>
                 </button>
                 <button class="lang-toggle-btn" id="langToggleBtn" aria-label="Tukar bahasa: Bahasa Melayu / English" title="Tukar Bahasa">
                     <i class="fas fa-language"></i>
@@ -3166,7 +3119,7 @@
                     <img src="https://i.ibb.co/fGtPXjpc/500px-Logo-of-the-Malaysian-Fire-and-Rescue-Department-svg.webp" alt="Logo JBPM" class="logo-img" loading="lazy" />
                 </div>
                 <div class="logo-text">
-                    <h1>PUSAT GERAKAN OPERASI <span>JOHOR</span></h1>
+                    <h1 data-ms="PUSAT GERAKAN OPERASI <span>JOHOR</span>" data-en="OPERATIONS COMMAND CENTRE <span>JOHOR</span>">PUSAT GERAKAN OPERASI <span>JOHOR</span></h1>
                     <span class="sub">Tactical Dashboard</span>
                 </div>
                 <div class="logo-img-wrapper">
@@ -3180,7 +3133,7 @@
     <nav class="breadcrumb-bar" aria-label="Anda di sini">
         <div class="breadcrumb-inner">
             <i class="fas fa-house"></i>
-            <span class="crumb current" aria-current="page">Laman Utama</span>
+            <span class="crumb current" aria-current="page" data-ms="Laman Utama" data-en="Home">Laman Utama</span>
         </div>
     </nav>
 
@@ -3188,7 +3141,7 @@
     <div class="search-bar-wrap">
         <div class="search-bar-inner">
             <i class="fas fa-search"></i>
-            <input type="text" id="googleSearchInput" placeholder="Cari di Google..." aria-label="Cari di Google" />
+            <input type="text" id="googleSearchInput" placeholder="Cari di Google..." aria-label="Cari di Google" data-ms-placeholder="Cari di Google..." data-en-placeholder="Search Google..." />
             <button id="googleSearchBtn" aria-label="Cari"><i class="fas fa-arrow-right"></i></button>
         </div>
     </div>
@@ -3205,29 +3158,29 @@
                         <a href="dbanggota.html" class="stat-item" rel="noopener noreferrer">
                             <i class="fas fa-user-shield icon-badge"></i>
                             <div class="num" id="statBertugas">--</div>
-                            <div class="label">Anggota Bertugas</div>
+                            <div class="label" data-ms="Anggota Bertugas" data-en="Personnel on Duty">Anggota Bertugas</div>
                         </a>
                         <a href="https://www.met.gov.my/" target="_blank" class="stat-item" rel="noopener noreferrer">
                             <i class="fas fa-cloud-sun icon-badge" id="statCuacaIcon"></i>
                             <div class="num" id="statCuaca">--°C</div>
-                            <div class="label">Cuaca JB</div>
+                            <div class="label" data-ms="Cuaca JB" data-en="JB Weather">Cuaca JB</div>
                         </a>
                         <a href="dashops.html" class="stat-item" rel="noopener noreferrer">
                             <i class="fas fa-chart-column icon-badge"></i>
                             <div class="num" id="statKesHariIni">--</div>
-                            <div class="label">Kes Hari Ini</div>
+                            <div class="label" data-ms="Kes Hari Ini" data-en="Cases Today">Kes Hari Ini</div>
                         </a>
                         <a href="jentera.html" class="stat-item" rel="noopener noreferrer">
                             <i class="fas fa-truck-field icon-badge"></i>
                             <div class="num" id="statJenteraSedia">--</div>
-                            <div class="label">Jentera Sedia</div>
+                            <div class="label" data-ms="Jentera Sedia" data-en="Vehicles Ready">Jentera Sedia</div>
                         </a>
                     </section>
 
                     <!-- ===== CAROUSEL KES KEBAKARAN & MANGSA ===== -->
                     <section class="section-carousel">
                         <div class="section-title">
-                            <i class="fas fa-fire" style="color:var(--hazard-gold)"></i> RINGKASAN KES RAWAK
+                            <i class="fas fa-fire" style="color:var(--hazard-gold)"></i> <span data-ms="RINGKASAN KES RAWAK" data-en="RANDOM CASE SUMMARY">RINGKASAN KES RAWAK</span>
                             <span class="status-badge live">● LIVE</span>
                             <span style="font-size:0.6rem; font-weight:400; color:var(--text-secondary); margin-left:auto;" id="carouselCount">0 kes</span>
                         </div>
@@ -3246,7 +3199,7 @@
                         <!-- Notis -->
                         <div class="carousel-notice">
                             <i class="fas fa-info-circle"></i>
-                            Sila buka <strong id="noticeDashOpsLink">Live Statistik Kes 24 Jam (DASH-OPS)</strong> untuk maklumat penuh.
+                            <span data-ms="Sila buka" data-en="Please open">Sila buka</span> <strong id="noticeDashOpsLink">Live Statistik Kes 24 Jam (DASH-OPS)</strong> <span data-ms="untuk maklumat penuh." data-en="for full information.">untuk maklumat penuh.</span>
                         </div>
                     </section>
 
@@ -3255,7 +3208,7 @@
                         <div class="peta-jentera-card" id="petaJenteraCard">
                             <div class="peta-card-header">
                                 <div class="peta-card-header-title">
-                                    <i class="fas fa-map-location-dot" style="color:var(--hazard-gold)"></i> PETA KETERSEDIAAN JENTERA
+                                    <i class="fas fa-map-location-dot" style="color:var(--hazard-gold)"></i> <span data-ms="PETA KETERSEDIAAN JENTERA" data-en="VEHICLE AVAILABILITY MAP">PETA KETERSEDIAAN JENTERA</span>
                                     <span class="status-badge live">● LIVE</span>
                                 </div>
                                 <div class="peta-card-header-right">
@@ -3266,33 +3219,33 @@
                                 </div>
                             </div>
                             <div class="peta-sumber-switch" id="petaSumberSwitch">
-                                <button type="button" class="peta-sumber-pill active" data-sumber="jentera"><i class="fas fa-truck-field"></i> Jentera</button>
+                                <button type="button" class="peta-sumber-pill active" data-sumber="jentera"><i class="fas fa-truck-field"></i> <span data-ms="Jentera" data-en="Vehicles">Jentera</span></button>
                                 <button type="button" class="peta-sumber-pill" data-sumber="emrs"><i class="fas fa-truck-medical"></i> EMRS</button>
                                 <button type="button" class="peta-sumber-pill" data-sumber="water"><i class="fas fa-truck-droplet"></i> Water Tanker</button>
                             </div>
                             <div class="peta-overall-stats" id="petaOverallStats">
-                                <div class="pos-item"><span class="pos-num" id="posJumlah">--</span><span class="pos-label">Jumlah Jentera</span></div>
-                                <div class="pos-item baik"><span class="pos-num" id="posBaik">--</span><span class="pos-label">Baik</span></div>
-                                <div class="pos-item minor"><span class="pos-num" id="posMinor">--</span><span class="pos-label">Rosak Minor</span></div>
-                                <div class="pos-item rosak"><span class="pos-num" id="posRosak">--</span><span class="pos-label">Rosak</span></div>
+                                <div class="pos-item"><span class="pos-num" id="posJumlah">--</span><span class="pos-label" data-ms="Jumlah Jentera" data-en="Total Vehicles">Jumlah Jentera</span></div>
+                                <div class="pos-item baik"><span class="pos-num" id="posBaik">--</span><span class="pos-label" data-ms="Baik" data-en="Good">Baik</span></div>
+                                <div class="pos-item minor"><span class="pos-num" id="posMinor">--</span><span class="pos-label" data-ms="Rosak Minor" data-en="Minor Damage">Rosak Minor</span></div>
+                                <div class="pos-item rosak"><span class="pos-num" id="posRosak">--</span><span class="pos-label" data-ms="Rosak" data-en="Damaged">Rosak</span></div>
                             </div>
                             <div class="peta-filter-bar">
-                                <span class="peta-filter-label"><i class="fas fa-filter"></i> Tapis:</span>
+                                <span class="peta-filter-label"><i class="fas fa-filter"></i> <span data-ms="Tapis:" data-en="Filter:">Tapis:</span></span>
                                 <label class="peta-filter-chip baik">
                                     <input type="checkbox" class="peta-filter-check" data-kelas="baik" checked />
-                                    <span class="peta-legend-dot baik"></span> Baik
+                                    <span class="peta-legend-dot baik"></span> <span data-ms="Baik" data-en="Good">Baik</span>
                                 </label>
                                 <label class="peta-filter-chip minor">
                                     <input type="checkbox" class="peta-filter-check" data-kelas="minor" checked />
-                                    <span class="peta-legend-dot minor"></span> Rosak Minor
+                                    <span class="peta-legend-dot minor"></span> <span data-ms="Rosak Minor" data-en="Minor Damage">Rosak Minor</span>
                                 </label>
                                 <label class="peta-filter-chip rosak">
                                     <input type="checkbox" class="peta-filter-check" data-kelas="rosak" checked />
-                                    <span class="peta-legend-dot rosak"></span> Rosak
+                                    <span class="peta-legend-dot rosak"></span> <span data-ms="Rosak" data-en="Damaged">Rosak</span>
                                 </label>
                                 <label class="peta-filter-chip na">
                                     <input type="checkbox" class="peta-filter-check" data-kelas="na" checked />
-                                    <span class="peta-legend-dot na"></span> Tiada Data
+                                    <span class="peta-legend-dot na"></span> <span data-ms="Tiada Data" data-en="No Data">Tiada Data</span>
                                 </label>
                                 <button type="button" class="peta-filter-reset" id="petaFilterReset">Nyahpilih Semua</button>
                             </div>
@@ -3319,8 +3272,8 @@
                                         <a href="dashops.html" class="app-card" rel="noopener noreferrer" id="dashOpsLink">
                                             <div class="icon"><i class="fas fa-chart-column"></i></div>
                                             <div>
-                                                <h3>Live Statistik Kes 24 Jam <span class="highlight">(DASH-OPS)</span></h3>
-                                                <p>Statistik masa nyata panggilan, lokasi & mangsa operasi.</p>
+                                                <h3 data-ms="Live Statistik Kes 24 Jam <span class=&quot;highlight&quot;>(DASH-OPS)</span>" data-en="Live 24-Hour Case Statistics <span class=&quot;highlight&quot;>(DASH-OPS)</span>">Live Statistik Kes 24 Jam <span class="highlight">(DASH-OPS)</span></h3>
+                                                <p data-ms="Statistik masa nyata panggilan, lokasi & mangsa operasi." data-en="Real-time statistics on calls, locations & operation casualties.">Statistik masa nyata panggilan, lokasi & mangsa operasi.</p>
                                             </div>
                                             <div class="card-footer">
                                                 <span class="badge live">● LIVE</span>
@@ -3346,8 +3299,8 @@
                                         <a href="jentera.html" class="app-card" rel="noopener noreferrer">
                                             <div class="icon"><i class="fas fa-truck-field"></i></div>
                                             <div>
-                                                <h3>Data <span class="highlight">Jentera</span> JBPM Johor</h3>
-                                                <p>Pemantauan status jentera & kenderaan operasi bomba.</p>
+                                                <h3 data-ms="Data <span class=&quot;highlight&quot;>Jentera</span> JBPM Johor" data-en="<span class=&quot;highlight&quot;>Vehicle</span> Data JBPM Johor">Data <span class="highlight">Jentera</span> JBPM Johor</h3>
+                                                <p data-ms="Pemantauan status jentera & kenderaan operasi bomba." data-en="Monitoring of fire operation vehicle & appliance status.">Pemantauan status jentera & kenderaan operasi bomba.</p>
                                             </div>
                                             <div class="card-footer">
                                                 <span class="badge online">● ONLINE</span>
@@ -3357,8 +3310,8 @@
                                         <a href="/dashboard-radio" class="app-card">
                                             <div class="icon"><i class="fas fa-tower-cell"></i></div>
                                             <div>
-                                                <h3>Data Aset <span class="highlight">GIRN</span></h3>
-                                                <p>Pemantauan aset komunikasi GIRN Negeri Johor.</p>
+                                                <h3 data-ms="Data Aset <span class=&quot;highlight&quot;>GIRN</span>" data-en="<span class=&quot;highlight&quot;>GIRN</span> Asset Data">Data Aset <span class="highlight">GIRN</span></h3>
+                                                <p data-ms="Pemantauan aset komunikasi GIRN Negeri Johor." data-en="Monitoring of Johor State GIRN communication assets.">Pemantauan aset komunikasi GIRN Negeri Johor.</p>
                                             </div>
                                             <div class="card-footer">
                                                 <span class="badge online">● ONLINE</span>
@@ -3369,8 +3322,8 @@
                                         <a href="/peta-bomba" class="app-card">
                                             <div class="icon"><i class="fas fa-map-location-dot"></i></div>
                                             <div>
-                                                <h3>Peta Kawasan <span class="highlight">Jagaan Balai</span></h3>
-                                                <p>Peta interaktif kawasan jagaan balai bomba.</p>
+                                                <h3 data-ms="Peta Kawasan <span class=&quot;highlight&quot;>Jagaan Balai</span>" data-en="<span class=&quot;highlight&quot;>Station Coverage</span> Area Map">Peta Kawasan <span class="highlight">Jagaan Balai</span></h3>
+                                                <p data-ms="Peta interaktif kawasan jagaan balai bomba." data-en="Interactive map of fire station coverage areas.">Peta interaktif kawasan jagaan balai bomba.</p>
                                             </div>
                                             <div class="card-footer">
                                                 <span class="badge online">● ONLINE</span>
@@ -3386,7 +3339,7 @@
                         <div class="cat-group">
                             <button type="button" class="cat-toggle" data-cat-target="catPanelDev" aria-expanded="false">
                                 <span class="cat-toggle-label">
-                                    <i class="fas fa-helmet-safety"></i> DALAM PEMBANGUNAN
+                                    <i class="fas fa-helmet-safety"></i> <span data-ms="DALAM PEMBANGUNAN" data-en="IN DEVELOPMENT">DALAM PEMBANGUNAN</span>
                                 </span>
                                 <i class="fas fa-chevron-down cat-arrow"></i>
                             </button>
@@ -3396,14 +3349,14 @@
                                         <a href="dbanggota.html" class="app-card" rel="noopener noreferrer">
                                             <div class="icon"><i class="fas fa-user-shield"></i></div>
                                             <div>
-                                                <h3>Kekuatan Anggota <span class="highlight">12 Jam</span></h3>
-                                                <p>Status anggota, syif, cuti & tugasan khas.</p>
+                                                <h3 data-ms="Kekuatan Anggota <span class=&quot;highlight&quot;>12 Jam</span>" data-en="Personnel Strength <span class=&quot;highlight&quot;>12-Hour</span>">Kekuatan Anggota <span class="highlight">12 Jam</span></h3>
+                                                <p data-ms="Status anggota, syif, cuti & tugasan khas." data-en="Personnel status, shifts, leave & special assignments.">Status anggota, syif, cuti & tugasan khas.</p>
                                                 <div class="anggota-mini-stats" id="anggotaMiniStats">
-                                                    <span><i class="fas fa-users"></i> Jumlah: <span class="num" id="miniTotal">--</span></span>
-                                                    <span><i class="fas fa-circle-check green"></i> Bertugas: <span class="num green" id="miniBertugas">--</span></span>
-                                                    <span><i class="fas fa-moon amber"></i> Cuti: <span class="num amber" id="miniCuti">--</span></span>
-                                                    <span><i class="fas fa-kit-medical red"></i> Sakit: <span class="num red" id="miniSakit">--</span></span>
-                                                    <span><i class="fas fa-bullseye purple"></i> Tugas Khas: <span class="num purple" id="miniTugasKhas">--</span></span>
+                                                    <span><i class="fas fa-users"></i> <span data-ms="Jumlah:" data-en="Total:">Jumlah:</span> <span class="num" id="miniTotal">--</span></span>
+                                                    <span><i class="fas fa-circle-check green"></i> <span data-ms="Bertugas:" data-en="On Duty:">Bertugas:</span> <span class="num green" id="miniBertugas">--</span></span>
+                                                    <span><i class="fas fa-moon amber"></i> <span data-ms="Cuti:" data-en="Leave:">Cuti:</span> <span class="num amber" id="miniCuti">--</span></span>
+                                                    <span><i class="fas fa-kit-medical red"></i> <span data-ms="Sakit:" data-en="Sick:">Sakit:</span> <span class="num red" id="miniSakit">--</span></span>
+                                                    <span><i class="fas fa-bullseye purple"></i> <span data-ms="Tugas Khas:" data-en="Special Duty:">Tugas Khas:</span> <span class="num purple" id="miniTugasKhas">--</span></span>
                                                 </div>
                                             </div>
                                             <div class="card-footer">
@@ -3422,10 +3375,10 @@
             <!-- ===== LAJUR KANAN ===== -->
             <div class="content-col-right">
                 <aside class="links-panel" id="linksPanel">
-                    <div class="panel-title"><i class="fas fa-satellite-dish"></i> PAUTAN PENTING</div>
+                    <div class="panel-title"><i class="fas fa-satellite-dish"></i> <span data-ms="PAUTAN PENTING" data-en="IMPORTANT LINKS">PAUTAN PENTING</span></div>
 
                     <div class="popular-links">
-                        <div class="popular-title"><i class="fas fa-star" style="color: var(--hazard-gold)"></i> Pautan Popular</div>
+                        <div class="popular-title"><i class="fas fa-star" style="color: var(--hazard-gold)"></i> <span data-ms="Pautan Popular" data-en="Popular Links">Pautan Popular</span></div>
                         <div class="popular-grid">
                             <a href="https://infobencanajkmv2.jkm.gov.my/landing/index.php?b=0&a=0" target="_blank" class="popular-item" rel="noopener noreferrer"><i class="fas fa-hand-holding-heart"></i> Info Bencana JKM</a>
                             <a href="https://myclimate.met.gov.my/fdrsWmsObsMsiaMetPortal" target="_blank" class="popular-item" rel="noopener noreferrer"><i class="fas fa-fire"></i> FDRS</a>
@@ -3436,11 +3389,11 @@
                     </div>
 
                     <!-- ▼ TARIKH DI-HARDCODE MANUAL ▼ -->
-                    <div class="update-timestamp"><i class="fas fa-sync-alt"></i> Pautan dikemaskini: <span id="linkUpdateDate">22 OGOS 2026</span></div>
+                    <div class="update-timestamp"><i class="fas fa-sync-alt"></i> <span data-ms="Pautan dikemaskini:" data-en="Links updated:">Pautan dikemaskini:</span> <span id="linkUpdateDate">22 OGOS 2026</span></div>
 
                     <div class="link-filter-wrap">
                         <i class="fas fa-search link-filter-icon"></i>
-                        <input type="text" id="linkFilterInput" class="link-filter-input" placeholder="Cari pautan / nombor kecemasan..." autocomplete="off">
+                        <input type="text" id="linkFilterInput" class="link-filter-input" placeholder="Cari pautan / nombor kecemasan..." autocomplete="off" data-ms-placeholder="Cari pautan / nombor kecemasan..." data-en-placeholder="Search links / emergency numbers...">
                     </div>
 
                     <div class="links-scroll" id="linksScroll">
@@ -3561,7 +3514,7 @@
                 <div class="sistem-panel" id="sistemPanel">
                     <button class="panel-toggle" id="sistemPanelToggle" aria-expanded="false">
                         <span class="panel-title">
-                            <i class="fas fa-server"></i> PAUTAN SISTEM PGO JOHOR
+                            <i class="fas fa-server"></i> <span data-ms="PAUTAN SISTEM PGO JOHOR" data-en="PGO JOHOR SYSTEM LINKS">PAUTAN SISTEM PGO JOHOR</span>
                         </span>
                         <i class="fas fa-chevron-down panel-arrow"></i>
                     </button>
@@ -3573,8 +3526,8 @@
                             <a href="https://kekuatan-anggota-jbpm-johor.vercel.app/" target="_blank" class="app-card" rel="noopener noreferrer">
                                 <div class="icon"><i class="fas fa-clipboard-list"></i></div>
                                 <div>
-                                    <h3>Sistem Kekuatan, Logistik <span class="highlight">& Checklist</span></h3>
-                                    <p>Platform pengisian anggota bertugas setiap pertukaran di balai-balai bomba seluruh Johor.</p>
+                                    <h3 data-ms="Sistem Kekuatan, Logistik <span class=&quot;highlight&quot;>& Checklist</span>" data-en="Strength, Logistics <span class=&quot;highlight&quot;>& Checklist</span> System">Sistem Kekuatan, Logistik <span class="highlight">& Checklist</span></h3>
+                                    <p data-ms="Platform pengisian anggota bertugas setiap pertukaran di balai-balai bomba seluruh Johor." data-en="Platform for logging on-duty personnel each shift across all Johor fire stations.">Platform pengisian anggota bertugas setiap pertukaran di balai-balai bomba seluruh Johor.</p>
                                 </div>
                                 <div class="card-footer">
                                     <span class="badge sistem">● SISTEM</span>
@@ -3584,8 +3537,8 @@
                             <a href="https://po1teknologia2.vercel.app/" target="_blank" class="app-card" rel="noopener noreferrer">
                                 <div class="icon"><i class="fas fa-boxes-stacked"></i></div>
                                 <div>
-                                    <h3>Sistem Inventori <span class="highlight">(DID)</span></h3>
-                                    <p>Pengurusan storan, peralatan & aset logistik.</p>
+                                    <h3 data-ms="Sistem Inventori <span class=&quot;highlight&quot;>(DID)</span>" data-en="Inventory System <span class=&quot;highlight&quot;>(DID)</span>">Sistem Inventori <span class="highlight">(DID)</span></h3>
+                                    <p data-ms="Pengurusan storan, peralatan & aset logistik." data-en="Management of storage, equipment & logistics assets.">Pengurusan storan, peralatan & aset logistik.</p>
                                 </div>
                                 <div class="card-footer">
                                     <span class="badge sistem">● SISTEM</span>
@@ -3595,8 +3548,8 @@
                             <a href="https://daftar-masuk-pelawat.vercel.app/" target="_blank" class="app-card" rel="noopener noreferrer">
                                 <div class="icon"><i class="fas fa-id-card-clip"></i></div>
                                 <div>
-                                    <h3>Sistem Daftar Masuk Pelawat <span class="highlight">(ENTRY)</span></h3>
-                                    <p>Sistem daftar masuk dengan pendaftaran ID digital.</p>
+                                    <h3 data-ms="Sistem Daftar Masuk Pelawat <span class=&quot;highlight&quot;>(ENTRY)</span>" data-en="Visitor Check-In System <span class=&quot;highlight&quot;>(ENTRY)</span>">Sistem Daftar Masuk Pelawat <span class="highlight">(ENTRY)</span></h3>
+                                    <p data-ms="Sistem daftar masuk dengan pendaftaran ID digital." data-en="Check-in system with digital ID registration.">Sistem daftar masuk dengan pendaftaran ID digital.</p>
                                 </div>
                                 <div class="card-footer">
                                     <span class="badge sistem">● SISTEM</span>
@@ -3622,12 +3575,12 @@
             <span>Aras 4, Pusat Gerakan Operasi Negeri Johor, Ibu Pejabat Jabatan Bomba dan Penyelamat Malaysia Negeri Johor, 81100 Jalan Kangkar Terbrau, Johor Bahru, Johor</span>
         </div>
         <div class="footer-top">
-            <a href="https://www.bomba.gov.my/ms/direktori-jbpm/johor" target="_blank" rel="noopener noreferrer" class="footer-link"><i class="fas fa-building-columns"></i> Direktori Rasmi JBPM Johor</a>
-            <a href="https://www.google.com/maps/search/?api=1&query=Ibu+Pejabat+Jabatan+Bomba+dan+Penyelamat+Malaysia+Negeri+Johor%2C+81100+Jalan+Kangkar+Terbrau%2C+Johor+Bahru%2C+Johor" target="_blank" rel="noopener noreferrer" class="footer-link"><i class="fas fa-map-location-dot"></i> Lihat di Peta</a>
+            <a href="https://www.bomba.gov.my/ms/direktori-jbpm/johor" target="_blank" rel="noopener noreferrer" class="footer-link"><i class="fas fa-building-columns"></i> <span data-ms="Direktori Rasmi JBPM Johor" data-en="Official JBPM Johor Directory">Direktori Rasmi JBPM Johor</span></a>
+            <a href="https://www.google.com/maps/search/?api=1&query=Ibu+Pejabat+Jabatan+Bomba+dan+Penyelamat+Malaysia+Negeri+Johor%2C+81100+Jalan+Kangkar+Terbrau%2C+Johor+Bahru%2C+Johor" target="_blank" rel="noopener noreferrer" class="footer-link"><i class="fas fa-map-location-dot"></i> <span data-ms="Lihat di Peta" data-en="View on Map">Lihat di Peta</span></a>
         </div>
         <div class="footer-bottom">
-            <div class="last-updated"><i class="fas fa-clock"></i> Kemaskini: <span id="updateTime">--</span></div>
-            <div class="brand"><span class="dot"></span><span>©2026 PGO JOHOR | Hak Cipta Terpelihara</span></div>
+            <div class="last-updated"><i class="fas fa-clock"></i> <span data-ms="Kemaskini:" data-en="Updated:">Kemaskini:</span> <span id="updateTime">--</span></div>
+            <div class="brand"><span class="dot"></span><span data-ms="©2026 PGO JOHOR | Hak Cipta Terpelihara" data-en="©2026 PGO JOHOR | All Rights Reserved">©2026 PGO JOHOR | Hak Cipta Terpelihara</span></div>
             <div class="social-links">
                 <a href="https://wa.me/60196717865" target="_blank" title="WhatsApp" rel="noopener noreferrer"><i class="fab fa-whatsapp"></i></a>
                 <a href="https://t.me/+60196717865" target="_blank" title="Telegram" rel="noopener noreferrer"><i class="fab fa-telegram-plane"></i></a>
@@ -3690,7 +3643,6 @@
             // ===== LOCALSTORAGE =====
             function loadState() {
                 const theme = localStorage.getItem('pgoTheme');
-                const displayMode = localStorage.getItem('pgoDisplayMode');
                 // Default rasmi: mod SIANG (terang & profesional). Mod malam hanya jika
                 // pengguna pernah pilih secara manual (tersimpan di localStorage).
                 if (theme === 'malam') {
@@ -3700,13 +3652,6 @@
                     document.body.classList.add('mode-siang');
                     document.querySelector('#modeToggleBtn i').className = 'fas fa-sun';
                 }
-                if (displayMode === 'mobile') {
-                    document.body.classList.add('mobile-mode');
-                    document.body.classList.remove('desktop-mode');
-                } else {
-                    document.body.classList.add('desktop-mode');
-                    document.body.classList.remove('mobile-mode');
-                }
                 const bahasa = localStorage.getItem('pgoBahasa');
                 terapBahasa(bahasa === 'en' ? 'en' : 'ms');
             }
@@ -3714,18 +3659,33 @@
 
             // ===== SWITCH BAHASA (BM / EN) =====
             // Nota: setiap elemen yang perlu diterjemah boleh diberi atribut
-            // data-ms="teks BM" dan data-en="text EN"; fungsi ini akan
-            // menukar textContent secara automatik ikut bahasa aktif.
+            // data-ms="teks/markup BM" dan data-en="text/markup EN"; fungsi ini
+            // akan menukar innerHTML secara automatik ikut bahasa aktif.
+            // Untuk placeholder input, guna data-ms-placeholder / data-en-placeholder.
+            window.bahasaAktif = 'ms';
             function terapBahasa(bahasa) {
+                window.bahasaAktif = bahasa;
                 document.documentElement.setAttribute('lang', bahasa);
                 document.body.classList.toggle('lang-en', bahasa === 'en');
                 document.querySelectorAll('[data-ms][data-en]').forEach(function(el) {
-                    el.textContent = bahasa === 'en' ? el.getAttribute('data-en') : el.getAttribute('data-ms');
+                    el.innerHTML = bahasa === 'en' ? el.getAttribute('data-en') : el.getAttribute('data-ms');
+                });
+                document.querySelectorAll('[data-ms-placeholder][data-en-placeholder]').forEach(function(el) {
+                    el.setAttribute('placeholder', bahasa === 'en' ? el.getAttribute('data-en-placeholder') : el.getAttribute('data-ms-placeholder'));
                 });
                 const badge = document.getElementById('langIndicatorBadge');
                 const btn = document.getElementById('langToggleBtn');
                 if (badge) badge.textContent = bahasa === 'en' ? 'BM' : 'EN';
                 if (btn) btn.setAttribute('aria-label', bahasa === 'en' ? 'Switch language to Bahasa Melayu' : 'Tukar bahasa ke English');
+                const filterResetBtn = document.getElementById('petaFilterReset');
+                if (filterResetBtn) {
+                    const cekAktif = document.querySelectorAll('.peta-filter-check:checked').length;
+                    const cekJumlah = document.querySelectorAll('.peta-filter-check').length;
+                    const semuaTerpilih = cekJumlah > 0 && cekAktif === cekJumlah;
+                    filterResetBtn.textContent = bahasa === 'en'
+                        ? (semuaTerpilih ? 'Deselect All' : 'Select All')
+                        : (semuaTerpilih ? 'Nyahpilih Semua' : 'Pilih Semua');
+                }
             }
 
             document.getElementById('langToggleBtn').addEventListener('click', function() {
@@ -3745,14 +3705,6 @@
                     icon.className = 'fas fa-moon';
                     localStorage.setItem('pgoTheme', 'malam');
                 }
-            });
-
-            // ===== SWITCH MODE =====
-            document.getElementById('switchModeBtn').addEventListener('click', function() {
-                document.body.classList.toggle('mobile-mode');
-                document.body.classList.toggle('desktop-mode');
-                localStorage.setItem('pgoDisplayMode',
-                    document.body.classList.contains('mobile-mode') ? 'mobile' : 'desktop');
             });
 
             // ===== REFRESH =====
@@ -4885,7 +4837,10 @@
                         cb.checked = semuaTerpilih ? false : true;
                     });
                     petaFilterAktif = semuaTerpilih ? new Set() : new Set(['baik', 'minor', 'rosak', 'na']);
-                    this.textContent = semuaTerpilih ? 'Pilih Semua' : 'Nyahpilih Semua';
+                    const enAktif = window.bahasaAktif === 'en';
+                    this.textContent = semuaTerpilih
+                        ? (enAktif ? 'Select All' : 'Pilih Semua')
+                        : (enAktif ? 'Deselect All' : 'Nyahpilih Semua');
                     terapFilterPeta();
                 });
             }
