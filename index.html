@@ -1363,6 +1363,60 @@
             overflow: hidden;
             border: 1px solid var(--hud-border);
             background: #0b1220;
+            transition: height 0.2s ease;
+        }
+
+        /* ===== BUTANG & MOD SKRIN PENUH PETA JENTERA ===== */
+        .peta-fullscreen-btn {
+            width: 1.7rem;
+            height: 1.7rem;
+            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--hud-border);
+            color: var(--hazard-gold);
+            border-radius: 0.5rem;
+            font-size: 0.75rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        .peta-fullscreen-btn:hover {
+            background: rgba(217, 169, 105, 0.12);
+            border-color: rgba(217, 169, 105, 0.4);
+        }
+        body.mode-siang .peta-fullscreen-btn {
+            background: rgba(255,255,255,0.7);
+            border-color: #e2e8f0;
+            color: #000;
+        }
+        .peta-jentera-card.fullscreen-mode {
+            position: fixed;
+            inset: 0;
+            z-index: 9999;
+            border-radius: 0;
+            display: flex;
+            flex-direction: column;
+            background: var(--bg-body);
+            overflow-y: auto;
+            padding: 1rem;
+            padding-top: max(1rem, env(safe-area-inset-top));
+            padding-bottom: max(1rem, env(safe-area-inset-bottom));
+            padding-left: max(1rem, env(safe-area-inset-left));
+            padding-right: max(1rem, env(safe-area-inset-right));
+        }
+        body.mode-siang .peta-jentera-card.fullscreen-mode {
+            background: #eef1f5;
+        }
+        .peta-jentera-card.fullscreen-mode #petaJenteraMap {
+            flex: 1 1 auto;
+            height: auto;
+            min-height: 16rem;
+        }
+        .peta-jentera-card.fullscreen-mode .peta-jentera-status,
+        .peta-jentera-card.fullscreen-mode .peta-unmatched-box {
+            flex-shrink: 0;
         }
         .peta-jentera-status {
             font-size: 0.7rem;
@@ -3064,8 +3118,11 @@
                             <i class="fas fa-map-location-dot" style="color:var(--hazard-gold)"></i> PETA KETERSEDIAAN JENTERA
                             <span class="status-badge live">● LIVE</span>
                             <span style="font-size:0.6rem; font-weight:400; color:var(--text-secondary); margin-left:auto;" id="petaJenteraCount">-- balai</span>
+                            <button type="button" class="peta-fullscreen-btn" id="petaJenteraFullscreenBtn" aria-label="Skrin Penuh" title="Skrin Penuh">
+                                <i class="fas fa-expand"></i>
+                            </button>
                         </div>
-                        <div class="peta-jentera-card">
+                        <div class="peta-jentera-card" id="petaJenteraCard">
                             <div class="peta-sumber-switch" id="petaSumberSwitch">
                                 <button type="button" class="peta-sumber-pill active" data-sumber="jentera"><i class="fas fa-truck-field"></i> Jentera</button>
                                 <button type="button" class="peta-sumber-pill" data-sumber="emrs"><i class="fas fa-truck-medical"></i> EMRS</button>
@@ -4704,6 +4761,32 @@
                     resetPetaJenteraTampilan();
                     fetchDanPaparPetaJentera();
                 });
+            });
+
+            // ===== SKRIN PENUH UNTUK PANEL PETA JENTERA SAHAJA =====
+            const petaJenteraCardEl = document.getElementById('petaJenteraCard');
+            const petaFullscreenBtn = document.getElementById('petaJenteraFullscreenBtn');
+            function togglePetaJenteraFullscreen() {
+                if (!petaJenteraCardEl) return;
+                const aktif = petaJenteraCardEl.classList.toggle('fullscreen-mode');
+                document.body.style.overflow = aktif ? 'hidden' : '';
+                if (petaFullscreenBtn) {
+                    petaFullscreenBtn.innerHTML = aktif ? '<i class="fas fa-compress"></i>' : '<i class="fas fa-expand"></i>';
+                    petaFullscreenBtn.setAttribute('aria-label', aktif ? 'Keluar Skrin Penuh' : 'Skrin Penuh');
+                    petaFullscreenBtn.setAttribute('title', aktif ? 'Keluar Skrin Penuh' : 'Skrin Penuh');
+                }
+                // Leaflet perlu tahu container dah bertukar saiz
+                setTimeout(() => {
+                    if (petaJenteraMapInstance) petaJenteraMapInstance.invalidateSize();
+                }, 220);
+            }
+            if (petaFullscreenBtn) {
+                petaFullscreenBtn.addEventListener('click', togglePetaJenteraFullscreen);
+            }
+            document.addEventListener('keydown', function(e) {
+                if (e.key === 'Escape' && petaJenteraCardEl && petaJenteraCardEl.classList.contains('fullscreen-mode')) {
+                    togglePetaJenteraFullscreen();
+                }
             });
 
             initPetaJenteraMap();
