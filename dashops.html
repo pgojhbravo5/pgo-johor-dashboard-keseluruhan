@@ -2957,6 +2957,7 @@
           l.includes('belukar') ||
           l.includes('kebun') ||
           l.includes('kebakaran rumput') ||
+          l.includes('kebakaran Hutan') ||
           l.includes('gambut') ||
           l.includes('semak')
         )
@@ -2964,6 +2965,10 @@
 
         if (l.includes('kebakaran sampah') || l.includes('longgokan sampah'))
           return '🗑️';
+
+          if (l.includes('kebakaran longgokan kayu') || l.includes('kayu'))
+          return '🪵';
+        
 
         if (
           l.includes('kebakaran elektrik') ||
