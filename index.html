@@ -542,6 +542,32 @@
             0%, 100% { transform: scale(1); opacity: 1; }
             50% { transform: scale(1.4); opacity: 0.4; }
         }
+        .lang-toggle-btn .lang-indicator-badge {
+            position: absolute;
+            bottom: -0.1875rem;
+            right: -0.25rem;
+            font-size: 0.5rem;
+            font-weight: 800;
+            letter-spacing: 0.02em;
+            background: var(--navy);
+            color: #fff;
+            border: 2px solid #000;
+            border-radius: 0.375rem;
+            padding: 0.0625rem 0.25rem;
+            line-height: 1.2;
+            pointer-events: none;
+        }
+        body.mode-siang .lang-toggle-btn .lang-indicator-badge {
+            border-color: #fff;
+        }
+        @media (hover: hover) {
+            .header-top-controls .lang-toggle-btn:hover {
+                background: var(--navy);
+                color: #fff;
+                box-shadow: 0 0 1.25rem rgba(11, 42, 77, 0.45);
+                border-color: var(--navy);
+            }
+        }
 
         .header-top-controls .analog-clock {
             width: 2.625rem;
@@ -3037,6 +3063,10 @@
                     <i class="fas fa-mobile-alt"></i>
                     <span class="mode-indicator-dot"></span>
                 </button>
+                <button class="lang-toggle-btn" id="langToggleBtn" aria-label="Tukar bahasa: Bahasa Melayu / English" title="Tukar Bahasa">
+                    <i class="fas fa-language"></i>
+                    <span class="lang-indicator-badge" id="langIndicatorBadge">EN</span>
+                </button>
                 <button class="refresh-btn" id="refreshBtn" aria-label="Muat semula halaman">
                     <i class="fas fa-sync-alt"></i>
                 </button>
@@ -3522,7 +3552,7 @@
     <footer class="footer">
         <div class="footer-address">
             <i class="fas fa-location-dot"></i>
-            <span>Aras 4, Pusat Gerakan Operasi Negeri Johor, Ibu Pejabat Jabatan Bomba dan Penyelamat Malaysia Negeri Johor, 81100 Jalan Kangkar Tebrau, Johor Bahru, Johor</span>
+            <span>Aras 4, Pusat Gerakan Operasi Negeri Johor, Ibu Pejabat Jabatan Bomba dan Penyelamat Malaysia Negeri Johor, 81100 Jalan Kangkar Terbrau, Johor Bahru, Johor</span>
         </div>
         <div class="footer-top">
             <a href="https://www.bomba.gov.my/ms/direktori-jbpm/johor" target="_blank" rel="noopener noreferrer" class="footer-link"><i class="fas fa-building-columns"></i> Direktori Rasmi JBPM Johor</a>
@@ -3610,8 +3640,32 @@
                     document.body.classList.add('desktop-mode');
                     document.body.classList.remove('mobile-mode');
                 }
+                const bahasa = localStorage.getItem('pgoBahasa');
+                terapBahasa(bahasa === 'en' ? 'en' : 'ms');
             }
             loadState();
+
+            // ===== SWITCH BAHASA (BM / EN) =====
+            // Nota: setiap elemen yang perlu diterjemah boleh diberi atribut
+            // data-ms="teks BM" dan data-en="text EN"; fungsi ini akan
+            // menukar textContent secara automatik ikut bahasa aktif.
+            function terapBahasa(bahasa) {
+                document.documentElement.setAttribute('lang', bahasa);
+                document.body.classList.toggle('lang-en', bahasa === 'en');
+                document.querySelectorAll('[data-ms][data-en]').forEach(function(el) {
+                    el.textContent = bahasa === 'en' ? el.getAttribute('data-en') : el.getAttribute('data-ms');
+                });
+                const badge = document.getElementById('langIndicatorBadge');
+                const btn = document.getElementById('langToggleBtn');
+                if (badge) badge.textContent = bahasa === 'en' ? 'BM' : 'EN';
+                if (btn) btn.setAttribute('aria-label', bahasa === 'en' ? 'Switch language to Bahasa Melayu' : 'Tukar bahasa ke English');
+            }
+
+            document.getElementById('langToggleBtn').addEventListener('click', function() {
+                const bahasaBaharu = document.body.classList.contains('lang-en') ? 'ms' : 'en';
+                terapBahasa(bahasaBaharu);
+                localStorage.setItem('pgoBahasa', bahasaBaharu);
+            });
 
             // ===== MODE TOGGLE =====
             document.getElementById('modeToggleBtn').addEventListener('click', function() {
