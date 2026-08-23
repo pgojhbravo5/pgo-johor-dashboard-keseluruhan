@@ -1229,6 +1229,54 @@
             color: #000;
         }
 
+        /* ===== PETA SUMBER SWITCH (SEGMENTED PILL) ===== */
+        .peta-sumber-switch {
+            display: flex;
+            gap: 0.3rem;
+            margin-bottom: 0.75rem;
+            padding: 0.3rem;
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid var(--hud-border);
+            border-radius: 1rem;
+        }
+        .peta-sumber-pill {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.35rem;
+            font-size: 0.72rem;
+            font-weight: 700;
+            color: var(--text-secondary);
+            background: transparent;
+            border: none;
+            border-radius: 0.8rem;
+            padding: 0.5rem 0.6rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            white-space: nowrap;
+        }
+        .peta-sumber-pill:hover {
+            color: var(--text-primary);
+            background: rgba(255, 255, 255, 0.04);
+        }
+        .peta-sumber-pill.active {
+            color: #1a1206;
+            background: linear-gradient(135deg, var(--hazard-gold), var(--alert-orange));
+            box-shadow: 0 0.2rem 0.6rem rgba(217, 169, 105, 0.35);
+        }
+        .peta-sumber-pill.active i { color: #1a1206; }
+        body.mode-siang .peta-sumber-switch {
+            background: rgba(255,255,255,0.6);
+            border-color: #e2e8f0;
+        }
+        body.mode-siang .peta-sumber-pill { color: #475569; }
+        body.mode-siang .peta-sumber-pill.active {
+            color: #fff;
+            background: linear-gradient(135deg, var(--fire-red), var(--alert-orange));
+        }
+        body.mode-siang .peta-sumber-pill.active i { color: #fff; }
+
         /* ===== PETA FILTER BAR (MULTISELECT CHECKBOX) ===== */
         .peta-filter-bar {
             display: flex;
@@ -3018,6 +3066,11 @@
                             <span style="font-size:0.6rem; font-weight:400; color:var(--text-secondary); margin-left:auto;" id="petaJenteraCount">-- balai</span>
                         </div>
                         <div class="peta-jentera-card">
+                            <div class="peta-sumber-switch" id="petaSumberSwitch">
+                                <button type="button" class="peta-sumber-pill active" data-sumber="jentera"><i class="fas fa-truck-field"></i> Jentera</button>
+                                <button type="button" class="peta-sumber-pill" data-sumber="emrs"><i class="fas fa-truck-medical"></i> EMRS</button>
+                                <button type="button" class="peta-sumber-pill" data-sumber="water"><i class="fas fa-truck-droplet"></i> Water Tanker</button>
+                            </div>
                             <div class="peta-overall-stats" id="petaOverallStats">
                                 <div class="pos-item"><span class="pos-num" id="posJumlah">--</span><span class="pos-label">Jumlah Jentera</span></div>
                                 <div class="pos-item baik"><span class="pos-num" id="posBaik">--</span><span class="pos-label">Baik</span></div>
@@ -4219,6 +4272,24 @@
             const CFRT_CSV_URL =
                 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQt0JkN2yWW_0FeY5GKpmIvs1uI6si89JcqNmSTO3f--rM8FhQZe1Q97YQd8tiAsmaMQdTXO5TQWedy/pub?gid=0&single=true&output=csv';
 
+            // Sumber CSV untuk Peta Ketersediaan (switch antara 3 jenis kenderaan)
+            // Semua sumber guna header/column struktur yang sama macam CFRT_CSV_URL
+            const PETA_SUMBER_CSV = {
+                jentera: {
+                    label: 'Jentera',
+                    url: 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQt0JkN2yWW_0FeY5GKpmIvs1uI6si89JcqNmSTO3f--rM8FhQZe1Q97YQd8tiAsmaMQdTXO5TQWedy/pub?gid=0&single=true&output=csv'
+                },
+                emrs: {
+                    label: 'EMRS',
+                    url: 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQt0JkN2yWW_0FeY5GKpmIvs1uI6si89JcqNmSTO3f--rM8FhQZe1Q97YQd8tiAsmaMQdTXO5TQWedy/pub?gid=795399708&single=true&output=csv'
+                },
+                water: {
+                    label: 'Water Tanker',
+                    url: 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQt0JkN2yWW_0FeY5GKpmIvs1uI6si89JcqNmSTO3f--rM8FhQZe1Q97YQd8tiAsmaMQdTXO5TQWedy/pub?gid=290336578&single=true&output=csv'
+                }
+            };
+            let petaSumberAktif = 'jentera';
+
             async function fetchJenteraBersedia() {
                 const elJumlah = document.getElementById('statJenteraSedia');
                 try {
@@ -4344,6 +4415,8 @@
             let petaJenteraMapInstance = null;
             let petaJenteraMarkers = {};
             let petaFilterAktif = new Set(['baik', 'minor', 'rosak', 'na']);
+            const warnaStatusPeta = { baik: '#4ade80', minor: '#d9a969', rosak: '#ef4444', na: '#64748b' };
+            let petaPermintaanTerkini = 0; // guard elak race condition bila switch sumber pantas
 
             function initPetaJenteraMap() {
                 const mapEl = document.getElementById('petaJenteraMap');
@@ -4364,13 +4437,11 @@
 
                 petaJenteraMapInstance.setMaxBounds([[1.15, 102.45], [2.85, 104.55]]);
 
-                const warnaStatus = { baik: '#4ade80', minor: '#d9a969', rosak: '#ef4444', na: '#64748b' };
-
                 SENARAI_BALAI_JOHOR.forEach(balai => {
                     const faIcon = balai.jenis === 'bengkel' ? 'fa-screwdriver-wrench' : 'fa-truck-field';
                     const icon = L.divIcon({
                         className: '',
-                        html: `<div class="peta-marker-wrap"><div class="peta-marker-dot" style="background:${warnaStatus.na}"><i class="fas ${faIcon}"></i></div></div>`,
+                        html: `<div class="peta-marker-wrap"><div class="peta-marker-dot" style="background:${warnaStatusPeta.na}"><i class="fas ${faIcon}"></i></div></div>`,
                         iconSize: [30, 30],
                         iconAnchor: [15, 15],
                         popupAnchor: [0, -14]
@@ -4423,11 +4494,14 @@
                     if (typeof L === 'undefined') { if (statusTextEl) statusTextEl.textContent = 'Ralat: Leaflet tidak dimuat.'; return; }
                     initPetaJenteraMap();
 
-                    const response = await fetch(CFRT_CSV_URL, { cache: 'no-cache' });
-                    if (!response.ok) throw new Error('Gagal memuat turun CSV CFRT');
+                    const sumberAktifObj = PETA_SUMBER_CSV[petaSumberAktif] || PETA_SUMBER_CSV.jentera;
+                    const idPermintaanSemasa = ++petaPermintaanTerkini;
+                    const response = await fetch(sumberAktifObj.url, { cache: 'no-cache' });
+                    if (!response.ok) throw new Error('Gagal memuat turun CSV ' + sumberAktifObj.label);
                     const text = await response.text();
+                    if (idPermintaanSemasa !== petaPermintaanTerkini) return; // sumber dah ditukar semasa fetch, abaikan respons ni
                     const rows = pgoParseCSV(text);
-                    if (rows.length < 2) throw new Error('Data CFRT kosong');
+                    if (rows.length < 2) throw new Error('Data ' + sumberAktifObj.label + ' kosong');
 
                     const headers = rows[0];
                     const idxLokasiSemasa = pgoColIdx(headers, 'LOKASI SEMASA');
@@ -4460,7 +4534,6 @@
                         jenteraIkutBalai[kunci].push(item);
                     }
 
-                    const warnaStatus = { baik: '#4ade80', minor: '#d9a969', rosak: '#ef4444', na: '#64748b' };
                     let balaiTakDipadan = 0;
                     let jumlahKeseluruhan = 0, jumlahBaik = 0, jumlahMinor = 0, jumlahRosak = 0;
 
@@ -4486,7 +4559,7 @@
                         const faIconUpdate = balai.jenis === 'bengkel' ? 'fa-screwdriver-wrench' : 'fa-truck-field';
                         const newIcon = L.divIcon({
                             className: '',
-                            html: `<div class="peta-marker-wrap"><div class="peta-marker-dot" style="background:${warnaStatus[kelasBalai]}"><i class="fas ${faIconUpdate}"></i></div>${senarai.length > 0 ? `<div class="peta-marker-count">${senarai.length}</div>` : ''}</div>`,
+                            html: `<div class="peta-marker-wrap"><div class="peta-marker-dot" style="background:${warnaStatusPeta[kelasBalai]}"><i class="fas ${faIconUpdate}"></i></div>${senarai.length > 0 ? `<div class="peta-marker-count">${senarai.length}</div>` : ''}</div>`,
                             iconSize: [30, 30],
                             iconAnchor: [15, 15],
                             popupAnchor: [0, -14]
@@ -4522,9 +4595,9 @@
                     const unmatchedBoxEl = document.getElementById('petaUnmatchedBox');
                     if (statusTextEl) {
                         if (senaraiTakPadan.length > 0) {
-                            statusTextEl.innerHTML = `Dikemaskini ${masaKini} — <span class="peta-unmatched-toggle" id="petaUnmatchedToggle">${senaraiTakPadan.length} lokasi CSV tidak sepadan dgn senarai balai (klik untuk lihat)</span>`;
+                            statusTextEl.innerHTML = `${sumberAktifObj.label} — Dikemaskini ${masaKini} — <span class="peta-unmatched-toggle" id="petaUnmatchedToggle">${senaraiTakPadan.length} lokasi CSV tidak sepadan dgn senarai balai (klik untuk lihat)</span>`;
                         } else {
-                            statusTextEl.textContent = `Dikemaskini ${masaKini}`;
+                            statusTextEl.textContent = `${sumberAktifObj.label} — Dikemaskini ${masaKini}`;
                         }
                     }
                     if (unmatchedBoxEl) {
@@ -4549,7 +4622,8 @@
                     terapFilterPeta();
                 } catch (e) {
                     console.warn('Peta Jentera fetch error:', e.message);
-                    if (statusTextEl) statusTextEl.textContent = 'Gagal memuatkan data jentera.';
+                    const sumberLabelRalat = (PETA_SUMBER_CSV[petaSumberAktif] || {}).label || '';
+                    if (statusTextEl) statusTextEl.textContent = `Gagal memuatkan data ${sumberLabelRalat}.`;
                 }
             }
 
@@ -4592,6 +4666,45 @@
                     terapFilterPeta();
                 });
             }
+
+            // ===== RESET PAPARAN PETA (dipanggil bila tukar sumber/pill) =====
+            function resetPetaJenteraTampilan() {
+                Object.values(petaJenteraMarkers).forEach(info => {
+                    info.kelasSemasa = 'na';
+                    const faIconReset = info.balai.jenis === 'bengkel' ? 'fa-screwdriver-wrench' : 'fa-truck-field';
+                    const resetIcon = L.divIcon({
+                        className: '',
+                        html: `<div class="peta-marker-wrap"><div class="peta-marker-dot" style="background:${warnaStatusPeta.na}"><i class="fas ${faIconReset}"></i></div></div>`,
+                        iconSize: [30, 30],
+                        iconAnchor: [15, 15],
+                        popupAnchor: [0, -14]
+                    });
+                    info.marker.setIcon(resetIcon);
+                    info.marker.setPopupContent(buatKandunganPopup(info.balai, []));
+                });
+                ['posJumlah', 'posBaik', 'posMinor', 'posRosak'].forEach(id => {
+                    const el = document.getElementById(id);
+                    if (el) el.textContent = '--';
+                });
+                const statusTextEl = document.getElementById('petaJenteraStatusText');
+                const sumberLabel = (PETA_SUMBER_CSV[petaSumberAktif] || {}).label || '';
+                if (statusTextEl) statusTextEl.textContent = `Memuatkan data ${sumberLabel}...`;
+                const unmatchedBoxEl = document.getElementById('petaUnmatchedBox');
+                if (unmatchedBoxEl) { unmatchedBoxEl.innerHTML = ''; unmatchedBoxEl.style.display = 'none'; }
+                terapFilterPeta();
+            }
+
+            // ===== SWITCH SUMBER PETA (PILL: JENTERA / EMRS / WATER TANKER) =====
+            document.querySelectorAll('.peta-sumber-pill').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const sumber = this.getAttribute('data-sumber');
+                    if (!PETA_SUMBER_CSV[sumber] || sumber === petaSumberAktif) return;
+                    petaSumberAktif = sumber;
+                    document.querySelectorAll('.peta-sumber-pill').forEach(b => b.classList.toggle('active', b === this));
+                    resetPetaJenteraTampilan();
+                    fetchDanPaparPetaJentera();
+                });
+            });
 
             initPetaJenteraMap();
             fetchDanPaparPetaJentera();
