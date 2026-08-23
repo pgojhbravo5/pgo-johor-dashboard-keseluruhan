@@ -1367,6 +1367,11 @@
         }
 
         /* ===== BUTANG & MOD SKRIN PENUH PETA JENTERA ===== */
+        .peta-card-toolbar {
+            display: flex;
+            justify-content: flex-end;
+            margin-bottom: 0.6rem;
+        }
         .peta-fullscreen-btn {
             width: 1.7rem;
             height: 1.7rem;
@@ -1381,6 +1386,8 @@
             font-size: 0.75rem;
             cursor: pointer;
             transition: all 0.2s ease;
+            position: relative;
+            z-index: 20;
         }
         .peta-fullscreen-btn:hover {
             background: rgba(217, 169, 105, 0.12);
@@ -3118,11 +3125,13 @@
                             <i class="fas fa-map-location-dot" style="color:var(--hazard-gold)"></i> PETA KETERSEDIAAN JENTERA
                             <span class="status-badge live">● LIVE</span>
                             <span style="font-size:0.6rem; font-weight:400; color:var(--text-secondary); margin-left:auto;" id="petaJenteraCount">-- balai</span>
-                            <button type="button" class="peta-fullscreen-btn" id="petaJenteraFullscreenBtn" aria-label="Skrin Penuh" title="Skrin Penuh">
-                                <i class="fas fa-expand"></i>
-                            </button>
                         </div>
                         <div class="peta-jentera-card" id="petaJenteraCard">
+                            <div class="peta-card-toolbar">
+                                <button type="button" class="peta-fullscreen-btn" id="petaJenteraFullscreenBtn" aria-label="Skrin Penuh" title="Skrin Penuh">
+                                    <i class="fas fa-expand"></i>
+                                </button>
+                            </div>
                             <div class="peta-sumber-switch" id="petaSumberSwitch">
                                 <button type="button" class="peta-sumber-pill active" data-sumber="jentera"><i class="fas fa-truck-field"></i> Jentera</button>
                                 <button type="button" class="peta-sumber-pill" data-sumber="emrs"><i class="fas fa-truck-medical"></i> EMRS</button>
@@ -4766,14 +4775,38 @@
             // ===== SKRIN PENUH UNTUK PANEL PETA JENTERA SAHAJA =====
             const petaJenteraCardEl = document.getElementById('petaJenteraCard');
             const petaFullscreenBtn = document.getElementById('petaJenteraFullscreenBtn');
+            let petaCardIndukAsal = null;
+            let petaCardSaudaraSelepasAsal = null;
+
             function togglePetaJenteraFullscreen() {
                 if (!petaJenteraCardEl) return;
-                const aktif = petaJenteraCardEl.classList.toggle('fullscreen-mode');
-                document.body.style.overflow = aktif ? 'hidden' : '';
+                const masukFullscreen = !petaJenteraCardEl.classList.contains('fullscreen-mode');
+
+                if (masukFullscreen) {
+                    // Simpan lokasi asal kad, lepas tu pindah terus jadi anak <body>
+                    // supaya overlay dijamin menutup SELURUH skrin (elak isu z-index/containing-block ibu bapa)
+                    petaCardIndukAsal = petaJenteraCardEl.parentElement;
+                    petaCardSaudaraSelepasAsal = petaJenteraCardEl.nextElementSibling;
+                    document.body.appendChild(petaJenteraCardEl);
+                    petaJenteraCardEl.classList.add('fullscreen-mode');
+                    document.body.style.overflow = 'hidden';
+                } else {
+                    petaJenteraCardEl.classList.remove('fullscreen-mode');
+                    document.body.style.overflow = '';
+                    // Kembalikan kad ke lokasi asal dalam susunan panel
+                    if (petaCardIndukAsal) {
+                        if (petaCardSaudaraSelepasAsal) {
+                            petaCardIndukAsal.insertBefore(petaJenteraCardEl, petaCardSaudaraSelepasAsal);
+                        } else {
+                            petaCardIndukAsal.appendChild(petaJenteraCardEl);
+                        }
+                    }
+                }
+
                 if (petaFullscreenBtn) {
-                    petaFullscreenBtn.innerHTML = aktif ? '<i class="fas fa-compress"></i>' : '<i class="fas fa-expand"></i>';
-                    petaFullscreenBtn.setAttribute('aria-label', aktif ? 'Keluar Skrin Penuh' : 'Skrin Penuh');
-                    petaFullscreenBtn.setAttribute('title', aktif ? 'Keluar Skrin Penuh' : 'Skrin Penuh');
+                    petaFullscreenBtn.innerHTML = masukFullscreen ? '<i class="fas fa-compress"></i>' : '<i class="fas fa-expand"></i>';
+                    petaFullscreenBtn.setAttribute('aria-label', masukFullscreen ? 'Keluar Skrin Penuh' : 'Skrin Penuh');
+                    petaFullscreenBtn.setAttribute('title', masukFullscreen ? 'Keluar Skrin Penuh' : 'Skrin Penuh');
                 }
                 // Leaflet perlu tahu container dah bertukar saiz
                 setTimeout(() => {
