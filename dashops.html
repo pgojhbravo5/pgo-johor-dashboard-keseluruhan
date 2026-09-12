@@ -47,16 +47,7 @@
         box-sizing: border-box;
       }
       body {
-        /* BACKGROUND IMAGE WITH DARK OVERLAY */
-        background-color: var(--bg-primary);
-        background-image:
-          linear-gradient(rgba(11, 14, 26, 0.88), rgba(11, 14, 26, 0.88)),
-          url('https://raw.githubusercontent.com/pgojhbravo5/pgo-johor-dashboard-keseluruhan/3c1b568398651e5e9612730038c9d189a673be48/firetruck-BG.png');
-        background-size: cover;
-        background-position: center;
-        background-attachment: fixed;
-        background-repeat: no-repeat;
-
+        background: var(--bg-primary);
         color: var(--text-primary);
         font-family: 'Segoe UI', Arial, sans-serif;
         padding: 10px;
@@ -163,8 +154,7 @@
       }
       .fullscreen-btn,
       .force-refresh-btn,
-      .theme-toggle-btn,
-      .btn-back {
+      .theme-toggle-btn {
         background: var(--bg-card);
         color: var(--text-primary);
         border: 1px solid var(--border-color);
@@ -172,18 +162,15 @@
         padding: 6px 12px;
         font-size: 0.8rem;
         cursor: pointer;
-        display: inline-flex;
+        display: flex;
         align-items: center;
         gap: 5px;
         transition: all 0.2s;
         white-space: nowrap;
-        text-decoration: none;
-        font-family: 'Segoe UI', Arial, sans-serif;
       }
       .fullscreen-btn:hover,
       .force-refresh-btn:hover,
-      .theme-toggle-btn:hover,
-      .btn-back:hover {
+      .theme-toggle-btn:hover {
         background: var(--bg-hover);
         border-color: var(--text-blue);
       }
@@ -1356,6 +1343,85 @@
         letter-spacing: 0.5px;
       }
 
+      /* ============ SEARCH BAR - SEMUA KES ============ */
+      .search-bar-container {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        padding: 6px 10px;
+        background: var(--bg-card);
+        border: 1px solid var(--border-color);
+        border-radius: 8px;
+        margin-bottom: 8px;
+        flex-shrink: 0;
+        transition: all 0.2s;
+      }
+      .search-bar-container:focus-within {
+        border-color: var(--text-blue);
+        box-shadow: 0 0 0 2px rgba(91, 155, 213, 0.2);
+      }
+      .search-icon {
+        font-size: 0.75rem;
+        opacity: 0.75;
+        flex-shrink: 0;
+      }
+      .search-input {
+        flex: 1;
+        background: transparent;
+        border: none;
+        outline: none;
+        color: var(--text-primary);
+        font-size: var(--font-xs);
+        font-family: inherit;
+        padding: 2px 0;
+        min-width: 0;
+        letter-spacing: 0.2px;
+      }
+      .search-input::placeholder {
+        color: var(--text-muted);
+        opacity: 0.8;
+      }
+      .search-clear-btn {
+        background: rgba(231, 76, 60, 0.15);
+        color: var(--red);
+        border: 1px solid transparent;
+        border-radius: 50%;
+        width: 20px;
+        height: 20px;
+        font-size: 0.6rem;
+        cursor: pointer;
+        display: none;
+        align-items: center;
+        justify-content: center;
+        padding: 0;
+        line-height: 1;
+        flex-shrink: 0;
+        transition: all 0.2s;
+      }
+      .search-clear-btn.visible {
+        display: flex;
+      }
+      .search-clear-btn:hover {
+        background: var(--red);
+        color: #fff;
+        transform: scale(1.1);
+      }
+      .search-result-count {
+        font-size: 0.55rem;
+        color: var(--text-gold);
+        white-space: nowrap;
+        font-weight: 700;
+        letter-spacing: 0.3px;
+        flex-shrink: 0;
+      }
+      body.light-mode .search-bar-container {
+        background: #f8fafc;
+        border-color: #d1d5db;
+      }
+      body.light-mode .search-input {
+        color: #1a1a1a;
+      }
+
       @media screen and (max-width: 1023px) {
         .grid {
           grid-template-columns: 1fr 1fr;
@@ -1398,7 +1464,6 @@
           height: auto;
           min-height: 100vh;
           min-height: 100dvh;
-          background-attachment: scroll;
         }
         .grid {
           grid-template-columns: 1fr;
@@ -1433,8 +1498,7 @@
         }
         .fullscreen-btn,
         .force-refresh-btn,
-        .theme-toggle-btn,
-        .btn-back {
+        .theme-toggle-btn {
           padding: 4px 8px;
           font-size: 0.6rem;
         }
@@ -1611,6 +1675,25 @@
           font-size: 0.4rem;
         }
 
+        .search-bar-container {
+          padding: 5px 8px;
+          margin-bottom: 5px;
+        }
+        .search-input {
+          font-size: 0.7rem;
+        }
+        .search-icon {
+          font-size: 0.65rem;
+        }
+        .search-clear-btn {
+          width: 18px;
+          height: 18px;
+          font-size: 0.55rem;
+        }
+        .search-result-count {
+          font-size: 0.5rem;
+        }
+
         body.fullscreen-mode {
           padding: 0 !important;
           overflow-y: auto !important;
@@ -1718,21 +1801,22 @@
         }
       }
 
+      body.fullscreen-mode .search-bar-container {
+        padding: 4px 8px !important;
+        margin-bottom: 5px !important;
+      }
+
       /* LIGHT MODE */
       body.light-mode {
-        background-color: #f0f2f5;
-        background-image:
-          linear-gradient(rgba(240, 242, 245, 0.90), rgba(240, 242, 245, 0.90)),
-          url('https://raw.githubusercontent.com/pgojhbravo5/pgo-johor-dashboard-keseluruhan/3c1b568398651e5e9612730038c9d189a673be48/firetruck-BG.png');
+        background: #f0f2f5;
         color: #1a1a1a;
       }
       body.light-mode .panel {
-        background: rgba(255, 255, 255, 0.92);
+        background: #fff;
         border-color: #d1d5db;
-        backdrop-filter: blur(4px);
       }
       body.light-mode .panel-header {
-        background: rgba(255, 255, 255, 0.92);
+        background: #fff;
         border-bottom-color: #e5e7eb;
       }
       body.light-mode .panel-header h2 {
@@ -1896,8 +1980,6 @@
         >
           📺 FULL SCREEN
         </button>
-        <!-- BUTANG KEMBALI (gaya seragam) -->
-        <a href="index.html" class="btn-back">⬅️ KEMBALI</a>
         <div class="datetime-display">
           <span class="date-text">📅 <span id="dateDisplay"></span></span>
           <span class="datetime-separator">|</span>
@@ -2188,6 +2270,29 @@
             </button>
           </div>
         </div>
+
+        <!-- SEARCH BAR - SEMUA KES -->
+        <div class="search-bar-container">
+          <span class="search-icon">🔍</span>
+          <input
+            type="text"
+            id="searchAllInput"
+            class="search-input"
+            placeholder="Cari kes... (jenis, balai, alamat, tarikh)"
+            oninput="onSearchAllInput(this.value)"
+            onkeydown="if(event.key==='Escape'){clearSearchAll();this.blur();}"
+          />
+          <span class="search-result-count" id="searchResultCount"></span>
+          <button
+            class="search-clear-btn"
+            id="searchClearBtn"
+            onclick="clearSearchAll()"
+            title="Kosongkan carian"
+          >
+            ✕
+          </button>
+        </div>
+
         <div class="scroll-container" id="scrollAllContainer">
           <div class="motion-wrapper" id="allWrapper">
             <div id="allCases"></div>
@@ -2291,6 +2396,10 @@
         weatherForecastData = [],
         currentWeatherCityIndex = 0,
         forecastFetchPromise = null;
+
+      // SEARCH STATE
+      let searchAllQuery = '';
+      let currentDashboardData = [];
 
       // ================================================================
       // TOGGLE FILTER SECTION
@@ -2935,6 +3044,7 @@
         return m[k] || 'cat-khidmat';
       }
 
+      // FUNCTION EMOJI SETIAP KES //
       function getCaseEmoji(j) {
         const l = (j || '').toLowerCase();
 
@@ -2947,6 +3057,7 @@
           l.includes('perkakas') ||
           l.includes('kebakaran kereta') ||
           l.includes('kebakaran suis box') ||
+          l.includes('kebakaran fius box') ||
           l.includes('letupan')
         )
           return '🔥';
@@ -2955,20 +3066,12 @@
           l.includes('kebakaran terbuka') ||
           l.includes('lalang') ||
           l.includes('belukar') ||
-          l.includes('kebun') ||
-          l.includes('kebakaran rumput') ||
-          l.includes('kebakaran hutan') ||
-          l.includes('gambut') ||
           l.includes('semak')
         )
           return '🍂';
 
         if (l.includes('kebakaran sampah') || l.includes('longgokan sampah'))
           return '🗑️';
-
-          if (l.includes('kebakaran longgokan kayu') || l.includes('kayu'))
-          return '🪵';
-        
 
         if (
           l.includes('kebakaran elektrik') ||
@@ -2987,9 +3090,13 @@
           l.includes('gerai') ||
           l.includes('kedai') ||
           l.includes('restoran') ||
+          l.includes('kontena') ||
+          l.includes('stor') ||
+          l.includes('setor') ||
           l.includes('kafe')
         )
           return '🏪';
+
         if (
           l.includes('kemalangan') ||
           l.includes('KJR') ||
@@ -3045,26 +3152,35 @@
           l.includes('tebuan')
         )
           return '🐝';
+
         if (l.includes('musang')) return '🦊';
         if (l.includes('biawak')) return '🦎';
         if (l.includes('kucing')) return '🐱';
         if (l.includes('anjing')) return '🐶';
+
         if (
           l.includes('terperangkap') ||
           l.includes('terkunci') ||
           l.includes('buka pintu')
         )
           return '🚪';
+
         if (l.includes('standby') || l.includes('stand by')) return '🎯';
+
         if (l.includes('helikopter')) return '🚁';
+
         if (l.includes('bola sepak') || l.includes('sukan')) return '⚽';
+
         if (l.includes('rondaan')) return '🚒';
+
         if (
           l.includes('latihan') ||
           l.includes('eksesais') ||
           l.includes('demonstrasi')
         )
           return '📋';
+
+        if (l.includes('kebakaran lori')) return '';
 
         if (l.includes('teknikal')) return '🔧';
 
@@ -3078,6 +3194,7 @@
           l.includes('kuil')
         )
           return '🕌';
+
         if (
           l.includes('sekolah') ||
           l.includes('hospital') ||
@@ -3086,6 +3203,141 @@
         )
           return '🏢';
         return '📍';
+      }
+
+      // ================================================================
+      // SEARCH - SEMUA KES
+      // ================================================================
+      function onSearchAllInput(value) {
+        searchAllQuery = (value || '').trim().toLowerCase();
+        renderAllCases();
+      }
+
+      function clearSearchAll() {
+        const input = document.getElementById('searchAllInput');
+        if (input) input.value = '';
+        searchAllQuery = '';
+        renderAllCases();
+        if (input) input.focus();
+      }
+
+      function matchesSearch(item, query) {
+        if (!query) return true;
+        const fields = [
+          item.jenis,
+          item.balai,
+          item.alamat,
+          item.tarikh,
+          item.masa,
+          item.sampai_lokasi,
+          item.operasi_tamat,
+          item.tempoh_operasi,
+          item.respon_time,
+          item.shif,
+          item.pko,
+          item.callCard,
+          item.maklumat_kejadian,
+          item.source,
+        ];
+        return fields.some(function (f) {
+          return (f || '').toString().toLowerCase().includes(query);
+        });
+      }
+
+      function renderAllCases() {
+        const data = currentDashboardData || [];
+        const container = document.getElementById('allCases');
+        if (!container) return;
+
+        const query = searchAllQuery;
+        const filtered = query
+          ? data.filter(function (item) {
+              return matchesSearch(item, query);
+            })
+          : data;
+
+        // Update result count
+        const countEl = document.getElementById('searchResultCount');
+        if (countEl) {
+          countEl.textContent = query ? filtered.length + '/' + data.length : '';
+        }
+
+        // Show/hide clear button
+        const clearBtn = document.getElementById('searchClearBtn');
+        if (clearBtn) {
+          if (query.length > 0) clearBtn.classList.add('visible');
+          else clearBtn.classList.remove('visible');
+        }
+
+        // Reset animation
+        if (animationIds['allWrapper'])
+          cancelAnimationFrame(animationIds['allWrapper']);
+        if (resumeTimeouts['allWrapper'])
+          clearTimeout(resumeTimeouts['allWrapper']);
+        const wrapper = document.getElementById('allWrapper');
+        if (wrapper) wrapper.style.transform = 'translateY(0px)';
+
+        if (!filtered.length) {
+          container.innerHTML = query
+            ? '<div style="color:#888;padding:20px;text-align:center;">🔍 Tiada kes sepadan dengan carian "' +
+              query.replace(/[<>&"]/g, '') +
+              '"</div>'
+            : '<div style="color:#888;padding:20px;">✅ Tiada kes untuk DAY ini.</div>';
+          return;
+        }
+
+        let allHtml = filtered
+          .map(function (item) {
+            const emoji = getCaseEmoji(item.jenis);
+            const classification = classifyCase(item);
+            const borderClass = getBorderClass(classification);
+            const shifBadge = getShifBadge(item.shif);
+            let badges = '';
+            if (item.mangsa_mati > 0)
+              badges +=
+                '<span class="badge mati">💀' + item.mangsa_mati + '</span> ';
+            if (item.mangsa_cedera > 0)
+              badges +=
+                '<span class="badge cedera">🟠' + item.mangsa_cedera + '</span> ';
+            if (item.mangsa_selamat > 0)
+              badges +=
+                '<span class="badge selamat">🟢' + item.mangsa_selamat + '</span> ';
+
+            const idx = allCaseData.indexOf(item);
+            const safeIdx = idx >= 0 ? idx : 0;
+
+            return (
+              '<div class="case-item ' +
+              borderClass +
+              '" onclick="showCaseDetail(allCaseData[' +
+              safeIdx +
+              '])"><div class="case-header-row"><span class="case-title">' +
+              emoji +
+              ' ' +
+              item.jenis +
+              '</span><span class="case-balai">' +
+              item.balai +
+              ' ' +
+              shifBadge +
+              '</span></div><div class="case-detail">📌 ' +
+              item.alamat.substring(0, 35) +
+              '...</div><div class="case-detail">📅 ' +
+              item.tarikh +
+              ' · 🕒 ' +
+              item.masa +
+              ' · ⏱️ ' +
+              item.respon_time +
+              '</div>' +
+              badges +
+              '<div class="case-click-hint">👆 Klik untuk maklumat</div></div>'
+            );
+          })
+          .join('');
+
+        // Triple for infinite loop
+        container.innerHTML = allHtml + allHtml + allHtml;
+
+        startInfiniteMotion('allWrapper', 0.3);
       }
 
       // ================================================================
@@ -4273,39 +4525,11 @@
 
         animateNumber('avgResponse', formatMMSS(averageResponse));
 
-        let allHtml = data
-          .map((item) => {
-            const emoji = getCaseEmoji(item.jenis);
-            const classification = classifyCase(item);
-            const borderClass = getBorderClass(classification);
-            const shifBadge = getShifBadge(item.shif);
-            let badges = '';
-            if (item.mangsa_mati > 0)
-              badges += `<span class="badge mati">💀${item.mangsa_mati}</span> `;
-            if (item.mangsa_cedera > 0)
-              badges += `<span class="badge cedera">🟠${item.mangsa_cedera}</span> `;
-            if (item.mangsa_selamat > 0)
-              badges += `<span class="badge selamat">🟢${item.mangsa_selamat}</span> `;
-            return `<div class="case-item ${borderClass}" onclick="showCaseDetail(allCaseData[${data.indexOf(
-              item
-            )}])"><div class="case-header-row"><span class="case-title">${emoji} ${
-              item.jenis
-            }</span><span class="case-balai">${
-              item.balai
-            } ${shifBadge}</span></div><div class="case-detail">📌 ${item.alamat.substring(
-              0,
-              35
-            )}...</div><div class="case-detail">📅 ${item.tarikh} · 🕒 ${
-              item.masa
-            } · ⏱️ ${
-              item.respon_time
-            }</div>${badges}<div class="case-click-hint">👆 Klik untuk maklumat</div></div>`;
-          })
-          .join('');
+        // Simpan data untuk search filtering
+        currentDashboardData = data;
 
-        document.getElementById('allCases').innerHTML = allHtml
-          ? allHtml + allHtml + allHtml
-          : '<div style="color:#888;padding:20px;">✅ Tiada kes untuk DAY ini.</div>';
+        // Render SEMUA KES (dengan search filter applied)
+        renderAllCases();
 
         Object.values(animationIds).forEach((id) => cancelAnimationFrame(id));
         animationIds = {};
@@ -4313,7 +4537,7 @@
         resumeTimeouts = {};
 
         startInfiniteMotion('filterWrapper', 0.3);
-        startInfiniteMotion('allWrapper', 0.3);
+        // NOTE: allWrapper diuruskan dalam renderAllCases()
 
         updateMapForCurrentMode();
       }
