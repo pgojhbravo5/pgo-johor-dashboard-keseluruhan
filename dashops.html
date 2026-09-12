@@ -878,6 +878,45 @@
       .leaflet-control-attribution {
         display: none !important;
       }
+
+      /* INDIKATOR CARIAN PADA MAP */
+      .search-map-indicator {
+        position: absolute;
+        top: 8px;
+        left: 8px;
+        background: rgba(255, 170, 0, 0.95);
+        color: #000;
+        padding: 5px 10px;
+        border-radius: 14px;
+        font-size: 0.6rem;
+        font-weight: 700;
+        letter-spacing: 0.3px;
+        z-index: 500;
+        display: none;
+        align-items: center;
+        gap: 4px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
+        max-width: calc(100% - 16px);
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        animation: pulseSearch 1.8s ease-in-out infinite;
+        pointer-events: none;
+      }
+      @keyframes pulseSearch {
+        0%,
+        100% {
+          box-shadow: 0 2px 10px rgba(255, 170, 0, 0.4);
+        }
+        50% {
+          box-shadow: 0 2px 18px rgba(255, 170, 0, 0.85);
+        }
+      }
+      body.light-mode .search-map-indicator {
+        background: #d97706;
+        color: #fff;
+      }
+
       .map-popup-overlay {
         position: absolute;
         top: 10px;
@@ -1693,6 +1732,10 @@
         .search-result-count {
           font-size: 0.5rem;
         }
+        .search-map-indicator {
+          font-size: 0.5rem;
+          padding: 4px 8px;
+        }
 
         body.fullscreen-mode {
           padding: 0 !important;
@@ -2250,7 +2293,10 @@
               </div>
             </div>
           </div>
-          <div id="map-container"><div id="map"></div></div>
+          <div id="map-container">
+            <div id="map"></div>
+            <div class="search-map-indicator" id="searchMapIndicator"></div>
+          </div>
         </div>
       </div>
 
@@ -3206,11 +3252,14 @@
       }
 
       // ================================================================
-      // SEARCH - SEMUA KES
+      // SEARCH - SEMUA KES (DENGAN MAP FILTER)
       // ================================================================
       function onSearchAllInput(value) {
         searchAllQuery = (value || '').trim().toLowerCase();
         renderAllCases();
+        // KEMASKINI MAP - tapis ikut keyword carian
+        updateMapForCurrentMode();
+        updateSearchMapIndicator();
       }
 
       function clearSearchAll() {
@@ -3218,7 +3267,40 @@
         if (input) input.value = '';
         searchAllQuery = '';
         renderAllCases();
+        // PULIHKAN MAP ke keadaan asal
+        updateMapForCurrentMode();
+        updateSearchMapIndicator();
         if (input) input.focus();
+      }
+
+      // Dapatkan data yang ditapis oleh carian sahaja
+      function getSearchFilteredData() {
+        const data = currentDashboardData || [];
+        if (!searchAllQuery || searchAllQuery.length === 0) return data;
+        return data.filter(function (item) {
+          return matchesSearch(item, searchAllQuery);
+        });
+      }
+
+      // Update indikator carian pada map
+      function updateSearchMapIndicator() {
+        const indicator = document.getElementById('searchMapIndicator');
+        if (!indicator) return;
+        if (searchAllQuery && searchAllQuery.length > 0) {
+          const count = getSearchFilteredData().length;
+          const total = (currentDashboardData || []).length;
+          indicator.innerHTML =
+            '🔍 CARIAN: "' +
+            searchAllQuery.replace(/[<>&"]/g, '') +
+            '" — ' +
+            count +
+            '/' +
+            total +
+            ' kes';
+          indicator.style.display = 'flex';
+        } else {
+          indicator.style.display = 'none';
+        }
       }
 
       function matchesSearch(item, query) {
@@ -3720,6 +3802,14 @@
             })
           : [...allFetchedData];
 
+        // Reset search bila hari berubah
+        if (searchAllQuery && searchAllQuery.length > 0) {
+          const input = document.getElementById('searchAllInput');
+          if (input) input.value = '';
+          searchAllQuery = '';
+          updateSearchMapIndicator();
+        }
+
         updateDashboard(allCaseData);
         renderFilteredCases();
         if (expandedPanel === 'panelStats') renderPopupCases();
@@ -3926,6 +4016,13 @@
       }
 
       function updateMapForCurrentMode() {
+        // PRIORITI 1: Jika ada carian aktif, tapis ikut carian
+        if (searchAllQuery && searchAllQuery.length > 0) {
+          updateMap(getSearchFilteredData());
+          return;
+        }
+        // PRIORITI 2: Panel Stats expanded - tunjuk semua
+        // PRIORITI 3: Tunjuk ikut filter kategori
         updateMap(
           expandedPanel === 'panelStats' ? allCaseData : getFilteredData()
         );
@@ -4366,7 +4463,7 @@
 
         if (panelId === 'panelStats') {
           if (window.innerWidth >= 768) createMapPopup();
-          updateMap(allCaseData);
+          updateMapForCurrentMode();
           setTimeout(() => {
             if (mapInstance) mapInstance.invalidateSize();
           }, 500);
@@ -4384,7 +4481,7 @@
         removeMapPopup();
         stopPopupMotion();
         activePopupCaseIndex = null;
-        updateMap(getFilteredData());
+        updateMapForCurrentMode();
         if (mapInstance) setTimeout(() => mapInstance.invalidateSize(), 300);
       }
 
@@ -4540,6 +4637,7 @@
         // NOTE: allWrapper diuruskan dalam renderAllCases()
 
         updateMapForCurrentMode();
+        updateSearchMapIndicator();
       }
 
       function animateNumber(elementId, newValue) {
