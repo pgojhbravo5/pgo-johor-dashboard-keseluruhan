@@ -1737,6 +1737,29 @@
           padding: 4px 8px;
         }
 
+        /* SEARCH BAR DI ATAS - VIEW TELEFON SAHAJA */
+        body > .search-bar-container {
+          margin: 6px 4px 8px 4px;
+          border: 2px solid var(--text-gold);
+          box-shadow: 0 0 15px rgba(255, 170, 0, 0.25);
+          background: var(--bg-panel);
+          animation: glowSearchBar 2s ease-in-out infinite;
+        }
+        @keyframes glowSearchBar {
+          0%,
+          100% {
+            box-shadow: 0 0 10px rgba(255, 170, 0, 0.2);
+            border-color: var(--text-gold);
+          }
+          50% {
+            box-shadow: 0 0 20px rgba(255, 170, 0, 0.5);
+            border-color: #ffcc33;
+          }
+        }
+        body.light-mode > .search-bar-container {
+          background: #fff;
+        }
+
         body.fullscreen-mode {
           padding: 0 !important;
           overflow-y: auto !important;
@@ -2446,6 +2469,46 @@
       // SEARCH STATE
       let searchAllQuery = '';
       let currentDashboardData = [];
+
+      // ================================================================
+      // RELOCATE SEARCH BAR - TELEFON: ATAS | DESKTOP: DALAM PANEL
+      // ================================================================
+      function relocateSearchBar() {
+        const searchBar = document.querySelector('.search-bar-container');
+        const panelAll = document.getElementById('panelAll');
+        const tickerHint = document.querySelector('.ticker-hint');
+        const mainGrid = document.getElementById('mainGrid');
+
+        if (!searchBar || !panelAll) return;
+
+        const isMobile = window.innerWidth <= 767;
+
+        if (isMobile) {
+          // TELEFON: Pindah ke atas (selepas ticker-hint, sebelum main grid)
+          if (searchBar.parentElement !== document.body) {
+            if (tickerHint) {
+              tickerHint.insertAdjacentElement('afterend', searchBar);
+            } else if (mainGrid) {
+              mainGrid.parentElement.insertBefore(searchBar, mainGrid);
+            }
+          }
+        } else {
+          // DESKTOP: Kembalikan ke dalam panelAll (selepas panel-header)
+          if (searchBar.parentElement !== panelAll) {
+            const panelHeader = panelAll.querySelector('.panel-header');
+            if (panelHeader) {
+              panelHeader.insertAdjacentElement('afterend', searchBar);
+            }
+          }
+        }
+      }
+
+      // Debounce untuk resize
+      let relocateTimeout = null;
+      window.addEventListener('resize', function () {
+        if (relocateTimeout) clearTimeout(relocateTimeout);
+        relocateTimeout = setTimeout(relocateSearchBar, 200);
+      });
 
       // ================================================================
       // TOGGLE FILTER SECTION
@@ -4710,6 +4773,8 @@
         setTimeout(() => {
           if (mapInstance) mapInstance.invalidateSize();
         }, 300);
+        // Reposition search bar bila tukar fullscreen
+        setTimeout(relocateSearchBar, 350);
       }
 
       document.addEventListener('fullscreenchange', updateFullscreenButton);
@@ -4805,6 +4870,9 @@
         updateFullscreenButton();
 
         initFilterSection();
+
+        // Pindah search bar mengikut saiz skrin
+        setTimeout(relocateSearchBar, 100);
       })();
     </script>
     <script>
