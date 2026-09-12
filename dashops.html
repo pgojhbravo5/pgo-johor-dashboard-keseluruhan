@@ -968,6 +968,90 @@
         padding: 2px 8px;
         border-radius: 10px;
       }
+
+      /* ============ SEARCH BAR DALAM POPUP ============ */
+      .popup-search-container {
+        display: flex;
+        align-items: center;
+        gap: 5px;
+        padding: 6px 10px;
+        background: rgba(0, 0, 0, 0.25);
+        border-bottom: 1px solid #3a4a6e;
+        flex-shrink: 0;
+        transition: all 0.2s;
+      }
+      .popup-search-container:focus-within {
+        background: rgba(91, 155, 213, 0.1);
+      }
+      .popup-search-icon {
+        font-size: 0.7rem;
+        opacity: 0.75;
+        flex-shrink: 0;
+        pointer-events: none;
+      }
+      .popup-search-input {
+        flex: 1;
+        background: transparent;
+        border: none;
+        outline: none;
+        color: var(--text-primary);
+        font-size: 0.7rem;
+        font-family: inherit;
+        padding: 2px 0;
+        min-width: 0;
+        letter-spacing: 0.2px;
+      }
+      .popup-search-input::placeholder {
+        color: #8a9ab5;
+        opacity: 0.8;
+      }
+      .popup-search-clear {
+        background: rgba(231, 76, 60, 0.15);
+        color: var(--red);
+        border: 1px solid transparent;
+        border-radius: 50%;
+        width: 18px;
+        height: 18px;
+        font-size: 0.55rem;
+        cursor: pointer;
+        display: none;
+        align-items: center;
+        justify-content: center;
+        padding: 0;
+        flex-shrink: 0;
+        transition: all 0.2s;
+        line-height: 1;
+      }
+      .popup-search-clear.visible {
+        display: flex;
+      }
+      .popup-search-clear:hover {
+        background: var(--red);
+        color: #fff;
+        transform: scale(1.1);
+      }
+      .popup-search-count {
+        font-size: 0.5rem;
+        color: var(--text-gold);
+        font-weight: 700;
+        white-space: nowrap;
+        flex-shrink: 0;
+        letter-spacing: 0.3px;
+      }
+      body.light-mode .popup-search-container {
+        background: rgba(0, 0, 0, 0.05);
+        border-bottom-color: #d1d5db;
+      }
+      body.light-mode .popup-search-container:focus-within {
+        background: rgba(30, 64, 175, 0.08);
+      }
+      body.light-mode .popup-search-input {
+        color: #1a1a1a;
+      }
+      body.light-mode .popup-search-input::placeholder {
+        color: #6b7280;
+      }
+
       .map-popup-scroll {
         flex: 1;
         overflow-y: auto;
@@ -1382,7 +1466,7 @@
         letter-spacing: 0.5px;
       }
 
-      /* ============ SEARCH BAR - SEMUA KES ============ */
+      /* ============ SEARCH BAR - SEMUA KES (PANEL) ============ */
       .search-bar-container {
         display: flex;
         align-items: center;
@@ -2466,9 +2550,12 @@
         currentWeatherCityIndex = 0,
         forecastFetchPromise = null;
 
-      // SEARCH STATE
+      // SEARCH STATE (PANEL)
       let searchAllQuery = '';
       let currentDashboardData = [];
+
+      // SEARCH STATE (POPUP MAP)
+      let popupSearchQuery = '';
 
       // ================================================================
       // RELOCATE SEARCH BAR - TELEFON: ATAS | DESKTOP: DALAM PANEL
@@ -2484,7 +2571,6 @@
         const isMobile = window.innerWidth <= 767;
 
         if (isMobile) {
-          // TELEFON: Pindah ke atas (selepas ticker-hint, sebelum main grid)
           if (searchBar.parentElement !== document.body) {
             if (tickerHint) {
               tickerHint.insertAdjacentElement('afterend', searchBar);
@@ -2493,7 +2579,6 @@
             }
           }
         } else {
-          // DESKTOP: Kembalikan ke dalam panelAll (selepas panel-header)
           if (searchBar.parentElement !== panelAll) {
             const panelHeader = panelAll.querySelector('.panel-header');
             if (panelHeader) {
@@ -2503,7 +2588,6 @@
         }
       }
 
-      // Debounce untuk resize
       let relocateTimeout = null;
       window.addEventListener('resize', function () {
         if (relocateTimeout) clearTimeout(relocateTimeout);
@@ -2552,7 +2636,7 @@
       }
 
       // ================================================================
-      // UPDATE FILTER COUNT - PAPAR JUMLAH KES & SYIF
+      // UPDATE FILTER COUNT
       // ================================================================
       function updateFilterCount() {
         const btn = document.getElementById('filterToggleBtn');
@@ -3315,12 +3399,11 @@
       }
 
       // ================================================================
-      // SEARCH - SEMUA KES (DENGAN MAP FILTER)
+      // SEARCH - PANEL SEMUA KES (DENGAN MAP FILTER)
       // ================================================================
       function onSearchAllInput(value) {
         searchAllQuery = (value || '').trim().toLowerCase();
         renderAllCases();
-        // KEMASKINI MAP - tapis ikut keyword carian
         updateMapForCurrentMode();
         updateSearchMapIndicator();
       }
@@ -3330,13 +3413,11 @@
         if (input) input.value = '';
         searchAllQuery = '';
         renderAllCases();
-        // PULIHKAN MAP ke keadaan asal
         updateMapForCurrentMode();
         updateSearchMapIndicator();
         if (input) input.focus();
       }
 
-      // Dapatkan data yang ditapis oleh carian sahaja
       function getSearchFilteredData() {
         const data = currentDashboardData || [];
         if (!searchAllQuery || searchAllQuery.length === 0) return data;
@@ -3345,16 +3426,41 @@
         });
       }
 
-      // Update indikator carian pada map
       function updateSearchMapIndicator() {
         const indicator = document.getElementById('searchMapIndicator');
         if (!indicator) return;
-        if (searchAllQuery && searchAllQuery.length > 0) {
-          const count = getSearchFilteredData().length;
-          const total = (currentDashboardData || []).length;
+
+        // Tentukan carian mana yang aktif (popup diutamakan)
+        let activeQuery = '';
+        let count = 0;
+        let total = 0;
+        let source = '';
+
+        if (
+          expandedPanel === 'panelStats' &&
+          popupSearchQuery &&
+          popupSearchQuery.length > 0
+        ) {
+          activeQuery = popupSearchQuery;
+          const filtered = allCaseData.filter(function (item) {
+            return matchesPopupSearch(item, popupSearchQuery);
+          });
+          count = filtered.length;
+          total = allCaseData.length;
+          source = 'POPUP';
+        } else if (searchAllQuery && searchAllQuery.length > 0) {
+          activeQuery = searchAllQuery;
+          count = getSearchFilteredData().length;
+          total = (currentDashboardData || []).length;
+          source = 'PANEL';
+        }
+
+        if (activeQuery) {
           indicator.innerHTML =
-            '🔍 CARIAN: "' +
-            searchAllQuery.replace(/[<>&"]/g, '') +
+            '🔍 [' +
+            source +
+            '] CARIAN: "' +
+            activeQuery.replace(/[<>&"]/g, '') +
             '" — ' +
             count +
             '/' +
@@ -3401,20 +3507,17 @@
             })
           : data;
 
-        // Update result count
         const countEl = document.getElementById('searchResultCount');
         if (countEl) {
           countEl.textContent = query ? filtered.length + '/' + data.length : '';
         }
 
-        // Show/hide clear button
         const clearBtn = document.getElementById('searchClearBtn');
         if (clearBtn) {
           if (query.length > 0) clearBtn.classList.add('visible');
           else clearBtn.classList.remove('visible');
         }
 
-        // Reset animation
         if (animationIds['allWrapper'])
           cancelAnimationFrame(animationIds['allWrapper']);
         if (resumeTimeouts['allWrapper'])
@@ -3479,10 +3582,54 @@
           })
           .join('');
 
-        // Triple for infinite loop
         container.innerHTML = allHtml + allHtml + allHtml;
 
         startInfiniteMotion('allWrapper', 0.3);
+      }
+
+      // ================================================================
+      // SEARCH - POPUP MAP (SEMUA KES DALAM MAP) + MAP FILTER
+      // ================================================================
+      function onPopupSearchInput(value) {
+        popupSearchQuery = (value || '').trim().toLowerCase();
+        renderPopupCases();
+        // KEMASKINI MAP - tapis marker ikut keyword carian popup
+        updateMapForCurrentMode();
+        updateSearchMapIndicator();
+      }
+
+      function clearPopupSearch() {
+        const input = document.getElementById('popupSearchInput');
+        if (input) input.value = '';
+        popupSearchQuery = '';
+        renderPopupCases();
+        // PULIHKAN MAP ke keadaan asal
+        updateMapForCurrentMode();
+        updateSearchMapIndicator();
+        if (input) input.focus();
+      }
+
+      function matchesPopupSearch(item, query) {
+        if (!query) return true;
+        const fields = [
+          item.jenis,
+          item.balai,
+          item.alamat,
+          item.tarikh,
+          item.masa,
+          item.sampai_lokasi,
+          item.operasi_tamat,
+          item.tempoh_operasi,
+          item.respon_time,
+          item.shif,
+          item.pko,
+          item.callCard,
+          item.maklumat_kejadian,
+          item.source,
+        ];
+        return fields.some(function (f) {
+          return (f || '').toString().toLowerCase().includes(query);
+        });
       }
 
       // ================================================================
@@ -3872,6 +4019,11 @@
           searchAllQuery = '';
           updateSearchMapIndicator();
         }
+        if (popupSearchQuery && popupSearchQuery.length > 0) {
+          const popupInput = document.getElementById('popupSearchInput');
+          if (popupInput) popupInput.value = '';
+          popupSearchQuery = '';
+        }
 
         updateDashboard(allCaseData);
         renderFilteredCases();
@@ -4079,13 +4231,24 @@
       }
 
       function updateMapForCurrentMode() {
-        // PRIORITI 1: Jika ada carian aktif, tapis ikut carian
+        // PRIORITI 1: Popup search (bila popup SEMUA KES dalam map terbuka)
+        if (
+          expandedPanel === 'panelStats' &&
+          popupSearchQuery &&
+          popupSearchQuery.length > 0
+        ) {
+          const data = allCaseData.filter(function (item) {
+            return matchesPopupSearch(item, popupSearchQuery);
+          });
+          updateMap(data);
+          return;
+        }
+        // PRIORITI 2: Panel search (search bar SEMUA KES)
         if (searchAllQuery && searchAllQuery.length > 0) {
           updateMap(getSearchFilteredData());
           return;
         }
-        // PRIORITI 2: Panel Stats expanded - tunjuk semua
-        // PRIORITI 3: Tunjuk ikut filter kategori
+        // PRIORITI 3: Stats expanded atau filter kategori
         updateMap(
           expandedPanel === 'panelStats' ? allCaseData : getFilteredData()
         );
@@ -4145,7 +4308,14 @@
         const popup = document.createElement('div');
         popup.id = 'mapCasePopup';
         popup.className = 'map-popup-overlay';
-        popup.innerHTML = `<div class="map-popup-header" id="popupDragHandle"><h4>📋 SEMUA KES</h4><span class="popup-count" id="popupCount">0 rekod</span></div><div class="map-popup-scroll" id="popupScroll"><div class="map-popup-motion" id="popupMotion"><div id="popupCases"></div></div></div>`;
+        popup.innerHTML = `<div class="map-popup-header" id="popupDragHandle"><h4>📋 SEMUA KES</h4><span class="popup-count" id="popupCount">0 rekod</span></div>
+          <div class="popup-search-container" id="popupSearchBox">
+            <span class="popup-search-icon">🔍</span>
+            <input type="text" id="popupSearchInput" class="popup-search-input" placeholder="Cari kes dalam map..." oninput="onPopupSearchInput(this.value)" onkeydown="if(event.key==='Escape'){clearPopupSearch();this.blur();event.stopPropagation();}" />
+            <span class="popup-search-count" id="popupSearchCount"></span>
+            <button class="popup-search-clear" id="popupSearchClearBtn" onclick="clearPopupSearch()" title="Kosongkan carian">✕</button>
+          </div>
+          <div class="map-popup-scroll" id="popupScroll"><div class="map-popup-motion" id="popupMotion"><div id="popupCases"></div></div></div>`;
         mapContainer.appendChild(popup);
 
         document
@@ -4168,10 +4338,53 @@
         const count = document.getElementById('popupCount');
         if (!container || !count) return;
 
-        count.textContent = allCaseData.length + ' rekod';
+        const total = allCaseData.length;
+        const query = popupSearchQuery;
 
-        let html = allCaseData
-          .map((d, i) => {
+        // Tapis ikut query carian popup
+        const filtered = query
+          ? allCaseData.filter(function (item) {
+              return matchesPopupSearch(item, query);
+            })
+          : allCaseData;
+
+        // Update header count
+        if (query) {
+          count.textContent = filtered.length + '/' + total + ' rekod';
+        } else {
+          count.textContent = total + ' rekod';
+        }
+
+        // Update search count & clear button
+        const searchCountEl = document.getElementById('popupSearchCount');
+        const clearBtn = document.getElementById('popupSearchClearBtn');
+        if (searchCountEl) {
+          searchCountEl.textContent = query
+            ? filtered.length + '/' + total
+            : '';
+        }
+        if (clearBtn) {
+          if (query.length > 0) clearBtn.classList.add('visible');
+          else clearBtn.classList.remove('visible');
+        }
+
+        // Reset motion wrapper
+        const wrapper = document.getElementById('popupMotion');
+        if (wrapper) wrapper.style.transform = 'translateY(0px)';
+
+        if (!filtered.length) {
+          container.innerHTML = query
+            ? '<div style="color:#888;padding:15px;text-align:center;font-size:0.7rem;">🔍 Tiada kes sepadan dengan carian "' +
+              query.replace(/[<>&"]/g, '') +
+              '"</div>'
+            : '<div style="color:#888;padding:10px;">✅ Tiada kes</div>';
+          stopPopupMotion();
+          return;
+        }
+
+        let html = filtered
+          .map((d) => {
+            const originalIndex = allCaseData.indexOf(d);
             const emoji = getCaseEmoji(d.jenis);
             const classification = classifyCase(d);
             const borderClass = getBorderClass(classification);
@@ -4184,7 +4397,7 @@
             if (d.mangsa_selamat > 0)
               badges += `<span class="badge selamat">🟢${d.mangsa_selamat}</span>`;
 
-            return `<div class="popup-case-item ${borderClass}" onclick="showPopupCaseDetail(${i})" style="display:flex;justify-content:space-between;align-items:flex-start;">
+            return `<div class="popup-case-item ${borderClass}" onclick="showPopupCaseDetail(${originalIndex})" style="display:flex;justify-content:space-between;align-items:flex-start;">
               <div style="flex:1;padding-right:10px;">
                 <div style="font-weight:bold;font-size:0.85rem;">${emoji} ${
               d.jenis
@@ -4207,9 +4420,14 @@
           })
           .join('');
 
-        container.innerHTML = html
-          ? html + html + html
-          : '<div style="color:#888;padding:10px;">✅ Tiada kes</div>';
+        // Kalau ada query, TAK perlu triple
+        if (query && query.length > 0) {
+          container.innerHTML = html;
+          stopPopupMotion();
+        } else {
+          container.innerHTML = html + html + html;
+          startPopupMotion();
+        }
       }
 
       function startPopupMotion() {
@@ -4268,6 +4486,10 @@
         const popup = document.getElementById('mapCasePopup');
         if (popup) popup.remove();
         activePopupCaseIndex = null;
+        // Reset popup search bila popup ditutup
+        popupSearchQuery = '';
+        // Reset indikator carian pada map
+        updateSearchMapIndicator();
       }
 
       function startDrag(e) {
@@ -4411,7 +4633,6 @@
         html += `<div class="modal-info"><strong>🛑 Operasi Tamat:</strong> ${data.operasi_tamat}</div>`;
         html += `<div class="modal-info"><strong>⏳ Tempoh Operasi:</strong> ${data.tempoh_operasi}</div>`;
 
-        // BUTANG GOOGLE MAPS & WAZE DENGAN HANYA LOGO
         if (data.lat !== 0 && data.long !== 0) {
           html += `<div class="modal-info"><strong>🗺️ Koordinat:</strong> ${data.lat.toFixed(
             5
@@ -4685,10 +4906,7 @@
 
         animateNumber('avgResponse', formatMMSS(averageResponse));
 
-        // Simpan data untuk search filtering
         currentDashboardData = data;
-
-        // Render SEMUA KES (dengan search filter applied)
         renderAllCases();
 
         Object.values(animationIds).forEach((id) => cancelAnimationFrame(id));
@@ -4697,7 +4915,6 @@
         resumeTimeouts = {};
 
         startInfiniteMotion('filterWrapper', 0.3);
-        // NOTE: allWrapper diuruskan dalam renderAllCases()
 
         updateMapForCurrentMode();
         updateSearchMapIndicator();
@@ -4773,7 +4990,6 @@
         setTimeout(() => {
           if (mapInstance) mapInstance.invalidateSize();
         }, 300);
-        // Reposition search bar bila tukar fullscreen
         setTimeout(relocateSearchBar, 350);
       }
 
@@ -4871,7 +5087,6 @@
 
         initFilterSection();
 
-        // Pindah search bar mengikut saiz skrin
         setTimeout(relocateSearchBar, 100);
       })();
     </script>
