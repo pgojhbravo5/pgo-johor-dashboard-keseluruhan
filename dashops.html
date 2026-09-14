@@ -86,7 +86,8 @@
         border-radius: 4px !important;
         padding: 5px !important;
       }
-      body.fullscreen-mode .weather-ticker-container {
+      body.fullscreen-mode .weather-ticker-container,
+      body.fullscreen-mode .ongoing-ticker-container {
         padding: 2px 0 !important;
       }
       body.fullscreen-mode .ticker-hint {
@@ -286,6 +287,7 @@
         opacity: 0.7;
       }
 
+      /* ============ WEATHER TICKER ============ */
       .weather-ticker-container {
         width: 100%;
         overflow: hidden;
@@ -321,20 +323,22 @@
         background: linear-gradient(270deg, #0a0f1e 0%, transparent 100%);
       }
       .weather-ticker {
-        display: inline-block;
+        display: inline-flex;
         white-space: nowrap;
-        animation: ticker-scroll 45s linear infinite;
-        padding: 0 10px;
+        animation: weather-ticker-scroll 45s linear infinite;
+        padding: 0;
+        will-change: transform;
+        width: max-content;
       }
       .weather-ticker-container:hover .weather-ticker {
         animation-play-state: paused;
       }
-      @keyframes ticker-scroll {
+      @keyframes weather-ticker-scroll {
         0% {
           transform: translateX(0);
         }
         100% {
-          transform: translateX(-33.33%);
+          transform: translateX(-50%);
         }
       }
       .weather-item {
@@ -410,6 +414,167 @@
         text-align: center;
         padding: 1px 0 4px;
         letter-spacing: 0.5px;
+      }
+
+      /* ============ ONGOING (KES BELUM SELESAI) TICKER ============ */
+      .ongoing-ticker-container {
+        width: 100%;
+        overflow: hidden;
+        background: linear-gradient(90deg, #2a0a0a 0%, #3d0f0f 50%, #2a0a0a 100%);
+        border-top: 1px solid #5a1a1a;
+        border-bottom: 1px solid #5a1a1a;
+        padding: 5px 0;
+        margin-bottom: 0;
+        flex-shrink: 0;
+        position: relative;
+      }
+      .ongoing-ticker-container::before,
+      .ongoing-ticker-container::after {
+        content: '';
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        width: 40px;
+        z-index: 2;
+        pointer-events: none;
+      }
+      .ongoing-ticker-container::before {
+        left: 0;
+        background: linear-gradient(90deg, #2a0a0a 0%, transparent 100%);
+      }
+      .ongoing-ticker-container::after {
+        right: 0;
+        background: linear-gradient(270deg, #2a0a0a 0%, transparent 100%);
+      }
+      .ongoing-ticker {
+        display: inline-flex;
+        white-space: nowrap;
+        animation: ongoing-ticker-scroll 45s linear infinite;
+        padding: 0;
+        will-change: transform;
+        width: max-content;
+      }
+      .ongoing-ticker-container:hover .ongoing-ticker {
+        animation-play-state: paused;
+      }
+      @keyframes ongoing-ticker-scroll {
+        0% {
+          transform: translateX(0);
+        }
+        100% {
+          transform: translateX(-50%);
+        }
+      }
+      .ongoing-item {
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+        padding: 3px 10px;
+        margin: 0 6px;
+        font-size: 0.62rem;
+        font-weight: 600;
+        letter-spacing: 0.3px;
+        border-radius: 12px;
+        cursor: pointer;
+        transition: all 0.2s;
+        border: 1px solid rgba(255, 80, 80, 0.3);
+        background: rgba(0, 0, 0, 0.25);
+        color: #ffcccc;
+      }
+      .ongoing-item:hover {
+        background: rgba(255, 80, 80, 0.2);
+        border-color: #ff5555;
+        color: #fff;
+        transform: scale(1.05);
+        box-shadow: 0 0 12px rgba(255, 60, 60, 0.5);
+      }
+      .ongoing-item:active {
+        transform: scale(0.95);
+      }
+      .ongoing-item .ongoing-emoji {
+        font-size: 0.85rem;
+      }
+      .ongoing-item .ongoing-jenis {
+        font-weight: 700;
+        color: #ff9999;
+      }
+      .ongoing-item .ongoing-balai {
+        font-size: 0.58rem;
+        color: #ffaa99;
+        opacity: 0.9;
+      }
+      .ongoing-item .ongoing-separator {
+        color: #ff5555;
+        opacity: 0.6;
+        margin: 0 2px;
+      }
+      .ongoing-separator {
+        color: #8a2a2a;
+        font-weight: 300;
+        opacity: 0.7;
+        margin: 0 2px;
+      }
+      .ongoing-loading {
+        display: inline-block;
+        color: #cc8888;
+        font-size: 0.62rem;
+        padding: 2px 20px;
+        animation: pulse 2s ease-in-out infinite;
+      }
+      .ongoing-empty {
+        display: inline-block;
+        color: #88cc88;
+        font-size: 0.62rem;
+        padding: 2px 20px;
+        font-weight: 600;
+        letter-spacing: 0.3px;
+      }
+      .ongoing-pulse {
+        display: inline-block;
+        width: 8px;
+        height: 8px;
+        background: #ff2222;
+        border-radius: 50%;
+        margin-right: 4px;
+        box-shadow: 0 0 8px #ff2222;
+        animation: ongoing-pulse-anim 1.5s ease-in-out infinite;
+      }
+      @keyframes ongoing-pulse-anim {
+        0%, 100% {
+          opacity: 0.6;
+          transform: scale(1);
+          box-shadow: 0 0 6px #ff2222;
+        }
+        50% {
+          opacity: 1;
+          transform: scale(1.3);
+          box-shadow: 0 0 14px #ff4444;
+        }
+      }
+      body.light-mode .ongoing-ticker-container {
+        background: linear-gradient(90deg, #ffe5e5 0%, #ffd0d0 50%, #ffe5e5 100%);
+        border-color: #ff9999;
+      }
+      body.light-mode .ongoing-ticker-container::before {
+        background: linear-gradient(90deg, #ffe5e5 0%, transparent 100%);
+      }
+      body.light-mode .ongoing-ticker-container::after {
+        background: linear-gradient(270deg, #ffe5e5 0%, transparent 100%);
+      }
+      body.light-mode .ongoing-item {
+        color: #8a0000;
+        border-color: rgba(200, 0, 0, 0.3);
+        background: rgba(255, 255, 255, 0.5);
+      }
+      body.light-mode .ongoing-item .ongoing-jenis {
+        color: #a00000;
+      }
+      body.light-mode .ongoing-item .ongoing-balai {
+        color: #8a3333;
+      }
+      body.light-mode .ongoing-item:hover {
+        background: rgba(255, 200, 200, 0.8);
+        color: #5a0000;
       }
 
       .grid {
@@ -1745,21 +1910,25 @@
           font-size: 0.7rem !important;
           padding: 6px 12px !important;
         }
-        .weather-ticker-container {
+        .weather-ticker-container,
+        .ongoing-ticker-container {
           padding: 3px 0;
         }
-        .weather-item {
+        .weather-item,
+        .ongoing-item {
           font-size: 0.55rem;
           padding: 3px 8px;
           margin: 0 3px;
         }
-        .weather-icon {
+        .weather-icon,
+        .ongoing-item .ongoing-emoji {
           font-size: 0.75rem;
         }
         .weather-temp {
           font-size: 0.6rem;
         }
-        .weather-location {
+        .weather-location,
+        .ongoing-item .ongoing-balai {
           font-size: 0.55rem;
         }
         .ticker-hint {
@@ -1904,7 +2073,8 @@
           max-height: 400px !important;
           min-height: 200px !important;
         }
-        body.fullscreen-mode .weather-ticker-container {
+        body.fullscreen-mode .weather-ticker-container,
+        body.fullscreen-mode .ongoing-ticker-container {
           padding: 2px 0 !important;
           flex-shrink: 0 !important;
         }
@@ -2165,8 +2335,16 @@
         <span class="weather-loading">🛰️ Memuat data cuaca...</span>
       </div>
     </div>
+
+    <!-- ONGOING (KES BELUM SELESAI) TICKER -->
+    <div class="ongoing-ticker-container" id="ongoingTickerContainer">
+      <div class="ongoing-ticker" id="ongoingTicker">
+        <span class="ongoing-loading">⏳ Memuat kes...</span>
+      </div>
+    </div>
+
     <div class="ticker-hint">
-      👆 Klik mana-mana bandar untuk ramalan cuaca 12 jam
+      👆 Klik mana-mana bandar untuk ramalan cuaca 12 jam · Klik kes untuk lihat di map
     </div>
 
     <!-- MAIN GRID -->
@@ -2593,6 +2771,99 @@
           operasiTamat === '00:00:00' ||
           operasiTamat === ''
         );
+      }
+
+      // ================================================================
+      // ONGOING TICKER - papar kes belum selesai di bawah ticker cuaca
+      // ================================================================
+      let ongoingTickerList = [];
+
+      function updateOngoingTicker() {
+        const t = document.getElementById('ongoingTicker');
+        if (!t) return;
+
+        // Ambil semua kes ONGOING dari allCaseData (TAK ikut filter kategori)
+        ongoingTickerList = (allCaseData || []).filter(function (d) {
+          return isCaseOngoing(d);
+        });
+
+        if (!ongoingTickerList.length) {
+          t.innerHTML =
+            '<span class="ongoing-empty">✅ Tiada kes sedang beroperasi</span>';
+          return;
+        }
+
+        let h = '';
+        ongoingTickerList.forEach(function (c, i) {
+          const emoji = getCaseEmoji(c.jenis);
+          const jenis = (c.jenis || '-').toString().trim();
+          const balai = (c.balai || '-').toString().trim();
+          h +=
+            '<span class="ongoing-item" onclick="event.stopPropagation();onClickOngoingTicker(' +
+            i +
+            ')" title="Klik untuk lihat di map · ' +
+            jenis.replace(/"/g, '') +
+            ' · ' +
+            balai.replace(/"/g, '') +
+            '">' +
+            '<span class="ongoing-pulse"></span>' +
+            '<span class="ongoing-emoji">' +
+            emoji +
+            '</span>' +
+            '<span class="ongoing-jenis">' +
+            jenis +
+            '</span>' +
+            '<span class="ongoing-separator">·</span>' +
+            '<span class="ongoing-balai">🏣 ' +
+            balai +
+            '</span>' +
+            '</span>';
+          if (i < ongoingTickerList.length - 1) {
+            h += '<span class="ongoing-separator">|</span>';
+          }
+        });
+
+        // Dua copy untuk seamless loop (translateX -50%)
+        t.innerHTML = h + h;
+      }
+
+      // Klik kes dalam ticker ongoing
+      function onClickOngoingTicker(index) {
+        const d = ongoingTickerList[index];
+        if (!d) return;
+
+        // Cari index sebenar dalam allCaseData
+        const realIndex = allCaseData.indexOf(d);
+        const data = realIndex >= 0 ? allCaseData[realIndex] : d;
+
+        // Zoom map ke lokasi kes
+        if (
+          mapInstance &&
+          data.lat !== 0 &&
+          data.long !== 0 &&
+          isInJohor(data.lat, data.long)
+        ) {
+          mapInstance.setView([data.lat, data.long], 15, {
+            animate: true,
+            duration: 0.8,
+          });
+          setTimeout(function () {
+            if (markersLayer) {
+              markersLayer.eachLayer(function (marker) {
+                const latLng = marker.getLatLng();
+                if (
+                  Math.abs(latLng.lat - data.lat) < 0.0001 &&
+                  Math.abs(latLng.lng - data.long) < 0.0001
+                ) {
+                  marker.openPopup();
+                }
+              });
+            }
+          }, 900);
+        }
+
+        // Buka modal detail
+        showCaseDetail(data, realIndex);
       }
 
       // ================================================================
@@ -3724,7 +3995,8 @@
           if (i < weatherData.length - 1)
             h += '<span class="weather-separator">|</span>';
         });
-        t.innerHTML = h + h + h;
+        // Dua copy untuk seamless loop
+        t.innerHTML = h + h;
       }
       async function fetchWeatherForecast() {
         try {
@@ -4072,6 +4344,8 @@
 
         updateDashboard(allCaseData);
         renderFilteredCases();
+        // Update ticker ongoing
+        updateOngoingTicker();
         if (expandedPanel === 'panelStats') renderPopupCases();
       }
 
