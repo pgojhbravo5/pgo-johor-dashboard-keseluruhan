@@ -3443,7 +3443,7 @@
           l.includes('pejabat') ||
           l.includes('premis')
         )
-          return '🏢';
+          return '🏣';
         return '📍';
       }
 
@@ -4663,11 +4663,11 @@
           categoryMap[category] || '📋 Lain-lain'
         }]</span>`;
 
-        let html = `<div class="modal-info"><strong>🏢 Balai:</strong> ${
+        let html = `<div class="modal-info"><strong>🏣 Balai:</strong> ${
           data.balai
         } ${getShifBadge(data.shif)}</div>`;
         if (data.pko && data.pko !== '-')
-          html += `<div class="modal-info"><strong>🏢 Balai Bantuan:</strong> ${data.pko}</div>`;
+          html += `<div class="modal-info"><strong>🏣 Balai Bantuan:</strong> ${data.pko}</div>`;
         html += `<div class="modal-info"><strong>📌 Alamat:</strong> ${data.alamat}</div>`;
         html += `<div class="modal-info"><strong>📅 Tarikh:</strong> ${data.tarikh}</div>`;
         html += `<div class="modal-info"><strong>🚒 Terima Panggilan:</strong> ${data.masa}</div>`;
