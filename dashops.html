@@ -4910,17 +4910,18 @@
         currentDashboardData = data;
         renderAllCases();
 
-        Object.values(animationIds).forEach((id) => cancelAnimationFrame(id));
-        animationIds = {};
-        Object.values(resumeTimeouts).forEach((id) => clearTimeout(id));
-        resumeTimeouts = {};
+        // Reset HANYA filterWrapper, JANGAN sentuh allWrapper
+        if (animationIds['filterWrapper'])
+          cancelAnimationFrame(animationIds['filterWrapper']);
+        if (resumeTimeouts['filterWrapper'])
+          clearTimeout(resumeTimeouts['filterWrapper']);
 
         startInfiniteMotion('filterWrapper', 0.3);
 
         updateMapForCurrentMode();
         updateSearchMapIndicator();
       }
-
+      
       function animateNumber(elementId, newValue) {
         const element = document.getElementById(elementId);
         if (!element) return;
