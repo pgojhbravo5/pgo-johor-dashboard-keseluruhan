@@ -114,7 +114,8 @@
       }
       .fullscreen-btn,
       .force-refresh-btn,
-      .theme-toggle-btn {
+      .theme-toggle-btn,
+      .btn-back {
         background: var(--bg-card);
         color: var(--text-primary);
         border: 1px solid var(--border-color);
@@ -127,10 +128,13 @@
         gap: 5px;
         transition: all 0.2s;
         white-space: nowrap;
+        text-decoration: none;
+        font-family: 'Segoe UI', Arial, sans-serif;
       }
       .fullscreen-btn:hover,
       .force-refresh-btn:hover,
-      .theme-toggle-btn:hover {
+      .theme-toggle-btn:hover,
+      .btn-back:hover {
         background: var(--bg-hover);
         border-color: var(--text-blue);
       }
@@ -1793,7 +1797,8 @@
         }
         .fullscreen-btn,
         .force-refresh-btn,
-        .theme-toggle-btn {
+        .theme-toggle-btn,
+        .btn-back {
           padding: 4px 8px;
           font-size: 0.6rem;
         }
@@ -2242,6 +2247,8 @@
         >
           📺 FULL SCREEN
         </button>
+        <!-- BUTANG KEMBALI (gaya seragam) -->
+        <a href="index.html" class="btn-back">⬅️ KEMBALI</a>
         <div class="datetime-display">
           <span class="date-text">📅 <span id="dateDisplay"></span></span>
           <span class="datetime-separator">|</span>
