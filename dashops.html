@@ -434,6 +434,14 @@
         margin-bottom: 0;
         flex-shrink: 0;
         position: relative;
+        /* Flex untuk center content bila statik */
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      }
+      /* Bila scrolling, kontena jadi flex-start */
+      .ongoing-ticker-container.scrolling {
+        justify-content: flex-start;
       }
       .ongoing-ticker-container::before,
       .ongoing-ticker-container::after {
@@ -444,6 +452,8 @@
         width: 40px;
         z-index: 2;
         pointer-events: none;
+        opacity: 0;
+        transition: opacity 0.3s;
       }
       .ongoing-ticker-container::before {
         left: 0;
@@ -453,16 +463,26 @@
         right: 0;
         background: linear-gradient(270deg, #2a0a0a 0%, transparent 100%);
       }
+      /* Fade tengah hanya muncul bila scrolling (class .scrolling) */
+      .ongoing-ticker-container.scrolling::before,
+      .ongoing-ticker-container.scrolling::after {
+        opacity: 1;
+      }
       .ongoing-ticker {
         display: flex;
         flex-wrap: nowrap;
         white-space: nowrap;
-        animation: ongoing-ticker-scroll 45s linear infinite;
         padding: 0;
         will-change: transform;
         width: max-content;
+        /* Default: statik, tiada animation */
+        animation: none;
       }
-      .ongoing-ticker-container:hover .ongoing-ticker {
+      /* Bila kes > frame, class .scrolling akan aktifkan animation */
+      .ongoing-ticker-container.scrolling .ongoing-ticker {
+        animation: ongoing-ticker-scroll 45s linear infinite;
+      }
+      .ongoing-ticker-container.scrolling:hover .ongoing-ticker {
         animation-play-state: paused;
       }
       @keyframes ongoing-ticker-scroll {
@@ -531,6 +551,7 @@
         padding: 2px 20px;
         font-weight: 600;
         letter-spacing: 0.3px;
+        text-align: center;
       }
       .ongoing-pulse {
         display: inline-block;
@@ -2785,19 +2806,27 @@
 
       // ================================================================
       // ONGOING TICKER - papar kes belum selesai di bawah ticker cuaca
+      // - Statik & CENTER bila kes tak cukup lebar frame
+      // - Auto scroll bila kes lebih dari frame (seamless loop)
       // ================================================================
       let ongoingTickerList = [];
 
       function updateOngoingTicker() {
         const t = document.getElementById('ongoingTicker');
-        if (!t) return;
+        const container = document.getElementById('ongoingTickerContainer');
+        if (!t || !container) return;
 
         // Ambil semua kes ONGOING dari allCaseData (TAK ikut filter kategori)
         ongoingTickerList = (allCaseData || []).filter(function (d) {
           return isCaseOngoing(d);
         });
 
+        // Reset state scrolling dulu
+        container.classList.remove('scrolling');
+
         if (!ongoingTickerList.length) {
+          t.style.animation = 'none';
+          t.style.width = 'auto';
           t.innerHTML =
             '<span class="ongoing-empty">✅ Tiada kes sedang beroperasi</span>';
           return;
@@ -2830,8 +2859,24 @@
             '</span>';
         });
 
-        // Dua copy untuk seamless loop (translateX -50%)
-        t.innerHTML = h + h;
+        // Set dulu dengan 1 copy untuk check lebar
+        t.style.animation = 'none';
+        t.style.width = 'auto';
+        t.innerHTML = h;
+
+        // Check: content lebih lebar dari container?
+        const contentWidth = t.scrollWidth;
+        const containerWidth = container.clientWidth;
+
+        if (contentWidth > containerWidth + 2) {
+          // Lebih dari frame → duplicate 2 copy + aktifkan scrolling
+          t.innerHTML = h + h;
+          // Force reflow supaya animation start dengan betul
+          void t.offsetWidth;
+          t.style.animation = '';
+          container.classList.add('scrolling');
+        }
+        // Kalau tidak lebih → biar static + center (via CSS)
       }
 
       // Klik kes dalam ticker ongoing
@@ -2908,6 +2953,15 @@
       window.addEventListener('resize', function () {
         if (relocateTimeout) clearTimeout(relocateTimeout);
         relocateTimeout = setTimeout(relocateSearchBar, 200);
+      });
+
+      // Auto check ongoing ticker bila resize window (untuk static/scroll)
+      let ongoingResizeTimeout = null;
+      window.addEventListener('resize', function () {
+        if (ongoingResizeTimeout) clearTimeout(ongoingResizeTimeout);
+        ongoingResizeTimeout = setTimeout(function () {
+          updateOngoingTicker();
+        }, 300);
       });
 
       // ================================================================
@@ -4351,7 +4405,7 @@
 
         updateDashboard(allCaseData);
         renderFilteredCases();
-        // Update ticker ongoing
+        // Update ticker ongoing (check static / scrolling)
         updateOngoingTicker();
         if (expandedPanel === 'panelStats') renderPopupCases();
       }
@@ -5314,6 +5368,7 @@
           if (mapInstance) mapInstance.invalidateSize();
         }, 300);
         setTimeout(relocateSearchBar, 350);
+        setTimeout(updateOngoingTicker, 400);
       }
 
       document.addEventListener('fullscreenchange', updateFullscreenButton);
