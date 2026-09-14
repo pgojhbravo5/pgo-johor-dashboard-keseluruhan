@@ -62,63 +62,22 @@
         overflow: hidden;
         touch-action: manipulation;
       }
+
+      /* ============================================================
+         FULLSCREEN MODE - HANYA BUANG MARGIN/PADDING LUAR
+         TIDAK SENTUH SEBARANG SAIZ FONT/PADDING/GAP DALAM
+         ============================================================ */
       body.fullscreen-mode {
         padding: 0 !important;
         padding-top: env(safe-area-inset-top) !important;
         padding-bottom: env(safe-area-inset-bottom) !important;
+        padding-left: env(safe-area-inset-left) !important;
+        padding-right: env(safe-area-inset-right) !important;
         margin: 0 !important;
         height: 100vh !important;
         height: 100dvh !important;
         width: 100vw !important;
         width: 100dvw !important;
-        overflow: hidden !important;
-      }
-      body.fullscreen-mode header {
-        padding: 4px 8px !important;
-        margin-bottom: 1px !important;
-        border-bottom-width: 1px !important;
-      }
-      body.fullscreen-mode .grid {
-        gap: 3px !important;
-        padding: 0 2px !important;
-      }
-      body.fullscreen-mode .panel {
-        border-radius: 4px !important;
-        padding: 5px !important;
-      }
-      body.fullscreen-mode .weather-ticker-container,
-      body.fullscreen-mode .ongoing-ticker-container {
-        padding: 2px 0 !important;
-      }
-      body.fullscreen-mode .ticker-hint {
-        padding: 0 !important;
-        font-size: 0.4rem !important;
-        line-height: 1 !important;
-      }
-      body.fullscreen-mode .footer {
-        margin-top: 1px !important;
-        padding-top: 1px !important;
-      }
-      body.fullscreen-mode .watermark-line1,
-      body.fullscreen-mode .watermark-line2 {
-        font-size: 0.35rem !important;
-        line-height: 1.1 !important;
-      }
-      body.fullscreen-mode .panel-header {
-        padding-bottom: 4px !important;
-        margin-bottom: 4px !important;
-      }
-      body.fullscreen-mode .panel-header h2 {
-        font-size: 0.7rem !important;
-      }
-      body.fullscreen-mode .stats-row-main {
-        gap: 3px !important;
-      }
-      body.fullscreen-mode .stat-card {
-        padding: 5px 3px !important;
-      }
-      body.fullscreen-mode #map-container {
-        margin-top: 4px !important;
       }
 
       header {
@@ -435,12 +394,10 @@
         margin-bottom: 0;
         flex-shrink: 0;
         position: relative;
-        /* Flex untuk center content bila statik */
         display: flex;
         justify-content: center;
         align-items: center;
       }
-      /* Bila scrolling, kontena jadi flex-start */
       .ongoing-ticker-container.scrolling {
         justify-content: flex-start;
       }
@@ -464,7 +421,6 @@
         right: 0;
         background: linear-gradient(270deg, #2a0a0a 0%, transparent 100%);
       }
-      /* Fade tengah hanya muncul bila scrolling (class .scrolling) */
       .ongoing-ticker-container.scrolling::before,
       .ongoing-ticker-container.scrolling::after {
         opacity: 1;
@@ -476,10 +432,8 @@
         padding: 0;
         will-change: transform;
         width: max-content;
-        /* Default: statik, tiada animation */
         animation: none;
       }
-      /* Bila kes > frame, class .scrolling akan aktifkan animation */
       .ongoing-ticker-container.scrolling .ongoing-ticker {
         animation: ongoing-ticker-scroll 45s linear infinite;
       }
@@ -2065,66 +2019,6 @@
         body.light-mode > .search-bar-container {
           background: #fff;
         }
-
-        body.fullscreen-mode {
-          padding: 0 !important;
-          overflow-y: auto !important;
-          overflow-x: hidden !important;
-          height: 100vh !important;
-          height: 100dvh !important;
-          -webkit-overflow-scrolling: touch !important;
-        }
-        body.fullscreen-mode header {
-          padding: 4px 6px !important;
-          gap: 3px !important;
-          flex-shrink: 0 !important;
-        }
-        body.fullscreen-mode .grid {
-          gap: 3px !important;
-          padding: 0 2px !important;
-          flex: none !important;
-          overflow: visible !important;
-        }
-        body.fullscreen-mode .panel {
-          padding: 4px !important;
-          border-radius: 4px !important;
-          max-height: none !important;
-          overflow: visible !important;
-          min-height: auto !important;
-          height: auto !important;
-          max-height: none !important;
-        }
-        body.fullscreen-mode .scroll-container {
-          max-height: 250px !important;
-          overflow-y: auto !important;
-          -webkit-overflow-scrolling: touch !important;
-          min-height: 150px !important;
-          height: auto !important;
-        }
-        body.fullscreen-mode .panel.expanded .scroll-container {
-          max-height: 400px !important;
-          min-height: 200px !important;
-        }
-        body.fullscreen-mode .weather-ticker-container,
-        body.fullscreen-mode .ongoing-ticker-container {
-          padding: 2px 0 !important;
-          flex-shrink: 0 !important;
-        }
-        body.fullscreen-mode #map-container {
-          min-height: 150px !important;
-          height: 150px !important;
-          flex-shrink: 0 !important;
-        }
-        body.fullscreen-mode .footer {
-          margin-top: 8px !important;
-          padding-top: 4px !important;
-          padding-bottom: 8px !important;
-          flex-shrink: 0 !important;
-        }
-        body.fullscreen-mode .watermark-line1,
-        body.fullscreen-mode .watermark-line2 {
-          font-size: 0.35rem !important;
-        }
       }
       @media screen and (max-width: 480px) {
         body {
@@ -2172,11 +2066,6 @@
         .weather-forecast-grid {
           grid-template-columns: repeat(2, 1fr);
         }
-      }
-
-      body.fullscreen-mode .search-bar-container {
-        padding: 4px 8px !important;
-        margin-bottom: 5px !important;
       }
 
       /* LIGHT MODE */
@@ -2794,7 +2683,6 @@
       function isCaseOngoing(data) {
         if (!data) return false;
         const operasiTamat = (data.operasi_tamat || '').toString().trim();
-        // Kosong / '-' / '0' / '00:00' / '00:00:00' = ONGOING
         return (
           !operasiTamat ||
           operasiTamat === '-' ||
@@ -2806,9 +2694,7 @@
       }
 
       // ================================================================
-      // ONGOING TICKER - papar kes belum selesai di bawah ticker cuaca
-      // - Statik & CENTER bila kes tak cukup lebar frame
-      // - Auto scroll bila kes lebih dari frame (seamless loop)
+      // ONGOING TICKER
       // ================================================================
       let ongoingTickerList = [];
 
@@ -2817,12 +2703,10 @@
         const container = document.getElementById('ongoingTickerContainer');
         if (!t || !container) return;
 
-        // Ambil semua kes ONGOING dari allCaseData (TAK ikut filter kategori)
         ongoingTickerList = (allCaseData || []).filter(function (d) {
           return isCaseOngoing(d);
         });
 
-        // Reset state scrolling dulu
         container.classList.remove('scrolling');
 
         if (!ongoingTickerList.length) {
@@ -2860,36 +2744,28 @@
             '</span>';
         });
 
-        // Set dulu dengan 1 copy untuk check lebar
         t.style.animation = 'none';
         t.style.width = 'auto';
         t.innerHTML = h;
 
-        // Check: content lebih lebar dari container?
         const contentWidth = t.scrollWidth;
         const containerWidth = container.clientWidth;
 
         if (contentWidth > containerWidth + 2) {
-          // Lebih dari frame → duplicate 2 copy + aktifkan scrolling
           t.innerHTML = h + h;
-          // Force reflow supaya animation start dengan betul
           void t.offsetWidth;
           t.style.animation = '';
           container.classList.add('scrolling');
         }
-        // Kalau tidak lebih → biar static + center (via CSS)
       }
 
-      // Klik kes dalam ticker ongoing
       function onClickOngoingTicker(index) {
         const d = ongoingTickerList[index];
         if (!d) return;
 
-        // Cari index sebenar dalam allCaseData
         const realIndex = allCaseData.indexOf(d);
         const data = realIndex >= 0 ? allCaseData[realIndex] : d;
 
-        // Zoom map ke lokasi kes
         if (
           mapInstance &&
           data.lat !== 0 &&
@@ -2915,12 +2791,11 @@
           }, 900);
         }
 
-        // Buka modal detail
         showCaseDetail(data, realIndex);
       }
 
       // ================================================================
-      // RELOCATE SEARCH BAR - TELEFON: ATAS | DESKTOP: DALAM PANEL
+      // RELOCATE SEARCH BAR
       // ================================================================
       function relocateSearchBar() {
         const searchBar = document.querySelector('.search-bar-container');
@@ -2956,7 +2831,6 @@
         relocateTimeout = setTimeout(relocateSearchBar, 200);
       });
 
-      // Auto check ongoing ticker bila resize window (untuk static/scroll)
       let ongoingResizeTimeout = null;
       window.addEventListener('resize', function () {
         if (ongoingResizeTimeout) clearTimeout(ongoingResizeTimeout);
@@ -3781,7 +3655,7 @@
       }
 
       // ================================================================
-      // SEARCH - PANEL SEMUA KES (DENGAN MAP FILTER)
+      // SEARCH - PANEL SEMUA KES
       // ================================================================
       function onSearchAllInput(value) {
         searchAllQuery = (value || '').trim().toLowerCase();
@@ -3969,7 +3843,7 @@
       }
 
       // ================================================================
-      // SEARCH - POPUP MAP (SEMUA KES DALAM MAP) + MAP FILTER
+      // SEARCH - POPUP MAP
       // ================================================================
       function onPopupSearchInput(value) {
         popupSearchQuery = (value || '').trim().toLowerCase();
@@ -4057,7 +3931,6 @@
           if (i < weatherData.length - 1)
             h += '<span class="weather-separator">|</span>';
         });
-        // Dua copy untuk seamless loop
         t.innerHTML = h + h;
       }
       async function fetchWeatherForecast() {
@@ -4406,7 +4279,6 @@
 
         updateDashboard(allCaseData);
         renderFilteredCases();
-        // Update ticker ongoing (check static / scrolling)
         updateOngoingTicker();
         if (expandedPanel === 'panelStats') renderPopupCases();
       }
@@ -4535,12 +4407,8 @@
         valid.slice(0, maxMarkers).forEach((d) => {
           const emoji = getCaseEmoji(d.jenis);
           const classification = classifyCase(d);
-
-          // Detect ONGOING - kes belum ada masa operasi tamat
           const isOngoing = isCaseOngoing(d);
 
-          // ONGOING → merah berkelip slow
-          // TAMAT   → ikut kategori (macam sekarang)
           const markerClass = isOngoing
             ? 'ongoing'
             : classification === 'kebakaran'
@@ -5340,31 +5208,34 @@
         location.reload();
       }
 
+      // ============================================================
+      // FULLSCREEN - hanya satu sumber kebenaran (updateFullscreenButton)
+      // ============================================================
       function toggleFullscreen() {
         const element = document.documentElement;
-        const body = document.body;
 
         if (!document.fullscreenElement && !document.webkitFullscreenElement) {
           if (element.requestFullscreen) element.requestFullscreen();
           else if (element.webkitRequestFullscreen)
             element.webkitRequestFullscreen();
-          body.classList.add('fullscreen-mode');
         } else {
           if (document.exitFullscreen) document.exitFullscreen();
           else if (document.webkitExitFullscreen)
             document.webkitExitFullscreen();
-          body.classList.remove('fullscreen-mode');
         }
       }
 
       function updateFullscreenButton() {
         const isFullscreen =
           document.fullscreenElement || document.webkitFullscreenElement;
+
         document.getElementById('fullscreenBtn').innerHTML = isFullscreen
           ? '🔲 KELUAR'
           : '📺 FULL SCREEN';
-        if (isFullscreen) document.body.classList.add('fullscreen-mode');
-        else document.body.classList.remove('fullscreen-mode');
+
+        // Kelas fullscreen-mode HANYA di sini
+        document.body.classList.toggle('fullscreen-mode', !!isFullscreen);
+
         setTimeout(() => {
           if (mapInstance) mapInstance.invalidateSize();
         }, 300);
