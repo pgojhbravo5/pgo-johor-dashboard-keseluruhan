@@ -1177,6 +1177,27 @@
         }
       }
 
+      /* ============ MARKER ONGOING - MERAH BERKELIP SLOW ============ */
+      .custom-marker.ongoing div {
+        border: 3px solid #ff2222 !important;
+        background: rgba(0, 0, 0, 0.8) !important;
+        animation: breath 2s ease-in-out infinite,
+          glow-ongoing-slow 3s ease-in-out infinite !important;
+      }
+      @keyframes glow-ongoing-slow {
+        0%,
+        100% {
+          box-shadow: 0 0 8px 2px rgba(255, 34, 34, 0.5),
+            0 0 15px 4px rgba(255, 34, 34, 0.3);
+          border-color: #ff2222;
+        }
+        50% {
+          box-shadow: 0 0 20px 6px rgba(255, 34, 34, 0.9),
+            0 0 40px 12px rgba(255, 34, 34, 0.6);
+          border-color: #ff5555;
+        }
+      }
+
       .panel-overlay {
         display: none;
         position: fixed;
@@ -2558,6 +2579,23 @@
       let popupSearchQuery = '';
 
       // ================================================================
+      // HELPER: Detect kes ONGOING (belum ada masa operasi tamat)
+      // ================================================================
+      function isCaseOngoing(data) {
+        if (!data) return false;
+        const operasiTamat = (data.operasi_tamat || '').toString().trim();
+        // Kosong / '-' / '0' / '00:00' / '00:00:00' = ONGOING
+        return (
+          !operasiTamat ||
+          operasiTamat === '-' ||
+          operasiTamat === '0' ||
+          operasiTamat === '00:00' ||
+          operasiTamat === '00:00:00' ||
+          operasiTamat === ''
+        );
+      }
+
+      // ================================================================
       // RELOCATE SEARCH BAR - TELEFON: ATAS | DESKTOP: DALAM PANEL
       // ================================================================
       function relocateSearchBar() {
@@ -3278,17 +3316,14 @@
         if (l.includes('kilang') || l.includes('petronas')) return '🏭';
 
         if (l.includes('kebun') || l.includes('tanaman')) return '🔥​';
-        
+
         if (l.includes('lori') || l.includes('treller')) return '🚛​​';
 
         if (l.includes('van') || l.includes('van')) return '🚐​​';
 
         if (l.includes('van') || l.includes('van')) return '🚌​​​';
 
-
-
         if (l.includes('fius') || l.includes('suisbox')) return '⚡​​';
-
 
         if (l.includes('lemas') || l.includes('pantai')) return '🏊🏼';
 
@@ -3444,7 +3479,6 @@
         const indicator = document.getElementById('searchMapIndicator');
         if (!indicator) return;
 
-        // Tentukan carian mana yang aktif (popup diutamakan)
         let activeQuery = '';
         let count = 0;
         let total = 0;
@@ -3607,7 +3641,6 @@
       function onPopupSearchInput(value) {
         popupSearchQuery = (value || '').trim().toLowerCase();
         renderPopupCases();
-        // KEMASKINI MAP - tapis marker ikut keyword carian popup
         updateMapForCurrentMode();
         updateSearchMapIndicator();
       }
@@ -3617,7 +3650,6 @@
         if (input) input.value = '';
         popupSearchQuery = '';
         renderPopupCases();
-        // PULIHKAN MAP ke keadaan asal
         updateMapForCurrentMode();
         updateSearchMapIndicator();
         if (input) input.focus();
@@ -4026,7 +4058,6 @@
             })
           : [...allFetchedData];
 
-        // Reset search bila hari berubah
         if (searchAllQuery && searchAllQuery.length > 0) {
           const input = document.getElementById('searchAllInput');
           if (input) input.value = '';
@@ -4168,16 +4199,23 @@
         valid.slice(0, maxMarkers).forEach((d) => {
           const emoji = getCaseEmoji(d.jenis);
           const classification = classifyCase(d);
-          const markerClass =
-            classification === 'kebakaran'
-              ? 'kebakaran'
-              : classification === 'menyelamat'
-              ? 'menyelamat'
-              : classification === 'khidmat'
-              ? 'khidmat'
-              : classification === 'tugaskhas'
-              ? 'tugaskhas'
-              : 'lain';
+
+          // Detect ONGOING - kes belum ada masa operasi tamat
+          const isOngoing = isCaseOngoing(d);
+
+          // ONGOING → merah berkelip slow
+          // TAMAT   → ikut kategori (macam sekarang)
+          const markerClass = isOngoing
+            ? 'ongoing'
+            : classification === 'kebakaran'
+            ? 'kebakaran'
+            : classification === 'menyelamat'
+            ? 'menyelamat'
+            : classification === 'khidmat'
+            ? 'khidmat'
+            : classification === 'tugaskhas'
+            ? 'tugaskhas'
+            : 'lain';
 
           const size = isMobile ? 30 : 40;
           const fontSize = isMobile ? '14px' : '20px';
@@ -4245,7 +4283,6 @@
       }
 
       function updateMapForCurrentMode() {
-        // PRIORITI 1: Popup search (bila popup SEMUA KES dalam map terbuka)
         if (
           expandedPanel === 'panelStats' &&
           popupSearchQuery &&
@@ -4257,12 +4294,10 @@
           updateMap(data);
           return;
         }
-        // PRIORITI 2: Panel search (search bar SEMUA KES)
         if (searchAllQuery && searchAllQuery.length > 0) {
           updateMap(getSearchFilteredData());
           return;
         }
-        // PRIORITI 3: Stats expanded atau filter kategori
         updateMap(
           expandedPanel === 'panelStats' ? allCaseData : getFilteredData()
         );
@@ -4355,21 +4390,18 @@
         const total = allCaseData.length;
         const query = popupSearchQuery;
 
-        // Tapis ikut query carian popup
         const filtered = query
           ? allCaseData.filter(function (item) {
               return matchesPopupSearch(item, query);
             })
           : allCaseData;
 
-        // Update header count
         if (query) {
           count.textContent = filtered.length + '/' + total + ' rekod';
         } else {
           count.textContent = total + ' rekod';
         }
 
-        // Update search count & clear button
         const searchCountEl = document.getElementById('popupSearchCount');
         const clearBtn = document.getElementById('popupSearchClearBtn');
         if (searchCountEl) {
@@ -4382,7 +4414,6 @@
           else clearBtn.classList.remove('visible');
         }
 
-        // Reset motion wrapper
         const wrapper = document.getElementById('popupMotion');
         if (wrapper) wrapper.style.transform = 'translateY(0px)';
 
@@ -4434,7 +4465,6 @@
           })
           .join('');
 
-        // Kalau ada query, TAK perlu triple
         if (query && query.length > 0) {
           container.innerHTML = html;
           stopPopupMotion();
@@ -4500,9 +4530,7 @@
         const popup = document.getElementById('mapCasePopup');
         if (popup) popup.remove();
         activePopupCaseIndex = null;
-        // Reset popup search bila popup ditutup
         popupSearchQuery = '';
-        // Reset indikator carian pada map
         updateSearchMapIndicator();
       }
 
@@ -4923,7 +4951,6 @@
         currentDashboardData = data;
         renderAllCases();
 
-        // Reset HANYA filterWrapper, JANGAN sentuh allWrapper
         if (animationIds['filterWrapper'])
           cancelAnimationFrame(animationIds['filterWrapper']);
         if (resumeTimeouts['filterWrapper'])
@@ -4934,7 +4961,7 @@
         updateMapForCurrentMode();
         updateSearchMapIndicator();
       }
-      
+
       function animateNumber(elementId, newValue) {
         const element = document.getElementById(elementId);
         if (!element) return;
