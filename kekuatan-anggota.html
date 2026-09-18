@@ -86,6 +86,8 @@
         --tab-special-ket-bd: rgba(31, 168, 160, 0.55);
         --tab-special-ket-fg: #63cdc7;
         --tab-special-ket-bg-hover: rgba(31, 168, 160, 0.14);
+        --ambient-glow-a: rgba(214, 52, 71, 0.55);
+        --ambient-glow-b: rgba(217, 154, 43, 0.35);
         color-scheme: dark;
       }
 
@@ -152,6 +154,8 @@
         --tab-special-ket-bd: rgba(21, 132, 124, 0.55);
         --tab-special-ket-fg: #0d635c;
         --tab-special-ket-bg-hover: rgba(21, 132, 124, 0.1);
+        --ambient-glow-a: rgba(192, 41, 61, 0.38);
+        --ambient-glow-b: rgba(184, 121, 28, 0.26);
         color-scheme: light;
       }
 
@@ -235,8 +239,53 @@
       }
       .main-title::before {
         content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px;
-        background: linear-gradient(90deg, var(--red) 0%, var(--red) 22%, var(--amber) 22%, var(--amber) 78%, var(--red) 78%, var(--red) 100%);
+        background: linear-gradient(
+          90deg,
+          var(--red) 0%,
+          var(--amber) 12%,
+          var(--red) 24%,
+          var(--amber) 36%,
+          var(--red) 48%,
+          var(--amber) 60%,
+          var(--red) 72%,
+          var(--amber) 84%,
+          var(--red) 100%
+        );
+        background-size: 200% 100%;
+        background-position: 0% 50%;
+        animation:
+          ambientFlow 10s linear infinite,
+          ambientPulse 3.5s ease-in-out infinite;
+        z-index: 1;
       }
+
+      @keyframes ambientFlow {
+        0%   { background-position:   0% 50%; }
+        100% { background-position: 200% 50%; }
+      }
+
+      @keyframes ambientPulse {
+        0%, 100% {
+          box-shadow:
+            0 0 8px  var(--ambient-glow-a),
+            0 0 16px var(--ambient-glow-b),
+            0 2px 12px var(--ambient-glow-a);
+        }
+        50% {
+          box-shadow:
+            0 0 14px var(--ambient-glow-a),
+            0 0 26px var(--ambient-glow-b),
+            0 2px 18px var(--ambient-glow-a);
+        }
+      }
+
+      @media (prefers-reduced-motion: reduce) {
+        .main-title::before {
+          animation: none;
+          background-position: 0% 50%;
+        }
+      }
+
       .main-title h1 {
         margin: 0; font-size: 1.7rem; font-weight: 700;
         letter-spacing: 0.11em; color: var(--text);
@@ -701,7 +750,6 @@
       }
       .sub-title:first-child { margin-top: 0; }
 
-      /* ====== FULLSCREEN BUTTON + STATE ====== */
       .btn-fullscreen {
         display: inline-flex; align-items: center; justify-content: center;
         background: transparent;
@@ -956,7 +1004,6 @@
         border-top: 2px solid var(--line);
       }
 
-      /* ============ TABEL RINGKASAN IKUT BALAI ============ */
       table.bsum {
         border-collapse: separate; border-spacing: 0;
         font-size: 0.62rem; white-space: nowrap; min-width: 100%;
@@ -1130,7 +1177,6 @@
 
       .print-footer { display: none; }
 
-      /* ====== MODAL MAKLUMAT CETAKAN ====== */
       .print-modal-overlay {
         position: fixed; inset: 0;
         background: rgba(2, 6, 16, 0.78);
@@ -1280,7 +1326,6 @@
           border-bottom: 3px solid #16223a !important;
         }
 
-        /* ===== Tajuk besar panel pada cetakan ===== */
         body.printing-single #sections > .section.print-target .section-head {
           background: transparent !important;
           border: none !important;
@@ -1340,7 +1385,6 @@
         .print-footer .pf-bottom b { color: #16223a; font-weight: 700; }
         .print-footer .pf-bottom .sep { margin: 0 8px; }
 
-        /* ===== CETAK SATU PANEL SAHAJA ===== */
         body.printing-single .wrap > *:not(#sections):not(.print-footer) {
           display: none !important;
         }
@@ -1577,7 +1621,6 @@
       </div>
     </div>
 
-    <!-- ===== MODAL MAKLUMAT CETAKAN ===== -->
     <div class="print-modal-overlay" id="printModalOverlay" role="dialog" aria-modal="true" aria-labelledby="printModalTitle">
       <div class="print-modal">
         <div class="print-modal-head">
@@ -1739,7 +1782,6 @@
         updateBodyFullscreenClass();
       }
 
-      /* ============ MAKLUMAT CETAKAN (POPUP) ============ */
       const PRINT_INFO_KEY = 'bomba-print-info';
 
       function loadPrintInfo() {
@@ -1842,7 +1884,6 @@
         });
       }
 
-      /* ============ CETAK SATU PANEL ============ */
       function printSinglePanel(sectionEl) {
         if (!sectionEl) return;
         closeAllFullscreenPanels();
@@ -3839,7 +3880,6 @@
         body.appendChild(info);
       }
 
-      /* ============ RINGKASAN IKUT BALAI ============ */
       function renderBalaiSummaryView() {
         renderBalaiSummaryTable({
           key: 'personel',
