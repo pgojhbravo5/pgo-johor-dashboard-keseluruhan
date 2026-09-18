@@ -1177,6 +1177,82 @@
 
       .print-footer { display: none; }
 
+      /* ===== TAB BKB & MERS999 ===== */
+      .tab.special.bkb { border-color: rgba(139, 111, 212, 0.55); color: #b9a3ea; }
+      .tab.special.bkb:hover { background: rgba(139, 111, 212, 0.14); }
+      .tab.special.bkb.active { background: var(--purple); color: #fff; border-color: transparent; }
+      .tab.special.mers { border-color: rgba(75, 142, 247, 0.55); color: #8ab4fb; }
+      .tab.special.mers:hover { background: rgba(75, 142, 247, 0.14); }
+      .tab.special.mers.active { background: var(--blue); color: #fff; border-color: transparent; }
+
+      .btn-contact { display: inline-flex; align-items: center; justify-content: center; width: 32px; height: 32px; border-radius: 6px; border: 1px solid; cursor: pointer; text-decoration: none; transition: all 0.15s ease; margin: 0 0.15rem; flex-shrink: 0; }
+      .btn-contact svg { width: 15px; height: 15px; }
+      .btn-call { background: rgba(46,158,99,0.12); color: var(--green); border-color: rgba(46,158,99,0.4); }
+      .btn-call:hover { background: var(--green); color: #fff; border-color: var(--green); transform: translateY(-1px); box-shadow: 0 3px 8px rgba(46,158,99,0.4); }
+      .btn-wa { background: rgba(37,211,102,0.12); color: #25d366; border-color: rgba(37,211,102,0.4); }
+      .btn-wa:hover { background: #25d366; color: #fff; border-color: #25d366; transform: translateY(-1px); box-shadow: 0 3px 8px rgba(37,211,102,0.4); }
+      .btn-contact.disabled { opacity: 0.3; pointer-events: none; cursor: not-allowed; }
+
+      table.bkb { border-collapse: separate; border-spacing: 0; font-size: 0.78rem; white-space: nowrap; min-width: 100%; font-family: 'IBM Plex Mono', monospace; border: 1px solid var(--line); border-radius: var(--radius-sm); overflow: hidden; }
+      table.bkb th, table.bkb td { border-right: 1px solid var(--line-soft); border-bottom: 1px solid var(--line-soft); padding: 0.42rem 0.6rem; text-align: center; vertical-align: middle; }
+      table.bkb tr > *:last-child { border-right: none; }
+      table.bkb thead th { background: var(--panel-2); color: var(--text-dim); font-family: 'Oswald', sans-serif; font-weight: 500; font-size: 0.7rem; letter-spacing: 0.05em; text-transform: uppercase; }
+      table.bkb tbody tr:nth-child(even) td { background: var(--zebra); }
+      table.bkb tbody tr:hover td { background: var(--hover-row); }
+      table.bkb tbody td.bil-cell { color: var(--text-faint); font-size: 0.7rem; width: 2.2rem; padding: 0.3rem; }
+      table.bkb tbody td.zon-cell { font-family: 'Oswald', sans-serif; font-weight: 700; font-size: 0.85rem; width: 2.5rem; }
+      table.bkb tbody td.zon-cell.zon-1 { color: var(--zon1); }
+      table.bkb tbody td.zon-cell.zon-2 { color: var(--zon2); }
+      table.bkb tbody td.zon-cell.zon-3 { color: var(--zon3); }
+      table.bkb tbody td.zon-cell.zon-4 { color: var(--zon4); }
+      table.bkb tbody td.gred-cell-sm { font-family: 'Oswald', sans-serif; font-weight: 700; font-size: 0.85rem; letter-spacing: 0.05em; width: 2.5rem; }
+      table.bkb tbody td.gred-cell-sm.gred-A { color: #d63447; }
+      table.bkb tbody td.gred-cell-sm.gred-B { color: #d99a2b; }
+      table.bkb tbody td.gred-cell-sm.gred-C { color: #4b8ef7; }
+      table.bkb tbody td.gred-cell-sm.gred-D { color: #7c8aa0; }
+      table.bkb tbody td.balai-name { text-align: left; font-family: 'Oswald', sans-serif; font-weight: 500; letter-spacing: 0.03em; color: var(--text); background: var(--panel-2); min-width: 160px; padding-left: 0.7rem; }
+      table.bkb tbody td.nama-cell { text-align: left; color: var(--text); font-family: 'IBM Plex Mono', monospace; font-size: 0.78rem; min-width: 180px; }
+      table.bkb tbody td.nama-cell.empty, table.bkb tbody td.tel-cell.empty { color: var(--text-faint); font-style: italic; opacity: 0.6; }
+      table.bkb tbody td.tel-cell { font-family: 'IBM Plex Mono', monospace; font-weight: 600; font-size: 0.82rem; color: var(--amber); min-width: 130px; }
+      table.bkb tbody td.contact-cell { min-width: 100px; white-space: nowrap; }
+
+      .mers-header { display: flex; flex-wrap: wrap; gap: 1rem 1.5rem; padding: 0.75rem 1rem; margin-bottom: 0.9rem; background: var(--panel-2); border: 1px solid var(--line); border-radius: var(--radius-sm); align-items: flex-end; }
+      .mers-header-title { flex: 1 1 100%; font-family: 'Oswald', sans-serif; font-size: 1.05rem; letter-spacing: 0.1em; text-transform: uppercase; text-align: center; color: var(--text); padding: 0.4rem 0; border-bottom: 2px solid var(--red); margin-bottom: 0.4rem; }
+      .mers-header-field { display: flex; flex-direction: column; gap: 0.2rem; min-width: 160px; flex: 1 1 160px; }
+      .mers-header-field label { font-size: 0.58rem; letter-spacing: 0.1em; color: var(--text-faint); text-transform: uppercase; font-weight: 600; }
+      .mers-header-field input { background: var(--bg-2); border: 1px solid var(--line); color: var(--text); font-family: 'IBM Plex Mono', monospace; font-size: 0.8rem; padding: 0.38rem 0.55rem; border-radius: var(--radius-sm); width: 100%; }
+      .mers-header-field input:focus { outline: none; border-color: var(--red); box-shadow: 0 0 0 3px rgba(214,52,71,0.16); }
+
+      table.mers { border-collapse: separate; border-spacing: 0; font-size: 0.72rem; white-space: nowrap; min-width: 100%; border: 1px solid var(--line); border-radius: var(--radius-sm); overflow: hidden; }
+      table.mers th, table.mers td { border-right: 1px solid var(--line-soft); border-bottom: 1px solid var(--line-soft); padding: 0.35rem 0.4rem; text-align: center; vertical-align: middle; }
+      table.mers thead th { background: var(--panel-3); color: var(--text); font-family: 'Oswald', sans-serif; font-weight: 600; font-size: 0.68rem; letter-spacing: 0.05em; text-transform: uppercase; }
+      table.mers thead tr.groups th { background: var(--panel-3); font-size: 0.72rem; }
+      table.mers thead tr.subs th { background: var(--panel-2); color: var(--text-dim); font-family: 'Oswald', sans-serif; font-weight: 500; font-size: 0.6rem; letter-spacing: 0.03em; }
+      table.mers thead tr.subs th.sub-ok { color: var(--green); }
+      table.mers thead tr.subs th.sub-no { color: var(--rosak); }
+      table.mers tbody tr:nth-child(even) td:not(.balai-cell) { background: var(--zebra); }
+      table.mers tbody tr:hover td { background: var(--hover-row); }
+      table.mers tbody tr.pgo-row td.balai-cell { background: rgba(217,154,43,0.15) !important; color: var(--amber) !important; font-weight: 700; }
+      table.mers tbody td.balai-cell { text-align: left; font-family: 'Oswald', sans-serif; font-weight: 500; letter-spacing: 0.03em; background: var(--panel-2); color: var(--text); padding-left: 0.7rem; min-width: 160px; }
+      table.mers tbody td.percent-cell { font-family: 'IBM Plex Mono', monospace; font-weight: 600; color: var(--amber); font-size: 0.78rem; min-width: 85px; }
+      table.mers tbody td.catatan-cell { min-width: 130px; padding: 0.25rem; }
+      table.mers tbody td.catatan-cell input { background: var(--bg-2); border: 1px solid var(--line); color: var(--text); font-family: 'IBM Plex Mono', monospace; font-size: 0.68rem; padding: 0.25rem 0.35rem; border-radius: 4px; width: 100%; min-width: 110px; }
+      table.mers tbody td.catatan-cell input:focus { outline: none; border-color: var(--red); box-shadow: 0 0 0 3px rgba(214,52,71,0.15); }
+
+      .mers-boxes { display: inline-flex; gap: 0.25rem; }
+      .mers-check { display: inline-flex; align-items: center; justify-content: center; width: 22px; height: 22px; border: 1.5px solid var(--line); border-radius: 4px; font-size: 0.85rem; font-weight: 700; line-height: 1; cursor: pointer; transition: all 0.15s; background: transparent; padding: 0; color: var(--text-faint); font-family: inherit; }
+      .mers-check.cek { border-color: rgba(46,158,99,0.5); color: var(--green); }
+      .mers-check.tak { border-color: rgba(214,69,69,0.5); color: var(--rosak); }
+      .mers-check.active.cek { background: var(--green); color: #fff; border-color: var(--green); }
+      .mers-check.active.tak { background: var(--rosak); color: #fff; border-color: var(--rosak); }
+      .mers-check:not(.readonly):hover { transform: scale(1.12); }
+      .mers-check.readonly { cursor: default; opacity: 0.9; }
+
+      .mers-footer { display: flex; flex-wrap: wrap; gap: 0.75rem 1.5rem; margin-top: 0.9rem; padding: 0.7rem 1rem; background: var(--panel-2); border: 1px solid var(--line); border-radius: var(--radius-sm); align-items: center; justify-content: space-between; }
+      .mers-footer .mf-label { font-family: 'Oswald', sans-serif; font-size: 0.75rem; letter-spacing: 0.08em; text-transform: uppercase; font-weight: 600; color: var(--text); }
+      .mers-footer .mf-value { font-family: 'IBM Plex Mono', monospace; font-size: 1.1rem; font-weight: 700; color: var(--amber); margin-left: 0.4rem; }
+      .mers-footer .mf-meta { font-family: 'IBM Plex Mono', monospace; font-size: 0.68rem; color: var(--text-dim); text-align: right; }
+
       .print-modal-overlay {
         position: fixed; inset: 0;
         background: rgba(2, 6, 16, 0.78);
@@ -1350,6 +1426,20 @@
         body.printing-single #sections > .section.print-target .section-head .hint {
           display: none !important;
         }
+
+        table.bkb tbody td.balai-name { background: #f5f5f5 !important; color: #16223a !important; }
+        table.bkb .contact-cell, table.bkb .contact-th { display: none !important; }
+        .mers-header { background: #f5f5f5 !important; border-color: #999 !important; }
+        .mers-header-field input { background: #fff !important; border: 1px solid #999 !important; color: #16223a !important; }
+        table.mers { border-color: #999 !important; }
+        table.mers th, table.mers td { border-color: #999 !important; color: #16223a !important; }
+        table.mers tbody tr.pgo-row td.balai-cell { background: #fde8b8 !important; color: #8a5810 !important; }
+        .mers-check.active.cek { background: #1f8a52 !important; color: #fff !important; border-color: #1f8a52 !important; }
+        .mers-check.active.tak { background: #c73838 !important; color: #fff !important; border-color: #c73838 !important; }
+        .mers-check.cek:not(.active) { color: #1f8a52 !important; }
+        .mers-check.tak:not(.active) { color: #c73838 !important; }
+        .mers-footer { background: #f5f5f5 !important; border-color: #999 !important; }
+        .mers-footer .mf-value { color: #8a5810 !important; }
 
         .print-footer {
           display: block !important; margin-top: 30px; padding-top: 14px;
@@ -1689,6 +1779,8 @@
         maximize: '<path d="M8 3H5a2 2 0 0 0-2 2v3"/><path d="M21 8V5a2 2 0 0 0-2-2h-3"/><path d="M3 16v3a2 2 0 0 0 2 2h3"/><path d="M16 21h3a2 2 0 0 0 2-2v-3"/>',
         minimize: '<path d="M8 3v3a2 2 0 0 1-2 2H3"/><path d="M21 8h-3a2 2 0 0 1-2-2V3"/><path d="M3 16h3a2 2 0 0 1 2 2v3"/><path d="M16 21v-3a2 2 0 0 1 2-2h3"/>',
         print: '<polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/>',
+        phone: '<path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/>',
+        signal: '<path d="M2 20h.01"/><path d="M7 20v-4"/><path d="M12 20v-8"/><path d="M17 20V8"/><path d="M22 4v16"/>',
       };
       function svgIcon(name) {
         return ('<svg class="ico" viewBox="0 0 24 24" aria-hidden="true">' + (ICONS[name] || '') + '</svg>');
@@ -2042,7 +2134,84 @@
       ];
 
       const JENTERA_KAT = ['FRT','LFRT','CFRT','RFRT','Rapid Rescue Vehicle (RRV)','ALP','SKYLIFT','TTL','High Performance Pump Module (HPPM)','High Capacity Foam Tender (HCFM)','PRIME MOVER','FOAM TENDER','Breathing Apparatus Tender Vehicle (BATV)','WATER TANKER 10,000','WATER TANKER 20,000','JEN. HAZMAT','KOMUNIKASI','RIM','EMRS','MOBILE COMMAND POST','KEMBALIK','SIASATAN (FORENSICS)'];
+      
+      /* ===== Senarai & Pemetaan Khas untuk PO3A (Jentera Utama) ===== */
+      const JENTERA_KAT_PO3A = [
+        'FRT',
+        'LFRT',
+        'CFRT',
+        'RFRT',
+        'Rapid Rescue Vehicle (RRV)',
+        'Fire Rescue Vehicle (FRV)',
+        'ALP',
+        'SKYLIFT',
+        'TTL',
+        'High Performance Pump Module (HPPM)',
+        'High Capacity Foam Tender (HCFM)',
+        'FOAM TENDER',
+        'Breathing Apparatus Tender Vehicle (BATV)',
+        'WATER TANKER 10,000 LITER',
+        'WATER TANKER 20,000 LITER',
+        'JEN. HAZMAT',
+        'KOMUNIKASI',
+        'RIM',
+        'EMRS',
+        'MOBILE COMMAND POST',
+        'KEMBALIK',
+        'NISSAN SAFARI'
+      ];
+
+      const JENTERA_MAP_PO3A = {
+        'FRT': 'FRT',
+        'LFRT': 'LFRT',
+        'CFRT': 'CFRT',
+        'RFRT': 'RFRT',
+        'Rapid Rescue Vehicle (RRV)': 'Rapid Rescue Vehicle (RRV)',
+        'ALP': 'ALP',
+        'SKYLIFT': 'SKYLIFT',
+        'TTL': 'TTL',
+        'High Performance Pump Module (HPPM)': 'High Performance Pump Module (HPPM)',
+        'High Capacity Foam Tender (HCFM)': 'High Capacity Foam Tender (HCFM)',
+        'FOAM TENDER': 'FOAM TENDER',
+        'Breathing Apparatus Tender Vehicle (BATV)': 'Breathing Apparatus Tender Vehicle (BATV)',
+        'WATER TANKER 10,000': 'WATER TANKER 10,000 LITER',
+        'WATER TANKER 20,000': 'WATER TANKER 20,000 LITER',
+        'JEN. HAZMAT': 'JEN. HAZMAT',
+        'KOMUNIKASI': 'KOMUNIKASI',
+        'RIM': 'RIM',
+        'EMRS': 'EMRS',
+        'MOBILE COMMAND POST': 'MOBILE COMMAND POST',
+        'KEMBALIK': 'KEMBALIK'
+      };
+
       const MARIN_KAT = ['ALUMINIUM BOT','ARIB BOT','FIBER BOT','JETSKI BOT','KEVLAR BOT','LIGHT SAR BOAT (HDPE) BOT','MUD BOAT','RUBBER DINGHY BOT'];
+
+      /* ===== Senarai & Pemetaan Khas untuk PO3A (Marin) ===== */
+      const MARIN_KAT_PO3A = [
+        'FIRE BOAT',
+        'RIGID INFLATABLE HALL BOAT',
+        'ALUMINIUM',
+        'AMPHIBIOUS RIGID INFLATABLE HALL BOAT',
+        'DINGHY',
+        'FIBER',
+        'APEX',
+        'JET SKI',
+        'MUD BOAT',
+        'MARES',
+        'HIGH DENSITY POLYETHYLENE'
+      ];
+
+      const MARIN_MAP_PO3A = {
+        'KEVLAR BOT': 'RIGID INFLATABLE HALL BOAT',
+        'ALUMINIUM BOT': 'ALUMINIUM',
+        'ARIB BOT': 'AMPHIBIOUS RIGID INFLATABLE HALL BOAT',
+        'RUBBER DINGHY BOT': 'DINGHY',
+        'FIBER BOT': 'FIBER',
+        'JETSKI BOT': 'JET SKI',
+        'MUD BOAT': 'MUD BOAT',
+        'LIGHT SAR BOAT (HDPE) BOT': 'HIGH DENSITY POLYETHYLENE'
+      };
+
       const UTILITI_KAT = ['HILUX 4X4','HILUX LOV 4X4','HILUX LOV','HICOM HANDALAN 5 TAN LORI','ISUZU 5 TAN LORI','ISUZU 3 TAN LORI','DMAX ISUZU 4X4','HINO BAS','ISUZU V6 4X4','KEMBARA 4X4','KIA PREGIO VAN','MITSUBISHI TRITON 4X4','NAVARA 4X4','NISSAN COASTER BAS','NISSAN XTRAIL 4X4','PAJERO 4X4','PERODUA ALZA MPV','RUSA VAN','TOYOTA FORTUNER 4X4','TOYOTA HIACE VAN','URVAN VAN','Amphibious All Terrain Vehichle (AATV)','All Terrain Vehichle (ATV)'];
 
       /* ===== Kategori ringkasan utiliti (untuk PO3A & Ringkasan Ikut Balai) ===== */
@@ -2168,6 +2337,340 @@
       }
 
       const RESET_PASSWORD = 'pgo1234';
+
+      /* ============ BKB — NO TELEFON PETUGAS ============ */
+      function getBkbOfficer(balaiName) {
+        const b = store && store.balai && store.balai[balaiName];
+        if (!b || !b.personel) return { nama: '', telefon: '' };
+        const bkb = b.personel.find(function (p) {
+          return p && p.peranan === 'BILIK KAWALAN (BKB)';
+        });
+        if (!bkb) return { nama: '', telefon: '' };
+        return { nama: bkb.nama || '', telefon: bkb.noTelefon || '' };
+      }
+
+      function normalizePhone(p) {
+        if (!p) return '';
+        let s = String(p).replace(/\D/g, '');
+        if (!s) return '';
+        if (s.startsWith('60')) return s;
+        if (s.startsWith('0')) return '60' + s.substring(1);
+        return '60' + s;
+      }
+
+      function renderContactButtons(container, phone) {
+        container.innerHTML = '';
+        const normalized = normalizePhone(phone);
+
+        const callBtn = document.createElement('a');
+        callBtn.className = 'btn-contact btn-call' + (normalized ? '' : ' disabled');
+        callBtn.href = normalized ? 'tel:+' + normalized : '#';
+        callBtn.title = normalized ? 'Panggil ' + phone : 'Tiada no. telefon';
+        callBtn.setAttribute('aria-label', 'Panggil');
+        callBtn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>';
+        if (!normalized) callBtn.addEventListener('click', function (e) { e.preventDefault(); });
+        container.appendChild(callBtn);
+
+        const waBtn = document.createElement('a');
+        waBtn.className = 'btn-contact btn-wa' + (normalized ? '' : ' disabled');
+        waBtn.href = normalized ? 'https://wa.me/' + normalized : '#';
+        waBtn.target = '_blank';
+        waBtn.rel = 'noopener noreferrer';
+        waBtn.title = normalized ? 'WhatsApp ' + phone : 'Tiada no. telefon';
+        waBtn.setAttribute('aria-label', 'WhatsApp');
+        waBtn.innerHTML = '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 0 1-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 0 1-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 0 1 2.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0 0 12.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 0 0 5.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 0 0-3.48-8.413z"/></svg>';
+        if (!normalized) waBtn.addEventListener('click', function (e) { e.preventDefault(); });
+        container.appendChild(waBtn);
+      }
+
+      function renderBkbView() {
+        const wrap = document.createElement('div');
+        wrap.className = 'section';
+        wrap.id = 'sec-bkb';
+        wrap.style.setProperty('--sec-color', 'var(--purple)');
+        wrap.innerHTML = `
+    <div class="section-head">
+      <h2>NO. TELEFON PETUGAS (BKB)</h2>
+      <div style="display:flex;align-items:center;gap:.6rem;">
+        <span class="hint">Auto-tarik dari data balai (peranan: BILIK KAWALAN)</span>
+        <button class="btn-fullscreen" type="button" title="Buka skrin penuh">${svgIcon('maximize')}</button>
+        <button class="btn-fullscreen btn-print-panel" type="button" title="Cetak panel ini">${svgIcon('print')}</button>
+        <span class="chev">${svgIcon('chevronDown')}</span>
+      </div>
+    </div>
+    <div class="section-body"></div>`;
+        const headEl = wrap.querySelector('.section-head');
+        headEl.addEventListener('click', () => wrap.classList.toggle('collapsed'));
+        const fsBtn = wrap.querySelector('.btn-fullscreen:not(.btn-print-panel)');
+        if (fsBtn) fsBtn.addEventListener('click', function (e) { e.stopPropagation(); togglePanelFullscreen(wrap, fsBtn); });
+        const printBtn = wrap.querySelector('.btn-print-panel');
+        if (printBtn) printBtn.addEventListener('click', function (e) { e.stopPropagation(); printSinglePanel(wrap); });
+        document.getElementById('sections').appendChild(wrap);
+        const body = wrap.querySelector('.section-body');
+
+        const tbl = document.createElement('table');
+        tbl.className = 'bkb';
+        const thead = document.createElement('thead');
+        thead.innerHTML = `<tr>
+    <th>BIL</th>
+    <th>ZON</th>
+    <th>GRED</th>
+    <th style="text-align:left;">BALAI</th>
+    <th style="text-align:left;">NAMA PETUGAS BKB</th>
+    <th>NO. TELEFON</th>
+    <th class="contact-th">HUBUNGI</th>
+  </tr>`;
+        tbl.appendChild(thead);
+
+        const tbody = document.createElement('tbody');
+        BALAI_LIST.forEach((b, idx) => {
+          const meta = BALAI_GRED_TURNOUT[b.name] || { gred: '-', turnOut: 0 };
+          const officer = getBkbOfficer(b.name);
+          const tr = document.createElement('tr');
+
+          const td1 = document.createElement('td');
+          td1.className = 'bil-cell'; td1.textContent = idx + 1; tr.appendChild(td1);
+
+          const td2 = document.createElement('td');
+          td2.className = 'zon-cell zon-' + b.zon; td2.textContent = b.zon; tr.appendChild(td2);
+
+          const td3 = document.createElement('td');
+          td3.className = 'gred-cell-sm gred-' + meta.gred; td3.textContent = meta.gred; tr.appendChild(td3);
+
+          const td4 = document.createElement('td');
+          td4.className = 'balai-name'; td4.textContent = b.name; tr.appendChild(td4);
+
+          const td5 = document.createElement('td');
+          td5.className = 'nama-cell' + (officer.nama ? '' : ' empty');
+          td5.textContent = officer.nama || '(Belum diisi)';
+          tr.appendChild(td5);
+
+          const td6 = document.createElement('td');
+          td6.className = 'tel-cell' + (officer.telefon ? '' : ' empty');
+          td6.textContent = officer.telefon || '(Tiada)';
+          tr.appendChild(td6);
+
+          const td7 = document.createElement('td');
+          td7.className = 'contact-cell';
+          renderContactButtons(td7, officer.telefon);
+          tr.appendChild(td7);
+
+          tbody.appendChild(tr);
+        });
+        tbl.appendChild(tbody);
+        body.appendChild(tbl);
+
+        const info = document.createElement('div');
+        info.style.cssText = 'margin-top:0.75rem; font-size:0.7rem; color:var(--text-dim); line-height:1.6;';
+        info.innerHTML =
+          '<b>Nota:</b> Data NAMA & NO. TELEFON diambil secara <b>automatik</b> dari <b>KEKUATAN PERSONEL</b> setiap balai — ' +
+          'isi pada baris dengan <b>PERANAN = BILIK KAWALAN (BKB)</b>.<br />' +
+          '<b>Butang HUBUNGI:</b> <b style="color:var(--green)">Telefon</b> — panggil terus, ' +
+          '<b style="color:#25d366">WhatsApp</b> — buka WhatsApp.';
+        body.appendChild(info);
+      }
+
+      /* ============ MERS999 ============ */
+      let mersPgoState = { cad: null, wic: null, bomra: null };
+
+      function getKomStatus(balaiName, itemName) {
+        const b = store && store.balai && store.balai[balaiName];
+        if (!b || !b.equip || !b.equip.komunikasi) return null;
+        const item = b.equip.komunikasi.find(function (r) {
+          return r && r.kategori === itemName;
+        });
+        if (!item || !item.status) return null;
+        return mapEquipStatus(item.status);
+      }
+
+      function getMersStatus(balaiName) {
+        return {
+          cad: getKomStatus(balaiName, 'SISTEM LITE CAD'),
+          wic: getKomStatus(balaiName, 'WEB INTEGRATED CONSOLE (WIC)'),
+          bomra: getKomStatus(balaiName, 'BOMBA RESPONDER APPS (BOMRA)'),
+        };
+      }
+
+      function computeMersPercent(obj) {
+        let baik = 0;
+        ['cad', 'wic', 'bomra'].forEach(function (k) {
+          if (obj[k] === 'B') baik++;
+        });
+        return (baik / 3) * 100;
+      }
+      function fmtPercent(v) { return v.toFixed(2) + ' %'; }
+
+      function makeMersCheckbox(kind, isActive, isReadonly, onClick) {
+        const btn = document.createElement('button');
+        btn.type = 'button';
+        btn.className = 'mers-check ' + kind + (isActive ? ' active' : '') + (isReadonly ? ' readonly' : '');
+        btn.textContent = kind === 'cek' ? '✓' : '✗';
+        btn.title = kind === 'cek' ? 'BOLEH' : 'TIDAK BOLEH';
+        if (isReadonly) { btn.disabled = true; }
+        else { btn.addEventListener('click', onClick); }
+        return btn;
+      }
+
+      function renderMersView() {
+        const wrap = document.createElement('div');
+        wrap.className = 'section';
+        wrap.id = 'sec-mers';
+        wrap.style.setProperty('--sec-color', 'var(--blue)');
+        wrap.innerHTML = `
+    <div class="section-head">
+      <h2>LAPORAN HARIAN STATUS NG MERS999 JBPM JOHOR</h2>
+      <div style="display:flex;align-items:center;gap:.6rem;">
+        <span class="hint">PGO manual tick · balai auto dari data KOMUNIKASI</span>
+        <button class="btn-fullscreen" type="button" title="Buka skrin penuh">${svgIcon('maximize')}</button>
+        <button class="btn-fullscreen btn-print-panel" type="button" title="Cetak panel ini">${svgIcon('print')}</button>
+        <span class="chev">${svgIcon('chevronDown')}</span>
+      </div>
+    </div>
+    <div class="section-body"></div>`;
+        const headEl = wrap.querySelector('.section-head');
+        headEl.addEventListener('click', () => wrap.classList.toggle('collapsed'));
+        const fsBtn = wrap.querySelector('.btn-fullscreen:not(.btn-print-panel)');
+        if (fsBtn) fsBtn.addEventListener('click', function (e) { e.stopPropagation(); togglePanelFullscreen(wrap, fsBtn); });
+        const printBtn = wrap.querySelector('.btn-print-panel');
+        if (printBtn) printBtn.addEventListener('click', function (e) { e.stopPropagation(); printSinglePanel(wrap); });
+        document.getElementById('sections').appendChild(wrap);
+        const body = wrap.querySelector('.section-body');
+
+        const hdr = document.createElement('div');
+        hdr.className = 'mers-header';
+        const today = new Date().toISOString().slice(0, 10);
+        hdr.innerHTML = `
+    <div class="mers-header-title">LAPORAN HARIAN STATUS NG MERS999 JBPM JOHOR</div>
+    <div class="mers-header-field"><label>Tarikh</label><input type="date" value="${today}" /></div>
+    <div class="mers-header-field"><label>Masa</label><input type="text" placeholder="2000H-0800H" /></div>
+    <div class="mers-header-field"><label>Pusatan (Pasukan Bertugas Semasa)</label><input type="text" placeholder="Nama pasukan bertugas…" /></div>`;
+        body.appendChild(hdr);
+
+        const tbl = document.createElement('table');
+        tbl.className = 'mers';
+        const thead = document.createElement('thead');
+        thead.innerHTML = `
+    <tr class="groups">
+      <th rowspan="2" style="text-align:left;">BALAI</th>
+      <th colspan="2">COMPUTER AIDED DISPATCH (CAD)</th>
+      <th colspan="2">WEB INTEGRATED CONSOLE (WIC)</th>
+      <th colspan="2">BOMBA RESPONDER APPS (BOMRA)</th>
+      <th rowspan="2">PERATUSAN KEBERKESANAN MERS999</th>
+      <th rowspan="2">CATATAN</th>
+    </tr>
+    <tr class="subs">
+      <th class="sub-ok">BOLEH</th><th class="sub-no">TIDAK</th>
+      <th class="sub-ok">BOLEH</th><th class="sub-no">TIDAK</th>
+      <th class="sub-ok">BOLEH</th><th class="sub-no">TIDAK</th>
+    </tr>`;
+        tbl.appendChild(thead);
+
+        const tbody = document.createElement('tbody');
+        // Setiap baris (PGO + semua balai) sentiasa = 3 sel (CAD + WIC + BOMRA)
+        const totalRows = 1 + BALAI_LIST.length;
+        const grandTotalCells = totalRows * 3;
+        let grandTotalBaik = 0;
+
+        const pgoTr = document.createElement('tr');
+        pgoTr.className = 'pgo-row';
+        const pgoBalai = document.createElement('td');
+        pgoBalai.className = 'balai-cell'; pgoBalai.textContent = 'PGO JOHOR';
+        pgoTr.appendChild(pgoBalai);
+        const pgoPercentCell = document.createElement('td');
+        pgoPercentCell.className = 'percent-cell';
+
+        ['cad', 'wic', 'bomra'].forEach(function (key) {
+          const tdOk = document.createElement('td');
+          const tdNo = document.createElement('td');
+          const boxesOk = document.createElement('div'); boxesOk.className = 'mers-boxes';
+          const boxesNo = document.createElement('div'); boxesNo.className = 'mers-boxes';
+          const btnOk = makeMersCheckbox('cek', mersPgoState[key] === 'B', false, function () {
+            mersPgoState[key] = mersPgoState[key] === 'B' ? null : 'B';
+            rerenderMersBody();
+          });
+          const btnNo = makeMersCheckbox('tak', mersPgoState[key] === 'R', false, function () {
+            mersPgoState[key] = mersPgoState[key] === 'R' ? null : 'R';
+            rerenderMersBody();
+          });
+          boxesOk.appendChild(btnOk); boxesNo.appendChild(btnNo);
+          tdOk.appendChild(boxesOk); tdNo.appendChild(boxesNo);
+          pgoTr.appendChild(tdOk); pgoTr.appendChild(tdNo);
+        });
+
+        pgoPercentCell.textContent = fmtPercent(computeMersPercent(mersPgoState));
+        pgoTr.appendChild(pgoPercentCell);
+
+        const pgoCatatan = document.createElement('td');
+        pgoCatatan.className = 'catatan-cell';
+        const pgoCatInp = document.createElement('input');
+        pgoCatInp.type = 'text'; pgoCatInp.placeholder = 'Catatan…';
+        pgoCatatan.appendChild(pgoCatInp);
+        pgoTr.appendChild(pgoCatatan);
+        tbody.appendChild(pgoTr);
+
+        ['cad', 'wic', 'bomra'].forEach(function (k) {
+          if (mersPgoState[k] === 'B') grandTotalBaik++;
+        });
+
+        BALAI_LIST.forEach(function (b) {
+          const st = getMersStatus(b.name);
+          const tr = document.createElement('tr');
+          const tdBalai = document.createElement('td');
+          tdBalai.className = 'balai-cell'; tdBalai.textContent = b.name;
+          tr.appendChild(tdBalai);
+          const pctCell = document.createElement('td');
+          pctCell.className = 'percent-cell';
+          ['cad', 'wic', 'bomra'].forEach(function (key) {
+            const val = st[key];
+            const tdOk = document.createElement('td');
+            const tdNo = document.createElement('td');
+            const boxOk = document.createElement('div'); boxOk.className = 'mers-boxes';
+            boxOk.appendChild(makeMersCheckbox('cek', val === 'B', true, null));
+            const boxNo = document.createElement('div'); boxNo.className = 'mers-boxes';
+            boxNo.appendChild(makeMersCheckbox('tak', val === 'R', true, null));
+            tdOk.appendChild(boxOk); tdNo.appendChild(boxNo);
+            tr.appendChild(tdOk); tr.appendChild(tdNo);
+              if (val === 'B') grandTotalBaik++;
+          });
+          pctCell.textContent = fmtPercent(computeMersPercent(st));
+          tr.appendChild(pctCell);
+          const tdCatatan = document.createElement('td');
+          tdCatatan.className = 'catatan-cell';
+          const inp = document.createElement('input');
+          inp.type = 'text'; inp.placeholder = 'Catatan…';
+          tdCatatan.appendChild(inp);
+          tr.appendChild(tdCatatan);
+          tbody.appendChild(tr);
+        });
+
+        tbl.appendChild(tbody);
+        body.appendChild(tbl);
+
+        const grandPct = (grandTotalBaik / grandTotalCells) * 100;        const now = new Date();
+        const months = ['JANUARI','FEBRUARI','MAC','APRIL','MEI','JUN','JULAI','OGOS','SEPTEMBER','OKTOBER','NOVEMBER','DISEMBER'];
+        const tglStr = now.getDate() + ' ' + months[now.getMonth()] + ' ' + now.getFullYear();
+        const masa = String(now.getHours()).padStart(2, '0') + ':' + String(now.getMinutes()).padStart(2, '0') + ':' + String(now.getSeconds()).padStart(2, '0');
+
+        const ftr = document.createElement('div');
+        ftr.className = 'mers-footer';
+        ftr.innerHTML = `
+    <div>
+      <span class="mf-label">Peratus Keseluruhan:</span>
+      <span class="mf-value">${fmtPercent(grandPct)}</span>
+    </div>
+    <div class="mf-meta">
+      KEMASKINI DATA:<br />
+      ${tglStr} ${masa}
+    </div>`;
+        body.appendChild(ftr);
+      }
+
+      function rerenderMersBody() {
+        const el = document.getElementById('sec-mers');
+        if (!el) return;
+        el.remove();
+        renderMersView();
+      }
 
       async function apiGet(params) {
         const url = API_URL + '?' + new URLSearchParams(params).toString();
@@ -2417,6 +2920,20 @@
         tBalaiSum.addEventListener('click', () => switchView('balai_sum'));
         desktop.appendChild(tBalaiSum);
 
+        const tMers = document.createElement('button');
+        tMers.className = 'tab special mers' + (store.view === 'mers' ? ' active' : '');
+        tMers.innerHTML = svgIcon('signal') + '<span>LAPORAN MERS999</span>';
+        tMers.title = 'Laporan Harian Status NG MERS999';
+        tMers.addEventListener('click', () => switchView('mers'));
+        desktop.appendChild(tMers);
+
+        const tBkb = document.createElement('button');
+        tBkb.className = 'tab special bkb' + (store.view === 'bkb' ? ' active' : '');
+        tBkb.innerHTML = svgIcon('phone') + '<span>NO. TELEFON PETUGAS (BKB)</span>';
+        tBkb.title = 'Senarai No. Telefon Petugas BKB';
+        tBkb.addEventListener('click', () => switchView('bkb'));
+        desktop.appendChild(tBkb);
+
         const sep0 = document.createElement('div');
         sep0.className = 'tab-zone-sep';
         sep0.textContent = 'BALAI';
@@ -2468,6 +2985,16 @@
         oBalaiSum.textContent = 'RINGKASAN IKUT BALAI';
         if (store.view === 'balai_sum') oBalaiSum.selected = true;
         ogS.appendChild(oBalaiSum);
+        const oMers = document.createElement('option');
+        oMers.value = '__mers__';
+        oMers.textContent = 'LAPORAN MERS999';
+        if (store.view === 'mers') oMers.selected = true;
+        ogS.appendChild(oMers);
+        const oBkb = document.createElement('option');
+        oBkb.value = '__bkb__';
+        oBkb.textContent = 'NO. TELEFON PETUGAS (BKB)';
+        if (store.view === 'bkb') oBkb.selected = true;
+        ogS.appendChild(oBkb);
         sel.appendChild(ogS);
 
         let curZon = null, og = null;
@@ -2489,6 +3016,8 @@
           if (v === '__summary__') switchView('summary');
           else if (v === '__ketua__') switchView('ketua');
           else if (v === '__balai_sum__') switchView('balai_sum');
+          else if (v === '__mers__') switchView('mers');
+          else if (v === '__bkb__') switchView('bkb');
           else switchBalai(v);
         });
         mobile.appendChild(lbl);
@@ -2532,6 +3061,20 @@
         } else if (store.view === 'balai_sum') {
           prefix.style.display = 'none';
           dp.textContent = 'RINGKASAN IKUT BALAI';
+          zb.style.display = 'none';
+          idFields.style.display = 'none';
+          if (saveBtn) saveBtn.style.display = 'none';
+          if (autosave) autosave.style.display = 'none';
+        } else if (store.view === 'mers') {
+          prefix.style.display = 'none';
+          dp.textContent = 'LAPORAN MERS999';
+          zb.style.display = 'none';
+          idFields.style.display = 'none';
+          if (saveBtn) saveBtn.style.display = 'none';
+          if (autosave) autosave.style.display = 'none';
+        } else if (store.view === 'bkb') {
+          prefix.style.display = 'none';
+          dp.textContent = 'NO. TELEFON PETUGAS (BKB)';
           zb.style.display = 'none';
           idFields.style.display = 'none';
           if (saveBtn) saveBtn.style.display = 'none';
@@ -2764,7 +3307,7 @@
         return m;
       }
 
-      /* ===== Kiraan ringkasan utiliti dengan pemetaan kategori ===== */
+      /* ===== Kiraan ringkasan dengan pemetaan kategori ===== */
       function computeAllEquipGridSummary(key, summaryCats, mapping) {
         const m = {};
         summaryCats.forEach((k) => { m[k] = { B: 0, R: 0 }; });
@@ -3397,8 +3940,8 @@
 
       function renderSummaryView() {
         renderSummaryPersonelSection();
-        renderSummaryEquipSection('jentera', 'RINGKASAN JENTERA UTAMA', 'var(--amber)', JENTERA_KAT, false);
-        renderSummaryEquipSection('marin', 'RINGKASAN JENTERA MARIN', 'var(--blue)', MARIN_KAT, false);
+        renderSummaryEquipSection('jentera', 'RINGKASAN JENTERA UTAMA', 'var(--amber)', JENTERA_KAT_PO3A, false, JENTERA_MAP_PO3A);
+        renderSummaryEquipSection('marin', 'RINGKASAN JENTERA MARIN', 'var(--blue)', MARIN_KAT_PO3A, false, MARIN_MAP_PO3A);
         renderSummaryEquipSection('utiliti', 'RINGKASAN KENDERAAN UTILITI', 'var(--slate)', UTILITI_KAT_SUMMARY, false, UTILITI_MAP_SUMMARY);
         renderSummaryEquipSection('komunikasi', 'RINGKASAN PERALATAN KOMUNIKASI', 'var(--green)', KOMUNIKASI_DEF.map((k) => k.name), true);
       }
@@ -4312,6 +4855,12 @@
         } else if (store.view === 'balai_sum') {
           renderBalaiSummaryView();
           renderAggregateStats();
+        } else if (store.view === 'mers') {
+          renderMersView();
+          document.getElementById('statsRow').innerHTML = '';
+        } else if (store.view === 'bkb') {
+          renderBkbView();
+          document.getElementById('statsRow').innerHTML = '';
         } else {
           renderPersonelSection();
           renderEquipSection('jentera', 'KEKUATAN JENTERA UTAMA', 'var(--amber)', JENTERA_KAT, false);
