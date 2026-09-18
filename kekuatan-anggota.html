@@ -2044,6 +2044,48 @@
       const JENTERA_KAT = ['FRT','LFRT','CFRT','RFRT','Rapid Rescue Vehicle (RRV)','ALP','SKYLIFT','TTL','High Performance Pump Module (HPPM)','High Capacity Foam Tender (HCFM)','PRIME MOVER','FOAM TENDER','Breathing Apparatus Tender Vehicle (BATV)','WATER TANKER 10,000','WATER TANKER 20,000','JEN. HAZMAT','KOMUNIKASI','RIM','EMRS','MOBILE COMMAND POST','KEMBALIK','SIASATAN (FORENSICS)'];
       const MARIN_KAT = ['ALUMINIUM BOT','ARIB BOT','FIBER BOT','JETSKI BOT','KEVLAR BOT','LIGHT SAR BOAT (HDPE) BOT','MUD BOAT','RUBBER DINGHY BOT'];
       const UTILITI_KAT = ['HILUX 4X4','HILUX LOV 4X4','HILUX LOV','HICOM HANDALAN 5 TAN LORI','ISUZU 5 TAN LORI','ISUZU 3 TAN LORI','DMAX ISUZU 4X4','HINO BAS','ISUZU V6 4X4','KEMBARA 4X4','KIA PREGIO VAN','MITSUBISHI TRITON 4X4','NAVARA 4X4','NISSAN COASTER BAS','NISSAN XTRAIL 4X4','PAJERO 4X4','PERODUA ALZA MPV','RUSA VAN','TOYOTA FORTUNER 4X4','TOYOTA HIACE VAN','URVAN VAN','Amphibious All Terrain Vehichle (AATV)','All Terrain Vehichle (ATV)'];
+
+      /* ===== Kategori ringkasan utiliti (untuk PO3A & Ringkasan Ikut Balai) ===== */
+      const UTILITI_KAT_SUMMARY = [
+        'LORI 5T',
+        'LORI 3T',
+        'BAS 40',
+        'BAS 25',
+        '4 WHEEL DRIVE (HILUX, DMAX, TRITON)',
+        'KEMBARA',
+        'VAN',
+        'BAS PEMERAN',
+        'Amphibious All Terrain Vehicle (AATV)',
+        'All Terrain Vehicle',
+        'LAIN LAIN',
+      ];
+
+      const UTILITI_MAP_SUMMARY = {
+        'HICOM HANDALAN 5 TAN LORI': 'LORI 5T',
+        'ISUZU 5 TAN LORI': 'LORI 5T',
+        'ISUZU 3 TAN LORI': 'LORI 3T',
+        'HINO BAS': 'BAS 40',
+        'NISSAN COASTER BAS': 'BAS 25',
+        'HILUX 4X4': '4 WHEEL DRIVE (HILUX, DMAX, TRITON)',
+        'HILUX LOV 4X4': '4 WHEEL DRIVE (HILUX, DMAX, TRITON)',
+        'HILUX LOV': '4 WHEEL DRIVE (HILUX, DMAX, TRITON)',
+        'DMAX ISUZU 4X4': '4 WHEEL DRIVE (HILUX, DMAX, TRITON)',
+        'ISUZU V6 4X4': '4 WHEEL DRIVE (HILUX, DMAX, TRITON)',
+        'MITSUBISHI TRITON 4X4': '4 WHEEL DRIVE (HILUX, DMAX, TRITON)',
+        'NAVARA 4X4': '4 WHEEL DRIVE (HILUX, DMAX, TRITON)',
+        'NISSAN XTRAIL 4X4': '4 WHEEL DRIVE (HILUX, DMAX, TRITON)',
+        'PAJERO 4X4': '4 WHEEL DRIVE (HILUX, DMAX, TRITON)',
+        'TOYOTA FORTUNER 4X4': '4 WHEEL DRIVE (HILUX, DMAX, TRITON)',
+        'KEMBARA 4X4': 'KEMBARA',
+        'KIA PREGIO VAN': 'VAN',
+        'PERODUA ALZA MPV': 'VAN',
+        'RUSA VAN': 'VAN',
+        'TOYOTA HIACE VAN': 'VAN',
+        'URVAN VAN': 'VAN',
+        'Amphibious All Terrain Vehichle (AATV)': 'Amphibious All Terrain Vehicle (AATV)',
+        'All Terrain Vehichle (ATV)': 'All Terrain Vehicle',
+      };
+
       const KOMUNIKASI_DEF = [
         { name: 'SISTEM LITE CAD', l1: 'B', l2: 'R' },
         { name: 'DESKTOP GIRN', l1: 'B', l2: 'R' },
@@ -2722,6 +2764,24 @@
         return m;
       }
 
+      /* ===== Kiraan ringkasan utiliti dengan pemetaan kategori ===== */
+      function computeAllEquipGridSummary(key, summaryCats, mapping) {
+        const m = {};
+        summaryCats.forEach((k) => { m[k] = { B: 0, R: 0 }; });
+        Object.values(store.balai).forEach((b) => {
+          const arr = (b.equip && b.equip[key]) || [];
+          arr.forEach((r) => {
+            if (!r || !r.kategori) return;
+            const mappedKat = mapping[r.kategori] || 'LAIN LAIN';
+            const c = mapEquipStatus(r.status);
+            if (!c) return;
+            if (!m[mappedKat]) m[mappedKat] = { B: 0, R: 0 };
+            m[mappedKat][c] += 1;
+          });
+        });
+        return m;
+      }
+
       function countPBBPBBKForState(s) {
         if (!s || !s.personel) return 0;
         const targets = ['10. PBBK II', '11. PBB'];
@@ -3339,7 +3399,7 @@
         renderSummaryPersonelSection();
         renderSummaryEquipSection('jentera', 'RINGKASAN JENTERA UTAMA', 'var(--amber)', JENTERA_KAT, false);
         renderSummaryEquipSection('marin', 'RINGKASAN JENTERA MARIN', 'var(--blue)', MARIN_KAT, false);
-        renderSummaryEquipSection('utiliti', 'RINGKASAN KENDERAAN UTILITI', 'var(--slate)', UTILITI_KAT, false);
+        renderSummaryEquipSection('utiliti', 'RINGKASAN KENDERAAN UTILITI', 'var(--slate)', UTILITI_KAT_SUMMARY, false, UTILITI_MAP_SUMMARY);
         renderSummaryEquipSection('komunikasi', 'RINGKASAN PERALATAN KOMUNIKASI', 'var(--green)', KOMUNIKASI_DEF.map((k) => k.name), true);
       }
 
@@ -3457,7 +3517,7 @@
         tbl.appendChild(tf);
       }
 
-      function renderSummaryEquipSection(key, title, color, katList, isKom) {
+      function renderSummaryEquipSection(key, title, color, katList, isKom, katMapSummary) {
         const wrap = document.createElement('div');
         wrap.className = 'section';
         wrap.id = 'sec-sum-' + key;
@@ -3555,7 +3615,9 @@
         thead.appendChild(sr);
         tbl.appendChild(thead);
 
-        const m = computeAllEquipGrid(key);
+        const m = katMapSummary
+          ? computeAllEquipGridSummary(key, katList, katMapSummary)
+          : computeAllEquipGrid(key);
         const tbody = document.createElement('tbody');
         const tr = document.createElement('tr');
         const items = isKom ? KOMUNIKASI_DEF.map((k) => k.name) : katList;
@@ -3908,9 +3970,10 @@
           key: 'utiliti',
           title: 'KEKUATAN JENTERA UTILITI — IKUT BALAI',
           color: 'var(--slate)',
-          catList: UTILITI_KAT,
+          catList: UTILITI_KAT_SUMMARY,
           mode: 'equip',
           equipKey: 'utiliti',
+          katMapSummary: UTILITI_MAP_SUMMARY,
         });
         renderBalaiSummaryTable({
           key: 'komunikasi',
@@ -3924,7 +3987,7 @@
       }
 
       function renderBalaiSummaryTable(opts) {
-        const { key, title, color, catList, mode, equipKey, isKomunikasi } = opts;
+        const { key, title, color, catList, mode, equipKey, isKomunikasi, katMapSummary } = opts;
         const isPersonel = mode === 'personel';
         const subCols = isPersonel ? ['A', 'C', 'CS', 'TK'] : ['B', 'R'];
         const subColSpan = subCols.length + 1;
@@ -3993,7 +4056,12 @@
               if (balaiState) {
                 const arr = (balaiState.equip && balaiState.equip[equipKey]) || [];
                 arr.forEach((r) => {
-                  if (r && r.kategori === cat) {
+                  if (!r || !r.kategori) return;
+                  let effectiveKat = r.kategori;
+                  if (katMapSummary) {
+                    effectiveKat = katMapSummary[r.kategori] || 'LAIN LAIN';
+                  }
+                  if (effectiveKat === cat) {
                     const c = mapEquipStatus(r.status);
                     if (c) {
                       const qty = isKomunikasi ? (parseInt(r.jumlah, 10) || 0) : 1;
