@@ -1477,6 +1477,20 @@
           font-size: 0.5rem !important;
           padding: 0.13rem 0.18rem !important;
         }
+
+        /* Split table wrapper */
+        body.printing-po3a .po3a-split-wrapper {
+          display: block !important;
+          width: 100% !important;
+        }
+        body.printing-po3a .po3a-split-wrapper > table.grid {
+          page-break-inside: avoid !important;
+          break-inside: avoid !important;
+          margin-bottom: 4px !important;
+        }
+        body.printing-po3a .po3a-split-wrapper > table.grid:last-child {
+          margin-bottom: 0 !important;
+        }
       }
 
       @media print {
@@ -1635,7 +1649,7 @@
         }
 
         /* PO3A / RINGKASAN IKUT BALAI — sembunyikan tabbar, kekalkan semua section */
-        body.printing-po3a .wrap > *:not(#sections):not(.print-footer) {
+        body.printing-po3a .wrap > *:not(#sections):not(.print-footer):not(.main-title) {
           display: none !important;
         }
         body.printing-po3a .main-title {
@@ -2154,6 +2168,135 @@
         }
       }
 
+      /* ⬇ BAHARU: Pecahkan table.grid lebar jadi beberapa table kecil bersambung
+         untuk cetakan PO3A / Ringkasan Ikut Balai. Table asal akan disembunyikan semasa cetak sahaja. */
+      function splitGridTableForPrint(originalTable, chunkSize) {
+        if (!originalTable) return null;
+        const thead = originalTable.querySelector('thead');
+        if (!thead) return null;
+        const groupRow = thead.querySelector('tr.groups');
+        const subRow = thead.querySelector('tr.subs');
+        if (!groupRow || !subRow) return null;
+
+        const groupThs = Array.from(groupRow.children);
+        const subThs = Array.from(subRow.children);
+        if (groupThs.length === 0) return null;
+
+        // Kesan kolum "rowname" (GRED) — biasanya th pertama tanpa colspan & tiada class jumlah-col
+        let rownameCount = 0;
+        const firstSpan = groupThs[0].colSpan || 1;
+        const firstText = (groupThs[0].textContent || '').trim();
+        if (firstSpan === 1 && !groupThs[0].classList.contains('jumlah-col')) {
+          if (firstText === '' || firstText.toUpperCase() === 'GRED') {
+            rownameCount = 1;
+          }
+        }
+
+        const groups = [];
+        let colIdx = 0;
+        groupThs.forEach((th) => {
+          const span = th.colSpan || 1;
+          groups.push({
+            headerTh: th,
+            subThs: subThs.slice(colIdx, colIdx + span),
+            span: span,
+            colStart: colIdx,
+            colEnd: colIdx + span,
+            isJumlah: th.classList.contains('jumlah-col'),
+          });
+          colIdx += span;
+        });
+
+        const rowHeaderGroups = [];
+        const catGroups = [];
+        let jumlahGroup = null;
+        groups.forEach((g, i) => {
+          if (i < rownameCount) { rowHeaderGroups.push(g); return; }
+          if (g.isJumlah) { jumlahGroup = g; return; }
+          catGroups.push(g);
+        });
+
+        if (catGroups.length <= chunkSize) return null; // Tak perlu pecah
+
+        const chunks = [];
+        for (let i = 0; i < catGroups.length; i += chunkSize) {
+          chunks.push(catGroups.slice(i, i + chunkSize));
+        }
+
+        const bodyRows = Array.from(originalTable.querySelectorAll('tbody tr'));
+        const bodyCellsArr = bodyRows.map(function (row) { return Array.from(row.children); });
+        const footRow = originalTable.querySelector('tfoot tr');
+        const footCells = footRow ? Array.from(footRow.children) : null;
+
+        const wrapper = document.createElement('div');
+        wrapper.className = 'po3a-split-wrapper';
+
+        chunks.forEach(function (chunk, ci) {
+          const isLast = (ci === chunks.length - 1);
+          const tbl = document.createElement('table');
+          tbl.className = originalTable.className;
+
+          // thead
+          const nThead = document.createElement('thead');
+          const nGr = document.createElement('tr'); nGr.className = 'groups';
+          const nSr = document.createElement('tr'); nSr.className = 'subs';
+
+          rowHeaderGroups.forEach(function (g) {
+            nGr.appendChild(g.headerTh.cloneNode(true));
+            g.subThs.forEach(function (st) { nSr.appendChild(st.cloneNode(true)); });
+          });
+          chunk.forEach(function (g) {
+            nGr.appendChild(g.headerTh.cloneNode(true));
+            g.subThs.forEach(function (st) { nSr.appendChild(st.cloneNode(true)); });
+          });
+          if (isLast && jumlahGroup) {
+            nGr.appendChild(jumlahGroup.headerTh.cloneNode(true));
+            jumlahGroup.subThs.forEach(function (st) { nSr.appendChild(st.cloneNode(true)); });
+          }
+          nThead.appendChild(nGr);
+          nThead.appendChild(nSr);
+          tbl.appendChild(nThead);
+
+          // tbody
+          const nTbody = document.createElement('tbody');
+          bodyCellsArr.forEach(function (cells) {
+            const nTr = document.createElement('tr');
+            rowHeaderGroups.forEach(function (g) {
+              cells.slice(g.colStart, g.colEnd).forEach(function (c) { nTr.appendChild(c.cloneNode(true)); });
+            });
+            chunk.forEach(function (g) {
+              cells.slice(g.colStart, g.colEnd).forEach(function (c) { nTr.appendChild(c.cloneNode(true)); });
+            });
+            if (isLast && jumlahGroup) {
+              cells.slice(jumlahGroup.colStart, jumlahGroup.colEnd).forEach(function (c) { nTr.appendChild(c.cloneNode(true)); });
+            }
+            nTbody.appendChild(nTr);
+          });
+          tbl.appendChild(nTbody);
+
+          // tfoot (jika ada)
+          if (footCells) {
+            const nTfoot = document.createElement('tfoot');
+            const nFtr = document.createElement('tr');
+            rowHeaderGroups.forEach(function (g) {
+              footCells.slice(g.colStart, g.colEnd).forEach(function (c) { nFtr.appendChild(c.cloneNode(true)); });
+            });
+            chunk.forEach(function (g) {
+              footCells.slice(g.colStart, g.colEnd).forEach(function (c) { nFtr.appendChild(c.cloneNode(true)); });
+            });
+            if (isLast && jumlahGroup) {
+              footCells.slice(jumlahGroup.colStart, jumlahGroup.colEnd).forEach(function (c) { nFtr.appendChild(c.cloneNode(true)); });
+            }
+            nTfoot.appendChild(nFtr);
+            tbl.appendChild(nTfoot);
+          }
+
+          wrapper.appendChild(tbl);
+        });
+
+        return wrapper;
+      }
+
       function openPrintModal(onConfirm) {
         const overlay = document.getElementById('printModalOverlay');
         const info = loadPrintInfo();
@@ -2222,21 +2365,38 @@
         });
       }
 
-      /* Cetak PO3A / Ringkasan Ikut Balai — landscape + auto-expand semua section */
+      /* Cetak PO3A / Ringkasan Ikut Balai — landscape + auto-expand + auto-split wide tables */
       function printPo3aView() {
         closeAllFullscreenPanels();
         updatePrintFooterDate();
 
         openPrintModal(() => {
+          // 1. Auto-expand section yang collapsed
           const sections = document.querySelectorAll('#sections > .section');
-          const restore = [];
+          const restoredCollapsed = [];
           sections.forEach(function (sec) {
             if (sec.classList.contains('collapsed')) {
               sec.classList.remove('collapsed');
-              restore.push(sec);
+              restoredCollapsed.push(sec);
             }
           });
 
+          // 2. Auto-split table.grid yang terlalu lebar (chunk 12 kategori)
+          const CHUNK_SIZE = 12;
+          const tables = document.querySelectorAll('#sections table.grid');
+          const restoredTables = [];
+          tables.forEach(function (tbl) {
+            const splits = splitGridTableForPrint(tbl, CHUNK_SIZE);
+            if (splits) {
+              tbl.parentNode.insertBefore(splits, tbl);
+              const prevDisplay = tbl.style.display || '';
+              tbl.setAttribute('data-print-prev-display', prevDisplay);
+              tbl.style.display = 'none';
+              restoredTables.push({ tbl: tbl, wrapper: splits });
+            }
+          });
+
+          // 3. Suntik gaya landscape
           const styleId = 'po3a-landscape-style';
           let styleEl = document.getElementById(styleId);
           if (!styleEl) {
@@ -2255,8 +2415,14 @@
             document.body.classList.remove('printing-po3a');
             const st = document.getElementById(styleId);
             if (st) st.remove();
-            restore.forEach(function (sec) {
+            restoredCollapsed.forEach(function (sec) {
               sec.classList.add('collapsed');
+            });
+            restoredTables.forEach(function (item) {
+              const prev = item.tbl.getAttribute('data-print-prev-display');
+              item.tbl.style.display = prev || '';
+              item.tbl.removeAttribute('data-print-prev-display');
+              item.wrapper.remove();
             });
             window.removeEventListener('afterprint', cleanup);
           };
@@ -2264,8 +2430,8 @@
 
           setTimeout(function () {
             window.print();
-            setTimeout(cleanup, 900);
-          }, 150);
+            setTimeout(cleanup, 1500);
+          }, 220);
         });
       }
 
@@ -2429,9 +2595,6 @@
         '11. PBB',
       ];
 
-      /* ===== Pemetaan ringkasan personel (PO3A & Ringkasan Ikut Balai) =====
-         Row label dengan kod gred gaji. PBBK II + PBB digabung jadi "PBB".
-      */
       const PERSONEL_KAT_RINGKASAN = [
         'TPgB I — KB8 (40)',
         'TPgB II — KB7 (38)',
@@ -2476,7 +2639,6 @@
 
       const JENTERA_KAT = ['FRT','LFRT','CFRT','RFRT','Rapid Rescue Vehicle (RRV)','ALP','SKYLIFT','TTL','High Performance Pump Module (HPPM)','High Capacity Foam Tender (HCFM)','PRIME MOVER','FOAM TENDER','Breathing Apparatus Tender Vehicle (BATV)','WATER TANKER 10,000','WATER TANKER 20,000','JEN. HAZMAT','KOMUNIKASI','RIM','EMRS','MOBILE COMMAND POST','KEMBALIK','SIASATAN (FORENSICS)'];
 
-      /* ===== Senarai & Pemetaan Khas untuk PO3A (Jentera Utama) ===== */
       const JENTERA_KAT_PO3A = [
         'FRT',
         'LFRT',
@@ -2528,7 +2690,6 @@
 
       const MARIN_KAT = ['ALUMINIUM BOT','ARIB BOT','FIBER BOT','JETSKI BOT','KEVLAR BOT','LIGHT SAR BOAT (HDPE) BOT','MUD BOAT','RUBBER DINGHY BOT'];
 
-      /* ===== Senarai & Pemetaan Khas untuk PO3A (Marin) ===== */
       const MARIN_KAT_PO3A = [
         'FIRE BOAT',
         'RIGID INFLATABLE HALL BOAT',
@@ -2557,7 +2718,6 @@
 
       const UTILITI_KAT = ['HILUX 4X4','HILUX LOV 4X4','HILUX LOV','HICOM HANDALAN 5 TAN LORI','ISUZU 5 TAN LORI','ISUZU 3 TAN LORI','DMAX ISUZU 4X4','HINO BAS','ISUZU V6 4X4','KEMBARA 4X4','KIA PREGIO VAN','MITSUBISHI TRITON 4X4','NAVARA 4X4','NISSAN COASTER BAS','NISSAN XTRAIL 4X4','PAJERO 4X4','PERODUA ALZA MPV','RUSA VAN','TOYOTA FORTUNER 4X4','TOYOTA HIACE VAN','URVAN VAN','Amphibious All Terrain Vehichle (AATV)','All Terrain Vehichle (ATV)'];
 
-      /* ===== Kategori ringkasan utiliti (untuk PO3A & Ringkasan Ikut Balai) ===== */
       const UTILITI_KAT_SUMMARY = [
         'LORI 5T',
         'LORI 3T',
@@ -3169,7 +3329,6 @@
               };
             });
 
-          // Keutamaan: API → LocalStorage → Kosong
           let identData = identMap[name];
           if (!identData && lsIdentAll[name]) {
             identData = {
@@ -3208,8 +3367,6 @@
       let store = null;
       let state = null;
 
-      // Auto-save DIMATIKAN sepenuhnya.
-      // Data hanya dihantar ke Google Sheets bila butang "Simpan Sekarang" ditekan.
       const dirtyBalai = new Set();
 
       function persistUI() {
@@ -3251,7 +3408,6 @@
         }
       }
 
-      // Hanya kemas kini state dalam memori — TIDAK hantar ke Google Sheets.
       function saveState() {
         store.balai[store.activeBalai] = state;
         persistUI();
@@ -3518,10 +3674,7 @@
         const fk = document.getElementById('f_kategori');
         state.ident.balai = store.activeBalai;
 
-        // Sahkan shif — reset jika tidak sah
         if (state.ident.shif && !SHIF_OPTS.includes(state.ident.shif)) state.ident.shif = '';
-
-        // Auto-selaras kategori dengan shif
         state.ident.kategori = computeKategoriFromShif(state.ident.shif);
 
         fs.value = state.ident.shif || '';
@@ -3712,7 +3865,6 @@
         return m;
       }
 
-      /* Kiraan ringkasan personel mengikut pemetaan PERSONEL_MAP_RINGKASAN */
       function computeAllPersonelGridSummary(summaryCats, mapping) {
         const m = {};
         summaryCats.forEach((k) => {
@@ -3758,7 +3910,6 @@
         return m;
       }
 
-      /* ===== Kiraan ringkasan dengan pemetaan kategori ===== */
       function computeAllEquipGridSummary(key, summaryCats, mapping) {
         const m = {};
         summaryCats.forEach((k) => { m[k] = { B: 0, R: 0 }; });
@@ -5634,7 +5785,6 @@
         const label = document.getElementById('saveSheetLabel');
         if (btn.disabled) return;
 
-        // Validasi: shif wajib dipilih
         if (store.view === 'balai' && !state.ident.shif) {
           showToast('Sila pilih Shif Bertugas sebelum simpan', 'error');
           return;
