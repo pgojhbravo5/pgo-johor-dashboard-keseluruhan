@@ -693,6 +693,7 @@
         background: var(--panel); border: 1px solid var(--line);
         border-radius: var(--radius); padding: 0.5rem; margin-bottom: 1.35rem;
         box-shadow: var(--shadow-sm);
+        position: relative; /* anchor untuk zone-drawer */
       }
       .tabbar-desktop {
         display: flex; gap: 0.3rem; overflow-x: auto;
@@ -756,6 +757,205 @@
       @media (max-width: 900px) {
         .tabbar-desktop { display: none; }
         .tabbar-mobile { display: block; }
+      }
+
+      /* ============================================================
+         TAB ZON — DRAWER DROPDOWN (DESKTOP)
+         ============================================================ */
+      .zone-tab {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.4rem;
+        position: relative;
+      }
+      .zone-tab .zt-label { font-weight: 600; }
+      .zone-tab .zt-chev {
+        display: inline-flex;
+        transition: transform 0.2s ease;
+      }
+      .zone-tab .zt-chev .ico { width: 0.8em; height: 0.8em; }
+      .zone-tab.zone-active .zt-chev { transform: rotate(180deg); }
+
+      .zone-tab.zone-active {
+        color: #fff;
+        border-color: rgba(255, 255, 255, 0.14);
+        font-weight: 700;
+      }
+      .zone-tab.zon1.zone-active { background: var(--zon1); }
+      .zone-tab.zon2.zone-active { background: var(--zon2); color: #1a1206; }
+      .zone-tab.zon3.zone-active { background: var(--zon3); }
+      .zone-tab.zon4.zone-active { background: var(--zon4); }
+
+      .zone-tab.has-active {
+        color: var(--text);
+        font-weight: 700;
+      }
+      .zone-tab.has-active::after {
+        content: '';
+        position: absolute;
+        bottom: 3px; left: 50%;
+        transform: translateX(-50%);
+        width: 6px; height: 6px;
+        border-radius: 50%;
+        background: var(--amber);
+        box-shadow: 0 0 6px var(--amber);
+      }
+
+      .zone-drawer {
+        position: absolute;
+        z-index: 600;
+        min-width: 320px;
+        max-width: min(680px, 92vw);
+        background: var(--panel);
+        border: 1px solid var(--line);
+        border-radius: var(--radius);
+        box-shadow:
+          0 12px 40px rgba(0, 0, 0, 0.55),
+          0 2px 8px rgba(0, 0, 0, 0.35);
+        padding: 0.75rem;
+        opacity: 0;
+        visibility: hidden;
+        transform: translateY(-6px);
+        transition:
+          opacity 0.16s ease,
+          transform 0.16s ease,
+          visibility 0.16s;
+        pointer-events: none;
+      }
+      [data-theme='light'] .zone-drawer {
+        box-shadow:
+          0 12px 40px rgba(15, 23, 42, 0.22),
+          0 2px 8px rgba(15, 23, 42, 0.12);
+      }
+      .zone-drawer.open {
+        opacity: 1;
+        visibility: visible;
+        transform: translateY(0);
+        pointer-events: auto;
+      }
+
+      .zone-drawer-title {
+        font-family: 'Oswald', sans-serif;
+        font-size: 0.62rem;
+        letter-spacing: 0.14em;
+        text-transform: uppercase;
+        color: var(--text-faint);
+        font-weight: 600;
+        padding: 0 0.35rem 0.55rem;
+        border-bottom: 1px solid var(--line-soft);
+        margin-bottom: 0.6rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+      }
+      .zone-drawer-title .zd-count {
+        margin-left: auto;
+        font-family: 'IBM Plex Mono', monospace;
+        font-size: 0.6rem;
+        letter-spacing: 0.04em;
+        color: var(--amber);
+        background: var(--col-amber-bg);
+        border: 1px solid var(--col-amber-row-bd);
+        padding: 0.05rem 0.45rem;
+        border-radius: 999px;
+        text-transform: none;
+      }
+
+      .zone-drawer-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+        gap: 0.35rem;
+        max-height: 55vh;
+        overflow-y: auto;
+        padding-right: 0.15rem;
+      }
+      .zone-drawer-grid::-webkit-scrollbar { width: 8px; }
+      .zone-drawer-grid::-webkit-scrollbar-thumb {
+        background: var(--line); border-radius: 4px;
+      }
+
+      .zone-drawer-item {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        padding: 0.55rem 0.7rem;
+        background: var(--panel-2);
+        border: 1px solid var(--line);
+        border-radius: var(--radius-sm);
+        color: var(--text);
+        font-family: 'Oswald', sans-serif;
+        font-size: 0.72rem;
+        font-weight: 500;
+        letter-spacing: 0.03em;
+        cursor: pointer;
+        text-align: left;
+        transition:
+          background 0.14s ease,
+          border-color 0.14s ease,
+          transform 0.1s ease,
+          color 0.14s ease;
+        position: relative;
+      }
+      .zone-drawer-item:hover {
+        background: var(--panel-3);
+        border-color: var(--btn-hover-border);
+        transform: translateY(-1px);
+      }
+      .zone-drawer-item:focus-visible {
+        outline: none;
+        box-shadow: 0 0 0 3px rgba(75, 142, 247, 0.25);
+      }
+      .zone-drawer-item.active {
+        background: linear-gradient(180deg, var(--col-amber-bg), var(--col-amber-bg-2));
+        border-color: var(--col-amber-row-bd);
+        color: var(--amber);
+        font-weight: 700;
+      }
+      .zone-drawer-item.active::before {
+        content: '▶';
+        font-size: 0.55rem;
+        color: var(--amber);
+        flex-shrink: 0;
+      }
+
+      .zone-drawer-item .zd-name {
+        flex: 1 1 auto;
+        min-width: 0;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+
+      .zone-drawer-item .zd-gred {
+        font-family: 'Oswald', sans-serif;
+        font-size: 0.58rem;
+        font-weight: 700;
+        padding: 0.08rem 0.34rem;
+        border-radius: 3px;
+        background: rgba(255, 255, 255, 0.08);
+        flex-shrink: 0;
+        line-height: 1.35;
+      }
+      .zone-drawer-item .zd-gred.gred-A { color: #ff8b98; }
+      .zone-drawer-item .zd-gred.gred-B { color: #f0bd63; }
+      .zone-drawer-item .zd-gred.gred-C { color: #8ab4fb; }
+      .zone-drawer-item .zd-gred.gred-D { color: #b6c1d1; }
+      [data-theme='light'] .zone-drawer-item .zd-gred.gred-A { color: #a01f33; }
+      [data-theme='light'] .zone-drawer-item .zd-gred.gred-B { color: #8a5810; }
+      [data-theme='light'] .zone-drawer-item .zd-gred.gred-C { color: #1d4fa5; }
+      [data-theme='light'] .zone-drawer-item .zd-gred.gred-D { color: #52607a; }
+
+      .zone-drawer-item .zd-dot {
+        width: 0.42rem;
+        height: 0.42rem;
+        border-radius: 50%;
+        background: var(--amber);
+        flex-shrink: 0;
+        animation: pulse-amber 1.5s infinite;
+      }
+
+      @media print {
+        .zone-drawer { display: none !important; }
       }
 
       .stats {
@@ -3454,6 +3654,8 @@
           setAutosaveIndicator('saved', 'Sedia');
           if (n) n.textContent = '';
         }
+
+        refreshZoneDrawerIfOpen();
       }
 
       function markDirty() {
@@ -3487,6 +3689,7 @@
         if (dirtyBalai.has(store.activeBalai)) {
           if (!confirm('Ada perubahan belum disimpan untuk "' + store.activeBalai + '".\n\nTeruskan tanpa simpan?')) return;
         }
+        closeZoneDrawer();
         closeAllFullscreenPanels();
         store.balai[store.activeBalai] = state;
         store.view = 'balai';
@@ -3506,6 +3709,7 @@
         if (store.view === 'balai' && dirtyBalai.has(store.activeBalai)) {
           if (!confirm('Ada perubahan belum disimpan untuk "' + store.activeBalai + '".\n\nTeruskan tanpa simpan?')) return;
         }
+        closeZoneDrawer();
         closeAllFullscreenPanels();
         store.balai[store.activeBalai] = state;
         store.view = v;
@@ -3522,9 +3726,11 @@
         if (!container) return;
         container.innerHTML = '';
 
+        /* ================= DESKTOP ================= */
         const desktop = document.createElement('div');
         desktop.className = 'tabbar-desktop';
 
+        /* ---- Tab khas ---- */
         const tSummary = document.createElement('button');
         tSummary.className = 'tab special summary' + (store.view === 'summary' ? ' active' : '');
         tSummary.innerHTML = svgIcon('chart') + '<span>PO3A</span>';
@@ -3560,34 +3766,49 @@
         tBkb.addEventListener('click', () => switchView('bkb'));
         desktop.appendChild(tBkb);
 
+        /* ---- Pemisah ---- */
         const sep0 = document.createElement('div');
         sep0.className = 'tab-zone-sep';
         sep0.textContent = 'BALAI';
         desktop.appendChild(sep0);
 
-        let lastZon = null;
-        BALAI_LIST.forEach((b) => {
-          if (b.zon !== lastZon) {
-            const sep = document.createElement('div');
-            sep.className = 'tab-zone-sep';
-            sep.textContent = 'ZON ' + b.zon;
-            desktop.appendChild(sep);
-            lastZon = b.zon;
-          }
-          const btn = document.createElement('button');
-          const isActive = store.view === 'balai' && b.name === store.activeBalai;
-          btn.className = 'tab zon' + b.zon + (isActive ? ' active' : '');
-          btn.textContent = b.name;
-          btn.addEventListener('click', () => switchBalai(b.name));
-          desktop.appendChild(btn);
+        /* ---- 4 Tab Zon ---- */
+        const activeZon = store.view === 'balai' ? getBalaiZon(store.activeBalai) : null;
+
+        [1, 2, 3, 4].forEach(function (zn) {
+          const zBtn = document.createElement('button');
+          zBtn.type = 'button';
+          zBtn.className = 'tab zone-tab zon' + zn;
+          zBtn.dataset.zon = String(zn);
+          if (activeZon === zn) zBtn.classList.add('has-active');
+
+          zBtn.innerHTML =
+            '<span class="zt-label">ZON ' + zn + '</span>' +
+            '<span class="zt-chev">' + svgIcon('chevronDown') + '</span>';
+
+          zBtn.addEventListener('click', function (e) {
+            e.stopPropagation();
+            toggleZoneDrawer(zn, zBtn);
+          });
+
+          desktop.appendChild(zBtn);
         });
+
         container.appendChild(desktop);
 
-        setTimeout(() => {
-          const active = desktop.querySelector('.tab.active');
+        /* ---- Drawer: letak DI LUAR .tabbar-desktop supaya tak dipotong oleh overflow-x ---- */
+        const drawer = document.createElement('div');
+        drawer.className = 'zone-drawer';
+        drawer.id = 'zoneDrawer';
+        container.appendChild(drawer);
+
+        /* Auto-scroll ke tab aktif */
+        setTimeout(function () {
+          const active = desktop.querySelector('.tab.active, .zone-tab.has-active');
           if (active) active.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
         }, 50);
 
+        /* ================= MOBILE (kekal sama) ================= */
         const mobile = document.createElement('div');
         mobile.className = 'tabbar-mobile';
         const lbl = document.createElement('label');
@@ -3596,35 +3817,41 @@
 
         const ogS = document.createElement('optgroup');
         ogS.label = 'PAPARAN KHAS';
+
         const oSum = document.createElement('option');
         oSum.value = '__summary__';
         oSum.textContent = 'PO3A — Ringkasan Kekuatan Logistik';
         if (store.view === 'summary') oSum.selected = true;
         ogS.appendChild(oSum);
+
         const oKetua = document.createElement('option');
         oKetua.value = '__ketua__';
         oKetua.textContent = 'RINGKASAN KEKUATAN ANGGOTA';
         if (store.view === 'ketua') oKetua.selected = true;
         ogS.appendChild(oKetua);
+
         const oBalaiSum = document.createElement('option');
         oBalaiSum.value = '__balai_sum__';
         oBalaiSum.textContent = 'RINGKASAN IKUT BALAI';
         if (store.view === 'balai_sum') oBalaiSum.selected = true;
         ogS.appendChild(oBalaiSum);
+
         const oMers = document.createElement('option');
         oMers.value = '__mers__';
         oMers.textContent = 'LAPORAN MERS999';
         if (store.view === 'mers') oMers.selected = true;
         ogS.appendChild(oMers);
+
         const oBkb = document.createElement('option');
         oBkb.value = '__bkb__';
         oBkb.textContent = 'NO. TELEFON PETUGAS (BKB)';
         if (store.view === 'bkb') oBkb.selected = true;
         ogS.appendChild(oBkb);
+
         sel.appendChild(ogS);
 
         let curZon = null, og = null;
-        BALAI_LIST.forEach((b) => {
+        BALAI_LIST.forEach(function (b) {
           if (b.zon !== curZon) {
             og = document.createElement('optgroup');
             og.label = 'ZON ' + b.zon;
@@ -3633,11 +3860,12 @@
           }
           const opt = document.createElement('option');
           opt.value = b.name;
-          opt.textContent = b.name;
+          opt.textContent = b.name + (dirtyBalai.has(b.name) ? '  ●' : '');
           if (store.view === 'balai' && b.name === store.activeBalai) opt.selected = true;
           og.appendChild(opt);
         });
-        sel.addEventListener('change', (e) => {
+
+        sel.addEventListener('change', function (e) {
           const v = e.target.value;
           if (v === '__summary__') switchView('summary');
           else if (v === '__ketua__') switchView('ketua');
@@ -3646,10 +3874,184 @@
           else if (v === '__bkb__') switchView('bkb');
           else switchBalai(v);
         });
+
         mobile.appendChild(lbl);
         mobile.appendChild(sel);
         container.appendChild(mobile);
       }
+
+      /* ============================================================
+         ZONE DRAWER — dropdown senarai balai per zon
+         ============================================================ */
+      function buildZoneDrawerContent(zon) {
+        const drawer = document.getElementById('zoneDrawer');
+        if (!drawer) return;
+        drawer.innerHTML = '';
+
+        const balaiInZon = BALAI_LIST.filter(function (b) { return b.zon === zon; });
+
+        /* Tajuk */
+        const title = document.createElement('div');
+        title.className = 'zone-drawer-title';
+        title.innerHTML =
+          '<span>SENARAI BALAI — ZON ' + zon + '</span>' +
+          '<span class="zd-count">' + balaiInZon.length + ' BALAI</span>';
+        drawer.appendChild(title);
+
+        /* Grid balai */
+        const grid = document.createElement('div');
+        grid.className = 'zone-drawer-grid';
+
+        balaiInZon.forEach(function (b) {
+          const item = document.createElement('button');
+          item.type = 'button';
+          item.className = 'zone-drawer-item';
+
+          const isActive = store.view === 'balai' && b.name === store.activeBalai;
+          const isDirty = dirtyBalai.has(b.name);
+          const meta = BALAI_GRED_TURNOUT[b.name] || { gred: '-', turnOut: 0 };
+
+          if (isActive) item.classList.add('active');
+          item.title = b.name +
+            '  •  Zon ' + b.zon +
+            '  •  Gred ' + meta.gred +
+            '  •  Turn-Out ' + meta.turnOut +
+            (isDirty ? '  •  ⚠ Belum disimpan' : '');
+
+          /* Nama */
+          const nameEl = document.createElement('span');
+          nameEl.className = 'zd-name';
+          nameEl.textContent = b.name;
+          item.appendChild(nameEl);
+
+          /* Badge gred */
+          const gredEl = document.createElement('span');
+          gredEl.className = 'zd-gred gred-' + meta.gred;
+          gredEl.textContent = meta.gred;
+          item.appendChild(gredEl);
+
+          /* Dot dirty */
+          if (isDirty) {
+            const dot = document.createElement('span');
+            dot.className = 'zd-dot';
+            dot.setAttribute('aria-label', 'Ada perubahan belum disimpan');
+            item.appendChild(dot);
+          }
+
+          item.addEventListener('click', function () {
+            closeZoneDrawer();
+            switchBalai(b.name);
+          });
+
+          grid.appendChild(item);
+        });
+
+        drawer.appendChild(grid);
+      }
+
+      function positionZoneDrawer(btn) {
+        const drawer = document.getElementById('zoneDrawer');
+        const tabbar = document.querySelector('.tabbar');
+        if (!drawer || !tabbar) return;
+
+        const tabbarRect = tabbar.getBoundingClientRect();
+        const btnRect = btn.getBoundingClientRect();
+
+        /* Ukur lebar drawer sebenar (min-width CSS: 320px) */
+        const drawerWidth = drawer.offsetWidth || 320;
+        let left = btnRect.left - tabbarRect.left;
+        const maxLeft = tabbarRect.width - drawerWidth - 8;
+        if (left > maxLeft) left = Math.max(0, maxLeft);
+        if (left < 0) left = 0;
+
+        drawer.style.left = left + 'px';
+        drawer.style.top = (btnRect.bottom - tabbarRect.top + 8) + 'px';
+      }
+
+      function toggleZoneDrawer(zon, btn) {
+        const drawer = document.getElementById('zoneDrawer');
+        if (!drawer) return;
+
+        const isSameOpen =
+          drawer.classList.contains('open') &&
+          drawer.dataset.zon === String(zon);
+
+        if (isSameOpen) {
+          closeZoneDrawer();
+          return;
+        }
+
+        /* ⚠️ PENTING: Buang inline style yang menyekat visibility */
+        drawer.style.opacity = '';
+        drawer.style.visibility = '';
+
+        /* Bina kandungan (senarai balai) */
+        buildZoneDrawerContent(zon);
+        drawer.dataset.zon = String(zon);
+
+        /* Reset posisi supaya ukuran tepat, kemudian posisikan */
+        drawer.style.left = '0px';
+        drawer.style.top = '0px';
+        positionZoneDrawer(btn);
+
+        /* Tanda tab zon yang aktif (chevron rotate + warna) */
+        document.querySelectorAll('.zone-tab.zone-active')
+          .forEach(function (el) { el.classList.remove('zone-active'); });
+        btn.classList.add('zone-active');
+
+        /* Buka drawer — kelas .open akan buat opacity:1, visibility:visible */
+        drawer.classList.add('open');
+
+        /* Listener tutup (klik luar / Esc) */
+        setTimeout(function () {
+          document.addEventListener('click', zoneDrawerOutsideClick, true);
+          document.addEventListener('keydown', zoneDrawerEscHandler, true);
+        }, 0);
+      }
+
+      function zoneDrawerOutsideClick(e) {
+        const drawer = document.getElementById('zoneDrawer');
+        if (!drawer) return;
+        if (drawer.contains(e.target)) return;
+        const zoneTabs = document.querySelectorAll('.zone-tab');
+        for (let i = 0; i < zoneTabs.length; i++) {
+          if (zoneTabs[i].contains(e.target)) return;
+        }
+        closeZoneDrawer();
+      }
+
+      function zoneDrawerEscHandler(e) {
+        if (e.key === 'Escape' || e.key === 'Esc') closeZoneDrawer();
+      }
+
+      function closeZoneDrawer() {
+        const drawer = document.getElementById('zoneDrawer');
+        if (drawer) {
+          drawer.classList.remove('open');
+          drawer.dataset.zon = '';
+        }
+        document.querySelectorAll('.zone-tab.zone-active')
+          .forEach(function (el) { el.classList.remove('zone-active'); });
+        document.removeEventListener('click', zoneDrawerOutsideClick, true);
+        document.removeEventListener('keydown', zoneDrawerEscHandler, true);
+      }
+
+      /* Refresh drawer bila dirty state berubah (jika sedang terbuka) */
+      function refreshZoneDrawerIfOpen() {
+        const drawer = document.getElementById('zoneDrawer');
+        if (!drawer || !drawer.classList.contains('open')) return;
+        const zon = parseInt(drawer.dataset.zon, 10);
+        if (!zon) return;
+        const currentZoneTab = document.querySelector('.zone-tab.zone-active');
+        buildZoneDrawerContent(zon);
+        if (currentZoneTab) positionZoneDrawer(currentZoneTab);
+      }
+
+      /* Tutup drawer bila resize (posisi mungkin lari) */
+      window.addEventListener('resize', function () {
+        const drawer = document.getElementById('zoneDrawer');
+        if (drawer && drawer.classList.contains('open')) closeZoneDrawer();
+      });
 
       function renderTopBar() {
         const dp = document.getElementById('balaiNameDisplay');
@@ -6101,4 +6503,4 @@
       initApp();
     </script>
   </body>
-</html> 
+</html>
