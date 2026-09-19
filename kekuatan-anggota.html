@@ -439,6 +439,30 @@
         50% { box-shadow: 0 2px 8px rgba(200, 16, 46, 0.35), 0 0 0 10px rgba(200, 16, 46, 0); }
       }
 
+      /* Butang Cetak Landscape untuk PO3A & Ringkasan Ikut Balai */
+      .btn-print-po3a {
+        display: inline-flex; align-items: center; gap: 0.45rem;
+        background: linear-gradient(180deg, #9b59b6, #7a3f96);
+        color: #fff; border: 1px solid #5c2d75;
+        padding: 0.55rem 0.9rem; border-radius: var(--radius-sm);
+        font-family: 'Oswald', sans-serif; font-size: 0.68rem;
+        letter-spacing: 0.09em; text-transform: uppercase; font-weight: 600;
+        cursor: pointer;
+        box-shadow: 0 2px 8px rgba(122, 63, 150, 0.35);
+        transition: transform 0.12s, box-shadow 0.12s, background 0.15s;
+        flex-shrink: 0; white-space: nowrap;
+      }
+      .btn-print-po3a:hover {
+        background: linear-gradient(180deg, #b072cb, #8e4ba8);
+        box-shadow: 0 4px 14px rgba(122, 63, 150, 0.55);
+        transform: translateY(-1px);
+      }
+      .btn-print-po3a:focus-visible {
+        outline: none;
+        box-shadow: 0 0 0 3px rgba(139, 111, 212, 0.35);
+      }
+      .btn-print-po3a .ico { font-size: 1rem; }
+
       .theme-toggle {
         display: inline-flex; align-items: center; gap: 0.45rem;
         background: var(--panel-2); border: 1px solid var(--line);
@@ -1379,6 +1403,82 @@
         background: var(--panel-2);
       }
 
+      /* ===== CETAK PO3A / RINGKASAN IKUT BALAI — LANDSCAPE COMPACT ===== */
+      @media print {
+        body.printing-po3a .stats,
+        body.printing-po3a .topbar {
+          display: none !important;
+        }
+        body.printing-po3a .main-title {
+          padding: 0.25rem 0.5rem 0.35rem !important;
+          margin-bottom: 0.4rem !important;
+        }
+        body.printing-po3a .main-title h1 {
+          font-size: 0.95rem !important;
+          letter-spacing: 0.06em !important;
+        }
+        body.printing-po3a .main-title .sub {
+          font-size: 0.5rem !important;
+          letter-spacing: 0.1em !important;
+          margin-top: 0.15rem !important;
+        }
+
+        body.printing-po3a .section {
+          margin-bottom: 0.35rem !important;
+          page-break-inside: auto !important;
+          break-inside: auto !important;
+        }
+        body.printing-po3a .section-head {
+          padding: 0.25rem 0.5rem !important;
+          page-break-after: avoid !important;
+          break-after: avoid !important;
+        }
+        body.printing-po3a .section-head::before {
+          width: 3px !important;
+        }
+        body.printing-po3a .section-head h2 {
+          font-size: 0.72rem !important;
+          padding-left: 0.2rem !important;
+        }
+        body.printing-po3a .section-head .hint { display: none !important; }
+        body.printing-po3a .section-body {
+          padding: 0.3rem 0.35rem !important;
+          overflow: visible !important;
+        }
+        body.printing-po3a .sub-title {
+          font-size: 0.52rem !important;
+          margin: 0.35rem 0 0.15rem !important;
+          padding-left: 0.4rem !important;
+        }
+
+        body.printing-po3a table.grid {
+          font-size: 0.5rem !important;
+        }
+        body.printing-po3a table.grid th,
+        body.printing-po3a table.grid td {
+          padding: 0.13rem 0.18rem !important;
+        }
+        body.printing-po3a table.grid thead tr.groups th {
+          font-size: 0.44rem !important;
+          padding: 0.13rem 0.1rem !important;
+          line-height: 1.05 !important;
+        }
+        body.printing-po3a table.grid thead tr.subs th {
+          font-size: 0.42rem !important;
+          padding: 0.08rem 0.1rem !important;
+        }
+        body.printing-po3a table.grid tbody th.rowname {
+          font-size: 0.5rem !important;
+          min-width: 95px !important;
+          padding: 0.13rem 0.3rem !important;
+        }
+        body.printing-po3a table.grid tfoot th,
+        body.printing-po3a table.grid tfoot td {
+          font-size: 0.5rem !important;
+          padding: 0.13rem 0.18rem !important;
+        }
+      }
+
       @media print {
         * {
           -webkit-print-color-adjust: exact !important;
@@ -1437,7 +1537,7 @@
         .section-head .chev, .theme-toggle, .btn-save-sheet,
         .manage-bar, .autosave-indicator, .btn-back-dashboard,
         .tabbar, .loading-overlay, .toast-container, .site-footer,
-        .print-modal-overlay {
+        .print-modal-overlay, .btn-print-po3a {
           display: none !important;
         }
         .section, .stat, .topbar, .main-title {
@@ -1533,6 +1633,16 @@
           box-shadow: none !important;
           margin: 0 !important;
         }
+
+        /* PO3A / RINGKASAN IKUT BALAI — sembunyikan tabbar, kekalkan semua section */
+        body.printing-po3a .wrap > *:not(#sections):not(.print-footer) {
+          display: none !important;
+        }
+        body.printing-po3a .main-title {
+          display: block !important;
+          border-top: 3px solid #16223a !important;
+          border-bottom: 3px solid #16223a !important;
+        }
       }
 
       /* ============ RESPONSIVE TOPBAR ============ */
@@ -1551,6 +1661,7 @@
         }
         .topbar-actions .autosave-indicator,
         .topbar-actions .btn-save-sheet,
+        .topbar-actions .btn-print-po3a,
         .topbar-actions .theme-toggle,
         .topbar-actions .btn-back-dashboard {
           flex: 1 1 auto;
@@ -1618,6 +1729,15 @@
               <polyline points="7 3 7 8 15 8" />
             </svg>
             <span id="saveSheetLabel">Simpan Sekarang</span>
+          </button>
+
+          <button class="btn-print-po3a" id="printPo3aBtn" type="button" style="display:none;">
+            <svg class="ico" viewBox="0 0 24 24" aria-hidden="true">
+              <polyline points="6 9 6 2 18 2 18 9" />
+              <path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2" />
+              <rect x="6" y="14" width="12" height="8" />
+            </svg>
+            <span>Cetak Landscape</span>
           </button>
 
           <button class="theme-toggle" id="themeToggle" type="button"></button>
@@ -2007,7 +2127,7 @@
         return new Date().toISOString().slice(0, 10);
       }
 
-      /* ⬅ BAHARU: Masa semasa ikut zon waktu Malaysia (Asia/Kuala_Lumpur) → "yyyy-MM-dd HH:mm:ss" */
+      /* Masa semasa ikut zon waktu Malaysia (Asia/Kuala_Lumpur) → "yyyy-MM-dd HH:mm:ss" */
       function nowMYString() {
         try {
           const parts = new Intl.DateTimeFormat('en-GB', {
@@ -2021,11 +2141,10 @@
             return p ? p.value : '00';
           };
           let hh = get('hour');
-          if (hh === '24') hh = '00'; // sesetengah enjin pulangkan '24' untuk tengah malam
+          if (hh === '24') hh = '00';
           return get('year') + '-' + get('month') + '-' + get('day') + ' ' +
                  hh + ':' + get('minute') + ':' + get('second');
         } catch (e) {
-          // Fallback: UTC+8 manual (kalau Intl tak sokong)
           const d = new Date();
           const my = new Date(d.getTime() + 8 * 3600000);
           const pad = (n) => String(n).padStart(2, '0');
@@ -2100,6 +2219,53 @@
             overlay.removeEventListener('click', onBackdrop);
             onCancel();
           }
+        });
+      }
+
+      /* Cetak PO3A / Ringkasan Ikut Balai — landscape + auto-expand semua section */
+      function printPo3aView() {
+        closeAllFullscreenPanels();
+        updatePrintFooterDate();
+
+        openPrintModal(() => {
+          const sections = document.querySelectorAll('#sections > .section');
+          const restore = [];
+          sections.forEach(function (sec) {
+            if (sec.classList.contains('collapsed')) {
+              sec.classList.remove('collapsed');
+              restore.push(sec);
+            }
+          });
+
+          const styleId = 'po3a-landscape-style';
+          let styleEl = document.getElementById(styleId);
+          if (!styleEl) {
+            styleEl = document.createElement('style');
+            styleEl.id = styleId;
+            styleEl.textContent = '@page { size: A4 landscape; margin: 8mm; }';
+            document.head.appendChild(styleEl);
+          }
+
+          document.body.classList.add('printing-po3a');
+
+          let cleaned = false;
+          const cleanup = function () {
+            if (cleaned) return;
+            cleaned = true;
+            document.body.classList.remove('printing-po3a');
+            const st = document.getElementById(styleId);
+            if (st) st.remove();
+            restore.forEach(function (sec) {
+              sec.classList.add('collapsed');
+            });
+            window.removeEventListener('afterprint', cleanup);
+          };
+          window.addEventListener('afterprint', cleanup);
+
+          setTimeout(function () {
+            window.print();
+            setTimeout(cleanup, 900);
+          }, 150);
         });
       }
 
@@ -2462,7 +2628,6 @@
         'WATER TANKER 20,000': ['J5-01 BMS 5928: T/BD 9282 SCANIA WT 20000L','J5-02 BMV 1317: T/BD 9284 SCANIA WT 20000L','J5-03 BMP 6933: T/BD 8293 SCANIA WT 20000L','J5-04 BMV 1436: T/BD 9244 SCANIA WT 20000L','J5-05 BMV 4137: T/BD 9269 SCANIA WT 20000L','J5-06 BMX 9594: T/BE 762 SCANIA WT 20000L','J5-07 BNE 8418: T/BE 266 SCANIA WT 20000L','J5-08 BMX 9580: T/BE 317 SCANIA WT 20000L','J5-09 BNH 2712: T/BE 931 SCANIA WT 20000L','J5-10 BNH 7962: T/BE 1743 SCANIA WT 20000L'],
         'JEN. HAZMAT': ['J4-01 WEU 5287 HAZMAT'],
         KOMUNIKASI: ['J10-01 WSG 3646 KOMUNIKASI'],
-        KOMUNIKASI: ['J10-01 WSG 3646 KOMUNIKASI'],
         RIM: [
           'J6-02 BGT 240 RIM ST 1300',
           'J6-03 BGT 229 RIM ST 1300',
@@ -2487,7 +2652,7 @@
           'SWART JVW 3497 MODENAS PULSAR-NS200-ABS NS200',
           'SWART JVW 3498 MODENAS PULSAR-NS200-ABS NS200',
         ],
-        EMRS: ['J2-01 BMP 3537 TOYOTA HIACE EMRS','J2-02 BNH 9581 TOYOTA HIACE EMRS','J2-03 BMQ 2930 TOYOTA HIACE EMRS','J2-04 BMT 158 TOYOTA HIACE EMRS','J2-05 BMT 1030 TOYOTA HIACE EMRS','J2-06 BMT 1034 TOYOTA HIACE EMRS','J2-07 BMT 1861 TOYOTA HIACE EMRS','J2-08 BMS 7089 TOYOTA HIACE EMRS','J2-09 BMS 7185 TOYOTA HIACE EMRS','J2-10 BMU 4233 TOYOTA HIACE EMRS','J2-11 BMU 5008 TOYOTA HIACE EMRS','J2-12 BMV 9267 TOYOTA HIACE EMRS','J2-13 BNE 654 TOYOTA HIACE EMRS','J2-14 BNE 754 TOYOTA HIACE EMRS','J2-15 BNE 1842 TOYOTA HIACE EMRS','J2-16 BNE 1944 TOYOTA HIACE EMRS','J2-17 BNG 3646 TOYOTA HIACE EMRS','J2-18 BNH 5275 TOYOTA HIACE EMRS','J2-19 BNH 9605 TOYOTA HIACE EMRS','J2-20 BNK 3528 TOYOTA HIACE EMRS'],        EMRS: ['J2-01 BMP 3537 TOYOTA HIACE EMRS','J2-02 BNH 9581 TOYOTA HIACE EMRS','J2-03 BMQ 2930 TOYOTA HIACE EMRS','J2-04 BMT 158 TOYOTA HIACE EMRS','J2-05 BMT 1030 TOYOTA HIACE EMRS','J2-06 BMT 1034 TOYOTA HIACE EMRS','J2-07 BMT 1861 TOYOTA HIACE EMRS','J2-08 BMS 7089 TOYOTA HIACE EMRS','J2-09 BMS 7185 TOYOTA HIACE EMRS','J2-10 BMU 4233 TOYOTA HIACE EMRS','J2-11 BMU 5008 TOYOTA HIACE EMRS','J2-12 BMV 9267 TOYOTA HIACE EMRS','J2-13 BNE 654 TOYOTA HIACE EMRS','J2-14 BNE 754 TOYOTA HIACE EMRS','J2-15 BNE 1842 TOYOTA HIACE EMRS','J2-16 BNE 1944 TOYOTA HIACE EMRS','J2-17 BNG 3646 TOYOTA HIACE EMRS','J2-18 BNH 5275 TOYOTA HIACE EMRS','J2-19 BNH 9605 TOYOTA HIACE EMRS','J2-20 BNK 3528 TOYOTA HIACE EMRS'],
+        EMRS: ['J2-01 BMP 3537 TOYOTA HIACE EMRS','J2-02 BNH 9581 TOYOTA HIACE EMRS','J2-03 BMQ 2930 TOYOTA HIACE EMRS','J2-04 BMT 158 TOYOTA HIACE EMRS','J2-05 BMT 1030 TOYOTA HIACE EMRS','J2-06 BMT 1034 TOYOTA HIACE EMRS','J2-07 BMT 1861 TOYOTA HIACE EMRS','J2-08 BMS 7089 TOYOTA HIACE EMRS','J2-09 BMS 7185 TOYOTA HIACE EMRS','J2-10 BMU 4233 TOYOTA HIACE EMRS','J2-11 BMU 5008 TOYOTA HIACE EMRS','J2-12 BMV 9267 TOYOTA HIACE EMRS','J2-13 BNE 654 TOYOTA HIACE EMRS','J2-14 BNE 754 TOYOTA HIACE EMRS','J2-15 BNE 1842 TOYOTA HIACE EMRS','J2-16 BNE 1944 TOYOTA HIACE EMRS','J2-17 BNG 3646 TOYOTA HIACE EMRS','J2-18 BNH 5275 TOYOTA HIACE EMRS','J2-19 BNH 9605 TOYOTA HIACE EMRS','J2-20 BNK 3528 TOYOTA HIACE EMRS'],
         'MOBILE COMMAND POST': ['LLJ COMMAND POST'],
         KEMBALIK: ['J14-01 BGU 488 KEMBALIK'],
         'SIASATAN (FORENSICS)': ['J9-01 WUJ 9272 FORENSICS','J9-02 FF 6853 FORENSICS'],
@@ -3277,6 +3442,7 @@
         const archiveBtn = document.getElementById('archiveBtn');
         const archiveAllBtn = document.getElementById('archiveAllBtn');
         const autosave = document.getElementById('autosaveIndicator');
+        const printPo3aBtn = document.getElementById('printPo3aBtn');
 
         const isBalai = store.view === 'balai';
 
@@ -3292,6 +3458,7 @@
           idFields.style.display = 'none';
           if (saveBtn) saveBtn.style.display = 'none';
           if (autosave) autosave.style.display = 'none';
+          if (printPo3aBtn) printPo3aBtn.style.display = '';
         } else if (store.view === 'ketua') {
           prefix.style.display = 'none';
           dp.textContent = 'RINGKASAN KEKUATAN ANGGOTA';
@@ -3299,6 +3466,7 @@
           idFields.style.display = 'none';
           if (saveBtn) saveBtn.style.display = 'none';
           if (autosave) autosave.style.display = 'none';
+          if (printPo3aBtn) printPo3aBtn.style.display = 'none';
         } else if (store.view === 'balai_sum') {
           prefix.style.display = 'none';
           dp.textContent = 'RINGKASAN IKUT BALAI';
@@ -3306,6 +3474,7 @@
           idFields.style.display = 'none';
           if (saveBtn) saveBtn.style.display = 'none';
           if (autosave) autosave.style.display = 'none';
+          if (printPo3aBtn) printPo3aBtn.style.display = '';
         } else if (store.view === 'mers') {
           prefix.style.display = 'none';
           dp.textContent = 'LAPORAN MERS999';
@@ -3313,6 +3482,7 @@
           idFields.style.display = 'none';
           if (saveBtn) saveBtn.style.display = 'none';
           if (autosave) autosave.style.display = 'none';
+          if (printPo3aBtn) printPo3aBtn.style.display = 'none';
         } else if (store.view === 'bkb') {
           prefix.style.display = 'none';
           dp.textContent = 'NO. TELEFON PETUGAS (BKB)';
@@ -3320,6 +3490,7 @@
           idFields.style.display = 'none';
           if (saveBtn) saveBtn.style.display = 'none';
           if (autosave) autosave.style.display = 'none';
+          if (printPo3aBtn) printPo3aBtn.style.display = 'none';
         } else {
           prefix.style.display = '';
           dp.textContent = store.activeBalai;
@@ -3330,6 +3501,7 @@
           idFields.style.display = '';
           if (saveBtn) saveBtn.style.display = '';
           if (autosave) autosave.style.display = '';
+          if (printPo3aBtn) printPo3aBtn.style.display = 'none';
           renderIdentity();
         }
       }
@@ -5173,7 +5345,6 @@
         const shif = state.ident.shif;
         const balai = store.activeBalai;
         const zon = getBalaiZon(balai);
-        /* ⬅ BAHARU: Guna masa Malaysia (bukan UTC) */
         const masaArkib = nowMYString();
 
         const personelGrid = computePersonelGrid();
@@ -5291,7 +5462,6 @@
         const tarikh = balaiState.ident.tarikh;
         const shif = balaiState.ident.shif;
         const zon = getBalaiZon(balaiName);
-        /* ⬅ BAHARU: Guna masa Malaysia (bukan UTC) */
         const masaArkib = nowMYString();
 
         const personelGrid = computePersonelGridForState(balaiState);
@@ -5673,6 +5843,14 @@
           setTimeout(() => window.print(), 100);
         });
       });
+
+      // Butang Cetak Landscape untuk PO3A & Ringkasan Ikut Balai
+      const printPo3aBtnEl = document.getElementById('printPo3aBtn');
+      if (printPo3aBtnEl) {
+        printPo3aBtnEl.addEventListener('click', function () {
+          printPo3aView();
+        });
+      }
 
       document.getElementById('resetBtn').addEventListener('click', async () => {
         const pwd = prompt('Masukkan kata laluan untuk RESET SEMUA BALAI:');
