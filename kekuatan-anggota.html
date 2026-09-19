@@ -21,6 +21,8 @@
       href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap"
       rel="stylesheet"
     />
+    <!-- ================== SUPABASE CLIENT ================== -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
       :root,
       :root[data-theme='dark'] {
@@ -1972,8 +1974,23 @@
     </div>
 
     <script>
-      const API_URL =
-        'https://script.google.com/macros/s/AKfycbx7iwD2X6g834FBHFSxv2lRxYdGnrgfHCSm7mUtBKFzKFN_MYBtQgexBSmjSGw4dvBsVA/exec';
+      /* ==========================================================
+         ⚙️  KONFIGURASI SUPABASE — GANTI DENGAN NILAI PROJEK ANDA
+         ========================================================== */
+      const SUPABASE_CONFIG = {
+        url: 'https://nstmylzvqckhrpxmbufx.supabase.co',
+        anonKey: 'sb_publishable_6i7rUdjTRmOYMcookS6CFQ_lwXyRJJL',
+      };
+
+      if (
+        !SUPABASE_CONFIG.url ||
+        SUPABASE_CONFIG.url.indexOf('YOUR-PROJECT-REF') !== -1 ||
+        !SUPABASE_CONFIG.anonKey ||
+        SUPABASE_CONFIG.anonKey.indexOf('PASTE_YOUR') !== -1
+      ) {
+        console.warn('⚠️ Sila tetapkan SUPABASE_CONFIG.url & anonKey sebelum guna.');
+      }
+      const sb = window.supabase.createClient(SUPABASE_CONFIG.url, SUPABASE_CONFIG.anonKey);
 
       const ICONS = {
         chart: '<line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/>',
@@ -2141,7 +2158,6 @@
         return new Date().toISOString().slice(0, 10);
       }
 
-      /* Masa semasa ikut zon waktu Malaysia (Asia/Kuala_Lumpur) → "yyyy-MM-dd HH:mm:ss" */
       function nowMYString() {
         try {
           const parts = new Intl.DateTimeFormat('en-GB', {
@@ -2168,8 +2184,6 @@
         }
       }
 
-      /* ⬇ BAHARU: Pecahkan table.grid lebar jadi beberapa table kecil bersambung
-         untuk cetakan PO3A / Ringkasan Ikut Balai. Table asal akan disembunyikan semasa cetak sahaja. */
       function splitGridTableForPrint(originalTable, chunkSize) {
         if (!originalTable) return null;
         const thead = originalTable.querySelector('thead');
@@ -2182,7 +2196,6 @@
         const subThs = Array.from(subRow.children);
         if (groupThs.length === 0) return null;
 
-        // Kesan kolum "rowname" (GRED) — biasanya th pertama tanpa colspan & tiada class jumlah-col
         let rownameCount = 0;
         const firstSpan = groupThs[0].colSpan || 1;
         const firstText = (groupThs[0].textContent || '').trim();
@@ -2216,7 +2229,7 @@
           catGroups.push(g);
         });
 
-        if (catGroups.length <= chunkSize) return null; // Tak perlu pecah
+        if (catGroups.length <= chunkSize) return null;
 
         const chunks = [];
         for (let i = 0; i < catGroups.length; i += chunkSize) {
@@ -2236,7 +2249,6 @@
           const tbl = document.createElement('table');
           tbl.className = originalTable.className;
 
-          // thead
           const nThead = document.createElement('thead');
           const nGr = document.createElement('tr'); nGr.className = 'groups';
           const nSr = document.createElement('tr'); nSr.className = 'subs';
@@ -2257,7 +2269,6 @@
           nThead.appendChild(nSr);
           tbl.appendChild(nThead);
 
-          // tbody
           const nTbody = document.createElement('tbody');
           bodyCellsArr.forEach(function (cells) {
             const nTr = document.createElement('tr');
@@ -2274,7 +2285,6 @@
           });
           tbl.appendChild(nTbody);
 
-          // tfoot (jika ada)
           if (footCells) {
             const nTfoot = document.createElement('tfoot');
             const nFtr = document.createElement('tr');
@@ -2365,13 +2375,11 @@
         });
       }
 
-      /* Cetak PO3A / Ringkasan Ikut Balai — landscape + auto-expand + auto-split wide tables */
       function printPo3aView() {
         closeAllFullscreenPanels();
         updatePrintFooterDate();
 
         openPrintModal(() => {
-          // 1. Auto-expand section yang collapsed
           const sections = document.querySelectorAll('#sections > .section');
           const restoredCollapsed = [];
           sections.forEach(function (sec) {
@@ -2381,7 +2389,6 @@
             }
           });
 
-          // 2. Auto-split table.grid yang terlalu lebar (chunk 12 kategori)
           const CHUNK_SIZE = 12;
           const tables = document.querySelectorAll('#sections table.grid');
           const restoredTables = [];
@@ -2396,7 +2403,6 @@
             }
           });
 
-          // 3. Suntik gaya landscape
           const styleId = 'po3a-landscape-style';
           let styleEl = document.getElementById(styleId);
           if (!styleEl) {
@@ -2475,7 +2481,6 @@
         }
       });
 
-      // Amaran bila pengguna cuba tutup/refresh tab dengan perubahan belum disimpan.
       window.addEventListener('beforeunload', function (e) {
         if (typeof dirtyBalai !== 'undefined' && dirtyBalai && dirtyBalai.size > 0) {
           e.preventDefault();
@@ -2532,7 +2537,6 @@
         if (idx === -1) return pangkat;
         return pangkat.substring(idx + 1).trim();
       }
-      /* Ambil nama pangkat (contoh "TPgB I") dari string "01. TPgB I — KB8" */
       function extractPangkat(pangkat) {
         if (!pangkat) return '';
         let s = String(pangkat);
@@ -2640,50 +2644,21 @@
       const JENTERA_KAT = ['FRT','LFRT','CFRT','RFRT','Rapid Rescue Vehicle (RRV)','ALP','SKYLIFT','TTL','High Performance Pump Module (HPPM)','High Capacity Foam Tender (HCFM)','PRIME MOVER','FOAM TENDER','Breathing Apparatus Tender Vehicle (BATV)','WATER TANKER 10,000','WATER TANKER 20,000','JEN. HAZMAT','KOMUNIKASI','RIM','EMRS','MOBILE COMMAND POST','KEMBALIK','SIASATAN (FORENSICS)'];
 
       const JENTERA_KAT_PO3A = [
-        'FRT',
-        'LFRT',
-        'CFRT',
-        'RFRT',
-        'Rapid Rescue Vehicle (RRV)',
-        'Fire Rescue Vehicle (FRV)',
-        'ALP',
-        'SKYLIFT',
-        'TTL',
-        'High Performance Pump Module (HPPM)',
-        'High Capacity Foam Tender (HCFM)',
-        'FOAM TENDER',
-        'Breathing Apparatus Tender Vehicle (BATV)',
-        'WATER TANKER 10,000 LITER',
-        'WATER TANKER 20,000 LITER',
-        'JEN. HAZMAT',
-        'KOMUNIKASI',
-        'RIM',
-        'EMRS',
-        'MOBILE COMMAND POST',
-        'KEMBALIK',
-        'NISSAN SAFARI',
-        'LAIN LAIN'
+        'FRT','LFRT','CFRT','RFRT','Rapid Rescue Vehicle (RRV)','Fire Rescue Vehicle (FRV)','ALP','SKYLIFT','TTL','High Performance Pump Module (HPPM)','High Capacity Foam Tender (HCFM)','FOAM TENDER','Breathing Apparatus Tender Vehicle (BATV)','WATER TANKER 10,000 LITER','WATER TANKER 20,000 LITER','JEN. HAZMAT','KOMUNIKASI','RIM','EMRS','MOBILE COMMAND POST','KEMBALIK','NISSAN SAFARI','LAIN LAIN'
       ];
 
       const JENTERA_MAP_PO3A = {
-        'FRT': 'FRT',
-        'LFRT': 'LFRT',
-        'CFRT': 'CFRT',
-        'RFRT': 'RFRT',
+        'FRT': 'FRT','LFRT': 'LFRT','CFRT': 'CFRT','RFRT': 'RFRT',
         'Rapid Rescue Vehicle (RRV)': 'Rapid Rescue Vehicle (RRV)',
-        'ALP': 'ALP',
-        'SKYLIFT': 'SKYLIFT',
-        'TTL': 'TTL',
+        'ALP': 'ALP','SKYLIFT': 'SKYLIFT','TTL': 'TTL',
         'High Performance Pump Module (HPPM)': 'High Performance Pump Module (HPPM)',
         'High Capacity Foam Tender (HCFM)': 'High Capacity Foam Tender (HCFM)',
         'FOAM TENDER': 'FOAM TENDER',
         'Breathing Apparatus Tender Vehicle (BATV)': 'Breathing Apparatus Tender Vehicle (BATV)',
         'WATER TANKER 10,000': 'WATER TANKER 10,000 LITER',
         'WATER TANKER 20,000': 'WATER TANKER 20,000 LITER',
-        'JEN. HAZMAT': 'JEN. HAZMAT',
-        'KOMUNIKASI': 'KOMUNIKASI',
-        'RIM': 'RIM',
-        'EMRS': 'EMRS',
+        'JEN. HAZMAT': 'JEN. HAZMAT','KOMUNIKASI': 'KOMUNIKASI',
+        'RIM': 'RIM','EMRS': 'EMRS',
         'MOBILE COMMAND POST': 'MOBILE COMMAND POST',
         'KEMBALIK': 'KEMBALIK'
       };
@@ -2691,18 +2666,7 @@
       const MARIN_KAT = ['ALUMINIUM BOT','ARIB BOT','FIBER BOT','JETSKI BOT','KEVLAR BOT','LIGHT SAR BOAT (HDPE) BOT','MUD BOAT','RUBBER DINGHY BOT'];
 
       const MARIN_KAT_PO3A = [
-        'FIRE BOAT',
-        'RIGID INFLATABLE HALL BOAT',
-        'ALUMINIUM',
-        'AMPHIBIOUS RIGID INFLATABLE HALL BOAT',
-        'DINGHY',
-        'FIBER',
-        'APEX',
-        'JET SKI',
-        'MUD BOAT',
-        'MARES',
-        'HIGH DENSITY POLYETHYLENE',
-        'LAIN LAIN'
+        'FIRE BOAT','RIGID INFLATABLE HALL BOAT','ALUMINIUM','AMPHIBIOUS RIGID INFLATABLE HALL BOAT','DINGHY','FIBER','APEX','JET SKI','MUD BOAT','MARES','HIGH DENSITY POLYETHYLENE','LAIN LAIN'
       ];
 
       const MARIN_MAP_PO3A = {
@@ -2719,17 +2683,7 @@
       const UTILITI_KAT = ['HILUX 4X4','HILUX LOV 4X4','HILUX LOV','HICOM HANDALAN 5 TAN LORI','ISUZU 5 TAN LORI','ISUZU 3 TAN LORI','DMAX ISUZU 4X4','HINO BAS','ISUZU V6 4X4','KEMBARA 4X4','KIA PREGIO VAN','MITSUBISHI TRITON 4X4','NAVARA 4X4','NISSAN COASTER BAS','NISSAN XTRAIL 4X4','PAJERO 4X4','PERODUA ALZA MPV','RUSA VAN','TOYOTA FORTUNER 4X4','TOYOTA HIACE VAN','URVAN VAN','Amphibious All Terrain Vehichle (AATV)','All Terrain Vehichle (ATV)'];
 
       const UTILITI_KAT_SUMMARY = [
-        'LORI 5T',
-        'LORI 3T',
-        'BAS 40',
-        'BAS 25',
-        '4 WHEEL DRIVE (HILUX, DMAX, TRITON)',
-        'KEMBARA',
-        'VAN',
-        'BAS PEMERAN',
-        'Amphibious All Terrain Vehicle (AATV)',
-        'All Terrain Vehicle',
-        'LAIN LAIN',
+        'LORI 5T','LORI 3T','BAS 40','BAS 25','4 WHEEL DRIVE (HILUX, DMAX, TRITON)','KEMBARA','VAN','BAS PEMERAN','Amphibious All Terrain Vehicle (AATV)','All Terrain Vehicle','LAIN LAIN',
       ];
 
       const UTILITI_MAP_SUMMARY = {
@@ -2749,11 +2703,7 @@
         'PAJERO 4X4': '4 WHEEL DRIVE (HILUX, DMAX, TRITON)',
         'TOYOTA FORTUNER 4X4': '4 WHEEL DRIVE (HILUX, DMAX, TRITON)',
         'KEMBARA 4X4': 'KEMBARA',
-        'KIA PREGIO VAN': 'VAN',
-        'PERODUA ALZA MPV': 'VAN',
-        'RUSA VAN': 'VAN',
-        'TOYOTA HIACE VAN': 'VAN',
-        'URVAN VAN': 'VAN',
+        'KIA PREGIO VAN': 'VAN','PERODUA ALZA MPV': 'VAN','RUSA VAN': 'VAN','TOYOTA HIACE VAN': 'VAN','URVAN VAN': 'VAN',
         'Amphibious All Terrain Vehichle (AATV)': 'Amphibious All Terrain Vehicle (AATV)',
         'All Terrain Vehichle (ATV)': 'All Terrain Vehicle',
       };
@@ -2789,28 +2739,7 @@
         'JEN. HAZMAT': ['J4-01 WEU 5287 HAZMAT'],
         KOMUNIKASI: ['J10-01 WSG 3646 KOMUNIKASI'],
         RIM: [
-          'J6-02 BGT 240 RIM ST 1300',
-          'J6-03 BGT 229 RIM ST 1300',
-          'J6-04 BGT 226 RIM ST 1300',
-          'J6-05 BGT 227 RIM ST 1300',
-          'J6-06 BGT 225 RIM ST 1300',
-          'J6-07 WQS 5095 RIM VFR 800',
-          'J6-08 WQS 5033 RIM VFR 800',
-          'J6-09 WQS 5291 RIM VFR 800',
-          'J6-10 WQS 5092 RIM VFR 800',
-          'J6-11 WQS 5202 RIM VFR 800',
-          'J6-12 WQS 5120 RIM VFR 800',
-          'VDN 4921 RIM VER 650',
-          'VDN 4923 RIM VER 650',
-          'VDN 4928 RIM VER 650',
-          'VDM 4035 RIM VER 650',
-          'VDM 4042 RIM VER 650',
-          'VDM 4047 RIM VER 650',
-          'VDM 4054 RIM VER 650',
-          'VDM 4059 RIM VER 650',
-          'VDM 4933 RIM VER 650',
-          'SWART JVW 3497 MODENAS PULSAR-NS200-ABS NS200',
-          'SWART JVW 3498 MODENAS PULSAR-NS200-ABS NS200',
+          'J6-02 BGT 240 RIM ST 1300','J6-03 BGT 229 RIM ST 1300','J6-04 BGT 226 RIM ST 1300','J6-05 BGT 227 RIM ST 1300','J6-06 BGT 225 RIM ST 1300','J6-07 WQS 5095 RIM VFR 800','J6-08 WQS 5033 RIM VFR 800','J6-09 WQS 5291 RIM VFR 800','J6-10 WQS 5092 RIM VFR 800','J6-11 WQS 5202 RIM VFR 800','J6-12 WQS 5120 RIM VFR 800','VDN 4921 RIM VER 650','VDN 4923 RIM VER 650','VDN 4928 RIM VER 650','VDM 4035 RIM VER 650','VDM 4042 RIM VER 650','VDM 4047 RIM VER 650','VDM 4054 RIM VER 650','VDM 4059 RIM VER 650','VDM 4933 RIM VER 650','SWART JVW 3497 MODENAS PULSAR-NS200-ABS NS200','SWART JVW 3498 MODENAS PULSAR-NS200-ABS NS200',
         ],
         EMRS: ['J2-01 BMP 3537 TOYOTA HIACE EMRS','J2-02 BNH 9581 TOYOTA HIACE EMRS','J2-03 BMQ 2930 TOYOTA HIACE EMRS','J2-04 BMT 158 TOYOTA HIACE EMRS','J2-05 BMT 1030 TOYOTA HIACE EMRS','J2-06 BMT 1034 TOYOTA HIACE EMRS','J2-07 BMT 1861 TOYOTA HIACE EMRS','J2-08 BMS 7089 TOYOTA HIACE EMRS','J2-09 BMS 7185 TOYOTA HIACE EMRS','J2-10 BMU 4233 TOYOTA HIACE EMRS','J2-11 BMU 5008 TOYOTA HIACE EMRS','J2-12 BMV 9267 TOYOTA HIACE EMRS','J2-13 BNE 654 TOYOTA HIACE EMRS','J2-14 BNE 754 TOYOTA HIACE EMRS','J2-15 BNE 1842 TOYOTA HIACE EMRS','J2-16 BNE 1944 TOYOTA HIACE EMRS','J2-17 BNG 3646 TOYOTA HIACE EMRS','J2-18 BNH 5275 TOYOTA HIACE EMRS','J2-19 BNH 9605 TOYOTA HIACE EMRS','J2-20 BNK 3528 TOYOTA HIACE EMRS'],
         'MOBILE COMMAND POST': ['LLJ COMMAND POST'],
@@ -2864,7 +2793,202 @@
 
       const RESET_PASSWORD = 'pgo1234';
 
-      /* ============ BKB — NO TELEFON PETUGAS ============ */
+      /* ============================================================
+         🚀  BACKEND SUPABASE
+         ============================================================ */
+
+      /* Padam semua rows untuk balai dalam satu table */
+      async function deleteBalaiRows(table, balaiName) {
+        const { error } = await sb.from(table).delete().eq('balai', balaiName);
+        if (error) throw new Error('delete ' + table + ': ' + error.message);
+      }
+
+      /* Insert rows (auto-chunk 500) */
+      async function insertRows(table, rows) {
+        if (!rows || rows.length === 0) return;
+        const CHUNK = 500;
+        for (let i = 0; i < rows.length; i += CHUNK) {
+          const slice = rows.slice(i, i + CHUNK);
+          const { error } = await sb.from(table).insert(slice);
+          if (error) throw new Error('insert ' + table + ': ' + error.message);
+        }
+      }
+
+      /* ---------- LOAD ALL ---------- */
+      async function loadAllFromAPI() {
+        const tables = ['ident', 'personel', 'jentera', 'marin', 'utiliti', 'komunikasi'];
+        const results = await Promise.all(
+          tables.map(function (t) {
+            return sb.from(t).select('*').order('balai', { ascending: true });
+          })
+        );
+        for (let i = 0; i < results.length; i++) {
+          if (results[i].error) {
+            throw new Error(tables[i] + ': ' + results[i].error.message);
+          }
+        }
+        const [ident, personel, jentera, marin, utiliti, komunikasi] = results.map(function (r) {
+          return r.data || [];
+        });
+
+        /* Tukar snake_case → camelCase untuk kod lama */
+        const mappedPersonel = personel.map(function (r) {
+          return {
+            balai: r.balai,
+            nama: r.nama || '', pangkat: r.pangkat || '',
+            noBadan: r.no_badan || '', noTelefon: r.no_telefon || '',
+            peranan: r.peranan || '', pasukan: r.pasukan || '',
+            status: r.status || '',
+            unit1: r.unit1 || '', unit2: r.unit2 || '',
+            unit3: r.unit3 || '', unit4: r.unit4 || '',
+            catatan: r.catatan || '',
+          };
+        });
+
+        return {
+          ident: ident.map(function (r) {
+            return {
+              balai: r.balai,
+              shif: r.shif || '',
+              tarikh: r.tarikh || '',
+              kategori: r.kategori || '',
+            };
+          }),
+          personel: mappedPersonel,
+          jentera: jentera.map(function (r) {
+            return {
+              balai: r.balai, maklumat: r.maklumat || '',
+              kategori: r.kategori || '', status: r.status || '',
+              catatan: r.catatan || '',
+            };
+          }),
+          marin: marin.map(function (r) {
+            return {
+              balai: r.balai, maklumat: r.maklumat || '',
+              kategori: r.kategori || '', status: r.status || '',
+              catatan: r.catatan || '',
+            };
+          }),
+          utiliti: utiliti.map(function (r) {
+            return {
+              balai: r.balai, maklumat: r.maklumat || '',
+              kategori: r.kategori || '', status: r.status || '',
+              catatan: r.catatan || '',
+            };
+          }),
+          komunikasi: komunikasi.map(function (r) {
+            return {
+              balai: r.balai, maklumat: r.maklumat || '',
+              kategori: r.kategori || '', jumlah: r.jumlah || '',
+              status: r.status || '', catatan: r.catatan || '',
+            };
+          }),
+        };
+      }
+
+      /* ---------- SAVE BALAI (replace semua rows untuk balai ni) ---------- */
+      async function saveBalaiToAPI(balaiName, balaiData) {
+        const ident = balaiData.ident || {};
+
+        /* 1. UPSERT ident */
+        const upIdent = await sb.from('ident').upsert({
+          balai: balaiName,
+          shif: ident.shif || '',
+          tarikh: ident.tarikh || null,
+          kategori: ident.kategori || '',
+        }, { onConflict: 'balai' });
+        if (upIdent.error) throw new Error('ident: ' + upIdent.error.message);
+
+        /* 2. Delete semua rows lama untuk balai ni */
+        await Promise.all([
+          deleteBalaiRows('personel', balaiName),
+          deleteBalaiRows('jentera', balaiName),
+          deleteBalaiRows('marin', balaiName),
+          deleteBalaiRows('utiliti', balaiName),
+          deleteBalaiRows('komunikasi', balaiName),
+        ]);
+
+        /* 3. Sedia payload */
+        const personelRows = (balaiData.personel || []).map(function (p, i) {
+          return {
+            balai: balaiName, urutan: i,
+            nama: p.nama || '', pangkat: p.pangkat || '',
+            no_badan: p.noBadan || '', no_telefon: p.noTelefon || '',
+            peranan: p.peranan || '', pasukan: p.pasukan || '',
+            status: p.status || '',
+            unit1: p.unit1 || '', unit2: p.unit2 || '',
+            unit3: p.unit3 || '', unit4: p.unit4 || '',
+            catatan: p.catatan || '',
+          };
+        });
+
+        const equipMap = {
+          jentera: (balaiData.equip && balaiData.equip.jentera) || [],
+          marin: (balaiData.equip && balaiData.equip.marin) || [],
+          utiliti: (balaiData.equip && balaiData.equip.utiliti) || [],
+        };
+        const jenteraRows = equipMap.jentera.map(function (r, i) {
+          return { balai: balaiName, urutan: i, maklumat: r.maklumat || '', kategori: r.kategori || '', status: r.status || '', catatan: r.catatan || '' };
+        });
+        const marinRows = equipMap.marin.map(function (r, i) {
+          return { balai: balaiName, urutan: i, maklumat: r.maklumat || '', kategori: r.kategori || '', status: r.status || '', catatan: r.catatan || '' };
+        });
+        const utilitiRows = equipMap.utiliti.map(function (r, i) {
+          return { balai: balaiName, urutan: i, maklumat: r.maklumat || '', kategori: r.kategori || '', status: r.status || '', catatan: r.catatan || '' };
+        });
+        const komRows = ((balaiData.equip && balaiData.equip.komunikasi) || []).map(function (r, i) {
+          return { balai: balaiName, urutan: i, maklumat: r.maklumat || '', kategori: r.kategori || '', jumlah: r.jumlah || '', status: r.status || '', catatan: r.catatan || '' };
+        });
+
+        /* 4. Insert semua */
+        await Promise.all([
+          insertRows('personel', personelRows),
+          insertRows('jentera', jenteraRows),
+          insertRows('marin', marinRows),
+          insertRows('utiliti', utilitiRows),
+          insertRows('komunikasi', komRows),
+        ]);
+
+        return { ok: true };
+      }
+
+      /* ---------- DELETE BALAI ---------- */
+      async function deleteBalaiFromAPI(balaiName) {
+        /* Cascade delete akan hapus child rows jika FK ON DELETE CASCADE */
+        const { error } = await sb.from('ident').delete().eq('balai', balaiName);
+        if (error) throw new Error(error.message);
+        return { ok: true };
+      }
+
+      /* ---------- ARCHIVE BALAI ---------- */
+      async function archiveBalaiToAPI(opts) {
+        const { tarikh, shif, balai, zon, personelRows, jenteraRows } = opts;
+
+        const pRows = (personelRows || []).map(function (r) {
+          return {
+            tarikh: r.tarikh || null, shif: r.shif || '',
+            balai: r.balai || balai, zon: r.zon || zon,
+            gred: r.gred || '', unit: r.unit || '',
+            a: r.A || 0, c: r.C || 0, cs: r.CS || 0, tk: r.TK || 0,
+            jumlah: r.jumlah || 0,
+          };
+        });
+        const jRows = (jenteraRows || []).map(function (r) {
+          return {
+            tarikh: r.tarikh || null, shif: r.shif || '',
+            balai: r.balai || balai, zon: r.zon || zon,
+            jenis: r.jenis || '', kategori: r.kategori || '',
+            baik: r.baik || 0, rosak: r.rosak || 0, jumlah: r.jumlah || 0,
+          };
+        });
+
+        if (pRows.length > 0) await insertRows('arkib_personel', pRows);
+        if (jRows.length > 0) await insertRows('arkib_jentera', jRows);
+
+        return { ok: true };
+      }
+
+      /* ============ BKB ============ */
       function getBkbOfficer(balaiName) {
         const b = store && store.balai && store.balai[balaiName];
         if (!b || !b.personel) return { nama: '', telefon: '' };
@@ -3171,7 +3295,8 @@
         tbl.appendChild(tbody);
         body.appendChild(tbl);
 
-        const grandPct = (grandTotalBaik / grandTotalCells) * 100;        const now = new Date();
+        const grandPct = (grandTotalBaik / grandTotalCells) * 100;
+        const now = new Date();
         const months = ['JANUARI','FEBRUARI','MAC','APRIL','MEI','JUN','JULAI','OGOS','SEPTEMBER','OKTOBER','NOVEMBER','DISEMBER'];
         const tglStr = now.getDate() + ' ' + months[now.getMonth()] + ' ' + now.getFullYear();
         const masa = String(now.getHours()).padStart(2, '0') + ':' + String(now.getMinutes()).padStart(2, '0') + ':' + String(now.getSeconds()).padStart(2, '0');
@@ -3195,67 +3320,6 @@
         if (!el) return;
         el.remove();
         renderMersView();
-      }
-
-      async function apiGet(params) {
-        const url = API_URL + '?' + new URLSearchParams(params).toString();
-        const res = await fetch(url, { method: 'GET' });
-        return res.json();
-      }
-      async function apiPost(payload) {
-        const res = await fetch(API_URL, {
-          method: 'POST',
-          headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-          body: JSON.stringify(payload),
-        });
-        return res.json();
-      }
-      async function loadAllFromAPI() {
-        const data = await apiGet({ action: 'getAll' });
-        if (data.error) throw new Error(data.error);
-        return data;
-      }
-
-      async function saveBalaiToAPI(balaiName, balaiData) {
-        const ident = balaiData.ident || {};
-        const payload = {
-          action: 'saveBalai',
-          balai: balaiName,
-          data: {
-            ident: [
-              {
-                balai: balaiName,
-                shif: ident.shif || '',
-                tarikh: ident.tarikh || '',
-                kategori: ident.kategori || '',
-              },
-            ],
-            personel: (balaiData.personel || []).map(function (p) {
-              return Object.assign({ balai: balaiName }, p);
-            }),
-            jentera: ((balaiData.equip && balaiData.equip.jentera) || []).map(function (r) {
-              return Object.assign({ balai: balaiName }, r);
-            }),
-            marin: ((balaiData.equip && balaiData.equip.marin) || []).map(function (r) {
-              return Object.assign({ balai: balaiName }, r);
-            }),
-            utiliti: ((balaiData.equip && balaiData.equip.utiliti) || []).map(function (r) {
-              return Object.assign({ balai: balaiName }, r);
-            }),
-            komunikasi: ((balaiData.equip && balaiData.equip.komunikasi) || []).map(function (r) {
-              return Object.assign({ balai: balaiName }, r);
-            }),
-          },
-        };
-        const result = await apiPost(payload);
-        if (result.error) throw new Error(result.error);
-        return result;
-      }
-
-      async function deleteBalaiFromAPI(balaiName) {
-        const result = await apiPost({ action: 'deleteBalai', balai: balaiName });
-        if (result.error) throw new Error(result.error);
-        return result;
       }
 
       function emptyPersonel() {
@@ -5556,7 +5620,7 @@
           return;
         }
 
-        if (!confirm('Simpan arkib untuk balai "' + balai + '"?\n\nTarikh: ' + tarikh + '\nShif: ' + shif + '\n\nIni akan menyimpan rekod kekuatan anggota dan jentera ke Google Sheets.')) return;
+        if (!confirm('Simpan arkib untuk balai "' + balai + '"?\n\nTarikh: ' + tarikh + '\nShif: ' + shif + '\n\nIni akan menyimpan rekod kekuatan anggota dan jentera ke Supabase.')) return;
 
         btn.disabled = true;
         btn.classList.add('saving');
@@ -5570,8 +5634,7 @@
             throw new Error('Tiada data untuk diarkib. Sila isi data terlebih dahulu.');
           }
 
-          const result = await apiPost({
-            action: 'archiveBalai',
+          await archiveBalaiToAPI({
             tarikh: tarikh,
             shif: shif,
             balai: balai,
@@ -5579,8 +5642,6 @@
             personelRows: archiveData.personelRows,
             jenteraRows: archiveData.jenteraRows,
           });
-
-          if (result.error) throw new Error(result.error);
 
           btn.classList.remove('saving');
           btn.classList.add('saved');
@@ -5666,7 +5727,7 @@
 
         const senaraiBalai = BALAI_LIST.map(function (b) { return b.name; });
 
-        if (!confirm('ARKIB SEMUA BALAI\n\nIni akan menyimpan rekod arkib untuk SEMUA ' + senaraiBalai.length + ' balai ke Google Sheets.\n\nSetiap balai akan guna Tarikh dan Shif masing-masing.\n\nTeruskan?')) return;
+        if (!confirm('ARKIB SEMUA BALAI\n\nIni akan menyimpan rekod arkib untuk SEMUA ' + senaraiBalai.length + ' balai ke Supabase.\n\nSetiap balai akan guna Tarikh dan Shif masing-masing.\n\nTeruskan?')) return;
 
         btn.disabled = true;
         btn.classList.add('saving');
@@ -5690,8 +5751,7 @@
             }
 
             const balaiState = store.balai[balaiName];
-            const result = await apiPost({
-              action: 'archiveBalai',
+            await archiveBalaiToAPI({
               tarikh: balaiState.ident.tarikh,
               shif: balaiState.ident.shif,
               balai: balaiName,
@@ -5700,7 +5760,6 @@
               jenteraRows: data.jenteraRows,
             });
 
-            if (result.error) throw new Error(result.error);
             totalBalai++;
           } catch (err) {
             console.error('Ralat arkib ' + balaiName + ':', err);
@@ -5735,7 +5794,7 @@
         initTheme();
         updatePrintFooterDate();
         fillPrintFooter(loadPrintInfo());
-        setLoading(true, 'Memuatkan data dari Google Sheets…');
+        setLoading(true, 'Memuatkan data dari Supabase…');
 
         try {
           const apiData = await loadAllFromAPI();
@@ -5759,7 +5818,7 @@
 
           dirtyBalai.clear();
           updateDirtyUI();
-          showToast('Data berjaya dimuatkan dari Google Sheets', 'success');
+          showToast('Data berjaya dimuatkan dari Supabase', 'success');
         } catch (err) {
           console.error('Init error:', err);
           showToast('Gagal memuat data: ' + err.message + '. Menggunakan data kosong.', 'error');
@@ -5808,7 +5867,7 @@
           const t = new Date().toLocaleTimeString('ms-MY');
           markClean(t);
 
-          showToast('Data ' + store.activeBalai + ' berjaya disimpan ke Google Sheet', 'success');
+          showToast('Data ' + store.activeBalai + ' berjaya disimpan ke Supabase', 'success');
 
           setTimeout(function () {
             btn.classList.remove('saved');
@@ -5885,7 +5944,7 @@
       });
 
       document.getElementById('refreshBtn').addEventListener('click', async () => {
-        if (!confirm('Muat semula data dari Google Sheets?\n\nSebarang perubahan yang belum disimpan akan hilang.')) return;
+        if (!confirm('Muat semula data dari Supabase?\n\nSebarang perubahan yang belum disimpan akan hilang.')) return;
         await initApp();
       });
 
@@ -5935,7 +5994,7 @@
           try {
             const p = JSON.parse(ev.target.result);
             if (p.balai && typeof p.balai === 'object') {
-              if (!confirm('Fail SEMUA BALAI dikesan. Import akan GANTIKAN semua data di Google Sheets. Teruskan?')) return;
+              if (!confirm('Fail SEMUA BALAI dikesan. Import akan GANTIKAN semua data di Supabase. Teruskan?')) return;
               setLoading(true, 'Mengimport semua balai…');
               const names = Object.keys(p.balai);
               for (let i = 0; i < names.length; i++) {
@@ -5950,7 +6009,7 @@
                 alert('Sila pilih tab balai dahulu sebelum import fail satu balai.');
                 return;
               }
-              if (!confirm('Fail SATU BALAI dikesan. Import ke dalam tab "' + store.activeBalai + '"? Data sedia ada di Google Sheets akan digantikan.')) return;
+              if (!confirm('Fail SATU BALAI dikesan. Import ke dalam tab "' + store.activeBalai + '"? Data sedia ada di Supabase akan digantikan.')) return;
               setLoading(true, 'Mengimport ke ' + store.activeBalai + '…');
               const def = defaultState(store.activeBalai);
               const newState = {
@@ -5994,7 +6053,6 @@
         });
       });
 
-      // Butang Cetak Landscape untuk PO3A & Ringkasan Ikut Balai
       const printPo3aBtnEl = document.getElementById('printPo3aBtn');
       if (printPo3aBtnEl) {
         printPo3aBtnEl.addEventListener('click', function () {
@@ -6010,7 +6068,7 @@
           return;
         }
         const nBalai = Object.keys(store.balai).length;
-        if (!confirm('AMARAN: Reset akan padam SEMUA data ' + nBalai + ' balai dari Google Sheets.\n\nTeruskan?')) return;
+        if (!confirm('AMARAN: Reset akan padam SEMUA data ' + nBalai + ' balai dari Supabase.\n\nTeruskan?')) return;
         if (!confirm('SAHKAN SEKALI LAGI — SEMUA data ' + nBalai + ' balai akan dipadam dan tidak boleh dikembalikan.\n\nBetul-betul pasti?')) return;
 
         setLoading(true, 'Mereset semua balai…');
