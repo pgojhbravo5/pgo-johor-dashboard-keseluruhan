@@ -1600,7 +1600,7 @@
         <div class="topbar-actions">
           <div class="autosave-indicator" id="autosaveIndicator">
             <span class="dot"></span>
-            <span id="autosaveText">Auto-save aktif</span>
+            <span id="autosaveText">Sedia</span>
           </div>
 
           <button class="btn-save-sheet" id="saveSheetBtn" type="button">
@@ -2083,6 +2083,15 @@
         }
       });
 
+      // Amaran bila pengguna cuba tutup/refresh tab dengan perubahan belum disimpan.
+      window.addEventListener('beforeunload', function (e) {
+        if (typeof dirtyBalai !== 'undefined' && dirtyBalai && dirtyBalai.size > 0) {
+          e.preventDefault();
+          e.returnValue = '';
+          return '';
+        }
+      });
+
       const BALAI_LIST = [
         { name: 'LARKIN', zon: 1 },
         { name: 'PASIR GUDANG', zon: 1 },
@@ -2130,6 +2139,15 @@
         const idx = pangkat.lastIndexOf('—');
         if (idx === -1) return pangkat;
         return pangkat.substring(idx + 1).trim();
+      }
+      /* Ambil nama pangkat (contoh "TPgB I") dari string "01. TPgB I — KB8" */
+      function extractPangkat(pangkat) {
+        if (!pangkat) return '';
+        let s = String(pangkat);
+        s = s.replace(/^\d+\.\s*/, '');
+        const idx = s.indexOf('—');
+        if (idx !== -1) s = s.substring(0, idx);
+        return s.trim();
       }
 
       const BALAI_GRED_TURNOUT = {
@@ -2185,6 +2203,36 @@
         '11. PBB',
       ];
 
+      /* ===== Pemetaan ringkasan personel (PO3A & Ringkasan Ikut Balai) =====
+         Row label dengan kod gred gaji. PBBK II + PBB digabung jadi "PBB".
+      */
+      const PERSONEL_KAT_RINGKASAN = [
+        'TPgB I — KB8 (40)',
+        'TPgB II — KB7 (38)',
+        'PKPgB — KB6 (32)',
+        'PPgB — KB5 (29)',
+        'PBT I — KB4 (28)',
+        'PBT II — KB3 (26)',
+        'PBK I — KB2 (24)',
+        'PBK II — KB2 (22 + KUP 22)',
+        'PB — KB1 (19)',
+        'PBB (PBBK II + PBB)',
+      ];
+
+      const PERSONEL_MAP_RINGKASAN = {
+        '01. TPgB I — KB8': 'TPgB I — KB8 (40)',
+        '02. TPgB II — KB7': 'TPgB II — KB7 (38)',
+        '03. PKPgB — KB6': 'PKPgB — KB6 (32)',
+        '04. PPgB — KB5': 'PPgB — KB5 (29)',
+        '05. PBT I — KB4': 'PBT I — KB4 (28)',
+        '06. PBT II — KB3': 'PBT II — KB3 (26)',
+        '07. PBK I — KB2': 'PBK I — KB2 (24)',
+        '08. PBK II — KB2 (TBBK1)': 'PBK II — KB2 (22 + KUP 22)',
+        '09. PB — KB1': 'PB — KB1 (19)',
+        '10. PBBK II': 'PBB (PBBK II + PBB)',
+        '11. PBB': 'PBB (PBBK II + PBB)',
+      };
+
       const UNITS = ['PEMADAM', 'EMRS', 'HAZMAT', 'PPDA', 'RIM', 'STORM / MUST'];
       const STATUS_P = ['A', 'C', 'CS', 'TK'];
       const PERSONEL_STATUSES = ['BERTUGAS', 'CUTI', 'CUTI SAKIT', 'TUGAS KHAS', 'HRM'];
@@ -2225,7 +2273,8 @@
         'EMRS',
         'MOBILE COMMAND POST',
         'KEMBALIK',
-        'NISSAN SAFARI'
+        'NISSAN SAFARI',
+        'LAIN LAIN'
       ];
 
       const JENTERA_MAP_PO3A = {
@@ -2265,7 +2314,8 @@
         'JET SKI',
         'MUD BOAT',
         'MARES',
-        'HIGH DENSITY POLYETHYLENE'
+        'HIGH DENSITY POLYETHYLENE',
+        'LAIN LAIN'
       ];
 
       const MARIN_MAP_PO3A = {
@@ -2896,7 +2946,10 @@
 
       let store = null;
       let state = null;
-      let saveTimer = null;
+
+      // Auto-save DIMATIKAN sepenuhnya.
+      // Data hanya dihantar ke Google Sheets bila butang "Simpan Sekarang" ditekan.
+      const dirtyBalai = new Set();
 
       function persistUI() {
         try {
@@ -2904,26 +2957,44 @@
         } catch (e) {}
       }
 
+      function updateDirtyUI() {
+        const activeDirty = dirtyBalai.has(store.activeBalai);
+        const anyDirty = dirtyBalai.size > 0;
+        const n = document.getElementById('savedNote');
+
+        if (activeDirty) {
+          setAutosaveIndicator('saving', 'Belum disimpan');
+          if (n) n.textContent = '⚠ Perubahan belum disimpan pada "' + store.activeBalai + '"';
+        } else if (anyDirty) {
+          setAutosaveIndicator('saving', 'Ada perubahan lain');
+          if (n) n.textContent = '⚠ ' + dirtyBalai.size + ' balai ada perubahan belum disimpan';
+        } else {
+          setAutosaveIndicator('saved', 'Sedia');
+          if (n) n.textContent = '';
+        }
+      }
+
+      function markDirty() {
+        dirtyBalai.add(store.activeBalai);
+        updateDirtyUI();
+      }
+
+      function markClean(timeStr) {
+        dirtyBalai.delete(store.activeBalai);
+        if (timeStr) {
+          setAutosaveIndicator('saved', 'Disimpan ' + timeStr);
+          const n = document.getElementById('savedNote');
+          if (n) n.textContent = 'Disimpan ' + timeStr;
+        } else {
+          updateDirtyUI();
+        }
+      }
+
+      // Hanya kemas kini state dalam memori — TIDAK hantar ke Google Sheets.
       function saveState() {
         store.balai[store.activeBalai] = state;
         persistUI();
-        setAutosaveIndicator('saving', 'Menyimpan…');
-        clearTimeout(saveTimer);
-        saveTimer = setTimeout(async function () {
-          try {
-            await saveBalaiToAPI(store.activeBalai, state);
-            const t = new Date().toLocaleTimeString('ms-MY');
-            setAutosaveIndicator('saved', 'Disimpan ' + t);
-            const n = document.getElementById('savedNote');
-            if (n) n.textContent = 'Disimpan ' + t;
-          } catch (err) {
-            console.error(err);
-            setAutosaveIndicator('error', 'Gagal simpan');
-            const n = document.getElementById('savedNote');
-            if (n) n.textContent = 'Gagal simpan!';
-            showToast('Gagal menyimpan ke Google Sheets', 'error');
-          }
-        }, 600);
+        markDirty();
       }
 
       function escAttr(s) {
@@ -2932,6 +3003,9 @@
 
       async function switchBalai(name) {
         if (store.view === 'balai' && name === store.activeBalai) return;
+        if (dirtyBalai.has(store.activeBalai)) {
+          if (!confirm('Ada perubahan belum disimpan untuk "' + store.activeBalai + '".\n\nTeruskan tanpa simpan?')) return;
+        }
         closeAllFullscreenPanels();
         store.balai[store.activeBalai] = state;
         store.view = 'balai';
@@ -2943,10 +3017,14 @@
         renderTabbar();
         renderTopBar();
         renderAll();
+        updateDirtyUI();
         window.scrollTo({ top: 0, behavior: 'smooth' });
       }
       function switchView(v) {
         if (store.view === v) return;
+        if (store.view === 'balai' && dirtyBalai.has(store.activeBalai)) {
+          if (!confirm('Ada perubahan belum disimpan untuk "' + store.activeBalai + '".\n\nTeruskan tanpa simpan?')) return;
+        }
         closeAllFullscreenPanels();
         store.balai[store.activeBalai] = state;
         store.view = v;
@@ -2954,6 +3032,7 @@
         renderTabbar();
         renderTopBar();
         renderAll();
+        updateDirtyUI();
         window.scrollTo({ top: 0, behavior: 'smooth' });
       }
 
@@ -3350,6 +3429,33 @@
             m[r][u].CS += g[r][u].CS;
             m[r][u].TK += g[r][u].TK;
           }));
+        });
+        return m;
+      }
+
+      /* Kiraan ringkasan personel mengikut pemetaan PERSONEL_MAP_RINGKASAN */
+      function computeAllPersonelGridSummary(summaryCats, mapping) {
+        const m = {};
+        summaryCats.forEach((k) => {
+          m[k] = {};
+          UNITS.forEach((u) => { m[k][u] = { A: 0, C: 0, CS: 0, TK: 0 }; });
+        });
+        Object.values(store.balai).forEach((b) => {
+          (b.personel || []).forEach((p) => {
+            if (!p || !p.pangkat || !p.status) return;
+            const effKat = mapping[p.pangkat];
+            if (!effKat) return;
+            if (!m[effKat]) {
+              m[effKat] = {};
+              UNITS.forEach((u) => { m[effKat][u] = { A: 0, C: 0, CS: 0, TK: 0 }; });
+            }
+            const st = mapPersonelStatus(p.status);
+            if (!st) return;
+            const u = p.unit1;
+            if (!u) return;
+            if (!m[effKat][u]) return;
+            m[effKat][u][st]++;
+          });
         });
         return m;
       }
@@ -4073,9 +4179,9 @@
         thead.appendChild(sr);
         tbl.appendChild(thead);
 
-        const m = computeAllPersonelGrid();
+        const m = computeAllPersonelGridSummary(PERSONEL_KAT_RINGKASAN, PERSONEL_MAP_RINGKASAN);
         const tbody = document.createElement('tbody');
-        RANKS.forEach((r) => {
+        PERSONEL_KAT_RINGKASAN.forEach((r) => {
           const tr = document.createElement('tr');
           const rowTh = document.createElement('th');
           rowTh.className = 'rowname';
@@ -4084,7 +4190,7 @@
           const rowSum = { A: 0, C: 0, CS: 0, TK: 0 };
           UNITS.forEach((u) => {
             STATUS_P.forEach((s) => {
-              const v = m[r][u][s];
+              const v = (m[r] && m[r][u] && m[r][u][s]) || 0;
               rowSum[s] += v;
               const td = document.createElement('td');
               td.textContent = v;
@@ -4110,7 +4216,9 @@
         UNITS.forEach((u) => {
           STATUS_P.forEach((s) => {
             let sum = 0;
-            RANKS.forEach((r) => (sum += m[r][u][s]));
+            PERSONEL_KAT_RINGKASAN.forEach((r) => {
+              sum += (m[r] && m[r][u] && m[r][u][s]) || 0;
+            });
             grand[s] += sum;
             const td = document.createElement('td');
             td.textContent = sum;
@@ -4298,8 +4406,8 @@
       }
       function formatNamaGred(person) {
         if (!person || !person.nama) return null;
-        const gred = extractGred(person.pangkat);
-        if (gred) return gred + ' - ' + person.nama;
+        const pangkat = extractPangkat(person.pangkat);
+        if (pangkat) return pangkat + ' ' + person.nama;
         return person.nama;
       }
 
@@ -4353,9 +4461,9 @@
     <th>GRED</th>
     <th>TURN OUT</th>
     <th style="text-align:left;">BALAI</th>
-    <th style="text-align:left;">KETUA BALAI (GRED - NAMA)</th>
+    <th style="text-align:left;">KETUA BALAI</th>
     <th>NO TEL</th>
-    <th style="text-align:left;">PENYELIA PASUKAN (GRED - NAMA)</th>
+    <th style="text-align:left;">PENYELIA PASUKAN</th>
     <th>NO TEL</th>
     <th>KB</th>
     <th>PO</th>
@@ -4556,24 +4664,27 @@
           key: 'personel',
           title: 'KEKUATAN PERSONEL — IKUT BALAI',
           color: 'var(--red)',
-          catList: RANKS,
+          catList: PERSONEL_KAT_RINGKASAN,
           mode: 'personel',
+          katMapPersonel: PERSONEL_MAP_RINGKASAN,
         });
         renderBalaiSummaryTable({
           key: 'jentera',
           title: 'KEKUATAN JENTERA UTAMA — IKUT BALAI',
           color: 'var(--amber)',
-          catList: JENTERA_KAT,
+          catList: JENTERA_KAT_PO3A,
           mode: 'equip',
           equipKey: 'jentera',
+          katMapSummary: JENTERA_MAP_PO3A,
         });
         renderBalaiSummaryTable({
           key: 'marin',
           title: 'KEKUATAN JENTERA MARIN — IKUT BALAI',
           color: 'var(--blue)',
-          catList: MARIN_KAT,
+          catList: MARIN_KAT_PO3A,
           mode: 'equip',
           equipKey: 'marin',
+          katMapSummary: MARIN_MAP_PO3A,
         });
         renderBalaiSummaryTable({
           key: 'utiliti',
@@ -4596,7 +4707,7 @@
       }
 
       function renderBalaiSummaryTable(opts) {
-        const { key, title, color, catList, mode, equipKey, isKomunikasi, katMapSummary } = opts;
+        const { key, title, color, catList, mode, equipKey, isKomunikasi, katMapSummary, katMapPersonel } = opts;
         const isPersonel = mode === 'personel';
         const subCols = isPersonel ? ['A', 'C', 'CS', 'TK'] : ['B', 'R'];
         const subColSpan = subCols.length + 1;
@@ -4652,7 +4763,11 @@
               const cnt = { A: 0, C: 0, CS: 0, TK: 0 };
               if (balaiState) {
                 (balaiState.personel || []).forEach((p) => {
-                  if (p && p.pangkat === cat) {
+                  if (!p || !p.pangkat) return;
+                  const effKat = katMapPersonel
+                    ? katMapPersonel[p.pangkat]
+                    : p.pangkat;
+                  if (effKat && effKat === cat) {
                     const st = mapPersonelStatus(p.status);
                     if (st) cnt[st]++;
                   }
@@ -5207,7 +5322,8 @@
           renderTopBar();
           renderAll();
 
-          setAutosaveIndicator('saved', 'Auto-save sedia');
+          dirtyBalai.clear();
+          updateDirtyUI();
           showToast('Data berjaya dimuatkan dari Google Sheets', 'success');
         } catch (err) {
           console.error('Init error:', err);
@@ -5222,7 +5338,8 @@
           renderTopBar();
           renderAll();
 
-          setAutosaveIndicator('error', 'Gagal muat');
+          dirtyBalai.clear();
+          updateDirtyUI();
         } finally {
           setLoading(false);
         }
@@ -5232,8 +5349,6 @@
         const btn = this;
         const label = document.getElementById('saveSheetLabel');
         if (btn.disabled) return;
-
-        clearTimeout(saveTimer);
 
         btn.disabled = true;
         btn.classList.add('saving');
@@ -5250,9 +5365,7 @@
           label.textContent = 'Disimpan!';
 
           const t = new Date().toLocaleTimeString('ms-MY');
-          setAutosaveIndicator('saved', 'Disimpan ' + t);
-          const n = document.getElementById('savedNote');
-          if (n) n.textContent = 'Disimpan ' + t;
+          markClean(t);
 
           showToast('Data ' + store.activeBalai + ' berjaya disimpan ke Google Sheet', 'success');
 
@@ -5295,6 +5408,9 @@
           store.balai[namaBalai] = state;
 
           await saveBalaiToAPI(namaBalai, state);
+
+          dirtyBalai.delete(namaBalai);
+          updateDirtyUI();
 
           renderTopBar();
           renderAll();
@@ -5409,6 +5525,8 @@
               await saveBalaiToAPI(store.activeBalai, newState);
               store.balai[store.activeBalai] = newState;
               state = newState;
+              dirtyBalai.delete(store.activeBalai);
+              updateDirtyUI();
               renderTopBar();
               renderAll();
               showToast('Import ke balai "' + store.activeBalai + '" berjaya', 'success');
@@ -5456,6 +5574,8 @@
           store.activeBalai = BALAI_LIST[0].name;
           store.balai[store.activeBalai] = defaultState(store.activeBalai);
           state = store.balai[store.activeBalai];
+          dirtyBalai.clear();
+          updateDirtyUI();
           persistUI();
           renderTabbar();
           renderTopBar();
