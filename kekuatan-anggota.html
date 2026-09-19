@@ -354,6 +354,16 @@
         outline: none; border-color: var(--red);
         box-shadow: 0 0 0 3px rgba(214, 52, 71, 0.16);
       }
+      .id-field input[readonly] {
+        background: var(--panel-3);
+        color: var(--amber);
+        cursor: default;
+        font-weight: 600;
+      }
+      .id-field input[readonly]:focus {
+        border-color: var(--line);
+        box-shadow: none;
+      }
 
       /* Kumpulan action button — kekal bersama bila wrap */
       .topbar-actions {
@@ -1580,6 +1590,7 @@
           <div class="id-field">
             <label>Shif Bertugas</label>
             <select id="f_shif">
+              <option value="">— Pilih Shif —</option>
               <option value="0800-2000">0800-2000</option>
               <option value="2000-0800">2000-0800</option>
               <option value="0800-0800">0800-0800</option>
@@ -1589,11 +1600,8 @@
             <label>Tarikh</label><input id="f_tarikh" type="date" />
           </div>
           <div class="id-field">
-            <label>Kategori Balai</label>
-            <select id="f_kategori">
-              <option value="12 JAM">12 JAM</option>
-              <option value="24 JAM">24 JAM</option>
-            </select>
+            <label>Kategori Balai (auto)</label>
+            <input id="f_kategori" type="text" readonly placeholder="—" tabindex="-1" />
           </div>
         </div>
 
@@ -1941,6 +1949,30 @@
         updateBodyFullscreenClass();
       }
 
+      /* ===== LocalStorage untuk Shif / Tarikh / Kategori per balai ===== */
+      const IDENT_LS_KEY = 'bomba-ident-per-balai';
+
+      function loadIdentLS() {
+        try {
+          const raw = localStorage.getItem(IDENT_LS_KEY);
+          return raw ? JSON.parse(raw) : {};
+        } catch (e) { return {}; }
+      }
+
+      function saveIdentLS(balaiName, ident) {
+        if (!balaiName || !ident) return;
+        try {
+          const all = loadIdentLS();
+          all[balaiName] = {
+            balai: balaiName,
+            shif: ident.shif || '',
+            tarikh: ident.tarikh || '',
+            kategori: ident.kategori || '',
+          };
+          localStorage.setItem(IDENT_LS_KEY, JSON.stringify(all));
+        } catch (e) {}
+      }
+
       const PRINT_INFO_KEY = 'bomba-print-info';
 
       function loadPrintInfo() {
@@ -2249,7 +2281,7 @@
       ];
 
       const JENTERA_KAT = ['FRT','LFRT','CFRT','RFRT','Rapid Rescue Vehicle (RRV)','ALP','SKYLIFT','TTL','High Performance Pump Module (HPPM)','High Capacity Foam Tender (HCFM)','PRIME MOVER','FOAM TENDER','Breathing Apparatus Tender Vehicle (BATV)','WATER TANKER 10,000','WATER TANKER 20,000','JEN. HAZMAT','KOMUNIKASI','RIM','EMRS','MOBILE COMMAND POST','KEMBALIK','SIASATAN (FORENSICS)'];
-      
+
       /* ===== Senarai & Pemetaan Khas untuk PO3A (Jentera Utama) ===== */
       const JENTERA_KAT_PO3A = [
         'FRT',
@@ -2816,9 +2848,9 @@
             ident: [
               {
                 balai: balaiName,
-                shif: ident.shif || '0800-2000',
-                tarikh: ident.tarikh || new Date().toISOString().slice(0, 10),
-                kategori: ident.kategori || '12 JAM',
+                shif: ident.shif || '',
+                tarikh: ident.tarikh || '',
+                kategori: ident.kategori || '',
               },
             ],
             personel: (balaiData.personel || []).map(function (p) {
@@ -2860,7 +2892,7 @@
       }
       function defaultState(balaiName) {
         return {
-          ident: { balai: balaiName || 'LARKIN', shif: '0800-2000', tarikh: new Date().toISOString().slice(0, 10), kategori: '12 JAM' },
+          ident: { balai: balaiName || 'LARKIN', shif: '', tarikh: '', kategori: '' },
           personel: Array.from({ length: 10 }, emptyPersonel),
           equip: {
             jentera: Array.from({ length: 5 }, () => emptyEquip('')),
@@ -2873,16 +2905,16 @@
 
       function buildStoreFromApiData(apiData) {
         const balai = {};
-        const today = new Date().toISOString().slice(0, 10);
+        const lsIdentAll = loadIdentLS();
 
         const identMap = {};
         (apiData.ident || []).forEach(function (r) {
           if (r && r.balai) {
             identMap[r.balai] = {
               balai: r.balai,
-              shif: r.shif || '0800-2000',
-              tarikh: r.tarikh || today,
-              kategori: r.kategori || '12 JAM',
+              shif: r.shif || '',
+              tarikh: r.tarikh || '',
+              kategori: r.kategori || '',
             };
           }
         });
@@ -2920,10 +2952,22 @@
               };
             });
 
+          // Keutamaan: API → LocalStorage → Kosong
+          let identData = identMap[name];
+          if (!identData && lsIdentAll[name]) {
+            identData = {
+              balai: name,
+              shif: lsIdentAll[name].shif || '',
+              tarikh: lsIdentAll[name].tarikh || '',
+              kategori: lsIdentAll[name].kategori || '',
+            };
+          }
+          if (!identData) {
+            identData = { balai: name, shif: '', tarikh: '', kategori: '' };
+          }
+
           balai[name] = {
-            ident: identMap[name] || {
-              balai: name, shif: '0800-2000', tarikh: today, kategori: '12 JAM',
-            },
+            ident: identData,
             personel: personel.length > 0 ? personel : Array.from({ length: 10 }, emptyPersonel),
             equip: {
               jentera: mapEquipRows(apiData.jentera).length > 0
@@ -3238,27 +3282,38 @@
         }
       }
 
+      function computeKategoriFromShif(shif) {
+        if (shif === '0800-2000' || shif === '2000-0800') return '12 JAM';
+        if (shif === '0800-0800') return '24 JAM';
+        return '';
+      }
+
       function renderIdentity() {
         const fs = document.getElementById('f_shif');
         const ft = document.getElementById('f_tarikh');
         const fk = document.getElementById('f_kategori');
         state.ident.balai = store.activeBalai;
-        if (state.ident.shif === '0800-0800') state.ident.kategori = '24 JAM';
-        else if (state.ident.shif === '0800-2000' || state.ident.shif === '2000-0800') state.ident.kategori = '12 JAM';
-        if (!SHIF_OPTS.includes(state.ident.shif)) { state.ident.shif = '0800-2000'; state.ident.kategori = '12 JAM'; }
-        if (!KATEGORI_BALAI_OPTS.includes(state.ident.kategori)) state.ident.kategori = '12 JAM';
-        fs.value = state.ident.shif;
-        fk.value = state.ident.kategori;
-        ft.value = state.ident.tarikh;
+
+        // Sahkan shif — reset jika tidak sah
+        if (state.ident.shif && !SHIF_OPTS.includes(state.ident.shif)) state.ident.shif = '';
+
+        // Auto-selaras kategori dengan shif
+        state.ident.kategori = computeKategoriFromShif(state.ident.shif);
+
+        fs.value = state.ident.shif || '';
+        ft.value = state.ident.tarikh || '';
+        fk.value = state.ident.kategori || '';
+
         fs.onchange = (e) => {
-          const v = e.target.value;
-          state.ident.shif = v;
-          state.ident.kategori = v === '0800-0800' ? '24 JAM' : '12 JAM';
-          fk.value = state.ident.kategori;
+          state.ident.shif = e.target.value;
+          state.ident.kategori = computeKategoriFromShif(e.target.value);
+          fk.value = state.ident.kategori || '';
           saveState();
         };
-        ft.oninput = (e) => { state.ident.tarikh = e.target.value; saveState(); };
-        fk.onchange = (e) => { state.ident.kategori = e.target.value; saveState(); };
+        ft.oninput = (e) => {
+          state.ident.tarikh = e.target.value;
+          saveState();
+        };
       }
 
       function makeInput(type, value, onChange, ph) {
@@ -5121,6 +5176,11 @@
         const tarikh = state.ident.tarikh;
         const shif = state.ident.shif;
 
+        if (!tarikh || !shif) {
+          showToast('Sila pilih Shif dan Tarikh sebelum arkib', 'error');
+          return;
+        }
+
         if (!confirm('Simpan arkib untuk balai "' + balai + '"?\n\nTarikh: ' + tarikh + '\nShif: ' + shif + '\n\nIni akan menyimpan rekod kekuatan anggota dan jentera ke Google Sheets.')) return;
 
         btn.disabled = true;
@@ -5350,6 +5410,12 @@
         const label = document.getElementById('saveSheetLabel');
         if (btn.disabled) return;
 
+        // Validasi: shif wajib dipilih
+        if (store.view === 'balai' && !state.ident.shif) {
+          showToast('Sila pilih Shif Bertugas sebelum simpan', 'error');
+          return;
+        }
+
         btn.disabled = true;
         btn.classList.add('saving');
         btn.classList.remove('saved');
@@ -5359,6 +5425,7 @@
         try {
           store.balai[store.activeBalai] = state;
           await saveBalaiToAPI(store.activeBalai, state);
+          saveIdentLS(store.activeBalai, state.ident);
 
           btn.classList.remove('saving');
           btn.classList.add('saved');
@@ -5408,6 +5475,7 @@
           store.balai[namaBalai] = state;
 
           await saveBalaiToAPI(namaBalai, state);
+          saveIdentLS(namaBalai, state.ident);
 
           dirtyBalai.delete(namaBalai);
           updateDirtyUI();
@@ -5525,6 +5593,7 @@
               await saveBalaiToAPI(store.activeBalai, newState);
               store.balai[store.activeBalai] = newState;
               state = newState;
+              saveIdentLS(store.activeBalai, newState.ident);
               dirtyBalai.delete(store.activeBalai);
               updateDirtyUI();
               renderTopBar();
@@ -5574,6 +5643,7 @@
           store.activeBalai = BALAI_LIST[0].name;
           store.balai[store.activeBalai] = defaultState(store.activeBalai);
           state = store.balai[store.activeBalai];
+          try { localStorage.removeItem(IDENT_LS_KEY); } catch (e) {}
           dirtyBalai.clear();
           updateDirtyUI();
           persistUI();
