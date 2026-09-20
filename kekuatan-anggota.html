@@ -21,7 +21,6 @@
       href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap"
       rel="stylesheet"
     />
-    <!-- ================== SUPABASE CLIENT ================== -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
       :root,
@@ -241,53 +240,29 @@
       }
       .main-title::before {
         content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px;
-        background: linear-gradient(
-          90deg,
-          var(--red) 0%,
-          var(--amber) 12%,
-          var(--red) 24%,
-          var(--amber) 36%,
-          var(--red) 48%,
-          var(--amber) 60%,
-          var(--red) 72%,
-          var(--amber) 84%,
-          var(--red) 100%
-        );
+        background: linear-gradient(90deg,
+          var(--red) 0%, var(--amber) 12%, var(--red) 24%, var(--amber) 36%,
+          var(--red) 48%, var(--amber) 60%, var(--red) 72%, var(--amber) 84%, var(--red) 100%);
         background-size: 200% 100%;
         background-position: 0% 50%;
-        animation:
-          ambientFlow 10s linear infinite,
-          ambientPulse 3.5s ease-in-out infinite;
+        animation: ambientFlow 10s linear infinite, ambientPulse 3.5s ease-in-out infinite;
         z-index: 1;
       }
-
       @keyframes ambientFlow {
-        0%   { background-position:   0% 50%; }
+        0% { background-position: 0% 50%; }
         100% { background-position: 200% 50%; }
       }
-
       @keyframes ambientPulse {
         0%, 100% {
-          box-shadow:
-            0 0 8px  var(--ambient-glow-a),
-            0 0 16px var(--ambient-glow-b),
-            0 2px 12px var(--ambient-glow-a);
+          box-shadow: 0 0 8px var(--ambient-glow-a), 0 0 16px var(--ambient-glow-b), 0 2px 12px var(--ambient-glow-a);
         }
         50% {
-          box-shadow:
-            0 0 14px var(--ambient-glow-a),
-            0 0 26px var(--ambient-glow-b),
-            0 2px 18px var(--ambient-glow-a);
+          box-shadow: 0 0 14px var(--ambient-glow-a), 0 0 26px var(--ambient-glow-b), 0 2px 18px var(--ambient-glow-a);
         }
       }
-
       @media (prefers-reduced-motion: reduce) {
-        .main-title::before {
-          animation: none;
-          background-position: 0% 50%;
-        }
+        .main-title::before { animation: none; background-position: 0% 50%; }
       }
-
       .main-title h1 {
         margin: 0; font-size: 1.7rem; font-weight: 700;
         letter-spacing: 0.11em; color: var(--text);
@@ -546,7 +521,7 @@
         font-weight: 600;
       }
       .mg-group.mg-danger .mg-label { color: var(--red); }
-      .mg-buttons { display: flex; flex-wrap: wrap; gap: 0.4rem; }
+      .mg-buttons { display: flex; flex-wrap: wrap; gap: 0.4rem; align-items: center; }
 
       .manage-bar button.btn,
       .manage-bar .btn-archive,
@@ -570,15 +545,78 @@
         color: #fff;
       }
 
-      .manage-bar .btn-export,
-      .manage-bar .btn-export-all {
+      .manage-bar .btn-export {
         border-color: var(--btn-primary-bd);
         color: var(--amber);
         background: var(--btn-primary-bg);
       }
-      .manage-bar .btn-export:hover,
-      .manage-bar .btn-export-all:hover {
+      .manage-bar .btn-export:hover {
         background: var(--btn-primary-bg-hover);
+      }
+
+      /* ===== AUTO-RELOAD WIDGET ===== */
+      .auto-reload-widget {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.35rem;
+        padding: 0.32rem 0.55rem;
+        background: var(--panel-2);
+        border: 1px solid var(--line);
+        border-radius: var(--radius-sm);
+        font-family: 'IBM Plex Mono', monospace;
+        font-size: 0.72rem;
+        color: var(--text-dim);
+        white-space: nowrap;
+        transition: border-color 0.2s, background 0.2s;
+      }
+      .auto-reload-widget .ar-label {
+        font-family: 'Oswald', sans-serif;
+        font-size: 0.6rem;
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
+        color: var(--text-faint);
+        font-weight: 600;
+      }
+      .auto-reload-widget .ar-time {
+        color: var(--amber);
+        font-weight: 700;
+        min-width: 38px;
+        text-align: center;
+        display: inline-block;
+        transition: color 0.2s;
+      }
+      .auto-reload-widget .ar-btn {
+        background: var(--bg-2);
+        border: 1px solid var(--line);
+        color: var(--text);
+        width: 22px;
+        height: 22px;
+        padding: 0;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 0.7rem;
+        line-height: 1;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        transition: background 0.12s, border-color 0.12s, color 0.12s;
+        font-family: inherit;
+      }
+      .auto-reload-widget .ar-btn:hover {
+        background: var(--panel-3);
+        border-color: var(--btn-hover-border);
+        color: var(--amber);
+      }
+      .auto-reload-widget.paused {
+        border-color: rgba(217, 154, 43, 0.5);
+        background: rgba(217, 154, 43, 0.06);
+      }
+      .auto-reload-widget.paused .ar-time {
+        color: var(--text-faint);
+      }
+      .auto-reload-widget.paused .ar-label::after {
+        content: ' ⏸';
+        color: var(--amber);
       }
 
       .manage-bar .btn-archive {
@@ -769,7 +807,6 @@
       }
       .zone-tab .zt-chev .ico { width: 0.8em; height: 0.8em; }
       .zone-tab.zone-active .zt-chev { transform: rotate(180deg); }
-
       .zone-tab.zone-active {
         color: #fff;
         border-color: rgba(255, 255, 255, 0.14);
@@ -803,23 +840,16 @@
         background: var(--panel);
         border: 1px solid var(--line);
         border-radius: var(--radius);
-        box-shadow:
-          0 12px 40px rgba(0, 0, 0, 0.55),
-          0 2px 8px rgba(0, 0, 0, 0.35);
+        box-shadow: 0 12px 40px rgba(0, 0, 0, 0.55), 0 2px 8px rgba(0, 0, 0, 0.35);
         padding: 0.75rem;
         opacity: 0;
         visibility: hidden;
         transform: translateY(-6px);
-        transition:
-          opacity 0.16s ease,
-          transform 0.16s ease,
-          visibility 0.16s;
+        transition: opacity 0.16s ease, transform 0.16s ease, visibility 0.16s;
         pointer-events: none;
       }
       [data-theme='light'] .zone-drawer {
-        box-shadow:
-          0 12px 40px rgba(15, 23, 42, 0.22),
-          0 2px 8px rgba(15, 23, 42, 0.12);
+        box-shadow: 0 12px 40px rgba(15, 23, 42, 0.22), 0 2px 8px rgba(15, 23, 42, 0.12);
       }
       .zone-drawer.open {
         opacity: 1;
@@ -883,11 +913,7 @@
         letter-spacing: 0.03em;
         cursor: pointer;
         text-align: left;
-        transition:
-          background 0.14s ease,
-          border-color 0.14s ease,
-          transform 0.1s ease,
-          color 0.14s ease;
+        transition: background 0.14s ease, border-color 0.14s ease, transform 0.1s ease, color 0.14s ease;
         position: relative;
       }
       .zone-drawer-item:hover {
@@ -1059,14 +1085,10 @@
         flex-direction: column;
         border-radius: var(--radius);
         background: var(--panel);
-        box-shadow:
-          0 0 0 9999px rgba(2, 6, 16, 0.7),
-          0 8px 40px rgba(0, 0, 0, 0.55);
+        box-shadow: 0 0 0 9999px rgba(2, 6, 16, 0.7), 0 8px 40px rgba(0, 0, 0, 0.55);
       }
       [data-theme='light'] .section.fullscreen-active {
-        box-shadow:
-          0 0 0 9999px rgba(15, 23, 42, 0.45),
-          0 8px 40px rgba(0, 0, 0, 0.35);
+        box-shadow: 0 0 0 9999px rgba(15, 23, 42, 0.45), 0 8px 40px rgba(0, 0, 0, 0.35);
       }
       .section.fullscreen-active .section-head {
         cursor: default;
@@ -1600,186 +1622,72 @@
 
       @media print {
         body.printing-po3a .stats,
-        body.printing-po3a .topbar {
-          display: none !important;
-        }
-        body.printing-po3a .main-title {
-          padding: 0.25rem 0.5rem 0.35rem !important;
-          margin-bottom: 0.4rem !important;
-        }
-        body.printing-po3a .main-title h1 {
-          font-size: 0.95rem !important;
-          letter-spacing: 0.06em !important;
-        }
-        body.printing-po3a .main-title .sub {
-          font-size: 0.5rem !important;
-          letter-spacing: 0.1em !important;
-          margin-top: 0.15rem !important;
-        }
-
-        body.printing-po3a .section {
-          margin-bottom: 0.35rem !important;
-          page-break-inside: auto !important;
-          break-inside: auto !important;
-        }
-        body.printing-po3a .section-head {
-          padding: 0.25rem 0.5rem !important;
-          page-break-after: avoid !important;
-          break-after: avoid !important;
-        }
-        body.printing-po3a .section-head::before {
-          width: 3px !important;
-        }
-        body.printing-po3a .section-head h2 {
-          font-size: 0.72rem !important;
-          padding-left: 0.2rem !important;
-        }
+        body.printing-po3a .topbar { display: none !important; }
+        body.printing-po3a .main-title { padding: 0.25rem 0.5rem 0.35rem !important; margin-bottom: 0.4rem !important; }
+        body.printing-po3a .main-title h1 { font-size: 0.95rem !important; letter-spacing: 0.06em !important; }
+        body.printing-po3a .main-title .sub { font-size: 0.5rem !important; letter-spacing: 0.1em !important; margin-top: 0.15rem !important; }
+        body.printing-po3a .section { margin-bottom: 0.35rem !important; page-break-inside: auto !important; break-inside: auto !important; }
+        body.printing-po3a .section-head { padding: 0.25rem 0.5rem !important; page-break-after: avoid !important; break-after: avoid !important; }
+        body.printing-po3a .section-head::before { width: 3px !important; }
+        body.printing-po3a .section-head h2 { font-size: 0.72rem !important; padding-left: 0.2rem !important; }
         body.printing-po3a .section-head .hint { display: none !important; }
-        body.printing-po3a .section-body {
-          padding: 0.3rem 0.35rem !important;
-          overflow: visible !important;
-        }
-        body.printing-po3a .sub-title {
-          font-size: 0.52rem !important;
-          margin: 0.35rem 0 0.15rem !important;
-          padding-left: 0.4rem !important;
-        }
-
-        body.printing-po3a table.grid {
-          font-size: 0.5rem !important;
-        }
+        body.printing-po3a .section-body { padding: 0.3rem 0.35rem !important; overflow: visible !important; }
+        body.printing-po3a .sub-title { font-size: 0.52rem !important; margin: 0.35rem 0 0.15rem !important; padding-left: 0.4rem !important; }
+        body.printing-po3a table.grid { font-size: 0.5rem !important; }
         body.printing-po3a table.grid th,
-        body.printing-po3a table.grid td {
-          padding: 0.13rem 0.18rem !important;
-        }
-        body.printing-po3a table.grid thead tr.groups th {
-          font-size: 0.44rem !important;
-          padding: 0.13rem 0.1rem !important;
-          line-height: 1.05 !important;
-        }
-        body.printing-po3a table.grid thead tr.subs th {
-          font-size: 0.42rem !important;
-          padding: 0.08rem 0.1rem !important;
-        }
-        body.printing-po3a table.grid tbody th.rowname {
-          font-size: 0.5rem !important;
-          min-width: 95px !important;
-          padding: 0.13rem 0.3rem !important;
-        }
+        body.printing-po3a table.grid td { padding: 0.13rem 0.18rem !important; }
+        body.printing-po3a table.grid thead tr.groups th { font-size: 0.44rem !important; padding: 0.13rem 0.1rem !important; line-height: 1.05 !important; }
+        body.printing-po3a table.grid thead tr.subs th { font-size: 0.42rem !important; padding: 0.08rem 0.1rem !important; }
+        body.printing-po3a table.grid tbody th.rowname { font-size: 0.5rem !important; min-width: 95px !important; padding: 0.13rem 0.3rem !important; }
         body.printing-po3a table.grid tfoot th,
-        body.printing-po3a table.grid tfoot td {
-          font-size: 0.5rem !important;
-          padding: 0.13rem 0.18rem !important;
-        }
-
-        body.printing-po3a .po3a-split-wrapper {
-          display: block !important;
-          width: 100% !important;
-        }
-        body.printing-po3a .po3a-split-wrapper > table.grid {
-          page-break-inside: avoid !important;
-          break-inside: avoid !important;
-          margin-bottom: 4px !important;
-        }
-        body.printing-po3a .po3a-split-wrapper > table.grid:last-child {
-          margin-bottom: 0 !important;
-        }
+        body.printing-po3a table.grid tfoot td { font-size: 0.5rem !important; padding: 0.13rem 0.18rem !important; }
+        body.printing-po3a .po3a-split-wrapper { display: block !important; width: 100% !important; }
+        body.printing-po3a .po3a-split-wrapper > table.grid { page-break-inside: avoid !important; break-inside: avoid !important; margin-bottom: 4px !important; }
+        body.printing-po3a .po3a-split-wrapper > table.grid:last-child { margin-bottom: 0 !important; }
       }
 
       @media print {
-        * {
-          -webkit-print-color-adjust: exact !important;
-          print-color-adjust: exact !important;
-        }
-
+        * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
         :root,
         :root[data-theme='dark'],
         :root[data-theme='light'] {
-          --bg: #eef1f6 !important;
-          --bg-2: #e4e9f1 !important;
-          --panel: #ffffff !important;
-          --panel-2: #f5f8fc !important;
-          --panel-3: #e9eef6 !important;
-          --surface: #fbfcfe !important;
-          --line: #d3dae5 !important;
-          --line-soft: #e5eaf2 !important;
-          --text: #16223a !important;
-          --text-dim: #52607a !important;
-          --text-faint: #8892a6 !important;
-          --text-strong: #0b1425 !important;
-          --red: #c0293d !important;
-          --red-dim: #8c1f2c !important;
-          --amber: #a5681a !important;
-          --green: #1f8a52 !important;
-          --blue: #2c6fd8 !important;
-          --slate: #63707f !important;
-          --rosak: #c73838 !important;
-          --purple: #6f4fc0 !important;
-          --teal: #15847c !important;
-          --zon1: #c0293d !important;
-          --zon2: #b8791c !important;
-          --zon3: #2c6fd8 !important;
-          --zon4: #1f8a52 !important;
-          --bg-glow: #ffffff !important;
-          --zebra: rgba(15, 23, 42, 0.02) !important;
-          --hover-row: transparent !important;
-          --col-amber-bg: rgba(165, 104, 26, 0.1) !important;
-          --col-amber-bg-2: rgba(165, 104, 26, 0.07) !important;
+          --bg: #eef1f6 !important; --bg-2: #e4e9f1 !important;
+          --panel: #ffffff !important; --panel-2: #f5f8fc !important; --panel-3: #e9eef6 !important;
+          --surface: #fbfcfe !important; --line: #d3dae5 !important; --line-soft: #e5eaf2 !important;
+          --text: #16223a !important; --text-dim: #52607a !important; --text-faint: #8892a6 !important;
+          --text-strong: #0b1425 !important; --red: #c0293d !important; --red-dim: #8c1f2c !important;
+          --amber: #a5681a !important; --green: #1f8a52 !important; --blue: #2c6fd8 !important;
+          --slate: #63707f !important; --rosak: #c73838 !important; --purple: #6f4fc0 !important;
+          --teal: #15847c !important; --zon1: #c0293d !important; --zon2: #b8791c !important;
+          --zon3: #2c6fd8 !important; --zon4: #1f8a52 !important; --bg-glow: #ffffff !important;
+          --zebra: rgba(15, 23, 42, 0.02) !important; --hover-row: transparent !important;
+          --col-amber-bg: rgba(165, 104, 26, 0.1) !important; --col-amber-bg-2: rgba(165, 104, 26, 0.07) !important;
           --col-amber-row: rgba(165, 104, 26, 0.1) !important;
         }
-
-        body {
-          background: #fff !important;
-          color: var(--text) !important;
-        }
+        body { background: #fff !important; color: var(--text) !important; }
         body.has-fullscreen-panel { overflow: visible !important; }
-        .section.fullscreen-active {
-          position: static !important;
-          inset: auto !important;
-          box-shadow: none !important;
-          z-index: auto !important;
-        }
+        .section.fullscreen-active { position: static !important; inset: auto !important; box-shadow: none !important; z-index: auto !important; }
         .btn-fullscreen { display: none !important; }
         .actions, .legend, .saved-note, .roster-toolbar, .del-cell,
         .section-head .chev, .theme-toggle, .btn-save-sheet,
         .manage-bar, .autosave-indicator, .btn-back-dashboard,
         .tabbar, .loading-overlay, .toast-container, .site-footer,
-        .print-modal-overlay, .btn-print-po3a {
-          display: none !important;
-        }
-        .section, .stat, .topbar, .main-title {
-          box-shadow: none !important; page-break-inside: avoid;
-        }
-        .main-title {
-          border-top: 3px solid #16223a !important;
-          border-bottom: 3px solid #16223a !important;
-        }
-
+        .print-modal-overlay, .btn-print-po3a, .auto-reload-widget { display: none !important; }
+        .section, .stat, .topbar, .main-title { box-shadow: none !important; page-break-inside: avoid; }
+        .main-title { border-top: 3px solid #16223a !important; border-bottom: 3px solid #16223a !important; }
         body.printing-single #sections > .section.print-target .section-head {
-          background: transparent !important;
-          border: none !important;
-          padding: 0 0 14px !important;
-          margin-bottom: 14px !important;
+          background: transparent !important; border: none !important;
+          padding: 0 0 14px !important; margin-bottom: 14px !important;
           border-bottom: 2.5px solid #16223a !important;
-          justify-content: center !important;
-          text-align: center !important;
+          justify-content: center !important; text-align: center !important;
         }
-        body.printing-single #sections > .section.print-target .section-head::before {
-          display: none !important;
-        }
+        body.printing-single #sections > .section.print-target .section-head::before { display: none !important; }
         body.printing-single #sections > .section.print-target .section-head h2 {
-          font-size: 1.45rem !important;
-          font-weight: 700 !important;
-          letter-spacing: 0.1em !important;
-          color: #16223a !important;
-          padding: 0 !important;
-          text-align: center !important;
-          line-height: 1.25 !important;
+          font-size: 1.45rem !important; font-weight: 700 !important;
+          letter-spacing: 0.1em !important; color: #16223a !important;
+          padding: 0 !important; text-align: center !important; line-height: 1.25 !important;
         }
-        body.printing-single #sections > .section.print-target .section-head .hint {
-          display: none !important;
-        }
-
+        body.printing-single #sections > .section.print-target .section-head .hint { display: none !important; }
         table.bkb tbody td.balai-name { background: #f5f5f5 !important; color: #16223a !important; }
         table.bkb .contact-cell, table.bkb .contact-th { display: none !important; }
         .mers-header { background: #f5f5f5 !important; border-color: #999 !important; }
@@ -1793,62 +1701,25 @@
         .mers-check.tak:not(.active) { color: #c73838 !important; }
         .mers-footer { background: #f5f5f5 !important; border-color: #999 !important; }
         .mers-footer .mf-value { color: #8a5810 !important; }
-
         .print-footer {
           display: block !important; margin-top: 30px; padding-top: 14px;
           page-break-inside: avoid; break-inside: avoid;
           font-family: 'Inter', Arial, sans-serif; color: #16223a;
         }
-        .print-footer .pf-loc-date {
-          text-align: right; font-size: 11px; margin-bottom: 22px;
-          font-family: 'IBM Plex Mono', monospace;
-        }
-        .print-footer .pf-signatures {
-          display: flex; justify-content: space-between;
-          gap: 40px; margin-bottom: 22px;
-        }
+        .print-footer .pf-loc-date { text-align: right; font-size: 11px; margin-bottom: 22px; font-family: 'IBM Plex Mono', monospace; }
+        .print-footer .pf-signatures { display: flex; justify-content: space-between; gap: 40px; margin-bottom: 22px; }
         .print-footer .pf-sign-block { flex: 1; max-width: 45%; }
-        .print-footer .pf-sign-block .pf-title {
-          font-size: 11px; font-weight: 600; letter-spacing: 0.04em;
-          margin-bottom: 55px; text-transform: uppercase;
-        }
-        .print-footer .pf-sign-line {
-          border-top: 1px solid #16223a; padding-top: 4px;
-          font-size: 10px; line-height: 1.5;
-        }
-        .print-footer .pf-sign-line b {
-          font-size: 11px; letter-spacing: 0.02em;
-        }
-        .print-footer .pf-bottom {
-          border-top: 1.5px solid #16223a; padding-top: 6px;
-          text-align: center; font-size: 9.5px;
-          letter-spacing: 0.08em; text-transform: uppercase;
-          font-family: 'Oswald', sans-serif; color: #16223a;
-        }
+        .print-footer .pf-sign-block .pf-title { font-size: 11px; font-weight: 600; letter-spacing: 0.04em; margin-bottom: 55px; text-transform: uppercase; }
+        .print-footer .pf-sign-line { border-top: 1px solid #16223a; padding-top: 4px; font-size: 10px; line-height: 1.5; }
+        .print-footer .pf-sign-line b { font-size: 11px; letter-spacing: 0.02em; }
+        .print-footer .pf-bottom { border-top: 1.5px solid #16223a; padding-top: 6px; text-align: center; font-size: 9.5px; letter-spacing: 0.08em; text-transform: uppercase; font-family: 'Oswald', sans-serif; color: #16223a; }
         .print-footer .pf-bottom b { color: #16223a; font-weight: 700; }
         .print-footer .pf-bottom .sep { margin: 0 8px; }
-
-        body.printing-single .wrap > *:not(#sections):not(.print-footer) {
-          display: none !important;
-        }
-        body.printing-single #sections > .section {
-          display: none !important;
-        }
-        body.printing-single #sections > .section.print-target {
-          display: block !important;
-          border: none !important;
-          box-shadow: none !important;
-          margin: 0 !important;
-        }
-
-        body.printing-po3a .wrap > *:not(#sections):not(.print-footer):not(.main-title) {
-          display: none !important;
-        }
-        body.printing-po3a .main-title {
-          display: block !important;
-          border-top: 3px solid #16223a !important;
-          border-bottom: 3px solid #16223a !important;
-        }
+        body.printing-single .wrap > *:not(#sections):not(.print-footer) { display: none !important; }
+        body.printing-single #sections > .section { display: none !important; }
+        body.printing-single #sections > .section.print-target { display: block !important; border: none !important; box-shadow: none !important; margin: 0 !important; }
+        body.printing-po3a .wrap > *:not(#sections):not(.print-footer):not(.main-title) { display: none !important; }
+        body.printing-po3a .main-title { display: block !important; border-top: 3px solid #16223a !important; border-bottom: 3px solid #16223a !important; }
       }
 
       @media (max-width: 1200px) {
@@ -1859,19 +1730,12 @@
         .crest { padding-left: 0.35rem; }
         .id-fields { flex: 1 1 auto; margin-left: 0; justify-content: stretch; }
         .id-field { flex: 1 1 110px; min-width: 0; }
-        .topbar-actions {
-          flex: 1 1 auto;
-          justify-content: stretch;
-          width: 100%;
-        }
+        .topbar-actions { flex: 1 1 auto; justify-content: stretch; width: 100%; }
         .topbar-actions .autosave-indicator,
         .topbar-actions .btn-save-sheet,
         .topbar-actions .btn-print-po3a,
         .topbar-actions .theme-toggle,
-        .topbar-actions .btn-back-dashboard {
-          flex: 1 1 auto;
-          justify-content: center;
-        }
+        .topbar-actions .btn-back-dashboard { flex: 1 1 auto; justify-content: center; }
       }
       @media (max-width: 640px) {
         .crest { font-size: 1rem; }
@@ -1890,9 +1754,7 @@
     <div class="wrap">
       <div class="main-title">
         <h1>SISTEM KEKUATAN ANGGOTA JBPM NEGERI JOHOR</h1>
-        <div class="sub">
-          Jabatan Bomba dan Penyelamat Malaysia — Negeri Johor
-        </div>
+        <div class="sub">Jabatan Bomba dan Penyelamat Malaysia — Negeri Johor</div>
       </div>
 
       <div class="topbar">
@@ -1975,16 +1837,14 @@
                 <polyline points="7 10 12 15 17 10" />
                 <line x1="12" y1="15" x2="12" y2="3" />
               </svg>
-              Export Balai
+              Export
             </button>
-            <button class="btn btn-export-all" id="exportAllBtn" type="button">
-              <svg class="ico" viewBox="0 0 24 24" aria-hidden="true">
-                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
-                <polyline points="7 10 12 15 17 10" />
-                <line x1="12" y1="15" x2="12" y2="3" />
-              </svg>
-              Export Semua
-            </button>
+            <div class="auto-reload-widget" id="autoReloadWidget" title="Auto-reload data dari pelayan">
+              <span class="ar-label">⏱ Auto-Reload:</span>
+              <span class="ar-time" id="autoReloadTime">5:00</span>
+              <button class="ar-btn" id="autoReloadPauseBtn" type="button" title="Pause auto-reload">⏸</button>
+              <button class="ar-btn" id="autoReloadNowBtn" type="button" title="Refresh sekarang">🔄</button>
+            </div>
           </div>
         </div>
 
@@ -2062,9 +1922,7 @@
       <div id="sections"></div>
 
       <div class="print-footer" id="printFooter">
-        <div class="pf-loc-date" id="pfLocDate">
-          Johor Bahru, ______________________
-        </div>
+        <div class="pf-loc-date" id="pfLocDate">Johor Bahru, ______________________</div>
         <div class="pf-signatures">
           <div class="pf-sign-block">
             <div class="pf-title">Disediakan oleh:</div>
@@ -2163,9 +2021,6 @@
     </div>
 
     <script>
-      /* ==========================================================
-         ⚙️  KONFIGURASI SUPABASE
-         ========================================================== */
       const SUPABASE_CONFIG = {
         url: 'https://nstmylzvqckhrpxmbufx.supabase.co',
         anonKey: 'sb_publishable_6i7rUdjTRmOYMcookS6CFQ_lwXyRJJL',
@@ -2219,7 +2074,6 @@
         if (text) lt.textContent = text;
         o.classList.toggle('active', !!on);
       }
-
       function setAutosaveIndicator(state, text) {
         const el = document.getElementById('autosaveIndicator');
         const txt = document.getElementById('autosaveText');
@@ -2289,22 +2143,12 @@
         updateBodyFullscreenClass();
       }
 
-      /* ===== LocalStorage untuk Shif / Tarikh / Kategori per balai =====
-         ⚠️ DIUBAH: cache ini dibuang. Data ident sepenuhnya dari Supabase. */
-      const IDENT_LS_KEY = 'bomba-ident-per-balai'; // kekal sebagai kunci legacy untuk cleanup
-
-      function loadIdentLS() {
-        // ⚠️ No-op — tidak lagi baca dari localStorage
-        return {};
-      }
-
-      function saveIdentLS(balaiName, ident) {
-        // ⚠️ No-op — tidak lagi tulis ke localStorage
-        return;
-      }
+      /* ===== LocalStorage ident (dibuang - data dari Supabase) ===== */
+      const IDENT_LS_KEY = 'bomba-ident-per-balai';
+      function loadIdentLS() { return {}; }
+      function saveIdentLS() { return; }
 
       const PRINT_INFO_KEY = 'bomba-print-info';
-
       function loadPrintInfo() {
         try {
           const saved = localStorage.getItem(PRINT_INFO_KEY);
@@ -2315,11 +2159,9 @@
           disahNama: '', disahJawatan: '', disahTarikh: ''
         };
       }
-
       function savePrintInfo(info) {
         try { localStorage.setItem(PRINT_INFO_KEY, JSON.stringify(info)); } catch (e) {}
       }
-
       function fillPrintFooter(info) {
         const setText = (id, val, fallback) => {
           const el = document.getElementById(id);
@@ -2333,10 +2175,7 @@
         setText('pfDisahTarikh', info.disahTarikh, '_____________________');
       }
 
-      function todayISO() {
-        return new Date().toISOString().slice(0, 10);
-      }
-
+      function todayISO() { return new Date().toISOString().slice(0, 10); }
       function nowMYString() {
         try {
           const parts = new Intl.DateTimeFormat('en-GB', {
@@ -2518,7 +2357,6 @@
           btnClose.removeEventListener('click', onCancel);
           overlay.removeEventListener('keydown', onKey);
         };
-
         const onOk = () => {
           const data = {
             disediaNama: eDisediaNama.value.trim(),
@@ -2533,19 +2371,15 @@
           cleanup();
           onConfirm();
         };
-
         const onCancel = () => { cleanup(); };
-
         const onKey = (e) => {
           if (e.key === 'Enter') { e.preventDefault(); onOk(); }
           else if (e.key === 'Escape') { e.stopPropagation(); onCancel(); }
         };
-
         btnOk.addEventListener('click', onOk);
         btnCancel.addEventListener('click', onCancel);
         btnClose.addEventListener('click', onCancel);
         overlay.addEventListener('keydown', onKey);
-
         overlay.addEventListener('click', function onBackdrop(e) {
           if (e.target === overlay) {
             overlay.removeEventListener('click', onBackdrop);
@@ -2557,7 +2391,6 @@
       function printPo3aView() {
         closeAllFullscreenPanels();
         updatePrintFooterDate();
-
         openPrintModal(() => {
           const sections = document.querySelectorAll('#sections > .section');
           const restoredCollapsed = [];
@@ -2567,7 +2400,6 @@
               restoredCollapsed.push(sec);
             }
           });
-
           const CHUNK_SIZE = 12;
           const tables = document.querySelectorAll('#sections table.grid');
           const restoredTables = [];
@@ -2581,7 +2413,6 @@
               restoredTables.push({ tbl: tbl, wrapper: splits });
             }
           });
-
           const styleId = 'po3a-landscape-style';
           let styleEl = document.getElementById(styleId);
           if (!styleEl) {
@@ -2590,9 +2421,7 @@
             styleEl.textContent = '@page { size: A4 landscape; margin: 8mm; }';
             document.head.appendChild(styleEl);
           }
-
           document.body.classList.add('printing-po3a');
-
           let cleaned = false;
           const cleanup = function () {
             if (cleaned) return;
@@ -2600,9 +2429,7 @@
             document.body.classList.remove('printing-po3a');
             const st = document.getElementById(styleId);
             if (st) st.remove();
-            restoredCollapsed.forEach(function (sec) {
-              sec.classList.add('collapsed');
-            });
+            restoredCollapsed.forEach(function (sec) { sec.classList.add('collapsed'); });
             restoredTables.forEach(function (item) {
               const prev = item.tbl.getAttribute('data-print-prev-display');
               item.tbl.style.display = prev || '';
@@ -2612,7 +2439,6 @@
             window.removeEventListener('afterprint', cleanup);
           };
           window.addEventListener('afterprint', cleanup);
-
           setTimeout(function () {
             window.print();
             setTimeout(cleanup, 1500);
@@ -2624,14 +2450,11 @@
         if (!sectionEl) return;
         closeAllFullscreenPanels();
         updatePrintFooterDate();
-
         openPrintModal(() => {
           const wasCollapsed = sectionEl.classList.contains('collapsed');
           sectionEl.classList.remove('collapsed');
-
           document.body.classList.add('printing-single');
           sectionEl.classList.add('print-target');
-
           let cleaned = false;
           const cleanup = function () {
             if (cleaned) return;
@@ -2642,7 +2465,6 @@
             window.removeEventListener('afterprint', cleanup);
           };
           window.addEventListener('afterprint', cleanup);
-
           setTimeout(function () {
             window.print();
             setTimeout(cleanup, 600);
@@ -2765,30 +2587,15 @@
       };
 
       const RANKS = [
-        '01. TPgB I — KB8',
-        '02. TPgB II — KB7',
-        '03. PKPgB — KB6',
-        '04. PPgB — KB5',
-        '05. PBT I — KB4',
-        '06. PBT II — KB3',
-        '07. PBK I — KB2',
-        '08. PBK II — KB2 (TBBK1)',
-        '09. PB — KB1',
-        '10. PBBK II',
-        '11. PBB',
+        '01. TPgB I — KB8','02. TPgB II — KB7','03. PKPgB — KB6','04. PPgB — KB5',
+        '05. PBT I — KB4','06. PBT II — KB3','07. PBK I — KB2','08. PBK II — KB2 (TBBK1)',
+        '09. PB — KB1','10. PBBK II','11. PBB',
       ];
 
       const PERSONEL_KAT_RINGKASAN = [
-        'TPgB I — KB8 (40)',
-        'TPgB II — KB7 (38)',
-        'PKPgB — KB6 (32)',
-        'PPgB — KB5 (29)',
-        'PBT I — KB4 (28)',
-        'PBT II — KB3 (26)',
-        'PBK I — KB2 (24)',
-        'PBK II — KB2 (22 + KUP 22)',
-        'PB — KB1 (19)',
-        'PBB (PBBK II + PBB)',
+        'TPgB I — KB8 (40)','TPgB II — KB7 (38)','PKPgB — KB6 (32)','PPgB — KB5 (29)',
+        'PBT I — KB4 (28)','PBT II — KB3 (26)','PBK I — KB2 (24)',
+        'PBK II — KB2 (22 + KUP 22)','PB — KB1 (19)','PBB (PBBK II + PBB)',
       ];
 
       const PERSONEL_MAP_RINGKASAN = {
@@ -2813,18 +2620,13 @@
       const SHIF_OPTS = ['0800-2000', '2000-0800', '0800-0800'];
       const KATEGORI_BALAI_OPTS = ['12 JAM', '24 JAM'];
       const EQUIP_STATUSES = [
-        'BAIK & BOLEH BEROPERASI',
-        'ROSAK MINOR & BOLEH BEROPERASI',
-        'ROSAK & TIDAK BOLEH BEROPERASI',
-        'DALAM PROSES LUPUS',
-        'LUPUS',
+        'BAIK & BOLEH BEROPERASI','ROSAK MINOR & BOLEH BEROPERASI',
+        'ROSAK & TIDAK BOLEH BEROPERASI','DALAM PROSES LUPUS','LUPUS',
       ];
 
       const JENTERA_KAT = ['FRT','LFRT','CFRT','RFRT','Rapid Rescue Vehicle (RRV)','ALP','SKYLIFT','TTL','High Performance Pump Module (HPPM)','High Capacity Foam Tender (HCFM)','PRIME MOVER','FOAM TENDER','Breathing Apparatus Tender Vehicle (BATV)','WATER TANKER 10,000','WATER TANKER 20,000','JEN. HAZMAT','KOMUNIKASI','RIM','EMRS','MOBILE COMMAND POST','KEMBALIK','SIASATAN (FORENSICS)'];
 
-      const JENTERA_KAT_PO3A = [
-        'FRT','LFRT','CFRT','RFRT','Rapid Rescue Vehicle (RRV)','Fire Rescue Vehicle (FRV)','ALP','SKYLIFT','TTL','High Performance Pump Module (HPPM)','High Capacity Foam Tender (HCFM)','FOAM TENDER','Breathing Apparatus Tender Vehicle (BATV)','WATER TANKER 10,000 LITER','WATER TANKER 20,000 LITER','JEN. HAZMAT','KOMUNIKASI','RIM','EMRS','MOBILE COMMAND POST','KEMBALIK','NISSAN SAFARI','LAIN LAIN'
-      ];
+      const JENTERA_KAT_PO3A = ['FRT','LFRT','CFRT','RFRT','Rapid Rescue Vehicle (RRV)','Fire Rescue Vehicle (FRV)','ALP','SKYLIFT','TTL','High Performance Pump Module (HPPM)','High Capacity Foam Tender (HCFM)','FOAM TENDER','Breathing Apparatus Tender Vehicle (BATV)','WATER TANKER 10,000 LITER','WATER TANKER 20,000 LITER','JEN. HAZMAT','KOMUNIKASI','RIM','EMRS','MOBILE COMMAND POST','KEMBALIK','NISSAN SAFARI','LAIN LAIN'];
 
       const JENTERA_MAP_PO3A = {
         'FRT': 'FRT','LFRT': 'LFRT','CFRT': 'CFRT','RFRT': 'RFRT',
@@ -2838,39 +2640,27 @@
         'WATER TANKER 20,000': 'WATER TANKER 20,000 LITER',
         'JEN. HAZMAT': 'JEN. HAZMAT','KOMUNIKASI': 'KOMUNIKASI',
         'RIM': 'RIM','EMRS': 'EMRS',
-        'MOBILE COMMAND POST': 'MOBILE COMMAND POST',
-        'KEMBALIK': 'KEMBALIK'
+        'MOBILE COMMAND POST': 'MOBILE COMMAND POST','KEMBALIK': 'KEMBALIK'
       };
 
       const MARIN_KAT = ['ALUMINIUM BOT','ARIB BOT','FIBER BOT','JETSKI BOT','KEVLAR BOT','LIGHT SAR BOAT (HDPE) BOT','MUD BOAT','RUBBER DINGHY BOT'];
-
-      const MARIN_KAT_PO3A = [
-        'FIRE BOAT','RIGID INFLATABLE HALL BOAT','ALUMINIUM','AMPHIBIOUS RIGID INFLATABLE HALL BOAT','DINGHY','FIBER','APEX','JET SKI','MUD BOAT','MARES','HIGH DENSITY POLYETHYLENE','LAIN LAIN'
-      ];
-
+      const MARIN_KAT_PO3A = ['FIRE BOAT','RIGID INFLATABLE HALL BOAT','ALUMINIUM','AMPHIBIOUS RIGID INFLATABLE HALL BOAT','DINGHY','FIBER','APEX','JET SKI','MUD BOAT','MARES','HIGH DENSITY POLYETHYLENE','LAIN LAIN'];
       const MARIN_MAP_PO3A = {
         'KEVLAR BOT': 'RIGID INFLATABLE HALL BOAT',
         'ALUMINIUM BOT': 'ALUMINIUM',
         'ARIB BOT': 'AMPHIBIOUS RIGID INFLATABLE HALL BOAT',
-        'RUBBER DINGHY BOT': 'DINGHY',
-        'FIBER BOT': 'FIBER',
-        'JETSKI BOT': 'JET SKI',
-        'MUD BOAT': 'MUD BOAT',
+        'RUBBER DINGHY BOT': 'DINGHY','FIBER BOT': 'FIBER',
+        'JETSKI BOT': 'JET SKI','MUD BOAT': 'MUD BOAT',
         'LIGHT SAR BOAT (HDPE) BOT': 'HIGH DENSITY POLYETHYLENE'
       };
 
       const UTILITI_KAT = ['HILUX 4X4','HILUX LOV 4X4','HILUX LOV','HICOM HANDALAN 5 TAN LORI','ISUZU 5 TAN LORI','ISUZU 3 TAN LORI','DMAX ISUZU 4X4','HINO BAS','ISUZU V6 4X4','KEMBARA 4X4','KIA PREGIO VAN','MITSUBISHI TRITON 4X4','NAVARA 4X4','NISSAN COASTER BAS','NISSAN XTRAIL 4X4','PAJERO 4X4','PERODUA ALZA MPV','RUSA VAN','TOYOTA FORTUNER 4X4','TOYOTA HIACE VAN','URVAN VAN','Amphibious All Terrain Vehichle (AATV)','All Terrain Vehichle (ATV)'];
 
-      const UTILITI_KAT_SUMMARY = [
-        'LORI 5T','LORI 3T','BAS 40','BAS 25','4 WHEEL DRIVE (HILUX, DMAX, TRITON)','KEMBARA','VAN','BAS PEMERAN','Amphibious All Terrain Vehicle (AATV)','All Terrain Vehicle','LAIN LAIN',
-      ];
+      const UTILITI_KAT_SUMMARY = ['LORI 5T','LORI 3T','BAS 40','BAS 25','4 WHEEL DRIVE (HILUX, DMAX, TRITON)','KEMBARA','VAN','BAS PEMERAN','Amphibious All Terrain Vehicle (AATV)','All Terrain Vehicle','LAIN LAIN'];
 
       const UTILITI_MAP_SUMMARY = {
-        'HICOM HANDALAN 5 TAN LORI': 'LORI 5T',
-        'ISUZU 5 TAN LORI': 'LORI 5T',
-        'ISUZU 3 TAN LORI': 'LORI 3T',
-        'HINO BAS': 'BAS 40',
-        'NISSAN COASTER BAS': 'BAS 25',
+        'HICOM HANDALAN 5 TAN LORI': 'LORI 5T','ISUZU 5 TAN LORI': 'LORI 5T',
+        'ISUZU 3 TAN LORI': 'LORI 3T','HINO BAS': 'BAS 40','NISSAN COASTER BAS': 'BAS 25',
         'HILUX 4X4': '4 WHEEL DRIVE (HILUX, DMAX, TRITON)',
         'HILUX LOV 4X4': '4 WHEEL DRIVE (HILUX, DMAX, TRITON)',
         'HILUX LOV': '4 WHEEL DRIVE (HILUX, DMAX, TRITON)',
@@ -2882,7 +2672,8 @@
         'PAJERO 4X4': '4 WHEEL DRIVE (HILUX, DMAX, TRITON)',
         'TOYOTA FORTUNER 4X4': '4 WHEEL DRIVE (HILUX, DMAX, TRITON)',
         'KEMBARA 4X4': 'KEMBARA',
-        'KIA PREGIO VAN': 'VAN','PERODUA ALZA MPV': 'VAN','RUSA VAN': 'VAN','TOYOTA HIACE VAN': 'VAN','URVAN VAN': 'VAN',
+        'KIA PREGIO VAN': 'VAN','PERODUA ALZA MPV': 'VAN','RUSA VAN': 'VAN',
+        'TOYOTA HIACE VAN': 'VAN','URVAN VAN': 'VAN',
         'Amphibious All Terrain Vehichle (AATV)': 'Amphibious All Terrain Vehicle (AATV)',
         'All Terrain Vehichle (ATV)': 'All Terrain Vehicle',
       };
@@ -2917,9 +2708,7 @@
         'WATER TANKER 20,000': ['J5-01 BMS 5928: T/BD 9282 SCANIA WT 20000L','J5-02 BMV 1317: T/BD 9284 SCANIA WT 20000L','J5-03 BMP 6933: T/BD 8293 SCANIA WT 20000L','J5-04 BMV 1436: T/BD 9244 SCANIA WT 20000L','J5-05 BMV 4137: T/BD 9269 SCANIA WT 20000L','J5-06 BMX 9594: T/BE 762 SCANIA WT 20000L','J5-07 BNE 8418: T/BE 266 SCANIA WT 20000L','J5-08 BMX 9580: T/BE 317 SCANIA WT 20000L','J5-09 BNH 2712: T/BE 931 SCANIA WT 20000L','J5-10 BNH 7962: T/BE 1743 SCANIA WT 20000L'],
         'JEN. HAZMAT': ['J4-01 WEU 5287 HAZMAT'],
         KOMUNIKASI: ['J10-01 WSG 3646 KOMUNIKASI'],
-        RIM: [
-          'J6-02 BGT 240 RIM ST 1300','J6-03 BGT 229 RIM ST 1300','J6-04 BGT 226 RIM ST 1300','J6-05 BGT 227 RIM ST 1300','J6-06 BGT 225 RIM ST 1300','J6-07 WQS 5095 RIM VFR 800','J6-08 WQS 5033 RIM VFR 800','J6-09 WQS 5291 RIM VFR 800','J6-10 WQS 5092 RIM VFR 800','J6-11 WQS 5202 RIM VFR 800','J6-12 WQS 5120 RIM VFR 800','VDN 4921 RIM VER 650','VDN 4923 RIM VER 650','VDN 4928 RIM VER 650','VDM 4035 RIM VER 650','VDM 4042 RIM VER 650','VDM 4047 RIM VER 650','VDM 4054 RIM VER 650','VDM 4059 RIM VER 650','VDM 4933 RIM VER 650','SWART JVW 3497 MODENAS PULSAR-NS200-ABS NS200','SWART JVW 3498 MODENAS PULSAR-NS200-ABS NS200',
-        ],
+        RIM: ['J6-02 BGT 240 RIM ST 1300','J6-03 BGT 229 RIM ST 1300','J6-04 BGT 226 RIM ST 1300','J6-05 BGT 227 RIM ST 1300','J6-06 BGT 225 RIM ST 1300','J6-07 WQS 5095 RIM VFR 800','J6-08 WQS 5033 RIM VFR 800','J6-09 WQS 5291 RIM VFR 800','J6-10 WQS 5092 RIM VFR 800','J6-11 WQS 5202 RIM VFR 800','J6-12 WQS 5120 RIM VFR 800','VDN 4921 RIM VER 650','VDN 4923 RIM VER 650','VDN 4928 RIM VER 650','VDM 4035 RIM VER 650','VDM 4042 RIM VER 650','VDM 4047 RIM VER 650','VDM 4054 RIM VER 650','VDM 4059 RIM VER 650','VDM 4933 RIM VER 650','SWART JVW 3497 MODENAS PULSAR-NS200-ABS NS200','SWART JVW 3498 MODENAS PULSAR-NS200-ABS NS200'],
         EMRS: ['J2-01 BMP 3537 TOYOTA HIACE EMRS','J2-02 BNH 9581 TOYOTA HIACE EMRS','J2-03 BMQ 2930 TOYOTA HIACE EMRS','J2-04 BMT 158 TOYOTA HIACE EMRS','J2-05 BMT 1030 TOYOTA HIACE EMRS','J2-06 BMT 1034 TOYOTA HIACE EMRS','J2-07 BMT 1861 TOYOTA HIACE EMRS','J2-08 BMS 7089 TOYOTA HIACE EMRS','J2-09 BMS 7185 TOYOTA HIACE EMRS','J2-10 BMU 4233 TOYOTA HIACE EMRS','J2-11 BMU 5008 TOYOTA HIACE EMRS','J2-12 BMV 9267 TOYOTA HIACE EMRS','J2-13 BNE 654 TOYOTA HIACE EMRS','J2-14 BNE 754 TOYOTA HIACE EMRS','J2-15 BNE 1842 TOYOTA HIACE EMRS','J2-16 BNE 1944 TOYOTA HIACE EMRS','J2-17 BNG 3646 TOYOTA HIACE EMRS','J2-18 BNH 5275 TOYOTA HIACE EMRS','J2-19 BNH 9605 TOYOTA HIACE EMRS','J2-20 BNK 3528 TOYOTA HIACE EMRS'],
         'MOBILE COMMAND POST': ['LLJ COMMAND POST'],
         KEMBALIK: ['J14-01 BGU 488 KEMBALIK'],
@@ -2973,14 +2762,12 @@
       const RESET_PASSWORD = 'pgo1234';
 
       /* ============================================================
-         🚀  BACKEND SUPABASE
+         BACKEND SUPABASE
          ============================================================ */
-
       async function deleteBalaiRows(table, balaiName) {
         const { error } = await sb.from(table).delete().eq('balai', balaiName);
         if (error) throw new Error('delete ' + table + ': ' + error.message);
       }
-
       async function insertRows(table, rows) {
         if (!rows || rows.length === 0) return;
         const CHUNK = 500;
@@ -2991,7 +2778,6 @@
         }
       }
 
-      /* ---------- LOAD ALL ---------- */
       async function loadAllFromAPI() {
         const tables = ['ident', 'personel', 'jentera', 'marin', 'utiliti', 'komunikasi'];
         const results = await Promise.all(
@@ -3000,14 +2786,11 @@
           })
         );
         for (let i = 0; i < results.length; i++) {
-          if (results[i].error) {
-            throw new Error(tables[i] + ': ' + results[i].error.message);
-          }
+          if (results[i].error) throw new Error(tables[i] + ': ' + results[i].error.message);
         }
         const [ident, personel, jentera, marin, utiliti, komunikasi] = results.map(function (r) {
           return r.data || [];
         });
-
         const mappedPersonel = personel.map(function (r) {
           return {
             balai: r.balai,
@@ -3020,57 +2803,36 @@
             catatan: r.catatan || '',
           };
         });
-
         return {
           ident: ident.map(function (r) {
-            return {
-              balai: r.balai,
-              shif: r.shif || '',
-              tarikh: r.tarikh || '',
-              kategori: r.kategori || '',
-            };
+            return { balai: r.balai, shif: r.shif || '', tarikh: r.tarikh || '', kategori: r.kategori || '' };
           }),
           personel: mappedPersonel,
           jentera: jentera.map(function (r) {
-            return {
-              balai: r.balai, maklumat: r.maklumat || '',
-              kategori: r.kategori || '', status: r.status || '',
-              catatan: r.catatan || '',
-            };
+            return { balai: r.balai, maklumat: r.maklumat || '', kategori: r.kategori || '', status: r.status || '', catatan: r.catatan || '' };
           }),
           marin: marin.map(function (r) {
-            return {
-              balai: r.balai, maklumat: r.maklumat || '',
-              kategori: r.kategori || '', status: r.status || '',
-              catatan: r.catatan || '',
-            };
+            return { balai: r.balai, maklumat: r.maklumat || '', kategori: r.kategori || '', status: r.status || '', catatan: r.catatan || '' };
           }),
           utiliti: utiliti.map(function (r) {
-            return {
-              balai: r.balai, maklumat: r.maklumat || '',
-              kategori: r.kategori || '', status: r.status || '',
-              catatan: r.catatan || '',
-            };
+            return { balai: r.balai, maklumat: r.maklumat || '', kategori: r.kategori || '', status: r.status || '', catatan: r.catatan || '' };
           }),
           komunikasi: komunikasi.map(function (r) {
-            return {
-              balai: r.balai, maklumat: r.maklumat || '',
-              kategori: r.kategori || '', jumlah: r.jumlah || '',
-              status: r.status || '', catatan: r.catatan || '',
-            };
+            return { balai: r.balai, maklumat: r.maklumat || '', kategori: r.kategori || '', jumlah: r.jumlah || '', status: r.status || '', catatan: r.catatan || '' };
           }),
         };
       }
 
       /* ============================================================
-         🔄  AUTO-REFRESH TIMER — 5 MINIT (POLLING)
+         AUTO-REFRESH — Timer 5 minit (300s) dengan UI countdown
          ============================================================ */
-      const AUTO_REFRESH_MS = 5 * 60 * 1000; // 5 minit = 300,000 ms
-      let autoRefreshTimer = null;
+      const AUTO_REFRESH_SECONDS = 5 * 60; // 5 minit
+      let autoReloadRemaining = AUTO_REFRESH_SECONDS;
+      let autoReloadPaused = false;
+      let autoReloadTickTimer = null;
       let autoRefreshInProgress = false;
       let lastDataSignature = null;
 
-      /* Buat "tandatangan" ringkas untuk detect perubahan data */
       function computeDataSignature(apiData) {
         try {
           return [
@@ -3087,22 +2849,62 @@
         }
       }
 
-      function startAutoRefresh() {
-        stopAutoRefresh();
-        autoRefreshTimer = setInterval(pollForUpdates, AUTO_REFRESH_MS);
-        console.log('[AutoRefresh] Timer bermula — setiap ' + (AUTO_REFRESH_MS / 60000) + ' minit');
-      }
+      function updateAutoReloadUI() {
+        const timeEl = document.getElementById('autoReloadTime');
+        const pauseBtn = document.getElementById('autoReloadPauseBtn');
+        const widget = document.getElementById('autoReloadWidget');
+        if (!timeEl || !pauseBtn || !widget) return;
 
-      function stopAutoRefresh() {
-        if (autoRefreshTimer) {
-          clearInterval(autoRefreshTimer);
-          autoRefreshTimer = null;
-          console.log('[AutoRefresh] Timer dihentikan');
+        const m = Math.floor(autoReloadRemaining / 60);
+        const s = autoReloadRemaining % 60;
+        timeEl.textContent = m + ':' + String(s).padStart(2, '0');
+
+        if (autoReloadPaused) {
+          pauseBtn.textContent = '▶';
+          pauseBtn.title = 'Resume auto-reload';
+          widget.classList.add('paused');
+        } else {
+          pauseBtn.textContent = '⏸';
+          pauseBtn.title = 'Pause auto-reload';
+          widget.classList.remove('paused');
         }
       }
 
+      function startAutoRefresh() {
+        stopAutoRefresh();
+        autoReloadRemaining = AUTO_REFRESH_SECONDS;
+        autoReloadPaused = false;
+        updateAutoReloadUI();
+        autoReloadTickTimer = setInterval(function () {
+          if (autoReloadPaused) return;
+          autoReloadRemaining--;
+          if (autoReloadRemaining <= 0) {
+            autoReloadRemaining = AUTO_REFRESH_SECONDS;
+            pollForUpdates();
+          }
+          updateAutoReloadUI();
+        }, 1000);
+      }
+
+      function stopAutoRefresh() {
+        if (autoReloadTickTimer) {
+          clearInterval(autoReloadTickTimer);
+          autoReloadTickTimer = null;
+        }
+      }
+
+      function toggleAutoReloadPause() {
+        autoReloadPaused = !autoReloadPaused;
+        updateAutoReloadUI();
+      }
+
+      function triggerAutoReloadNow() {
+        autoReloadRemaining = AUTO_REFRESH_SECONDS;
+        updateAutoReloadUI();
+        pollForUpdates();
+      }
+
       async function pollForUpdates() {
-        // Skip jika ada perubahan belum disimpan, sedang refresh, atau tab tidak aktif
         if (dirtyBalai && dirtyBalai.size > 0) return;
         if (autoRefreshInProgress) return;
         if (document.hidden) return;
@@ -3114,7 +2916,7 @@
 
           if (newSignature === lastDataSignature) {
             autoRefreshInProgress = false;
-            return; // Tiada perubahan
+            return;
           }
 
           lastDataSignature = newSignature;
@@ -3151,22 +2953,21 @@
         }
       }
 
-      /* Refresh serta-merta bila pengguna balik ke tab (dari minimize) */
       document.addEventListener('visibilitychange', function () {
         if (!document.hidden && store && dirtyBalai && dirtyBalai.size === 0) {
+          autoReloadRemaining = AUTO_REFRESH_SECONDS;
+          updateAutoReloadUI();
           pollForUpdates();
         }
       });
 
-      /* Pastikan timer berhenti bila tinggalkan page */
       window.addEventListener('beforeunload', function () {
         stopAutoRefresh();
       });
 
-      /* ---------- SAVE BALAI ---------- */
+      /* ---------- SAVE ---------- */
       async function saveBalaiToAPI(balaiName, balaiData) {
         const ident = balaiData.ident || {};
-
         const upIdent = await sb.from('ident').upsert({
           balai: balaiName,
           shif: ident.shif || '',
@@ -3233,7 +3034,6 @@
 
       async function archiveBalaiToAPI(opts) {
         const { tarikh, shif, balai, zon, personelRows, jenteraRows } = opts;
-
         const pRows = (personelRows || []).map(function (r) {
           return {
             tarikh: r.tarikh || null, shif: r.shif || '',
@@ -3251,10 +3051,8 @@
             baik: r.baik || 0, rosak: r.rosak || 0, jumlah: r.jumlah || 0,
           };
         });
-
         if (pRows.length > 0) await insertRows('arkib_personel', pRows);
         if (jRows.length > 0) await insertRows('arkib_jentera', jRows);
-
         return { ok: true };
       }
 
@@ -3332,9 +3130,7 @@
         tbl.className = 'bkb';
         const thead = document.createElement('thead');
         thead.innerHTML = `<tr>
-    <th>BIL</th>
-    <th>ZON</th>
-    <th>GRED</th>
+    <th>BIL</th><th>ZON</th><th>GRED</th>
     <th style="text-align:left;">BALAI</th>
     <th style="text-align:left;">NAMA PETUGAS BKB</th>
     <th>NO. TELEFON</th>
@@ -3347,34 +3143,13 @@
           const meta = BALAI_GRED_TURNOUT[b.name] || { gred: '-', turnOut: 0 };
           const officer = getBkbOfficer(b.name);
           const tr = document.createElement('tr');
-
-          const td1 = document.createElement('td');
-          td1.className = 'bil-cell'; td1.textContent = idx + 1; tr.appendChild(td1);
-
-          const td2 = document.createElement('td');
-          td2.className = 'zon-cell zon-' + b.zon; td2.textContent = b.zon; tr.appendChild(td2);
-
-          const td3 = document.createElement('td');
-          td3.className = 'gred-cell-sm gred-' + meta.gred; td3.textContent = meta.gred; tr.appendChild(td3);
-
-          const td4 = document.createElement('td');
-          td4.className = 'balai-name'; td4.textContent = b.name; tr.appendChild(td4);
-
-          const td5 = document.createElement('td');
-          td5.className = 'nama-cell' + (officer.nama ? '' : ' empty');
-          td5.textContent = officer.nama || '(Belum diisi)';
-          tr.appendChild(td5);
-
-          const td6 = document.createElement('td');
-          td6.className = 'tel-cell' + (officer.telefon ? '' : ' empty');
-          td6.textContent = officer.telefon || '(Tiada)';
-          tr.appendChild(td6);
-
-          const td7 = document.createElement('td');
-          td7.className = 'contact-cell';
-          renderContactButtons(td7, officer.telefon);
-          tr.appendChild(td7);
-
+          const td1 = document.createElement('td'); td1.className = 'bil-cell'; td1.textContent = idx + 1; tr.appendChild(td1);
+          const td2 = document.createElement('td'); td2.className = 'zon-cell zon-' + b.zon; td2.textContent = b.zon; tr.appendChild(td2);
+          const td3 = document.createElement('td'); td3.className = 'gred-cell-sm gred-' + meta.gred; td3.textContent = meta.gred; tr.appendChild(td3);
+          const td4 = document.createElement('td'); td4.className = 'balai-name'; td4.textContent = b.name; tr.appendChild(td4);
+          const td5 = document.createElement('td'); td5.className = 'nama-cell' + (officer.nama ? '' : ' empty'); td5.textContent = officer.nama || '(Belum diisi)'; tr.appendChild(td5);
+          const td6 = document.createElement('td'); td6.className = 'tel-cell' + (officer.telefon ? '' : ' empty'); td6.textContent = officer.telefon || '(Tiada)'; tr.appendChild(td6);
+          const td7 = document.createElement('td'); td7.className = 'contact-cell'; renderContactButtons(td7, officer.telefon); tr.appendChild(td7);
           tbody.appendChild(tr);
         });
         tbl.appendChild(tbody);
@@ -3515,7 +3290,6 @@
           tdOk.appendChild(boxesOk); tdNo.appendChild(boxesNo);
           pgoTr.appendChild(tdOk); pgoTr.appendChild(tdNo);
         });
-
         pgoPercentCell.textContent = fmtPercent(computeMersPercent(mersPgoState));
         pgoTr.appendChild(pgoPercentCell);
 
@@ -3549,7 +3323,7 @@
             boxNo.appendChild(makeMersCheckbox('tak', val === 'R', true, null));
             tdOk.appendChild(boxOk); tdNo.appendChild(boxNo);
             tr.appendChild(tdOk); tr.appendChild(tdNo);
-              if (val === 'B') grandTotalBaik++;
+            if (val === 'B') grandTotalBaik++;
           });
           pctCell.textContent = fmtPercent(computeMersPercent(st));
           tr.appendChild(pctCell);
@@ -3662,9 +3436,7 @@
             });
 
           let identData = identMap[name];
-          if (!identData) {
-            identData = { balai: name, shif: '', tarikh: '', kategori: '' };
-          }
+          if (!identData) identData = { balai: name, shif: '', tarikh: '', kategori: '' };
 
           balai[name] = {
             ident: identData,
@@ -3690,7 +3462,6 @@
 
       let store = null;
       let state = null;
-
       const dirtyBalai = new Set();
 
       function persistUI() {
@@ -3703,7 +3474,6 @@
         const activeDirty = dirtyBalai.has(store.activeBalai);
         const anyDirty = dirtyBalai.size > 0;
         const n = document.getElementById('savedNote');
-
         if (activeDirty) {
           setAutosaveIndicator('saving', 'Belum disimpan');
           if (n) n.textContent = '⚠ Perubahan belum disimpan pada "' + store.activeBalai + '"';
@@ -3714,7 +3484,6 @@
           setAutosaveIndicator('saved', 'Sedia');
           if (n) n.textContent = '';
         }
-
         refreshZoneDrawerIfOpen();
       }
 
@@ -3722,7 +3491,6 @@
         dirtyBalai.add(store.activeBalai);
         updateDirtyUI();
       }
-
       function markClean(timeStr) {
         dirtyBalai.delete(store.activeBalai);
         if (timeStr) {
@@ -3733,13 +3501,11 @@
           updateDirtyUI();
         }
       }
-
       function saveState() {
         store.balai[store.activeBalai] = state;
         persistUI();
         markDirty();
       }
-
       function escAttr(s) {
         return String(s).replace(/\\/g, '\\\\').replace(/"/g, '\\"');
       }
@@ -3805,8 +3571,8 @@
 
         const tBalaiSum = document.createElement('button');
         tBalaiSum.className = 'tab special balai-sum' + (store.view === 'balai_sum' ? ' active' : '');
-        tBalaiSum.innerHTML = svgIcon('chart') + '<span>RINGKASAN IKUT BALAI</span>';
-        tBalaiSum.title = 'Ringkasan Setiap Balai';
+        tBalaiSum.innerHTML = svgIcon('chart') + '<span>PO3A BALAI</span>';
+        tBalaiSum.title = 'PO3A Ikut Balai';
         tBalaiSum.addEventListener('click', () => switchView('balai_sum'));
         desktop.appendChild(tBalaiSum);
 
@@ -3837,16 +3603,13 @@
           zBtn.className = 'tab zone-tab zon' + zn;
           zBtn.dataset.zon = String(zn);
           if (activeZon === zn) zBtn.classList.add('has-active');
-
           zBtn.innerHTML =
             '<span class="zt-label">ZON ' + zn + '</span>' +
             '<span class="zt-chev">' + svgIcon('chevronDown') + '</span>';
-
           zBtn.addEventListener('click', function (e) {
             e.stopPropagation();
             toggleZoneDrawer(zn, zBtn);
           });
-
           desktop.appendChild(zBtn);
         });
 
@@ -3885,7 +3648,7 @@
 
         const oBalaiSum = document.createElement('option');
         oBalaiSum.value = '__balai_sum__';
-        oBalaiSum.textContent = 'RINGKASAN IKUT BALAI';
+        oBalaiSum.textContent = 'PO3A BALAI';
         if (store.view === 'balai_sum') oBalaiSum.selected = true;
         ogS.appendChild(oBalaiSum);
 
@@ -3960,11 +3723,7 @@
           const meta = BALAI_GRED_TURNOUT[b.name] || { gred: '-', turnOut: 0 };
 
           if (isActive) item.classList.add('active');
-          item.title = b.name +
-            '  •  Zon ' + b.zon +
-            '  •  Gred ' + meta.gred +
-            '  •  Turn-Out ' + meta.turnOut +
-            (isDirty ? '  •  ⚠ Belum disimpan' : '');
+          item.title = b.name + '  •  Zon ' + b.zon + '  •  Gred ' + meta.gred + '  •  Turn-Out ' + meta.turnOut + (isDirty ? '  •  ⚠ Belum disimpan' : '');
 
           const nameEl = document.createElement('span');
           nameEl.className = 'zd-name';
@@ -3998,16 +3757,13 @@
         const drawer = document.getElementById('zoneDrawer');
         const tabbar = document.querySelector('.tabbar');
         if (!drawer || !tabbar) return;
-
         const tabbarRect = tabbar.getBoundingClientRect();
         const btnRect = btn.getBoundingClientRect();
-
         const drawerWidth = drawer.offsetWidth || 320;
         let left = btnRect.left - tabbarRect.left;
         const maxLeft = tabbarRect.width - drawerWidth - 8;
         if (left > maxLeft) left = Math.max(0, maxLeft);
         if (left < 0) left = 0;
-
         drawer.style.left = left + 'px';
         drawer.style.top = (btnRect.bottom - tabbarRect.top + 8) + 'px';
       }
@@ -4015,32 +3771,18 @@
       function toggleZoneDrawer(zon, btn) {
         const drawer = document.getElementById('zoneDrawer');
         if (!drawer) return;
-
-        const isSameOpen =
-          drawer.classList.contains('open') &&
-          drawer.dataset.zon === String(zon);
-
-        if (isSameOpen) {
-          closeZoneDrawer();
-          return;
-        }
-
+        const isSameOpen = drawer.classList.contains('open') && drawer.dataset.zon === String(zon);
+        if (isSameOpen) { closeZoneDrawer(); return; }
         drawer.style.opacity = '';
         drawer.style.visibility = '';
-
         buildZoneDrawerContent(zon);
         drawer.dataset.zon = String(zon);
-
         drawer.style.left = '0px';
         drawer.style.top = '0px';
         positionZoneDrawer(btn);
-
-        document.querySelectorAll('.zone-tab.zone-active')
-          .forEach(function (el) { el.classList.remove('zone-active'); });
+        document.querySelectorAll('.zone-tab.zone-active').forEach(function (el) { el.classList.remove('zone-active'); });
         btn.classList.add('zone-active');
-
         drawer.classList.add('open');
-
         setTimeout(function () {
           document.addEventListener('click', zoneDrawerOutsideClick, true);
           document.addEventListener('keydown', zoneDrawerEscHandler, true);
@@ -4068,8 +3810,7 @@
           drawer.classList.remove('open');
           drawer.dataset.zon = '';
         }
-        document.querySelectorAll('.zone-tab.zone-active')
-          .forEach(function (el) { el.classList.remove('zone-active'); });
+        document.querySelectorAll('.zone-tab.zone-active').forEach(function (el) { el.classList.remove('zone-active'); });
         document.removeEventListener('click', zoneDrawerOutsideClick, true);
         document.removeEventListener('keydown', zoneDrawerEscHandler, true);
       }
@@ -4101,6 +3842,8 @@
         const archiveAllBtn = document.getElementById('archiveAllBtn');
         const autosave = document.getElementById('autosaveIndicator');
         const printPo3aBtn = document.getElementById('printPo3aBtn');
+        const importBtn = document.getElementById('importBtn');
+        const exportCurrentBtn = document.getElementById('exportCurrentBtn');
 
         const isBalai = store.view === 'balai';
 
@@ -4108,6 +3851,10 @@
         if (archiveAllBtn) archiveAllBtn.style.display = isBalai ? 'none' : '';
         if (resetBalaiBtn) resetBalaiBtn.style.display = isBalai ? '' : 'none';
         if (resetAllBtn)   resetAllBtn.style.display   = isBalai ? 'none' : '';
+
+        /* Import & Export hanya muncul dalam tab balai */
+        if (importBtn)         importBtn.style.display         = isBalai ? '' : 'none';
+        if (exportCurrentBtn)  exportCurrentBtn.style.display  = isBalai ? '' : 'none';
 
         if (store.view === 'summary') {
           prefix.style.display = 'none';
@@ -4127,7 +3874,7 @@
           if (printPo3aBtn) printPo3aBtn.style.display = 'none';
         } else if (store.view === 'balai_sum') {
           prefix.style.display = 'none';
-          dp.textContent = 'RINGKASAN IKUT BALAI';
+          dp.textContent = 'PO3A BALAI';
           zb.style.display = 'none';
           idFields.style.display = 'none';
           if (saveBtn) saveBtn.style.display = 'none';
@@ -4175,14 +3922,11 @@
         const ft = document.getElementById('f_tarikh');
         const fk = document.getElementById('f_kategori');
         state.ident.balai = store.activeBalai;
-
         if (state.ident.shif && !SHIF_OPTS.includes(state.ident.shif)) state.ident.shif = '';
         state.ident.kategori = computeKategoriFromShif(state.ident.shif);
-
         fs.value = state.ident.shif || '';
         ft.value = state.ident.tarikh || '';
         fk.value = state.ident.kategori || '';
-
         fs.onchange = (e) => {
           state.ident.shif = e.target.value;
           state.ident.kategori = computeKategoriFromShif(e.target.value);
@@ -4207,13 +3951,11 @@
         const s = document.createElement('select');
         if (cls) s.className = cls;
         const b = document.createElement('option');
-        b.value = '';
-        b.textContent = '—';
+        b.value = ''; b.textContent = '—';
         s.appendChild(b);
         opts.forEach((o) => {
           const op = document.createElement('option');
-          op.value = o;
-          op.textContent = o;
+          op.value = o; op.textContent = o;
           if (o === value) op.selected = true;
           s.appendChild(op);
         });
@@ -4300,8 +4042,6 @@
         if (s === 'BAIK & BOLEH BEROPERASI') return 'B';
         if (s === 'ROSAK MINOR & BOLEH BEROPERASI') return 'B';
         if (s === 'ROSAK & TIDAK BOLEH BEROPERASI') return 'R';
-        if (s === 'DALAM PROSES LUPUS') return null;
-        if (s === 'LUPUS') return null;
         return null;
       }
 
@@ -4309,9 +4049,7 @@
         const m = {};
         RANKS.forEach((r) => {
           m[r] = {};
-          UNITS.forEach((u) => {
-            m[r][u] = { A: 0, C: 0, CS: 0, TK: 0 };
-          });
+          UNITS.forEach((u) => { m[r][u] = { A: 0, C: 0, CS: 0, TK: 0 }; });
         });
         (s.personel || []).forEach((p) => {
           if (!p.pangkat || !p.status) return;
@@ -4479,49 +4217,29 @@
         const rtb = document.createElement('tbody');
         state.personel.forEach((p, idx) => {
           const tr = document.createElement('tr');
-          const tdB = document.createElement('td');
-          tdB.className = 'bil-cell';
-          tdB.textContent = idx + 1;
-          tr.appendChild(tdB);
-
+          const tdB = document.createElement('td'); tdB.className = 'bil-cell'; tdB.textContent = idx + 1; tr.appendChild(tdB);
           const tdN = document.createElement('td');
           const iN = makeInput('text', p.nama, (v) => { p.nama = v; saveState(); }, 'NAMA PENUH');
           iN.style.minWidth = '200px';
-          tdN.appendChild(iN);
-          tr.appendChild(tdN);
-
+          tdN.appendChild(iN); tr.appendChild(tdN);
           const tdP = document.createElement('td');
-          tdP.appendChild(makeSelect(RANKS, p.pangkat, (v) => {
-            p.pangkat = v;
-            saveState();
-            globalRecalc();
-          }));
+          tdP.appendChild(makeSelect(RANKS, p.pangkat, (v) => { p.pangkat = v; saveState(); globalRecalc(); }));
           tr.appendChild(tdP);
-
           const tdNB = document.createElement('td');
           tdNB.appendChild(makeInput('text', p.noBadan, (v) => { p.noBadan = v; saveState(); }, ''));
           tr.appendChild(tdNB);
-
           const tdNT = document.createElement('td');
           tdNT.appendChild(makeInput('text', p.noTelefon, (v) => { p.noTelefon = v; saveState(); }, ''));
           tr.appendChild(tdNT);
-
           const tdPer = document.createElement('td');
           tdPer.appendChild(makeSelect(PERANAN_OPTS, p.peranan, (v) => { p.peranan = v; saveState(); }));
           tr.appendChild(tdPer);
-
           const tdPas = document.createElement('td');
           tdPas.appendChild(makeSelect(PASUKAN_OPTS, p.pasukan, (v) => { p.pasukan = v; saveState(); }));
           tr.appendChild(tdPas);
-
           const tdS = document.createElement('td');
-          tdS.appendChild(makeSelect(PERSONEL_STATUSES, p.status, (v) => {
-            p.status = v;
-            saveState();
-            globalRecalc();
-          }));
+          tdS.appendChild(makeSelect(PERSONEL_STATUSES, p.status, (v) => { p.status = v; saveState(); globalRecalc(); }));
           tr.appendChild(tdS);
-
           const unitSelects = {};
           ['unit1', 'unit2', 'unit3', 'unit4'].forEach((k) => {
             const td = document.createElement('td');
@@ -4536,11 +4254,9 @@
             tr.appendChild(td);
           });
           updateUnitLocks(p, unitSelects);
-
           const tdC = document.createElement('td');
           tdC.appendChild(makeInput('text', p.catatan, (v) => { p.catatan = v; saveState(); }, ''));
           tr.appendChild(tdC);
-
           const tdD = document.createElement('td');
           tdD.className = 'del-cell';
           const bD = document.createElement('button');
@@ -4590,14 +4306,11 @@
         gr.appendChild(document.createElement('th'));
         UNITS.forEach((u) => {
           const th = document.createElement('th');
-          th.colSpan = 4;
-          th.textContent = u;
+          th.colSpan = 4; th.textContent = u;
           gr.appendChild(th);
         });
         const jth = document.createElement('th');
-        jth.colSpan = 4;
-        jth.textContent = 'JUMLAH';
-        jth.className = 'jumlah-col';
+        jth.colSpan = 4; jth.textContent = 'JUMLAH'; jth.className = 'jumlah-col';
         gr.appendChild(jth);
 
         const sr = document.createElement('tr');
@@ -4620,25 +4333,21 @@
           sr.appendChild(th);
         });
         const thead = document.createElement('thead');
-        thead.appendChild(gr);
-        thead.appendChild(sr);
+        thead.appendChild(gr); thead.appendChild(sr);
         tbl.appendChild(thead);
 
         const tbody = document.createElement('tbody');
         RANKS.forEach((r) => {
           const tr = document.createElement('tr');
           const rowTh = document.createElement('th');
-          rowTh.className = 'rowname';
-          rowTh.textContent = r;
+          rowTh.className = 'rowname'; rowTh.textContent = r;
           tr.appendChild(rowTh);
           UNITS.forEach((u) => {
             STATUS_P.forEach((s) => {
               const td = document.createElement('td');
               const span = document.createElement('span');
               span.className = 'pcell';
-              span.dataset.rank = r;
-              span.dataset.unit = u;
-              span.dataset.status = s;
+              span.dataset.rank = r; span.dataset.unit = u; span.dataset.status = s;
               td.appendChild(span);
               tr.appendChild(td);
             });
@@ -4646,8 +4355,7 @@
           STATUS_P.forEach((s) => {
             const td = document.createElement('td');
             td.className = 'jumlah-cell prow-jml';
-            td.dataset.rank = r;
-            td.dataset.status = s;
+            td.dataset.rank = r; td.dataset.status = s;
             tr.appendChild(td);
           });
           tbody.appendChild(tr);
@@ -4663,15 +4371,13 @@
           STATUS_P.forEach((s) => {
             const td = document.createElement('td');
             td.className = 'pcol-jml';
-            td.dataset.unit = u;
-            td.dataset.status = s;
+            td.dataset.unit = u; td.dataset.status = s;
             fr.appendChild(td);
           });
         });
         STATUS_P.forEach((s) => {
           const td = document.createElement('td');
-          td.className = 'pgrand-jml';
-          td.dataset.status = s;
+          td.className = 'pgrand-jml'; td.dataset.status = s;
           fr.appendChild(td);
         });
         tf.appendChild(fr);
@@ -4764,11 +4470,7 @@
 
         state.equip[key].forEach((r, idx) => {
           const tr = document.createElement('tr');
-          const tdB = document.createElement('td');
-          tdB.className = 'bil-cell';
-          tdB.textContent = idx + 1;
-          tr.appendChild(tdB);
-
+          const tdB = document.createElement('td'); tdB.className = 'bil-cell'; tdB.textContent = idx + 1; tr.appendChild(tdB);
           const tdK = document.createElement('td');
           let vehCtrl = null;
           const katSelect = makeSelect(katList, r.kategori, (v) => {
@@ -4783,10 +4485,7 @@
           if (!isKom) {
             const tdM = document.createElement('td');
             if (isKategoriDriven) {
-              vehCtrl = makeKategoriDrivenInput(key, r.kategori, r.maklumat, (v) => {
-                r.maklumat = v;
-                saveState();
-              });
+              vehCtrl = makeKategoriDrivenInput(key, r.kategori, r.maklumat, (v) => { r.maklumat = v; saveState(); });
               tdM.appendChild(vehCtrl.element);
             } else {
               const iM = makeInput('text', r.maklumat, (v) => { r.maklumat = v; saveState(); }, 'No. plat / keterangan');
@@ -4800,18 +4499,13 @@
             const tdJ = document.createElement('td');
             const iJ = makeInput('number', r.jumlah, (v) => { r.jumlah = v; saveState(); globalRecalc(); }, '');
             iJ.min = '0';
-            iJ.style.minWidth = '55px';
-            iJ.style.maxWidth = '80px';
+            iJ.style.minWidth = '55px'; iJ.style.maxWidth = '80px';
             tdJ.appendChild(iJ);
             tr.appendChild(tdJ);
           }
 
           const tdS = document.createElement('td');
-          tdS.appendChild(makeSelect(EQUIP_STATUSES, r.status, (v) => {
-            r.status = v;
-            saveState();
-            globalRecalc();
-          }));
+          tdS.appendChild(makeSelect(EQUIP_STATUSES, r.status, (v) => { r.status = v; saveState(); globalRecalc(); }));
           tr.appendChild(tdS);
 
           const tdC = document.createElement('td');
@@ -4878,8 +4572,7 @@
         if (isKom) {
           KOMUNIKASI_DEF.forEach((k) => {
             const gh = document.createElement('th');
-            gh.colSpan = colSpan;
-            gh.textContent = k.name;
+            gh.colSpan = colSpan; gh.textContent = k.name;
             gr.appendChild(gh);
             cols.forEach((c, i) => {
               const th = document.createElement('th');
@@ -4891,9 +4584,7 @@
             });
           });
           const gj = document.createElement('th');
-          gj.colSpan = colSpan;
-          gj.textContent = 'JUMLAH';
-          gj.className = 'jumlah-col';
+          gj.colSpan = colSpan; gj.textContent = 'JUMLAH'; gj.className = 'jumlah-col';
           gr.appendChild(gj);
           cols.forEach((c) => {
             const th = document.createElement('th');
@@ -4904,8 +4595,7 @@
         } else {
           katList.forEach((name) => {
             const gh = document.createElement('th');
-            gh.colSpan = colSpan;
-            gh.textContent = name;
+            gh.colSpan = colSpan; gh.textContent = name;
             gr.appendChild(gh);
             cols.forEach((c) => {
               const th = document.createElement('th');
@@ -4915,9 +4605,7 @@
             });
           });
           const gj = document.createElement('th');
-          gj.colSpan = colSpan;
-          gj.textContent = 'JUMLAH';
-          gj.className = 'jumlah-col';
+          gj.colSpan = colSpan; gj.textContent = 'JUMLAH'; gj.className = 'jumlah-col';
           gr.appendChild(gj);
           cols.forEach((c) => {
             const th = document.createElement('th');
@@ -4928,8 +4616,7 @@
         }
 
         const thead = document.createElement('thead');
-        thead.appendChild(gr);
-        thead.appendChild(sr);
+        thead.appendChild(gr); thead.appendChild(sr);
         return thead;
       }
 
@@ -4944,8 +4631,7 @@
             const td = document.createElement('td');
             const span = document.createElement('span');
             span.className = 'ecell';
-            span.dataset.kat = name;
-            span.dataset.status = cat;
+            span.dataset.kat = name; span.dataset.status = cat;
             td.appendChild(span);
             tr.appendChild(td);
           });
@@ -5077,14 +4763,11 @@
         gr.appendChild(document.createElement('th'));
         UNITS.forEach((u) => {
           const th = document.createElement('th');
-          th.colSpan = 4;
-          th.textContent = u;
+          th.colSpan = 4; th.textContent = u;
           gr.appendChild(th);
         });
         const jth = document.createElement('th');
-        jth.colSpan = 4;
-        jth.textContent = 'JUMLAH';
-        jth.className = 'jumlah-col';
+        jth.colSpan = 4; jth.textContent = 'JUMLAH'; jth.className = 'jumlah-col';
         gr.appendChild(jth);
 
         const sr = document.createElement('tr');
@@ -5107,8 +4790,7 @@
           sr.appendChild(th);
         });
         const thead = document.createElement('thead');
-        thead.appendChild(gr);
-        thead.appendChild(sr);
+        thead.appendChild(gr); thead.appendChild(sr);
         tbl.appendChild(thead);
 
         const m = computeAllPersonelGridSummary(PERSONEL_KAT_RINGKASAN, PERSONEL_MAP_RINGKASAN);
@@ -5116,8 +4798,7 @@
         PERSONEL_KAT_RINGKASAN.forEach((r) => {
           const tr = document.createElement('tr');
           const rowTh = document.createElement('th');
-          rowTh.className = 'rowname';
-          rowTh.textContent = r;
+          rowTh.className = 'rowname'; rowTh.textContent = r;
           tr.appendChild(rowTh);
           const rowSum = { A: 0, C: 0, CS: 0, TK: 0 };
           UNITS.forEach((u) => {
@@ -5196,8 +4877,7 @@
         if (isKom) {
           KOMUNIKASI_DEF.forEach((k) => {
             const gh = document.createElement('th');
-            gh.colSpan = 3;
-            gh.textContent = k.name;
+            gh.colSpan = 3; gh.textContent = k.name;
             gr.appendChild(gh);
             [
               { lbl: k.l1, cls: 's-' + k.l1 },
@@ -5211,9 +4891,7 @@
             });
           });
           const gj = document.createElement('th');
-          gj.colSpan = 3;
-          gj.textContent = 'JUMLAH';
-          gj.className = 'jumlah-col';
+          gj.colSpan = 3; gj.textContent = 'JUMLAH'; gj.className = 'jumlah-col';
           gr.appendChild(gj);
           [
             { lbl: 'B', cls: 's-B' },
@@ -5228,8 +4906,7 @@
         } else {
           katList.forEach((name) => {
             const gh = document.createElement('th');
-            gh.colSpan = 3;
-            gh.textContent = name;
+            gh.colSpan = 3; gh.textContent = name;
             gr.appendChild(gh);
             [
               { lbl: 'B', cls: 's-B' },
@@ -5243,9 +4920,7 @@
             });
           });
           const gj = document.createElement('th');
-          gj.colSpan = 3;
-          gj.textContent = 'JUMLAH';
-          gj.className = 'jumlah-col';
+          gj.colSpan = 3; gj.textContent = 'JUMLAH'; gj.className = 'jumlah-col';
           gr.appendChild(gj);
           [
             { lbl: 'B', cls: 's-B' },
@@ -5260,8 +4935,7 @@
         }
 
         const thead = document.createElement('thead');
-        thead.appendChild(gr);
-        thead.appendChild(sr);
+        thead.appendChild(gr); thead.appendChild(sr);
         tbl.appendChild(thead);
 
         const m = katMapSummary
@@ -5274,17 +4948,14 @@
 
         items.forEach((name) => {
           const d = m[name] || { B: 0, R: 0 };
-
           const tdB = document.createElement('td');
           tdB.textContent = d.B;
           tr.appendChild(tdB);
           grand.B += d.B;
-
           const tdR = document.createElement('td');
           tdR.textContent = d.R;
           tr.appendChild(tdR);
           grand.R += d.R;
-
           const tdJ = document.createElement('td');
           tdJ.className = 'jumlah-cell';
           tdJ.textContent = d.B + d.R;
@@ -5292,18 +4963,13 @@
         });
 
         const gtB = document.createElement('td');
-        gtB.className = 'jumlah-cell';
-        gtB.textContent = grand.B;
+        gtB.className = 'jumlah-cell'; gtB.textContent = grand.B;
         tr.appendChild(gtB);
-
         const gtR = document.createElement('td');
-        gtR.className = 'jumlah-cell';
-        gtR.textContent = grand.R;
+        gtR.className = 'jumlah-cell'; gtR.textContent = grand.R;
         tr.appendChild(gtR);
-
         const gtJ = document.createElement('td');
-        gtJ.className = 'jumlah-cell';
-        gtJ.textContent = grand.B + grand.R;
+        gtJ.className = 'jumlah-cell'; gtJ.textContent = grand.B + grand.R;
         tr.appendChild(gtJ);
 
         tbody.appendChild(tr);
@@ -5353,12 +5019,8 @@
       <h2>RINGKASAN KEKUATAN ANGGOTA</h2>
       <div style="display:flex;align-items:center;gap:.6rem;">
         <span class="hint">Auto-dari data balai (read-only)</span>
-        <button class="btn-fullscreen" type="button" title="Buka skrin penuh" aria-label="Buka skrin penuh">
-          ${svgIcon('maximize')}
-        </button>
-        <button class="btn-fullscreen btn-print-panel" type="button" title="Cetak panel ini" aria-label="Cetak panel ini">
-          ${svgIcon('print')}
-        </button>
+        <button class="btn-fullscreen" type="button" title="Buka skrin penuh" aria-label="Buka skrin penuh">${svgIcon('maximize')}</button>
+        <button class="btn-fullscreen btn-print-panel" type="button" title="Cetak panel ini" aria-label="Cetak panel ini">${svgIcon('print')}</button>
         <span class="chev">${svgIcon('chevronDown')}</span>
       </div>
     </div>
@@ -5389,16 +5051,13 @@
         tbl.className = 'ketua';
         const thead = document.createElement('thead');
         thead.innerHTML = `<tr>
-    <th>BIL</th>
-    <th>GRED</th>
-    <th>TURN OUT</th>
+    <th>BIL</th><th>GRED</th><th>TURN OUT</th>
     <th style="text-align:left;">BALAI</th>
     <th style="text-align:left;">KETUA BALAI</th>
     <th>NO TEL</th>
     <th style="text-align:left;">PENYELIA PASUKAN</th>
     <th>NO TEL</th>
-    <th>KB</th>
-    <th>PO</th>
+    <th>KB</th><th>PO</th>
     <th>A</th><th>C</th><th>CS</th><th>TK</th>
     <th>JUMLAH</th>
     <th>PBB + PBBK II</th>
@@ -5406,15 +5065,8 @@
         tbl.appendChild(thead);
 
         const tbody = document.createElement('tbody');
-        let totalTurnOut = 0;
-        let totalPBB = 0;
-        let totalKB = 0;
-        let totalPO = 0;
-        let totalA = 0;
-        let totalC = 0;
-        let totalCS = 0;
-        let totalTK = 0;
-        let totalJumlah = 0;
+        let totalTurnOut = 0, totalPBB = 0, totalKB = 0, totalPO = 0;
+        let totalA = 0, totalC = 0, totalCS = 0, totalTK = 0, totalJumlah = 0;
 
         BALAI_LIST.forEach((b, idx) => {
           const d = getKetuaBalaiData(b.name);
@@ -5424,17 +5076,12 @@
           totalPBB += pbbCount;
           totalKB += d.statusKetua;
           totalPO += d.statusPO;
-          totalA += d.A;
-          totalC += d.C;
-          totalCS += d.CS;
-          totalTK += d.TK;
+          totalA += d.A; totalC += d.C; totalCS += d.CS; totalTK += d.TK;
           totalJumlah += d.jumlah;
 
           const tr = document.createElement('tr');
-
           const tdNo = document.createElement('td');
-          tdNo.className = 'bil-cell';
-          tdNo.textContent = idx + 1;
+          tdNo.className = 'bil-cell'; tdNo.textContent = idx + 1;
           tr.appendChild(tdNo);
 
           const tdGred = document.createElement('td');
@@ -5443,13 +5090,11 @@
           tr.appendChild(tdGred);
 
           const tdTO = document.createElement('td');
-          tdTO.className = 'turnout-cell';
-          tdTO.textContent = meta.turnOut;
+          tdTO.className = 'turnout-cell'; tdTO.textContent = meta.turnOut;
           tr.appendChild(tdTO);
 
           const tdBalai = document.createElement('td');
-          tdBalai.className = 'balai-name';
-          tdBalai.textContent = d.balai;
+          tdBalai.className = 'balai-name'; tdBalai.textContent = d.balai;
           tr.appendChild(tdBalai);
 
           const tdK = document.createElement('td');
@@ -5505,55 +5150,41 @@
         tbl.appendChild(tbody);
 
         const tf = document.createElement('tfoot');
-
         const fr = document.createElement('tr');
-
         const fBil = document.createElement('th');
         fr.appendChild(fBil);
-
         const fLabel = document.createElement('th');
         fLabel.textContent = 'JUMLAH';
         fLabel.style.textAlign = 'right';
         fLabel.style.paddingRight = '8px';
         fr.appendChild(fLabel);
-
         const fTO = document.createElement('th');
         fTO.className = 'turnout-cell';
         fTO.style.textAlign = 'center';
         fTO.textContent = totalTurnOut;
         fr.appendChild(fTO);
-
         const fSpacer = document.createElement('th');
         fSpacer.colSpan = 5;
         fr.appendChild(fSpacer);
-
         const fKB = document.createElement('th');
-        fKB.className = 's1';
-        fKB.textContent = totalKB;
+        fKB.className = 's1'; fKB.textContent = totalKB;
         fr.appendChild(fKB);
-
         const fPO = document.createElement('th');
-        fPO.className = 's1';
-        fPO.textContent = totalPO;
+        fPO.className = 's1'; fPO.textContent = totalPO;
         fr.appendChild(fPO);
-
         [totalA, totalC, totalCS, totalTK].forEach(function (v) {
           const th = document.createElement('th');
           th.textContent = v;
           fr.appendChild(th);
         });
-
         const fJum = document.createElement('th');
         fJum.textContent = totalJumlah;
         fJum.style.color = 'var(--amber)';
         fJum.style.fontWeight = '700';
         fr.appendChild(fJum);
-
         const fPBB = document.createElement('th');
-        fPBB.className = 'pbb-cell';
-        fPBB.textContent = totalPBB;
+        fPBB.className = 'pbb-cell'; fPBB.textContent = totalPBB;
         fr.appendChild(fPBB);
-
         tf.appendChild(fr);
 
         const fr2 = document.createElement('tr');
@@ -5572,9 +5203,7 @@
           ' &nbsp;&nbsp;•&nbsp;&nbsp; ' +
           'PBB + PBBK II: <b style="color:var(--teal)">' + totalPBB + '</b>';
         fr2.appendChild(f2Summary);
-
         tf.appendChild(fr2);
-
         tbl.appendChild(tf);
 
         body.appendChild(tbl);
@@ -5642,8 +5271,9 @@
         const { key, title, color, catList, mode, equipKey, isKomunikasi, katMapSummary, katMapPersonel } = opts;
         const isPersonel = mode === 'personel';
         const subCols = isPersonel ? ['A', 'C', 'CS', 'TK'] : ['B', 'R'];
-        const subColSpan = subCols.length + 1;
-        const grandCols = isPersonel ? ['A', 'C', 'CS', 'TK'] : ['B', 'R'];
+        const subColSpan = subCols.length + 1; // +1 untuk J per kategori
+        /* ⚠️ PERUBAHAN: tambah kolum J pada JUMLAH hujung */
+        const grandCols = isPersonel ? ['A', 'C', 'CS', 'TK', 'J'] : ['B', 'R', 'J'];
         const grandColSpan = grandCols.length;
         const totalCols = 2 + catList.length * subColSpan + grandColSpan;
 
@@ -5656,12 +5286,8 @@
       <h2>${title}</h2>
       <div style="display:flex;align-items:center;gap:.6rem;">
         <span class="hint">Setiap balai satu baris — dikelompok ikut zon</span>
-        <button class="btn-fullscreen" type="button" title="Buka skrin penuh" aria-label="Buka skrin penuh" data-fullscreen-target="sec-bs-${key}">
-          ${svgIcon('maximize')}
-        </button>
-        <button class="btn-fullscreen btn-print-panel" type="button" title="Cetak panel ini" aria-label="Cetak panel ini">
-          ${svgIcon('print')}
-        </button>
+        <button class="btn-fullscreen" type="button" title="Buka skrin penuh" aria-label="Buka skrin penuh" data-fullscreen-target="sec-bs-${key}">${svgIcon('maximize')}</button>
+        <button class="btn-fullscreen btn-print-panel" type="button" title="Cetak panel ini" aria-label="Cetak panel ini">${svgIcon('print')}</button>
         <span class="chev">${svgIcon('chevronDown')}</span>
       </div>
     </div>
@@ -5677,7 +5303,6 @@
             togglePanelFullscreen(wrap, btnFS);
           });
         }
-
         const btnPrint = wrap.querySelector('.btn-print-panel');
         if (btnPrint) {
           btnPrint.addEventListener('click', function (e) {
@@ -5696,9 +5321,7 @@
               if (balaiState) {
                 (balaiState.personel || []).forEach((p) => {
                   if (!p || !p.pangkat) return;
-                  const effKat = katMapPersonel
-                    ? katMapPersonel[p.pangkat]
-                    : p.pangkat;
+                  const effKat = katMapPersonel ? katMapPersonel[p.pangkat] : p.pangkat;
                   if (effKat && effKat === cat) {
                     const st = mapPersonelStatus(p.status);
                     if (st) cnt[st]++;
@@ -5729,6 +5352,8 @@
               return [cnt.B, cnt.R, cnt.B + cnt.R];
             }
           });
+
+          /* Grand total — grandCols kini ada elemen terakhir 'J' */
           const grand = grandCols.map((_, ci) => {
             let s = 0;
             cats.forEach((arr) => { s += arr[ci]; });
@@ -5813,6 +5438,7 @@
           thJ.className = 'sub-J';
           hSub.appendChild(thJ);
         });
+        /* Grand header sub-row — kini termasuk J */
         grandCols.forEach((sc) => {
           const th = document.createElement('th');
           th.textContent = sc;
@@ -5904,24 +5530,16 @@
           cats.forEach((arr) => {
             arr.forEach((v) => {
               const td = document.createElement('td');
-              if (v === 0) {
-                td.textContent = '·';
-                td.className = 'zero';
-              } else {
-                td.textContent = v;
-              }
+              if (v === 0) { td.textContent = '·'; td.className = 'zero'; }
+              else { td.textContent = v; }
               tr.appendChild(td);
             });
           });
 
           grand.forEach((v) => {
             const td = document.createElement('td');
-            if (v === 0) {
-              td.textContent = '·';
-              td.className = 'zero';
-            } else {
-              td.textContent = v;
-            }
+            if (v === 0) { td.textContent = '·'; td.className = 'zero'; }
+            else { td.textContent = v; }
             tr.appendChild(td);
           });
           tbody.appendChild(tr);
@@ -6031,16 +5649,10 @@
             }
           });
         }
-
         addJenteraRows('JENTERA', JENTERA_KAT, computeEquipGrid('jentera'));
         addJenteraRows('MARIN', MARIN_KAT, computeEquipGrid('marin'));
         addJenteraRows('UTILITI', UTILITI_KAT, computeEquipGrid('utiliti'));
-        addJenteraRows(
-          'KOMUNIKASI',
-          KOMUNIKASI_DEF.map(function (k) { return k.name; }),
-          computeEquipGrid('komunikasi')
-        );
-
+        addJenteraRows('KOMUNIKASI', KOMUNIKASI_DEF.map(function (k) { return k.name; }), computeEquipGrid('komunikasi'));
         return { personelRows: personelRows, jenteraRows: jenteraRows };
       }
 
@@ -6048,45 +5660,33 @@
         const btn = this;
         const label = document.getElementById('archiveLabel');
         if (btn.disabled) return;
-
         const balai = store.activeBalai;
         const tarikh = state.ident.tarikh;
         const shif = state.ident.shif;
-
         if (!tarikh || !shif) {
           showToast('Sila pilih Shif dan Tarikh sebelum arkib', 'error');
           return;
         }
-
         if (!confirm('Simpan arkib untuk balai "' + balai + '"?\n\nTarikh: ' + tarikh + '\nShif: ' + shif + '\n\nIni akan menyimpan rekod kekuatan anggota dan jentera ke Supabase.')) return;
-
         btn.disabled = true;
         btn.classList.add('saving');
         btn.classList.remove('saved');
         label.textContent = 'Menyimpan…';
-
         try {
           const archiveData = buildArchiveData();
-
           if (archiveData.personelRows.length === 0 && archiveData.jenteraRows.length === 0) {
             throw new Error('Tiada data untuk diarkib. Sila isi data terlebih dahulu.');
           }
-
           await archiveBalaiToAPI({
-            tarikh: tarikh,
-            shif: shif,
-            balai: balai,
+            tarikh: tarikh, shif: shif, balai: balai,
             zon: getBalaiZon(balai),
             personelRows: archiveData.personelRows,
             jenteraRows: archiveData.jenteraRows,
           });
-
           btn.classList.remove('saving');
           btn.classList.add('saved');
           label.textContent = 'Diarkib!';
-
           showToast('Arkib disimpan: ' + archiveData.personelRows.length + ' baris anggota + ' + archiveData.jenteraRows.length + ' baris jentera', 'success');
-
           setTimeout(function () {
             btn.classList.remove('saved');
             label.textContent = 'Arkib Balai';
@@ -6097,7 +5697,6 @@
           btn.classList.remove('saving');
           label.textContent = 'Gagal';
           showToast('Gagal arkib: ' + err.message, 'error');
-
           setTimeout(function () {
             label.textContent = 'Arkib Balai';
             btn.disabled = false;
@@ -6108,12 +5707,10 @@
       function buildArchiveDataForBalai(balaiName) {
         const balaiState = store.balai[balaiName];
         if (!balaiState) return { personelRows: [], jenteraRows: [] };
-
         const tarikh = balaiState.ident.tarikh;
         const shif = balaiState.ident.shif;
         const zon = getBalaiZon(balaiName);
         const masaArkib = nowMYString();
-
         const personelGrid = computePersonelGridForState(balaiState);
         const personelRows = [];
         RANKS.forEach(function (gred) {
@@ -6130,7 +5727,6 @@
             }
           });
         });
-
         const jenteraRows = [];
         function addJenteraRows(jenis, katList, grid) {
           katList.forEach(function (kat) {
@@ -6145,16 +5741,10 @@
             }
           });
         }
-
         addJenteraRows('JENTERA', JENTERA_KAT, computeEquipGridForState(balaiState, 'jentera'));
         addJenteraRows('MARIN', MARIN_KAT, computeEquipGridForState(balaiState, 'marin'));
         addJenteraRows('UTILITI', UTILITI_KAT, computeEquipGridForState(balaiState, 'utiliti'));
-        addJenteraRows(
-          'KOMUNIKASI',
-          KOMUNIKASI_DEF.map(function (k) { return k.name; }),
-          computeEquipGridForState(balaiState, 'komunikasi')
-        );
-
+        addJenteraRows('KOMUNIKASI', KOMUNIKASI_DEF.map(function (k) { return k.name; }), computeEquipGridForState(balaiState, 'komunikasi'));
         return { personelRows: personelRows, jenteraRows: jenteraRows };
       }
 
@@ -6162,32 +5752,22 @@
         const btn = this;
         const label = document.getElementById('archiveAllLabel');
         if (btn.disabled) return;
-
         const senaraiBalai = BALAI_LIST.map(function (b) { return b.name; });
-
         if (!confirm('ARKIB SEMUA BALAI\n\nIni akan menyimpan rekod arkib untuk SEMUA ' + senaraiBalai.length + ' balai ke Supabase.\n\nSetiap balai akan guna Tarikh dan Shif masing-masing.\n\nTeruskan?')) return;
-
         btn.disabled = true;
         btn.classList.add('saving');
         btn.classList.remove('saved');
-
-        let totalBalai = 0;
-        let totalKosong = 0;
-        let ralat = 0;
+        let totalBalai = 0, totalKosong = 0, ralat = 0;
         const senaraiRalat = [];
-
         for (let i = 0; i < senaraiBalai.length; i++) {
           const balaiName = senaraiBalai[i];
           label.textContent = 'Arkib ' + (i + 1) + '/' + senaraiBalai.length + '…';
-
           try {
             const data = buildArchiveDataForBalai(balaiName);
-
             if (data.personelRows.length === 0 && data.jenteraRows.length === 0) {
               totalKosong++;
               continue;
             }
-
             const balaiState = store.balai[balaiName];
             await archiveBalaiToAPI({
               tarikh: balaiState.ident.tarikh,
@@ -6197,7 +5777,6 @@
               personelRows: data.personelRows,
               jenteraRows: data.jenteraRows,
             });
-
             totalBalai++;
           } catch (err) {
             console.error('Ralat arkib ' + balaiName + ':', err);
@@ -6205,22 +5784,17 @@
             senaraiRalat.push(balaiName);
           }
         }
-
         btn.classList.remove('saving');
-
         if (ralat === 0) {
           btn.classList.add('saved');
           label.textContent = 'Selesai!';
-
           let msg = 'Arkib ' + totalBalai + ' balai berjaya.';
           if (totalKosong > 0) msg += ' (' + totalKosong + ' balai kosong diabaikan)';
-
           showToast(msg, 'success');
         } else {
           label.textContent = ralat + ' Gagal';
           showToast('Arkib: ' + totalBalai + ' berjaya, ' + ralat + ' gagal (' + senaraiRalat.join(', ') + ')', 'error');
         }
-
         setTimeout(function () {
           btn.classList.remove('saved');
           label.textContent = 'Arkib Semua';
@@ -6233,51 +5807,38 @@
         updatePrintFooterDate();
         fillPrintFooter(loadPrintInfo());
         setLoading(true, 'Memuatkan data dari Supabase…');
-
         try {
           const apiData = await loadAllFromAPI();
           const balai = buildStoreFromApiData(apiData);
-
           let uiPrefs = { view: 'balai', activeBalai: BALAI_LIST[0].name };
           try {
             const saved = localStorage.getItem('bomba-ui-prefs');
             if (saved) uiPrefs = Object.assign(uiPrefs, JSON.parse(saved));
           } catch (e) {}
-
           if (!balai[uiPrefs.activeBalai]) uiPrefs.activeBalai = BALAI_LIST[0].name;
-
           store = { view: uiPrefs.view, activeBalai: uiPrefs.activeBalai, balai: balai };
           state = store.balai[store.activeBalai];
           state.ident.balai = store.activeBalai;
-
           renderTabbar();
           renderTopBar();
           renderAll();
-
           dirtyBalai.clear();
           updateDirtyUI();
-
-          /* 🔄 Set signature semasa & mula auto-refresh 5 minit */
           lastDataSignature = computeDataSignature(apiData);
           startAutoRefresh();
-
           showToast('Data berjaya dimuatkan dari Supabase', 'success');
         } catch (err) {
           console.error('Init error:', err);
           showToast('Gagal memuat data: ' + err.message + '. Menggunakan data kosong.', 'error');
-
           store = { view: 'balai', activeBalai: BALAI_LIST[0].name, balai: {} };
           BALAI_LIST.forEach((b) => { store.balai[b.name] = defaultState(b.name); });
           state = store.balai[store.activeBalai];
           state.ident.balai = store.activeBalai;
-
           renderTabbar();
           renderTopBar();
           renderAll();
-
           dirtyBalai.clear();
           updateDirtyUI();
-
           try { startAutoRefresh(); } catch (e) {}
         } finally {
           setLoading(false);
@@ -6288,37 +5849,28 @@
         const btn = this;
         const label = document.getElementById('saveSheetLabel');
         if (btn.disabled) return;
-
         if (store.view === 'balai' && !state.ident.shif) {
           showToast('Sila pilih Shif Bertugas sebelum simpan', 'error');
           return;
         }
-
         btn.disabled = true;
         btn.classList.add('saving');
         btn.classList.remove('saved');
         label.textContent = 'Menyimpan…';
         setAutosaveIndicator('saving', 'Menyimpan…');
-
         try {
           store.balai[store.activeBalai] = state;
           await saveBalaiToAPI(store.activeBalai, state);
-
           btn.classList.remove('saving');
           btn.classList.add('saved');
           label.textContent = 'Disimpan!';
-
           const t = new Date().toLocaleTimeString('ms-MY');
           markClean(t);
-
-          // Update signature supaya auto-refresh tak trigger reload sia-sia
           try {
             const fresh = await loadAllFromAPI();
             lastDataSignature = computeDataSignature(fresh);
           } catch (e) {}
-
           showToast('Data ' + store.activeBalai + ' berjaya disimpan ke Supabase', 'success');
-
           setTimeout(function () {
             btn.classList.remove('saved');
             label.textContent = 'Simpan Sekarang';
@@ -6330,7 +5882,6 @@
           label.textContent = 'Gagal — Cuba lagi';
           setAutosaveIndicator('error', 'Gagal simpan');
           showToast('Gagal simpan: ' + err.message, 'error');
-
           setTimeout(function () {
             label.textContent = 'Simpan Sekarang';
             btn.disabled = false;
@@ -6342,38 +5893,27 @@
         const btn = this;
         const label = document.getElementById('resetBalaiLabel');
         if (btn.disabled) return;
-
         const namaBalai = store.activeBalai;
-
         if (!confirm('AMARAN: Reset akan padam SEMUA data untuk balai "' + namaBalai + '".\n\nData personel, jentera, marin, utiliti, dan komunikasi akan dikosongkan.\n\nTeruskan?')) return;
         if (!confirm('SAHKAN SEKALI LAGI — Data balai "' + namaBalai + '" akan dipadam dan tidak boleh dikembalikan.\n\nBetul-betul pasti?')) return;
-
         btn.disabled = true;
         btn.classList.add('resetting');
         label.textContent = 'Mereset…';
-
         try {
           state = defaultState(namaBalai);
           state.ident.balai = namaBalai;
           store.balai[namaBalai] = state;
-
           await saveBalaiToAPI(namaBalai, state);
-
           dirtyBalai.delete(namaBalai);
           updateDirtyUI();
-
-          // Update signature
           try {
             const fresh = await loadAllFromAPI();
             lastDataSignature = computeDataSignature(fresh);
           } catch (e) {}
-
           renderTopBar();
           renderAll();
-
           label.textContent = 'Selesai!';
           showToast('Balai "' + namaBalai + '" berjaya direset', 'success');
-
           setTimeout(function () {
             btn.classList.remove('resetting');
             label.textContent = 'Reset Balai';
@@ -6384,7 +5924,6 @@
           btn.classList.remove('resetting');
           label.textContent = 'Gagal — Cuba lagi';
           showToast('Gagal reset: ' + err.message, 'error');
-
           setTimeout(function () {
             label.textContent = 'Reset Balai';
             btn.disabled = false;
@@ -6403,24 +5942,24 @@
         await initApp();
       });
 
-      document.getElementById('exportAllBtn').addEventListener('click', () => {
-        store.balai[store.activeBalai] = state;
-        const blob = new Blob([JSON.stringify(store, null, 2)], { type: 'application/json' });
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        const tk = new Date().toISOString().slice(0, 10);
-        a.href = url;
-        a.download = `kekuatan_SEMUA_BALAI_${tk}.json`;
-        document.body.appendChild(a);
-        a.click();
-        document.body.removeChild(a);
-        URL.revokeObjectURL(url);
-        showToast('Semua balai dieksport', 'success');
-      });
+      /* Butang pause & refresh untuk auto-reload widget */
+      const autoReloadPauseBtnEl = document.getElementById('autoReloadPauseBtn');
+      if (autoReloadPauseBtnEl) {
+        autoReloadPauseBtnEl.addEventListener('click', function () {
+          toggleAutoReloadPause();
+        });
+      }
+      const autoReloadNowBtnEl = document.getElementById('autoReloadNowBtn');
+      if (autoReloadNowBtnEl) {
+        autoReloadNowBtnEl.addEventListener('click', function () {
+          triggerAutoReloadNow();
+          showToast('Refresh manual dijalankan', 'success');
+        });
+      }
 
       document.getElementById('exportCurrentBtn').addEventListener('click', () => {
         if (store.view !== 'balai') {
-          alert('Export Balai hanya untuk paparan balai. Sila pilih tab balai dahulu.');
+          alert('Export hanya untuk paparan balai. Sila pilih tab balai dahulu.');
           return;
         }
         const blob = new Blob([JSON.stringify(state, null, 2)], { type: 'application/json' });
@@ -6483,13 +6022,10 @@
               state = newState;
               dirtyBalai.delete(store.activeBalai);
               updateDirtyUI();
-
-              // Update signature
               try {
                 const fresh = await loadAllFromAPI();
                 lastDataSignature = computeDataSignature(fresh);
               } catch (e) {}
-
               renderTopBar();
               renderAll();
               showToast('Import ke balai "' + store.activeBalai + '" berjaya', 'success');
@@ -6531,7 +6067,6 @@
         const nBalai = Object.keys(store.balai).length;
         if (!confirm('AMARAN: Reset akan padam SEMUA data ' + nBalai + ' balai dari Supabase.\n\nTeruskan?')) return;
         if (!confirm('SAHKAN SEKALI LAGI — SEMUA data ' + nBalai + ' balai akan dipadam dan tidak boleh dikembalikan.\n\nBetul-betul pasti?')) return;
-
         setLoading(true, 'Mereset semua balai…');
         try {
           const names = Object.keys(store.balai);
@@ -6548,10 +6083,7 @@
           dirtyBalai.clear();
           updateDirtyUI();
           persistUI();
-
-          // Reset signature
           lastDataSignature = null;
-
           renderTabbar();
           renderTopBar();
           renderAll();
