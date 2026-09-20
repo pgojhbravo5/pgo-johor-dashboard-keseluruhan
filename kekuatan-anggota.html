@@ -440,7 +440,6 @@
         50% { box-shadow: 0 2px 8px rgba(200, 16, 46, 0.35), 0 0 0 10px rgba(200, 16, 46, 0); }
       }
 
-      /* Butang Cetak Landscape untuk PO3A & Ringkasan Ikut Balai */
       .btn-print-po3a {
         display: inline-flex; align-items: center; gap: 0.45rem;
         background: linear-gradient(180deg, #9b59b6, #7a3f96);
@@ -483,7 +482,6 @@
       }
       .theme-toggle .ico { font-size: 1rem; }
 
-      /* ⬇️ BUTANG DASHBOARD ⬇️ */
       .btn-back-dashboard {
         display: inline-flex; align-items: center; gap: 0.45rem;
         background: var(--panel-2);
@@ -1445,7 +1443,6 @@
 
       .print-footer { display: none; }
 
-      /* ===== TAB BKB & MERS999 ===== */
       .tab.special.bkb { border-color: rgba(139, 111, 212, 0.55); color: #b9a3ea; }
       .tab.special.bkb:hover { background: rgba(139, 111, 212, 0.14); }
       .tab.special.bkb.active { background: var(--purple); color: #fff; border-color: transparent; }
@@ -1601,7 +1598,6 @@
         background: var(--panel-2);
       }
 
-      /* ===== CETAK PO3A / RINGKASAN IKUT BALAI — LANDSCAPE COMPACT ===== */
       @media print {
         body.printing-po3a .stats,
         body.printing-po3a .topbar {
@@ -2168,7 +2164,7 @@
 
     <script>
       /* ==========================================================
-         ⚙️  KONFIGURASI SUPABASE — GANTI DENGAN NILAI PROJEK ANDA
+         ⚙️  KONFIGURASI SUPABASE
          ========================================================== */
       const SUPABASE_CONFIG = {
         url: 'https://nstmylzvqckhrpxmbufx.supabase.co',
@@ -2304,7 +2300,6 @@
 
       function saveIdentLS(balaiName, ident) {
         // ⚠️ No-op — tidak lagi tulis ke localStorage
-        // Data ident disimpan sepenuhnya di Supabase melalui saveBalaiToAPI()
         return;
       }
 
@@ -3068,79 +3063,105 @@
       }
 
       /* ============================================================
-         🔄  REALTIME SYNC — Supabase
+         🔄  AUTO-REFRESH TIMER — 5 MINIT (POLLING)
          ============================================================ */
-      let realtimeChannel = null;
-      let reloadDebounceTimer = null;
-      let realtimeReloadInProgress = false;
+      const AUTO_REFRESH_MS = 5 * 60 * 1000; // 5 minit = 300,000 ms
+      let autoRefreshTimer = null;
+      let autoRefreshInProgress = false;
+      let lastDataSignature = null;
 
-      function setupRealtimeSync() {
-        // Bersihkan channel lama jika ada (elak duplicate)
-        if (realtimeChannel) {
-          try { sb.removeChannel(realtimeChannel); } catch (e) {}
-          realtimeChannel = null;
+      /* Buat "tandatangan" ringkas untuk detect perubahan data */
+      function computeDataSignature(apiData) {
+        try {
+          return [
+            (apiData.ident || []).length,
+            (apiData.personel || []).length,
+            (apiData.jentera || []).length,
+            (apiData.marin || []).length,
+            (apiData.utiliti || []).length,
+            (apiData.komunikasi || []).length,
+            JSON.stringify(apiData).length,
+          ].join('|');
+        } catch (e) {
+          return String(Date.now());
         }
-
-        const tables = ['ident', 'personel', 'jentera', 'marin', 'utiliti', 'komunikasi'];
-        let channel = sb.channel('bomba-johor-realtime');
-
-        tables.forEach(function (tableName) {
-          channel = channel.on(
-            'postgres_changes',
-            { event: '*', schema: 'public', table: tableName },
-            handleRealtimeChange
-          );
-        });
-
-        realtimeChannel = channel.subscribe(function (status) {
-          console.log('[Realtime] Status:', status);
-          if (status === 'SUBSCRIBED') {
-            console.log('[Realtime] Bersedia menerima perubahan dari pelayan.');
-          }
-        });
       }
 
-      function handleRealtimeChange(payload) {
-        // Jangan ganggu kerja pengguna jika ada perubahan belum disimpan
-        if (dirtyBalai && dirtyBalai.size > 0) {
-          return;
+      function startAutoRefresh() {
+        stopAutoRefresh();
+        autoRefreshTimer = setInterval(pollForUpdates, AUTO_REFRESH_MS);
+        console.log('[AutoRefresh] Timer bermula — setiap ' + (AUTO_REFRESH_MS / 60000) + ' minit');
+      }
+
+      function stopAutoRefresh() {
+        if (autoRefreshTimer) {
+          clearInterval(autoRefreshTimer);
+          autoRefreshTimer = null;
+          console.log('[AutoRefresh] Timer dihentikan');
         }
-        if (realtimeReloadInProgress) return;
+      }
 
-        clearTimeout(reloadDebounceTimer);
-        reloadDebounceTimer = setTimeout(async function () {
-          if (realtimeReloadInProgress) return;
-          realtimeReloadInProgress = true;
-          try {
-            const apiData = await loadAllFromAPI();
-            const newBalai = buildStoreFromApiData(apiData);
+      async function pollForUpdates() {
+        // Skip jika ada perubahan belum disimpan, sedang refresh, atau tab tidak aktif
+        if (dirtyBalai && dirtyBalai.size > 0) return;
+        if (autoRefreshInProgress) return;
+        if (document.hidden) return;
 
-            const currentBalai = store.activeBalai;
-            const currentView = store.view;
+        autoRefreshInProgress = true;
+        try {
+          const apiData = await loadAllFromAPI();
+          const newSignature = computeDataSignature(apiData);
 
-            store.balai = newBalai;
-            if (!store.balai[currentBalai]) {
-              // Balai semasa telah dipadam — pindah ke balai pertama
-              store.activeBalai = BALAI_LIST[0].name;
-            } else {
-              store.activeBalai = currentBalai;
+          if (newSignature === lastDataSignature) {
+            autoRefreshInProgress = false;
+            return; // Tiada perubahan
+          }
+
+          lastDataSignature = newSignature;
+
+          const newBalai = buildStoreFromApiData(apiData);
+          const currentBalai = store.activeBalai;
+          const currentView = store.view;
+
+          store.balai = newBalai;
+          if (!store.balai[currentBalai]) {
+            store.activeBalai = BALAI_LIST[0].name;
+          } else {
+            store.activeBalai = currentBalai;
+          }
+          store.view = currentView;
+          state = store.balai[store.activeBalai] || defaultState(store.activeBalai);
+          state.ident.balai = store.activeBalai;
+
+          renderTabbar();
+          renderTopBar();
+          renderAll();
+          updateDirtyUI();
+
+          setAutosaveIndicator('saved', 'Dikemaskini ' + new Date().toLocaleTimeString('ms-MY'));
+          setTimeout(() => {
+            if (!dirtyBalai || dirtyBalai.size === 0) {
+              setAutosaveIndicator('saved', 'Sedia');
             }
-            store.view = currentView;
-            state = store.balai[store.activeBalai] || defaultState(store.activeBalai);
-            state.ident.balai = store.activeBalai;
-
-            renderTabbar();
-            renderTopBar();
-            renderAll();
-            updateDirtyUI();
-            showToast('Data dikemaskini dari pelayan', 'success');
-          } catch (err) {
-            console.error('[Realtime] Gagal reload:', err);
-          } finally {
-            realtimeReloadInProgress = false;
-          }
-        }, 1500);
+          }, 4000);
+        } catch (err) {
+          console.warn('[AutoRefresh] Gagal poll:', err.message);
+        } finally {
+          autoRefreshInProgress = false;
+        }
       }
+
+      /* Refresh serta-merta bila pengguna balik ke tab (dari minimize) */
+      document.addEventListener('visibilitychange', function () {
+        if (!document.hidden && store && dirtyBalai && dirtyBalai.size === 0) {
+          pollForUpdates();
+        }
+      });
+
+      /* Pastikan timer berhenti bila tinggalkan page */
+      window.addEventListener('beforeunload', function () {
+        stopAutoRefresh();
+      });
 
       /* ---------- SAVE BALAI ---------- */
       async function saveBalaiToAPI(balaiName, balaiData) {
@@ -3595,7 +3616,6 @@
 
       function buildStoreFromApiData(apiData) {
         const balai = {};
-        // ⚠️ Tidak lagi baca dari localStorage — ident sepenuhnya dari Supabase
         const identMap = {};
         (apiData.ident || []).forEach(function (r) {
           if (r && r.balai) {
@@ -3641,7 +3661,6 @@
               };
             });
 
-          // Ident dari Supabase sahaja (tiada fallback localStorage)
           let identData = identMap[name];
           if (!identData) {
             identData = { balai: name, shif: '', tarikh: '', kategori: '' };
@@ -6238,8 +6257,9 @@
           dirtyBalai.clear();
           updateDirtyUI();
 
-          // 🔄 Aktifkan realtime sync
-          setupRealtimeSync();
+          /* 🔄 Set signature semasa & mula auto-refresh 5 minit */
+          lastDataSignature = computeDataSignature(apiData);
+          startAutoRefresh();
 
           showToast('Data berjaya dimuatkan dari Supabase', 'success');
         } catch (err) {
@@ -6258,8 +6278,7 @@
           dirtyBalai.clear();
           updateDirtyUI();
 
-          // Cuba aktifkan realtime walaupun load gagal
-          try { setupRealtimeSync(); } catch (e) {}
+          try { startAutoRefresh(); } catch (e) {}
         } finally {
           setLoading(false);
         }
@@ -6284,7 +6303,6 @@
         try {
           store.balai[store.activeBalai] = state;
           await saveBalaiToAPI(store.activeBalai, state);
-          // saveIdentLS kini no-op, kekal untuk keserasian
 
           btn.classList.remove('saving');
           btn.classList.add('saved');
@@ -6292,6 +6310,12 @@
 
           const t = new Date().toLocaleTimeString('ms-MY');
           markClean(t);
+
+          // Update signature supaya auto-refresh tak trigger reload sia-sia
+          try {
+            const fresh = await loadAllFromAPI();
+            lastDataSignature = computeDataSignature(fresh);
+          } catch (e) {}
 
           showToast('Data ' + store.activeBalai + ' berjaya disimpan ke Supabase', 'success');
 
@@ -6334,10 +6358,15 @@
           store.balai[namaBalai] = state;
 
           await saveBalaiToAPI(namaBalai, state);
-          // saveIdentLS no-op
 
           dirtyBalai.delete(namaBalai);
           updateDirtyUI();
+
+          // Update signature
+          try {
+            const fresh = await loadAllFromAPI();
+            lastDataSignature = computeDataSignature(fresh);
+          } catch (e) {}
 
           renderTopBar();
           renderAll();
@@ -6452,9 +6481,15 @@
               await saveBalaiToAPI(store.activeBalai, newState);
               store.balai[store.activeBalai] = newState;
               state = newState;
-              // saveIdentLS no-op
               dirtyBalai.delete(store.activeBalai);
               updateDirtyUI();
+
+              // Update signature
+              try {
+                const fresh = await loadAllFromAPI();
+                lastDataSignature = computeDataSignature(fresh);
+              } catch (e) {}
+
               renderTopBar();
               renderAll();
               showToast('Import ke balai "' + store.activeBalai + '" berjaya', 'success');
@@ -6509,11 +6544,14 @@
           store.activeBalai = BALAI_LIST[0].name;
           store.balai[store.activeBalai] = defaultState(store.activeBalai);
           state = store.balai[store.activeBalai];
-          // Bersihkan key legacy dari localStorage jika ada (dari versi lama)
           try { localStorage.removeItem(IDENT_LS_KEY); } catch (e) {}
           dirtyBalai.clear();
           updateDirtyUI();
           persistUI();
+
+          // Reset signature
+          lastDataSignature = null;
+
           renderTabbar();
           renderTopBar();
           renderAll();
