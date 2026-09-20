@@ -1458,15 +1458,60 @@
       }
       input[type='file'] { display: none; }
 
+      /* ===== SITE FOOTER — 2 LAYER ===== */
       .site-footer {
-        margin-top: 2.25rem; padding: 1.15rem 0.5rem 0.5rem;
-        text-align: center; font-size: 0.7rem; color: var(--text-faint);
+        margin-top: 2.25rem;
         border-top: 1px solid var(--line);
         font-family: 'Oswald', sans-serif;
-        letter-spacing: 0.14em; text-transform: uppercase;
       }
-      .site-footer b { color: var(--amber); font-weight: 600; }
-      .site-footer .sep { color: var(--red); margin: 0 0.6rem; font-weight: 700; }
+
+      /* LAYER 1 — Copyright (center) */
+      .site-footer .sf-layer-top {
+        text-align: center;
+        padding: 1.15rem 0.5rem 0.85rem;
+        font-size: 0.7rem;
+        color: var(--text-faint);
+        letter-spacing: 0.14em;
+        text-transform: uppercase;
+        border-bottom: 1px solid var(--line);
+      }
+      .site-footer .sf-layer-top b {
+        color: var(--amber);
+        font-weight: 700;
+      }
+      .site-footer .sf-layer-top .sep {
+        color: var(--red);
+        margin: 0 0.6rem;
+        font-weight: 700;
+      }
+
+      /* LAYER 2 — Maklumat (kiri) */
+      .site-footer .sf-layer-bottom {
+        padding: 0.8rem 1.15rem 0.9rem;
+        text-align: left;
+        font-family: 'Inter', system-ui, -apple-system, sans-serif;
+        font-size: 0.65rem;
+        color: var(--text-faint);
+        letter-spacing: 0.02em;
+        text-transform: none;
+        line-height: 1.75;
+      }
+      .site-footer .sf-layer-bottom .sf-item {
+        margin-bottom: 0.15rem;
+      }
+      .site-footer .sf-layer-bottom .sf-item:last-child {
+        margin-bottom: 0;
+      }
+      .site-footer .sf-layer-bottom .sf-item b {
+        color: var(--text-dim);
+        font-weight: 600;
+      }
+      @media (max-width: 640px) {
+        .site-footer .sf-layer-bottom {
+          padding: 0.75rem 0.85rem 0.85rem;
+          font-size: 0.62rem;
+        }
+      }
 
       .print-footer { display: none; }
 
@@ -1965,7 +2010,14 @@
       </div>
 
       <div class="site-footer">
-        <b>©2026 PGO JOHOR</b><span class="sep">|</span>Hak Cipta Terpelihara<span class="sep">|</span>Built by PB MOHAMAD AIDIL
+        <div class="sf-layer-top">
+          <b>©2026 PGO JOHOR</b><span class="sep">|</span>HAK CIPTA TERPELIHARA
+        </div>
+        <div class="sf-layer-bottom">
+          <div class="sf-item">Versi Sistem: <b>v2.0</b></div>
+          <div class="sf-item">Pembina Aplikasi: <b>PB Mohamad Aidil bin Zainal Abidin</b></div>
+          <div class="sf-item">Penyedia Tutorial (Cara Penggunaan): <b>PB Jevinson Justin</b></div>
+        </div>
       </div>
     </div>
 
