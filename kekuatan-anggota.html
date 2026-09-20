@@ -607,6 +607,11 @@
         border-color: var(--btn-hover-border);
         color: var(--amber);
       }
+      .auto-reload-widget .ar-btn .ico {
+        width: 0.85rem;
+        height: 0.85rem;
+        stroke-width: 2.2;
+      }
       .auto-reload-widget.paused {
         border-color: rgba(217, 154, 43, 0.5);
         background: rgba(217, 154, 43, 0.06);
@@ -615,7 +620,7 @@
         color: var(--text-faint);
       }
       .auto-reload-widget.paused .ar-label::after {
-        content: ' ⏸';
+        content: ' PAUSED';
         color: var(--amber);
       }
 
@@ -1840,10 +1845,14 @@
               Export
             </button>
             <div class="auto-reload-widget" id="autoReloadWidget" title="Auto-reload data dari pelayan">
-              <span class="ar-label">⏱ Auto-Reload:</span>
+              <span class="ar-label">Auto-Reload:</span>
               <span class="ar-time" id="autoReloadTime">5:00</span>
-              <button class="ar-btn" id="autoReloadPauseBtn" type="button" title="Pause auto-reload">⏸</button>
-              <button class="ar-btn" id="autoReloadNowBtn" type="button" title="Refresh sekarang">🔄</button>
+              <button class="ar-btn" id="autoReloadPauseBtn" type="button" title="Pause auto-reload" aria-label="Pause auto-reload">
+                <svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><rect x="6" y="4" width="4" height="16" rx="1"/><rect x="14" y="4" width="4" height="16" rx="1"/></svg>
+              </button>
+              <button class="ar-btn" id="autoReloadNowBtn" type="button" title="Refresh sekarang" aria-label="Refresh sekarang">
+                <svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>
+              </button>
             </div>
           </div>
         </div>
@@ -1882,14 +1891,6 @@
                 <rect x="6" y="14" width="12" height="8" />
               </svg>
               Print
-            </button>
-            <button class="btn" id="refreshBtn" type="button">
-              <svg class="ico" viewBox="0 0 24 24" aria-hidden="true">
-                <polyline points="23 4 23 10 17 10" />
-                <polyline points="1 20 1 14 7 14" />
-                <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15" />
-              </svg>
-              Muat Semula
             </button>
           </div>
         </div>
@@ -2051,6 +2052,9 @@
         phone: '<path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/>',
         signal: '<path d="M2 20h.01"/><path d="M7 20v-4"/><path d="M12 20v-8"/><path d="M17 20V8"/><path d="M22 4v16"/>',
         arrowLeft: '<line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/>',
+        pause: '<rect x="6" y="4" width="4" height="16" rx="1"/><rect x="14" y="4" width="4" height="16" rx="1"/>',
+        play: '<polygon points="6 3 20 12 6 21 6 3"/>',
+        refreshCw: '<polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/>',
       };
       function svgIcon(name) {
         return ('<svg class="ico" viewBox="0 0 24 24" aria-hidden="true">' + (ICONS[name] || '') + '</svg>');
@@ -2626,7 +2630,8 @@
 
       const JENTERA_KAT = ['FRT','LFRT','CFRT','RFRT','Rapid Rescue Vehicle (RRV)','ALP','SKYLIFT','TTL','High Performance Pump Module (HPPM)','High Capacity Foam Tender (HCFM)','PRIME MOVER','FOAM TENDER','Breathing Apparatus Tender Vehicle (BATV)','WATER TANKER 10,000','WATER TANKER 20,000','JEN. HAZMAT','KOMUNIKASI','RIM','EMRS','MOBILE COMMAND POST','KEMBALIK','SIASATAN (FORENSICS)'];
 
-      const JENTERA_KAT_PO3A = ['FRT','LFRT','CFRT','RFRT','Rapid Rescue Vehicle (RRV)','Fire Rescue Vehicle (FRV)','ALP','SKYLIFT','TTL','High Performance Pump Module (HPPM)','High Capacity Foam Tender (HCFM)','FOAM TENDER','Breathing Apparatus Tender Vehicle (BATV)','WATER TANKER 10,000 LITER','WATER TANKER 20,000 LITER','JEN. HAZMAT','KOMUNIKASI','RIM','EMRS','MOBILE COMMAND POST','KEMBALIK','NISSAN SAFARI','LAIN LAIN'];
+      /* ⚠️ PERUBAHAN: 'LAIN LAIN' dibuang dari JENTERA_KAT_PO3A */
+      const JENTERA_KAT_PO3A = ['FRT','LFRT','CFRT','RFRT','Rapid Rescue Vehicle (RRV)','Fire Rescue Vehicle (FRV)','ALP','SKYLIFT','TTL','High Performance Pump Module (HPPM)','High Capacity Foam Tender (HCFM)','FOAM TENDER','Breathing Apparatus Tender Vehicle (BATV)','WATER TANKER 10,000 LITER','WATER TANKER 20,000 LITER','JEN. HAZMAT','KOMUNIKASI','RIM','EMRS','MOBILE COMMAND POST','KEMBALIK','NISSAN SAFARI'];
 
       const JENTERA_MAP_PO3A = {
         'FRT': 'FRT','LFRT': 'LFRT','CFRT': 'CFRT','RFRT': 'RFRT',
@@ -2644,7 +2649,8 @@
       };
 
       const MARIN_KAT = ['ALUMINIUM BOT','ARIB BOT','FIBER BOT','JETSKI BOT','KEVLAR BOT','LIGHT SAR BOAT (HDPE) BOT','MUD BOAT','RUBBER DINGHY BOT'];
-      const MARIN_KAT_PO3A = ['FIRE BOAT','RIGID INFLATABLE HALL BOAT','ALUMINIUM','AMPHIBIOUS RIGID INFLATABLE HALL BOAT','DINGHY','FIBER','APEX','JET SKI','MUD BOAT','MARES','HIGH DENSITY POLYETHYLENE','LAIN LAIN'];
+      /* ⚠️ PERUBAHAN: 'LAIN LAIN' dibuang dari MARIN_KAT_PO3A */
+      const MARIN_KAT_PO3A = ['FIRE BOAT','RIGID INFLATABLE HALL BOAT','ALUMINIUM','AMPHIBIOUS RIGID INFLATABLE HALL BOAT','DINGHY','FIBER','APEX','JET SKI','MUD BOAT','MARES','HIGH DENSITY POLYETHYLENE'];
       const MARIN_MAP_PO3A = {
         'KEVLAR BOT': 'RIGID INFLATABLE HALL BOAT',
         'ALUMINIUM BOT': 'ALUMINIUM',
@@ -2860,12 +2866,14 @@
         timeEl.textContent = m + ':' + String(s).padStart(2, '0');
 
         if (autoReloadPaused) {
-          pauseBtn.textContent = '▶';
+          pauseBtn.innerHTML = svgIcon('play');
           pauseBtn.title = 'Resume auto-reload';
+          pauseBtn.setAttribute('aria-label', 'Resume auto-reload');
           widget.classList.add('paused');
         } else {
-          pauseBtn.textContent = '⏸';
+          pauseBtn.innerHTML = svgIcon('pause');
           pauseBtn.title = 'Pause auto-reload';
+          pauseBtn.setAttribute('aria-label', 'Pause auto-reload');
           widget.classList.remove('paused');
         }
       }
@@ -4157,10 +4165,10 @@
           const arr = (b.equip && b.equip[key]) || [];
           arr.forEach((r) => {
             if (!r || !r.kategori) return;
-            const mappedKat = mapping[r.kategori] || 'LAIN LAIN';
+            const mappedKat = mapping[r.kategori];
+            if (!mappedKat || !m[mappedKat]) return;
             const c = mapEquipStatus(r.status);
             if (!c) return;
-            if (!m[mappedKat]) m[mappedKat] = { B: 0, R: 0 };
             m[mappedKat][c] += 1;
           });
         });
@@ -4766,6 +4774,10 @@
           th.colSpan = 4; th.textContent = u;
           gr.appendChild(th);
         });
+        /* BREAKDOWN — display sahaja, semua nilai 0 */
+        const bth = document.createElement('th');
+        bth.colSpan = 5; bth.textContent = 'BREAKDOWN';
+        gr.appendChild(bth);
         const jth = document.createElement('th');
         jth.colSpan = 4; jth.textContent = 'JUMLAH'; jth.className = 'jumlah-col';
         gr.appendChild(jth);
@@ -4782,6 +4794,13 @@
             th.className = 's-' + s;
             sr.appendChild(th);
           });
+        });
+        /* BREAKDOWN sub-kolum: A, C, CS, TK, J */
+        ['A', 'C', 'CS', 'TK', 'J'].forEach((s) => {
+          const th = document.createElement('th');
+          th.textContent = s;
+          th.className = 's-' + s;
+          sr.appendChild(th);
         });
         STATUS_P.forEach((s) => {
           const th = document.createElement('th');
@@ -4810,6 +4829,12 @@
               tr.appendChild(td);
             });
           });
+          /* BREAKDOWN — display sahaja, semua 0 */
+          ['A', 'C', 'CS', 'TK', 'J'].forEach(() => {
+            const td = document.createElement('td');
+            td.textContent = '0';
+            tr.appendChild(td);
+          });
           STATUS_P.forEach((s) => {
             const td = document.createElement('td');
             td.className = 'jumlah-cell';
@@ -4837,6 +4862,12 @@
             td.textContent = sum;
             fr.appendChild(td);
           });
+        });
+        /* BREAKDOWN footer — display sahaja, semua 0 */
+        ['A', 'C', 'CS', 'TK', 'J'].forEach(() => {
+          const td = document.createElement('td');
+          td.textContent = '0';
+          fr.appendChild(td);
         });
         STATUS_P.forEach((s) => {
           const td = document.createElement('td');
@@ -5338,7 +5369,8 @@
                   if (!r || !r.kategori) return;
                   let effectiveKat = r.kategori;
                   if (katMapSummary) {
-                    effectiveKat = katMapSummary[r.kategori] || 'LAIN LAIN';
+                    effectiveKat = katMapSummary[r.kategori];
+                    if (!effectiveKat) return;
                   }
                   if (effectiveKat === cat) {
                     const c = mapEquipStatus(r.status);
@@ -5935,11 +5967,6 @@
         const next = currentTheme() === 'dark' ? 'light' : 'dark';
         applyTheme(next);
         try { localStorage.setItem(THEME_KEY, next); } catch (e) {}
-      });
-
-      document.getElementById('refreshBtn').addEventListener('click', async () => {
-        if (!confirm('Muat semula data dari Supabase?\n\nSebarang perubahan yang belum disimpan akan hilang.')) return;
-        await initApp();
       });
 
       /* Butang pause & refresh untuk auto-reload widget */
