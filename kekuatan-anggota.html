@@ -367,7 +367,6 @@
         box-shadow: none;
       }
 
-      /* Kumpulan action button — kekal bersama bila wrap */
       .topbar-actions {
         display: flex; flex-wrap: wrap; gap: 0.5rem;
         align-items: center; flex: 0 0 auto;
@@ -693,7 +692,7 @@
         background: var(--panel); border: 1px solid var(--line);
         border-radius: var(--radius); padding: 0.5rem; margin-bottom: 1.35rem;
         box-shadow: var(--shadow-sm);
-        position: relative; /* anchor untuk zone-drawer */
+        position: relative;
       }
       .tabbar-desktop {
         display: flex; gap: 0.3rem; overflow-x: auto;
@@ -759,9 +758,6 @@
         .tabbar-mobile { display: block; }
       }
 
-      /* ============================================================
-         TAB ZON — DRAWER DROPDOWN (DESKTOP)
-         ============================================================ */
       .zone-tab {
         display: inline-flex;
         align-items: center;
@@ -1680,7 +1676,6 @@
           padding: 0.13rem 0.18rem !important;
         }
 
-        /* Split table wrapper */
         body.printing-po3a .po3a-split-wrapper {
           display: block !important;
           width: 100% !important;
@@ -1850,7 +1845,6 @@
           margin: 0 !important;
         }
 
-        /* PO3A / RINGKASAN IKUT BALAI — sembunyikan tabbar, kekalkan semua section */
         body.printing-po3a .wrap > *:not(#sections):not(.print-footer):not(.main-title) {
           display: none !important;
         }
@@ -1861,7 +1855,6 @@
         }
       }
 
-      /* ============ RESPONSIVE TOPBAR ============ */
       @media (max-width: 1200px) {
         .id-fields { flex: 1 1 100%; margin-left: 0; justify-content: flex-start; }
       }
@@ -2300,28 +2293,19 @@
         updateBodyFullscreenClass();
       }
 
-      /* ===== LocalStorage untuk Shif / Tarikh / Kategori per balai ===== */
-      const IDENT_LS_KEY = 'bomba-ident-per-balai';
+      /* ===== LocalStorage untuk Shif / Tarikh / Kategori per balai =====
+         ⚠️ DIUBAH: cache ini dibuang. Data ident sepenuhnya dari Supabase. */
+      const IDENT_LS_KEY = 'bomba-ident-per-balai'; // kekal sebagai kunci legacy untuk cleanup
 
       function loadIdentLS() {
-        try {
-          const raw = localStorage.getItem(IDENT_LS_KEY);
-          return raw ? JSON.parse(raw) : {};
-        } catch (e) { return {}; }
+        // ⚠️ No-op — tidak lagi baca dari localStorage
+        return {};
       }
 
       function saveIdentLS(balaiName, ident) {
-        if (!balaiName || !ident) return;
-        try {
-          const all = loadIdentLS();
-          all[balaiName] = {
-            balai: balaiName,
-            shif: ident.shif || '',
-            tarikh: ident.tarikh || '',
-            kategori: ident.kategori || '',
-          };
-          localStorage.setItem(IDENT_LS_KEY, JSON.stringify(all));
-        } catch (e) {}
+        // ⚠️ No-op — tidak lagi tulis ke localStorage
+        // Data ident disimpan sepenuhnya di Supabase melalui saveBalaiToAPI()
+        return;
       }
 
       const PRINT_INFO_KEY = 'bomba-print-info';
@@ -2997,13 +2981,11 @@
          🚀  BACKEND SUPABASE
          ============================================================ */
 
-      /* Padam semua rows untuk balai dalam satu table */
       async function deleteBalaiRows(table, balaiName) {
         const { error } = await sb.from(table).delete().eq('balai', balaiName);
         if (error) throw new Error('delete ' + table + ': ' + error.message);
       }
 
-      /* Insert rows (auto-chunk 500) */
       async function insertRows(table, rows) {
         if (!rows || rows.length === 0) return;
         const CHUNK = 500;
@@ -3031,7 +3013,6 @@
           return r.data || [];
         });
 
-        /* Tukar snake_case → camelCase untuk kod lama */
         const mappedPersonel = personel.map(function (r) {
           return {
             balai: r.balai,
@@ -3086,11 +3067,85 @@
         };
       }
 
-      /* ---------- SAVE BALAI (replace semua rows untuk balai ni) ---------- */
+      /* ============================================================
+         🔄  REALTIME SYNC — Supabase
+         ============================================================ */
+      let realtimeChannel = null;
+      let reloadDebounceTimer = null;
+      let realtimeReloadInProgress = false;
+
+      function setupRealtimeSync() {
+        // Bersihkan channel lama jika ada (elak duplicate)
+        if (realtimeChannel) {
+          try { sb.removeChannel(realtimeChannel); } catch (e) {}
+          realtimeChannel = null;
+        }
+
+        const tables = ['ident', 'personel', 'jentera', 'marin', 'utiliti', 'komunikasi'];
+        let channel = sb.channel('bomba-johor-realtime');
+
+        tables.forEach(function (tableName) {
+          channel = channel.on(
+            'postgres_changes',
+            { event: '*', schema: 'public', table: tableName },
+            handleRealtimeChange
+          );
+        });
+
+        realtimeChannel = channel.subscribe(function (status) {
+          console.log('[Realtime] Status:', status);
+          if (status === 'SUBSCRIBED') {
+            console.log('[Realtime] Bersedia menerima perubahan dari pelayan.');
+          }
+        });
+      }
+
+      function handleRealtimeChange(payload) {
+        // Jangan ganggu kerja pengguna jika ada perubahan belum disimpan
+        if (dirtyBalai && dirtyBalai.size > 0) {
+          return;
+        }
+        if (realtimeReloadInProgress) return;
+
+        clearTimeout(reloadDebounceTimer);
+        reloadDebounceTimer = setTimeout(async function () {
+          if (realtimeReloadInProgress) return;
+          realtimeReloadInProgress = true;
+          try {
+            const apiData = await loadAllFromAPI();
+            const newBalai = buildStoreFromApiData(apiData);
+
+            const currentBalai = store.activeBalai;
+            const currentView = store.view;
+
+            store.balai = newBalai;
+            if (!store.balai[currentBalai]) {
+              // Balai semasa telah dipadam — pindah ke balai pertama
+              store.activeBalai = BALAI_LIST[0].name;
+            } else {
+              store.activeBalai = currentBalai;
+            }
+            store.view = currentView;
+            state = store.balai[store.activeBalai] || defaultState(store.activeBalai);
+            state.ident.balai = store.activeBalai;
+
+            renderTabbar();
+            renderTopBar();
+            renderAll();
+            updateDirtyUI();
+            showToast('Data dikemaskini dari pelayan', 'success');
+          } catch (err) {
+            console.error('[Realtime] Gagal reload:', err);
+          } finally {
+            realtimeReloadInProgress = false;
+          }
+        }, 1500);
+      }
+
+      /* ---------- SAVE BALAI ---------- */
       async function saveBalaiToAPI(balaiName, balaiData) {
         const ident = balaiData.ident || {};
 
-        /* 1. UPSERT ident */
         const upIdent = await sb.from('ident').upsert({
           balai: balaiName,
           shif: ident.shif || '',
@@ -3099,7 +3154,6 @@
         }, { onConflict: 'balai' });
         if (upIdent.error) throw new Error('ident: ' + upIdent.error.message);
 
-        /* 2. Delete semua rows lama untuk balai ni */
         await Promise.all([
           deleteBalaiRows('personel', balaiName),
           deleteBalaiRows('jentera', balaiName),
@@ -3108,7 +3162,6 @@
           deleteBalaiRows('komunikasi', balaiName),
         ]);
 
-        /* 3. Sedia payload */
         const personelRows = (balaiData.personel || []).map(function (p, i) {
           return {
             balai: balaiName, urutan: i,
@@ -3140,7 +3193,6 @@
           return { balai: balaiName, urutan: i, maklumat: r.maklumat || '', kategori: r.kategori || '', jumlah: r.jumlah || '', status: r.status || '', catatan: r.catatan || '' };
         });
 
-        /* 4. Insert semua */
         await Promise.all([
           insertRows('personel', personelRows),
           insertRows('jentera', jenteraRows),
@@ -3152,15 +3204,12 @@
         return { ok: true };
       }
 
-      /* ---------- DELETE BALAI ---------- */
       async function deleteBalaiFromAPI(balaiName) {
-        /* Cascade delete akan hapus child rows jika FK ON DELETE CASCADE */
         const { error } = await sb.from('ident').delete().eq('balai', balaiName);
         if (error) throw new Error(error.message);
         return { ok: true };
       }
 
-      /* ---------- ARCHIVE BALAI ---------- */
       async function archiveBalaiToAPI(opts) {
         const { tarikh, shif, balai, zon, personelRows, jenteraRows } = opts;
 
@@ -3546,8 +3595,7 @@
 
       function buildStoreFromApiData(apiData) {
         const balai = {};
-        const lsIdentAll = loadIdentLS();
-
+        // ⚠️ Tidak lagi baca dari localStorage — ident sepenuhnya dari Supabase
         const identMap = {};
         (apiData.ident || []).forEach(function (r) {
           if (r && r.balai) {
@@ -3593,15 +3641,8 @@
               };
             });
 
+          // Ident dari Supabase sahaja (tiada fallback localStorage)
           let identData = identMap[name];
-          if (!identData && lsIdentAll[name]) {
-            identData = {
-              balai: name,
-              shif: lsIdentAll[name].shif || '',
-              tarikh: lsIdentAll[name].tarikh || '',
-              kategori: lsIdentAll[name].kategori || '',
-            };
-          }
           if (!identData) {
             identData = { balai: name, shif: '', tarikh: '', kategori: '' };
           }
@@ -3726,11 +3767,9 @@
         if (!container) return;
         container.innerHTML = '';
 
-        /* ================= DESKTOP ================= */
         const desktop = document.createElement('div');
         desktop.className = 'tabbar-desktop';
 
-        /* ---- Tab khas ---- */
         const tSummary = document.createElement('button');
         tSummary.className = 'tab special summary' + (store.view === 'summary' ? ' active' : '');
         tSummary.innerHTML = svgIcon('chart') + '<span>PO3A</span>';
@@ -3766,13 +3805,11 @@
         tBkb.addEventListener('click', () => switchView('bkb'));
         desktop.appendChild(tBkb);
 
-        /* ---- Pemisah ---- */
         const sep0 = document.createElement('div');
         sep0.className = 'tab-zone-sep';
         sep0.textContent = 'BALAI';
         desktop.appendChild(sep0);
 
-        /* ---- 4 Tab Zon ---- */
         const activeZon = store.view === 'balai' ? getBalaiZon(store.activeBalai) : null;
 
         [1, 2, 3, 4].forEach(function (zn) {
@@ -3796,19 +3833,16 @@
 
         container.appendChild(desktop);
 
-        /* ---- Drawer: letak DI LUAR .tabbar-desktop supaya tak dipotong oleh overflow-x ---- */
         const drawer = document.createElement('div');
         drawer.className = 'zone-drawer';
         drawer.id = 'zoneDrawer';
         container.appendChild(drawer);
 
-        /* Auto-scroll ke tab aktif */
         setTimeout(function () {
           const active = desktop.querySelector('.tab.active, .zone-tab.has-active');
           if (active) active.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
         }, 50);
 
-        /* ================= MOBILE (kekal sama) ================= */
         const mobile = document.createElement('div');
         mobile.className = 'tabbar-mobile';
         const lbl = document.createElement('label');
@@ -3880,9 +3914,6 @@
         container.appendChild(mobile);
       }
 
-      /* ============================================================
-         ZONE DRAWER — dropdown senarai balai per zon
-         ============================================================ */
       function buildZoneDrawerContent(zon) {
         const drawer = document.getElementById('zoneDrawer');
         if (!drawer) return;
@@ -3890,7 +3921,6 @@
 
         const balaiInZon = BALAI_LIST.filter(function (b) { return b.zon === zon; });
 
-        /* Tajuk */
         const title = document.createElement('div');
         title.className = 'zone-drawer-title';
         title.innerHTML =
@@ -3898,7 +3928,6 @@
           '<span class="zd-count">' + balaiInZon.length + ' BALAI</span>';
         drawer.appendChild(title);
 
-        /* Grid balai */
         const grid = document.createElement('div');
         grid.className = 'zone-drawer-grid';
 
@@ -3918,19 +3947,16 @@
             '  •  Turn-Out ' + meta.turnOut +
             (isDirty ? '  •  ⚠ Belum disimpan' : '');
 
-          /* Nama */
           const nameEl = document.createElement('span');
           nameEl.className = 'zd-name';
           nameEl.textContent = b.name;
           item.appendChild(nameEl);
 
-          /* Badge gred */
           const gredEl = document.createElement('span');
           gredEl.className = 'zd-gred gred-' + meta.gred;
           gredEl.textContent = meta.gred;
           item.appendChild(gredEl);
 
-          /* Dot dirty */
           if (isDirty) {
             const dot = document.createElement('span');
             dot.className = 'zd-dot';
@@ -3957,7 +3983,6 @@
         const tabbarRect = tabbar.getBoundingClientRect();
         const btnRect = btn.getBoundingClientRect();
 
-        /* Ukur lebar drawer sebenar (min-width CSS: 320px) */
         const drawerWidth = drawer.offsetWidth || 320;
         let left = btnRect.left - tabbarRect.left;
         const maxLeft = tabbarRect.width - drawerWidth - 8;
@@ -3981,28 +4006,22 @@
           return;
         }
 
-        /* ⚠️ PENTING: Buang inline style yang menyekat visibility */
         drawer.style.opacity = '';
         drawer.style.visibility = '';
 
-        /* Bina kandungan (senarai balai) */
         buildZoneDrawerContent(zon);
         drawer.dataset.zon = String(zon);
 
-        /* Reset posisi supaya ukuran tepat, kemudian posisikan */
         drawer.style.left = '0px';
         drawer.style.top = '0px';
         positionZoneDrawer(btn);
 
-        /* Tanda tab zon yang aktif (chevron rotate + warna) */
         document.querySelectorAll('.zone-tab.zone-active')
           .forEach(function (el) { el.classList.remove('zone-active'); });
         btn.classList.add('zone-active');
 
-        /* Buka drawer — kelas .open akan buat opacity:1, visibility:visible */
         drawer.classList.add('open');
 
-        /* Listener tutup (klik luar / Esc) */
         setTimeout(function () {
           document.addEventListener('click', zoneDrawerOutsideClick, true);
           document.addEventListener('keydown', zoneDrawerEscHandler, true);
@@ -4036,7 +4055,6 @@
         document.removeEventListener('keydown', zoneDrawerEscHandler, true);
       }
 
-      /* Refresh drawer bila dirty state berubah (jika sedang terbuka) */
       function refreshZoneDrawerIfOpen() {
         const drawer = document.getElementById('zoneDrawer');
         if (!drawer || !drawer.classList.contains('open')) return;
@@ -4047,7 +4065,6 @@
         if (currentZoneTab) positionZoneDrawer(currentZoneTab);
       }
 
-      /* Tutup drawer bila resize (posisi mungkin lari) */
       window.addEventListener('resize', function () {
         const drawer = document.getElementById('zoneDrawer');
         if (drawer && drawer.classList.contains('open')) closeZoneDrawer();
@@ -6220,6 +6237,10 @@
 
           dirtyBalai.clear();
           updateDirtyUI();
+
+          // 🔄 Aktifkan realtime sync
+          setupRealtimeSync();
+
           showToast('Data berjaya dimuatkan dari Supabase', 'success');
         } catch (err) {
           console.error('Init error:', err);
@@ -6236,6 +6257,9 @@
 
           dirtyBalai.clear();
           updateDirtyUI();
+
+          // Cuba aktifkan realtime walaupun load gagal
+          try { setupRealtimeSync(); } catch (e) {}
         } finally {
           setLoading(false);
         }
@@ -6260,7 +6284,7 @@
         try {
           store.balai[store.activeBalai] = state;
           await saveBalaiToAPI(store.activeBalai, state);
-          saveIdentLS(store.activeBalai, state.ident);
+          // saveIdentLS kini no-op, kekal untuk keserasian
 
           btn.classList.remove('saving');
           btn.classList.add('saved');
@@ -6310,7 +6334,7 @@
           store.balai[namaBalai] = state;
 
           await saveBalaiToAPI(namaBalai, state);
-          saveIdentLS(namaBalai, state.ident);
+          // saveIdentLS no-op
 
           dirtyBalai.delete(namaBalai);
           updateDirtyUI();
@@ -6428,7 +6452,7 @@
               await saveBalaiToAPI(store.activeBalai, newState);
               store.balai[store.activeBalai] = newState;
               state = newState;
-              saveIdentLS(store.activeBalai, newState.ident);
+              // saveIdentLS no-op
               dirtyBalai.delete(store.activeBalai);
               updateDirtyUI();
               renderTopBar();
@@ -6485,6 +6509,7 @@
           store.activeBalai = BALAI_LIST[0].name;
           store.balai[store.activeBalai] = defaultState(store.activeBalai);
           state = store.balai[store.activeBalai];
+          // Bersihkan key legacy dari localStorage jika ada (dari versi lama)
           try { localStorage.removeItem(IDENT_LS_KEY); } catch (e) {}
           dirtyBalai.clear();
           updateDirtyUI();
