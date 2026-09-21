@@ -1163,6 +1163,177 @@
             text-decoration: underline;
         }
 
+        /* ===== STATUS KESEDIAAN PASUKAN KHAS ===== */
+        .section-pasukan-khas {
+            margin-bottom: 1.5rem;
+        }
+        .pasukan-khas-card {
+            border-radius: 1.25rem;
+            background: var(--hud-card-bg);
+            border: 1px solid var(--hud-border);
+            backdrop-filter: blur(14px);
+            -webkit-backdrop-filter: blur(14px);
+            padding: 1rem;
+            transition: border-color 0.3s ease;
+        }
+        .pasukan-khas-card:hover {
+            border-color: var(--hud-border-red);
+        }
+        .pasukan-card-header {
+            display: flex;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 0.6rem;
+            font-size: 0.8rem;
+            font-weight: 800;
+            letter-spacing: 0.09rem;
+            color: #ffffff;
+            text-transform: uppercase;
+            margin-bottom: 1rem;
+            padding-bottom: 0.625rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .pasukan-card-header > i {
+            font-size: 1rem;
+        }
+        .pasukan-card-header-count {
+            font-size: 0.6rem;
+            font-weight: 400;
+            color: var(--text-secondary);
+            text-transform: none;
+            letter-spacing: normal;
+            white-space: nowrap;
+            margin-left: auto;
+        }
+        .unit-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 0.75rem;
+        }
+        .unit-card {
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 0.85rem;
+            padding: 0.7rem 0.85rem;
+            border: 1px solid var(--hud-border);
+            border-left: 3px solid var(--hazard-gold);
+            display: flex;
+            flex-direction: column;
+            gap: 0.25rem;
+            transition: all 0.25s ease;
+        }
+        .unit-card:hover {
+            background: var(--glass-highlight);
+            transform: translateY(-2px);
+            border-left-color: var(--fire-red);
+        }
+        .unit-card .unit-name {
+            font-weight: 800;
+            font-size: 0.75rem;
+            color: #ffffff;
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+            text-transform: uppercase;
+            letter-spacing: 0.03rem;
+        }
+        .unit-card .unit-name i {
+            font-size: 0.9rem;
+            color: var(--hazard-gold);
+        }
+        .unit-card .unit-count {
+            font-size: 1.25rem;
+            font-weight: 900;
+            color: #ffffff;
+            line-height: 1.1;
+            letter-spacing: 0.02rem;
+        }
+        .unit-card .unit-count .count-denom {
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+            font-weight: 600;
+            margin-left: 0.1rem;
+        }
+        .unit-card .unit-status {
+            font-size: 0.58rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+            padding: 0.15rem 0.6rem;
+            border-radius: 20px;
+            display: inline-block;
+            width: fit-content;
+            margin-top: 0.15rem;
+        }
+        .unit-status.ready {
+            background: rgba(74, 222, 128, 0.15);
+            color: #4ade80;
+            border: 1px solid rgba(74, 222, 128, 0.35);
+        }
+        .unit-status.partial {
+            background: rgba(217, 169, 105, 0.15);
+            color: #d9a969;
+            border: 1px solid rgba(217, 169, 105, 0.35);
+        }
+        .unit-status.notready {
+            background: rgba(239, 68, 68, 0.15);
+            color: #ef4444;
+            border: 1px solid rgba(239, 68, 68, 0.35);
+        }
+        .unit-status.slate {
+            background: rgba(148, 163, 184, 0.15);
+            color: #94a3b8;
+            border: 1px solid rgba(148, 163, 184, 0.3);
+        }
+
+        body.mode-siang .pasukan-khas-card {
+            background: #ffffff;
+            border-color: #e2e8f0;
+        }
+        body.mode-siang .pasukan-card-header {
+            color: #0f172a;
+            border-bottom: 0.1875rem solid;
+            border-image: linear-gradient(90deg, #b3223f, #d9a969, #0b2a4d) 1;
+            padding-bottom: 0.5rem;
+        }
+        body.mode-siang .pasukan-card-header-count { color: #64748b; }
+        body.mode-siang .unit-card {
+            background: rgba(248, 250, 252, 0.7);
+            border-color: #e2e8f0;
+            border-left-color: var(--hazard-gold);
+        }
+        body.mode-siang .unit-card:hover {
+            background: #ffffff;
+            border-left-color: var(--fire-red);
+        }
+        body.mode-siang .unit-card .unit-name { color: #0f172a; }
+        body.mode-siang .unit-card .unit-count { color: #0f172a; }
+        body.mode-siang .unit-card .unit-count .count-denom { color: #64748b; }
+        body.mode-siang .unit-status.ready {
+            background: #dcfce7; color: #166534; border-color: #86efac;
+        }
+        body.mode-siang .unit-status.partial {
+            background: #fef3c7; color: #92400e; border-color: #fcd34d;
+        }
+        body.mode-siang .unit-status.notready {
+            background: #fee2e2; color: #991b1b; border-color: #fca5a5;
+        }
+        body.mode-siang .unit-status.slate {
+            background: #f1f5f9; color: #475569; border-color: #cbd5e1;
+        }
+
+        @media (max-width: 640px) {
+            .unit-grid { grid-template-columns: 1fr 1fr; gap: 0.5rem; }
+            .unit-card { padding: 0.6rem 0.7rem; }
+            .unit-card .unit-name { font-size: 0.68rem; }
+            .unit-card .unit-name i { font-size: 0.8rem; }
+            .unit-card .unit-count { font-size: 1.05rem; }
+            .pasukan-card-header { font-size: 0.7rem; }
+            .pasukan-card-header-count { display: none; }
+        }
+        @media (max-width: 420px) {
+            .unit-grid { grid-template-columns: 1fr; }
+        }
+
         /* ===== PETA JENTERA ===== */
         .section-peta-jentera {
             margin-bottom: 1.5rem;
@@ -3133,6 +3304,23 @@
                         </div>
                     </section>
 
+                    <!-- ===== STATUS KESEDIAAN PASUKAN KHAS ===== -->
+                    <section class="section-pasukan-khas">
+                        <div class="pasukan-khas-card">
+                            <div class="pasukan-card-header">
+                                <i class="fas fa-user-shield" style="color:var(--hazard-gold)"></i>
+                                <span data-ms="STATUS KESEDIAAN PASUKAN KHAS" data-en="SPECIAL TEAM READINESS STATUS">STATUS KESEDIAAN PASUKAN KHAS</span>
+                                <span class="status-badge live">● LIVE</span>
+                                <span class="pasukan-card-header-count" data-ms="Unit 1–4 · Berdasarkan anggota bertugas" data-en="Unit 1–4 · Based on personnel on duty">Unit 1–4 · Berdasarkan anggota bertugas</span>
+                            </div>
+                            <div class="unit-grid" id="specialUnitsContainer">
+                                <div style="grid-column: 1/-1; text-align: center; padding: 1rem; color: var(--text-secondary); font-size: 0.75rem;">
+                                    <i class="fas fa-spinner fa-spin"></i> <span data-ms="Memuatkan..." data-en="Loading...">Memuatkan...</span>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+
                     <!-- ===== PETA KETERSEDIAAN JENTERA ===== -->
                     <section class="section-peta-jentera">
                         <div class="peta-jentera-card" id="petaJenteraCard">
@@ -3602,6 +3790,7 @@
                 }
                 try { renderPetaStatusText(); } catch (e) { }
                 try { terapFilterPeta(); } catch (e) { }
+                try { if (anggotaCacheForUnits) renderSpecialUnits(anggotaCacheForUnits); } catch (e) { }
             }
 
             document.getElementById('langToggleBtn').addEventListener('click', function() {
@@ -4829,15 +5018,86 @@
             fetchDanPaparPetaJentera();
             setInterval(fetchDanPaparPetaJentera, 60000);
 
-            // ===== FETCH ANGGOTA MINI STATS (SYNC DENGAN dbanggota.html) =====
+            // ===== FETCH ANGGOTA MINI STATS + STATUS PASUKAN KHAS (SYNC DENGAN dbanggota.html) =====
             // Sumber: Supabase nstmylzvqckhrpxmbufx — table "personel"
-            // Logik kiraan SAMA dengan buildTickerContent() dalam dbanggota.html
+            // Logik kiraan SAMA dengan buildTickerContent() & renderSpecialUnits() dalam dbanggota.html
+            const ALL_UNITS_DASHBOARD = ['PEMADAM', 'EMRS', 'HAZMAT', 'PPDA', 'RIM', 'STORM/MUST'];
+            let anggotaCacheForUnits = null;
+
+            function normalizeUnitName(u) {
+                if (!u) return '';
+                const s = String(u).toUpperCase().trim().replace(/\s*\/\s*/g, '/');
+                if (s === 'STORM/MUST' || s === 'STORM / MUST') return 'STORM/MUST';
+                return s;
+            }
+
+            function getActiveUnitsForAnggota(a) {
+                const found = [];
+                [a.unit1, a.unit2, a.unit3, a.unit4].forEach(u => {
+                    if (!u) return;
+                    const norm = normalizeUnitName(u);
+                    if (ALL_UNITS_DASHBOARD.includes(norm) && !found.includes(norm)) {
+                        found.push(norm);
+                    }
+                });
+                // Fallback: kalau tiada unit sah, anggap PEMADAM (sama macam dbanggota.html)
+                if (found.length === 0) found.push('PEMADAM');
+                return found;
+            }
+
+            function renderSpecialUnits(anggota) {
+                const container = document.getElementById('specialUnitsContainer');
+                if (!container) return;
+
+                const units = [
+                    { key: 'PEMADAM', label: 'PEMADAM', icon: 'fa-fire-extinguisher' },
+                    { key: 'EMRS', label: 'EMRS', icon: 'fa-truck-medical' },
+                    { key: 'HAZMAT', label: 'HAZMAT', icon: 'fa-flask' },
+                    { key: 'PPDA', label: 'PPDA', icon: 'fa-helmet-safety' },
+                    { key: 'RIM', label: 'RIM', icon: 'fa-motorcycle' },
+                    { key: 'STORM/MUST', label: 'STORM/MUST', icon: 'fa-bolt' }
+                ];
+
+                const enAktif = window.bahasaAktif === 'en';
+                let html = '';
+
+                units.forEach(u => {
+                    const members = anggota.filter(a => getActiveUnitsForAnggota(a).includes(u.key));
+                    const total = members.length;
+                    const bertugas = members.filter(a => a.status === 'BERTUGAS').length;
+
+                    let statusClass, statusLabel;
+                    if (total === 0) {
+                        statusClass = 'slate';
+                        statusLabel = enAktif ? 'NO PERSONNEL' : 'TIADA ANGGOTA';
+                    } else if (bertugas === total) {
+                        statusClass = 'ready';
+                        statusLabel = enAktif ? 'READY (100%)' : 'SEDIA (100%)';
+                    } else if (bertugas > 0) {
+                        statusClass = 'partial';
+                        const pct = Math.round((bertugas / total) * 100);
+                        statusLabel = enAktif ? `PARTIAL (${pct}%)` : `SEPARA (${pct}%)`;
+                    } else {
+                        statusClass = 'notready';
+                        statusLabel = enAktif ? 'NOT READY' : 'TIDAK SEDIA';
+                    }
+
+                    html += `<div class="unit-card">
+                        <div class="unit-name"><i class="fas ${u.icon}"></i> ${u.label}</div>
+                        <div class="unit-count">${bertugas}<span class="count-denom">/ ${total}</span></div>
+                        <span class="unit-status ${statusClass}">${statusLabel}</span>
+                    </div>`;
+                });
+
+                container.innerHTML = html;
+            }
+
             async function fetchAnggotaMiniStats() {
                 try {
                     const SUPABASE_URL = 'https://nstmylzvqckhrpxmbufx.supabase.co';
                     const SUPABASE_ANON_KEY = 'sb_publishable_6i7rUdjTRmOYMcookS6CFQ_lwXyRJJL';
 
-                    const resp = await fetch(`${SUPABASE_URL}/rest/v1/personel?select=status,nama,pangkat,unit1,balai`, {
+                    const resp = await fetch(`${SUPABASE_URL}/rest/v1/personel?select=status,nama,pangkat,unit1,unit2,unit3,unit4,balai`, {
                         headers: {
                             apikey: SUPABASE_ANON_KEY,
                             Authorization: 'Bearer ' + SUPABASE_ANON_KEY,
@@ -4849,14 +5109,16 @@
                     const anggota = await resp.json();
                     if (!Array.isArray(anggota)) return;
 
-                    // Kiraan sama macam dbanggota.html ticker & mini stats
+                    // Simpan cache untuk re-render bila tukar bahasa
+                    anggotaCacheForUnits = anggota;
+
+                    // Kiraan mini stats (sama macam dbanggota.html ticker)
                     const total      = anggota.length;
                     const bertugas   = anggota.filter(a => a.status === 'BERTUGAS').length;
                     const cuti       = anggota.filter(a => a.status === 'CUTI').length;
                     const sakit      = anggota.filter(a => a.status === 'CUTI SAKIT').length;
                     const tugasKhas  = anggota.filter(a => a.status === 'TUGAS KHAS').length;
 
-                    // Papar pada kad mini stats
                     const setTxt = (id, val) => {
                         const el = document.getElementById(id);
                         if (el) el.textContent = val;
@@ -4867,13 +5129,18 @@
                     setTxt('miniSakit', sakit);
                     setTxt('miniTugasKhas', tugasKhas);
 
-                    // Kad stat utama "Anggota Bertugas"
                     const statBertugasEl = document.getElementById('statBertugas');
                     if (statBertugasEl) statBertugasEl.textContent = bertugas;
 
+                    // Status kesediaan pasukan khas
+                    renderSpecialUnits(anggota);
+
                 } catch (e) {
                     console.warn('[index.html] fetchAnggotaMiniStats error:', e.message);
-                    /* biarkan nilai '--' */
+                    const container = document.getElementById('specialUnitsContainer');
+                    if (container) {
+                        container.innerHTML = '<div style="grid-column: 1/-1; text-align: center; padding: 1rem; color: var(--text-secondary); font-size: 0.75rem;"><i class="fas fa-circle-exclamation"></i> Gagal memuatkan data pasukan khas</div>';
+                    }
                 }
             }
             fetchAnggotaMiniStats();
