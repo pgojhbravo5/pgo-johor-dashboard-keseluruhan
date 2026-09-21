@@ -1205,6 +1205,16 @@
             white-space: nowrap;
             margin-left: auto;
         }
+        .pasukan-card-hint {
+            font-size: 0.6rem;
+            font-weight: 500;
+            color: var(--hazard-gold);
+            text-transform: none;
+            letter-spacing: normal;
+            white-space: nowrap;
+            margin-left: auto;
+            opacity: 0.85;
+        }
         .unit-grid {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
@@ -1220,11 +1230,34 @@
             flex-direction: column;
             gap: 0.25rem;
             transition: all 0.25s ease;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+        }
+        .unit-card::after {
+            content: '\f06e';
+            font-family: 'Font Awesome 6 Free';
+            font-weight: 900;
+            position: absolute;
+            top: 0.5rem;
+            right: 0.6rem;
+            font-size: 0.6rem;
+            color: var(--text-secondary);
+            opacity: 0;
+            transition: opacity 0.25s ease;
         }
         .unit-card:hover {
             background: var(--glass-highlight);
             transform: translateY(-2px);
             border-left-color: var(--fire-red);
+            box-shadow: 0 0.5rem 1.25rem rgba(0, 0, 0, 0.3);
+        }
+        .unit-card:hover::after {
+            opacity: 1;
+            color: var(--hazard-gold);
+        }
+        .unit-card:active {
+            transform: translateY(-1px) scale(0.99);
         }
         .unit-card .unit-name {
             font-weight: 800;
@@ -1296,6 +1329,7 @@
             padding-bottom: 0.5rem;
         }
         body.mode-siang .pasukan-card-header-count { color: #64748b; }
+        body.mode-siang .pasukan-card-hint { color: #8a6a24; }
         body.mode-siang .unit-card {
             background: rgba(248, 250, 252, 0.7);
             border-color: #e2e8f0;
@@ -1304,7 +1338,10 @@
         body.mode-siang .unit-card:hover {
             background: #ffffff;
             border-left-color: var(--fire-red);
+            box-shadow: 0 0.5rem 1.25rem rgba(15, 23, 42, 0.1);
         }
+        body.mode-siang .unit-card::after { color: #94a3b8; }
+        body.mode-siang .unit-card:hover::after { color: #b3223f; }
         body.mode-siang .unit-card .unit-name { color: #0f172a; }
         body.mode-siang .unit-card .unit-count { color: #0f172a; }
         body.mode-siang .unit-card .unit-count .count-denom { color: #64748b; }
@@ -1329,9 +1366,501 @@
             .unit-card .unit-count { font-size: 1.05rem; }
             .pasukan-card-header { font-size: 0.7rem; }
             .pasukan-card-header-count { display: none; }
+            .pasukan-card-hint { display: none; }
         }
         @media (max-width: 420px) {
             .unit-grid { grid-template-columns: 1fr; }
+        }
+
+        /* ===== MODAL SENARAI ANGGOTA PASUKAN KHAS ===== */
+        .pasukan-modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.78);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            z-index: 9998;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 1rem;
+            opacity: 0;
+            transition: opacity 0.25s ease;
+        }
+        .pasukan-modal-overlay.open {
+            display: flex;
+            opacity: 1;
+            animation: pasukanModalFade 0.25s ease;
+        }
+        @keyframes pasukanModalFade {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        .pasukan-modal {
+            background: rgba(18, 18, 24, 0.98);
+            border: 1px solid var(--hud-border);
+            border-radius: 1.5rem;
+            width: 100%;
+            max-width: 44rem;
+            max-height: 92vh;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            box-shadow: 0 2rem 5rem rgba(0, 0, 0, 0.75),
+                0 0 3rem rgba(179, 34, 63, 0.1);
+            backdrop-filter: blur(24px);
+            -webkit-backdrop-filter: blur(24px);
+            animation: pasukanModalSlide 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        @keyframes pasukanModalSlide {
+            from {
+                opacity: 0;
+                transform: translateY(1.5rem) scale(0.97);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        .pasukan-modal-header {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 1rem 1.25rem;
+            border-bottom: 1px solid var(--hud-border);
+            flex-shrink: 0;
+            background: linear-gradient(90deg, rgba(179, 34, 63, 0.1), transparent 60%);
+        }
+        .pasukan-modal-title-wrap {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            flex: 1;
+            min-width: 0;
+        }
+        .pasukan-modal-icon {
+            width: 2.75rem;
+            height: 2.75rem;
+            border-radius: 0.75rem;
+            background: rgba(217, 169, 105, 0.12);
+            border: 1px solid rgba(217, 169, 105, 0.3);
+            color: var(--hazard-gold);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            flex-shrink: 0;
+        }
+        .pasukan-modal-title-text {
+            display: flex;
+            flex-direction: column;
+            gap: 0.15rem;
+            min-width: 0;
+        }
+        .pasukan-modal-title-text h3 {
+            font-size: 1rem;
+            font-weight: 800;
+            color: #ffffff;
+            text-transform: uppercase;
+            letter-spacing: 0.06rem;
+            margin: 0;
+            line-height: 1.2;
+        }
+        .pasukan-modal-subtitle {
+            font-size: 0.7rem;
+            font-weight: 600;
+            color: var(--text-secondary);
+        }
+        .pasukan-modal-subtitle .sub-ready { color: #4ade80; font-weight: 800; }
+        .pasukan-modal-subtitle .sub-total { color: #cbd5e1; font-weight: 800; }
+        .pasukan-modal-subtitle .sub-pct { color: var(--hazard-gold); font-weight: 800; }
+
+        .pasukan-modal-close {
+            width: 2.25rem;
+            height: 2.25rem;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--hud-border);
+            color: var(--text-primary);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1rem;
+            transition: all 0.2s ease;
+            flex-shrink: 0;
+        }
+        .pasukan-modal-close:hover {
+            background: rgba(179, 34, 63, 0.2);
+            border-color: rgba(179, 34, 63, 0.5);
+            color: #fff;
+            transform: rotate(90deg);
+        }
+
+        .pasukan-modal-filters {
+            display: flex;
+            gap: 0.4rem;
+            padding: 0.75rem 1.25rem 0.5rem;
+            overflow-x: auto;
+            scrollbar-width: none;
+            flex-shrink: 0;
+        }
+        .pasukan-modal-filters::-webkit-scrollbar { display: none; }
+        .filter-chip {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.35rem;
+            font-size: 0.7rem;
+            font-weight: 700;
+            padding: 0.35rem 0.75rem;
+            border-radius: 1rem;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid var(--hud-border);
+            color: var(--text-secondary);
+            cursor: pointer;
+            white-space: nowrap;
+            transition: all 0.2s ease;
+            flex-shrink: 0;
+            font-family: var(--font-main);
+        }
+        .filter-chip:hover {
+            background: rgba(255, 255, 255, 0.07);
+            color: var(--text-primary);
+        }
+        .filter-chip.active {
+            background: linear-gradient(135deg, var(--hazard-gold), var(--alert-orange));
+            color: #1a1206;
+            border-color: var(--hazard-gold);
+            box-shadow: 0 0.2rem 0.6rem rgba(217, 169, 105, 0.3);
+        }
+        .filter-chip .chip-count {
+            background: rgba(0, 0, 0, 0.25);
+            font-size: 0.6rem;
+            padding: 0.05rem 0.4rem;
+            border-radius: 0.6rem;
+            font-weight: 800;
+            min-width: 1.2rem;
+            text-align: center;
+        }
+        .filter-chip.active .chip-count {
+            background: rgba(0, 0, 0, 0.3);
+            color: #fff;
+        }
+
+        .pasukan-modal-search-wrap {
+            position: relative;
+            margin: 0.4rem 1.25rem 0.5rem;
+            flex-shrink: 0;
+        }
+        .pasukan-modal-search-wrap i {
+            position: absolute;
+            left: 0.9rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-secondary);
+            font-size: 0.8rem;
+            pointer-events: none;
+        }
+        .pasukan-modal-search-wrap input {
+            width: 100%;
+            padding: 0.6rem 1rem 0.6rem 2.4rem;
+            border-radius: 0.75rem;
+            border: 1px solid var(--hud-border);
+            background: rgba(5, 5, 10, 0.5);
+            color: var(--text-primary);
+            font-size: 0.8rem;
+            outline: none;
+            font-family: var(--font-main);
+            transition: border-color 0.2s ease;
+        }
+        .pasukan-modal-search-wrap input:focus {
+            border-color: var(--hazard-gold);
+        }
+        .pasukan-modal-search-wrap input::placeholder {
+            color: var(--text-secondary);
+        }
+
+        .pasukan-modal-list {
+            flex: 1 1 auto;
+            overflow-y: auto;
+            padding: 0.5rem 1.25rem 1.25rem;
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+        .pasukan-modal-list::-webkit-scrollbar { width: 6px; }
+        .pasukan-modal-list::-webkit-scrollbar-track { background: transparent; }
+        .pasukan-modal-list::-webkit-scrollbar-thumb {
+            background: var(--hud-border);
+            border-radius: 4px;
+        }
+        .pasukan-modal-list::-webkit-scrollbar-thumb:hover {
+            background: rgba(217, 169, 105, 0.5);
+        }
+
+        .pasukan-member-item {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.7rem 0.85rem;
+            border-radius: 0.85rem;
+            background: rgba(255, 255, 255, 0.025);
+            border: 1px solid var(--hud-border);
+            transition: all 0.2s ease;
+        }
+        .pasukan-member-item:hover {
+            background: var(--glass-highlight);
+            border-color: var(--hud-border-red);
+            transform: translateX(0.15rem);
+        }
+        .member-info {
+            flex: 1;
+            min-width: 0;
+        }
+        .member-name {
+            font-weight: 800;
+            font-size: 0.82rem;
+            color: #ffffff;
+            line-height: 1.2;
+            margin-bottom: 0.15rem;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+        .member-pangkat {
+            font-size: 0.66rem;
+            color: var(--text-secondary);
+            font-weight: 600;
+            margin-bottom: 0.2rem;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+        .member-meta {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+            font-size: 0.62rem;
+        }
+        .member-balai {
+            color: var(--hazard-gold);
+            font-weight: 700;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.25rem;
+            background: rgba(217, 169, 105, 0.08);
+            padding: 0.1rem 0.45rem;
+            border-radius: 0.5rem;
+            border: 1px solid rgba(217, 169, 105, 0.2);
+        }
+        .member-nobadan {
+            color: var(--text-secondary);
+            font-family: ui-monospace, monospace;
+            font-weight: 600;
+        }
+        .member-actions {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+            gap: 0.35rem;
+            flex-shrink: 0;
+        }
+        .member-status {
+            font-size: 0.58rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.03em;
+            padding: 0.15rem 0.55rem;
+            border-radius: 1rem;
+            white-space: nowrap;
+        }
+        .member-status.green {
+            background: rgba(74, 222, 128, 0.15);
+            color: #4ade80;
+            border: 1px solid rgba(74, 222, 128, 0.35);
+        }
+        .member-status.amber {
+            background: rgba(251, 191, 36, 0.15);
+            color: #fbbf24;
+            border: 1px solid rgba(251, 191, 36, 0.35);
+        }
+        .member-status.red {
+            background: rgba(239, 68, 68, 0.15);
+            color: #ef4444;
+            border: 1px solid rgba(239, 68, 68, 0.35);
+        }
+        .member-status.purple {
+            background: rgba(167, 139, 250, 0.15);
+            color: #a78bfa;
+            border: 1px solid rgba(167, 139, 250, 0.35);
+        }
+        .member-status.slate {
+            background: rgba(148, 163, 184, 0.15);
+            color: #94a3b8;
+            border: 1px solid rgba(148, 163, 184, 0.3);
+        }
+        .member-contacts {
+            display: flex;
+            gap: 0.3rem;
+        }
+        .member-btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 1.85rem;
+            height: 1.85rem;
+            border-radius: 0.5rem;
+            text-decoration: none;
+            font-size: 0.75rem;
+            transition: all 0.2s ease;
+            border: 1px solid;
+        }
+        .member-btn.call {
+            background: rgba(74, 222, 128, 0.1);
+            color: #4ade80;
+            border-color: rgba(74, 222, 128, 0.3);
+        }
+        .member-btn.call:hover {
+            background: rgba(74, 222, 128, 0.25);
+            transform: scale(1.1);
+        }
+        .member-btn.wa {
+            background: rgba(37, 211, 102, 0.1);
+            color: #25d366;
+            border-color: rgba(37, 211, 102, 0.3);
+        }
+        .member-btn.wa:hover {
+            background: rgba(37, 211, 102, 0.25);
+            transform: scale(1.1);
+        }
+
+        .pasukan-modal-empty {
+            text-align: center;
+            padding: 2rem 1rem;
+            color: var(--text-secondary);
+            font-size: 0.8rem;
+        }
+        .pasukan-modal-empty i {
+            font-size: 2rem;
+            opacity: 0.3;
+            display: block;
+            margin-bottom: 0.75rem;
+        }
+
+        /* MOD SIANG */
+        body.mode-siang .pasukan-modal-overlay {
+            background: rgba(15, 23, 42, 0.5);
+        }
+        body.mode-siang .pasukan-modal {
+            background: #ffffff;
+            border-color: #e2e8f0;
+            box-shadow: 0 2rem 5rem rgba(15, 23, 42, 0.25);
+        }
+        body.mode-siang .pasukan-modal-header {
+            background: linear-gradient(90deg, rgba(179, 34, 63, 0.06), transparent 60%);
+            border-bottom-color: #e2e8f0;
+        }
+        body.mode-siang .pasukan-modal-icon {
+            background: rgba(138, 106, 36, 0.1);
+            border-color: rgba(138, 106, 36, 0.25);
+            color: #8a6a24;
+        }
+        body.mode-siang .pasukan-modal-title-text h3 { color: #0f172a; }
+        body.mode-siang .pasukan-modal-subtitle { color: #64748b; }
+        body.mode-siang .pasukan-modal-subtitle .sub-ready { color: #16a34a; }
+        body.mode-siang .pasukan-modal-subtitle .sub-total { color: #0f172a; }
+        body.mode-siang .pasukan-modal-subtitle .sub-pct { color: #8a6a24; }
+        body.mode-siang .pasukan-modal-close {
+            background: #f1f5f9;
+            border-color: #e2e8f0;
+            color: #475569;
+        }
+        body.mode-siang .pasukan-modal-close:hover {
+            background: #fee2e2;
+            border-color: #fca5a5;
+            color: #b3223f;
+        }
+        body.mode-siang .filter-chip {
+            background: #f8fafc;
+            border-color: #e2e8f0;
+            color: #64748b;
+        }
+        body.mode-siang .filter-chip:hover {
+            background: #f1f5f9;
+            color: #0f172a;
+        }
+        body.mode-siang .filter-chip.active {
+            background: linear-gradient(135deg, #b3223f, #c2703d);
+            color: #fff;
+            border-color: #b3223f;
+            box-shadow: 0 0.2rem 0.6rem rgba(179, 34, 63, 0.3);
+        }
+        body.mode-siang .filter-chip.active .chip-count {
+            background: rgba(0, 0, 0, 0.25);
+            color: #fff;
+        }
+        body.mode-siang .pasukan-modal-search-wrap i { color: #94a3b8; }
+        body.mode-siang .pasukan-modal-search-wrap input {
+            background: #f8fafc;
+            border-color: #e2e8f0;
+            color: #0f172a;
+        }
+        body.mode-siang .pasukan-modal-search-wrap input::placeholder { color: #94a3b8; }
+        body.mode-siang .pasukan-member-item {
+            background: #f8fafc;
+            border-color: #e2e8f0;
+        }
+        body.mode-siang .pasukan-member-item:hover {
+            background: #ffffff;
+            border-color: rgba(179, 34, 63, 0.25);
+            box-shadow: 0 0.4rem 1rem rgba(15, 23, 42, 0.06);
+        }
+        body.mode-siang .member-name { color: #0f172a; }
+        body.mode-siang .member-pangkat { color: #64748b; }
+        body.mode-siang .member-balai {
+            background: #fef3c7;
+            color: #92400e;
+            border-color: #fcd34d;
+        }
+        body.mode-siang .member-nobadan { color: #475569; }
+        body.mode-siang .member-status.green {
+            background: #dcfce7; color: #166534; border-color: #86efac;
+        }
+        body.mode-siang .member-status.amber {
+            background: #fef3c7; color: #92400e; border-color: #fcd34d;
+        }
+        body.mode-siang .member-status.red {
+            background: #fee2e2; color: #991b1b; border-color: #fca5a5;
+        }
+        body.mode-siang .member-status.purple {
+            background: #f5f3ff; color: #5b21b6; border-color: #c4b5fd;
+        }
+        body.mode-siang .member-status.slate {
+            background: #f1f5f9; color: #475569; border-color: #cbd5e1;
+        }
+        body.mode-siang .pasukan-modal-empty { color: #64748b; }
+
+        @media (max-width: 640px) {
+            .pasukan-modal-overlay { padding: 0; align-items: flex-end; }
+            .pasukan-modal {
+                max-height: 95vh;
+                border-radius: 1.5rem 1.5rem 0 0;
+                max-width: 100%;
+            }
+            .pasukan-modal-header { padding: 0.85rem 1rem; }
+            .pasukan-modal-icon { width: 2.4rem; height: 2.4rem; font-size: 1rem; }
+            .pasukan-modal-title-text h3 { font-size: 0.9rem; }
+            .pasukan-modal-subtitle { font-size: 0.65rem; }
+            .pasukan-modal-filters { padding: 0.6rem 1rem 0.4rem; }
+            .filter-chip { font-size: 0.65rem; padding: 0.3rem 0.65rem; }
+            .pasukan-modal-search-wrap { margin: 0.3rem 1rem 0.5rem; }
+            .pasukan-modal-list { padding: 0.4rem 1rem 1rem; }
+            .pasukan-member-item { padding: 0.6rem 0.7rem; gap: 0.6rem; }
+            .member-name { font-size: 0.78rem; }
+            .member-pangkat { font-size: 0.62rem; }
+            .member-btn { width: 1.75rem; height: 1.75rem; font-size: 0.7rem; }
         }
 
         /* ===== PETA JENTERA ===== */
@@ -3311,7 +3840,7 @@
                                 <i class="fas fa-user-shield" style="color:var(--hazard-gold)"></i>
                                 <span data-ms="STATUS KESEDIAAN PASUKAN KHAS" data-en="SPECIAL TEAM READINESS STATUS">STATUS KESEDIAAN PASUKAN KHAS</span>
                                 <span class="status-badge live">● LIVE</span>
-                                <span class="pasukan-card-header-count" data-ms="Unit 1–4 · Berdasarkan anggota bertugas" data-en="Unit 1–4 · Based on personnel on duty">Unit 1–4 · Berdasarkan anggota bertugas</span>
+                                <span class="pasukan-card-hint" data-ms="👆 Klik kad untuk lihat senarai anggota" data-en="👆 Tap card to view personnel list">👆 Klik kad untuk lihat senarai anggota</span>
                             </div>
                             <div class="unit-grid" id="specialUnitsContainer">
                                 <div style="grid-column: 1/-1; text-align: center; padding: 1rem; color: var(--text-secondary); font-size: 0.75rem;">
@@ -3701,6 +4230,63 @@
         </div>
     </footer>
 
+    <!-- ===== MODAL SENARAI ANGGOTA PASUKAN KHAS ===== -->
+    <div class="pasukan-modal-overlay" id="pasukanModalOverlay">
+        <div class="pasukan-modal" id="pasukanModal" role="dialog" aria-modal="true" aria-labelledby="pasukanModalTitle">
+            <div class="pasukan-modal-header">
+                <div class="pasukan-modal-title-wrap">
+                    <div class="pasukan-modal-icon" id="pasukanModalIcon">
+                        <i class="fas fa-fire-extinguisher"></i>
+                    </div>
+                    <div class="pasukan-modal-title-text">
+                        <h3 id="pasukanModalTitle">PEMADAM</h3>
+                        <span class="pasukan-modal-subtitle" id="pasukanModalSubtitle">
+                            <span class="sub-ready">0</span> / <span class="sub-total">0</span> bertugas · <span class="sub-pct">0%</span>
+                        </span>
+                    </div>
+                </div>
+                <button class="pasukan-modal-close" id="pasukanModalClose" aria-label="Tutup">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+
+            <div class="pasukan-modal-filters" id="pasukanModalFilters">
+                <button class="filter-chip active" data-filter="SEMUA">
+                    <span data-ms="Semua" data-en="All">Semua</span>
+                    <span class="chip-count" data-count="SEMUA">0</span>
+                </button>
+                <button class="filter-chip" data-filter="BERTUGAS">
+                    <span data-ms="Bertugas" data-en="On Duty">Bertugas</span>
+                    <span class="chip-count" data-count="BERTUGAS">0</span>
+                </button>
+                <button class="filter-chip" data-filter="CUTI">
+                    <span data-ms="Cuti" data-en="Leave">Cuti</span>
+                    <span class="chip-count" data-count="CUTI">0</span>
+                </button>
+                <button class="filter-chip" data-filter="CUTI SAKIT">
+                    <span data-ms="Cuti Sakit" data-en="Sick Leave">Cuti Sakit</span>
+                    <span class="chip-count" data-count="CUTI SAKIT">0</span>
+                </button>
+                <button class="filter-chip" data-filter="TUGAS KHAS">
+                    <span data-ms="Tugas Khas" data-en="Special Duty">Tugas Khas</span>
+                    <span class="chip-count" data-count="TUGAS KHAS">0</span>
+                </button>
+            </div>
+
+            <div class="pasukan-modal-search-wrap">
+                <i class="fas fa-search"></i>
+                <input type="text" id="pasukanModalSearch" placeholder="Cari nama / no badan / balai..." data-ms-placeholder="Cari nama / no badan / balai..." data-en-placeholder="Search name / body no / station..." autocomplete="off" />
+            </div>
+
+            <div class="pasukan-modal-list" id="pasukanModalList">
+                <div class="pasukan-modal-empty">
+                    <i class="fas fa-spinner fa-spin"></i>
+                    <span data-ms="Memuatkan..." data-en="Loading...">Memuatkan...</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
@@ -3791,6 +4377,7 @@
                 try { renderPetaStatusText(); } catch (e) { }
                 try { terapFilterPeta(); } catch (e) { }
                 try { if (anggotaCacheForUnits) renderSpecialUnits(anggotaCacheForUnits); } catch (e) { }
+                try { if (modalUnitAktif) renderPasukanModalList(); } catch (e) { }
             }
 
             document.getElementById('langToggleBtn').addEventListener('click', function() {
@@ -5020,7 +5607,6 @@
 
             // ===== FETCH ANGGOTA MINI STATS + STATUS PASUKAN KHAS (SYNC DENGAN dbanggota.html) =====
             // Sumber: Supabase nstmylzvqckhrpxmbufx — table "personel"
-            // Logik kiraan SAMA dengan buildTickerContent() & renderSpecialUnits() dalam dbanggota.html
             const ALL_UNITS_DASHBOARD = ['PEMADAM', 'EMRS', 'HAZMAT', 'PPDA', 'RIM', 'STORM/MUST'];
             let anggotaCacheForUnits = null;
 
@@ -5040,7 +5626,6 @@
                         found.push(norm);
                     }
                 });
-                // Fallback: kalau tiada unit sah, anggap PEMADAM (sama macam dbanggota.html)
                 if (found.length === 0) found.push('PEMADAM');
                 return found;
             }
@@ -5082,7 +5667,7 @@
                         statusLabel = enAktif ? 'NOT READY' : 'TIDAK SEDIA';
                     }
 
-                    html += `<div class="unit-card">
+                    html += `<div class="unit-card" data-unit="${u.key}" role="button" tabindex="0" onclick="openPasukanModal('${u.key}')">
                         <div class="unit-name"><i class="fas ${u.icon}"></i> ${u.label}</div>
                         <div class="unit-count">${bertugas}<span class="count-denom">/ ${total}</span></div>
                         <span class="unit-status ${statusClass}">${statusLabel}</span>
@@ -5090,14 +5675,265 @@
                 });
 
                 container.innerHTML = html;
+
+                // Bila re-render (cth: tukar bahasa), pastikan modal kekal jika terbuka
+                if (modalUnitAktif) {
+                    const unitObj = units.find(u => u.key === modalUnitAktif);
+                    if (unitObj) {
+                        const iconEl = document.getElementById('pasukanModalIcon');
+                        if (iconEl) iconEl.innerHTML = `<i class="fas ${unitObj.icon}"></i>`;
+                        renderPasukanModalList();
+                    }
+                }
             }
 
+            // ===== MODAL PASUKAN KHAS =====
+            let modalUnitAktif = null;
+            let modalFilterAktif = 'SEMUA';
+            let modalSearchQuery = '';
+
+            const PASUKAN_ICONS = {
+                'PEMADAM': 'fa-fire-extinguisher',
+                'EMRS': 'fa-truck-medical',
+                'HAZMAT': 'fa-flask',
+                'PPDA': 'fa-helmet-safety',
+                'RIM': 'fa-motorcycle',
+                'STORM/MUST': 'fa-bolt'
+            };
+
+            function formatPhoneNumber(p) {
+                if (!p) return '';
+                return String(p).replace(/[^0-9]/g, '');
+            }
+
+            function createPhoneButtons(noTel) {
+                const clean = formatPhoneNumber(noTel);
+                if (!clean) return '';
+                let wa = clean;
+                if (wa.startsWith('0')) wa = '60' + wa.slice(1);
+                return `
+                    <a href="tel:${clean}" class="member-btn call" title="Call ${clean}" aria-label="Call">
+                        <i class="fas fa-phone"></i>
+                    </a>
+                    <a href="https://wa.me/${wa}" target="_blank" rel="noopener noreferrer" class="member-btn wa" title="WhatsApp ${clean}" aria-label="WhatsApp">
+                        <i class="fab fa-whatsapp"></i>
+                    </a>
+                `;
+            }
+
+            function getStatusBadgeClass(status) {
+                const s = (status || '').toUpperCase();
+                if (s === 'BERTUGAS') return 'green';
+                if (s === 'CUTI') return 'amber';
+                if (s === 'CUTI SAKIT') return 'red';
+                if (s === 'TUGAS KHAS') return 'purple';
+                return 'slate';
+            }
+
+            function escapeHtml(str) {
+                if (str === null || str === undefined) return '';
+                return String(str)
+                    .replace(/&/g, '&amp;')
+                    .replace(/</g, '&lt;')
+                    .replace(/>/g, '&gt;')
+                    .replace(/"/g, '&quot;')
+                    .replace(/'/g, '&#039;');
+            }
+
+            function openPasukanModal(unitKey) {
+                if (!anggotaCacheForUnits) return;
+                modalUnitAktif = unitKey;
+                modalFilterAktif = 'SEMUA';
+                modalSearchQuery = '';
+
+                // Set tajuk + ikon
+                const titleEl = document.getElementById('pasukanModalTitle');
+                const iconEl = document.getElementById('pasukanModalIcon');
+                if (titleEl) titleEl.textContent = unitKey;
+                if (iconEl) iconEl.innerHTML = `<i class="fas ${PASUKAN_ICONS[unitKey] || 'fa-user-shield'}"></i>`;
+
+                // Reset UI
+                const searchEl = document.getElementById('pasukanModalSearch');
+                if (searchEl) searchEl.value = '';
+                document.querySelectorAll('#pasukanModalFilters .filter-chip').forEach(chip => {
+                    chip.classList.toggle('active', chip.dataset.filter === 'SEMUA');
+                });
+
+                // Buka modal
+                const overlay = document.getElementById('pasukanModalOverlay');
+                if (overlay) {
+                    overlay.classList.add('open');
+                    document.body.style.overflow = 'hidden';
+                }
+
+                // Render senarai
+                renderPasukanModalList();
+
+                // Focus search (delay sikit untuk elak iOS keyboard popup time)
+                setTimeout(() => {
+                    if (searchEl && window.innerWidth > 768) searchEl.focus();
+                }, 320);
+            }
+
+            function closePasukanModal() {
+                const overlay = document.getElementById('pasukanModalOverlay');
+                if (overlay) overlay.classList.remove('open');
+                document.body.style.overflow = '';
+                modalUnitAktif = null;
+                modalSearchQuery = '';
+                modalFilterAktif = 'SEMUA';
+            }
+
+            function renderPasukanModalList() {
+                if (!modalUnitAktif || !anggotaCacheForUnits) return;
+
+                const listEl = document.getElementById('pasukanModalList');
+                const subtitleEl = document.getElementById('pasukanModalSubtitle');
+                if (!listEl) return;
+
+                // Ambil semua anggota unit ini
+                const allMembers = anggotaCacheForUnits.filter(a =>
+                    getActiveUnitsForAnggota(a).includes(modalUnitAktif)
+                );
+
+                // Kiraan untuk chips
+                const counts = {
+                    'SEMUA': allMembers.length,
+                    'BERTUGAS': allMembers.filter(m => m.status === 'BERTUGAS').length,
+                    'CUTI': allMembers.filter(m => m.status === 'CUTI').length,
+                    'CUTI SAKIT': allMembers.filter(m => m.status === 'CUTI SAKIT').length,
+                    'TUGAS KHAS': allMembers.filter(m => m.status === 'TUGAS KHAS').length
+                };
+                document.querySelectorAll('#pasukanModalFilters .chip-count').forEach(el => {
+                    const key = el.getAttribute('data-count');
+                    el.textContent = counts[key] || 0;
+                });
+
+                // Update subtitle
+                const total = allMembers.length;
+                const bertugas = counts['BERTUGAS'];
+                const pct = total > 0 ? Math.round((bertugas / total) * 100) : 0;
+                if (subtitleEl) {
+                    const enAktif = window.bahasaAktif === 'en';
+                    subtitleEl.innerHTML = `<span class="sub-ready">${bertugas}</span> / <span class="sub-total">${total}</span> ${enAktif ? 'on duty' : 'bertugas'} · <span class="sub-pct">${pct}%</span>`;
+                }
+
+                // Tapis ikut chip + search
+                let filtered = allMembers;
+                if (modalFilterAktif !== 'SEMUA') {
+                    filtered = filtered.filter(m => m.status === modalFilterAktif);
+                }
+                if (modalSearchQuery) {
+                    const q = modalSearchQuery.toUpperCase();
+                    filtered = filtered.filter(m => {
+                        const haystack = [
+                            m.nama || '',
+                            m.pangkat || '',
+                            m.no_badan || '',
+                            m.balai || '',
+                            m.peranan || ''
+                        ].join(' ').toUpperCase();
+                        return haystack.includes(q);
+                    });
+                }
+
+                // Sort: BERTUGAS dulu, kemudian ikut balai, kemudian nama
+                filtered.sort((a, b) => {
+                    const aDuty = a.status === 'BERTUGAS' ? 0 : 1;
+                    const bDuty = b.status === 'BERTUGAS' ? 0 : 1;
+                    if (aDuty !== bDuty) return aDuty - bDuty;
+                    const aBalai = (a.balai || '').toUpperCase();
+                    const bBalai = (b.balai || '').toUpperCase();
+                    if (aBalai !== bBalai) return aBalai.localeCompare(bBalai);
+                    return (a.nama || '').toUpperCase().localeCompare((b.nama || '').toUpperCase());
+                });
+
+                // Render
+                if (filtered.length === 0) {
+                    const enAktif = window.bahasaAktif === 'en';
+                    listEl.innerHTML = `
+                        <div class="pasukan-modal-empty">
+                            <i class="fas fa-inbox"></i>
+                            ${enAktif ? 'No personnel match the current filter/search.' : 'Tiada anggota sepadan dengan tapisan/carian semasa.'}
+                        </div>
+                    `;
+                    return;
+                }
+
+                let html = '';
+                filtered.forEach(m => {
+                    const statusClass = getStatusBadgeClass(m.status);
+                    const phoneBtns = createPhoneButtons(m.no_telefon);
+                    html += `
+                        <div class="pasukan-member-item">
+                            <div class="member-info">
+                                <div class="member-name">${escapeHtml(m.nama) || '-'}</div>
+                                <div class="member-pangkat">${escapeHtml(m.pangkat) || '-'}</div>
+                                <div class="member-meta">
+                                    ${m.balai ? `<span class="member-balai"><i class="fas fa-building"></i> ${escapeHtml(m.balai)}</span>` : ''}
+                                    ${m.no_badan ? `<span class="member-nobadan">${escapeHtml(m.no_badan)}</span>` : ''}
+                                </div>
+                            </div>
+                            <div class="member-actions">
+                                <span class="member-status ${statusClass}">${escapeHtml(m.status || 'TIADA STATUS')}</span>
+                                ${phoneBtns ? `<div class="member-contacts">${phoneBtns}</div>` : ''}
+                            </div>
+                        </div>
+                    `;
+                });
+                listEl.innerHTML = html;
+            }
+
+            // ===== EVENT LISTENER UNTUK MODAL =====
+            const modalOverlay = document.getElementById('pasukanModalOverlay');
+            const modalClose = document.getElementById('pasukanModalClose');
+            const modalSearch = document.getElementById('pasukanModalSearch');
+
+            if (modalClose) {
+                modalClose.addEventListener('click', closePasukanModal);
+            }
+            if (modalOverlay) {
+                modalOverlay.addEventListener('click', function(e) {
+                    if (e.target === modalOverlay) closePasukanModal();
+                });
+            }
+            document.addEventListener('keydown', function(e) {
+                if (e.key === 'Escape' && modalOverlay && modalOverlay.classList.contains('open')) {
+                    closePasukanModal();
+                }
+            });
+            if (modalSearch) {
+                modalSearch.addEventListener('input', function() {
+                    modalSearchQuery = this.value.trim();
+                    renderPasukanModalList();
+                });
+            }
+            document.querySelectorAll('#pasukanModalFilters .filter-chip').forEach(chip => {
+                chip.addEventListener('click', function() {
+                    modalFilterAktif = this.getAttribute('data-filter');
+                    document.querySelectorAll('#pasukanModalFilters .filter-chip').forEach(c => {
+                        c.classList.toggle('active', c === this);
+                    });
+                    renderPasukanModalList();
+                });
+            });
+
+            // Keyboard support untuk unit-card (Enter/Space)
+            document.addEventListener('keydown', function(e) {
+                if ((e.key === 'Enter' || e.key === ' ') && e.target.classList && e.target.classList.contains('unit-card')) {
+                    e.preventDefault();
+                    const unitKey = e.target.getAttribute('data-unit');
+                    if (unitKey) openPasukanModal(unitKey);
+                }
+            });
+
+            // ===== FETCH ANGGOTA DARI SUPABASE =====
             async function fetchAnggotaMiniStats() {
                 try {
                     const SUPABASE_URL = 'https://nstmylzvqckhrpxmbufx.supabase.co';
                     const SUPABASE_ANON_KEY = 'sb_publishable_6i7rUdjTRmOYMcookS6CFQ_lwXyRJJL';
 
-                    const resp = await fetch(`${SUPABASE_URL}/rest/v1/personel?select=status,nama,pangkat,unit1,unit2,unit3,unit4,balai`, {
+                    const resp = await fetch(`${SUPABASE_URL}/rest/v1/personel?select=status,nama,pangkat,no_badan,no_telefon,peranan,unit1,unit2,unit3,unit4,balai`, {
                         headers: {
                             apikey: SUPABASE_ANON_KEY,
                             Authorization: 'Bearer ' + SUPABASE_ANON_KEY,
@@ -5109,7 +5945,6 @@
                     const anggota = await resp.json();
                     if (!Array.isArray(anggota)) return;
 
-                    // Simpan cache untuk re-render bila tukar bahasa
                     anggotaCacheForUnits = anggota;
 
                     // Kiraan mini stats (sama macam dbanggota.html ticker)
@@ -5132,7 +5967,6 @@
                     const statBertugasEl = document.getElementById('statBertugas');
                     if (statBertugasEl) statBertugasEl.textContent = bertugas;
 
-                    // Status kesediaan pasukan khas
                     renderSpecialUnits(anggota);
 
                 } catch (e) {
