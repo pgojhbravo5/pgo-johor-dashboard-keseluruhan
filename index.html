@@ -138,7 +138,7 @@
             pointer-events: none;
         }
 
-        /* MOD SIANG — rasmi & bersih */
+        /* MOD SIANG */
         body.mode-siang {
             background-image: none;
             background-color: #eef1f5;
@@ -306,7 +306,6 @@
         }
         body.mode-siang .sistem-panel .app-card h3 { color: #0f172a; }
         body.mode-siang .sistem-panel .app-card p { color: #475569; }
-        /* Carousel mode siang */
         body.mode-siang .carousel-container {
             background: rgba(255, 255, 255, 0.5);
             border-color: #e2e8f0;
@@ -636,7 +635,6 @@
             margin-top: 0.125rem;
         }
 
-        /* ===== SEARCH BAR ===== */
         /* ===== BREADCRUMB ===== */
         .breadcrumb-bar {
             width: 100%;
@@ -765,7 +763,6 @@
             flex: 1;
             display: flex;
             flex-direction: column;
-            width: 100%;
             box-sizing: border-box;
         }
 
@@ -1227,7 +1224,7 @@
             color: #000;
         }
 
-        /* ===== PETA SUMBER SWITCH (SEGMENTED PILL) ===== */
+        /* ===== PETA SUMBER SWITCH ===== */
         .peta-sumber-switch {
             display: flex;
             gap: 0.3rem;
@@ -1275,7 +1272,7 @@
         }
         body.mode-siang .peta-sumber-pill.active i { color: #fff; }
 
-        /* ===== PETA FILTER BAR (MULTISELECT CHECKBOX) ===== */
+        /* ===== PETA FILTER BAR ===== */
         .peta-filter-bar {
             display: flex;
             flex-wrap: wrap;
@@ -1364,7 +1361,6 @@
             transition: height 0.2s ease;
         }
 
-        /* ===== BUTANG & MOD SKRIN PENUH PETA JENTERA ===== */
         .peta-card-header {
             display: flex;
             align-items: center;
@@ -1457,8 +1453,6 @@
         .peta-jentera-card.fullscreen-mode .peta-unmatched-box {
             flex-shrink: 0;
         }
-
-        /* ===== MOD SKRIN PENUH — MINIMALISTKAN ELEMEN LAIN, FOKUS PADA PETA ===== */
         .peta-jentera-card.fullscreen-mode {
             padding: 0.6rem;
         }
@@ -1562,7 +1556,6 @@
             color: var(--hazard-gold);
             white-space: nowrap;
         }
-        /* Leaflet dark theme adjustments */
         .leaflet-container {
             background: #0b1220 !important;
             font-family: var(--font-main) !important;
@@ -2084,7 +2077,6 @@
             padding: 0.5rem 0 0 0;
         }
 
-        /* Accordion dalam links panel */
         .links-panel .accordion-item {
             margin-bottom: 0.625rem;
             border-radius: 0.875rem;
@@ -2209,7 +2201,6 @@
             flex-shrink: 0;
         }
 
-        /* Emergency items */
         .links-panel .emergency-group-title {
             color: var(--hazard-gold);
             font-size: 0.625rem;
@@ -2301,7 +2292,6 @@
             color: var(--text-secondary);
         }
 
-        /* Link icon colours */
         .link-icon.weather { background: rgba(59, 130, 246, 0.15); color: #3b82f6; }
         .link-icon.tide { background: rgba(6, 182, 212, 0.15); color: #06b6d4; }
         .link-icon.disaster { background: rgba(239, 68, 68, 0.15); color: #ef4444; }
@@ -2318,7 +2308,7 @@
         .link-icon.international { background: rgba(168, 85, 247, 0.15); color: #a855f7; }
         .link-icon.gov { background: rgba(251, 146, 60, 0.15); color: #fb923c; }
 
-        /* ===== SISTEM PANEL (tanpa password) ===== */
+        /* ===== SISTEM PANEL ===== */
         .sistem-panel {
             width: 100%;
             background: var(--hud-bg);
@@ -2384,7 +2374,6 @@
             padding: 0 1.5rem 1.5rem 1.5rem;
         }
 
-        /* Sistem content – pautan terus tanpa password */
         .sistem-panel .sistem-content {
             display: flex;
             flex-direction: column;
@@ -2750,14 +2739,10 @@
             }
         }
 
-        /* ===== PENYESUAIAN UNTUK MOBILE (skrin < 480px) ===== */
         @media (max-width: 480px) {
-            /* Kecilkan saiz asas kepada 15px */
             html {
                 font-size: 15px;
             }
-
-            /* Kurangkan padding/margin pada banyak elemen */
             .dashboard {
                 padding: 1rem 0.6rem;
             }
@@ -2790,10 +2775,8 @@
             .cat-panel.open {
                 padding: 0 0.6rem 0.6rem;
             }
-
-            /* Saiz teks khusus */
             .stat-item .num {
-                font-size: 1.4rem; /* ~21px */
+                font-size: 1.4rem;
             }
             .stat-item .label {
                 font-size: 0.6rem;
@@ -2802,7 +2785,7 @@
                 font-size: 1.25rem;
             }
             .logo-text h1 {
-                font-size: 1.2rem; /* ~18px */
+                font-size: 1.2rem;
             }
             .logo-text .sub {
                 font-size: 0.6rem;
@@ -2811,7 +2794,7 @@
                 height: 2rem;
             }
             .app-card h3 {
-                font-size: 0.85rem; /* ~12.75px */
+                font-size: 0.85rem;
             }
             .app-card p {
                 font-size: 0.7rem;
@@ -2885,7 +2868,6 @@
             .footer .last-updated {
                 font-size: 0.6rem;
             }
-            /* Butang dan kawalan sentuh minimum 44px */
             .header-top-controls button,
             .header-top-controls .refresh-btn,
             .search-bar-inner button,
@@ -2905,7 +2887,6 @@
             .carousel-dot.active {
                 width: 1.2rem;
             }
-            /* Kurangkan ruang antara elemen */
             .stats-bar {
                 gap: 0.25rem;
                 margin-bottom: 1rem;
@@ -2925,8 +2906,6 @@
             .anggota-mini-stats {
                 font-size: 0.55rem;
             }
-
-            /* ===== WRAP TEXT UNTUK MOBILE ===== */
             .app-card h3,
             .app-card p {
                 white-space: normal;
@@ -2945,15 +2924,12 @@
                 overflow: visible;
                 text-overflow: clip;
             }
-            /* Biarkan anggota-mini-stats kekal sekarangrap */
             .anggota-mini-stats span {
                 white-space: nowrap;
             }
         }
 
-        /* ========== PENAMBAHBAIKAN UNTUK DESKTOP VIEW ========== */
         @media (min-width: 64rem) {
-            /* Header dan footer meregang penuh lebar skrin, tiada max-width */
             .header-inner {
                 max-width: none;
                 width: 100%;
@@ -2962,18 +2938,12 @@
             .footer {
                 padding: 0.75rem 2rem;
             }
-
-            /* Main wrapper kekal berpusat dengan max-width */
             .main-wrapper {
                 padding: 0 2rem 0.75rem;
             }
-
-            /* Search bar tiada padding sendiri, ikut main-wrapper */
             .search-bar-wrap {
                 padding: 0;
             }
-
-            /* Dashboard dan panel lain – tambah padding dalaman untuk lebih ruang */
             .dashboard {
                 padding: 2rem 1.75rem;
             }
@@ -2986,8 +2956,6 @@
             .sistem-panel .panel-body.open {
                 padding: 0 1.75rem 1.75rem;
             }
-
-            /* Kategori – scroller untuk lebih 3 kad, padding diperluas */
             .cat-panel.open {
                 padding: 0 1rem 1rem;
                 max-height: 600px;
@@ -3008,8 +2976,6 @@
             .cat-panel .app-card {
                 padding: 0.85rem 1rem;
             }
-
-            /* Wrap text untuk desktop – membolehkan teks melipat */
             .app-card h3,
             .app-card p {
                 white-space: normal;
@@ -3028,18 +2994,15 @@
                 overflow: visible;
                 text-overflow: clip;
             }
-            /* Biarkan badge dan arrow kekal tidak wrap */
             .app-card .badge,
             .app-card .arrow {
                 white-space: nowrap;
                 flex-shrink: 0;
             }
-            /* Anggota mini stats kekal sekarangrap */
             .anggota-mini-stats span {
                 white-space: nowrap;
             }
         }
-
     </style>
 </head>
 <body>
@@ -3145,7 +3108,7 @@
                         </a>
                     </section>
 
-                    <!-- ===== CAROUSEL KES KEBAKARAN & MANGSA ===== -->
+                    <!-- ===== CAROUSEL KES ===== -->
                     <section class="section-carousel">
                         <div class="section-title">
                             <i class="fas fa-fire" style="color:var(--hazard-gold)"></i> <span data-ms="RINGKASAN KES RAWAK" data-en="RANDOM CASE SUMMARY">RINGKASAN KES RAWAK</span>
@@ -3164,14 +3127,13 @@
                             <div class="carousel-dots" id="carouselDots"></div>
                         </div>
 
-                        <!-- Notis -->
                         <div class="carousel-notice">
                             <i class="fas fa-info-circle"></i>
                             <span data-ms="Sila buka" data-en="Please open">Sila buka</span> <strong id="noticeDashOpsLink">Live Statistik Kes 24 Jam (DASH-OPS)</strong> <span data-ms="untuk maklumat penuh." data-en="for full information.">untuk maklumat penuh.</span>
                         </div>
                     </section>
 
-                    <!-- ===== PETA KETERSEDIAAN JENTERA SELURUH JOHOR ===== -->
+                    <!-- ===== PETA KETERSEDIAAN JENTERA ===== -->
                     <section class="section-peta-jentera">
                         <div class="peta-jentera-card" id="petaJenteraCard">
                             <div class="peta-card-header">
@@ -3223,7 +3185,7 @@
                         </div>
                     </section>
 
-                    <!-- KATEGORI (accordion) -->
+                    <!-- KATEGORI -->
                     <div class="cat-accordion">
                         <!-- LIVE -->
                         <div class="cat-group">
@@ -3286,7 +3248,6 @@
                                                 <span class="arrow"><i class="fas fa-arrow-right"></i></span>
                                             </div>
                                         </a>
-                                        <!-- KAD PETA KAWASAN JAGAAN BALAI – TUKAR DARI DEV KE ONLINE -->
                                         <a href="/peta-bomba" class="app-card">
                                             <div class="icon"><i class="fas fa-map-location-dot"></i></div>
                                             <div>
@@ -3356,7 +3317,6 @@
                         </div>
                     </div>
 
-                    <!-- ▼ TARIKH DI-HARDCODE MANUAL ▼ -->
                     <div class="update-timestamp"><i class="fas fa-sync-alt"></i> <span data-ms="Pautan dikemaskini:" data-en="Links updated:">Pautan dikemaskini:</span> <span id="linkUpdateDate">22 OGOS 2026</span></div>
 
                     <div class="link-filter-wrap">
@@ -3365,7 +3325,7 @@
                     </div>
 
                     <div class="links-scroll" id="linksScroll">
-                        <!-- 1: Talian Kecemasan (diutamakan untuk ops) -->
+                        <!-- 1: Talian Kecemasan -->
                         <div class="accordion-item">
                             <button class="accordion-header" data-target="linkAcc1" aria-expanded="false">
                                 <span class="accordion-title" data-ms="&lt;i class=&quot;fas fa-phone-volume&quot;&gt;&lt;/i&gt; Talian Kecemasan 24/7" data-en="&lt;i class=&quot;fas fa-phone-volume&quot;&gt;&lt;/i&gt; 24/7 Emergency Hotline"><i class="fas fa-phone-volume"></i> Talian Kecemasan 24/7</span>
@@ -3478,7 +3438,7 @@
                     </div><!-- /links-scroll -->
                 </aside>
 
-                <!-- ===== PANEL SISTEM (tanpa password) ===== -->
+                <!-- ===== PANEL SISTEM ===== -->
                 <div class="sistem-panel" id="sistemPanel">
                     <button class="panel-toggle" id="sistemPanelToggle" aria-expanded="false">
                         <span class="panel-title">
@@ -3488,9 +3448,7 @@
                     </button>
 
                     <div class="panel-body" id="sistemPanelBody">
-                        <!-- ===== PAUTAN SISTEM LANGSUNG (tanpa password) ===== -->
                         <div class="sistem-content">
-                            <!-- ▼ SISTEM KEKUATAN ANGGOTA JBPM JOHOR (BARU) ▼ -->
                             <a href="kekuatan-anggota.html" class="app-card" rel="noopener noreferrer">
                                 <div class="icon"><i class="fas fa-users-gear"></i></div>
                                 <div>
@@ -3501,7 +3459,8 @@
                                     <span class="badge sistem">● SISTEM</span>
                                     <span class="arrow"><i class="fas fa-arrow-right"></i></span>
                                 </div>
-                            </a>                            <a href="https://po1teknologia2.vercel.app/" target="_blank" class="app-card" rel="noopener noreferrer">
+                            </a>
+                            <a href="https://po1teknologia2.vercel.app/" target="_blank" class="app-card" rel="noopener noreferrer">
                                 <div class="icon"><i class="fas fa-boxes-stacked"></i></div>
                                 <div>
                                     <h3 data-ms="Sistem Inventori <span class=&quot;highlight&quot;>(DID)</span>" data-en="Inventory System <span class=&quot;highlight&quot;>(DID)</span>">Sistem Inventori <span class="highlight">(DID)</span></h3>
@@ -3592,23 +3551,18 @@
                 }
             }
 
-            // ===== FUNGSI TARIKH PAUTAN DIKEMASKINI (DIKOSONGKAN - GUNA MANUAL) =====
             function setLinkUpdateDate() {
-                // Tarikh pautan dikemaskini kini di-hardcode secara manual dalam HTML.
-                // Fungsi ini dikosongkan supaya tarikh tidak berubah walaupun refresh.
                 return;
             }
 
             setInitialUpdateTime();
             updateClocks();
-            setLinkUpdateDate(); // tidak buat apa-apa, tarikh kekal dari HTML
+            setLinkUpdateDate();
             setInterval(updateClocks, 1000);
 
             // ===== LOCALSTORAGE =====
             function loadState() {
                 const theme = localStorage.getItem('pgoTheme');
-                // Default rasmi: mod SIANG (terang & profesional). Mod malam hanya jika
-                // pengguna pernah pilih secara manual (tersimpan di localStorage).
                 if (theme === 'malam') {
                     document.body.classList.remove('mode-siang');
                     document.querySelector('#modeToggleBtn i').className = 'fas fa-moon';
@@ -3621,11 +3575,7 @@
             }
             loadState();
 
-            // ===== SWITCH BAHASA (BM / EN) =====
-            // Nota: setiap elemen yang perlu diterjemah boleh diberi atribut
-            // data-ms="teks/markup BM" dan data-en="text/markup EN"; fungsi ini
-            // akan menukar innerHTML secara automatik ikut bahasa aktif.
-            // Untuk placeholder input, guna data-ms-placeholder / data-en-placeholder.
+            // ===== SWITCH BAHASA =====
             window.bahasaAktif = 'ms';
             function terapBahasa(bahasa) {
                 window.bahasaAktif = bahasa;
@@ -3650,8 +3600,8 @@
                         ? (semuaTerpilih ? 'Deselect All' : 'Select All')
                         : (semuaTerpilih ? 'Nyahpilih Semua' : 'Pilih Semua');
                 }
-                try { renderPetaStatusText(); } catch (e) { /* peta belum sedia lagi semasa load awal */ }
-                try { terapFilterPeta(); } catch (e) { /* peta belum sedia lagi semasa load awal */ }
+                try { renderPetaStatusText(); } catch (e) { }
+                try { terapFilterPeta(); } catch (e) { }
             }
 
             document.getElementById('langToggleBtn').addEventListener('click', function() {
@@ -3705,7 +3655,6 @@
                         const arrow = header.querySelector('.arrow');
                         let itemHasMatch = false;
 
-                        // Pautan biasa (sidebar-link)
                         content.querySelectorAll('.sidebar-link').forEach((link) => {
                             const text = link.textContent.toLowerCase();
                             const match = !q || text.includes(q);
@@ -3713,7 +3662,6 @@
                             if (match) itemHasMatch = true;
                         });
 
-                        // Talian kecemasan (emergency-item)
                         content.querySelectorAll('.emergency-item').forEach((eItem) => {
                             const text = eItem.textContent.toLowerCase();
                             const match = !q || text.includes(q);
@@ -3765,10 +3713,7 @@
                 });
             });
 
-            // ===== DRAWER PANEL STATE (LIVE, ONLINE, DALAM PEMBANGUNAN, PAUTAN SISTEM PGO) =====
-            // Default: SEMUA drawer TERBUKA bila pengguna buka Laman Utama.
-            // Pengguna boleh tutup manual, dan status tutup itu disimpan pada localStorage SAHAJA.
-            // Jika tiada status tersimpan (pengguna baharu / storan dikosongkan), default kekal SEMUA TERBUKA.
+            // ===== DRAWER PANEL STATE =====
             const DRAWER_STORAGE_PREFIX = 'pgoDrawer_';
 
             function openCatPanel(panel, arrow, btn) {
@@ -3785,7 +3730,7 @@
                 if (btn) btn.setAttribute('aria-expanded', 'false');
             }
 
-            // ===== CATEGORY ACCORDION (LIVE / ONLINE / DALAM PEMBANGUNAN) =====
+            // ===== CATEGORY ACCORDION =====
             document.querySelectorAll('.cat-toggle').forEach((btn) => {
                 const targetId = btn.getAttribute('data-cat-target');
                 const panel = document.getElementById(targetId);
@@ -3793,7 +3738,6 @@
                 if (!panel) return;
                 const storageKey = DRAWER_STORAGE_PREFIX + targetId;
 
-                // Default TERBUKA — tutup hanya jika pengguna pernah tutup manual (tersimpan di localStorage)
                 if (localStorage.getItem(storageKey) === 'closed') {
                     closeCatPanel(panel, arrow, btn);
                 } else {
@@ -3812,13 +3756,12 @@
                 });
             });
 
-            // ===== SISTEM PANEL TOGGLE (PAUTAN SISTEM PGO JOHOR - tanpa password) =====
+            // ===== SISTEM PANEL TOGGLE =====
             const sistemToggle = document.getElementById('sistemPanelToggle');
             const sistemBody = document.getElementById('sistemPanelBody');
             const sistemArrow = sistemToggle.querySelector('.panel-arrow');
             const sistemStorageKey = DRAWER_STORAGE_PREFIX + 'sistemPanelBody';
 
-            // Default TERBUKA — tutup hanya jika pengguna pernah tutup manual (tersimpan di localStorage)
             if (localStorage.getItem(sistemStorageKey) === 'closed') {
                 sistemBody.classList.remove('open');
                 sistemArrow.classList.remove('open');
@@ -3893,11 +3836,8 @@
             }, { passive: true });
 
             // ===== CAROUSEL DATA FETCH & RENDER =====
-            // --- Konfigurasi penapis: hanya kes kebakaran & melibatkan mangsa ---
             const ALLOWED_KEYWORDS = [
-                // Kebakaran
                 'kebakaran', 'api', 'fire',
-                // Mangsa / kecederaan / kemalangan / penyelamatan
                 'mangsa', 'terperangkap', 'kecederaan', 'cedera',
                 'kemalangan', 'penyelamatan', 'rescue', 'trapped', 'injured'
             ];
@@ -3907,14 +3847,12 @@
                 return ALLOWED_KEYWORDS.some(kw => combined.includes(kw));
             }
 
-            // --- Gunakan URL yang sama seperti dashops ---
             const CAROUSEL_CSV_URLS = {
                 syifA: 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRqq7kIOrESSTIiuwPXR-LfsmMu_NaJnWSr2qOyCrnUK4QDqP2DNQy8io0jJIysZQ6Nc6DCZr9YrrW-/pub?gid=1671240510&single=true&output=csv',
                 syifB: 'https://docs.google.com/spreadsheets/d/e/2PACX-1vToFUGdZ63m5oOjUMMYKta_aJ9cQlP3Bxz8QxjTxshfySACV1zqOQVwHBo6ptNyrk1mcw_yuvhIhbcH/pub?gid=1671240510&single=true&output=csv',
                 syifC: 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRgdRVgrUyuMX5IocMXA6g1yM5e0gU1qg3YpazTpmvFhgkl9KCPX02hn-0epm40SCxeHFQ125xCJN2T/pub?gid=1671240510&single=true&output=csv'
             };
 
-            // --- Fungsi parse CSV (sama seperti yang sedia ada) ---
             function pgoParseCSV(text) {
                 text = text.replace(/^\uFEFF/, '').replace(/\r\n/g, '\n').replace(/\r/g, '\n');
                 const rows = [];
@@ -3980,7 +3918,6 @@
                 return parseInt(parts[0]) || 0;
             }
 
-            // --- Fetch satu CSV dan kembalikan array objek ---
             async function fetchSingleCarouselCSV(url, label) {
                 try {
                     const resp = await fetch(url, { cache: 'no-cache' });
@@ -4024,7 +3961,6 @@
                 }
             }
 
-            // --- Gabung semua syif dan tentukan hari operasi terkini ---
             function findLatestOperatingDay(cases) {
                 let latest = null;
                 cases.forEach(d => {
@@ -4038,7 +3974,6 @@
                 return latest;
             }
 
-            // --- Fungsi utama untuk fetch data carousel ---
             let carouselData = [];
 
             async function fetchCarouselData() {
@@ -4055,7 +3990,6 @@
                         renderCarouselSlides([]);
                         return;
                     }
-                    // Filter untuk hari operasi terkini
                     let filtered = all.filter(d => {
                         const t = pgoParseTarikh(d.tarikh);
                         if (!t) return false;
@@ -4065,7 +3999,6 @@
                         return opDate.getTime() === latestDay.getTime();
                     });
 
-                    // === PENAPIS TAMBAHAN: hanya kes kebakaran atau melibatkan mangsa ===
                     filtered = filtered.filter(isCaseAllowed);
 
                     carouselData = filtered;
@@ -4076,7 +4009,6 @@
                 }
             }
 
-            // --- Render slaid carousel ---
             function renderCarouselSlides(cases) {
                 const track = document.getElementById('carouselTrack');
                 const dotsContainer = document.getElementById('carouselDots');
@@ -4084,7 +4016,6 @@
 
                 if (!track) return;
 
-                // Kosongkan track
                 track.innerHTML = '';
 
                 if (!cases || cases.length === 0) {
@@ -4101,7 +4032,6 @@
                     return;
                 }
 
-                // === TINGKATKAN BILANGAN MAKSIMUM SLAID KEPADA 20 ===
                 const maxSlides = Math.min(cases.length, 20);
                 const sliced = cases.slice(0, maxSlides);
 
@@ -4110,7 +4040,6 @@
                     slide.className = 'carousel-slide' + (index === 0 ? ' active' : '');
                     slide.dataset.index = index;
 
-                    // Badge kategori ringkas
                     let badgeText = 'Kejadian';
                     const lowerJenis = d.jenis.toLowerCase();
                     const lowerMaklumat = d.maklumat.toLowerCase();
@@ -4123,7 +4052,6 @@
                     else if (lowerJenis.includes('penyelamatan') || lowerMaklumat.includes('rescue') || lowerMaklumat
                         .includes('mangsa')) badgeText = '🚑 Penyelamatan';
 
-                    // Tarikh + masa
                     const timeDisplay = d.masa && d.masa !== '-' ? d.masa : '';
                     const dateDisplay = d.tarikh && d.tarikh !== '-' ? d.tarikh : '';
 
@@ -4139,13 +4067,10 @@
 
                 if (countEl) countEl.textContent = sliced.length + ' kes';
 
-                // Setup dots dan controls
                 setupCarouselControls(sliced.length);
-                // Aktifkan slaid pertama
                 goToCarouselSlide(0, false);
             }
 
-            // --- Carousel navigation state ---
             let carouselCurrentIndex = 0;
             let carouselTotalSlides = 0;
             let carouselAutoInterval = null;
@@ -4168,10 +4093,8 @@
                     dotsContainer.appendChild(dot);
                 }
 
-                // Reset index jika lebih dari total
                 if (carouselCurrentIndex >= total) carouselCurrentIndex = 0;
 
-                // Event listeners untuk butang prev/next
                 const prevBtn = document.getElementById('carouselPrev');
                 const nextBtn = document.getElementById('carouselNext');
                 if (prevBtn) {
@@ -4189,7 +4112,6 @@
                     };
                 }
 
-                // Pause on hover
                 const container = document.getElementById('carouselContainer');
                 if (container) {
                     container.onmouseenter = function() {
@@ -4203,7 +4125,6 @@
                     };
                 }
 
-                // Touch swipe support
                 let touchStartX = 0,
                     isSwiping = false;
                 if (container) {
@@ -4229,7 +4150,6 @@
                     }, { passive: true });
                 }
 
-                // Mulakan auto-slide jika ada lebih dari 1 slaid
                 if (total > 1) startCarouselAuto();
                 else if (carouselAutoInterval) {
                     clearInterval(carouselAutoInterval);
@@ -4248,7 +4168,6 @@
 
                 carouselCurrentIndex = index;
 
-                // Animate track
                 if (animate) {
                     track.style.transition = 'transform 0.6s cubic-bezier(0.16, 1, 0.3, 1)';
                 } else {
@@ -4256,12 +4175,10 @@
                 }
                 track.style.transform = 'translateX(-' + (index * 100) + '%)';
 
-                // Update active class
                 slides.forEach((slide, i) => {
                     slide.classList.toggle('active', i === index);
                 });
 
-                // Update dots
                 dots.forEach((dot, i) => {
                     dot.classList.toggle('active', i === index);
                 });
@@ -4283,7 +4200,6 @@
                 startCarouselAuto();
             }
 
-            // --- Panggil fetch carousel ---
             fetchCarouselData();
             setInterval(fetchCarouselData, 60000);
 
@@ -4349,7 +4265,7 @@
             fetchCuacaJB();
             setInterval(fetchCuacaJB, 900000);
 
-            // ===== KES HARI INI (DASH-OPS) =====
+            // ===== KES HARI INI =====
             const DASHOPS_CSV_URLS = [
                 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRqq7kIOrESSTIiuwPXR-LfsmMu_NaJnWSr2qOyCrnUK4QDqP2DNQy8io0jJIysZQ6Nc6DCZr9YrrW-/pub?gid=1671240510&single=true&output=csv',
                 'https://docs.google.com/spreadsheets/d/e/2PACX-1vToFUGdZ63m5oOjUMMYKta_aJ9cQlP3Bxz8QxjTxshfySACV1zqOQVwHBo6ptNyrk1mcw_yuvhIhbcH/pub?gid=1671240510&single=true&output=csv',
@@ -4413,8 +4329,6 @@
             const CFRT_CSV_URL =
                 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQt0JkN2yWW_0FeY5GKpmIvs1uI6si89JcqNmSTO3f--rM8FhQZe1Q97YQd8tiAsmaMQdTXO5TQWedy/pub?gid=0&single=true&output=csv';
 
-            // Sumber CSV untuk Peta Ketersediaan (switch antara 3 jenis kenderaan)
-            // Semua sumber guna header/column struktur yang sama macam CFRT_CSV_URL
             const PETA_SUMBER_CSV = {
                 jentera: {
                     label: 'Jentera',
@@ -4434,14 +4348,12 @@
             };
             let petaSumberAktif = 'jentera';
 
-            // Label sumber ikut bahasa aktif semasa (guna window.bahasaAktif yang ditetapkan oleh terapBahasa())
             function labelSumberPeta(objSumber) {
                 if (!objSumber) return '';
                 return window.bahasaAktif === 'en' ? (objSumber.labelEn || objSumber.label) : objSumber.label;
             }
 
-            // Simpan status terkini peta jentera supaya teks boleh dibina semula bila bahasa ditukar
-            let petaStatusState = null; // { jenis: 'loading'|'ok'|'ralat', sumberObj, masaKini, senaraiTakPadan }
+            let petaStatusState = null;
 
             function renderPetaStatusText() {
                 const statusTextEl = document.getElementById('petaJenteraStatusText');
@@ -4495,7 +4407,7 @@
                         const row = rows[i];
                         if (!row || row.length === 0) continue;
                         const status = idxStatus >= 0 ? (row[idxStatus] || '').trim() : '';
-                        if (statusJenteraDikecualikan(status)) continue; // lupus / proses lupus / telah dipulangkan
+                        if (statusJenteraDikecualikan(status)) continue;
                         const s = status.toUpperCase();
                         const bolehBeroperasi = s.includes('BOLEH BEROPERASI') && !s.includes('TIDAK BOLEH BEROPERASI');
                         if (bolehBeroperasi) jumlah++;
@@ -4508,9 +4420,8 @@
             fetchJenteraBersedia();
             setInterval(fetchJenteraBersedia, 60000);
 
-            // ===== PETA KETERSEDIAAN JENTERA (LEAFLET + OPENSTREETMAP) =====
+            // ===== PETA KETERSEDIAAN JENTERA =====
             const SENARAI_BALAI_JOHOR = [
-                // ZON 1 - JOHOR BAHRU (13)
                 { nama: 'BBP Larkin (JB)', zon: 1, daerah: 'Johor Bahru', lat: 1.4854561788224945, lng: 103.75081990820912, tel: '07-2243444' },
                 { nama: 'BBP Pasir Gudang', zon: 1, daerah: 'Johor Bahru', lat: 1.4643416318507871, lng: 103.89600906588159, tel: '07-2513444' },
                 { nama: 'BBP Johor Jaya', zon: 1, daerah: 'Johor Bahru', lat: 1.531594273562039, lng: 103.79519160820901, tel: '07-3511444' },
@@ -4524,7 +4435,6 @@
                 { nama: 'BBP Bandar Baru Kulai', zon: 1, daerah: 'Kulai', lat: 1.6579859203880312, lng: 103.62661719424169, tel: '07-5908711' },
                 { nama: 'BBP Kempas', zon: 1, daerah: 'Johor Bahru', lat: 1.5271427241141524, lng: 103.73291787937283, tel: '07-2325474' },
                 { nama: 'BBP Fire Post Benut', zon: 1, daerah: 'Pontian', lat: 1.63813001403506, lng: 103.25906880820891, tel: '07-6905839' },
-                // ZON 2 - KOTA TINGGI (8)
                 { nama: 'BBP Kota Tinggi', zon: 2, daerah: 'Kota Tinggi', lat: 1.7400726715952255, lng: 103.89888355053641, tel: '07-8831444' },
                 { nama: 'BBP Sungai Rengit', zon: 2, daerah: 'Pengerang', lat: 1.3586296957880815, lng: 104.23142533704556, tel: '07-8246770' },
                 { nama: 'BBP Bandar Penawar', zon: 2, daerah: 'Kota Tinggi', lat: 1.5584240268894343, lng: 104.22836464004762, tel: '07-8223692' },
@@ -4533,7 +4443,6 @@
                 { nama: 'BBP Sebana Cove', zon: 2, daerah: 'Kota Tinggi', lat: 1.4111942637295485, lng: 104.20702710820935, tel: '07-8861641' },
                 { nama: 'BBP Punggai', zon: 2, daerah: 'Kota Tinggi', lat: 1.42940813601492, lng: 104.27036571006252, tel: '07-8861952' },
                 { nama: 'BBP Bandar Tenggara', zon: 2, daerah: 'Kulai', lat: 1.8512117790715301, lng: 103.61435888307892, tel: '07-8964498' },
-                // ZON 3 - KLUANG (8)
                 { nama: 'BBP Penggaram', zon: 3, daerah: 'Batu Pahat', lat: 1.8587485315341812, lng: 102.94072309627684, tel: '07-4345757' },
                 { nama: 'BBP Kluang', zon: 3, daerah: 'Kluang', lat: 2.0342273939975697, lng: 103.31953787937219, tel: '07-7724444' },
                 { nama: 'BBP Batu Pahat', zon: 3, daerah: 'Batu Pahat', lat: 1.85005904680567, lng: 102.92981160780664, tel: '07-4338444' },
@@ -4542,7 +4451,6 @@
                 { nama: 'BBP Yong Peng', zon: 3, daerah: 'Batu Pahat', lat: 2.01254932009085, lng: 103.06322993660169, tel: '07-4674444' },
                 { nama: 'BBP Ayer Hitam', zon: 3, daerah: 'Batu Pahat', lat: 1.9046398311946404, lng: 103.16580533704466, tel: '07-7582206' },
                 { nama: 'BBP Fire Post Parit Sulong', zon: 3, daerah: 'Batu Pahat', lat: 1.9734098250147893, lng: 102.86930995238934, tel: 'n/a' },
-                // ZON 4 - MUAR (7)
                 { nama: 'BBP Muar', zon: 4, daerah: 'Muar', lat: 2.0536025587250952, lng: 102.57234047937226, tel: '06-9555994' },
                 { nama: 'BBP Bandar Baru Segamat', zon: 4, daerah: 'Segamat', lat: 2.498693444757604, lng: 102.87045925238905, tel: '07-9435844' },
                 { nama: 'BBP Segamat', zon: 4, daerah: 'Segamat', lat: 2.5097396869375945, lng: 102.81377777937195, tel: '07-9314444' },
@@ -4550,18 +4458,15 @@
                 { nama: 'BBP Bukit Gambir', zon: 4, daerah: 'Tangkak', lat: 2.217126038710606, lng: 102.65990143704445, tel: '06-9765144' },
                 { nama: 'BBP Tangkak', zon: 4, daerah: 'Tangkak', lat: 2.2709401263413143, lng: 102.54347515009461, tel: '06-9783444' },
                 { nama: 'BBP Pagoh', zon: 4, daerah: 'Muar', lat: 2.136905853626598, lng: 102.73936700820836, tel: '06-9741955' },
-                // BENGKEL / LOKASI SOKONGAN (bukan balai operasi)
                 { nama: 'Bengkel Kejuruteraan', jenis: 'bengkel', zon: 0, daerah: 'Johor Bahru', lat: 1.485846, lng: 103.751072, tel: 'n/a' },
                 { nama: 'Bengkel Swasta', jenis: 'bengkel', zon: 0, daerah: 'Johor Bahru', lat: 1.485841, lng: 103.751169, tel: 'n/a' }
             ];
 
-            // Alias nama balai: nama lain/pendek yang mungkin digunakan dalam CSV -> nama ternormalisasi sebenar
             const ALIAS_NAMA_BALAI = {
                 'PENAWAR': 'BANDAR PENAWAR',
                 'BENGKEL KJT BOMBA': 'BENGKEL KEJURUTERAAN'
             };
 
-            // Normalisasi nama balai: buang "BBP", "FIRE POST", kurungan, ruang berlebih, uppercase
             function normalisasiNamaBalai(str) {
                 if (!str) return '';
                 let n = str
@@ -4577,22 +4482,16 @@
                 return n;
             }
 
-            // Bina lookup map: nama ternormalisasi -> objek balai
             const PETA_BALAI_LOOKUP = {};
             SENARAI_BALAI_JOHOR.forEach(b => {
                 PETA_BALAI_LOOKUP[normalisasiNamaBalai(b.nama)] = b;
             });
 
-            // Jentera dengan status ini tidak dikira/dipaparkan langsung (dilupuskan / telah dipulangkan)
             function statusJenteraDikecualikan(status) {
                 const s = (status || '').toUpperCase();
                 return s.includes('LUPUS') || s.includes('DIPULANGKAN');
             }
 
-            // Logik klasifikasi - paparkan ikut status SEBENAR (untuk statistik & warna ikon):
-            //   BAIK & BOLEH BEROPERASI        -> baik   (hijau)
-            //   ROSAK MINOR & BOLEH BEROPERASI -> minor  (jingga)
-            //   ROSAK & TIDAK BOLEH BEROPERASI -> rosak  (merah)
             function klasifikasiStatusJentera(status, kerosakan) {
                 const s = (status || '').toUpperCase();
                 if (s.includes('BAIK')) return 'baik';
@@ -4605,7 +4504,7 @@
             let petaJenteraMarkers = {};
             let petaFilterAktif = new Set(['baik', 'minor', 'rosak', 'na']);
             const warnaStatusPeta = { baik: '#4ade80', minor: '#d9a969', rosak: '#ef4444', na: '#64748b' };
-            let petaPermintaanTerkini = 0; // guard elak race condition bila switch sumber pantas
+            let petaPermintaanTerkini = 0;
 
             function initPetaJenteraMap() {
                 const mapEl = document.getElementById('petaJenteraMap');
@@ -4688,7 +4587,7 @@
                     const response = await fetch(sumberAktifObj.url, { cache: 'no-cache' });
                     if (!response.ok) throw new Error('Gagal memuat turun CSV ' + sumberAktifObj.label);
                     const text = await response.text();
-                    if (idPermintaanSemasa !== petaPermintaanTerkini) return; // sumber dah ditukar semasa fetch, abaikan respons ni
+                    if (idPermintaanSemasa !== petaPermintaanTerkini) return;
                     const rows = pgoParseCSV(text);
                     if (rows.length < 2) throw new Error('Data ' + sumberAktifObj.label + ' kosong');
 
@@ -4699,7 +4598,6 @@
                     const idxCallsign = pgoColIdx(headers, 'CALLSIGN');
                     const idxPlate = pgoColIdx(headers, 'PLATE');
 
-                    // Kumpul jentera ikut balai (ternormalisasi)
                     const jenteraIkutBalai = {};
                     const namaAsalIkutKunci = {};
                     for (let i = 1; i < rows.length; i++) {
@@ -4711,7 +4609,7 @@
                         namaAsalIkutKunci[kunci] = lokasiRaw;
                         const status = idxStatus >= 0 ? (row[idxStatus] || '').trim() : '';
                         const kerosakan = idxKerosakan >= 0 ? (row[idxKerosakan] || '').trim() : '';
-                        if (statusJenteraDikecualikan(status)) continue; // lupus / proses lupus / telah dipulangkan - tidak dipaparkan
+                        if (statusJenteraDikecualikan(status)) continue;
                         const kelas = klasifikasiStatusJentera(status, kerosakan);
                         const item = {
                             callsign: idxCallsign >= 0 ? (row[idxCallsign] || '').trim() : '',
@@ -4758,7 +4656,6 @@
                         markerInfo.kelasSemasa = kelasBalai;
                     });
 
-                    // Kesan lokasi dalam CSV yang tidak match mana-mana balai
                     const senaraiTakPadan = [];
                     Object.keys(jenteraIkutBalai).forEach(kunci => {
                         if (!petaJenteraMarkers[kunci]) {
@@ -4800,7 +4697,6 @@
                 }
             }
 
-            // ===== FILTER MULTISELECT (TICKBOX) UNTUK PAPARAN JENTERA =====
             function terapFilterPeta() {
                 if (!petaJenteraMapInstance) return;
                 let dipaparkan = 0;
@@ -4848,7 +4744,6 @@
                 });
             }
 
-            // ===== RESET PAPARAN PETA (dipanggil bila tukar sumber/pill) =====
             function resetPetaJenteraTampilan() {
                 Object.values(petaJenteraMarkers).forEach(info => {
                     info.kelasSemasa = 'na';
@@ -4874,7 +4769,6 @@
                 terapFilterPeta();
             }
 
-            // ===== SWITCH SUMBER PETA (PILL: JENTERA / EMRS / WATER TANKER) =====
             document.querySelectorAll('.peta-sumber-pill').forEach(btn => {
                 btn.addEventListener('click', function() {
                     const sumber = this.getAttribute('data-sumber');
@@ -4886,7 +4780,6 @@
                 });
             });
 
-            // ===== SKRIN PENUH UNTUK PANEL PETA JENTERA SAHAJA =====
             const petaJenteraCardEl = document.getElementById('petaJenteraCard');
             const petaFullscreenBtn = document.getElementById('petaJenteraFullscreenBtn');
             let petaCardIndukAsal = null;
@@ -4897,8 +4790,6 @@
                 const masukFullscreen = !petaJenteraCardEl.classList.contains('fullscreen-mode');
 
                 if (masukFullscreen) {
-                    // Simpan lokasi asal kad, lepas tu pindah terus jadi anak <body>
-                    // supaya overlay dijamin menutup SELURUH skrin (elak isu z-index/containing-block ibu bapa)
                     petaCardIndukAsal = petaJenteraCardEl.parentElement;
                     petaCardSaudaraSelepasAsal = petaJenteraCardEl.nextElementSibling;
                     document.body.appendChild(petaJenteraCardEl);
@@ -4907,7 +4798,6 @@
                 } else {
                     petaJenteraCardEl.classList.remove('fullscreen-mode');
                     document.body.style.overflow = '';
-                    // Kembalikan kad ke lokasi asal dalam susunan panel
                     if (petaCardIndukAsal) {
                         if (petaCardSaudaraSelepasAsal) {
                             petaCardIndukAsal.insertBefore(petaJenteraCardEl, petaCardSaudaraSelepasAsal);
@@ -4922,7 +4812,6 @@
                     petaFullscreenBtn.setAttribute('aria-label', masukFullscreen ? 'Keluar Skrin Penuh' : 'Skrin Penuh');
                     petaFullscreenBtn.setAttribute('title', masukFullscreen ? 'Keluar Skrin Penuh' : 'Skrin Penuh');
                 }
-                // Leaflet perlu tahu container dah bertukar saiz
                 setTimeout(() => {
                     if (petaJenteraMapInstance) petaJenteraMapInstance.invalidateSize();
                 }, 220);
@@ -4940,36 +4829,52 @@
             fetchDanPaparPetaJentera();
             setInterval(fetchDanPaparPetaJentera, 60000);
 
-            // ===== FETCH ANGGOTA MINI STATS =====
+            // ===== FETCH ANGGOTA MINI STATS (SYNC DENGAN dbanggota.html) =====
+            // Sumber: Supabase nstmylzvqckhrpxmbufx — table "personel"
+            // Logik kiraan SAMA dengan buildTickerContent() dalam dbanggota.html
             async function fetchAnggotaMiniStats() {
                 try {
-                    const SUPABASE_URL = 'https://hglmbrqweijpguxfeloq.supabase.co';
-                    const SUPABASE_ANON_KEY =
-                        'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhnbG1icnF3ZWlqcGd1eGZlbG9xIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODU1NDcyNDAsImV4cCI6MjEwMTEyMzI0MH0.xBuhxHVmkuIPC34421QfuCERIpBPFiyVi1sSC-PQAiQ';
-                    const resp = await fetch(`${SUPABASE_URL}/rest/v1/jbpm_data?id=eq.1&select=rekodAnggota`, {
+                    const SUPABASE_URL = 'https://nstmylzvqckhrpxmbufx.supabase.co';
+                    const SUPABASE_ANON_KEY = 'sb_publishable_6i7rUdjTRmOYMcookS6CFQ_lwXyRJJL';
+
+                    const resp = await fetch(`${SUPABASE_URL}/rest/v1/personel?select=status,nama,pangkat,unit1,balai`, {
                         headers: {
                             apikey: SUPABASE_ANON_KEY,
-                            Authorization: 'Bearer ' + SUPABASE_ANON_KEY
+                            Authorization: 'Bearer ' + SUPABASE_ANON_KEY,
+                            'Content-Type': 'application/json'
                         }
                     });
-                    if (!resp.ok) throw new Error('Gagal fetch data');
-                    const data = await resp.json();
-                    if (data && data.length > 0 && data[0].rekodAnggota) {
-                        const anggota = data[0].rekodAnggota;
-                        const total = anggota.length;
-                        const bertugas = anggota.filter(a => a.status === 'BERTUGAS').length;
-                        const cuti = anggota.filter(a => a.status === 'CUTI').length;
-                        const sakit = anggota.filter(a => a.status === 'CUTI SAKIT').length;
-                        const tugasKhas = anggota.filter(a => a.status === 'TUGAS KHAS').length;
-                        document.getElementById('miniTotal').textContent = total;
-                        document.getElementById('miniBertugas').textContent = bertugas;
-                        document.getElementById('miniCuti').textContent = cuti;
-                        document.getElementById('miniSakit').textContent = sakit;
-                        document.getElementById('miniTugasKhas').textContent = tugasKhas;
-                        const statBertugasEl = document.getElementById('statBertugas');
-                        if (statBertugasEl) statBertugasEl.textContent = bertugas;
-                    }
-                } catch (e) { /* biarkan nilai '--' */ }
+                    if (!resp.ok) throw new Error('Gagal fetch data personel: HTTP ' + resp.status);
+
+                    const anggota = await resp.json();
+                    if (!Array.isArray(anggota)) return;
+
+                    // Kiraan sama macam dbanggota.html ticker & mini stats
+                    const total      = anggota.length;
+                    const bertugas   = anggota.filter(a => a.status === 'BERTUGAS').length;
+                    const cuti       = anggota.filter(a => a.status === 'CUTI').length;
+                    const sakit      = anggota.filter(a => a.status === 'CUTI SAKIT').length;
+                    const tugasKhas  = anggota.filter(a => a.status === 'TUGAS KHAS').length;
+
+                    // Papar pada kad mini stats
+                    const setTxt = (id, val) => {
+                        const el = document.getElementById(id);
+                        if (el) el.textContent = val;
+                    };
+                    setTxt('miniTotal', total);
+                    setTxt('miniBertugas', bertugas);
+                    setTxt('miniCuti', cuti);
+                    setTxt('miniSakit', sakit);
+                    setTxt('miniTugasKhas', tugasKhas);
+
+                    // Kad stat utama "Anggota Bertugas"
+                    const statBertugasEl = document.getElementById('statBertugas');
+                    if (statBertugasEl) statBertugasEl.textContent = bertugas;
+
+                } catch (e) {
+                    console.warn('[index.html] fetchAnggotaMiniStats error:', e.message);
+                    /* biarkan nilai '--' */
+                }
             }
             fetchAnggotaMiniStats();
             setInterval(fetchAnggotaMiniStats, 60000);
