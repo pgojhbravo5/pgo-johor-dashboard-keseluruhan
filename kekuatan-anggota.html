@@ -2691,6 +2691,9 @@
         '11. PBB': 'PBB (PBBK II + PBB)',
       };
 
+      // ⬇️ TAMBAHAN: Peranan yang TIDAK dikira dalam jumlah anggota
+      const EXCLUDED_ROLES_FROM_COUNT = ['KETUA BALAI', 'PEGAWAI OPERASI'];
+
       const UNITS = ['PEMADAM', 'EMRS', 'HAZMAT', 'PPDA', 'RIM', 'STORM / MUST'];
       const STATUS_P = ['A', 'C', 'CS', 'TK'];
       const PERSONEL_STATUSES = ['BERTUGAS', 'CUTI', 'CUTI SAKIT', 'TUGAS KHAS', 'HRM'];
@@ -3287,6 +3290,42 @@
         return btn;
       }
 
+      /* ⬇️ AUTO-POPULATE HEADER MERS999 (Masa & Pusatan) */
+      function computeMersHeaderDefaults() {
+        const shifCount = {};
+        BALAI_LIST.forEach(function (b) {
+          const s = store.balai[b.name];
+          if (s && s.ident && s.ident.shif) {
+            shifCount[s.ident.shif] = (shifCount[s.ident.shif] || 0) + 1;
+          }
+        });
+        let masa = '';
+        let maxShif = 0;
+        Object.keys(shifCount).forEach(function (k) {
+          if (shifCount[k] > maxShif) { maxShif = shifCount[k]; masa = k; }
+        });
+        if (masa) masa = masa.replace(/^(\d{4})-(\d{4})$/, '$1H-$2H');
+
+        const pasukanCount = {};
+        BALAI_LIST.forEach(function (b) {
+          const s = store.balai[b.name];
+          if (!s) return;
+          (s.personel || []).forEach(function (p) {
+            if (!p || p.status !== 'BERTUGAS') return;
+            if (!p.pasukan) return;
+            pasukanCount[p.pasukan] = (pasukanCount[p.pasukan] || 0) + 1;
+          });
+        });
+        let pusatan = '';
+        let maxPasukan = 0;
+        Object.keys(pasukanCount).forEach(function (k) {
+          if (pasukanCount[k] > maxPasukan) { maxPasukan = pasukanCount[k]; pusatan = k; }
+        });
+        if (pusatan) pusatan = 'PASUKAN ' + pusatan;
+
+        return { masa: masa, pusatan: pusatan };
+      }
+
       function renderMersView() {
         const wrap = document.createElement('div');
         wrap.className = 'section';
@@ -3315,11 +3354,12 @@
         const hdr = document.createElement('div');
         hdr.className = 'mers-header';
         const today = new Date().toISOString().slice(0, 10);
+        const mersDefaults = computeMersHeaderDefaults();
         hdr.innerHTML = `
     <div class="mers-header-title">LAPORAN HARIAN STATUS NG MERS999 JBPM JOHOR</div>
     <div class="mers-header-field"><label>Tarikh</label><input type="date" value="${today}" /></div>
-    <div class="mers-header-field"><label>Masa</label><input type="text" placeholder="2000H-0800H" /></div>
-    <div class="mers-header-field"><label>Pusatan (Pasukan Bertugas Semasa)</label><input type="text" placeholder="Nama pasukan bertugas…" /></div>`;
+    <div class="mers-header-field"><label>Masa</label><input type="text" value="${mersDefaults.masa}" placeholder="2000H-0800H" /></div>
+    <div class="mers-header-field"><label>Pusatan (Pasukan Bertugas Semasa)</label><input type="text" value="${mersDefaults.pusatan}" placeholder="Nama pasukan bertugas…" /></div>`;
         body.appendChild(hdr);
 
         const tbl = document.createElement('table');
@@ -4079,7 +4119,8 @@
         kategori: 'KATEGORI', maklumat: 'MAKLUMAT', jumlah: 'JUMLAH',
       };
       const LOCKED_PASUKAN_ROLES = ['KETUA BALAI', 'PEGAWAI OPERASI'];
-      const LOCKED_STATUS_ROLES = ['BILIK KAWALAN (BKB)'];
+      // ⬇️ BKB tidak lagi dikunci — status jadi OPTIONAL dropdown
+      const LOCKED_STATUS_ROLES = [];
 
       function applyPerananLocks(person, pasukanSelect, statusSelect) {
         if (pasukanSelect) {
@@ -4262,6 +4303,8 @@
         (s.personel || []).forEach((p) => {
           if (!p.pangkat || !p.status) return;
           if (!m[p.pangkat]) return;
+          // ⬇️ KETUA BALAI & PEGAWAI OPERASI TIDAK DIKIRA
+          if (EXCLUDED_ROLES_FROM_COUNT.includes(p.peranan)) return;
           const st = mapPersonelStatus(p.status);
           if (!st) return;
           const u = p.unit1;
@@ -4322,6 +4365,8 @@
         Object.values(store.balai).forEach((b) => {
           (b.personel || []).forEach((p) => {
             if (!p || !p.pangkat || !p.status) return;
+            // ⬇️ KETUA BALAI & PEGAWAI OPERASI TIDAK DIKIRA
+            if (EXCLUDED_ROLES_FROM_COUNT.includes(p.peranan)) return;
             const effKat = mapping[p.pangkat];
             if (!effKat) return;
             if (!m[effKat]) {
@@ -4380,7 +4425,10 @@
         const targets = ['10. PBBK II', '11. PBB'];
         let count = 0;
         s.personel.forEach(function (p) {
-          if (p && targets.includes(p.pangkat)) count++;
+          if (!p) return;
+          // ⬇️ KETUA BALAI & PEGAWAI OPERASI TIDAK DIKIRA
+          if (EXCLUDED_ROLES_FROM_COUNT.includes(p.peranan)) return;
+          if (targets.includes(p.pangkat)) count++;
         });
         return count;
       }
@@ -5416,9 +5464,15 @@
           tdSP.textContent = d.statusPO;
           tr.appendChild(tdSP);
 
+          // ⬇️ Kolum A (BERTUGAS): MERAH jika ≤ 5, normal jika ≥ 6
           ['A', 'C', 'CS', 'TK'].forEach((k) => {
             const td = document.createElement('td');
-            td.textContent = d[k] || 0;
+            const val = d[k] || 0;
+            td.textContent = val;
+            if (k === 'A' && val <= 5) {
+              td.style.color = 'var(--rosak)';
+              td.style.fontWeight = '700';
+            }
             tr.appendChild(td);
           });
 
@@ -5503,7 +5557,9 @@
           'Penyelia Pasukan diambil 1 sahaja (jika ada lebih).<br />' +
           '<b>GRED</b> — mengikut klasifikasi balai. ' +
           '<b>TURN OUT</b> — bilangan jentera keluar bertugas. ' +
-          '<b>PBB + PBBK II</b> — jumlah anggota berpangkat PBB dan PBBK II.';
+          '<b>PBB + PBBK II</b> — jumlah anggota berpangkat PBB dan PBBK II.<br />' +
+          '<b>Kolum A (BERTUGAS)</b> — diwarnakan <span style="color:var(--rosak);font-weight:700">MERAH</span> jika 5 orang atau ke bawah.<br />' +
+          '<b>Nota kiraan:</b> Peranan <b>KETUA BALAI</b> dan <b>PEGAWAI OPERASI</b> tidak dikira dalam jumlah A/C/CS/TK.';
         body.appendChild(info);
       }
 
@@ -5607,6 +5663,8 @@
               if (balaiState) {
                 (balaiState.personel || []).forEach((p) => {
                   if (!p || !p.pangkat) return;
+                  // ⬇️ KETUA BALAI & PEGAWAI OPERASI TIDAK DIKIRA
+                  if (EXCLUDED_ROLES_FROM_COUNT.includes(p.peranan)) return;
                   const effKat = katMapPersonel ? katMapPersonel[p.pangkat] : p.pangkat;
                   if (effKat && effKat === cat) {
                     const st = mapPersonelStatus(p.status);
