@@ -1238,7 +1238,6 @@
         font-weight: 500; border-color: var(--col-amber-row-bd);
       }
 
-      /* ===== Kolum MAKLUMAT dilebarkan ===== */
       table.roster td.td-maklumat,
       table.roster th.th-maklumat {
         min-width: 400px;
@@ -1250,7 +1249,6 @@
         box-sizing: border-box;
       }
 
-      /* Mandatori — tanda pada header */
       table.roster thead th.th-mandatory::after {
         content: ' *';
         color: var(--rosak);
@@ -1483,7 +1481,6 @@
       }
       input[type='file'] { display: none; }
 
-      /* ===== SITE FOOTER — 2 LAYER ===== */
       .site-footer {
         margin-top: 2.25rem;
         border-top: 1px solid var(--line);
@@ -1544,6 +1541,586 @@
       .tab.special.mers { border-color: rgba(75, 142, 247, 0.55); color: #8ab4fb; }
       .tab.special.mers:hover { background: rgba(75, 142, 247, 0.14); }
       .tab.special.mers.active { background: var(--blue); color: #fff; border-color: transparent; }
+
+      /* ===== TAB: SENARAI SEMAK LOKASI JENTERA ===== */
+      .tab.special.semak { border-color: rgba(31, 168, 160, 0.55); color: #63cdc7; }
+      .tab.special.semak:hover { background: rgba(31, 168, 160, 0.14); }
+      .tab.special.semak.active { background: var(--teal); color: #fff; border-color: transparent; }
+
+      table.semak-lokasi {
+        border-collapse: separate; border-spacing: 0;
+        font-size: 0.68rem; white-space: nowrap; min-width: 100%;
+        font-family: 'IBM Plex Mono', monospace;
+        border: 1px solid var(--line); border-radius: var(--radius-sm);
+        overflow: hidden;
+      }
+      table.semak-lokasi th,
+      table.semak-lokasi td {
+        border-right: 1px solid var(--line-soft);
+        border-bottom: 1px solid var(--line-soft);
+        padding: 0.28rem 0.3rem;
+        text-align: center;
+        vertical-align: middle;
+      }
+      table.semak-lokasi tr > *:last-child { border-right: none; }
+      table.semak-lokasi thead th {
+        background: var(--panel-2);
+        color: var(--text-dim);
+        font-family: 'Oswald', sans-serif;
+        font-weight: 600;
+        font-size: 0.62rem;
+        letter-spacing: 0.04em;
+        text-transform: uppercase;
+      }
+      table.semak-lokasi thead th.balai-col {
+        width: 84px; min-width: 84px; max-width: 84px;
+        padding: 0.4rem 0.15rem;
+        font-size: 0.58rem;
+        letter-spacing: 0.01em;
+        white-space: normal;
+        line-height: 1.18;
+        word-break: break-word;
+        vertical-align: middle;
+      }
+      table.semak-lokasi thead th.zon-header {
+        background: var(--panel-3);
+        color: var(--text);
+        font-size: 0.6rem;
+      }
+      table.semak-lokasi thead th.jumlah-col {
+        color: var(--amber);
+        background: var(--col-amber-bg);
+        min-width: 58px;
+      }
+      table.semak-lokasi tbody tr.section-row td {
+        background: linear-gradient(90deg, var(--teal) 0%, rgba(31,168,160,0.35) 8%, var(--panel-3) 30%) !important;
+        color: var(--text);
+        font-family: 'Oswald', sans-serif;
+        font-weight: 700;
+        font-size: 0.72rem;
+        letter-spacing: 0.1em;
+        padding: 0.5rem 0.7rem;
+        text-transform: uppercase;
+        text-align: left;
+        border-top: 2px solid var(--teal);
+      }
+      table.semak-lokasi tbody tr:nth-child(even) td:not(.section-row) { background: var(--zebra); }
+      table.semak-lokasi tbody tr:hover td { background: var(--hover-row) !important; }
+      table.semak-lokasi tbody td.bil-cell {
+        color: var(--text-faint); font-size: 0.6rem;
+        width: 2.2rem; padding: 0.25rem 0.2rem;
+      }
+      table.semak-lokasi tbody td.kat-cell {
+        font-family: 'Oswald', sans-serif;
+        font-size: 0.62rem;
+        color: var(--amber);
+        font-weight: 600;
+        white-space: normal;
+        max-width: 90px;
+        min-width: 70px;
+        line-height: 1.1;
+      }
+      table.semak-lokasi tbody td.maklumat-cell {
+        text-align: left;
+        font-family: 'IBM Plex Mono', monospace;
+        font-size: 0.66rem;
+        min-width: 240px;
+        padding-left: 0.6rem;
+        background: var(--panel-2);
+        color: var(--text);
+      }
+      table.semak-lokasi tbody td.check-cell {
+        min-width: 84px; width: 84px; max-width: 84px;
+        padding: 0.2rem;
+      }
+      table.semak-lokasi .loc-dot {
+        display: inline-block;
+        width: 9px; height: 9px;
+        border-radius: 50%;
+        background: var(--green);
+        box-shadow: 0 0 5px rgba(46,158,99,0.7), inset 0 0 2px rgba(255,255,255,0.5);
+      }
+      table.semak-lokasi tbody td.jumlah-cell {
+        color: var(--amber);
+        font-weight: 700;
+        font-size: 0.72rem;
+        background: var(--col-amber-bg-2);
+        border-left: 1px solid var(--col-amber-row-bd);
+      }
+      table.semak-lokasi tbody tr.total-row td {
+        background: var(--col-amber-bg) !important;
+        color: var(--amber);
+        font-weight: 700;
+        font-family: 'Oswald', sans-serif;
+        letter-spacing: 0.05em;
+        border-top: 2px solid var(--amber);
+        font-size: 0.72rem;
+      }
+      table.semak-lokasi tbody tr.total-row td.jumlah-cell {
+        background: var(--amber) !important;
+        color: #1a1206;
+        font-size: 0.82rem;
+      }
+      [data-theme='light'] table.semak-lokasi tbody tr.total-row td.jumlah-cell {
+        color: #fff;
+      }
+      table.semak-lokasi tbody tr.total-row td.total-label {
+        text-align: right;
+        padding-right: 0.7rem;
+        font-size: 0.72rem;
+      }
+
+      /* ===== Semak Lokasi: Toolbar & Search ===== */
+      .semak-toolbar {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.55rem;
+        align-items: center;
+        padding: 0.6rem 0.75rem;
+        background: var(--panel-2);
+        border: 1px solid var(--line);
+        border-radius: var(--radius-sm);
+        margin-bottom: 0.75rem;
+      }
+      .semak-search {
+        position: relative;
+        flex: 1 1 260px;
+        min-width: 200px;
+        max-width: 480px;
+      }
+      .semak-search .ico {
+        position: absolute;
+        left: 0.55rem;
+        top: 50%;
+        transform: translateY(-50%);
+        color: var(--text-faint);
+        font-size: 0.95rem;
+        pointer-events: none;
+      }
+      .semak-search input {
+        width: 100%;
+        background: var(--bg-2);
+        border: 1px solid var(--line);
+        color: var(--text);
+        font-family: 'IBM Plex Mono', monospace;
+        font-size: 0.78rem;
+        padding: 0.45rem 2rem 0.45rem 2rem;
+        border-radius: var(--radius-sm);
+      }
+      .semak-search input:focus {
+        outline: none;
+        border-color: var(--amber);
+        box-shadow: 0 0 0 3px rgba(217, 154, 43, 0.16);
+      }
+      .semak-search input::placeholder { color: var(--text-faint); font-style: italic; }
+      .semak-search .semak-clear {
+        position: absolute;
+        right: 0.35rem;
+        top: 50%;
+        transform: translateY(-50%);
+        background: transparent;
+        border: none;
+        color: var(--text-faint);
+        cursor: pointer;
+        padding: 0.15rem 0.4rem;
+        border-radius: 3px;
+        font-size: 0.9rem;
+        line-height: 1;
+        display: none;
+      }
+      .semak-search.has-value .semak-clear { display: inline-block; }
+      .semak-search .semak-clear:hover { color: var(--rosak); background: rgba(214,69,69,0.14); }
+
+      .semak-info {
+        font-family: 'IBM Plex Mono', monospace;
+        font-size: 0.68rem;
+        color: var(--text-dim);
+        padding: 0.32rem 0.6rem;
+        background: var(--bg-2);
+        border: 1px solid var(--line);
+        border-radius: var(--radius-sm);
+        white-space: nowrap;
+      }
+      .semak-info b { color: var(--amber); }
+
+      .semak-scroll-btns {
+        display: inline-flex;
+        gap: 0.3rem;
+        margin-left: auto;
+      }
+      .semak-scroll-btn {
+        background: var(--panel-3);
+        border: 1px solid var(--line);
+        color: var(--text);
+        width: 34px;
+        height: 34px;
+        border-radius: var(--radius-sm);
+        cursor: pointer;
+        font-size: 0.85rem;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        transition: background 0.14s, border-color 0.14s, color 0.14s, transform 0.1s;
+        font-family: inherit;
+      }
+      .semak-scroll-btn:hover {
+        background: var(--amber);
+        color: #1a1206;
+        border-color: var(--amber);
+        transform: translateY(-1px);
+      }
+      .semak-scroll-btn:active { transform: translateY(0); }
+
+      /* ===== Semak Lokasi: Filter Row ===== */
+      table.semak-lokasi thead tr.filter-row th {
+        background: var(--bg-2);
+        padding: 0.22rem 0.15rem;
+        border-bottom: 2px solid var(--line);
+        border-top: 1px solid var(--line);
+      }
+      table.semak-lokasi thead tr.filter-row th.filter-kat,
+      table.semak-lokasi thead tr.filter-row th.filter-mak {
+        background: var(--panel-3);
+        padding: 0.24rem 0.3rem;
+      }
+      table.semak-lokasi thead tr.filter-row input[type="text"] {
+        width: 100%;
+        background: var(--panel-3);
+        border: 1px solid var(--line);
+        color: var(--text);
+        font-family: 'IBM Plex Mono', monospace;
+        font-size: 0.65rem;
+        padding: 0.25rem 0.35rem;
+        border-radius: 3px;
+      }
+      table.semak-lokasi thead tr.filter-row input[type="text"]:focus {
+        outline: none;
+        border-color: var(--amber);
+        box-shadow: 0 0 0 2px rgba(217, 154, 43, 0.18);
+      }
+      table.semak-lokasi thead tr.filter-row input[type="text"]::placeholder {
+        color: var(--text-faint);
+        font-style: italic;
+        font-size: 0.6rem;
+      }
+      table.semak-lokasi thead tr.filter-row th.filter-check {
+        width: 84px;
+        min-width: 84px;
+        max-width: 84px;
+        text-align: center;
+        padding: 0.3rem 0.15rem;
+      }
+      table.semak-lokasi thead tr.filter-row input[type="checkbox"] {
+        width: 15px;
+        height: 15px;
+        cursor: pointer;
+        accent-color: var(--amber);
+        margin: 0;
+      }
+
+      /* Sembunyikan baris yang difilter */
+      table.semak-lokasi tbody tr.row-hidden { display: none !important; }
+      table.semak-lokasi tbody tr.section-row.section-hidden { display: none !important; }
+
+      /* ===== Semak Lokasi: Toggle Butang (2 Kategori) ===== */
+      .semak-toggle-bar {
+        display: flex;
+        gap: 0.5rem;
+        margin-bottom: 0.85rem;
+        padding: 0.5rem;
+        background: var(--panel-2);
+        border: 1px solid var(--line);
+        border-radius: var(--radius-sm);
+        flex-wrap: wrap;
+      }
+      .semak-toggle {
+        flex: 1 1 220px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.55rem;
+        padding: 0.75rem 1rem;
+        background: var(--panel);
+        border: 1.5px solid var(--line);
+        border-radius: var(--radius-sm);
+        color: var(--text-dim);
+        font-family: 'Oswald', sans-serif;
+        font-size: 0.72rem;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.18s ease;
+      }
+      .semak-toggle:hover {
+        background: var(--panel-3);
+        color: var(--text);
+        border-color: var(--btn-hover-border);
+        transform: translateY(-1px);
+      }
+      .semak-toggle.active {
+        background: linear-gradient(180deg, var(--teal), #15847c);
+        color: #fff;
+        border-color: transparent;
+        box-shadow: 0 3px 12px rgba(31, 168, 160, 0.35);
+      }
+      .semak-toggle.active:hover { transform: translateY(-1px); }
+      .semak-toggle .st-count {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        min-width: 30px;
+        height: 24px;
+        padding: 0 0.55rem;
+        border-radius: 999px;
+        background: rgba(255, 255, 255, 0.08);
+        border: 1px solid var(--line);
+        font-family: 'IBM Plex Mono', monospace;
+        font-size: 0.75rem;
+        font-weight: 700;
+        color: var(--amber);
+        letter-spacing: 0;
+      }
+      .semak-toggle.active .st-count {
+        background: rgba(255, 255, 255, 0.22);
+        border-color: transparent;
+        color: #fff;
+      }
+      .semak-toggle[data-mode="unassigned"] .st-count {
+        color: var(--rosak);
+      }
+      .semak-toggle[data-mode="unassigned"].active {
+        background: linear-gradient(180deg, #c73838, #a02a2a);
+        box-shadow: 0 3px 12px rgba(199, 56, 56, 0.35);
+      }
+      .semak-toggle[data-mode="unassigned"].active .st-count {
+        color: #fff;
+      }
+
+      /* Baris kosong */
+      table.semak-lokasi tbody tr.empty-row td {
+        text-align: center;
+        padding: 2rem 1rem;
+        font-style: italic;
+        color: var(--text-faint);
+        background: var(--panel-2);
+      }
+
+      /* ===== Baris DUPLIKAT (dipilih > 1 balai) ===== */
+      table.semak-lokasi tbody tr.row-duplicate > td {
+        background: rgba(199, 56, 56, 0.12) !important;
+        border-bottom-color: rgba(199, 56, 56, 0.35) !important;
+      }
+      table.semak-lokasi tbody tr.row-duplicate > td.col-sticky-1,
+      table.semak-lokasi tbody tr.row-duplicate > td.col-sticky-2,
+      table.semak-lokasi tbody tr.row-duplicate > td.col-sticky-3 {
+        background: rgba(199, 56, 56, 0.12) !important;
+      }
+      table.semak-lokasi tbody tr.row-duplicate > td.col-sticky-2.kat-cell {
+        color: var(--rosak) !important;
+        font-weight: 700 !important;
+      }
+      table.semak-lokasi tbody tr.row-duplicate > td.maklumat-cell {
+        color: var(--rosak) !important;
+        font-weight: 600 !important;
+      }
+      table.semak-lokasi tbody tr.row-duplicate > td.jumlah-cell {
+        background: var(--rosak) !important;
+        color: #fff !important;
+        font-weight: 800 !important;
+      }
+      table.semak-lokasi tbody tr.row-duplicate .loc-dot {
+        background: var(--rosak) !important;
+        box-shadow: 0 0 6px rgba(199, 56, 56, 0.85), inset 0 0 2px rgba(255,255,255,0.6) !important;
+      }
+      table.semak-lokasi tbody tr.row-duplicate:hover > td {
+        background: rgba(199, 56, 56, 0.2) !important;
+      }
+      [data-theme='light'] table.semak-lokasi tbody tr.row-duplicate > td {
+        background: rgba(199, 56, 56, 0.1) !important;
+      }
+      [data-theme='light'] table.semak-lokasi tbody tr.row-duplicate > td.jumlah-cell {
+        background: var(--rosak) !important;
+        color: #fff !important;
+      }
+
+      /* Legend baris duplikat */
+      .semak-legend {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.85rem 1.25rem;
+        margin-top: 0.65rem;
+        padding: 0.55rem 0.85rem;
+        background: var(--panel-2);
+        border: 1px solid var(--line);
+        border-radius: var(--radius-sm);
+        font-size: 0.68rem;
+        color: var(--text-dim);
+        align-items: center;
+      }
+      .semak-legend .lg-item {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.45rem;
+        font-family: 'IBM Plex Mono', monospace;
+      }
+      .semak-legend .lg-swatch {
+        display: inline-block;
+        width: 14px;
+        height: 14px;
+        border-radius: 3px;
+        border: 1px solid var(--line);
+      }
+      .semak-legend .lg-swatch.sw-normal { background: rgba(46, 158, 99, 0.35); border-color: rgba(46, 158, 99, 0.6); }
+      .semak-legend .lg-swatch.sw-duplicate { background: rgba(199, 56, 56, 0.35); border-color: rgba(199, 56, 56, 0.7); }
+      .semak-legend b { color: var(--text); font-weight: 600; }
+
+      /* Cell "TIDAK DIPILIH" */
+      table.semak-lokasi tbody td.status-none-cell {
+        font-style: italic;
+        color: var(--text-faint);
+        font-size: 0.66rem;
+        letter-spacing: 0.02em;
+        background: var(--panel-2);
+      }
+
+      /* ===== Drag-to-scroll + Scrollbar ===== */
+      #sec-semak_lokasi .section-body {
+        cursor: grab;
+        scrollbar-width: thin;
+        scrollbar-color: var(--amber) var(--panel-2);
+        scroll-behavior: auto;
+        overflow-x: auto !important;
+        overflow-y: visible;
+        -webkit-overflow-scrolling: touch;
+      }
+      #sec-semak_lokasi .section-body.dragging {
+        cursor: grabbing;
+        user-select: none;
+        -webkit-user-select: none;
+      }
+      #sec-semak_lokasi .section-body.dragging * {
+        user-select: none !important;
+        -webkit-user-select: none !important;
+      }
+      #sec-semak_lokasi .section-body::-webkit-scrollbar {
+        height: 12px;
+        width: 12px;
+      }
+      #sec-semak_lokasi .section-body::-webkit-scrollbar-track {
+        background: var(--panel-2);
+        border-radius: 6px;
+      }
+      #sec-semak_lokasi .section-body::-webkit-scrollbar-thumb {
+        background: var(--line);
+        border-radius: 6px;
+        border: 2px solid var(--panel-2);
+      }
+      #sec-semak_lokasi .section-body::-webkit-scrollbar-thumb:hover {
+        background: var(--amber);
+      }
+
+      /* Hint scroll */
+      .semak-scroll-hint {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.45rem;
+        margin-top: 0.55rem;
+        font-size: 0.66rem;
+        color: var(--text-faint);
+        font-style: italic;
+        font-family: 'IBM Plex Mono', monospace;
+      }
+      .semak-scroll-hint .ico { font-size: 0.9rem; color: var(--amber); }
+
+      /* ===== FREEZE KOLUM KIRI (BIL, KATEGORI, MAKLUMAT) ===== */
+      table.semak-lokasi {
+        border-collapse: separate;
+        border-spacing: 0;
+      }
+
+      table.semak-lokasi tbody .col-sticky-1,
+      table.semak-lokasi tbody .col-sticky-2,
+      table.semak-lokasi tbody .col-sticky-3 {
+        position: sticky;
+        background: var(--panel) !important;
+        background-clip: padding-box;
+        z-index: 5;
+      }
+
+      table.semak-lokasi thead .col-sticky-1,
+      table.semak-lokasi thead .col-sticky-2,
+      table.semak-lokasi thead .col-sticky-3 {
+        position: sticky;
+        background: var(--panel-3) !important;
+        background-clip: padding-box;
+        z-index: 8;
+      }
+
+      table.semak-lokasi thead tr.filter-row .col-sticky-2,
+      table.semak-lokasi thead tr.filter-row .col-sticky-3 {
+        background: var(--bg-2) !important;
+      }
+
+      table.semak-lokasi .col-sticky-1 {
+        left: 0;
+        width: 42px;
+        min-width: 42px;
+        max-width: 42px;
+        z-index: 6;
+      }
+      table.semak-lokasi .col-sticky-2 {
+        left: 42px;
+        width: 110px;
+        min-width: 110px;
+        max-width: 110px;
+        z-index: 6;
+      }
+      table.semak-lokasi .col-sticky-3 {
+        left: 152px;
+        width: 280px;
+        min-width: 280px;
+        max-width: 280px;
+        z-index: 6;
+        box-shadow: 8px 0 12px -8px rgba(0, 0, 0, 0.45);
+      }
+
+      table.semak-lokasi thead .col-sticky-1,
+      table.semak-lokasi thead .col-sticky-2,
+      table.semak-lokasi thead .col-sticky-3 {
+        z-index: 8;
+      }
+
+      table.semak-lokasi tbody .col-sticky-2.kat-cell {
+        background: var(--panel) !important;
+        color: var(--amber);
+      }
+      table.semak-lokasi tbody .col-sticky-3.maklumat-cell {
+        background: var(--panel) !important;
+      }
+
+      table.semak-lokasi thead .col-sticky-3 { text-align: left; }
+
+      @media print {
+        table.semak-lokasi .col-sticky-1,
+        table.semak-lokasi .col-sticky-2,
+        table.semak-lokasi .col-sticky-3 {
+          position: static !important;
+          box-shadow: none !important;
+        }
+      }
+
+      @media (max-width: 768px) {
+        table.semak-lokasi .col-sticky-2 {
+          width: 90px; min-width: 90px; max-width: 90px;
+          left: 42px;
+        }
+        table.semak-lokasi .col-sticky-3 {
+          width: 200px; min-width: 200px; max-width: 200px;
+          left: 132px;
+        }
+      }
 
       .btn-contact { display: inline-flex; align-items: center; justify-content: center; width: 32px; height: 32px; border-radius: 6px; border: 1px solid; cursor: pointer; text-decoration: none; transition: all 0.15s ease; margin: 0 0.15rem; flex-shrink: 0; }
       .btn-contact svg { width: 15px; height: 15px; }
@@ -1745,7 +2322,8 @@
         .section-head .chev, .theme-toggle, .btn-save-sheet,
         .manage-bar, .autosave-indicator, .btn-back-dashboard,
         .tabbar, .loading-overlay, .toast-container, .site-footer,
-        .print-modal-overlay, .btn-print-po3a, .auto-reload-widget { display: none !important; }
+        .print-modal-overlay, .btn-print-po3a, .auto-reload-widget,
+        .semak-toggle-bar { display: none !important; }
         .section, .stat, .topbar, .main-title { box-shadow: none !important; page-break-inside: avoid; }
         .main-title { border-top: 3px solid #16223a !important; border-bottom: 3px solid #16223a !important; }
         body.printing-single #sections > .section.print-target .section-head {
@@ -1774,6 +2352,11 @@
         .mers-check.tak:not(.active) { color: #c73838 !important; }
         .mers-footer { background: #f5f5f5 !important; border-color: #999 !important; }
         .mers-footer .mf-value { color: #8a5810 !important; }
+        table.semak-lokasi { border-color: #999 !important; }
+        table.semak-lokasi th, table.semak-lokasi td { border-color: #999 !important; color: #16223a !important; }
+        table.semak-lokasi thead th { background: #e5e5e5 !important; }
+        table.semak-lokasi tbody tr.section-row td { background: #d9f5f3 !important; color: #0d635c !important; }
+        table.semak-lokasi .loc-dot { background: #1f8a52 !important; box-shadow: none !important; }
         .print-footer {
           display: block !important; margin-top: 30px; padding-top: 14px;
           page-break-inside: avoid; break-inside: avoid;
@@ -2130,6 +2713,7 @@
         pause: '<rect x="6" y="4" width="4" height="16" rx="1"/><rect x="14" y="4" width="4" height="16" rx="1"/>',
         play: '<polygon points="6 3 20 12 6 21 6 3"/>',
         refreshCw: '<polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/>',
+        search: '<circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>',
       };
       function svgIcon(name) {
         return ('<svg class="ico" viewBox="0 0 24 24" aria-hidden="true">' + (ICONS[name] || '') + '</svg>');
@@ -2222,7 +2806,6 @@
         updateBodyFullscreenClass();
       }
 
-      /* ===== LocalStorage ident (dibuang - data dari Supabase) ===== */
       const IDENT_LS_KEY = 'bomba-ident-per-balai';
       function loadIdentLS() { return {}; }
       function saveIdentLS() { return; }
@@ -2691,10 +3274,8 @@
         '11. PBB': 'PBB (PBBK II + PBB)',
       };
 
-      // ⬇️ Peranan yang TIDAK dikira dalam jumlah anggota
       const EXCLUDED_ROLES_FROM_COUNT = ['KETUA BALAI', 'PEGAWAI OPERASI'];
 
-      // ⬇️ Default STATUS ikut PERANAN (boleh diubah oleh user)
       const DEFAULT_STATUS_FOR_ROLES = {
         'BILIK KAWALAN (BKB)': 'BERTUGAS',
       };
@@ -3295,7 +3876,6 @@
         return btn;
       }
 
-      /* ⬇️ AUTO-POPULATE HEADER MERS999 (Masa & Pusatan) */
       function computeMersHeaderDefaults() {
         const shifCount = {};
         BALAI_LIST.forEach(function (b) {
@@ -3716,6 +4296,13 @@
         tBkb.addEventListener('click', () => switchView('bkb'));
         desktop.appendChild(tBkb);
 
+        const tSemak = document.createElement('button');
+        tSemak.className = 'tab special semak' + (store.view === 'semak_lokasi' ? ' active' : '');
+        tSemak.innerHTML = svgIcon('clipboard') + '<span>SENARAI SEMAK LOKASI JENTERA</span>';
+        tSemak.title = 'Senarai Semak Lokasi Jentera / Kenderaan';
+        tSemak.addEventListener('click', () => switchView('semak_lokasi'));
+        desktop.appendChild(tSemak);
+
         const sep0 = document.createElement('div');
         sep0.className = 'tab-zone-sep';
         sep0.textContent = 'BALAI';
@@ -3790,6 +4377,12 @@
         if (store.view === 'bkb') oBkb.selected = true;
         ogS.appendChild(oBkb);
 
+        const oSemak = document.createElement('option');
+        oSemak.value = '__semak_lokasi__';
+        oSemak.textContent = 'SENARAI SEMAK LOKASI JENTERA';
+        if (store.view === 'semak_lokasi') oSemak.selected = true;
+        ogS.appendChild(oSemak);
+
         sel.appendChild(ogS);
 
         let curZon = null, og = null;
@@ -3814,6 +4407,7 @@
           else if (v === '__balai_sum__') switchView('balai_sum');
           else if (v === '__mers__') switchView('mers');
           else if (v === '__bkb__') switchView('bkb');
+          else if (v === '__semak_lokasi__') switchView('semak_lokasi');
           else switchBalai(v);
         });
 
@@ -4021,6 +4615,14 @@
           if (saveBtn) saveBtn.style.display = 'none';
           if (autosave) autosave.style.display = 'none';
           if (printPo3aBtn) printPo3aBtn.style.display = 'none';
+        } else if (store.view === 'semak_lokasi') {
+          prefix.style.display = 'none';
+          dp.textContent = 'SENARAI SEMAK LOKASI JENTERA';
+          zb.style.display = 'none';
+          idFields.style.display = 'none';
+          if (saveBtn) saveBtn.style.display = 'none';
+          if (autosave) autosave.style.display = 'none';
+          if (printPo3aBtn) printPo3aBtn.style.display = '';
         } else {
           prefix.style.display = '';
           dp.textContent = store.activeBalai;
@@ -4113,7 +4715,6 @@
         });
       }
 
-      /* ====== MANDATORI & PERANAN LOCKS ====== */
       const MANDATORY_PERSONEL_KEYS = ['nama', 'pangkat', 'noBadan', 'noTelefon', 'peranan', 'pasukan', 'status', 'unit1'];
       const MANDATORY_EQUIP_KEYS = ['kategori', 'maklumat', 'status'];
       const MANDATORY_KOM_KEYS = ['kategori', 'jumlah', 'status'];
@@ -4124,7 +4725,6 @@
         kategori: 'KATEGORI', maklumat: 'MAKLUMAT', jumlah: 'JUMLAH',
       };
       const LOCKED_PASUKAN_ROLES = ['KETUA BALAI', 'PEGAWAI OPERASI'];
-      // ⬇️ BKB tidak dikunci — status jadi OPTIONAL dropdown
       const LOCKED_STATUS_ROLES = [];
 
       function applyPerananLocks(person, pasukanSelect, statusSelect) {
@@ -4148,8 +4748,6 @@
           } else {
             statusSelect.disabled = false;
             statusSelect.title = '';
-            // ⬇️ Auto-default STATUS untuk peranan tertentu (BKB → BERTUGAS)
-            // Hanya set jika status masih kosong — user boleh ubah selepas ini
             const defStatus = DEFAULT_STATUS_FOR_ROLES[person.peranan];
             if (defStatus && !person.status) {
               person.status = defStatus;
@@ -4256,7 +4854,6 @@
         inp.value = currentMaklumat || '';
         inp.dataset.mf = 'maklumat';
         inp.setAttribute('list', listId);
-        /* ===== INPUT LEBAR PENUH — POPUP DATALIST IKUT LEBAR KOLUM ===== */
         inp.style.width = '100%';
         inp.style.minWidth = '100%';
         inp.style.boxSizing = 'border-box';
@@ -4313,10 +4910,10 @@
           UNITS.forEach((u) => { m[r][u] = { A: 0, C: 0, CS: 0, TK: 0 }; });
         });
         (s.personel || []).forEach((p) => {
-  if (!p.pangkat || !p.status) return;
-  if (!m[p.pangkat]) return;
-  const st = mapPersonelStatus(p.status);
-            if (!st) return;
+          if (!p.pangkat || !p.status) return;
+          if (!m[p.pangkat]) return;
+          const st = mapPersonelStatus(p.status);
+          if (!st) return;
           const u = p.unit1;
           if (!u) return;
           if (!m[p.pangkat][u]) return;
@@ -4374,9 +4971,9 @@
         });
         Object.values(store.balai).forEach((b) => {
           (b.personel || []).forEach((p) => {
-  if (!p || !p.pangkat || !p.status) return;
-  const effKat = mapping[p.pangkat];
-              if (!effKat) return;
+            if (!p || !p.pangkat || !p.status) return;
+            const effKat = mapping[p.pangkat];
+            if (!effKat) return;
             if (!m[effKat]) {
               m[effKat] = {};
               UNITS.forEach((u) => { m[effKat][u] = { A: 0, C: 0, CS: 0, TK: 0 }; });
@@ -4434,7 +5031,6 @@
         let count = 0;
         s.personel.forEach(function (p) {
           if (!p) return;
-          // ⬇️ KETUA BALAI & PEGAWAI OPERASI TIDAK DIKIRA
           if (EXCLUDED_ROLES_FROM_COUNT.includes(p.peranan)) return;
           if (targets.includes(p.pangkat)) count++;
         });
@@ -4798,7 +5394,6 @@
 
           if (!isKom) {
             const tdM = document.createElement('td');
-            /* ===== LEBARKAN KOLUM MAKLUMAT — POPUP DROPDOWN IKUT SAIZ ===== */
             tdM.className = 'td-maklumat';
             if (isKategoriDriven) {
               vehCtrl = makeKategoriDrivenInput(key, r.kategori, r.maklumat, (v) => { r.maklumat = v; saveState(); markRow(); });
@@ -5335,17 +5930,16 @@
         });
         result.statusKetua = result.ketua && result.ketua.status === 'BERTUGAS' ? 1 : 0;
         result.statusPO = result.po && result.po.status === 'BERTUGAS' ? 1 : 0;
-// ⬇️ KETUA BALAI & PEGAWAI OPERASI TIDAK DIKIRA (khas untuk view ini)
-(s.personel || []).forEach(function (p) {
-  if (!p || !p.pangkat || !p.status) return;
-  if (!RANKS.includes(p.pangkat)) return;
-  if (EXCLUDED_ROLES_FROM_COUNT.includes(p.peranan)) return;
-  const st = mapPersonelStatus(p.status);
-  if (!st) return;
-  if (!UNITS.includes(p.unit1)) return;
-  result[st]++;
-});
-result.jumlah = result.A + result.C + result.CS + result.TK;
+        (s.personel || []).forEach(function (p) {
+          if (!p || !p.pangkat || !p.status) return;
+          if (!RANKS.includes(p.pangkat)) return;
+          if (EXCLUDED_ROLES_FROM_COUNT.includes(p.peranan)) return;
+          const st = mapPersonelStatus(p.status);
+          if (!st) return;
+          if (!UNITS.includes(p.unit1)) return;
+          result[st]++;
+        });
+        result.jumlah = result.A + result.C + result.CS + result.TK;
         return result;
       }
       function formatNamaGred(person) {
@@ -5475,7 +6069,6 @@ result.jumlah = result.A + result.C + result.CS + result.TK;
           tdSP.textContent = d.statusPO;
           tr.appendChild(tdSP);
 
-          // ⬇️ Kolum A (BERTUGAS): MERAH jika ≤ 5, normal jika ≥ 6
           ['A', 'C', 'CS', 'TK'].forEach((k) => {
             const td = document.createElement('td');
             const val = d[k] || 0;
@@ -5673,9 +6266,9 @@ result.jumlah = result.A + result.C + result.CS + result.TK;
               const cnt = { A: 0, C: 0, CS: 0, TK: 0 };
               if (balaiState) {
                 (balaiState.personel || []).forEach((p) => {
-  if (!p || !p.pangkat) return;
-  const effKat = katMapPersonel ? katMapPersonel[p.pangkat] : p.pangkat;
-                    if (effKat && effKat === cat) {
+                  if (!p || !p.pangkat) return;
+                  const effKat = katMapPersonel ? katMapPersonel[p.pangkat] : p.pangkat;
+                  if (effKat && effKat === cat) {
                     const st = mapPersonelStatus(p.status);
                     if (st) cnt[st]++;
                   }
@@ -5926,6 +6519,499 @@ result.jumlah = result.A + result.C + result.CS + result.TK;
         body.appendChild(tbl);
       }
 
+      /* ============================================================
+         SENARAI SEMAK LOKASI JENTERA
+         — 2 kategori (toggle): DIPILIH (≥1 balai) / TIDAK DIPILIH
+         ============================================================ */
+      let semakViewMode = 'assigned'; // 'assigned' | 'unassigned'
+      let semakFilterState = { search: '' };
+
+      /* ===== Drag-to-scroll global state ===== */
+      let semakDragState = null;
+
+      function setupSemakDragScroll(el) {
+        if (!el || el.dataset.dragBound === '1') return;
+        el.dataset.dragBound = '1';
+        el.addEventListener('mousedown', function (e) {
+          if (e.button !== 0) return;
+          if (e.target.closest('input, textarea, select, button, a, label, .semak-clear')) return;
+          if (el.scrollWidth <= el.clientWidth + 2) return;
+          semakDragState = {
+            el: el,
+            startX: e.pageX,
+            startY: e.pageY,
+            startScrollLeft: el.scrollLeft,
+          };
+          el.classList.add('dragging');
+          e.preventDefault();
+        });
+      }
+
+      document.addEventListener('mousemove', function (e) {
+        if (!semakDragState) return;
+        const walkX = e.pageX - semakDragState.startX;
+        semakDragState.el.scrollLeft = semakDragState.startScrollLeft - walkX;
+      });
+      document.addEventListener('mouseup', function () {
+        if (!semakDragState) return;
+        semakDragState.el.classList.remove('dragging');
+        semakDragState = null;
+      });
+      window.addEventListener('blur', function () {
+        if (semakDragState) {
+          semakDragState.el.classList.remove('dragging');
+          semakDragState = null;
+        }
+      });
+
+      function renderSemakLokasiView() {
+        document.getElementById('sec-semak_lokasi')?.remove();
+
+        const balaiNames = BALAI_LIST.map(function (b) { return b.name; });
+        const balaiZon   = BALAI_LIST.map(function (b) { return b.zon; });
+        const nBalai     = balaiNames.length;
+
+        const balaiItems = {};
+        balaiNames.forEach(function (bn) {
+          const set = new Set();
+          const s = store.balai[bn];
+          if (s && s.equip) {
+            ['jentera', 'marin', 'utiliti'].forEach(function (key) {
+              (s.equip[key] || []).forEach(function (r) {
+                if (r && r.maklumat && String(r.maklumat).trim()) {
+                  set.add(String(r.maklumat).trim());
+                }
+              });
+            });
+          }
+          balaiItems[bn] = set;
+        });
+
+        const SECTIONS = [
+          { label: 'JENTERA UTAMA',     catalog: CATALOG_JENTERA, kats: JENTERA_KAT },
+          { label: 'JENTERA MARIN',     catalog: CATALOG_MARIN,   kats: MARIN_KAT },
+          { label: 'KENDERAAN UTILITI', catalog: CATALOG_UTILITI, kats: UTILITI_KAT },
+        ];
+
+        const allItems = [];
+        let bil = 0;
+        SECTIONS.forEach(function (sec) {
+          sec.kats.forEach(function (kat) {
+            (sec.catalog[kat] || []).forEach(function (item) {
+              bil++;
+              const key = String(item).trim();
+              const flags = balaiNames.map(function (bn) {
+                return balaiItems[bn].has(key);
+              });
+              const count = flags.filter(Boolean).length;
+              allItems.push({
+                bil: bil, section: sec.label, kategori: kat,
+                maklumat: item, flags: flags, count: count,
+              });
+            });
+          });
+        });
+
+        const assignedItems   = allItems.filter(function (it) { return it.count > 0; });
+        const unassignedItems = allItems.filter(function (it) { return it.count === 0; });
+
+        const wrap = document.createElement('div');
+        wrap.className = 'section';
+        wrap.id = 'sec-semak_lokasi';
+        wrap.style.setProperty('--sec-color', 'var(--teal)');
+        wrap.innerHTML = `
+    <div class="section-head">
+      <h2>SENARAI SEMAK LOKASI JENTERA / KENDERAAN</h2>
+      <div style="display:flex;align-items:center;gap:.6rem;">
+        <span class="hint">Titik (<span class="loc-dot" style="vertical-align:middle;display:inline-block;"></span>) = jentera berada di balai tersebut · auto dari data balai</span>
+        <button class="btn-fullscreen" type="button" title="Buka skrin penuh" aria-label="Buka skrin penuh">${svgIcon('maximize')}</button>
+        <button class="btn-fullscreen btn-print-panel" type="button" title="Cetak panel ini" aria-label="Cetak panel ini">${svgIcon('print')}</button>
+        <span class="chev">${svgIcon('chevronDown')}</span>
+      </div>
+    </div>
+    <div class="section-body"></div>`;
+
+        wrap.querySelector('.section-head').addEventListener('click', function () {
+          wrap.classList.toggle('collapsed');
+        });
+        const fsBtn = wrap.querySelector('.btn-fullscreen:not(.btn-print-panel)');
+        if (fsBtn) fsBtn.addEventListener('click', function (e) { e.stopPropagation(); togglePanelFullscreen(wrap, fsBtn); });
+        const printBtn = wrap.querySelector('.btn-print-panel');
+        if (printBtn) printBtn.addEventListener('click', function (e) { e.stopPropagation(); printSinglePanel(wrap); });
+
+        document.getElementById('sections').appendChild(wrap);
+        const body = wrap.querySelector('.section-body');
+
+        /* ---- Toggle butang 2 kategori ---- */
+        const toggleBar = document.createElement('div');
+        toggleBar.className = 'semak-toggle-bar';
+        toggleBar.innerHTML = `
+    <button type="button" class="semak-toggle ${semakViewMode === 'assigned' ? 'active' : ''}" data-mode="assigned">
+      <span class="st-count">${assignedItems.length}</span>
+      <span>DIPILIH (≥ 1 BALAI)</span>
+    </button>
+    <button type="button" class="semak-toggle ${semakViewMode === 'unassigned' ? 'active' : ''}" data-mode="unassigned">
+      <span class="st-count">${unassignedItems.length}</span>
+      <span>TIDAK DIPILIH</span>
+    </button>`;
+        body.appendChild(toggleBar);
+
+        toggleBar.querySelectorAll('.semak-toggle').forEach(function (btn) {
+          btn.addEventListener('click', function () {
+            if (semakViewMode === btn.dataset.mode) return;
+            semakViewMode = btn.dataset.mode;
+            renderSemakLokasiView();
+          });
+        });
+
+        /* ---- Toolbar carian ---- */
+        const toolbar = document.createElement('div');
+        toolbar.className = 'semak-toolbar';
+        toolbar.innerHTML = `
+    <div class="semak-search ${semakFilterState.search ? 'has-value' : ''}" id="semakSearchWrap">
+      ${svgIcon('search')}
+      <input type="text" id="semakSearchInput" placeholder="Cari jentera / kategori… (contoh: SCANIA, FRT, HILUX)" autocomplete="off" value="${semakFilterState.search.replace(/"/g, '&quot;')}" />
+      <button type="button" class="semak-clear" id="semakClearInput" title="Kosongkan carian">✕</button>
+    </div>
+    <button type="button" class="btn small" id="semakClearAllBtn">Kosongkan Carian</button>
+    <span class="semak-info" id="semakInfo">—</span>
+    <div class="semak-scroll-btns">
+      <button type="button" class="semak-scroll-btn" id="semakScrollLeft" title="Tatal ke kiri">◀</button>
+      <button type="button" class="semak-scroll-btn" id="semakScrollRight" title="Tatal ke kanan">▶</button>
+    </div>`;
+        body.appendChild(toolbar);
+
+        /* ---- Table ---- */
+        const tbl = document.createElement('table');
+        tbl.className = 'semak-lokasi';
+        tbl.id = 'semakTable';
+
+        const isAssigned = (semakViewMode === 'assigned');
+
+        const thead = document.createElement('thead');
+        const hRow = document.createElement('tr');
+        hRow.className = 'groups';
+
+        const thBil = document.createElement('th');
+        thBil.textContent = 'BIL';
+        thBil.rowSpan = isAssigned ? 3 : 2;
+        thBil.className = 'col-sticky-1';
+        hRow.appendChild(thBil);
+
+        const thKat = document.createElement('th');
+        thKat.textContent = 'KATEGORI';
+        thKat.rowSpan = isAssigned ? 3 : 2;
+        thKat.className = 'col-sticky-2';
+        hRow.appendChild(thKat);
+
+        const thMak = document.createElement('th');
+        thMak.textContent = 'MAKLUMAT JENTERA / KENDERAAN';
+        thMak.style.textAlign = 'left';
+        thMak.rowSpan = isAssigned ? 3 : 2;
+        thMak.className = 'col-sticky-3';
+        hRow.appendChild(thMak);
+
+        if (isAssigned) {
+          let zStart = 0;
+          for (let i = 0; i < balaiZon.length; i++) {
+            if (i === balaiZon.length - 1 || balaiZon[i + 1] !== balaiZon[i]) {
+              const span = i - zStart + 1;
+              const th = document.createElement('th');
+              th.colSpan = span;
+              th.className = 'zon-header zon-' + balaiZon[i];
+              th.textContent = 'ZON ' + balaiZon[i];
+              th.style.color = 'var(--zon' + balaiZon[i] + ')';
+              hRow.appendChild(th);
+              zStart = i + 1;
+            }
+          }
+        } else {
+          const thInfo = document.createElement('th');
+          thInfo.colSpan = 2;
+          thInfo.textContent = 'STATUS';
+          hRow.appendChild(thInfo);
+        }
+
+        const thJumTop = document.createElement('th');
+        thJumTop.textContent = 'JUMLAH';
+        thJumTop.rowSpan = isAssigned ? 3 : 2;
+        thJumTop.className = 'jumlah-col';
+        hRow.appendChild(thJumTop);
+        thead.appendChild(hRow);
+
+        if (isAssigned) {
+          const hRow2 = document.createElement('tr');
+          hRow2.className = 'balai-header';
+          balaiNames.forEach(function (bn) {
+            const th = document.createElement('th');
+            th.className = 'balai-col';
+            th.textContent = bn;
+            th.title = bn;
+            hRow2.appendChild(th);
+          });
+          thead.appendChild(hRow2);
+
+          const hRowFilter = document.createElement('tr');
+          hRowFilter.className = 'filter-row';
+          const thEmptyBil = document.createElement('th');
+          thEmptyBil.className = 'col-sticky-1 filter-empty';
+          hRowFilter.appendChild(thEmptyBil);
+          const thEmptyKat = document.createElement('th');
+          thEmptyKat.className = 'col-sticky-2 filter-empty';
+          hRowFilter.appendChild(thEmptyKat);
+          const thEmptyMak = document.createElement('th');
+          thEmptyMak.className = 'col-sticky-3 filter-empty';
+          hRowFilter.appendChild(thEmptyMak);
+          balaiNames.forEach(function () {
+            const th = document.createElement('th');
+            th.className = 'filter-check';
+            th.innerHTML = '<span style="opacity:.35;font-size:.9rem;">•</span>';
+            hRowFilter.appendChild(th);
+          });
+          const thEmptyJum = document.createElement('th');
+          thEmptyJum.className = 'filter-empty';
+          hRowFilter.appendChild(thEmptyJum);
+          thead.appendChild(hRowFilter);
+        } else {
+          const hRow2 = document.createElement('tr');
+          hRow2.className = 'balai-header';
+          const thInfo = document.createElement('th');
+          thInfo.colSpan = 2;
+          thInfo.textContent = 'TIDAK DIPILIH DI MANA-MANA BALAI';
+          thInfo.style.fontStyle = 'italic';
+          thInfo.style.color = 'var(--text-dim)';
+          thInfo.style.letterSpacing = '0.05em';
+          hRow2.appendChild(thInfo);
+          thead.appendChild(hRow2);
+        }
+
+        tbl.appendChild(thead);
+
+        const tbody = document.createElement('tbody');
+        const itemsToShow = isAssigned ? assignedItems : unassignedItems;
+
+        const balaiTotals = new Array(nBalai).fill(0);
+        let grandTotal = 0;
+
+        const bySection = {};
+        SECTIONS.forEach(function (sec) { bySection[sec.label] = []; });
+        itemsToShow.forEach(function (it) {
+          if (!bySection[it.section]) bySection[it.section] = [];
+          bySection[it.section].push(it);
+        });
+
+        const totalColSpan = isAssigned ? (3 + nBalai + 1) : (3 + 2 + 1);
+
+        SECTIONS.forEach(function (sec) {
+          const itemsInSec = bySection[sec.label] || [];
+          if (itemsInSec.length === 0) return;
+
+          const secTr = document.createElement('tr');
+          secTr.className = 'section-row';
+          secTr.dataset.section = sec.label;
+          const secTd = document.createElement('td');
+          secTd.colSpan = totalColSpan;
+          secTd.textContent = sec.label + '  —  ' + itemsInSec.length + ' item';
+          secTr.appendChild(secTd);
+          tbody.appendChild(secTr);
+
+          itemsInSec.forEach(function (it) {
+            const tr = document.createElement('tr');
+            tr.dataset.kategori = it.kategori.toLowerCase();
+            tr.dataset.maklumat = it.maklumat.toLowerCase();
+            tr.dataset.section = sec.label;
+            /* Highlight MERAH jika dipilih lebih dari 1 balai (duplikat) */
+            if (isAssigned && it.count > 1) {
+              tr.classList.add('row-duplicate');
+              tr.title = '⚠ Jentera ini dipilih oleh ' + it.count + ' balai berlainan';
+            }
+
+            const td1 = document.createElement('td');
+            td1.className = 'bil-cell col-sticky-1';
+            td1.textContent = it.bil;
+            tr.appendChild(td1);
+
+            const td2 = document.createElement('td');
+            td2.className = 'kat-cell col-sticky-2';
+            td2.textContent = it.kategori;
+            tr.appendChild(td2);
+
+            const td3 = document.createElement('td');
+            td3.className = 'maklumat-cell col-sticky-3';
+            td3.textContent = it.maklumat;
+            tr.appendChild(td3);
+
+            if (isAssigned) {
+              it.flags.forEach(function (has, bi) {
+                const td = document.createElement('td');
+                td.className = 'check-cell';
+                if (has) {
+                  const dot = document.createElement('span');
+                  dot.className = 'loc-dot';
+                  dot.title = 'Ada di ' + balaiNames[bi];
+                  td.appendChild(dot);
+                  balaiTotals[bi]++;
+                  grandTotal++;
+                }
+                tr.appendChild(td);
+              });
+            } else {
+              const tdInfo = document.createElement('td');
+              tdInfo.className = 'status-none-cell';
+              tdInfo.colSpan = 2;
+              tdInfo.textContent = 'Tiada balai memilih';
+              tr.appendChild(tdInfo);
+            }
+
+            const tdJ = document.createElement('td');
+            tdJ.className = 'jumlah-cell';
+            tdJ.textContent = it.count || '0';
+            tr.appendChild(tdJ);
+
+            tbody.appendChild(tr);
+          });
+        });
+
+        if (itemsToShow.length === 0) {
+          const emptyTr = document.createElement('tr');
+          emptyTr.className = 'empty-row';
+          const emptyTd = document.createElement('td');
+          emptyTd.colSpan = totalColSpan;
+          emptyTd.textContent = isAssigned
+            ? 'Tiada jentera dipilih oleh mana-mana balai.'
+            : '✓ Semua jentera telah dipilih oleh sekurang-kurangnya 1 balai.';
+          emptyTr.appendChild(emptyTd);
+          tbody.appendChild(emptyTr);
+        }
+
+        if (isAssigned && itemsToShow.length > 0) {
+          const totalTr = document.createElement('tr');
+          totalTr.className = 'total-row';
+
+          const totalLbl = document.createElement('td');
+          totalLbl.colSpan = 3;
+          totalLbl.className = 'total-label';
+          totalLbl.textContent = 'JUMLAH KESELURUHAN';
+          totalTr.appendChild(totalLbl);
+
+          balaiTotals.forEach(function (t) {
+            const td = document.createElement('td');
+            td.className = 'jumlah-cell';
+            td.textContent = t || '';
+            totalTr.appendChild(td);
+          });
+
+          const grandTd = document.createElement('td');
+          grandTd.className = 'jumlah-cell';
+          grandTd.textContent = grandTotal;
+          totalTr.appendChild(grandTd);
+
+          tbody.appendChild(totalTr);
+        }
+
+        tbl.appendChild(tbody);
+        body.appendChild(tbl);
+
+        /* Aktifkan drag-to-scroll pada section-body */
+        setupSemakDragScroll(body);
+
+        if (isAssigned) {
+          const hint = document.createElement('div');
+          hint.className = 'semak-scroll-hint';
+          hint.innerHTML = svgIcon('arrowLeft') + '<span>Kolum <b style="color:var(--amber)">BIL, KATEGORI &amp; MAKLUMAT</b> kekal beku — hanya kolum balai bergerak. <b style="color:var(--amber)">Klik + Tahan + Gerak mouse</b> untuk skrol, atau guna butang ◀ ▶.</span>';
+          body.appendChild(hint);
+        }
+
+        /* Legend warna (hanya untuk mode assigned) */
+        if (isAssigned && assignedItems.length > 0) {
+          const legend = document.createElement('div');
+          legend.className = 'semak-legend';
+          const nDup = assignedItems.filter(function (it) { return it.count > 1; }).length;
+          legend.innerHTML = `
+    <span class="lg-item"><span class="lg-swatch sw-normal"></span> <b>Unik</b> — dipilih oleh 1 balai sahaja</span>
+    <span class="lg-item"><span class="lg-swatch sw-duplicate"></span> <b style="color:var(--rosak);">Duplikat</b> — dipilih oleh &gt; 1 balai (${nDup} item)</span>`;
+          body.appendChild(legend);
+        }
+
+        const info = document.createElement('div');
+        info.style.cssText = 'margin-top:0.75rem; font-size:0.7rem; color:var(--text-dim); line-height:1.6;';
+        info.innerHTML = isAssigned
+          ? '<b>Nota:</b> Senarai ini memaparkan jentera / kenderaan yang <b>telah dipilih</b> oleh sekurang-kurangnya <b>1 balai</b>. ' +
+            'Baris berwarna <b style="color:var(--rosak)">MERAH</b> bermaksud jentera tersebut dipilih oleh <b>lebih dari 1 balai</b> (duplikat — perlu disemak). ' +
+            'Titik <span class="loc-dot" style="vertical-align:middle;display:inline-block;"></span> hijau = unik 1 balai, titik <span class="loc-dot" style="background:var(--rosak);vertical-align:middle;display:inline-block;"></span> merah = ada di beberapa balai. ' +
+            'Data diambil dari <b>KEKUATAN JENTERA UTAMA</b>, <b>JENTERA MARIN</b> & <b>KENDERAAN UTILITI</b>.'
+          : '<b>Nota:</b> Senarai ini memaparkan jentera / kenderaan yang <b>langsung tidak dipilih</b> oleh mana-mana balai dalam sistem. Jika ada item yang tersenarai di sini, ia bermakna item tersebut masih belum diisi dalam <b>KEKUATAN JENTERA UTAMA</b> / <b>JENTERA MARIN</b> / <b>KENDERAAN UTILITI</b> mana-mana balai.';
+        body.appendChild(info);
+
+        const searchInput = document.getElementById('semakSearchInput');
+        const searchWrap  = document.getElementById('semakSearchWrap');
+        const clearInputBtn = document.getElementById('semakClearInput');
+
+        searchInput.addEventListener('input', function () {
+          semakFilterState.search = searchInput.value;
+          searchWrap.classList.toggle('has-value', !!searchInput.value);
+          applySemakSearch();
+        });
+        clearInputBtn.addEventListener('click', function () {
+          searchInput.value = '';
+          semakFilterState.search = '';
+          searchWrap.classList.remove('has-value');
+          searchInput.focus();
+          applySemakSearch();
+        });
+        document.getElementById('semakClearAllBtn').addEventListener('click', function () {
+          semakFilterState.search = '';
+          searchInput.value = '';
+          searchWrap.classList.remove('has-value');
+          applySemakSearch();
+        });
+
+        document.getElementById('semakScrollLeft').addEventListener('click', function () {
+          body.scrollBy({ left: -450, behavior: 'smooth' });
+        });
+        document.getElementById('semakScrollRight').addEventListener('click', function () {
+          body.scrollBy({ left: 450, behavior: 'smooth' });
+        });
+
+        const infoBar = document.getElementById('semakInfo');
+        if (infoBar) infoBar.textContent = itemsToShow.length + ' baris';
+        applySemakSearch();
+      }
+
+      function applySemakSearch() {
+        const tbody = document.querySelector('#sec-semak_lokasi tbody');
+        if (!tbody) return;
+
+        const s = (semakFilterState.search || '').toLowerCase().trim();
+        const rows = tbody.querySelectorAll('tr:not(.section-row):not(.total-row):not(.empty-row)');
+        let visibleCount = 0;
+
+        rows.forEach(function (tr) {
+          const kat = tr.dataset.kategori || '';
+          const mak = tr.dataset.maklumat || '';
+          const show = !s || kat.includes(s) || mak.includes(s);
+          tr.classList.toggle('row-hidden', !show);
+          if (show) visibleCount++;
+        });
+
+        tbody.querySelectorAll('tr.section-row').forEach(function (secTr) {
+          let next = secTr.nextElementSibling;
+          let hasVisible = false;
+          while (next && !next.classList.contains('section-row') && !next.classList.contains('total-row')) {
+            if (!next.classList.contains('row-hidden')) { hasVisible = true; break; }
+            next = next.nextElementSibling;
+          }
+          secTr.classList.toggle('section-hidden', !hasVisible);
+        });
+
+        const info = document.getElementById('semakInfo');
+        if (info) {
+          const total = rows.length;
+          if (!s) info.textContent = total + ' baris';
+          else info.innerHTML = 'Menunjuk <b>' + visibleCount + '</b> / ' + total + ' baris';
+        }
+      }
+
       function renderAll() {
         document.getElementById('sections').innerHTML = '';
         updateBodyFullscreenClass();
@@ -5943,6 +7029,9 @@ result.jumlah = result.A + result.C + result.CS + result.TK;
           document.getElementById('statsRow').innerHTML = '';
         } else if (store.view === 'bkb') {
           renderBkbView();
+          document.getElementById('statsRow').innerHTML = '';
+        } else if (store.view === 'semak_lokasi') {
+          renderSemakLokasiView();
           document.getElementById('statsRow').innerHTML = '';
         } else {
           renderPersonelSection();
