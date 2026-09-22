@@ -1238,6 +1238,18 @@
         font-weight: 500; border-color: var(--col-amber-row-bd);
       }
 
+      /* ===== Kolum MAKLUMAT dilebarkan ===== */
+      table.roster td.td-maklumat,
+      table.roster th.th-maklumat {
+        min-width: 400px;
+        width: 400px;
+      }
+      table.roster td.td-maklumat input {
+        width: 100%;
+        min-width: 100%;
+        box-sizing: border-box;
+      }
+
       /* Mandatori — tanda pada header */
       table.roster thead th.th-mandatory::after {
         content: ' *';
@@ -4103,7 +4115,6 @@
         return !r.kategori && !r.maklumat && !r.status && !r.catatan;
       }
 
-      /* ====== UBAH: TANPA SKIP KOSONG — SEMUA BARIS WAJIB LENGKAP ====== */
       function markMandatoryPersonel(tr, p) {
         if (!tr || !p) return;
         tr.querySelectorAll('[data-mf]').forEach(el => {
@@ -4192,7 +4203,10 @@
         inp.value = currentMaklumat || '';
         inp.dataset.mf = 'maklumat';
         inp.setAttribute('list', listId);
-        inp.style.minWidth = '260px';
+        /* ===== INPUT LEBAR PENUH — POPUP DATALIST IKUT LEBAR KOLUM ===== */
+        inp.style.width = '100%';
+        inp.style.minWidth = '100%';
+        inp.style.boxSizing = 'border-box';
         function refresh(kat) {
           dl.innerHTML = '';
           const list = catalog[kat] || [];
@@ -4523,7 +4537,6 @@
         });
         tb.appendChild(bA);
 
-        /* Butang padam semua baris kosong (personel) */
         const bClean = document.createElement('button');
         bClean.className = 'btn danger small';
         bClean.textContent = '✕ Padam Baris Kosong';
@@ -4704,7 +4717,7 @@
         thead.innerHTML = `<tr>
     <th>BIL</th>
     <th class="th-mandatory">KATEGORI</th>
-    ${isKom ? '' : '<th class="th-mandatory">MAKLUMAT</th>'}
+    ${isKom ? '' : '<th class="th-mandatory th-maklumat">MAKLUMAT</th>'}
     ${isKom ? '<th class="th-mandatory">JUMLAH</th>' : ''}
     <th class="th-mandatory">STATUS</th><th>CATATAN</th><th></th>
   </tr>`;
@@ -4729,13 +4742,17 @@
 
           if (!isKom) {
             const tdM = document.createElement('td');
+            /* ===== LEBARKAN KOLUM MAKLUMAT — POPUP DROPDOWN IKUT SAIZ ===== */
+            tdM.className = 'td-maklumat';
             if (isKategoriDriven) {
               vehCtrl = makeKategoriDrivenInput(key, r.kategori, r.maklumat, (v) => { r.maklumat = v; saveState(); markRow(); });
               tdM.appendChild(vehCtrl.element);
             } else {
               const iM = makeInput('text', r.maklumat, (v) => { r.maklumat = v; saveState(); markRow(); }, 'No. plat / keterangan');
               iM.dataset.mf = 'maklumat';
-              iM.style.minWidth = '220px';
+              iM.style.width = '100%';
+              iM.style.minWidth = '100%';
+              iM.style.boxSizing = 'border-box';
               tdM.appendChild(iM);
             }
             tr.appendChild(tdM);
@@ -4786,7 +4803,6 @@
         });
         tb.appendChild(bA);
 
-        /* Butang padam semua baris kosong (peralatan) */
         const bClean = document.createElement('button');
         bClean.className = 'btn danger small';
         bClean.textContent = '✕ Padam Baris Kosong';
@@ -5937,7 +5953,6 @@
           return;
         }
 
-        /* ==== VALIDASI MANDATORI ==== */
         const v = validateBalaiFull(state);
         if (hasInvalid(v)) {
           alert('Tidak boleh arkib — kolum mandatori belum lengkap:\n\n' + formatInvalidMsg(store.activeBalai, v));
@@ -6041,7 +6056,6 @@
           const balaiName = senaraiBalai[i];
           label.textContent = 'Arkib ' + (i + 1) + '/' + senaraiBalai.length + '…';
 
-          /* ==== SKIP JIKA MANDATORI TAK LENGKAP ==== */
           const balaiState0 = store.balai[balaiName];
           const v0 = balaiState0 ? validateBalaiFull(balaiState0) : { personel: [], equip: [] };
           if (hasInvalid(v0)) {
@@ -6143,7 +6157,6 @@
           return;
         }
 
-        /* ==== VALIDASI MANDATORI ==== */
         const v = validateBalaiFull(state);
         if (hasInvalid(v)) {
           alert('Tidak boleh simpan — kolum mandatori belum lengkap:\n\n' + formatInvalidMsg(store.activeBalai, v));
@@ -6235,7 +6248,6 @@
         try { localStorage.setItem(THEME_KEY, next); } catch (e) {}
       });
 
-      /* Butang pause & refresh untuk auto-reload widget */
       const autoReloadPauseBtnEl = document.getElementById('autoReloadPauseBtn');
       if (autoReloadPauseBtnEl) {
         autoReloadPauseBtnEl.addEventListener('click', function () {
