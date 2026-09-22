@@ -2376,6 +2376,67 @@
         body.printing-single #sections > .section.print-target { display: block !important; border: none !important; box-shadow: none !important; margin: 0 !important; }
         body.printing-po3a .wrap > *:not(#sections):not(.print-footer):not(.main-title) { display: none !important; }
         body.printing-po3a .main-title { display: block !important; border-top: 3px solid #16223a !important; border-bottom: 3px solid #16223a !important; }
+
+        /* ===== SAFETY NET: Semua mode print — tiada overflow ===== */
+        body.printing-po3a .section-body,
+        body.printing-single .section-body,
+        body.printing-full .section-body {
+          overflow: visible !important;
+          cursor: default !important;
+          max-height: none !important;
+          padding: 0.3rem 0.35rem !important;
+        }
+        body.printing-po3a table,
+        body.printing-single table,
+        body.printing-full table {
+          overflow: visible !important;
+          max-width: 100% !important;
+        }
+        .po3a-split-wrapper {
+          display: block;
+          width: 100%;
+        }
+        .po3a-split-wrapper > table {
+          page-break-inside: avoid !important;
+          break-inside: avoid !important;
+          margin-bottom: 6px !important;
+          width: 100% !important;
+        }
+        .po3a-split-wrapper > table:last-child { margin-bottom: 0 !important; }
+
+        /* ===== printing-full: paparan balai (semua section) ===== */
+        body.printing-full .wrap > *:not(#sections):not(.print-footer) {
+          display: none !important;
+        }
+        body.printing-full #sections > .section {
+          page-break-inside: auto !important;
+          break-inside: auto !important;
+        }
+        body.printing-full .section-head {
+          page-break-after: avoid !important;
+          break-after: avoid !important;
+        }
+        body.printing-full table.roster,
+        body.printing-full table.mers,
+        body.printing-full table.ketua,
+        body.printing-full table.bkb {
+          page-break-inside: auto !important;
+          break-inside: auto !important;
+        }
+        body.printing-full table.roster tr,
+        body.printing-full table.ketua tr,
+        body.printing-full table.bkb tr,
+        body.printing-full table.mers tr {
+          page-break-inside: avoid !important;
+          break-inside: avoid !important;
+        }
+        body.printing-full table {
+          font-size: 0.6rem !important;
+        }
+        body.printing-full table th,
+        body.printing-full table td {
+          padding: 0.18rem 0.24rem !important;
+        }
       }
 
       @media (max-width: 1200px) {
@@ -2952,6 +3013,8 @@
           const nTbody = document.createElement('tbody');
           bodyCellsArr.forEach(function (cells) {
             const nTr = document.createElement('tr');
+            const origTr = cells[0].parentNode;
+            if (origTr.className) nTr.className = origTr.className;
             rowHeaderGroups.forEach(function (g) {
               cells.slice(g.colStart, g.colEnd).forEach(function (c) { nTr.appendChild(c.cloneNode(true)); });
             });
@@ -2985,6 +3048,224 @@
         });
 
         return wrapper;
+      }
+
+      /* ============================================================
+         SPLIT TABLE SEMAK LOKASI — chunk mengikut balai
+         ============================================================ */
+      function splitSemakLokasiForPrint(originalTable, chunkSize) {
+        if (!originalTable) return null;
+        const thead = originalTable.querySelector('thead');
+        if (!thead) return null;
+
+        const groupRow = thead.querySelector('tr.groups');
+        const balaiRow = thead.querySelector('tr.balai-header');
+        const filterRow = thead.querySelector('tr.filter-row');
+        if (!groupRow || !balaiRow) return null;
+
+        const groupChildren = Array.from(groupRow.children);
+        const balaiChildren = Array.from(balaiRow.children);
+
+        const hasBalaiCols = balaiChildren.some(function (c) {
+          return c.classList && c.classList.contains('balai-col');
+        });
+        if (!hasBalaiCols) return null;
+
+        const stickyCount = 3;
+        const jumlahCols = 1;
+
+        const balaiCols = balaiChildren.slice(stickyCount, balaiChildren.length - jumlahCols);
+        if (balaiCols.length <= chunkSize) return null;
+
+        const chunks = [];
+        for (let i = 0; i < balaiCols.length; i += chunkSize) {
+          chunks.push(balaiCols.slice(i, i + chunkSize));
+        }
+
+        const zones = [];
+        let balaiIdx = 0;
+        groupChildren.slice(stickyCount, groupChildren.length - jumlahCols).forEach(function (zth) {
+          const span = zth.colSpan || 1;
+          zones.push({ el: zth, start: balaiIdx, end: balaiIdx + span });
+          balaiIdx += span;
+        });
+
+        const bodyRows = Array.from(originalTable.querySelectorAll('tbody tr'));
+        const wrapper = document.createElement('div');
+        wrapper.className = 'po3a-split-wrapper';
+
+        chunks.forEach(function (chunk, ci) {
+          const chunkStart = ci * chunkSize;
+          const chunkEnd = chunkStart + chunk.length;
+
+          const tbl = document.createElement('table');
+          tbl.className = originalTable.className;
+
+          const nThead = document.createElement('thead');
+
+          const nH1 = document.createElement('tr');
+          nH1.className = 'groups';
+          for (let i = 0; i < stickyCount; i++) {
+            nH1.appendChild(groupChildren[i].cloneNode(true));
+          }
+          zones.forEach(function (zone) {
+            const oStart = Math.max(zone.start, chunkStart);
+            const oEnd = Math.min(zone.end, chunkEnd);
+            if (oEnd > oStart) {
+              const nz = zone.el.cloneNode(true);
+              nz.colSpan = oEnd - oStart;
+              nH1.appendChild(nz);
+            }
+          });
+          nH1.appendChild(groupChildren[groupChildren.length - 1].cloneNode(true));
+          nThead.appendChild(nH1);
+
+          const nH2 = document.createElement('tr');
+          nH2.className = 'balai-header';
+          for (let i = 0; i < stickyCount; i++) {
+            nH2.appendChild(balaiChildren[i].cloneNode(true));
+          }
+          chunk.forEach(function (b) { nH2.appendChild(b.cloneNode(true)); });
+          nH2.appendChild(balaiChildren[balaiChildren.length - 1].cloneNode(true));
+          nThead.appendChild(nH2);
+
+          if (filterRow) {
+            const fChildren = Array.from(filterRow.children);
+            const nH3 = document.createElement('tr');
+            nH3.className = 'filter-row';
+            for (let i = 0; i < stickyCount; i++) {
+              nH3.appendChild(fChildren[i].cloneNode(true));
+            }
+            chunk.forEach(function () {
+              const th = document.createElement('th');
+              th.className = 'filter-check';
+              nH3.appendChild(th);
+            });
+            nH3.appendChild(fChildren[fChildren.length - 1].cloneNode(true));
+            nThead.appendChild(nH3);
+          }
+
+          tbl.appendChild(nThead);
+
+          const nTbody = document.createElement('tbody');
+          bodyRows.forEach(function (tr) {
+            const cells = Array.from(tr.children);
+            if (tr.classList.contains('empty-row')) return;
+
+            if (tr.classList.contains('section-row')) {
+              const nTr = document.createElement('tr');
+              nTr.className = tr.className;
+              const td = document.createElement('td');
+              td.colSpan = stickyCount + chunk.length + jumlahCols;
+              td.textContent = cells[0].textContent;
+              nTr.appendChild(td);
+              nTbody.appendChild(nTr);
+              return;
+            }
+
+            if (tr.classList.contains('total-row')) {
+              const nTr = document.createElement('tr');
+              nTr.className = tr.className;
+              const lbl = document.createElement('td');
+              lbl.className = cells[0].className;
+              lbl.colSpan = stickyCount;
+              lbl.textContent = cells[0].textContent;
+              nTr.appendChild(lbl);
+              for (let i = 0; i < chunk.length; i++) {
+                nTr.appendChild(cells[stickyCount + chunkStart + i].cloneNode(true));
+              }
+              nTr.appendChild(cells[cells.length - 1].cloneNode(true));
+              nTbody.appendChild(nTr);
+              return;
+            }
+
+            const nTr = document.createElement('tr');
+            nTr.className = tr.className;
+            for (let i = 0; i < stickyCount; i++) {
+              nTr.appendChild(cells[i].cloneNode(true));
+            }
+            for (let i = 0; i < chunk.length; i++) {
+              nTr.appendChild(cells[stickyCount + chunkStart + i].cloneNode(true));
+            }
+            nTr.appendChild(cells[cells.length - 1].cloneNode(true));
+            nTbody.appendChild(nTr);
+          });
+          tbl.appendChild(nTbody);
+
+          wrapper.appendChild(tbl);
+        });
+
+        return wrapper;
+      }
+
+      /* ============================================================
+         PERSEDIAAN CETAK — split semua table yang perlu
+         ============================================================ */
+      function prepareTableSplitsForPrint() {
+        const restored = [];
+        const CHUNK_GRID = 12;
+        const CHUNK_SEMAK = 12;
+
+        document.querySelectorAll('#sections table.grid, #sections table.bsum').forEach(function (tbl) {
+          const splits = splitGridTableForPrint(tbl, CHUNK_GRID);
+          if (splits) swapTableForPrint(tbl, splits, restored);
+        });
+
+        document.querySelectorAll('#sections table.semak-lokasi').forEach(function (tbl) {
+          const splits = splitSemakLokasiForPrint(tbl, CHUNK_SEMAK);
+          if (splits) swapTableForPrint(tbl, splits, restored);
+        });
+
+        return restored;
+      }
+
+      function swapTableForPrint(tbl, wrapper, restored) {
+        tbl.parentNode.insertBefore(wrapper, tbl);
+        const prev = tbl.style.display || '';
+        tbl.setAttribute('data-print-prev-display', prev);
+        tbl.style.display = 'none';
+        restored.push({ tbl: tbl, wrapper: wrapper });
+      }
+
+      function restoreTableSplitsForPrint(restored) {
+        (restored || []).forEach(function (item) {
+          const prev = item.tbl.getAttribute('data-print-prev-display');
+          item.tbl.style.display = prev || '';
+          item.tbl.removeAttribute('data-print-prev-display');
+          item.wrapper.remove();
+        });
+      }
+
+      function applyPrintLandscapeStyle() {
+        const styleId = 'print-landscape-style';
+        if (!document.getElementById(styleId)) {
+          const s = document.createElement('style');
+          s.id = styleId;
+          s.textContent = '@page { size: A4 landscape; margin: 8mm; }';
+          document.head.appendChild(s);
+        }
+      }
+      function removePrintLandscapeStyle() {
+        const s = document.getElementById('print-landscape-style');
+        if (s) s.remove();
+      }
+
+      function preparePrintEnvironment() {
+        applyPrintLandscapeStyle();
+        const restoredCollapsed = [];
+        document.querySelectorAll('#sections > .section.collapsed').forEach(function (sec) {
+          sec.classList.remove('collapsed');
+          restoredCollapsed.push(sec);
+        });
+        const restoredTables = prepareTableSplitsForPrint();
+        return { restoredCollapsed: restoredCollapsed, restoredTables: restoredTables };
+      }
+
+      function cleanupPrintEnvironment(env) {
+        if (!env) return;
+        restoreTableSplitsForPrint(env.restoredTables);
+        (env.restoredCollapsed || []).forEach(function (sec) { sec.classList.add('collapsed'); });
+        removePrintLandscapeStyle();
       }
 
       function openPrintModal(onConfirm) {
@@ -3054,50 +3335,14 @@
         closeAllFullscreenPanels();
         updatePrintFooterDate();
         openPrintModal(() => {
-          const sections = document.querySelectorAll('#sections > .section');
-          const restoredCollapsed = [];
-          sections.forEach(function (sec) {
-            if (sec.classList.contains('collapsed')) {
-              sec.classList.remove('collapsed');
-              restoredCollapsed.push(sec);
-            }
-          });
-          const CHUNK_SIZE = 12;
-          const tables = document.querySelectorAll('#sections table.grid');
-          const restoredTables = [];
-          tables.forEach(function (tbl) {
-            const splits = splitGridTableForPrint(tbl, CHUNK_SIZE);
-            if (splits) {
-              tbl.parentNode.insertBefore(splits, tbl);
-              const prevDisplay = tbl.style.display || '';
-              tbl.setAttribute('data-print-prev-display', prevDisplay);
-              tbl.style.display = 'none';
-              restoredTables.push({ tbl: tbl, wrapper: splits });
-            }
-          });
-          const styleId = 'po3a-landscape-style';
-          let styleEl = document.getElementById(styleId);
-          if (!styleEl) {
-            styleEl = document.createElement('style');
-            styleEl.id = styleId;
-            styleEl.textContent = '@page { size: A4 landscape; margin: 8mm; }';
-            document.head.appendChild(styleEl);
-          }
+          const env = preparePrintEnvironment();
           document.body.classList.add('printing-po3a');
           let cleaned = false;
           const cleanup = function () {
             if (cleaned) return;
             cleaned = true;
             document.body.classList.remove('printing-po3a');
-            const st = document.getElementById(styleId);
-            if (st) st.remove();
-            restoredCollapsed.forEach(function (sec) { sec.classList.add('collapsed'); });
-            restoredTables.forEach(function (item) {
-              const prev = item.tbl.getAttribute('data-print-prev-display');
-              item.tbl.style.display = prev || '';
-              item.tbl.removeAttribute('data-print-prev-display');
-              item.wrapper.remove();
-            });
+            cleanupPrintEnvironment(env);
             window.removeEventListener('afterprint', cleanup);
           };
           window.addEventListener('afterprint', cleanup);
@@ -3115,6 +3360,18 @@
         openPrintModal(() => {
           const wasCollapsed = sectionEl.classList.contains('collapsed');
           sectionEl.classList.remove('collapsed');
+
+          applyPrintLandscapeStyle();
+          const restoredTables = [];
+          sectionEl.querySelectorAll('table.grid, table.bsum').forEach(function (tbl) {
+            const splits = splitGridTableForPrint(tbl, 12);
+            if (splits) swapTableForPrint(tbl, splits, restoredTables);
+          });
+          sectionEl.querySelectorAll('table.semak-lokasi').forEach(function (tbl) {
+            const splits = splitSemakLokasiForPrint(tbl, 12);
+            if (splits) swapTableForPrint(tbl, splits, restoredTables);
+          });
+
           document.body.classList.add('printing-single');
           sectionEl.classList.add('print-target');
           let cleaned = false;
@@ -3123,14 +3380,16 @@
             cleaned = true;
             document.body.classList.remove('printing-single');
             sectionEl.classList.remove('print-target');
+            restoreTableSplitsForPrint(restoredTables);
+            removePrintLandscapeStyle();
             if (wasCollapsed) sectionEl.classList.add('collapsed');
             window.removeEventListener('afterprint', cleanup);
           };
           window.addEventListener('afterprint', cleanup);
           setTimeout(function () {
             window.print();
-            setTimeout(cleanup, 600);
-          }, 120);
+            setTimeout(cleanup, 800);
+          }, 150);
         });
       }
 
@@ -3150,6 +3409,13 @@
           e.returnValue = '';
           return '';
         }
+      });
+
+      window.addEventListener('beforeunload', function () {
+        ['printing-po3a', 'printing-single', 'printing-full'].forEach(function (c) {
+          document.body.classList.remove(c);
+        });
+        removePrintLandscapeStyle();
       });
 
       const BALAI_LIST = [
@@ -4725,7 +4991,9 @@
         kategori: 'KATEGORI', maklumat: 'MAKLUMAT', jumlah: 'JUMLAH',
       };
       const LOCKED_PASUKAN_ROLES = ['KETUA BALAI', 'PEGAWAI OPERASI'];
-      const LOCKED_STATUS_ROLES = [];
+      const LOCKED_STATUS_ROLES = {
+        'BILIK KAWALAN (BKB)': 'BERTUGAS',
+      };
 
       function applyPerananLocks(person, pasukanSelect, statusSelect) {
         if (pasukanSelect) {
@@ -4740,11 +5008,12 @@
           }
         }
         if (statusSelect) {
-          if (LOCKED_STATUS_ROLES.includes(person.peranan)) {
-            person.status = 'TUGAS KHAS';
-            statusSelect.value = 'TUGAS KHAS';
+          const lockedStatus = LOCKED_STATUS_ROLES[person.peranan];
+          if (lockedStatus) {
+            person.status = lockedStatus;
+            statusSelect.value = lockedStatus;
             statusSelect.disabled = true;
-            statusSelect.title = 'Auto-set untuk peranan ini';
+            statusSelect.title = 'Auto-set untuk peranan ini (tidak boleh diubah)';
           } else {
             statusSelect.disabled = false;
             statusSelect.title = '';
@@ -5116,7 +5385,7 @@
               p.pasukan = '';
               if (pasukanSelect) pasukanSelect.value = '';
             }
-            if (LOCKED_STATUS_ROLES.includes(oldPeranan) && !LOCKED_STATUS_ROLES.includes(v)) {
+            if (LOCKED_STATUS_ROLES[oldPeranan] && !LOCKED_STATUS_ROLES[v]) {
               p.status = '';
               if (statusSelect) statusSelect.value = '';
             }
@@ -5137,7 +5406,7 @@
 
           const tdS = document.createElement('td');
           statusSelect = makeSelect(PERSONEL_STATUSES, p.status, (v) => {
-            if (LOCKED_STATUS_ROLES.includes(p.peranan)) return;
+            if (LOCKED_STATUS_ROLES[p.peranan]) return;
             p.status = v;
             saveState(); globalRecalc(); markRow();
           });
@@ -5185,7 +5454,19 @@
         bA.textContent = '+ Tambah Baris';
         bA.addEventListener('click', () => {
           state.personel.push(emptyPersonel());
-          saveState(); rerenderPersonel();
+          saveState();
+          rerenderPersonel();
+          setTimeout(() => {
+            const rows = document.querySelectorAll('#sec-personel tbody tr');
+            const lastRow = rows[rows.length - 1];
+            if (lastRow) {
+              lastRow.scrollIntoView({ behavior: 'smooth', block: 'center' });
+              const focusTarget = lastRow.querySelector(
+                'select:not(:disabled), input:not(:disabled):not([readonly])'
+              );
+              if (focusTarget) focusTarget.focus();
+            }
+          }, 60);
         });
         tb.appendChild(bA);
 
@@ -5327,9 +5608,11 @@
       }
 
       function rerenderPersonel() {
+        const scrollY = window.scrollY;
         document.getElementById('sec-personel')?.remove();
         renderPersonelSection();
         renderStats();
+        window.scrollTo({ top: scrollY, behavior: 'instant' });
       }
 
       function renderEquipSection(key, title, color, katList, isKom) {
@@ -5451,6 +5734,17 @@
           state.equip[key].push(isKom ? emptyKom('') : emptyEquip(''));
           saveState();
           rerenderEquip(key, title, color, katList, isKom);
+          setTimeout(() => {
+            const rows = document.querySelectorAll('#sec-' + key + ' tbody tr');
+            const lastRow = rows[rows.length - 1];
+            if (lastRow) {
+              lastRow.scrollIntoView({ behavior: 'smooth', block: 'center' });
+              const focusTarget = lastRow.querySelector(
+                'select:not(:disabled), input:not(:disabled):not([readonly])'
+              );
+              if (focusTarget) focusTarget.focus();
+            }
+          }, 60);
         });
         tb.appendChild(bA);
 
@@ -5596,9 +5890,11 @@
       }
 
       function rerenderEquip(key, title, color, katList, isKom) {
+        const scrollY = window.scrollY;
         document.getElementById('sec-' + key)?.remove();
         renderEquipSection(key, title, color, katList, isKom);
         renderStats();
+        window.scrollTo({ top: scrollY, behavior: 'instant' });
       }
 
       function globalRecalc() {
@@ -6521,12 +6817,10 @@
 
       /* ============================================================
          SENARAI SEMAK LOKASI JENTERA
-         — 2 kategori (toggle): DIPILIH (≥1 balai) / TIDAK DIPILIH
          ============================================================ */
-      let semakViewMode = 'assigned'; // 'assigned' | 'unassigned'
+      let semakViewMode = 'assigned';
       let semakFilterState = { search: '' };
 
-      /* ===== Drag-to-scroll global state ===== */
       let semakDragState = null;
 
       function setupSemakDragScroll(el) {
@@ -6642,7 +6936,6 @@
         document.getElementById('sections').appendChild(wrap);
         const body = wrap.querySelector('.section-body');
 
-        /* ---- Toggle butang 2 kategori ---- */
         const toggleBar = document.createElement('div');
         toggleBar.className = 'semak-toggle-bar';
         toggleBar.innerHTML = `
@@ -6664,7 +6957,6 @@
           });
         });
 
-        /* ---- Toolbar carian ---- */
         const toolbar = document.createElement('div');
         toolbar.className = 'semak-toolbar';
         toolbar.innerHTML = `
@@ -6681,7 +6973,6 @@
     </div>`;
         body.appendChild(toolbar);
 
-        /* ---- Table ---- */
         const tbl = document.createElement('table');
         tbl.className = 'semak-lokasi';
         tbl.id = 'semakTable';
@@ -6820,7 +7111,6 @@
             tr.dataset.kategori = it.kategori.toLowerCase();
             tr.dataset.maklumat = it.maklumat.toLowerCase();
             tr.dataset.section = sec.label;
-            /* Highlight MERAH jika dipilih lebih dari 1 balai (duplikat) */
             if (isAssigned && it.count > 1) {
               tr.classList.add('row-duplicate');
               tr.title = '⚠ Jentera ini dipilih oleh ' + it.count + ' balai berlainan';
@@ -6912,7 +7202,6 @@
         tbl.appendChild(tbody);
         body.appendChild(tbl);
 
-        /* Aktifkan drag-to-scroll pada section-body */
         setupSemakDragScroll(body);
 
         if (isAssigned) {
@@ -6922,7 +7211,6 @@
           body.appendChild(hint);
         }
 
-        /* Legend warna (hanya untuk mode assigned) */
         if (isAssigned && assignedItems.length > 0) {
           const legend = document.createElement('div');
           legend.className = 'semak-legend';
@@ -7507,7 +7795,28 @@
         closeAllFullscreenPanels();
         updatePrintFooterDate();
         openPrintModal(() => {
-          setTimeout(() => window.print(), 100);
+          const isAggregateView =
+            store.view === 'summary' ||
+            store.view === 'balai_sum' ||
+            store.view === 'semak_lokasi';
+
+          const env = preparePrintEnvironment();
+          const bodyClass = isAggregateView ? 'printing-po3a' : 'printing-full';
+          document.body.classList.add(bodyClass);
+
+          let cleaned = false;
+          const cleanup = function () {
+            if (cleaned) return;
+            cleaned = true;
+            document.body.classList.remove(bodyClass);
+            cleanupPrintEnvironment(env);
+            window.removeEventListener('afterprint', cleanup);
+          };
+          window.addEventListener('afterprint', cleanup);
+          setTimeout(function () {
+            window.print();
+            setTimeout(cleanup, 1200);
+          }, 220);
         });
       });
 
