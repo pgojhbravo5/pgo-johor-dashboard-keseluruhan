@@ -4313,12 +4313,10 @@
           UNITS.forEach((u) => { m[r][u] = { A: 0, C: 0, CS: 0, TK: 0 }; });
         });
         (s.personel || []).forEach((p) => {
-          if (!p.pangkat || !p.status) return;
-          if (!m[p.pangkat]) return;
-          // ⬇️ KETUA BALAI & PEGAWAI OPERASI TIDAK DIKIRA
-          if (EXCLUDED_ROLES_FROM_COUNT.includes(p.peranan)) return;
-          const st = mapPersonelStatus(p.status);
-          if (!st) return;
+  if (!p.pangkat || !p.status) return;
+  if (!m[p.pangkat]) return;
+  const st = mapPersonelStatus(p.status);
+            if (!st) return;
           const u = p.unit1;
           if (!u) return;
           if (!m[p.pangkat][u]) return;
@@ -4376,11 +4374,9 @@
         });
         Object.values(store.balai).forEach((b) => {
           (b.personel || []).forEach((p) => {
-            if (!p || !p.pangkat || !p.status) return;
-            // ⬇️ KETUA BALAI & PEGAWAI OPERASI TIDAK DIKIRA
-            if (EXCLUDED_ROLES_FROM_COUNT.includes(p.peranan)) return;
-            const effKat = mapping[p.pangkat];
-            if (!effKat) return;
+  if (!p || !p.pangkat || !p.status) return;
+  const effKat = mapping[p.pangkat];
+              if (!effKat) return;
             if (!m[effKat]) {
               m[effKat] = {};
               UNITS.forEach((u) => { m[effKat][u] = { A: 0, C: 0, CS: 0, TK: 0 }; });
@@ -5339,14 +5335,17 @@
         });
         result.statusKetua = result.ketua && result.ketua.status === 'BERTUGAS' ? 1 : 0;
         result.statusPO = result.po && result.po.status === 'BERTUGAS' ? 1 : 0;
-        const g = computePersonelGridForState(s);
-        RANKS.forEach((r) => UNITS.forEach((u) => {
-          result.A += g[r][u].A;
-          result.C += g[r][u].C;
-          result.CS += g[r][u].CS;
-          result.TK += g[r][u].TK;
-        }));
-        result.jumlah = result.A + result.C + result.CS + result.TK;
+// ⬇️ KETUA BALAI & PEGAWAI OPERASI TIDAK DIKIRA (khas untuk view ini)
+(s.personel || []).forEach(function (p) {
+  if (!p || !p.pangkat || !p.status) return;
+  if (!RANKS.includes(p.pangkat)) return;
+  if (EXCLUDED_ROLES_FROM_COUNT.includes(p.peranan)) return;
+  const st = mapPersonelStatus(p.status);
+  if (!st) return;
+  if (!UNITS.includes(p.unit1)) return;
+  result[st]++;
+});
+result.jumlah = result.A + result.C + result.CS + result.TK;
         return result;
       }
       function formatNamaGred(person) {
@@ -5674,11 +5673,9 @@
               const cnt = { A: 0, C: 0, CS: 0, TK: 0 };
               if (balaiState) {
                 (balaiState.personel || []).forEach((p) => {
-                  if (!p || !p.pangkat) return;
-                  // ⬇️ KETUA BALAI & PEGAWAI OPERASI TIDAK DIKIRA
-                  if (EXCLUDED_ROLES_FROM_COUNT.includes(p.peranan)) return;
-                  const effKat = katMapPersonel ? katMapPersonel[p.pangkat] : p.pangkat;
-                  if (effKat && effKat === cat) {
+  if (!p || !p.pangkat) return;
+  const effKat = katMapPersonel ? katMapPersonel[p.pangkat] : p.pangkat;
+                    if (effKat && effKat === cat) {
                     const st = mapPersonelStatus(p.status);
                     if (st) cnt[st]++;
                   }
