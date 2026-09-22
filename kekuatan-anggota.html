@@ -1238,6 +1238,19 @@
         font-weight: 500; border-color: var(--col-amber-row-bd);
       }
 
+      /* Mandatori — tanda pada header */
+      table.roster thead th.th-mandatory::after {
+        content: ' *';
+        color: var(--rosak);
+        font-weight: 700;
+      }
+      table.roster input.field-invalid,
+      table.roster select.field-invalid {
+        border-color: var(--rosak) !important;
+        box-shadow: 0 0 0 3px rgba(214,69,69,0.18) !important;
+        background: rgba(214,69,69,0.05) !important;
+      }
+
       table.ketua {
         border-collapse: separate; border-spacing: 0;
         font-size: 0.74rem; white-space: nowrap; min-width: 100%;
@@ -1465,7 +1478,6 @@
         font-family: 'Oswald', sans-serif;
       }
 
-      /* LAYER 1 — Copyright (center) */
       .site-footer .sf-layer-top {
         text-align: center;
         padding: 1.15rem 0.5rem 0.85rem;
@@ -1485,7 +1497,6 @@
         font-weight: 700;
       }
 
-      /* LAYER 2 — Maklumat (kiri) */
       .site-footer .sf-layer-bottom {
         padding: 0.8rem 1.15rem 0.9rem;
         text-align: left;
@@ -2682,7 +2693,6 @@
 
       const JENTERA_KAT = ['FRT','LFRT','CFRT','RFRT','Rapid Rescue Vehicle (RRV)','ALP','SKYLIFT','TTL','High Performance Pump Module (HPPM)','High Capacity Foam Tender (HCFM)','PRIME MOVER','FOAM TENDER','Breathing Apparatus Tender Vehicle (BATV)','WATER TANKER 10,000','WATER TANKER 20,000','JEN. HAZMAT','KOMUNIKASI','RIM','EMRS','MOBILE COMMAND POST','KEMBALIK','SIASATAN (FORENSICS)'];
 
-      /* ⚠️ PERUBAHAN: 'LAIN LAIN' dibuang dari JENTERA_KAT_PO3A */
       const JENTERA_KAT_PO3A = ['FRT','LFRT','CFRT','RFRT','Rapid Rescue Vehicle (RRV)','Fire Rescue Vehicle (FRV)','ALP','SKYLIFT','TTL','High Performance Pump Module (HPPM)','High Capacity Foam Tender (HCFM)','FOAM TENDER','Breathing Apparatus Tender Vehicle (BATV)','WATER TANKER 10,000 LITER','WATER TANKER 20,000 LITER','JEN. HAZMAT','KOMUNIKASI','RIM','EMRS','MOBILE COMMAND POST','KEMBALIK','NISSAN SAFARI'];
 
       const JENTERA_MAP_PO3A = {
@@ -2701,7 +2711,6 @@
       };
 
       const MARIN_KAT = ['ALUMINIUM BOT','ARIB BOT','FIBER BOT','JETSKI BOT','KEVLAR BOT','LIGHT SAR BOAT (HDPE) BOT','MUD BOAT','RUBBER DINGHY BOT'];
-      /* ⚠️ PERUBAHAN: 'LAIN LAIN' dibuang dari MARIN_KAT_PO3A */
       const MARIN_KAT_PO3A = ['FIRE BOAT','RIGID INFLATABLE HALL BOAT','ALUMINIUM','AMPHIBIOUS RIGID INFLATABLE HALL BOAT','DINGHY','FIBER','APEX','JET SKI','MUD BOAT','MARES','HIGH DENSITY POLYETHYLENE'];
       const MARIN_MAP_PO3A = {
         'KEVLAR BOT': 'RIGID INFLATABLE HALL BOAT',
@@ -2884,7 +2893,7 @@
       /* ============================================================
          AUTO-REFRESH — Timer 5 minit (300s) dengan UI countdown
          ============================================================ */
-      const AUTO_REFRESH_SECONDS = 5 * 60; // 5 minit
+      const AUTO_REFRESH_SECONDS = 5 * 60;
       let autoReloadRemaining = AUTO_REFRESH_SECONDS;
       let autoReloadPaused = false;
       let autoReloadTickTimer = null;
@@ -3438,11 +3447,11 @@
       function defaultState(balaiName) {
         return {
           ident: { balai: balaiName || 'LARKIN', shif: '', tarikh: '', kategori: '' },
-          personel: Array.from({ length: 10 }, emptyPersonel),
+          personel: Array.from({ length: 5 }, emptyPersonel),
           equip: {
-            jentera: Array.from({ length: 5 }, () => emptyEquip('')),
-            marin: Array.from({ length: 5 }, () => emptyEquip('')),
-            utiliti: Array.from({ length: 5 }, () => emptyEquip('')),
+            jentera: Array.from({ length: 2 }, () => emptyEquip('')),
+            marin: Array.from({ length: 2 }, () => emptyEquip('')),
+            utiliti: Array.from({ length: 2 }, () => emptyEquip('')),
             komunikasi: KOMUNIKASI_DEF.map((k) => emptyKom(k.name)),
           },
         };
@@ -3500,17 +3509,17 @@
 
           balai[name] = {
             ident: identData,
-            personel: personel.length > 0 ? personel : Array.from({ length: 10 }, emptyPersonel),
+            personel: personel.length > 0 ? personel : Array.from({ length: 5 }, emptyPersonel),
             equip: {
               jentera: mapEquipRows(apiData.jentera).length > 0
                 ? mapEquipRows(apiData.jentera)
-                : Array.from({ length: 5 }, () => emptyEquip('')),
+                : Array.from({ length: 2 }, () => emptyEquip('')),
               marin: mapEquipRows(apiData.marin).length > 0
                 ? mapEquipRows(apiData.marin)
-                : Array.from({ length: 5 }, () => emptyEquip('')),
+                : Array.from({ length: 2 }, () => emptyEquip('')),
               utiliti: mapEquipRows(apiData.utiliti).length > 0
                 ? mapEquipRows(apiData.utiliti)
-                : Array.from({ length: 5 }, () => emptyEquip('')),
+                : Array.from({ length: 2 }, () => emptyEquip('')),
               komunikasi: komunikasi.length > 0
                 ? komunikasi
                 : KOMUNIKASI_DEF.map((k) => emptyKom(k.name)),
@@ -3912,7 +3921,6 @@
         if (resetBalaiBtn) resetBalaiBtn.style.display = isBalai ? '' : 'none';
         if (resetAllBtn)   resetAllBtn.style.display   = isBalai ? 'none' : '';
 
-        /* Import & Export hanya muncul dalam tab balai */
         if (importBtn)         importBtn.style.display         = isBalai ? '' : 'none';
         if (exportCurrentBtn)  exportCurrentBtn.style.display  = isBalai ? '' : 'none';
 
@@ -4048,6 +4056,119 @@
         });
       }
 
+      /* ====== MANDATORI & PERANAN LOCKS ====== */
+      const MANDATORY_PERSONEL_KEYS = ['nama', 'pangkat', 'noBadan', 'noTelefon', 'peranan', 'pasukan', 'status', 'unit1'];
+      const MANDATORY_EQUIP_KEYS = ['kategori', 'maklumat', 'status'];
+      const MANDATORY_KOM_KEYS = ['kategori', 'jumlah', 'status'];
+      const FIELD_LABELS = {
+        nama: 'NAMA PENUH', pangkat: 'PANGKAT / GRED', noBadan: 'NO BADAN',
+        noTelefon: 'NO TELEFON', peranan: 'PERANAN', pasukan: 'PASUKAN',
+        status: 'STATUS', unit1: 'UNIT 1',
+        kategori: 'KATEGORI', maklumat: 'MAKLUMAT', jumlah: 'JUMLAH',
+      };
+      const LOCKED_PASUKAN_ROLES = ['KETUA BALAI', 'PEGAWAI OPERASI'];
+      const LOCKED_STATUS_ROLES = ['BILIK KAWALAN (BKB)'];
+
+      function applyPerananLocks(person, pasukanSelect, statusSelect) {
+        if (pasukanSelect) {
+          if (LOCKED_PASUKAN_ROLES.includes(person.peranan)) {
+            person.pasukan = 'WAKTU PEJABAT';
+            pasukanSelect.value = 'WAKTU PEJABAT';
+            pasukanSelect.disabled = true;
+            pasukanSelect.title = 'Auto-set untuk peranan ini';
+          } else {
+            pasukanSelect.disabled = false;
+            pasukanSelect.title = '';
+          }
+        }
+        if (statusSelect) {
+          if (LOCKED_STATUS_ROLES.includes(person.peranan)) {
+            person.status = 'TUGAS KHAS';
+            statusSelect.value = 'TUGAS KHAS';
+            statusSelect.disabled = true;
+            statusSelect.title = 'Auto-set untuk peranan ini';
+          } else {
+            statusSelect.disabled = false;
+            statusSelect.title = '';
+          }
+        }
+      }
+
+      function isRowPersonelEmpty(p) {
+        return MANDATORY_PERSONEL_KEYS.every(k => !p[k])
+          && !p.unit2 && !p.unit3 && !p.unit4 && !p.catatan;
+      }
+      function isRowEquipEmpty(r, isKom) {
+        if (isKom) return !r.kategori && !r.jumlah && !r.status && !r.catatan;
+        return !r.kategori && !r.maklumat && !r.status && !r.catatan;
+      }
+
+      function markMandatoryPersonel(tr, p) {
+        if (!tr || !p) return;
+        const rowEmpty = isRowPersonelEmpty(p);
+        tr.querySelectorAll('[data-mf]').forEach(el => {
+          const key = el.dataset.mf;
+          el.classList.toggle('field-invalid', !rowEmpty && !p[key]);
+        });
+      }
+      function markMandatoryEquip(tr, r, isKom) {
+        if (!tr || !r) return;
+        const rowEmpty = isRowEquipEmpty(r, isKom);
+        const keys = isKom ? MANDATORY_KOM_KEYS : MANDATORY_EQUIP_KEYS;
+        tr.querySelectorAll('[data-mf]').forEach(el => {
+          const key = el.dataset.mf;
+          if (!keys.includes(key)) return;
+          el.classList.toggle('field-invalid', !rowEmpty && !r[key]);
+        });
+      }
+
+      function validatePersonelBalai(balaiState) {
+        const invalid = [];
+        (balaiState.personel || []).forEach((p, idx) => {
+          if (isRowPersonelEmpty(p)) return;
+          const missing = MANDATORY_PERSONEL_KEYS.filter(k => !p[k]);
+          if (missing.length) invalid.push({ row: idx + 1, missing });
+        });
+        return invalid;
+      }
+      function validateEquipBalai(balaiState) {
+        const invalid = [];
+        const panels = [
+          { key: 'jentera', label: 'Jentera Utama' },
+          { key: 'marin', label: 'Jentera Marin' },
+          { key: 'utiliti', label: 'Utiliti' },
+          { key: 'komunikasi', label: 'Komunikasi' },
+        ];
+        panels.forEach(({ key, label }) => {
+          const isKom = key === 'komunikasi';
+          const keys = isKom ? MANDATORY_KOM_KEYS : MANDATORY_EQUIP_KEYS;
+          const arr = (balaiState.equip && balaiState.equip[key]) || [];
+          arr.forEach((r, idx) => {
+            if (isRowEquipEmpty(r, isKom)) return;
+            const missing = keys.filter(k => !r[k]);
+            if (missing.length) invalid.push({ panel: label, row: idx + 1, missing });
+          });
+        });
+        return invalid;
+      }
+      function validateBalaiFull(balaiState) {
+        return { personel: validatePersonelBalai(balaiState), equip: validateEquipBalai(balaiState) };
+      }
+      function hasInvalid(v) { return v.personel.length > 0 || v.equip.length > 0; }
+      function formatInvalidMsg(balaiName, v) {
+        const lines = [];
+        if (v.personel.length) {
+          lines.push('PERSONEL:');
+          v.personel.forEach(r => lines.push('  • Baris ' + r.row + ' — belum isi: ' + r.missing.map(k => FIELD_LABELS[k] || k).join(', ')));
+        }
+        if (v.equip.length) {
+          if (lines.length) lines.push('');
+          lines.push('PERALATAN:');
+          v.equip.forEach(r => lines.push('  • ' + r.panel + ' Baris ' + r.row + ' — belum isi: ' + r.missing.map(k => FIELD_LABELS[k] || k).join(', ')));
+        }
+        return 'Balai "' + balaiName + '":\n\n' + lines.join('\n');
+      }
+
       let dlCounter = 0;
       function makeKategoriDrivenInput(key, currentKat, currentMaklumat, onMaklumatChange) {
         const catalog = getCatalogForSection(key);
@@ -4057,6 +4178,7 @@
         const inp = document.createElement('input');
         inp.type = 'text';
         inp.value = currentMaklumat || '';
+        inp.dataset.mf = 'maklumat';
         inp.setAttribute('list', listId);
         inp.style.minWidth = '260px';
         function refresh(kat) {
@@ -4246,7 +4368,7 @@
     <div class="section-head">
       <h2>KEKUATAN PERSONEL</h2>
       <div style="display:flex;align-items:center;gap:.75rem;">
-        <span class="hint">Ringkasan auto-kira dari senarai di bawah</span>
+        <span class="hint">Kolom bertanda <b style="color:var(--rosak)">*</b> wajib (NAMA → UNIT 1) · ringkasan auto-kira di bawah</span>
         <span class="chev">${svgIcon('chevronDown')}</span>
       </div>
     </div>
@@ -4267,71 +4389,113 @@
         rTbl.className = 'roster';
         const thead = document.createElement('thead');
         thead.innerHTML = `<tr>
-    <th>BIL</th><th>NAMA PENUH</th><th>PANGKAT / GRED</th>
-    <th>NO BADAN</th><th>NO TELEFON</th><th>PERANAN</th>
-    <th>PASUKAN</th><th>STATUS</th>
-    <th>UNIT 1</th><th>UNIT 2</th><th>UNIT 3</th><th>UNIT 4</th>
+    <th>BIL</th>
+    <th class="th-mandatory">NAMA PENUH</th>
+    <th class="th-mandatory">PANGKAT / GRED</th>
+    <th class="th-mandatory">NO BADAN</th>
+    <th class="th-mandatory">NO TELEFON</th>
+    <th class="th-mandatory">PERANAN</th>
+    <th class="th-mandatory">PASUKAN</th>
+    <th class="th-mandatory">STATUS</th>
+    <th class="th-mandatory">UNIT 1</th>
+    <th>UNIT 2</th><th>UNIT 3</th><th>UNIT 4</th>
     <th>CATATAN</th><th></th>
   </tr>`;
         rTbl.appendChild(thead);
         const rtb = document.createElement('tbody');
         state.personel.forEach((p, idx) => {
           const tr = document.createElement('tr');
+          const markRow = () => markMandatoryPersonel(tr, p);
+
           const tdB = document.createElement('td'); tdB.className = 'bil-cell'; tdB.textContent = idx + 1; tr.appendChild(tdB);
+
           const tdN = document.createElement('td');
-          const iN = makeInput('text', p.nama, (v) => { p.nama = v; saveState(); }, 'NAMA PENUH');
-          iN.style.minWidth = '200px';
+          const iN = makeInput('text', p.nama, (v) => { p.nama = v; saveState(); markRow(); }, 'NAMA PENUH');
+          iN.dataset.mf = 'nama'; iN.style.minWidth = '200px';
           tdN.appendChild(iN); tr.appendChild(tdN);
+
           const tdP = document.createElement('td');
-          tdP.appendChild(makeSelect(RANKS, p.pangkat, (v) => { p.pangkat = v; saveState(); globalRecalc(); }));
-          tr.appendChild(tdP);
+          const selPangkat = makeSelect(RANKS, p.pangkat, (v) => { p.pangkat = v; saveState(); globalRecalc(); markRow(); });
+          selPangkat.dataset.mf = 'pangkat';
+          tdP.appendChild(selPangkat); tr.appendChild(tdP);
+
           const tdNB = document.createElement('td');
-          tdNB.appendChild(makeInput('text', p.noBadan, (v) => { p.noBadan = v; saveState(); }, ''));
-          tr.appendChild(tdNB);
+          const iNB = makeInput('text', p.noBadan, (v) => { p.noBadan = v; saveState(); markRow(); }, '');
+          iNB.dataset.mf = 'noBadan'; tdNB.appendChild(iNB); tr.appendChild(tdNB);
+
           const tdNT = document.createElement('td');
-          tdNT.appendChild(makeInput('text', p.noTelefon, (v) => { p.noTelefon = v; saveState(); }, ''));
-          tr.appendChild(tdNT);
+          const iNT = makeInput('text', p.noTelefon, (v) => { p.noTelefon = v; saveState(); markRow(); }, '');
+          iNT.dataset.mf = 'noTelefon'; tdNT.appendChild(iNT); tr.appendChild(tdNT);
+
+          let pasukanSelect = null;
+          let statusSelect = null;
+
           const tdPer = document.createElement('td');
-          tdPer.appendChild(makeSelect(PERANAN_OPTS, p.peranan, (v) => { p.peranan = v; saveState(); }));
-          tr.appendChild(tdPer);
+          const selPer = makeSelect(PERANAN_OPTS, p.peranan, (v) => {
+            const oldPeranan = p.peranan;
+            p.peranan = v;
+            if (LOCKED_PASUKAN_ROLES.includes(oldPeranan) && !LOCKED_PASUKAN_ROLES.includes(v)) {
+              p.pasukan = '';
+              if (pasukanSelect) pasukanSelect.value = '';
+            }
+            if (LOCKED_STATUS_ROLES.includes(oldPeranan) && !LOCKED_STATUS_ROLES.includes(v)) {
+              p.status = '';
+              if (statusSelect) statusSelect.value = '';
+            }
+            applyPerananLocks(p, pasukanSelect, statusSelect);
+            saveState(); globalRecalc(); markRow();
+          });
+          selPer.dataset.mf = 'peranan';
+          tdPer.appendChild(selPer); tr.appendChild(tdPer);
+
           const tdPas = document.createElement('td');
-          tdPas.appendChild(makeSelect(PASUKAN_OPTS, p.pasukan, (v) => { p.pasukan = v; saveState(); }));
-          tr.appendChild(tdPas);
+          pasukanSelect = makeSelect(PASUKAN_OPTS, p.pasukan, (v) => {
+            if (LOCKED_PASUKAN_ROLES.includes(p.peranan)) return;
+            p.pasukan = v;
+            saveState(); markRow();
+          });
+          pasukanSelect.dataset.mf = 'pasukan';
+          tdPas.appendChild(pasukanSelect); tr.appendChild(tdPas);
+
           const tdS = document.createElement('td');
-          tdS.appendChild(makeSelect(PERSONEL_STATUSES, p.status, (v) => { p.status = v; saveState(); globalRecalc(); }));
-          tr.appendChild(tdS);
+          statusSelect = makeSelect(PERSONEL_STATUSES, p.status, (v) => {
+            if (LOCKED_STATUS_ROLES.includes(p.peranan)) return;
+            p.status = v;
+            saveState(); globalRecalc(); markRow();
+          });
+          statusSelect.dataset.mf = 'status';
+          tdS.appendChild(statusSelect); tr.appendChild(tdS);
+
+          applyPerananLocks(p, pasukanSelect, statusSelect);
+
           const unitSelects = {};
           ['unit1', 'unit2', 'unit3', 'unit4'].forEach((k) => {
             const td = document.createElement('td');
             const sel = makeSelect(UNITS, p[k], (v) => {
               p[k] = v;
               if (k === 'unit1') updateUnitLocks(p, unitSelects);
-              saveState();
-              globalRecalc();
+              saveState(); globalRecalc(); markRow();
             });
-            unitSelects[k] = sel;
-            td.appendChild(sel);
-            tr.appendChild(td);
+            if (k === 'unit1') sel.dataset.mf = 'unit1';
+            unitSelects[k] = sel; td.appendChild(sel); tr.appendChild(td);
           });
           updateUnitLocks(p, unitSelects);
+
           const tdC = document.createElement('td');
-          tdC.appendChild(makeInput('text', p.catatan, (v) => { p.catatan = v; saveState(); }, ''));
-          tr.appendChild(tdC);
-          const tdD = document.createElement('td');
-          tdD.className = 'del-cell';
+          const iC = makeInput('text', p.catatan, (v) => { p.catatan = v; saveState(); markRow(); }, '');
+          tdC.appendChild(iC); tr.appendChild(tdC);
+
+          const tdD = document.createElement('td'); tdD.className = 'del-cell';
           const bD = document.createElement('button');
-          bD.innerHTML = svgIcon('x');
-          bD.title = 'Padam baris';
-          bD.setAttribute('aria-label', 'Padam baris');
+          bD.innerHTML = svgIcon('x'); bD.title = 'Padam baris'; bD.setAttribute('aria-label', 'Padam baris');
           bD.addEventListener('click', () => {
             if (!confirm(`Padam baris ${idx + 1}?`)) return;
-            state.personel.splice(idx, 1);
-            saveState();
-            rerenderPersonel();
+            state.personel.splice(idx, 1); saveState(); rerenderPersonel();
           });
-          tdD.appendChild(bD);
-          tr.appendChild(tdD);
+          tdD.appendChild(bD); tr.appendChild(tdD);
+
           rtb.appendChild(tr);
+          markMandatoryPersonel(tr, p);
         });
         rTbl.appendChild(rtb);
         body.appendChild(rTbl);
@@ -4343,19 +4507,9 @@
         bA.textContent = '+ Tambah Baris';
         bA.addEventListener('click', () => {
           state.personel.push(emptyPersonel());
-          saveState();
-          rerenderPersonel();
+          saveState(); rerenderPersonel();
         });
         tb.appendChild(bA);
-        const b5 = document.createElement('button');
-        b5.className = 'btn small';
-        b5.textContent = '+ 5 Baris';
-        b5.addEventListener('click', () => {
-          for (let i = 0; i < 5; i++) state.personel.push(emptyPersonel());
-          saveState();
-          rerenderPersonel();
-        });
-        tb.appendChild(b5);
         body.appendChild(tb);
       }
 
@@ -4493,7 +4647,7 @@
     <div class="section-head">
       <h2>${title}</h2>
       <div style="display:flex;align-items:center;gap:.75rem;">
-        <span class="hint">Ringkasan auto-kira dari senarai di bawah</span>
+        <span class="hint">Kolom bertanda <b style="color:var(--rosak)">*</b> wajib · ringkasan auto-kira di bawah</span>
         <span class="chev">${svgIcon('chevronDown')}</span>
       </div>
     </div>
@@ -4520,35 +4674,38 @@
         const thead = document.createElement('thead');
         thead.innerHTML = `<tr>
     <th>BIL</th>
-    <th>KATEGORI</th>
-    ${isKom ? '' : '<th>MAKLUMAT</th>'}
-    ${isKom ? '<th>JUMLAH</th>' : ''}
-    <th>STATUS</th><th>CATATAN</th><th></th>
+    <th class="th-mandatory">KATEGORI</th>
+    ${isKom ? '' : '<th class="th-mandatory">MAKLUMAT</th>'}
+    ${isKom ? '<th class="th-mandatory">JUMLAH</th>' : ''}
+    <th class="th-mandatory">STATUS</th><th>CATATAN</th><th></th>
   </tr>`;
         rTbl.appendChild(thead);
         const rtb = document.createElement('tbody');
 
         state.equip[key].forEach((r, idx) => {
           const tr = document.createElement('tr');
+          const markRow = () => markMandatoryEquip(tr, r, isKom);
+
           const tdB = document.createElement('td'); tdB.className = 'bil-cell'; tdB.textContent = idx + 1; tr.appendChild(tdB);
+
           const tdK = document.createElement('td');
           let vehCtrl = null;
           const katSelect = makeSelect(katList, r.kategori, (v) => {
-            r.kategori = v;
-            saveState();
+            r.kategori = v; saveState();
             if (vehCtrl) vehCtrl.updateForKategori(v);
-            globalRecalc();
+            globalRecalc(); markRow();
           }, isKategoriDriven ? 'kat-select' : null);
-          tdK.appendChild(katSelect);
-          tr.appendChild(tdK);
+          katSelect.dataset.mf = 'kategori';
+          tdK.appendChild(katSelect); tr.appendChild(tdK);
 
           if (!isKom) {
             const tdM = document.createElement('td');
             if (isKategoriDriven) {
-              vehCtrl = makeKategoriDrivenInput(key, r.kategori, r.maklumat, (v) => { r.maklumat = v; saveState(); });
+              vehCtrl = makeKategoriDrivenInput(key, r.kategori, r.maklumat, (v) => { r.maklumat = v; saveState(); markRow(); });
               tdM.appendChild(vehCtrl.element);
             } else {
-              const iM = makeInput('text', r.maklumat, (v) => { r.maklumat = v; saveState(); }, 'No. plat / keterangan');
+              const iM = makeInput('text', r.maklumat, (v) => { r.maklumat = v; saveState(); markRow(); }, 'No. plat / keterangan');
+              iM.dataset.mf = 'maklumat';
               iM.style.minWidth = '220px';
               tdM.appendChild(iM);
             }
@@ -4557,41 +4714,36 @@
 
           if (isKom) {
             const tdJ = document.createElement('td');
-            const iJ = makeInput('number', r.jumlah, (v) => { r.jumlah = v; saveState(); globalRecalc(); }, '');
-            iJ.min = '0';
-            iJ.style.minWidth = '55px'; iJ.style.maxWidth = '80px';
-            tdJ.appendChild(iJ);
-            tr.appendChild(tdJ);
+            const iJ = makeInput('number', r.jumlah, (v) => { r.jumlah = v; saveState(); globalRecalc(); markRow(); }, '');
+            iJ.dataset.mf = 'jumlah';
+            iJ.min = '0'; iJ.style.minWidth = '55px'; iJ.style.maxWidth = '80px';
+            tdJ.appendChild(iJ); tr.appendChild(tdJ);
           }
 
           const tdS = document.createElement('td');
-          tdS.appendChild(makeSelect(EQUIP_STATUSES, r.status, (v) => { r.status = v; saveState(); globalRecalc(); }));
-          tr.appendChild(tdS);
+          const selS = makeSelect(EQUIP_STATUSES, r.status, (v) => { r.status = v; saveState(); globalRecalc(); markRow(); });
+          selS.dataset.mf = 'status';
+          tdS.appendChild(selS); tr.appendChild(tdS);
 
           const tdC = document.createElement('td');
-          const iC = makeInput('text', r.catatan, (v) => { r.catatan = v; saveState(); }, '');
+          const iC = makeInput('text', r.catatan, (v) => { r.catatan = v; saveState(); markRow(); }, '');
           iC.style.minWidth = '130px';
-          tdC.appendChild(iC);
-          tr.appendChild(tdC);
+          tdC.appendChild(iC); tr.appendChild(tdC);
 
-          const tdD = document.createElement('td');
-          tdD.className = 'del-cell';
+          const tdD = document.createElement('td'); tdD.className = 'del-cell';
           const bD = document.createElement('button');
-          bD.innerHTML = svgIcon('x');
-          bD.title = 'Padam baris';
-          bD.setAttribute('aria-label', 'Padam baris');
+          bD.innerHTML = svgIcon('x'); bD.title = 'Padam baris'; bD.setAttribute('aria-label', 'Padam baris');
           bD.addEventListener('click', () => {
             if (!confirm(`Padam baris ${idx + 1}?`)) return;
-            state.equip[key].splice(idx, 1);
-            saveState();
+            state.equip[key].splice(idx, 1); saveState();
             rerenderEquip(key, title, color, katList, isKom);
           });
-          tdD.appendChild(bD);
-          tr.appendChild(tdD);
+          tdD.appendChild(bD); tr.appendChild(tdD);
+
           rtb.appendChild(tr);
+          markMandatoryEquip(tr, r, isKom);
         });
-        rTbl.appendChild(rtb);
-        body.appendChild(rTbl);
+        rTbl.appendChild(rtb); body.appendChild(rTbl);
 
         const tb = document.createElement('div');
         tb.className = 'roster-toolbar';
@@ -4604,15 +4756,6 @@
           rerenderEquip(key, title, color, katList, isKom);
         });
         tb.appendChild(bA);
-        const b5 = document.createElement('button');
-        b5.className = 'btn small';
-        b5.textContent = '+ 5 Baris';
-        b5.addEventListener('click', () => {
-          for (let i = 0; i < 5; i++) state.equip[key].push(isKom ? emptyKom('') : emptyEquip(''));
-          saveState();
-          rerenderEquip(key, title, color, katList, isKom);
-        });
-        tb.appendChild(b5);
         body.appendChild(tb);
       }
 
@@ -4826,7 +4969,6 @@
           th.colSpan = 4; th.textContent = u;
           gr.appendChild(th);
         });
-        /* BREAKDOWN — display sahaja, semua nilai 0 */
         const bth = document.createElement('th');
         bth.colSpan = 5; bth.textContent = 'BREAKDOWN';
         gr.appendChild(bth);
@@ -4847,7 +4989,6 @@
             sr.appendChild(th);
           });
         });
-        /* BREAKDOWN sub-kolum: A, C, CS, TK, J */
         ['A', 'C', 'CS', 'TK', 'J'].forEach((s) => {
           const th = document.createElement('th');
           th.textContent = s;
@@ -4881,7 +5022,6 @@
               tr.appendChild(td);
             });
           });
-          /* BREAKDOWN — display sahaja, semua 0 */
           ['A', 'C', 'CS', 'TK', 'J'].forEach(() => {
             const td = document.createElement('td');
             td.textContent = '0';
@@ -4915,7 +5055,6 @@
             fr.appendChild(td);
           });
         });
-        /* BREAKDOWN footer — display sahaja, semua 0 */
         ['A', 'C', 'CS', 'TK', 'J'].forEach(() => {
           const td = document.createElement('td');
           td.textContent = '0';
@@ -5354,8 +5493,7 @@
         const { key, title, color, catList, mode, equipKey, isKomunikasi, katMapSummary, katMapPersonel } = opts;
         const isPersonel = mode === 'personel';
         const subCols = isPersonel ? ['A', 'C', 'CS', 'TK'] : ['B', 'R'];
-        const subColSpan = subCols.length + 1; // +1 untuk J per kategori
-        /* ⚠️ PERUBAHAN: tambah kolum J pada JUMLAH hujung */
+        const subColSpan = subCols.length + 1;
         const grandCols = isPersonel ? ['A', 'C', 'CS', 'TK', 'J'] : ['B', 'R', 'J'];
         const grandColSpan = grandCols.length;
         const totalCols = 2 + catList.length * subColSpan + grandColSpan;
@@ -5437,7 +5575,6 @@
             }
           });
 
-          /* Grand total — grandCols kini ada elemen terakhir 'J' */
           const grand = grandCols.map((_, ci) => {
             let s = 0;
             cats.forEach((arr) => { s += arr[ci]; });
@@ -5522,7 +5659,6 @@
           thJ.className = 'sub-J';
           hSub.appendChild(thJ);
         });
-        /* Grand header sub-row — kini termasuk J */
         grandCols.forEach((sc) => {
           const th = document.createElement('th');
           th.textContent = sc;
@@ -5751,6 +5887,15 @@
           showToast('Sila pilih Shif dan Tarikh sebelum arkib', 'error');
           return;
         }
+
+        /* ==== VALIDASI MANDATORI ==== */
+        const v = validateBalaiFull(state);
+        if (hasInvalid(v)) {
+          alert('Tidak boleh arkib — kolum mandatori belum lengkap:\n\n' + formatInvalidMsg(store.activeBalai, v));
+          globalRecalc();
+          return;
+        }
+
         if (!confirm('Simpan arkib untuk balai "' + balai + '"?\n\nTarikh: ' + tarikh + '\nShif: ' + shif + '\n\nIni akan menyimpan rekod kekuatan anggota dan jentera ke Supabase.')) return;
         btn.disabled = true;
         btn.classList.add('saving');
@@ -5846,6 +5991,17 @@
         for (let i = 0; i < senaraiBalai.length; i++) {
           const balaiName = senaraiBalai[i];
           label.textContent = 'Arkib ' + (i + 1) + '/' + senaraiBalai.length + '…';
+
+          /* ==== SKIP JIKA MANDATORI TAK LENGKAP ==== */
+          const balaiState0 = store.balai[balaiName];
+          const v0 = balaiState0 ? validateBalaiFull(balaiState0) : { personel: [], equip: [] };
+          if (hasInvalid(v0)) {
+            ralat++;
+            senaraiRalat.push(balaiName + ' (mandatori)');
+            console.warn('Skip ' + balaiName + ' — mandatori tak lengkap', v0);
+            continue;
+          }
+
           try {
             const data = buildArchiveDataForBalai(balaiName);
             if (data.personelRows.length === 0 && data.jenteraRows.length === 0) {
@@ -5937,6 +6093,15 @@
           showToast('Sila pilih Shif Bertugas sebelum simpan', 'error');
           return;
         }
+
+        /* ==== VALIDASI MANDATORI ==== */
+        const v = validateBalaiFull(state);
+        if (hasInvalid(v)) {
+          alert('Tidak boleh simpan — kolum mandatori belum lengkap:\n\n' + formatInvalidMsg(store.activeBalai, v));
+          globalRecalc();
+          return;
+        }
+
         btn.disabled = true;
         btn.classList.add('saving');
         btn.classList.remove('saved');
