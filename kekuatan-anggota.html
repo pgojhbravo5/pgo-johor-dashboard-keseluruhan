@@ -3447,11 +3447,11 @@
       function defaultState(balaiName) {
         return {
           ident: { balai: balaiName || 'LARKIN', shif: '', tarikh: '', kategori: '' },
-          personel: Array.from({ length: 5 }, emptyPersonel),
+          personel: Array.from({ length: 1 }, emptyPersonel),
           equip: {
-            jentera: Array.from({ length: 2 }, () => emptyEquip('')),
-            marin: Array.from({ length: 2 }, () => emptyEquip('')),
-            utiliti: Array.from({ length: 2 }, () => emptyEquip('')),
+            jentera: Array.from({ length: 1 }, () => emptyEquip('')),
+            marin: Array.from({ length: 1 }, () => emptyEquip('')),
+            utiliti: Array.from({ length: 1 }, () => emptyEquip('')),
             komunikasi: KOMUNIKASI_DEF.map((k) => emptyKom(k.name)),
           },
         };
@@ -3509,17 +3509,17 @@
 
           balai[name] = {
             ident: identData,
-            personel: personel.length > 0 ? personel : Array.from({ length: 5 }, emptyPersonel),
+            personel: personel.length > 0 ? personel : Array.from({ length: 1 }, emptyPersonel),
             equip: {
               jentera: mapEquipRows(apiData.jentera).length > 0
                 ? mapEquipRows(apiData.jentera)
-                : Array.from({ length: 2 }, () => emptyEquip('')),
+                : Array.from({ length: 1 }, () => emptyEquip('')),
               marin: mapEquipRows(apiData.marin).length > 0
                 ? mapEquipRows(apiData.marin)
-                : Array.from({ length: 2 }, () => emptyEquip('')),
+                : Array.from({ length: 1 }, () => emptyEquip('')),
               utiliti: mapEquipRows(apiData.utiliti).length > 0
                 ? mapEquipRows(apiData.utiliti)
-                : Array.from({ length: 2 }, () => emptyEquip('')),
+                : Array.from({ length: 1 }, () => emptyEquip('')),
               komunikasi: komunikasi.length > 0
                 ? komunikasi
                 : KOMUNIKASI_DEF.map((k) => emptyKom(k.name)),
@@ -4103,31 +4103,33 @@
         return !r.kategori && !r.maklumat && !r.status && !r.catatan;
       }
 
+      /* ====== UBAH: TANPA SKIP KOSONG — SEMUA BARIS WAJIB LENGKAP ====== */
       function markMandatoryPersonel(tr, p) {
         if (!tr || !p) return;
-        const rowEmpty = isRowPersonelEmpty(p);
         tr.querySelectorAll('[data-mf]').forEach(el => {
           const key = el.dataset.mf;
-          el.classList.toggle('field-invalid', !rowEmpty && !p[key]);
+          el.classList.toggle('field-invalid', !p[key]);
         });
       }
       function markMandatoryEquip(tr, r, isKom) {
         if (!tr || !r) return;
-        const rowEmpty = isRowEquipEmpty(r, isKom);
         const keys = isKom ? MANDATORY_KOM_KEYS : MANDATORY_EQUIP_KEYS;
         tr.querySelectorAll('[data-mf]').forEach(el => {
           const key = el.dataset.mf;
           if (!keys.includes(key)) return;
-          el.classList.toggle('field-invalid', !rowEmpty && !r[key]);
+          el.classList.toggle('field-invalid', !r[key]);
         });
       }
 
       function validatePersonelBalai(balaiState) {
         const invalid = [];
         (balaiState.personel || []).forEach((p, idx) => {
-          if (isRowPersonelEmpty(p)) return;
           const missing = MANDATORY_PERSONEL_KEYS.filter(k => !p[k]);
-          if (missing.length) invalid.push({ row: idx + 1, missing });
+          if (missing.length) invalid.push({
+            row: idx + 1,
+            missing,
+            empty: isRowPersonelEmpty(p),
+          });
         });
         return invalid;
       }
@@ -4144,9 +4146,13 @@
           const keys = isKom ? MANDATORY_KOM_KEYS : MANDATORY_EQUIP_KEYS;
           const arr = (balaiState.equip && balaiState.equip[key]) || [];
           arr.forEach((r, idx) => {
-            if (isRowEquipEmpty(r, isKom)) return;
             const missing = keys.filter(k => !r[k]);
-            if (missing.length) invalid.push({ panel: label, row: idx + 1, missing });
+            if (missing.length) invalid.push({
+              panel: label,
+              row: idx + 1,
+              missing,
+              empty: isRowEquipEmpty(r, isKom),
+            });
           });
         });
         return invalid;
@@ -4159,12 +4165,18 @@
         const lines = [];
         if (v.personel.length) {
           lines.push('PERSONEL:');
-          v.personel.forEach(r => lines.push('  • Baris ' + r.row + ' — belum isi: ' + r.missing.map(k => FIELD_LABELS[k] || k).join(', ')));
+          v.personel.forEach(r => {
+            if (r.empty) lines.push('  • Baris ' + r.row + ' — KOSONG. Sila PADAM baris ini (tekan butang ✕) atau isi maklumat.');
+            else lines.push('  • Baris ' + r.row + ' — belum isi: ' + r.missing.map(k => FIELD_LABELS[k] || k).join(', '));
+          });
         }
         if (v.equip.length) {
           if (lines.length) lines.push('');
           lines.push('PERALATAN:');
-          v.equip.forEach(r => lines.push('  • ' + r.panel + ' Baris ' + r.row + ' — belum isi: ' + r.missing.map(k => FIELD_LABELS[k] || k).join(', ')));
+          v.equip.forEach(r => {
+            if (r.empty) lines.push('  • ' + r.panel + ' Baris ' + r.row + ' — KOSONG. Sila PADAM baris ini (tekan butang ✕) atau isi maklumat.');
+            else lines.push('  • ' + r.panel + ' Baris ' + r.row + ' — belum isi: ' + r.missing.map(k => FIELD_LABELS[k] || k).join(', '));
+          });
         }
         return 'Balai "' + balaiName + '":\n\n' + lines.join('\n');
       }
@@ -4510,6 +4522,23 @@
           saveState(); rerenderPersonel();
         });
         tb.appendChild(bA);
+
+        /* Butang padam semua baris kosong (personel) */
+        const bClean = document.createElement('button');
+        bClean.className = 'btn danger small';
+        bClean.textContent = '✕ Padam Baris Kosong';
+        bClean.title = 'Padam semua baris yang belum diisi';
+        bClean.addEventListener('click', () => {
+          const before = state.personel.length;
+          state.personel = state.personel.filter(p => !isRowPersonelEmpty(p));
+          if (state.personel.length === 0) state.personel.push(emptyPersonel());
+          const removed = before - state.personel.length;
+          if (removed === 0) { showToast('Tiada baris kosong untuk dipadam'); return; }
+          saveState(); rerenderPersonel();
+          showToast('Dipadam ' + removed + ' baris kosong', 'success');
+        });
+        tb.appendChild(bClean);
+
         body.appendChild(tb);
       }
 
@@ -4756,6 +4785,26 @@
           rerenderEquip(key, title, color, katList, isKom);
         });
         tb.appendChild(bA);
+
+        /* Butang padam semua baris kosong (peralatan) */
+        const bClean = document.createElement('button');
+        bClean.className = 'btn danger small';
+        bClean.textContent = '✕ Padam Baris Kosong';
+        bClean.title = 'Padam semua baris yang belum diisi';
+        bClean.addEventListener('click', () => {
+          const before = state.equip[key].length;
+          state.equip[key] = state.equip[key].filter(r => !isRowEquipEmpty(r, isKom));
+          if (state.equip[key].length === 0) {
+            state.equip[key].push(isKom ? emptyKom('') : emptyEquip(''));
+          }
+          const removed = before - state.equip[key].length;
+          if (removed === 0) { showToast('Tiada baris kosong untuk dipadam'); return; }
+          saveState();
+          rerenderEquip(key, title, color, katList, isKom);
+          showToast('Dipadam ' + removed + ' baris kosong', 'success');
+        });
+        tb.appendChild(bClean);
+
         body.appendChild(tb);
       }
 
