@@ -3393,6 +3393,9 @@
         }
 
         @media (max-width: 42.5rem) {
+            :root {
+                --section-title-size: 0.9rem;
+            }
             .header-inner {
                 padding: 0.75rem 0.75rem;
             }
@@ -3403,14 +3406,14 @@
                 height: 2.375rem;
             }
             .logo-text h1 {
-                font-size: 0.75rem;
-                line-height: 1.25;
-                gap: 0.25rem;
+                font-size: 1.125rem;
+                line-height: 1.2;
+                gap: 0.3rem;
             }
             .logo-text .sub {
-                font-size: 0.5rem;
-                letter-spacing: 0.0625rem;
-                margin-top: 0.125rem;
+                font-size: 0.625rem;
+                letter-spacing: 0.125rem;
+                margin-top: 0.2rem;
             }
             .stats-bar {
                 grid-template-columns: repeat(2, 1fr);
@@ -3529,7 +3532,7 @@
                 margin: 0.4rem 0.5rem 0.5rem 0.5rem;
             }
             .carousel-panel-header {
-                font-size: 0.7rem;
+                font-size: var(--section-title-size);
                 padding: 0.6rem 0.75rem 0.5rem 0.75rem;
             }
         }
@@ -3556,6 +3559,9 @@
         @media (max-width: 480px) {
             html {
                 font-size: 15px;
+            }
+            :root {
+                --section-title-size: 0.95rem;
             }
             .dashboard {
                 padding: 1rem 0.6rem;
@@ -3599,10 +3605,12 @@
                 font-size: 1.25rem;
             }
             .logo-text h1 {
-                font-size: 1.2rem;
+                font-size: 1.25rem;
+                line-height: 1.15;
             }
             .logo-text .sub {
-                font-size: 0.6rem;
+                font-size: 0.65rem;
+                letter-spacing: 0.15rem;
             }
             .logo-img {
                 height: 2rem;
@@ -3731,6 +3739,25 @@
             }
             .anggota-mini-stats span {
                 white-space: nowrap;
+            }
+        }
+
+        /* ===== HAND PHONE SANGAT KECIL ===== */
+        @media (max-width: 360px) {
+            .logo-text h1 {
+                font-size: 1.05rem;
+                line-height: 1.15;
+                gap: 0.2rem;
+            }
+            .logo-text .sub {
+                font-size: 0.55rem;
+                letter-spacing: 0.1rem;
+            }
+            .logo-img {
+                height: 1.75rem;
+            }
+            .logo-img-wrapper {
+                padding: 0.35rem;
             }
         }
 
