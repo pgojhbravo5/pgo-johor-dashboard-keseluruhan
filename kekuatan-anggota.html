@@ -2691,8 +2691,13 @@
         '11. PBB': 'PBB (PBBK II + PBB)',
       };
 
-      // ⬇️ TAMBAHAN: Peranan yang TIDAK dikira dalam jumlah anggota
+      // ⬇️ Peranan yang TIDAK dikira dalam jumlah anggota
       const EXCLUDED_ROLES_FROM_COUNT = ['KETUA BALAI', 'PEGAWAI OPERASI'];
+
+      // ⬇️ Default STATUS ikut PERANAN (boleh diubah oleh user)
+      const DEFAULT_STATUS_FOR_ROLES = {
+        'BILIK KAWALAN (BKB)': 'BERTUGAS',
+      };
 
       const UNITS = ['PEMADAM', 'EMRS', 'HAZMAT', 'PPDA', 'RIM', 'STORM / MUST'];
       const STATUS_P = ['A', 'C', 'CS', 'TK'];
@@ -4119,7 +4124,7 @@
         kategori: 'KATEGORI', maklumat: 'MAKLUMAT', jumlah: 'JUMLAH',
       };
       const LOCKED_PASUKAN_ROLES = ['KETUA BALAI', 'PEGAWAI OPERASI'];
-      // ⬇️ BKB tidak lagi dikunci — status jadi OPTIONAL dropdown
+      // ⬇️ BKB tidak dikunci — status jadi OPTIONAL dropdown
       const LOCKED_STATUS_ROLES = [];
 
       function applyPerananLocks(person, pasukanSelect, statusSelect) {
@@ -4143,6 +4148,13 @@
           } else {
             statusSelect.disabled = false;
             statusSelect.title = '';
+            // ⬇️ Auto-default STATUS untuk peranan tertentu (BKB → BERTUGAS)
+            // Hanya set jika status masih kosong — user boleh ubah selepas ini
+            const defStatus = DEFAULT_STATUS_FOR_ROLES[person.peranan];
+            if (defStatus && !person.status) {
+              person.status = defStatus;
+              statusSelect.value = defStatus;
+            }
           }
         }
       }
