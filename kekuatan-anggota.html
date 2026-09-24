@@ -2455,7 +2455,7 @@
       }
 
       /* ============================================================
-         ARCHIVE CONFIRM MODAL
+         EXPORT / ARCHIVE CONFIRM MODAL
          ============================================================ */
       .archive-modal-overlay {
         position: fixed; inset: 0;
@@ -2943,59 +2943,61 @@
     </div>
 
     <!-- ============================================================
-         MODAL: Simpan Data Arkib? (selepas Simpan Sekarang)
+         MODAL: Export Data? (selepas Simpan Sekarang)
          ============================================================ -->
-    <div class="archive-modal-overlay" id="archiveModalOverlay" role="dialog" aria-modal="true" aria-labelledby="archiveModalTitle">
+    <div class="archive-modal-overlay" id="exportModalOverlay" role="dialog" aria-modal="true" aria-labelledby="exportModalTitle">
       <div class="archive-modal">
         <div class="archive-modal-head">
-          <h3 id="archiveModalTitle">Simpan Data Arkib?</h3>
-          <button class="archive-modal-close" id="archiveModalClose" type="button" aria-label="Tutup">×</button>
+          <h3 id="exportModalTitle">Export Data Balai?</h3>
+          <button class="archive-modal-close" id="exportModalClose" type="button" aria-label="Tutup">×</button>
         </div>
         <div class="archive-modal-body">
 
-          <div class="archive-modal-icon">📦</div>
+          <div class="archive-modal-icon">📥</div>
           <p class="archive-modal-intro">
-            Data balai <b id="archiveModalBalai">—</b> telah berjaya disimpan ke Supabase.
+            Data balai <b id="exportModalBalai">—</b> telah berjaya disimpan ke Supabase.
           </p>
 
           <div class="archive-explain">
-            <h4>Apa itu Data Arkib?</h4>
+            <h4>Apa itu Export Data?</h4>
             <p>
-              <b>Data Arkib</b> ialah <b>rekod kekal</b> yang disimpan ke pangkalan data Supabase sebagai
-              rujukan sejarah. Ia menyimpan <b>ringkasan kekuatan</b> balai pada tarikh &amp; shif semasa —
-              <b>bukan</b> salinan penuh semua butiran anggota.
+              <b>Export Data</b> ialah proses memuat turun <b>salinan penuh</b> data balai anda
+              sebagai fail <b>JSON</b> ke komputer/peranti anda. Fail ini boleh digunakan sebagai
+              <b>backup</b>, rujukan peribadi, atau untuk <b>import semula</b> ke dalam sistem.
             </p>
 
-            <h4>Yang Disimpan:</h4>
+            <h4>Yang Akan Dieksport:</h4>
             <ul>
-              <li><b>Arkib Personel</b> — bilangan anggota mengikut <b>Gred × Unit × Status</b> (Bertugas / Cuti / Cuti Sakit / Tugas Khas)</li>
-              <li><b>Arkib Jentera</b> — bilangan jentera &amp; kenderaan mengikut <b>Kategori × Keadaan</b> (Baik / Rosak) untuk Jentera Utama, Marin, Utiliti &amp; Komunikasi</li>
+              <li><b>Identiti Balai</b> — Nama balai, shif bertugas, tarikh, dan kategori balai</li>
+              <li><b>Data Personel</b> — Semua butiran anggota (nama, pangkat, no badan, telefon, peranan, pasukan, status, unit, catatan)</li>
+              <li><b>Data Jentera &amp; Kenderaan</b> — Jentera Utama, Marin, Utiliti &amp; Komunikasi (maklumat, kategori, status, catatan)</li>
             </ul>
 
-            <h4>Maklumat Arkib:</h4>
+            <h4>Maklumat Export:</h4>
             <div style="display:flex; flex-direction:column; gap:0.28rem;">
-              <div><span style="color:var(--text-dim);">Balai:</span> <b id="archiveModalBalai2">—</b></div>
-              <div><span style="color:var(--text-dim);">Tarikh:</span> <b id="archiveModalTarikh">—</b></div>
-              <div><span style="color:var(--text-dim);">Shif:</span> <b id="archiveModalShif">—</b></div>
+              <div><span style="color:var(--text-dim);">Balai:</span> <b id="exportModalBalai2">—</b></div>
+              <div><span style="color:var(--text-dim);">Tarikh:</span> <b id="exportModalTarikh">—</b></div>
+              <div><span style="color:var(--text-dim);">Shif:</span> <b id="exportModalShif">—</b></div>
+              <div><span style="color:var(--text-dim);">Format Fail:</span> <b>JSON (.json)</b></div>
             </div>
 
             <div class="ae-note">
-              <span class="ae-warn">⚠ Nota:</span> Data arkib yang telah disimpan <b>tidak boleh dipadam</b> melalui sistem ini.
-              Ia hanya untuk <b>rujukan &amp; laporan</b> — tidak mengubah data semasa balai anda.
+              <span class="ae-warn">ℹ Nota:</span> Fail export <b>tidak menjejaskan</b> data di Supabase.
+              Ia hanya salinan setempat untuk rujukan/backup anda.
             </div>
           </div>
 
-          <label class="archive-confirm" id="archiveConfirmLabel">
-            <input type="checkbox" id="archiveConfirmCheck" />
+          <label class="archive-confirm" id="exportConfirmLabel">
+            <input type="checkbox" id="exportConfirmCheck" />
             <span class="ac-text">
-              Saya telah membaca dan <b>faham</b> fungsi penyimpanan Data Arkib seperti diterangkan di atas.
+              Saya telah membaca dan <b>faham</b> fungsi Export Data seperti diterangkan di atas.
             </span>
           </label>
 
         </div>
         <div class="archive-modal-foot">
-          <button class="btn" id="archiveModalNo" type="button" disabled>Tidak</button>
-          <button class="btn btn-yes-archive" id="archiveModalYes" type="button" disabled>Ya, Simpan Arkib</button>
+          <button class="btn" id="exportModalNo" type="button" disabled>Tidak</button>
+          <button class="btn btn-yes-archive" id="exportModalYes" type="button" disabled>Ya, Export</button>
         </div>
       </div>
     </div>
@@ -4009,8 +4011,8 @@
         if (e.key === 'Escape' || e.key === 'Esc') {
           const printModal = document.getElementById('printModalOverlay');
           if (printModal && printModal.classList.contains('active')) return;
-          const archiveModal = document.getElementById('archiveModalOverlay');
-          if (archiveModal && archiveModal.classList.contains('active')) return;
+          const exportModal = document.getElementById('exportModalOverlay');
+          if (exportModal && exportModal.classList.contains('active')) return;
           if (document.querySelector('.section.fullscreen-active')) {
             closeAllFullscreenPanels();
           }
@@ -6110,7 +6112,7 @@
     <div class="section-head">
       <h2>KEKUATAN PERSONEL</h2>
       <div style="display:flex;align-items:center;gap:.75rem;">
-        <span class="hint">Kolom bertanda <b style="color:var(--rosak)">*</b> wajib (NAMA → UNIT 1) · ringkasan auto-kira di bawah</span>
+        <span class="hint">Kolum bertanda <b style="color:var(--rosak)">*</b> wajib (NAMA → UNIT 1) · ringkasan auto-kira di bawah</span>
         <span class="chev">${svgIcon('chevronDown')}</span>
       </div>
     </div>
@@ -6345,7 +6347,7 @@
     <div class="section-head">
       <h2>${title}</h2>
       <div style="display:flex;align-items:center;gap:.75rem;">
-        <span class="hint">Kolom bertanda <b style="color:var(--rosak)">*</b> wajib · ringkasan auto-kira di bawah</span>
+        <span class="hint">Kolum bertanda <b style="color:var(--rosak)">*</b> wajib · ringkasan auto-kira di bawah</span>
         <span class="chev">${svgIcon('chevronDown')}</span>
       </div>
     </div>
@@ -8154,19 +8156,45 @@
         await performArchiveBalai({ btn: btn, label: label });
       });
 
-      function showArchiveModal(onYes, onNo) {
-        const overlay = document.getElementById('archiveModalOverlay');
+      /* ============================================================
+         PERFORM EXPORT BALAI — helper dipanggil dari butang Export
+         & modal selepas Simpan Sekarang
+         ============================================================ */
+      function performExportBalai() {
+        if (store.view !== 'balai') {
+          showToast('Export hanya untuk paparan balai', 'error');
+          return;
+        }
+        const blob = new Blob([JSON.stringify(state, null, 2)], { type: 'application/json' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        const tk = state.ident.tarikh || new Date().toISOString().slice(0, 10);
+        const bl = (store.activeBalai || 'BALAI').replace(/\s+/g, '_');
+        a.href = url;
+        a.download = `kekuatan_${bl}_${tk}.json`;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+        showToast('Balai ' + store.activeBalai + ' berjaya dieksport', 'success');
+      }
+
+      /* ============================================================
+         MODAL EXPORT — seakan arkib, tapi untuk export data balai
+         ============================================================ */
+      function showExportModal(onYes, onNo) {
+        const overlay = document.getElementById('exportModalOverlay');
         if (!overlay) return;
 
-        const balaiEl  = document.getElementById('archiveModalBalai');
-        const balai2El = document.getElementById('archiveModalBalai2');
-        const tarikhEl = document.getElementById('archiveModalTarikh');
-        const shifEl   = document.getElementById('archiveModalShif');
-        const checkEl  = document.getElementById('archiveConfirmCheck');
-        const lblEl    = document.getElementById('archiveConfirmLabel');
-        const btnYes   = document.getElementById('archiveModalYes');
-        const btnNo    = document.getElementById('archiveModalNo');
-        const btnClose = document.getElementById('archiveModalClose');
+        const balaiEl  = document.getElementById('exportModalBalai');
+        const balai2El = document.getElementById('exportModalBalai2');
+        const tarikhEl = document.getElementById('exportModalTarikh');
+        const shifEl   = document.getElementById('exportModalShif');
+        const checkEl  = document.getElementById('exportConfirmCheck');
+        const lblEl    = document.getElementById('exportConfirmLabel');
+        const btnYes   = document.getElementById('exportModalYes');
+        const btnNo    = document.getElementById('exportModalNo');
+        const btnClose = document.getElementById('exportModalClose');
 
         const namaBalai = store.activeBalai;
         const tarikhStr = state.ident.tarikh || '—';
@@ -8186,7 +8214,6 @@
           lblEl.classList.toggle('checked', ok);
           btnYes.disabled = !ok;
           btnNo.disabled = !ok;
-
           playCheckboxTickSound(ok);
         };
         checkEl.addEventListener('change', onCheckChange);
@@ -8219,18 +8246,18 @@
           if (e.key === 'Escape' || e.key === 'Esc') {
             e.stopPropagation();
             if (checkEl.checked) onNoClick();
-            else showToast('Sila baca penerangan & tandakan "Saya faham" dahulu', 'error');
+            else showToastSilent('Sila baca penerangan & tandakan "Saya faham" dahulu', 'error');
           } else if (e.key === 'Enter') {
             e.preventDefault();
             if (checkEl.checked) onYesClick();
-            else showToast('Sila baca penerangan & tandakan "Saya faham" dahulu', 'error');
+            else showToastSilent('Sila baca penerangan & tandakan "Saya faham" dahulu', 'error');
           }
         };
 
         const onBackdrop = function (e) {
           if (e.target === overlay) {
             if (checkEl.checked) onNoClick();
-            else showToast('Sila baca penerangan & tandakan "Saya faham" dahulu', 'error');
+            else showToastSilent('Sila baca penerangan & tandakan "Saya faham" dahulu', 'error');
           }
         };
 
@@ -8436,13 +8463,14 @@
             btn.disabled = false;
           }, 2500);
 
+          // Selepas simpan → tanya Export Data (modal)
           setTimeout(function () {
-            showArchiveModal(
-              async function () {
-                await performArchiveBalai();
+            showExportModal(
+              function () {
+                performExportBalai();
               },
               function () {
-                showToast('Arkib tidak disimpan', 'success');
+                showToastSilent('Export tidak dijalankan');
               }
             );
           }, 350);
@@ -8541,24 +8569,8 @@
         });
       }
 
-      document.getElementById('exportCurrentBtn').addEventListener('click', () => {
-        if (store.view !== 'balai') {
-          alert('Export hanya untuk paparan balai. Sila pilih tab balai dahulu.');
-          return;
-        }
-        const blob = new Blob([JSON.stringify(state, null, 2)], { type: 'application/json' });
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        const tk = state.ident.tarikh || new Date().toISOString().slice(0, 10);
-        const bl = (store.activeBalai || 'BALAI').replace(/\s+/g, '_');
-        a.href = url;
-        a.download = `kekuatan_${bl}_${tk}.json`;
-        document.body.appendChild(a);
-        a.click();
-        document.body.removeChild(a);
-        URL.revokeObjectURL(url);
-        showToast('Balai dieksport', 'success');
-      });
+      // Butang Export di bar Pengurusan — guna helper yang sama
+      document.getElementById('exportCurrentBtn').addEventListener('click', performExportBalai);
 
       document.getElementById('importBtn').addEventListener('click', () =>
         document.getElementById('fileInput').click()
