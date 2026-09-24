@@ -18,7 +18,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
-      href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&family=Inter:wght@400;500;600;700&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap"
       rel="stylesheet"
     />
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -320,7 +320,7 @@
       .id-field input,
       .id-field select {
         background: var(--bg-2); border: 1px solid var(--line); color: var(--text);
-        font-family: 'IBM Plex Mono', monospace; font-size: 0.8rem;
+        font-family: 'Inter', system-ui, sans-serif; font-size: 0.8rem;
         padding: 0.4rem 0.55rem; border-radius: var(--radius-sm); width: 100%;
         transition: border-color 0.15s, box-shadow 0.15s, background-color 0.2s ease, color 0.2s ease;
       }
@@ -561,7 +561,7 @@
         background: var(--panel-2);
         border: 1px solid var(--line);
         border-radius: var(--radius-sm);
-        font-family: 'IBM Plex Mono', monospace;
+        font-family: 'Inter', system-ui, sans-serif;
         font-size: 0.72rem;
         color: var(--text-dim);
         white-space: nowrap;
@@ -877,7 +877,7 @@
       }
       .zone-drawer-title .zd-count {
         margin-left: auto;
-        font-family: 'IBM Plex Mono', monospace;
+        font-family: 'Inter', system-ui, sans-serif;
         font-size: 0.6rem;
         letter-spacing: 0.04em;
         color: var(--amber);
@@ -996,7 +996,7 @@
         width: 3px; background: var(--stat-color, var(--amber));
       }
       .stat .n {
-        font-family: 'Oswald', sans-serif; font-size: 1.75rem; font-weight: 600;
+        font-family: 'IBM Plex Sans', system-ui, sans-serif; font-size: 1.75rem; font-weight: 600;
         line-height: 1; letter-spacing: 0.01em;
         font-variant-numeric: tabular-nums; color: var(--text);
       }
@@ -1123,7 +1123,7 @@
       table.grid {
         border-collapse: separate; border-spacing: 0;
         font-size: 0.75rem; white-space: nowrap; min-width: 100%;
-        font-family: 'IBM Plex Mono', monospace;
+        font-family: 'Inter', system-ui, sans-serif;
         font-variant-numeric: tabular-nums;
         border: 1px solid var(--line); border-radius: var(--radius-sm);
         overflow: hidden;
@@ -1170,6 +1170,17 @@
       }
       td.jumlah-cell { color: var(--amber); font-weight: 600; }
 
+      /* Kekalkan alignment angka dalam semua jadual */
+      table.grid,
+      table.bsum,
+      table.ketua,
+      table.semak-lokasi,
+      table.bkb,
+      table.mers,
+      table.roster {
+        font-variant-numeric: tabular-nums;
+      }
+
       th.s-A { color: var(--green) !important; }
       th.s-C { color: var(--amber) !important; }
       th.s-CS { color: var(--slate) !important; }
@@ -1201,7 +1212,7 @@
       table.roster input,
       table.roster select {
         background: var(--bg-2); border: 1px solid var(--line); color: var(--text);
-        font-family: 'IBM Plex Mono', monospace; font-size: 0.7rem;
+        font-family: 'Inter', system-ui, sans-serif; font-size: 0.7rem;
         padding: 0.28rem 0.4rem; border-radius: 4px; width: 100%; min-width: 55px;
         transition: border-color 0.14s, box-shadow 0.14s;
       }
@@ -1218,7 +1229,7 @@
       table.roster td.bil-cell {
         color: var(--text-faint); font-size: 0.68rem;
         width: 2rem; padding: 0.2rem;
-        font-family: 'IBM Plex Mono', monospace;
+        font-family: 'Inter', system-ui, sans-serif;
       }
       table.roster td.del-cell { width: 1.7rem; padding: 0.1rem; }
       table.roster td.del-cell button {
@@ -1303,11 +1314,11 @@
       table.ketua .gred-cell.gred-C { color: #4b8ef7; }
       table.ketua .gred-cell.gred-D { color: #7c8aa0; }
       table.ketua .turnout-cell {
-        font-family: 'IBM Plex Mono', monospace; font-weight: 600;
+        font-family: 'Inter', system-ui, sans-serif; font-weight: 600;
         color: var(--amber); font-size: 0.82rem;
       }
       table.ketua .pbb-cell {
-        font-family: 'IBM Plex Mono', monospace; font-weight: 600;
+        font-family: 'Inter', system-ui, sans-serif; font-weight: 600;
         color: var(--teal); font-size: 0.82rem;
       }
       table.ketua tfoot th {
@@ -1321,7 +1332,7 @@
       table.bsum {
         border-collapse: separate; border-spacing: 0;
         font-size: 0.62rem; white-space: nowrap; min-width: 100%;
-        font-family: 'IBM Plex Mono', monospace;
+        font-family: 'Inter', system-ui, sans-serif;
         font-variant-numeric: tabular-nums;
         border: 1px solid var(--line); border-radius: var(--radius-sm);
         overflow: hidden;
@@ -1547,7 +1558,7 @@
       table.semak-lokasi {
         border-collapse: separate; border-spacing: 0;
         font-size: 0.68rem; white-space: nowrap; min-width: 100%;
-        font-family: 'IBM Plex Mono', monospace;
+        font-family: 'Inter', system-ui, sans-serif;
         border: 1px solid var(--line); border-radius: var(--radius-sm);
         overflow: hidden;
       }
@@ -1619,7 +1630,7 @@
       }
       table.semak-lokasi tbody td.maklumat-cell {
         text-align: left;
-        font-family: 'IBM Plex Mono', monospace;
+        font-family: 'Inter', system-ui, sans-serif;
         font-size: 0.66rem;
         min-width: 240px;
         padding-left: 0.6rem;
@@ -1698,7 +1709,7 @@
         background: var(--bg-2);
         border: 1px solid var(--line);
         color: var(--text);
-        font-family: 'IBM Plex Mono', monospace;
+        font-family: 'Inter', system-ui, sans-serif;
         font-size: 0.78rem;
         padding: 0.45rem 2rem 0.45rem 2rem;
         border-radius: var(--radius-sm);
@@ -1728,7 +1739,7 @@
       .semak-search .semak-clear:hover { color: var(--rosak); background: rgba(214,69,69,0.14); }
 
       .semak-info {
-        font-family: 'IBM Plex Mono', monospace;
+        font-family: 'Inter', system-ui, sans-serif;
         font-size: 0.68rem;
         color: var(--text-dim);
         padding: 0.32rem 0.6rem;
@@ -1783,7 +1794,7 @@
         background: var(--panel-3);
         border: 1px solid var(--line);
         color: var(--text);
-        font-family: 'IBM Plex Mono', monospace;
+        font-family: 'Inter', system-ui, sans-serif;
         font-size: 0.65rem;
         padding: 0.25rem 0.35rem;
         border-radius: 3px;
@@ -1868,7 +1879,7 @@
         border-radius: 999px;
         background: rgba(255, 255, 255, 0.08);
         border: 1px solid var(--line);
-        font-family: 'IBM Plex Mono', monospace;
+        font-family: 'Inter', system-ui, sans-serif;
         font-size: 0.75rem;
         font-weight: 700;
         color: var(--amber);
@@ -1952,7 +1963,7 @@
         display: inline-flex;
         align-items: center;
         gap: 0.45rem;
-        font-family: 'IBM Plex Mono', monospace;
+        font-family: 'Inter', system-ui, sans-serif;
       }
       .semak-legend .lg-swatch {
         display: inline-block;
@@ -2017,7 +2028,7 @@
         font-size: 0.66rem;
         color: var(--text-faint);
         font-style: italic;
-        font-family: 'IBM Plex Mono', monospace;
+        font-family: 'Inter', system-ui, sans-serif;
       }
       .semak-scroll-hint .ico { font-size: 0.9rem; color: var(--amber); }
 
@@ -2116,7 +2127,7 @@
       .btn-wa:hover { background: #25d366; color: #fff; border-color: #25d366; transform: translateY(-1px); box-shadow: 0 3px 8px rgba(37,211,102,0.4); }
       .btn-contact.disabled { opacity: 0.3; pointer-events: none; cursor: not-allowed; }
 
-      table.bkb { border-collapse: separate; border-spacing: 0; font-size: 0.78rem; white-space: nowrap; min-width: 100%; font-family: 'IBM Plex Mono', monospace; border: 1px solid var(--line); border-radius: var(--radius-sm); overflow: hidden; }
+      table.bkb { border-collapse: separate; border-spacing: 0; font-size: 0.78rem; white-space: nowrap; min-width: 100%; font-family: 'Inter', system-ui, sans-serif; border: 1px solid var(--line); border-radius: var(--radius-sm); overflow: hidden; }
       table.bkb th, table.bkb td { border-right: 1px solid var(--line-soft); border-bottom: 1px solid var(--line-soft); padding: 0.42rem 0.6rem; text-align: center; vertical-align: middle; }
       table.bkb tr > *:last-child { border-right: none; }
       table.bkb thead th { background: var(--panel-2); color: var(--text-dim); font-family: 'Oswald', sans-serif; font-weight: 500; font-size: 0.7rem; letter-spacing: 0.05em; text-transform: uppercase; }
@@ -2134,16 +2145,16 @@
       table.bkb tbody td.gred-cell-sm.gred-C { color: #4b8ef7; }
       table.bkb tbody td.gred-cell-sm.gred-D { color: #7c8aa0; }
       table.bkb tbody td.balai-name { text-align: left; font-family: 'Oswald', sans-serif; font-weight: 500; letter-spacing: 0.03em; color: var(--text); background: var(--panel-2); min-width: 160px; padding-left: 0.7rem; }
-      table.bkb tbody td.nama-cell { text-align: left; color: var(--text); font-family: 'IBM Plex Mono', monospace; font-size: 0.78rem; min-width: 180px; }
+      table.bkb tbody td.nama-cell { text-align: left; color: var(--text); font-family: 'Inter', system-ui, sans-serif; font-size: 0.78rem; min-width: 180px; }
       table.bkb tbody td.nama-cell.empty, table.bkb tbody td.tel-cell.empty { color: var(--text-faint); font-style: italic; opacity: 0.6; }
-      table.bkb tbody td.tel-cell { font-family: 'IBM Plex Mono', monospace; font-weight: 600; font-size: 0.82rem; color: var(--amber); min-width: 130px; }
+      table.bkb tbody td.tel-cell { font-family: 'Inter', system-ui, sans-serif; font-weight: 600; font-size: 0.82rem; color: var(--amber); min-width: 130px; }
       table.bkb tbody td.contact-cell { min-width: 100px; white-space: nowrap; }
 
       .mers-header { display: flex; flex-wrap: wrap; gap: 1rem 1.5rem; padding: 0.75rem 1rem; margin-bottom: 0.9rem; background: var(--panel-2); border: 1px solid var(--line); border-radius: var(--radius-sm); align-items: flex-end; }
       .mers-header-title { flex: 1 1 100%; font-family: 'Oswald', sans-serif; font-size: 1.05rem; letter-spacing: 0.1em; text-transform: uppercase; text-align: center; color: var(--text); padding: 0.4rem 0; border-bottom: 2px solid var(--red); margin-bottom: 0.4rem; }
       .mers-header-field { display: flex; flex-direction: column; gap: 0.2rem; min-width: 160px; flex: 1 1 160px; }
       .mers-header-field label { font-size: 0.58rem; letter-spacing: 0.1em; color: var(--text-faint); text-transform: uppercase; font-weight: 600; }
-      .mers-header-field input { background: var(--bg-2); border: 1px solid var(--line); color: var(--text); font-family: 'IBM Plex Mono', monospace; font-size: 0.8rem; padding: 0.38rem 0.55rem; border-radius: var(--radius-sm); width: 100%; }
+      .mers-header-field input { background: var(--bg-2); border: 1px solid var(--line); color: var(--text); font-family: 'Inter', system-ui, sans-serif; font-size: 0.8rem; padding: 0.38rem 0.55rem; border-radius: var(--radius-sm); width: 100%; }
       .mers-header-field input:focus { outline: none; border-color: var(--red); box-shadow: 0 0 0 3px rgba(214,52,71,0.16); }
 
       table.mers { border-collapse: separate; border-spacing: 0; font-size: 0.72rem; white-space: nowrap; min-width: 100%; border: 1px solid var(--line); border-radius: var(--radius-sm); overflow: hidden; }
@@ -2157,9 +2168,9 @@
       table.mers tbody tr:hover td { background: var(--hover-row); }
       table.mers tbody tr.pgo-row td.balai-cell { background: rgba(217,154,43,0.15) !important; color: var(--amber) !important; font-weight: 700; }
       table.mers tbody td.balai-cell { text-align: left; font-family: 'Oswald', sans-serif; font-weight: 500; letter-spacing: 0.03em; background: var(--panel-2); color: var(--text); padding-left: 0.7rem; min-width: 160px; }
-      table.mers tbody td.percent-cell { font-family: 'IBM Plex Mono', monospace; font-weight: 600; color: var(--amber); font-size: 0.78rem; min-width: 85px; }
+      table.mers tbody td.percent-cell { font-family: 'Inter', system-ui, sans-serif; font-weight: 600; color: var(--amber); font-size: 0.78rem; min-width: 85px; }
       table.mers tbody td.catatan-cell { min-width: 130px; padding: 0.25rem; }
-      table.mers tbody td.catatan-cell input { background: var(--bg-2); border: 1px solid var(--line); color: var(--text); font-family: 'IBM Plex Mono', monospace; font-size: 0.68rem; padding: 0.25rem 0.35rem; border-radius: 4px; width: 100%; min-width: 110px; }
+      table.mers tbody td.catatan-cell input { background: var(--bg-2); border: 1px solid var(--line); color: var(--text); font-family: 'Inter', system-ui, sans-serif; font-size: 0.68rem; padding: 0.25rem 0.35rem; border-radius: 4px; width: 100%; min-width: 110px; }
       table.mers tbody td.catatan-cell input:focus { outline: none; border-color: var(--red); box-shadow: 0 0 0 3px rgba(214,52,71,0.15); }
 
       .mers-boxes { display: inline-flex; gap: 0.25rem; }
@@ -2173,8 +2184,8 @@
 
       .mers-footer { display: flex; flex-wrap: wrap; gap: 0.75rem 1.5rem; margin-top: 0.9rem; padding: 0.7rem 1rem; background: var(--panel-2); border: 1px solid var(--line); border-radius: var(--radius-sm); align-items: center; justify-content: space-between; }
       .mers-footer .mf-label { font-family: 'Oswald', sans-serif; font-size: 0.75rem; letter-spacing: 0.08em; text-transform: uppercase; font-weight: 600; color: var(--text); }
-      .mers-footer .mf-value { font-family: 'IBM Plex Mono', monospace; font-size: 1.1rem; font-weight: 700; color: var(--amber); margin-left: 0.4rem; }
-      .mers-footer .mf-meta { font-family: 'IBM Plex Mono', monospace; font-size: 0.68rem; color: var(--text-dim); text-align: right; }
+      .mers-footer .mf-value { font-family: 'Inter', system-ui, sans-serif; font-size: 1.1rem; font-weight: 700; color: var(--amber); margin-left: 0.4rem; }
+      .mers-footer .mf-meta { font-family: 'Inter', system-ui, sans-serif; font-size: 0.68rem; color: var(--text-dim); text-align: right; }
 
       .print-modal-overlay {
         position: fixed; inset: 0;
@@ -2241,7 +2252,7 @@
       }
       .print-modal-field input {
         background: var(--bg-2); border: 1px solid var(--line); color: var(--text);
-        font-family: 'IBM Plex Mono', monospace; font-size: 0.78rem;
+        font-family: 'Inter', system-ui, sans-serif; font-size: 0.78rem;
         padding: 0.42rem 0.6rem; border-radius: var(--radius-sm); width: 100%;
         transition: border-color 0.14s, box-shadow 0.14s;
       }
@@ -2348,7 +2359,7 @@
           page-break-inside: avoid; break-inside: avoid;
           font-family: 'Inter', Arial, sans-serif; color: #16223a;
         }
-        .print-footer .pf-loc-date { text-align: right; font-size: 11px; margin-bottom: 22px; font-family: 'IBM Plex Mono', monospace; }
+        .print-footer .pf-loc-date { text-align: right; font-size: 11px; margin-bottom: 22px; font-family: 'Inter', system-ui, sans-serif; }
         .print-footer .pf-signatures { display: flex; justify-content: space-between; gap: 40px; margin-bottom: 22px; }
         .print-footer .pf-sign-block { flex: 1; max-width: 45%; }
         .print-footer .pf-sign-block .pf-title { font-size: 11px; font-weight: 600; letter-spacing: 0.04em; margin-bottom: 55px; text-transform: uppercase; }
@@ -2442,6 +2453,211 @@
         .crest { font-size: 1rem; }
         .id-field { flex: 1 1 100%; }
       }
+
+      /* ============================================================
+         ARCHIVE CONFIRM MODAL
+         ============================================================ */
+      .archive-modal-overlay {
+        position: fixed; inset: 0;
+        background: rgba(2, 6, 16, 0.78);
+        display: none; align-items: center; justify-content: center;
+        z-index: 10005; padding: 1rem;
+        backdrop-filter: blur(4px);
+      }
+      .archive-modal-overlay.active { display: flex; }
+
+      .archive-modal {
+        background: var(--panel); border: 1px solid var(--line);
+        border-radius: var(--radius); max-width: 560px; width: 100%;
+        box-shadow: var(--shadow); overflow: hidden;
+        animation: modalIn 0.2s ease;
+        display: flex; flex-direction: column;
+        max-height: 92vh;
+      }
+
+      .archive-modal-head {
+        display: flex; align-items: center; justify-content: space-between;
+        padding: 0.85rem 1.15rem;
+        border-bottom: 1px solid var(--line);
+        background: linear-gradient(180deg, var(--panel-3), var(--panel-2));
+        position: relative; flex-shrink: 0;
+      }
+      .archive-modal-head::before {
+        content: ''; position: absolute; left: 0; top: 0; bottom: 0;
+        width: 4px; background: var(--blue);
+      }
+      .archive-modal-head h3 {
+        margin: 0; font-size: 0.85rem; letter-spacing: 0.08em;
+        text-transform: uppercase; color: var(--text);
+        padding-left: 0.4rem; font-family: 'Oswald', sans-serif;
+      }
+      .archive-modal-close {
+        background: transparent; border: none; color: var(--text-dim);
+        font-size: 1.4rem; cursor: pointer; line-height: 1; padding: 0 0.4rem;
+        border-radius: 4px;
+      }
+      .archive-modal-close:hover { color: var(--red); background: rgba(214, 52, 71, 0.12); }
+
+      .archive-modal-body {
+        padding: 1.15rem 1.25rem 1rem;
+        overflow-y: auto; flex: 1 1 auto;
+      }
+      .archive-modal-body::-webkit-scrollbar { width: 8px; }
+      .archive-modal-body::-webkit-scrollbar-track { background: var(--panel-2); border-radius: 4px; }
+      .archive-modal-body::-webkit-scrollbar-thumb { background: var(--line); border-radius: 4px; }
+      .archive-modal-body::-webkit-scrollbar-thumb:hover { background: var(--blue); }
+
+      .archive-modal-icon {
+        font-size: 2.4rem; text-align: center; margin-bottom: 0.5rem;
+        line-height: 1;
+      }
+      .archive-modal-intro {
+        margin: 0 0 0.9rem; font-size: 0.82rem; line-height: 1.55;
+        color: var(--text); text-align: center;
+      }
+      .archive-modal-intro b { color: var(--amber); }
+
+      .archive-explain {
+        text-align: left;
+        background: var(--panel-2);
+        border: 1px solid var(--line);
+        border-left: 3px solid var(--blue);
+        border-radius: var(--radius-sm);
+        padding: 0.75rem 0.95rem;
+        margin-bottom: 0.85rem;
+        font-size: 0.75rem;
+        line-height: 1.6;
+        color: var(--text);
+      }
+      .archive-explain h4 {
+        margin: 0 0 0.4rem;
+        font-family: 'Oswald', sans-serif;
+        font-size: 0.68rem;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        color: var(--blue);
+        font-weight: 600;
+      }
+      .archive-explain h4:not(:first-child) { margin-top: 0.7rem; }
+      .archive-explain p { margin: 0 0 0.4rem; }
+      .archive-explain p:last-child { margin-bottom: 0; }
+      .archive-explain ul {
+        margin: 0.35rem 0 0.5rem;
+        padding-left: 1.15rem;
+      }
+      .archive-explain ul li {
+        margin-bottom: 0.28rem;
+      }
+      .archive-explain ul li:last-child { margin-bottom: 0; }
+      .archive-explain b { color: var(--amber); font-weight: 600; }
+      .archive-explain .ae-note {
+        margin-top: 0.7rem;
+        padding-top: 0.6rem;
+        border-top: 1px dashed var(--line);
+        font-size: 0.7rem;
+        color: var(--text-dim);
+        font-style: italic;
+      }
+      .archive-explain .ae-warn {
+        color: var(--rosak);
+        font-weight: 600;
+        font-style: normal;
+      }
+
+      .archive-confirm {
+        display: flex;
+        align-items: flex-start;
+        gap: 0.6rem;
+        padding: 0.7rem 0.85rem;
+        background: var(--col-amber-bg-2);
+        border: 1.5px solid var(--col-amber-row-bd);
+        border-radius: var(--radius-sm);
+        cursor: pointer;
+        user-select: none;
+        transition: background 0.15s, border-color 0.15s;
+      }
+      .archive-confirm:hover { background: var(--col-amber-bg); }
+      .archive-confirm.checked {
+        background: rgba(46, 158, 99, 0.1);
+        border-color: rgba(46, 158, 99, 0.55);
+      }
+      .archive-confirm input[type="checkbox"] {
+        width: 18px; height: 18px;
+        margin: 1px 0 0;
+        cursor: pointer;
+        accent-color: var(--green);
+        flex-shrink: 0;
+      }
+      .archive-confirm .ac-text {
+        font-size: 0.75rem;
+        color: var(--text);
+        line-height: 1.5;
+        font-weight: 500;
+      }
+      .archive-confirm .ac-text b { color: var(--amber); font-weight: 700; }
+      .archive-confirm.checked .ac-text b { color: var(--green); }
+
+      .archive-modal-foot {
+        display: flex; justify-content: flex-end; gap: 0.55rem;
+        padding: 0.85rem 1.15rem;
+        border-top: 1px solid var(--line);
+        background: var(--panel-2);
+        flex-shrink: 0;
+      }
+      .archive-modal-foot .btn { min-width: 100px; justify-content: center; }
+
+      .btn.btn-yes-archive {
+        background: linear-gradient(180deg, #4b8ef7, #2c6fd8);
+        color: #fff; border-color: #1d4fa5;
+        box-shadow: 0 2px 6px rgba(44, 111, 216, 0.3);
+        font-weight: 700;
+      }
+      .btn.btn-yes-archive:hover:not(:disabled) {
+        background: linear-gradient(180deg, #6ba3ff, #3b7ee6);
+        border-color: #1d4fa5;
+        transform: translateY(-1px);
+        box-shadow: 0 3px 10px rgba(44, 111, 216, 0.5);
+      }
+      .btn.btn-yes-archive:not(:disabled) {
+        animation: pulse-archive-btn 2.2s ease-in-out infinite;
+      }
+      @keyframes pulse-archive-btn {
+        0%, 100% { box-shadow: 0 2px 6px rgba(44,111,216,0.3), 0 0 0 0 rgba(44,111,216,0.55); }
+        50%      { box-shadow: 0 2px 6px rgba(44,111,216,0.3), 0 0 0 10px rgba(44,111,216,0); }
+      }
+
+      .archive-modal-foot .btn:disabled {
+        opacity: 0.4;
+        cursor: not-allowed;
+        transform: none !important;
+        box-shadow: none !important;
+        animation: none !important;
+      }
+
+      @media print {
+        .archive-modal-overlay { display: none !important; }
+      }
+
+      /* ============================================================
+         SOUND TOGGLE BUTANG (di topbar)
+         ============================================================ */
+      .sound-toggle.muted {
+        color: var(--text-faint);
+        border-color: var(--line-soft);
+        opacity: 0.7;
+      }
+      .sound-toggle.muted:hover {
+        opacity: 1;
+        color: var(--rosak);
+        border-color: rgba(214, 69, 69, 0.5);
+        background: rgba(214, 69, 69, 0.08);
+      }
+      .sound-toggle:not(.muted):hover {
+        color: var(--green);
+        border-color: rgba(46, 158, 99, 0.5);
+        background: rgba(46, 158, 99, 0.08);
+      }
+      .sound-toggle .ico { font-size: 1rem; }
     </style>
   </head>
   <body>
@@ -2507,6 +2723,8 @@
             </svg>
             <span>Cetak Landscape</span>
           </button>
+
+          <button class="theme-toggle sound-toggle" id="soundToggle" type="button"></button>
 
           <button class="theme-toggle" id="themeToggle" type="button"></button>
 
@@ -2724,6 +2942,64 @@
       </div>
     </div>
 
+    <!-- ============================================================
+         MODAL: Simpan Data Arkib? (selepas Simpan Sekarang)
+         ============================================================ -->
+    <div class="archive-modal-overlay" id="archiveModalOverlay" role="dialog" aria-modal="true" aria-labelledby="archiveModalTitle">
+      <div class="archive-modal">
+        <div class="archive-modal-head">
+          <h3 id="archiveModalTitle">Simpan Data Arkib?</h3>
+          <button class="archive-modal-close" id="archiveModalClose" type="button" aria-label="Tutup">×</button>
+        </div>
+        <div class="archive-modal-body">
+
+          <div class="archive-modal-icon">📦</div>
+          <p class="archive-modal-intro">
+            Data balai <b id="archiveModalBalai">—</b> telah berjaya disimpan ke Supabase.
+          </p>
+
+          <div class="archive-explain">
+            <h4>Apa itu Data Arkib?</h4>
+            <p>
+              <b>Data Arkib</b> ialah <b>rekod kekal</b> yang disimpan ke pangkalan data Supabase sebagai
+              rujukan sejarah. Ia menyimpan <b>ringkasan kekuatan</b> balai pada tarikh &amp; shif semasa —
+              <b>bukan</b> salinan penuh semua butiran anggota.
+            </p>
+
+            <h4>Yang Disimpan:</h4>
+            <ul>
+              <li><b>Arkib Personel</b> — bilangan anggota mengikut <b>Gred × Unit × Status</b> (Bertugas / Cuti / Cuti Sakit / Tugas Khas)</li>
+              <li><b>Arkib Jentera</b> — bilangan jentera &amp; kenderaan mengikut <b>Kategori × Keadaan</b> (Baik / Rosak) untuk Jentera Utama, Marin, Utiliti &amp; Komunikasi</li>
+            </ul>
+
+            <h4>Maklumat Arkib:</h4>
+            <div style="display:flex; flex-direction:column; gap:0.28rem;">
+              <div><span style="color:var(--text-dim);">Balai:</span> <b id="archiveModalBalai2">—</b></div>
+              <div><span style="color:var(--text-dim);">Tarikh:</span> <b id="archiveModalTarikh">—</b></div>
+              <div><span style="color:var(--text-dim);">Shif:</span> <b id="archiveModalShif">—</b></div>
+            </div>
+
+            <div class="ae-note">
+              <span class="ae-warn">⚠ Nota:</span> Data arkib yang telah disimpan <b>tidak boleh dipadam</b> melalui sistem ini.
+              Ia hanya untuk <b>rujukan &amp; laporan</b> — tidak mengubah data semasa balai anda.
+            </div>
+          </div>
+
+          <label class="archive-confirm" id="archiveConfirmLabel">
+            <input type="checkbox" id="archiveConfirmCheck" />
+            <span class="ac-text">
+              Saya telah membaca dan <b>faham</b> fungsi penyimpanan Data Arkib seperti diterangkan di atas.
+            </span>
+          </label>
+
+        </div>
+        <div class="archive-modal-foot">
+          <button class="btn" id="archiveModalNo" type="button" disabled>Tidak</button>
+          <button class="btn btn-yes-archive" id="archiveModalYes" type="button" disabled>Ya, Simpan Arkib</button>
+        </div>
+      </div>
+    </div>
+
     <script>
       const SUPABASE_CONFIG = {
         url: 'https://nstmylzvqckhrpxmbufx.supabase.co',
@@ -2759,12 +3035,368 @@
         play: '<polygon points="6 3 20 12 6 21 6 3"/>',
         refreshCw: '<polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/>',
         search: '<circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>',
+        volumeOn: '<polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14"/>',
+        volumeOff: '<polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><line x1="23" y1="9" x2="17" y2="15"/><line x1="17" y1="9" x2="23" y2="15"/>',
       };
       function svgIcon(name) {
         return ('<svg class="ico" viewBox="0 0 24 24" aria-hidden="true">' + (ICONS[name] || '') + '</svg>');
       }
 
+      /* ============================================================
+         SOUND STATE — Enable/Disable bunyi + simpan preferens
+         ============================================================ */
+      const SOUND_KEY = 'bomba-sound-enabled';
+      let soundEnabled = true;
+
+      function loadSoundPref() {
+        try {
+          const v = localStorage.getItem(SOUND_KEY);
+          if (v === 'false') soundEnabled = false;
+          else soundEnabled = true;
+        } catch (e) {
+          soundEnabled = true;
+        }
+      }
+
+      function saveSoundPref() {
+        try {
+          localStorage.setItem(SOUND_KEY, soundEnabled ? 'true' : 'false');
+        } catch (e) {}
+      }
+
+      function applySoundToggleUI() {
+        const btn = document.getElementById('soundToggle');
+        if (!btn) return;
+        if (soundEnabled) {
+          btn.innerHTML = svgIcon('volumeOn') + '<span>Bunyi: ON</span>';
+          btn.title = 'Klik untuk matikan bunyi';
+          btn.setAttribute('aria-label', 'Matikan bunyi');
+          btn.setAttribute('aria-pressed', 'true');
+          btn.classList.remove('muted');
+        } else {
+          btn.innerHTML = svgIcon('volumeOff') + '<span>Bunyi: OFF</span>';
+          btn.title = 'Klik untuk hidupkan bunyi';
+          btn.setAttribute('aria-label', 'Hidupkan bunyi');
+          btn.setAttribute('aria-pressed', 'false');
+          btn.classList.add('muted');
+        }
+      }
+
+      function initSound() {
+        loadSoundPref();
+        applySoundToggleUI();
+      }
+
+      /* ============================================================
+         BUNYI: Tick checkbox (ON/OFF)
+         ============================================================ */
+      function playCheckboxTickSound(isOn) {
+        if (!soundEnabled) return;
+        try {
+          const AudioCtx = window.AudioContext || window.webkitAudioContext;
+          if (!AudioCtx) return;
+          const ctx = new AudioCtx();
+          const now = ctx.currentTime;
+          const osc = ctx.createOscillator();
+          const gain = ctx.createGain();
+          const freq = isOn ? 880 : 660;
+          osc.type = 'triangle';
+          osc.frequency.setValueAtTime(freq, now);
+          osc.frequency.exponentialRampToValueAtTime(freq * 0.65, now + 0.05);
+          gain.gain.setValueAtTime(0, now);
+          gain.gain.linearRampToValueAtTime(0.14, now + 0.008);
+          gain.gain.exponentialRampToValueAtTime(0.001, now + 0.09);
+          osc.connect(gain);
+          gain.connect(ctx.destination);
+          osc.start(now);
+          osc.stop(now + 0.12);
+          setTimeout(function () { try { ctx.close(); } catch (e) {} }, 300);
+        } catch (e) { console.warn('[Sound] Gagal main tick:', e); }
+      }
+
+      /* ============================================================
+         BUNYI: Error besar (validasi native alert)
+         ============================================================ */
+      function playErrorSound() {
+        if (!soundEnabled) return;
+        try {
+          const AudioCtx = window.AudioContext || window.webkitAudioContext;
+          if (!AudioCtx) return;
+          const ctx = new AudioCtx();
+          const now = ctx.currentTime;
+          const notes = [
+            { freq: 392.00, start: 0.00, dur: 0.20, type: 'sawtooth' },
+            { freq: 311.13, start: 0.16, dur: 0.35, type: 'sawtooth' },
+          ];
+          notes.forEach(function (n) {
+            const osc = ctx.createOscillator();
+            const gain = ctx.createGain();
+            const filter = ctx.createBiquadFilter();
+            osc.type = n.type;
+            osc.frequency.setValueAtTime(n.freq, now + n.start);
+            osc.frequency.exponentialRampToValueAtTime(n.freq * 0.92, now + n.start + n.dur);
+            filter.type = 'lowpass';
+            filter.frequency.setValueAtTime(1800, now + n.start);
+            filter.Q.setValueAtTime(1.2, now + n.start);
+            gain.gain.setValueAtTime(0, now + n.start);
+            gain.gain.linearRampToValueAtTime(0.18, now + n.start + 0.015);
+            gain.gain.exponentialRampToValueAtTime(0.001, now + n.start + n.dur);
+            osc.connect(filter);
+            filter.connect(gain);
+            gain.connect(ctx.destination);
+            osc.start(now + n.start);
+            osc.stop(now + n.start + n.dur + 0.05);
+          });
+          setTimeout(function () { try { ctx.close(); } catch (e) {} }, 900);
+        } catch (e) { console.warn('[Sound] Gagal main error:', e); }
+      }
+
+      /* ============================================================
+         BUNYI: Chime arkib berjaya (C5→E5→G5→C6)
+         ============================================================ */
+      function playArchiveSuccessSound() {
+        if (!soundEnabled) return;
+        try {
+          const AudioCtx = window.AudioContext || window.webkitAudioContext;
+          if (!AudioCtx) return;
+          const ctx = new AudioCtx();
+          const now = ctx.currentTime;
+          const notes = [
+            { freq: 523.25, start: 0.00, dur: 0.20 },
+            { freq: 659.25, start: 0.13, dur: 0.20 },
+            { freq: 783.99, start: 0.26, dur: 0.42 },
+            { freq: 1046.50, start: 0.42, dur: 0.55 },
+          ];
+          notes.forEach(function (n) {
+            const osc = ctx.createOscillator();
+            const gain = ctx.createGain();
+            osc.type = 'sine';
+            osc.frequency.setValueAtTime(n.freq, now + n.start);
+            gain.gain.setValueAtTime(0, now + n.start);
+            gain.gain.linearRampToValueAtTime(0.22, now + n.start + 0.02);
+            gain.gain.exponentialRampToValueAtTime(0.001, now + n.start + n.dur);
+            osc.connect(gain);
+            gain.connect(ctx.destination);
+            osc.start(now + n.start);
+            osc.stop(now + n.start + n.dur + 0.05);
+          });
+          setTimeout(function () { try { ctx.close(); } catch (e) {} }, 1800);
+        } catch (e) { console.warn('[Sound] Gagal main chime:', e); }
+      }
+
+      /* ============================================================
+         BUNYI: Theme toggle klik
+         ============================================================ */
+      function playThemeToggleSound() {
+        if (!soundEnabled) return;
+        try {
+          const AudioCtx = window.AudioContext || window.webkitAudioContext;
+          if (!AudioCtx) return;
+          const ctx = new AudioCtx();
+          const now = ctx.currentTime;
+          const osc = ctx.createOscillator();
+          const gain = ctx.createGain();
+          osc.type = 'triangle';
+          osc.frequency.setValueAtTime(700, now);
+          osc.frequency.exponentialRampToValueAtTime(500, now + 0.06);
+          gain.gain.setValueAtTime(0, now);
+          gain.gain.linearRampToValueAtTime(0.10, now + 0.006);
+          gain.gain.exponentialRampToValueAtTime(0.001, now + 0.10);
+          osc.connect(gain);
+          gain.connect(ctx.destination);
+          osc.start(now);
+          osc.stop(now + 0.13);
+          setTimeout(function () { try { ctx.close(); } catch (e) {} }, 300);
+        } catch (e) { console.warn('[Sound] Gagal main theme toggle:', e); }
+      }
+
+      /* ============================================================
+         BUNYI: Toast SUCCESS — ding lembut
+         ============================================================ */
+      function playToastSuccessSound() {
+        if (!soundEnabled) return;
+        try {
+          const AudioCtx = window.AudioContext || window.webkitAudioContext;
+          if (!AudioCtx) return;
+          const ctx = new AudioCtx();
+          const now = ctx.currentTime;
+          const osc = ctx.createOscillator();
+          const gain = ctx.createGain();
+          osc.type = 'sine';
+          osc.frequency.setValueAtTime(1046.50, now);
+          osc.frequency.exponentialRampToValueAtTime(1318.51, now + 0.08);
+          gain.gain.setValueAtTime(0, now);
+          gain.gain.linearRampToValueAtTime(0.10, now + 0.008);
+          gain.gain.exponentialRampToValueAtTime(0.001, now + 0.14);
+          osc.connect(gain);
+          gain.connect(ctx.destination);
+          osc.start(now);
+          osc.stop(now + 0.18);
+          setTimeout(function () { try { ctx.close(); } catch (e) {} }, 400);
+        } catch (e) { console.warn('[Sound] Gagal main toast success:', e); }
+      }
+
+      /* ============================================================
+         BUNYI: Toast ERROR — buzz rendah
+         ============================================================ */
+      function playToastErrorSound() {
+        if (!soundEnabled) return;
+        try {
+          const AudioCtx = window.AudioContext || window.webkitAudioContext;
+          if (!AudioCtx) return;
+          const ctx = new AudioCtx();
+          const now = ctx.currentTime;
+          const osc = ctx.createOscillator();
+          const gain = ctx.createGain();
+          const filter = ctx.createBiquadFilter();
+          osc.type = 'triangle';
+          osc.frequency.setValueAtTime(233.08, now);
+          osc.frequency.exponentialRampToValueAtTime(196.00, now + 0.12);
+          filter.type = 'lowpass';
+          filter.frequency.setValueAtTime(1500, now);
+          filter.Q.setValueAtTime(1.0, now);
+          gain.gain.setValueAtTime(0, now);
+          gain.gain.linearRampToValueAtTime(0.13, now + 0.012);
+          gain.gain.exponentialRampToValueAtTime(0.001, now + 0.16);
+          osc.connect(filter);
+          filter.connect(gain);
+          gain.connect(ctx.destination);
+          osc.start(now);
+          osc.stop(now + 0.20);
+          setTimeout(function () { try { ctx.close(); } catch (e) {} }, 400);
+        } catch (e) { console.warn('[Sound] Gagal main toast error:', e); }
+      }
+
+      /* ============================================================
+         BUNYI: Klik tab (double click feel)
+         ============================================================ */
+      function playTabClickSound() {
+        if (!soundEnabled) return;
+        try {
+          const AudioCtx = window.AudioContext || window.webkitAudioContext;
+          if (!AudioCtx) return;
+          const ctx = new AudioCtx();
+          const now = ctx.currentTime;
+          const clicks = [
+            { freq: 480, start: 0.00, dur: 0.05, vol: 0.09 },
+            { freq: 620, start: 0.045, dur: 0.06, vol: 0.11 },
+          ];
+          clicks.forEach(function (c) {
+            const osc = ctx.createOscillator();
+            const gain = ctx.createGain();
+            osc.type = 'triangle';
+            osc.frequency.setValueAtTime(c.freq, now + c.start);
+            osc.frequency.exponentialRampToValueAtTime(c.freq * 0.55, now + c.start + c.dur);
+            gain.gain.setValueAtTime(0, now + c.start);
+            gain.gain.linearRampToValueAtTime(c.vol, now + c.start + 0.005);
+            gain.gain.exponentialRampToValueAtTime(0.001, now + c.start + c.dur);
+            osc.connect(gain);
+            gain.connect(ctx.destination);
+            osc.start(now + c.start);
+            osc.stop(now + c.start + c.dur + 0.03);
+          });
+          setTimeout(function () { try { ctx.close(); } catch (e) {} }, 400);
+        } catch (e) { console.warn('[Sound] Gagal main tab click:', e); }
+      }
+
+      /* ============================================================
+         BUNYI: Import berjaya — thunk + treble
+         ============================================================ */
+      function playImportSuccessSound() {
+        if (!soundEnabled) return;
+        try {
+          const AudioCtx = window.AudioContext || window.webkitAudioContext;
+          if (!AudioCtx) return;
+          const ctx = new AudioCtx();
+          const now = ctx.currentTime;
+          const notes = [
+            { freq: 146.83, start: 0.00, dur: 0.18, vol: 0.20, type: 'triangle' },
+            { freq: 587.33, start: 0.14, dur: 0.22, vol: 0.14, type: 'sine' },
+            { freq: 880.00, start: 0.26, dur: 0.28, vol: 0.12, type: 'sine' },
+          ];
+          notes.forEach(function (n) {
+            const osc = ctx.createOscillator();
+            const gain = ctx.createGain();
+            osc.type = n.type;
+            osc.frequency.setValueAtTime(n.freq, now + n.start);
+            if (n.type === 'triangle') {
+              osc.frequency.exponentialRampToValueAtTime(n.freq * 0.75, now + n.start + n.dur);
+            }
+            gain.gain.setValueAtTime(0, now + n.start);
+            gain.gain.linearRampToValueAtTime(n.vol, now + n.start + 0.01);
+            gain.gain.exponentialRampToValueAtTime(0.001, now + n.start + n.dur);
+            osc.connect(gain);
+            gain.connect(ctx.destination);
+            osc.start(now + n.start);
+            osc.stop(now + n.start + n.dur + 0.05);
+          });
+          setTimeout(function () { try { ctx.close(); } catch (e) {} }, 800);
+        } catch (e) { console.warn('[Sound] Gagal main import success:', e); }
+      }
+
+      /* ============================================================
+         BUNYI: Cetak — printer feed (white noise × 3 burst)
+         ============================================================ */
+      function playPrintSound() {
+        if (!soundEnabled) return;
+        try {
+          const AudioCtx = window.AudioContext || window.webkitAudioContext;
+          if (!AudioCtx) return;
+          const ctx = new AudioCtx();
+          const now = ctx.currentTime;
+          for (let i = 0; i < 3; i++) {
+            const start = now + i * 0.14;
+            const dur = 0.09;
+            const bufferSize = ctx.sampleRate * dur;
+            const buffer = ctx.createBuffer(1, bufferSize, ctx.sampleRate);
+            const data = buffer.getChannelData(0);
+            for (let j = 0; j < bufferSize; j++) {
+              data[j] = (Math.random() * 2 - 1) * 0.4;
+            }
+            const source = ctx.createBufferSource();
+            source.buffer = buffer;
+            const filter = ctx.createBiquadFilter();
+            filter.type = 'bandpass';
+            filter.frequency.setValueAtTime(2400, start);
+            filter.frequency.exponentialRampToValueAtTime(900, start + dur);
+            filter.Q.setValueAtTime(4.5, start);
+            const gain = ctx.createGain();
+            gain.gain.setValueAtTime(0, start);
+            gain.gain.linearRampToValueAtTime(0.13, start + 0.01);
+            gain.gain.exponentialRampToValueAtTime(0.001, start + dur);
+            source.connect(filter);
+            filter.connect(gain);
+            gain.connect(ctx.destination);
+            source.start(start);
+            source.stop(start + dur + 0.02);
+          }
+          setTimeout(function () { try { ctx.close(); } catch (e) {} }, 1000);
+        } catch (e) { console.warn('[Sound] Gagal main print:', e); }
+      }
+
+      /* ============================================================
+         TOAST TANPA BUNYI — untuk kes khas (elak double sound)
+         ============================================================ */
+      function showToastSilent(msg, type) {
+        const c = document.getElementById('toastContainer');
+        const t = document.createElement('div');
+        t.className = 'toast ' + (type || '');
+        t.innerHTML = svgIcon(type === 'error' ? 'alert' : 'check') + '<span>' + msg + '</span>';
+        c.appendChild(t);
+        setTimeout(() => {
+          t.style.opacity = '0';
+          t.style.transition = 'opacity 0.3s';
+          setTimeout(() => t.remove(), 320);
+        }, 2800);
+      }
+
       function showToast(msg, type) {
+        if (type === 'success') {
+          playToastSuccessSound();
+        } else if (type === 'error') {
+          playToastErrorSound();
+        }
+
         const c = document.getElementById('toastContainer');
         const t = document.createElement('div');
         t.className = 'toast ' + (type || '');
@@ -3313,6 +3945,7 @@
         closeAllFullscreenPanels();
         updatePrintFooterDate();
         openPrintModal(() => {
+          playPrintSound();
           const env = preparePrintEnvironment();
           document.body.classList.add('printing-po3a');
           let cleaned = false;
@@ -3336,6 +3969,7 @@
         closeAllFullscreenPanels();
         updatePrintFooterDate();
         openPrintModal(() => {
+          playPrintSound();
           const wasCollapsed = sectionEl.classList.contains('collapsed');
           sectionEl.classList.remove('collapsed');
 
@@ -3373,8 +4007,10 @@
 
       document.addEventListener('keydown', function (e) {
         if (e.key === 'Escape' || e.key === 'Esc') {
-          const modal = document.getElementById('printModalOverlay');
-          if (modal && modal.classList.contains('active')) return;
+          const printModal = document.getElementById('printModalOverlay');
+          if (printModal && printModal.classList.contains('active')) return;
+          const archiveModal = document.getElementById('archiveModalOverlay');
+          if (archiveModal && archiveModal.classList.contains('active')) return;
           if (document.querySelector('.section.fullscreen-active')) {
             closeAllFullscreenPanels();
           }
@@ -4453,6 +5089,9 @@
 
       async function switchBalai(name) {
         if (store.view === 'balai' && name === store.activeBalai) return;
+
+        playTabClickSound();
+
         if (dirtyBalai.has(store.activeBalai)) {
           if (!confirm('Ada perubahan belum disimpan untuk "' + store.activeBalai + '".\n\nTeruskan tanpa simpan?')) return;
         }
@@ -4473,6 +5112,9 @@
       }
       function switchView(v) {
         if (store.view === v) return;
+
+        playTabClickSound();
+
         if (store.view === 'balai' && dirtyBalai.has(store.activeBalai)) {
           if (!confirm('Ada perubahan belum disimpan untuk "' + store.activeBalai + '".\n\nTeruskan tanpa simpan?')) return;
         }
@@ -5275,9 +5917,6 @@
         return count;
       }
 
-      /* ============================================================
-         HELPER: Renumber kolum BIL
-         ============================================================ */
       function renumberRows(tbody) {
         if (!tbody) return;
         Array.from(tbody.children).forEach(function (row, i) {
@@ -5286,9 +5925,6 @@
         });
       }
 
-      /* ============================================================
-         HELPER: Bina <tr> Personel
-         ============================================================ */
       function buildPersonelRow(p, tbody) {
         const tr = document.createElement('tr');
         const markRow = () => markMandatoryPersonel(tr, p);
@@ -5392,9 +6028,6 @@
         return tr;
       }
 
-      /* ============================================================
-         HELPER: Bina <tr> Equip
-         ============================================================ */
       function buildEquipRow(key, r, isKom, katList, title, color, rtb) {
         const tr = document.createElement('tr');
         const markRow = () => markMandatoryEquip(tr, r, isKom);
@@ -7424,30 +8057,35 @@
         return { personelRows: personelRows, jenteraRows: jenteraRows };
       }
 
-      document.getElementById('archiveBtn').addEventListener('click', async function () {
-        const btn = this;
-        const label = document.getElementById('archiveLabel');
-        if (btn.disabled) return;
+      async function performArchiveBalai(opts) {
+        opts = opts || {};
+        const btn = opts.btn || null;
+        const label = opts.label || null;
+
         const balai = store.activeBalai;
         const tarikh = state.ident.tarikh;
         const shif = state.ident.shif;
+
         if (!tarikh || !shif) {
           showToast('Sila pilih Shif dan Tarikh sebelum arkib', 'error');
-          return;
+          return false;
         }
 
         const v = validateBalaiFull(state);
         if (hasInvalid(v)) {
+          playErrorSound();
           alert('Tidak boleh arkib — kolum mandatori belum lengkap:\n\n' + formatInvalidMsg(store.activeBalai, v));
           globalRecalc();
-          return;
+          return false;
         }
 
-        if (!confirm('Simpan arkib untuk balai "' + balai + '"?\n\nTarikh: ' + tarikh + '\nShif: ' + shif + '\n\nIni akan menyimpan rekod kekuatan anggota dan jentera ke Supabase.')) return;
-        btn.disabled = true;
-        btn.classList.add('saving');
-        btn.classList.remove('saved');
-        label.textContent = 'Menyimpan…';
+        if (btn) {
+          btn.disabled = true;
+          btn.classList.add('saving');
+          btn.classList.remove('saved');
+        }
+        if (label) label.textContent = 'Menyimpan…';
+
         try {
           const archiveData = buildArchiveData();
           if (archiveData.personelRows.length === 0 && archiveData.jenteraRows.length === 0) {
@@ -7459,26 +8097,151 @@
             personelRows: archiveData.personelRows,
             jenteraRows: archiveData.jenteraRows,
           });
-          btn.classList.remove('saving');
-          btn.classList.add('saved');
-          label.textContent = 'Diarkib!';
-          showToast('Arkib disimpan: ' + archiveData.personelRows.length + ' baris anggota + ' + archiveData.jenteraRows.length + ' baris jentera', 'success');
+
+          if (btn) {
+            btn.classList.remove('saving');
+            btn.classList.add('saved');
+          }
+          if (label) label.textContent = 'Diarkib!';
+
+          playArchiveSuccessSound();
+
+          showToast(
+            'Arkib disimpan: ' + archiveData.personelRows.length + ' baris anggota + ' +
+            archiveData.jenteraRows.length + ' baris jentera',
+            'success'
+          );
+
           setTimeout(function () {
-            btn.classList.remove('saved');
-            label.textContent = 'Arkib Balai';
-            btn.disabled = false;
+            if (btn) { btn.classList.remove('saved'); btn.disabled = false; }
+            if (label) label.textContent = 'Arkib Balai';
           }, 2500);
+
+          return true;
         } catch (err) {
           console.error(err);
-          btn.classList.remove('saving');
-          label.textContent = 'Gagal';
+          if (btn) btn.classList.remove('saving');
+          if (label) label.textContent = 'Gagal';
           showToast('Gagal arkib: ' + err.message, 'error');
           setTimeout(function () {
-            label.textContent = 'Arkib Balai';
-            btn.disabled = false;
+            if (label) label.textContent = 'Arkib Balai';
+            if (btn) btn.disabled = false;
           }, 2500);
+          return false;
         }
+      }
+
+      document.getElementById('archiveBtn').addEventListener('click', async function () {
+        const btn = this;
+        const label = document.getElementById('archiveLabel');
+        if (btn.disabled) return;
+
+        const balai = store.activeBalai;
+        const tarikh = state.ident.tarikh;
+        const shif = state.ident.shif;
+
+        if (!tarikh || !shif) {
+          showToast('Sila pilih Shif dan Tarikh sebelum arkib', 'error');
+          return;
+        }
+
+        if (!confirm(
+          'Simpan arkib untuk balai "' + balai + '"?\n\n' +
+          'Tarikh: ' + tarikh + '\nShif: ' + shif + '\n\n' +
+          'Ini akan menyimpan rekod kekuatan anggota dan jentera ke Supabase.'
+        )) return;
+
+        await performArchiveBalai({ btn: btn, label: label });
       });
+
+      function showArchiveModal(onYes, onNo) {
+        const overlay = document.getElementById('archiveModalOverlay');
+        if (!overlay) return;
+
+        const balaiEl  = document.getElementById('archiveModalBalai');
+        const balai2El = document.getElementById('archiveModalBalai2');
+        const tarikhEl = document.getElementById('archiveModalTarikh');
+        const shifEl   = document.getElementById('archiveModalShif');
+        const checkEl  = document.getElementById('archiveConfirmCheck');
+        const lblEl    = document.getElementById('archiveConfirmLabel');
+        const btnYes   = document.getElementById('archiveModalYes');
+        const btnNo    = document.getElementById('archiveModalNo');
+        const btnClose = document.getElementById('archiveModalClose');
+
+        const namaBalai = store.activeBalai;
+        const tarikhStr = state.ident.tarikh || '—';
+        const shifStr   = state.ident.shif || '—';
+        if (balaiEl)  balaiEl.textContent  = namaBalai;
+        if (balai2El) balai2El.textContent = namaBalai;
+        if (tarikhEl) tarikhEl.textContent = tarikhStr;
+        if (shifEl)   shifEl.textContent   = shifStr;
+
+        checkEl.checked = false;
+        lblEl.classList.remove('checked');
+        btnYes.disabled = true;
+        btnNo.disabled = true;
+
+        const onCheckChange = function () {
+          const ok = checkEl.checked;
+          lblEl.classList.toggle('checked', ok);
+          btnYes.disabled = !ok;
+          btnNo.disabled = !ok;
+
+          playCheckboxTickSound(ok);
+        };
+        checkEl.addEventListener('change', onCheckChange);
+
+        overlay.classList.add('active');
+
+        const cleanup = function () {
+          overlay.classList.remove('active');
+          checkEl.removeEventListener('change', onCheckChange);
+          btnYes.removeEventListener('click', onYesClick);
+          btnNo.removeEventListener('click', onNoClick);
+          btnClose.removeEventListener('click', onNoClick);
+          overlay.removeEventListener('keydown', onKey);
+          overlay.removeEventListener('click', onBackdrop);
+        };
+
+        const onYesClick = function () {
+          if (!checkEl.checked) return;
+          cleanup();
+          if (typeof onYes === 'function') onYes();
+        };
+
+        const onNoClick = function () {
+          if (!checkEl.checked) return;
+          cleanup();
+          if (typeof onNo === 'function') onNo();
+        };
+
+        const onKey = function (e) {
+          if (e.key === 'Escape' || e.key === 'Esc') {
+            e.stopPropagation();
+            if (checkEl.checked) onNoClick();
+            else showToast('Sila baca penerangan & tandakan "Saya faham" dahulu', 'error');
+          } else if (e.key === 'Enter') {
+            e.preventDefault();
+            if (checkEl.checked) onYesClick();
+            else showToast('Sila baca penerangan & tandakan "Saya faham" dahulu', 'error');
+          }
+        };
+
+        const onBackdrop = function (e) {
+          if (e.target === overlay) {
+            if (checkEl.checked) onNoClick();
+            else showToast('Sila baca penerangan & tandakan "Saya faham" dahulu', 'error');
+          }
+        };
+
+        btnYes.addEventListener('click', onYesClick);
+        btnNo.addEventListener('click', onNoClick);
+        btnClose.addEventListener('click', onNoClick);
+        overlay.addEventListener('keydown', onKey);
+        overlay.addEventListener('click', onBackdrop);
+
+        setTimeout(function () { checkEl.focus(); }, 80);
+      }
 
       function buildArchiveDataForBalai(balaiName) {
         const balaiState = store.balai[balaiName];
@@ -7574,6 +8337,7 @@
         if (ralat === 0) {
           btn.classList.add('saved');
           label.textContent = 'Selesai!';
+          playArchiveSuccessSound();
           let msg = 'Arkib ' + totalBalai + ' balai berjaya.';
           if (totalKosong > 0) msg += ' (' + totalKosong + ' balai kosong diabaikan)';
           showToast(msg, 'success');
@@ -7590,6 +8354,7 @@
 
       async function initApp() {
         initTheme();
+        initSound();
         updatePrintFooterDate();
         fillPrintFooter(loadPrintInfo());
         setLoading(true, 'Memuatkan data dari Supabase…');
@@ -7670,6 +8435,17 @@
             label.textContent = 'Simpan Sekarang';
             btn.disabled = false;
           }, 2500);
+
+          setTimeout(function () {
+            showArchiveModal(
+              async function () {
+                await performArchiveBalai();
+              },
+              function () {
+                showToast('Arkib tidak disimpan', 'success');
+              }
+            );
+          }, 350);
         } catch (err) {
           console.error(err);
           btn.classList.remove('saving');
@@ -7726,10 +8502,30 @@
       });
 
       document.getElementById('themeToggle').addEventListener('click', () => {
+        playThemeToggleSound();
         const next = currentTheme() === 'dark' ? 'light' : 'dark';
         applyTheme(next);
         try { localStorage.setItem(THEME_KEY, next); } catch (e) {}
       });
+
+      const soundToggleBtnEl = document.getElementById('soundToggle');
+      if (soundToggleBtnEl) {
+        soundToggleBtnEl.addEventListener('click', function () {
+          if (soundEnabled) {
+            playCheckboxTickSound(false);
+            soundEnabled = false;
+            saveSoundPref();
+            applySoundToggleUI();
+            showToastSilent('Bunyi dimatikan', 'success');
+          } else {
+            soundEnabled = true;
+            saveSoundPref();
+            applySoundToggleUI();
+            playCheckboxTickSound(true);
+            showToast('Bunyi dihidupkan', 'success');
+          }
+        });
+      }
 
       const autoReloadPauseBtnEl = document.getElementById('autoReloadPauseBtn');
       if (autoReloadPauseBtnEl) {
@@ -7785,6 +8581,7 @@
                 await saveBalaiToAPI(name, p.balai[name]);
               }
               await initApp();
+              playImportSuccessSound();
               showToast('Import SEMUA BALAI berjaya', 'success');
             } else if (p.personel || p.equip) {
               if (store.view !== 'balai') {
@@ -7816,6 +8613,7 @@
               } catch (e) {}
               renderTopBar();
               renderAll();
+              playImportSuccessSound();
               showToast('Import ke balai "' + store.activeBalai + '" berjaya', 'success');
             } else {
               throw new Error('Struktur fail tidak dikenali.');
@@ -7834,6 +8632,7 @@
         closeAllFullscreenPanels();
         updatePrintFooterDate();
         openPrintModal(() => {
+          playPrintSound();
           const isAggregateView =
             store.view === 'summary' ||
             store.view === 'balai_sum' ||
