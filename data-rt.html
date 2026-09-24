@@ -234,9 +234,9 @@
       .stat-mini .lbl { font-size: 10.5px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.4px; font-weight: 600; }
       .stat-mini .val { font-size: 19px; font-weight: 700; color: var(--text); margin-top: 4px; font-variant-numeric: tabular-nums; }
       .stat-mini .sub { font-size: 10.5px; color: var(--text-subtle); margin-top: 2px; }
-      .table-scroll { overflow: visible; max-height: none; border-radius: var(--radius); border: 1px solid var(--border); }
+      .table-scroll { overflow: auto; max-height: 75vh; border-radius: var(--radius); border: 1px solid var(--border); }
       table { width: 100%; border-collapse: collapse; font-size: 12.5px; table-layout: auto; }
-      thead th { position: sticky; top: var(--topbar-h); background: var(--surface-2); padding: 8px 8px; text-align: left; color: var(--text-muted); font-weight: 700; text-transform: uppercase; font-size: 10.5px; letter-spacing: 0.5px; cursor: pointer; user-select: none; border-bottom: 1px solid var(--border-strong); white-space: normal; word-break: break-word; z-index: 5; box-shadow: 0 1px 0 0 var(--border-strong), 0 2px 4px rgba(0,43,92,0.04); }
+      thead th { position: sticky; top: 0; background: var(--surface-2); padding: 8px 8px; text-align: left; color: var(--text-muted); font-weight: 700; text-transform: uppercase; font-size: 10.5px; letter-spacing: 0.5px; cursor: pointer; user-select: none; border-bottom: 1px solid var(--border-strong); white-space: normal; word-break: break-word; z-index: 10; box-shadow: 0 1px 0 0 var(--border-strong), 0 2px 4px rgba(0,43,92,0.04); }
       thead th:hover { color: var(--johor-navy); }
       thead th.sorted-asc::after { content: ' \25B2'; color: var(--johor-navy); }
       thead th.sorted-desc::after { content: ' \25BC'; color: var(--johor-navy); }
@@ -254,7 +254,7 @@
       .rows-per-page-select:focus { outline: none; border-color: var(--johor-navy); box-shadow: 0 0 0 3px rgba(0, 43, 92, 0.08); }
       .page-info-text { font-variant-numeric: tabular-nums; }
       #jadualBalai { font-size: 12px; }
-      #jadualBalai thead th { cursor: default; position: sticky; top: var(--topbar-h); background: var(--surface-2); z-index: 5; }
+      #jadualBalai thead th { cursor: default; position: sticky; top: 0; background: var(--surface-2); z-index: 5; }
       #jadualBalai tfoot td { background: var(--surface-2); font-weight: 700; color: var(--johor-navy); border-top: 2px solid var(--border-strong); padding: 10px 12px; position: sticky; bottom: 0; z-index: 4; }
       #jadualBalai td.num, #jadualBalai th.num { text-align: right; font-variant-numeric: tabular-nums; }
       #jadualBalai td.zon-cell { font-weight: 600; color: var(--johor-navy); }
@@ -672,11 +672,6 @@
                 <div class="stat-value" id="kpiRT">-</div>
                 <div class="stat-sub">minit</div>
               </div>
-              <div class="stat-card stat-success">
-                <div class="stat-label"><svg class="ico" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" /><polyline points="22 4 12 14.01 9 11.01" /></svg>KPI Acknowledge</div>
-                <div class="stat-value" id="kpiAck">-</div>
-                <div class="stat-sub" id="kpiAckSub">≤ 10 saat</div>
-              </div>
               <div class="stat-card">
                 <div class="stat-label"><svg class="ico" viewBox="0 0 24 24"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z" /><line x1="12" y1="9" x2="12" y2="13" /><line x1="12" y1="17" x2="12.01" y2="17" /></svg>KPI Enroute</div>
                 <div class="stat-value" id="kpiEnroute">-</div>
@@ -812,9 +807,6 @@
             </button>
             <button class="tab-btn" data-tab="operasi">
               <svg class="ico" viewBox="0 0 24 24"><path d="M6 2h12M6 22h12M6 2v6a6 6 0 0 0 12 0V2M6 22v-6a6 6 0 0 1 12 0v6" /></svg>Masa Operasi
-            </button>
-            <button class="tab-btn" data-tab="hotspot">
-              <svg class="ico" viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" /><circle cx="12" cy="10" r="3" /></svg>Hotspot
             </button>
             <button class="tab-btn" data-tab="jarak">
               <svg class="ico" viewBox="0 0 24 24"><path d="M21.3 8.7l-6-6a1 1 0 0 0-1.4 0L2.7 13.9a1 1 0 0 0 0 1.4l6 6a1 1 0 0 0 1.4 0l11.2-11.2a1 1 0 0 0 0-1.4z" /></svg>Jarak vs RT
@@ -1051,19 +1043,6 @@
             </div>
           </div>
 
-          <div class="tab-panel" id="panel-hotspot">
-            <div class="card">
-              <div class="card-header">
-                <div class="card-title">Hotspot vs Bukan Hotspot</div>
-                <div class="card-controls">
-                  <div class="chart-type-picker" data-chart="chartHotspot"></div>
-                  <button class="num-toggle" data-chart="chartHotspot" type="button"><span class="num-icon"><svg viewBox="0 0 24 24" style="width:12px;height:12px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;"><line x1="4" y1="9" x2="20" y2="9"/><line x1="4" y1="15" x2="20" y2="15"/><line x1="10" y1="3" x2="8" y2="21"/><line x1="16" y1="3" x2="14" y2="21"/></svg></span><span class="num-label">Nombor OFF</span></button>
-                </div>
-              </div>
-              <div class="chart-wrap-md"><canvas id="chartHotspot"></canvas></div>
-            </div>
-          </div>
-
           <div class="tab-panel" id="panel-jarak">
             <div class="card">
               <div class="card-header">
@@ -1082,6 +1061,9 @@
           <div class="card">
             <div class="card-header">
               <div class="card-title">Senarai Kejadian</div>
+              <div class="card-controls">
+                <div class="ms" data-key="tableCols" style="min-width: 220px"></div>
+              </div>
               <span class="card-badge">klik teks header untuk sort • klik ikon tapis untuk tapis kolum</span>
             </div>
             <div id="colWarning"></div>
@@ -1222,7 +1204,7 @@
         chartKategori: { default: 'doughnut' }, chartJenis: { default: 'barH' },
         chartBalai: { default: 'barH' }, chartZon: { default: 'pie' }, chartDaerah: { default: 'barH' },
         chartShif: { default: 'pie' }, chartMonsun: { default: 'bar' },
-        chartOperasi: { default: 'doughnut' }, chartHotspot: { default: 'doughnut' },
+        chartOperasi: { default: 'doughnut' },
         chartJarak: { default: 'scatter' },
       };
 
@@ -1241,8 +1223,7 @@
         total:          { label: 'Total Kes', type: 'number', default: true },
         kebakaran:      { label: 'Kebakaran', type: 'number', default: true },
         penyelamatan:   { label: 'Penyelamatan', type: 'number', default: true },
-        khidmatKhas:    { label: 'Khidmat Khas', type: 'number', default: true },
-        kemanusiaan:    { label: 'Kemanusiaan', type: 'number', default: false },
+        khidmatKhasKemanusiaan: { label: 'Khidmat Khas Kemanusiaan', type: 'number', default: true },
         tugasKhas:      { label: 'Tugas Khas', type: 'number', default: false },
         panggilanPalsu: { label: 'Panggilan Palsu', type: 'number', default: false },
         gambut:         { label: 'Kebakaran Tanah Gambut', type: 'number', default: true },
@@ -1250,20 +1231,35 @@
         avgJarak:       { label: 'Purata Jarak (km)', type: 'number', default: true, decimals: 1 },
         countDays:      { label: 'Bilangan Hari Aktif', type: 'number', default: true },
         countJenis:     { label: 'Bilangan Jenis Panggilan', type: 'number', default: false },
-        kpiAck:         { label: 'KPI Ack %', type: 'percent', default: true },
         kpiEnroute:     { label: 'KPI Enroute %', type: 'percent', default: false },
         kpiRT10:        { label: 'KPI RT ≤10min %', type: 'percent', default: true },
-        hotspot:        { label: 'Hotspot', type: 'number', default: false },
         mangsaSelamat:  { label: 'Mangsa Selamat', type: 'number', default: false },
         mangsaMati:     { label: 'Mangsa Mati', type: 'number', default: false },
         jamOps:         { label: 'Jumlah Jam Ops', type: 'number', default: false, decimals: 1 },
-        agensi:         { label: 'Agensi Luar', type: 'number', default: false },
       };
 
       const TablePrefs = {
         STORAGE_KEY: 'rt-jadual-metrics',
         getSelected() { try { const s = localStorage.getItem(this.STORAGE_KEY); if (s) return JSON.parse(s).filter((k) => TABLE_METRICS[k]); } catch (e) {} return Object.keys(TABLE_METRICS).filter((k) => TABLE_METRICS[k].default); },
         setSelected(keys) { localStorage.setItem(this.STORAGE_KEY, JSON.stringify(keys.filter((k) => TABLE_METRICS[k]))); },
+      };
+
+      // ── COLUMN PREFERENCES FOR DATA TABLE ──
+      const TableColPrefs = {
+        STORAGE_KEY: 'rt-table-cols',
+        getVisible() {
+          try {
+            const s = localStorage.getItem(this.STORAGE_KEY);
+            if (s) {
+              const parsed = JSON.parse(s);
+              if (Array.isArray(parsed) && parsed.length > 0) return new Set(parsed);
+            }
+          } catch(e) {}
+          return new Set(TABLE_COLS.map(c => c.key));
+        },
+        setVisible(set) {
+          localStorage.setItem(this.STORAGE_KEY, JSON.stringify([...set]));
+        }
       };
 
       if (typeof ChartDataLabels !== 'undefined') Chart.register(ChartDataLabels);
@@ -1565,7 +1561,7 @@
           if (cEl) cEl.textContent = '0 dipilih';
           c.querySelectorAll('input[type=checkbox]').forEach((cb) => { cb.checked = false; });
         }
-        function clearAll() { Object.keys(instances).forEach((k) => { if (k !== 'tableMetrics') clear(k); }); }
+        function clearAll() { Object.keys(instances).forEach((k) => { if (k !== 'tableMetrics' && k !== 'tableCols') clear(k); }); }
         return { create, getSelected, setSelected, clear, clearAll, attachGlobalListener, closeAllPopups };
       })();
 
@@ -1871,6 +1867,7 @@
             MASA_OPERASI_MULAI: findCol(['MASA OPERASI DIMULAKAN'], 36),
             TARIKH_OPERASI_MULAI: findCol(['TARIKH OPERASI DIMULAKAN'], 37),
             GAMBUT: findCol(['KEBAKARAN TANAH GAMBUT'], 38),
+            MASA_OPERASI_TAMAT: findCol(['MASA OPERASI DITAMATKAN', 'MASA TAMAT'], 39),
             MANGSA_SELAMAT: findCol(['MANGSA DISELAMATKAN'], 47),
             MANGSA_MATI: findCol(['MANGSA MATI'], 48),
             MANGSA_MAUT: findCol(['MANGSA MAUT'], 49),
@@ -1946,6 +1943,12 @@
               statusNartYs: clean(r[COL.STATUS_NART_YS]),
               statusNartTkp: clean(r[COL.STATUS_NART_TKP]),
               statusNartKp: clean(r[COL.STATUS_NART_KP]),
+              // ── MASA Columns for Data Table ──
+              masaTerima: clean(r[COL.MASA_A]) || '-',
+              masaLooping: clean(r[COL.MASA_LOOPING]) || '-',
+              masaBerlepas: clean(r[COL.MASA_BERLEPAS]) || '-',
+              masaTiba: clean(r[COL.MASA_F]) || '-',
+              masaTamat: clean(r[COL.MASA_OPERASI_TAMAT]) || '-',
             };
           });
 
@@ -1955,6 +1958,7 @@
           initDynamicControls();
           initKategoriStripEvents();
           initTableMetricsDropdown();
+          initTableColDropdown();
           initJadualControls();
           FilterPanel.init();
           initPageNav();
@@ -1969,23 +1973,29 @@
         }
       }
 
+      // ── TABLE COLUMNS DEFINITION ──
       const TABLE_COLS = [
-        { idx: COL.BIL, label: 'BIL' },
-        { idx: COL.TAHUN, label: 'Tahun' },
-        { idx: COL.MONSUN, label: 'Fasa Monsun' },
-        { idx: COL.BULAN, label: 'Bulan' },
-        { idx: 'hari', label: 'Day' },
-        { idx: COL.TARIKH, label: 'Tarikh' },
-        { idx: COL.DAERAH, label: 'Daerah' },
-        { idx: COL.ZON, label: 'Zon' },
-        { idx: COL.BALAI, label: 'Balai' },
-        { idx: COL.CALL_CARD, label: 'Call Card' },
-        { idx: COL.KATEGORI, label: 'Kategori' },
-        { idx: COL.SUB_KATEGORI_1, label: 'Sub Kat 1' },
-        { idx: COL.SUB_KATEGORI_2, label: 'Sub Kat 2' },
-        { idx: COL.JENIS, label: 'Jenis' },
-        { idx: 'rt', label: 'RT (min)' },
-        { idx: 'statusOperasi', label: 'Status Ops' },
+        { key: 'bil', label: 'BIL' },
+        { key: 'tahun', label: 'Tahun' },
+        { key: 'monsun', label: 'Fasa Monsun' },
+        { key: 'bulan', label: 'Bulan' },
+        { key: 'hari', label: 'Day' },
+        { key: 'tarikhStr', label: 'Tarikh' },
+        { key: 'daerah', label: 'Daerah' },
+        { key: 'zon', label: 'Zon' },
+        { key: 'balai', label: 'Balai' },
+        { key: 'callCard', label: 'Call Card' },
+        { key: 'kategori', label: 'Kategori' },
+        { key: 'subKategori1', label: 'Sub Kat 1' },
+        { key: 'subKategori2', label: 'Sub Kat 2' },
+        { key: 'jenis', label: 'Jenis' },
+        { key: 'masaTerima', label: 'T/P' },
+        { key: 'masaLooping', label: 'L/B' },
+        { key: 'masaBerlepas', label: 'J/K' },
+        { key: 'masaTiba', label: 'S/L' },
+        { key: 'masaTamat', label: 'O/T' },
+        { key: 'rt', label: 'RT (min)' },
+        { key: 'statusOperasi', label: 'Status Ops' },
       ];
 
       const COL_FILTERS = {};
@@ -1993,36 +2003,42 @@
       let cfTempSelected = new Set();
 
       function getColDisplayValue(d, colKey) {
-        if (colKey === 'hari') return d.hari || '';
-        if (colKey === 'rt') return d.rt != null ? d.rt.toFixed(1) : '';
-        if (colKey === 'statusOperasi') return d.statusOperasi || '';
-        const idx = +colKey;
-        if (idx === COL.BIL) return d.bil;
-        if (idx === COL.TAHUN) return d.tahun;
-        if (idx === COL.MONSUN) return d.monsun;
-        if (idx === COL.BULAN) return d.bulan;
-        if (idx === COL.TARIKH) return d.tarikhStr;
-        if (idx === COL.DAERAH) return d.daerah;
-        if (idx === COL.ZON) return d.zon;
-        if (idx === COL.BALAI) return d.balai;
-        if (idx === COL.CALL_CARD) return d.callCard;
-        if (idx === COL.KATEGORI) return d.kategori;
-        if (idx === COL.SUB_KATEGORI_1) return d.subKategori1;
-        if (idx === COL.SUB_KATEGORI_2) return d.subKategori2;
-        if (idx === COL.JENIS) return d.jenis;
+        if (colKey === 'bil') return d.bil || '-';
+        if (colKey === 'tahun') return d.tahun || '-';
+        if (colKey === 'monsun') return d.monsun;
+        if (colKey === 'bulan') return d.bulan || '-';
+        if (colKey === 'hari') return d.hari || '-';
+        if (colKey === 'tarikhStr') return d.tarikhStr;
+        if (colKey === 'daerah') return d.daerah;
+        if (colKey === 'zon') return d.zon;
+        if (colKey === 'balai') return d.balai;
+        if (colKey === 'callCard') return d.callCard || '-';
+        if (colKey === 'kategori') return d.kategori;
+        if (colKey === 'subKategori1') return d.subKategori1;
+        if (colKey === 'subKategori2') return d.subKategori2;
+        if (colKey === 'jenis') return d.jenis;
+        if (colKey === 'masaTerima') return d.masaTerima;
+        if (colKey === 'masaLooping') return d.masaLooping;
+        if (colKey === 'masaBerlepas') return d.masaBerlepas;
+        if (colKey === 'masaTiba') return d.masaTiba;
+        if (colKey === 'masaTamat') return d.masaTamat;
+        if (colKey === 'rt') return d.rt != null ? d.rt.toFixed(1) : '-';
+        if (colKey === 'statusOperasi') return d.statusOperasi;
         return '';
       }
 
       function buildTableHeaders() {
         const thead = document.getElementById('tableHead');
-        thead.innerHTML = TABLE_COLS.map((c) => {
-          const hasFilter = COL_FILTERS[String(c.idx)] && COL_FILTERS[String(c.idx)].size > 0;
-          return `<th data-col="${c.idx}">
-      <span class="th-label">${c.label}</span>
-      <button type="button" class="cf-btn ${hasFilter ? 'active' : ''}" data-cf-col="${c.idx}" title="Tapis kolum ini">
-        <svg viewBox="0 0 24 24"><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"/></svg>
-      </button>
-    </th>`;
+        const visible = TableColPrefs.getVisible();
+        const cols = TABLE_COLS.filter(c => visible.has(c.key));
+        thead.innerHTML = cols.map((c) => {
+          const hasFilter = COL_FILTERS[c.key] && COL_FILTERS[c.key].size > 0;
+          return `<th data-col="${c.key}">
+            <span class="th-label">${c.label}</span>
+            <button type="button" class="cf-btn ${hasFilter ? 'active' : ''}" data-cf-col="${c.key}" title="Tapis kolum ini">
+              <svg viewBox="0 0 24 24"><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"/></svg>
+            </button>
+          </th>`;
         }).join('');
         thead.querySelectorAll('th').forEach((th) => {
           th.addEventListener('click', (e) => {
@@ -2170,6 +2186,29 @@
         MultiSelect.setSelected('tableMetrics', initial.map((k) => TABLE_METRICS[k].label));
       }
 
+      function initTableColDropdown() {
+        const container = document.querySelector('.ms[data-key="tableCols"]');
+        if (!container) return;
+        MultiSelect.create('tableCols', container, {
+          items: TABLE_COLS.map(c => c.label),
+          onChange: () => {
+            const sel = MultiSelect.getSelected('tableCols');
+            if (sel.length === 0) {
+               MultiSelect.setSelected('tableCols', ['BIL']);
+               TableColPrefs.setVisible(new Set(['bil']));
+            } else {
+               const keys = sel.map(lbl => TABLE_COLS.find(c => c.label === lbl)?.key).filter(Boolean);
+               TableColPrefs.setVisible(new Set(keys));
+            }
+            buildTableHeaders();
+            renderTable();
+          }
+        });
+        const visible = TableColPrefs.getVisible();
+        const visibleLabels = TABLE_COLS.filter(c => visible.has(c.key)).map(c => c.label);
+        MultiSelect.setSelected('tableCols', visibleLabels);
+      }
+
       function initJadualControls() {
         const threshold = document.getElementById('jadualThreshold');
         const compactBtn = document.getElementById('jadualCompactToggle');
@@ -2221,6 +2260,8 @@
 
       function resetFilter() {
         MultiSelect.clearAll();
+        MultiSelect.setSelected('tableCols', TABLE_COLS.map(c => c.label));
+        TableColPrefs.setVisible(new Set(TABLE_COLS.map(c => c.key)));
         Object.keys(COL_FILTERS).forEach((k) => delete COL_FILTERS[k]);
         buildTableHeaders();
         const dates = RAW_DATA.map((d) => d.tarikh).filter(Boolean).filter((d) => d >= MIN_DATE).sort((a, b) => a - b);
@@ -2417,7 +2458,6 @@
         const jarakList = FILTERED.map((d) => d.jarak).filter((v) => v > 0);
         const avgJarak = jarakList.length ? (jarakList.reduce((a, b) => a + b, 0) / jarakList.length).toFixed(1) : '-';
         const operasiPanjang = FILTERED.filter((d) => /PANJANG/i.test(d.masaOperasi) || d.jamOperasi > 24).length;
-        const ackAchieved = FILTERED.filter((d) => d.statusKpiAck === 'TERCAPAI').length;
         const enrAchieved = FILTERED.filter((d) => d.statusKpiEnr === 'TERCAPAI').length;
         const rt10Achieved = FILTERED.filter((d) => d.statusKpiRt10 === 'TERCAPAI').length;
 
@@ -2428,8 +2468,6 @@
         set('kpiPenyelamatan', penyelamatan.toLocaleString());
         set('kpiPenyelamatanSub', pct(penyelamatan, total));
         set('kpiRT', avgRT);
-        set('kpiAck', pct(ackAchieved, total));
-        set('kpiAckSub', `${ackAchieved} / ${total} tercapai`);
         set('kpiEnroute', pct(enrAchieved, total));
         set('kpiEnrouteSub', `${enrAchieved} / ${total} tercapai`);
         set('kpiRt10', pct(rt10Achieved, total));
@@ -2720,7 +2758,6 @@
         shif:              { kind: 'dim', label: 'Shif', get: (d) => d.shif },
         monsun:            { kind: 'dim', label: 'Fasa Monsun', get: (d) => d.monsun },
         katBalai:          { kind: 'dim', label: 'Kategori Balai', get: (d) => d.katBalai },
-        hotspot:           { kind: 'dim', label: 'Hotspot', get: (d) => d.hotspot || '(TIADA)' },
         gambut:            { kind: 'dim', label: 'Kebakaran Tanah Gambut', get: (d) => d.gambut || '(TIADA)' },
         kesTidakRt:        { kind: 'dim', label: 'Kes Tidak Dikira RT', get: (d) => d.kesTidakRt || '(TIADA)' },
         melibatkanMangsa:  { kind: 'dim', label: 'Melibatkan Mangsa', get: (d) => d.melibatkanMangsa || '(TIADA)' },
@@ -2746,9 +2783,7 @@
         pctKpiRt10:        { kind: 'metric', label: '% KPI RT ≤10min', agg: 'pctStatus', field: 'statusKpiRt10', decimals: 1 },
         countKebakaran:    { kind: 'metric', label: 'Bilangan Kebakaran', agg: 'countFn', fn: (d) => isKebakaran(d.kategori), decimals: 0 },
         countPenyelamatan: { kind: 'metric', label: 'Bilangan Penyelamatan', agg: 'countFn', fn: (d) => isPenyelamatan(d), decimals: 0 },
-        countHotspot:      { kind: 'metric', label: 'Bilangan Hotspot', agg: 'countFn', fn: (d) => /hotspot/i.test(d.hotspot) && !/bukan/i.test(d.hotspot), decimals: 0 },
         countGambut:       { kind: 'metric', label: 'Bilangan Kes Gambut', agg: 'countFn', fn: (d) => d.gambut === 'YA', decimals: 0 },
-        countAgensi:       { kind: 'metric', label: 'Bilangan Agensi Luar', agg: 'countFn', fn: (d) => hasAgensiLuar(d.agensiLuar), decimals: 0 },
         countAdaMangsa:    { kind: 'metric', label: 'Kes Ada Mangsa', agg: 'countFn', fn: (d) => (d.mangsaSelamat + d.mangsaMati) > 0, decimals: 0 },
       };
 
@@ -3013,11 +3048,12 @@
           if (!map[key]) map[key] = {
             balai: d.balai, zon: d.zon || '(TIADA)',
             total: 0, kebakaran: 0, penyelamatan: 0,
-            khidmatKhas: 0, kemanusiaan: 0, tugasKhas: 0, panggilanPalsu: 0,
+            khidmatKhasKemanusiaan: 0,
+            tugasKhas: 0, panggilanPalsu: 0,
             gambut: 0, rtSum: 0, rtCount: 0,
             jarakSum: 0, jarakCount: 0,
-            kpiAckY: 0, kpiAckN: 0, kpiEnrY: 0, kpiEnrN: 0, kpiRt10Y: 0, kpiRt10N: 0,
-            hotspot: 0, mangsaSelamat: 0, mangsaMati: 0, jamOps: 0, agensi: 0,
+            kpiEnrY: 0, kpiEnrN: 0, kpiRt10Y: 0, kpiRt10N: 0,
+            mangsaSelamat: 0, mangsaMati: 0, jamOps: 0,
             daysSet: new Set(), jenisSet: new Set(),
             bulanCount: new Array(12).fill(0),
           };
@@ -3025,42 +3061,37 @@
           m.total++;
           if (isKebakaran(d.kategori)) m.kebakaran++;
           if (isPenyelamatan(d)) m.penyelamatan++;
-          if (isKhidmatKhas(d.kategori)) m.khidmatKhas++;
-          if (isKemanusiaan(d.kategori)) m.kemanusiaan++;
+          if (isKhidmatKhas(d.kategori) || isKemanusiaan(d.kategori)) m.khidmatKhasKemanusiaan++;
           if (isTugasKhas(d.kategori)) m.tugasKhas++;
           if (isPanggilanPalsu(d.kategori)) m.panggilanPalsu++;
           if (d.gambut === 'YA') m.gambut++;
           if (d.rt != null) { m.rtSum += d.rt; m.rtCount++; }
           if (d.jarak > 0) { m.jarakSum += d.jarak; m.jarakCount++; }
-          if (d.statusKpiAck === 'TERCAPAI') m.kpiAckY++; else if (d.statusKpiAck === 'TIDAK TERCAPAI') m.kpiAckN++;
           if (d.statusKpiEnr === 'TERCAPAI') m.kpiEnrY++; else if (d.statusKpiEnr === 'TIDAK TERCAPAI') m.kpiEnrN++;
           if (d.statusKpiRt10 === 'TERCAPAI') m.kpiRt10Y++; else if (d.statusKpiRt10 === 'TIDAK TERCAPAI') m.kpiRt10N++;
-          if (/hotspot/i.test(d.hotspot) && !/bukan/i.test(d.hotspot)) m.hotspot++;
           m.mangsaSelamat += d.mangsaSelamat;
           m.mangsaMati += d.mangsaMati;
           m.jamOps += d.jamOperasi;
-          if (hasAgensiLuar(d.agensiLuar)) m.agensi++;
           if (d.tarikh) m.daysSet.add(d.tarikh.toDateString());
           if (d.jenis && d.jenis !== '(TIADA)') m.jenisSet.add(d.jenis);
           if (d.tarikh && !isNaN(d.tarikh.getTime())) m.bulanCount[d.tarikh.getMonth()]++;
         });
         return Object.values(map).map((m) => {
-          const denAck = m.kpiAckY + m.kpiAckN, denEnr = m.kpiEnrY + m.kpiEnrN, denRT = m.kpiRt10Y + m.kpiRt10N;
+          const denEnr = m.kpiEnrY + m.kpiEnrN, denRT = m.kpiRt10Y + m.kpiRt10N;
           return {
             balai: m.balai, zon: m.zon, total: m.total,
             kebakaran: m.kebakaran, penyelamatan: m.penyelamatan,
-            khidmatKhas: m.khidmatKhas, kemanusiaan: m.kemanusiaan,
+            khidmatKhasKemanusiaan: m.khidmatKhasKemanusiaan,
             tugasKhas: m.tugasKhas, panggilanPalsu: m.panggilanPalsu,
             gambut: m.gambut,
             avgRT: m.rtCount ? m.rtSum / m.rtCount : 0,
             avgJarak: m.jarakCount ? m.jarakSum / m.jarakCount : 0,
             countDays: m.daysSet.size,
             countJenis: m.jenisSet.size,
-            kpiAck: denAck ? (m.kpiAckY / denAck) * 100 : 0,
             kpiEnroute: denEnr ? (m.kpiEnrY / denEnr) * 100 : 0,
             kpiRT10: denRT ? (m.kpiRt10Y / denRT) * 100 : 0,
-            hotspot: m.hotspot, mangsaSelamat: m.mangsaSelamat, mangsaMati: m.mangsaMati,
-            jamOps: m.jamOps, agensi: m.agensi, sparkline: m.bulanCount,
+            mangsaSelamat: m.mangsaSelamat, mangsaMati: m.mangsaMati,
+            jamOps: m.jamOps, sparkline: m.bulanCount,
           };
         });
       }
@@ -3370,7 +3401,6 @@
           case 'chartShif': return renderSimple(chartId, type, showNumbers, canvas, getSimpleCountData('shif'), transposed);
           case 'chartMonsun': return renderSimple(chartId, type, showNumbers, canvas, getSimpleCountData('monsun'), transposed);
           case 'chartOperasi': return renderSimple(chartId, type, showNumbers, canvas, getSimpleCountData('masaOperasi'), transposed);
-          case 'chartHotspot': return renderHotspot(chartId, type, showNumbers, canvas, transposed);
           case 'chartJarak': return renderJarak(chartId, type, showNumbers, canvas, transposed);
         }
       }
@@ -3456,23 +3486,6 @@
         return newChart(chartId, canvas, cfg, showNumbers);
       }
 
-      function renderHotspot(chartId, type, showNumbers, canvas, transposed) {
-        let y = 0, n = 0;
-        FILTERED.forEach((d) => { if (/hotspot/i.test(d.hotspot) && !/bukan/i.test(d.hotspot)) y++; else if (d.hotspot) n++; });
-        const labels = ['Hotspot (>2x)', 'Bukan Hotspot'];
-        const values = [y, n];
-        const colors = [KPI_COLORS.danger, '#A8B4C0'];
-        if (type === 'scatter') return newChart(chartId, canvas, { type: 'scatter', data: { datasets: [{ data: values.map((v, i) => transposed ? { x: v, y: i } : { x: i, y: v }), backgroundColor: colors.map((c) => hexToRgba(c, 0.75)), borderColor: colors, borderWidth: 1.5, pointRadius: 8 }] }, options: makeOpts({ plugins: { legend: { display: false } } }) }, showNumbers);
-        if (type === 'bubble') return newChart(chartId, canvas, { type: 'bubble', data: { datasets: [{ data: values.map((v, i) => transposed ? { x: v, y: i, r: Math.max(8, v / 3) } : { x: i, y: v, r: Math.max(8, v / 3) }), backgroundColor: colors.map((c) => hexToRgba(c, 0.6)), borderColor: colors, borderWidth: 1.5 }] }, options: makeOpts({ plugins: { legend: { display: false } } }) }, showNumbers);
-        if (type === 'radar') return newChart(chartId, canvas, { type: 'radar', data: { labels, datasets: [{ label: 'Kes', data: values, backgroundColor: hexToRgba(KPI_COLORS.danger, 0.25), borderColor: KPI_COLORS.danger, borderWidth: 2, pointBackgroundColor: KPI_COLORS.danger }] }, options: makeOpts({ plugins: { legend: { display: false } }, scales: { r: { ticks: { color: getCSSVar('--text-muted', '#64748b') }, grid: { color: getCSSVar('--border', 'rgba(0,0,0,.08)') } } } }) }, showNumbers);
-        if (type === 'treemap') return newChart(chartId, canvas, { type: 'treemap', data: { datasets: [{ tree: labels.map((l, i) => ({ label: l, value: values[i] })), backgroundColor: (ctx) => hexToRgba(colors[(ctx.dataIndex || 0) % colors.length], 0.85), borderColor: '#fff', borderWidth: 2 }] }, options: makeOpts({ plugins: { legend: { display: false } } }) }, showNumbers);
-        if (type === 'matrix') return newChart(chartId, canvas, { type: 'matrix', data: { datasets: [{ data: values.map((v, i) => ({ x: i, y: 0, v })), backgroundColor: (ctx) => hexToRgba(colors[(ctx.raw?.x || 0) % colors.length], 0.85), width: ({ chart }) => (chart.chartArea || {}).width / 2 - 8, height: ({ chart }) => (chart.chartArea || {}).height - 8 }] }, options: makeOpts({ plugins: { legend: { display: false } }, scales: { x: { type: 'category', labels, grid: { display: false } }, y: { type: 'category', labels: [''], offset: true, ticks: { display: false }, grid: { display: false } } } }) }, showNumbers);
-        const chartJsType = { bar: 'bar', barH: 'bar', line: 'line', pie: 'pie', doughnut: 'doughnut', polar: 'polarArea', stacked: 'bar', mixed: 'bar', histogram: 'bar' }[type] || 'doughnut';
-        const isH = (type === 'barH') !== !!transposed;
-        if (chartJsType === 'pie' || chartJsType === 'doughnut' || chartJsType === 'polarArea') return newChart(chartId, canvas, { type: chartJsType, data: { labels, datasets: [{ data: values, backgroundColor: colors.map((c) => hexToRgba(c, 0.85)), borderColor: '#fff', borderWidth: 2 }] }, options: makeOpts({ plugins: { legend: { position: 'right' } }, scales: undefined }) }, showNumbers);
-        return newChart(chartId, canvas, { type: chartJsType, data: { labels, datasets: [{ label: 'Kes', data: values, backgroundColor: colors.map((c) => hexToRgba(c, 0.82)), borderColor: colors, borderWidth: 1, borderRadius: 4, tension: 0.35, fill: chartJsType === 'line' ? hexToRgba(KPI_COLORS.danger, 0.15) : false }] }, options: makeOpts({ indexAxis: isH ? 'y' : 'x', plugins: { legend: { display: false } } }) }, showNumbers);
-      }
-
       function renderJarak(chartId, type, showNumbers, canvas, transposed) {
         const scatterData = getScatterData();
         if (type === 'scatter') return newChart(chartId, canvas, { type: 'scatter', data: { datasets: [{ label: 'Kejadian', data: transposed ? scatterData.map((p) => ({ x: p.y, y: p.x })) : scatterData, backgroundColor: hexToRgba('#3B6EA5', 0.55), borderColor: '#3B6EA5', borderWidth: 1.5, pointRadius: 5, pointHoverRadius: 8 }] }, options: makeOpts({ plugins: { legend: { display: false }, tooltip: { callbacks: { label: (ctx) => transposed ? `RT: ${ctx.parsed.x} min, Jarak: ${ctx.parsed.y} km` : `Jarak: ${ctx.parsed.x} km, RT: ${ctx.parsed.y} min` } } }, scales: { x: { title: { display: true, text: transposed ? 'Response Time (minit)' : 'Jarak (km)', color: getCSSVar('--text-muted', '#64748b') }, ticks: { color: getCSSVar('--text-muted', '#64748b') }, grid: { color: getCSSVar('--border', 'rgba(0,0,0,.06)') }, beginAtZero: true }, y: { title: { display: true, text: transposed ? 'Jarak (km)' : 'Response Time (minit)', color: getCSSVar('--text-muted', '#64748b') }, ticks: { color: getCSSVar('--text-muted', '#64748b') }, grid: { color: getCSSVar('--border', 'rgba(0,0,0,.06)') }, beginAtZero: true } } }) }, showNumbers);
@@ -3511,7 +3524,6 @@
         const statKpiEl = document.getElementById('statKpi');
         if (statKpiEl) statKpiEl.innerHTML = `
     <div class="stat-mini"><div class="lbl">Total Kes</div><div class="val">${total}</div></div>
-    <div class="stat-mini"><div class="lbl">KPI Ack ≤10s</div><div class="val" style="color:#8BA888">${pct(kpiData.series[0].values[0], total)}</div><div class="sub">${kpiData.series[0].values[0]} tercapai • ${kpiData.series[1].values[0]} tidak</div></div>
     <div class="stat-mini"><div class="lbl">KPI Enroute ≤60s</div><div class="val" style="color:#3B6EA5">${pct(kpiData.series[0].values[1], total)}</div><div class="sub">${kpiData.series[0].values[1]} tercapai • ${kpiData.series[1].values[1]} tidak</div></div>
     <div class="stat-mini"><div class="lbl">KPI RT ≤10min</div><div class="val" style="color:#C4A45C">${pct(kpiData.series[0].values[2], total)}</div><div class="sub">${kpiData.series[0].values[2]} tercapai • ${kpiData.series[1].values[2]} tidak</div></div>`;
         const katData = getSimpleCountData('kategori');
@@ -3547,17 +3559,14 @@
         });
         if (sortCol !== null) {
           rows.sort((a, b) => {
-            let va, vb;
+            let va = a[sortCol] ?? '';
+            let vb = b[sortCol] ?? '';
             if (sortCol === 'rt') { va = a.rt ?? -1; vb = b.rt ?? -1; }
-            else if (sortCol === 'statusOperasi') { va = a.statusOperasi || ''; vb = b.statusOperasi || ''; }
             else if (sortCol === 'hari') {
               const numA = parseInt(String(a.hari).replace(/\D/g, ''), 10);
               const numB = parseInt(String(b.hari).replace(/\D/g, ''), 10);
               if (!isNaN(numA) && !isNaN(numB)) { va = numA; vb = numB; }
-              else { va = a.hari || ''; vb = b.hari || ''; }
             } else {
-              const idx = +sortCol;
-              va = a.raw[idx] || ''; vb = b.raw[idx] || '';
               const na = parseFloat(va), nb = parseFloat(vb);
               if (!isNaN(na) && !isNaN(nb)) { va = na; vb = nb; }
             }
@@ -3566,6 +3575,8 @@
             return 0;
           });
         }
+        const visible = TableColPrefs.getVisible();
+        const cols = TABLE_COLS.filter(c => visible.has(c.key));
         const effectiveRowsPerPage = rowsPerPage === Infinity || rowsPerPage <= 0 ? Math.max(rows.length, 1) : rowsPerPage;
         const totalPages = Math.max(1, Math.ceil(rows.length / effectiveRowsPerPage));
         if (currentPage > totalPages) currentPage = totalPages;
@@ -3573,11 +3584,13 @@
         const pageRows = rows.slice(start, start + effectiveRowsPerPage);
         document.getElementById('tableBody').innerHTML = pageRows.map((d) => `
     <tr>
-      <td>${d.bil || '-'}</td><td>${d.tahun || '-'}</td><td>${d.monsun}</td><td>${d.bulan || '-'}</td><td>${d.hari || '-'}</td>
-      <td>${d.tarikhStr}</td><td>${d.daerah}</td><td>${d.zon}</td><td>${d.balai}</td><td>${d.callCard || '-'}</td>
-      <td>${d.kategori}</td><td>${d.subKategori1}</td><td>${d.subKategori2}</td><td>${d.jenis}</td>
-      <td>${d.rt != null ? d.rt.toFixed(1) : '-'}</td>
-      <td>${d.statusOperasi === 'MASIH BEROPERASI' ? '<span style="color:#D97757;font-weight:600;">MASIH BEROPERASI</span>' : 'OPERASI TAMAT'}</td>
+      ${cols.map(c => {
+        let val = getColDisplayValue(d, c.key);
+        if (c.key === 'statusOperasi') {
+          return `<td>${val === 'MASIH BEROPERASI' ? '<span style="color:#D97757;font-weight:600;">MASIH BEROPERASI</span>' : val}</td>`;
+        }
+        return `<td>${val}</td>`;
+      }).join('')}
     </tr>`).join('');
         const perPageLabel = rowsPerPage === Infinity || rowsPerPage <= 0 ? 'semua' : rowsPerPage;
         document.getElementById('pageInfo').textContent = `Halaman ${currentPage} / ${totalPages} • ${rows.length} rekod • ${perPageLabel}/halaman`;
