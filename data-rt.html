@@ -412,7 +412,6 @@
       #jadualBalai.compact-mode tfoot td[data-col="agensi"] {
         display: none !important;
       }
-      /* ── SUB KATEGORI GRID (tanpa scrollbar) ── */
       .subkat-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 8px; padding: 2px 0; }
       .subkat-grid .mini-card { flex: none; width: auto; display: flex; flex-direction: column; }
       .subkat-grid .mini-label { white-space: normal; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; min-height: 2.6em; line-height: 1.3; margin-bottom: 6px; }
@@ -440,7 +439,6 @@
         .kat-strip { grid-template-columns: 1fr 1fr; }
         .kat-tile-value { font-size: 21px; }
       }
-      /* ===== BUTANG KEMBALI TERAPUNG ===== */
       .back-fab {
         position: fixed; bottom: 20px; right: 20px; z-index: 9999;
         display: inline-flex; align-items: center; gap: 8px;
@@ -617,6 +615,24 @@
               <div class="filter-group">
                 <label><svg class="ico" viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" /><circle cx="12" cy="7" r="4" /></svg>Melibatkan Mangsa</label>
                 <div class="ms" data-key="melibatkanMangsa"></div>
+              </div>
+              <!-- ===== FILTER BAHARU: RT <9 MIN (BF) ===== -->
+              <div class="filter-group">
+                <label>
+                  <svg class="ico" viewBox="0 0 24 24"><circle cx="12" cy="13" r="8"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="13" x2="16" y2="15"/></svg>
+                  RT &lt;9 MIN
+                  <span class="filter-help" data-tip="Tapisan ikut kolum BF — Range Masa T/P (RT ≤9min, 9-9.5min, … , RT >30min).">?</span>
+                </label>
+                <div class="ms" data-key="rangeRt1"></div>
+              </div>
+              <!-- ===== FILTER BAHARU: RT <10 MIN (BG) ===== -->
+              <div class="filter-group">
+                <label>
+                  <svg class="ico" viewBox="0 0 24 24"><circle cx="12" cy="13" r="8"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="13" x2="16" y2="15"/></svg>
+                  RT &lt;10 MIN
+                  <span class="filter-help" data-tip="Tapisan ikut kolum BG — Range Masa T/P (2) (RT ≤10min, 10-11min, … , RT >30min).">?</span>
+                </label>
+                <div class="ms" data-key="rangeRt2"></div>
               </div>
               <div class="filter-bar-actions">
                 <button class="btn-secondary" onclick="resetFilter()">
@@ -795,6 +811,10 @@
             </button>
             <button class="tab-btn" data-tab="balai">
               <svg class="ico" viewBox="0 0 24 24"><rect x="1" y="3" width="15" height="13" /><polygon points="16 8 20 8 23 11 23 16 16 16 16 8" /></svg>Balai
+            </button>
+            <!-- ===== TAB BAHARU: BALAI × RT ===== -->
+            <button class="tab-btn" data-tab="balai-rt">
+              <svg class="ico" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>Balai × RT
             </button>
             <button class="tab-btn" data-tab="zon">
               <svg class="ico" viewBox="0 0 24 24"><polygon points="1 6 1 22 8 18 16 22 23 18 23 2 16 6 8 2 1 6" /></svg>Zon & Daerah
@@ -980,6 +1000,28 @@
             </div>
           </div>
 
+          <!-- ===== PANEL BAHARU: BALAI × RT ===== -->
+          <div class="tab-panel" id="panel-balai-rt">
+            <div class="card">
+              <div class="card-header">
+                <div class="card-title">Balai × Range RT — Jumlah Kes</div>
+                <div class="card-controls">
+                  <select id="balaiRtRange" class="dyn-select" style="width:auto;min-height:32px;padding:6px 10px;">
+                    <option value="rangeRt1">RT &lt;9 MIN (BF)</option>
+                    <option value="rangeRt2">RT &lt;10 MIN (BG)</option>
+                  </select>
+                  <div class="chart-type-picker" data-chart="chartBalaiRt"></div>
+                  <button class="num-toggle" data-chart="chartBalaiRt" type="button">
+                    <span class="num-icon"><svg viewBox="0 0 24 24" style="width:12px;height:12px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;"><line x1="4" y1="9" x2="20" y2="9"/><line x1="4" y1="15" x2="20" y2="15"/><line x1="10" y1="3" x2="8" y2="21"/><line x1="16" y1="3" x2="14" y2="21"/></svg></span>
+                    <span class="num-label">Nombor OFF</span>
+                  </button>
+                </div>
+              </div>
+              <div class="stat-row" id="statBalaiRt"></div>
+              <div class="chart-wrap-lg"><canvas id="chartBalaiRt"></canvas></div>
+            </div>
+          </div>
+
           <div class="tab-panel" id="panel-zon">
             <div class="card">
               <div class="card-header">
@@ -1140,7 +1182,6 @@
 
     <div class="cf-dropdown" id="cfDropdown" hidden></div>
 
-    <!-- ===== BUTANG KEMBALI TERAPUNG (MOBILE) ===== -->
     <a href="index.html" class="back-fab" title="Kembali ke Dashboard Utama">
       <svg viewBox="0 0 24 24">
         <line x1="19" y1="12" x2="5" y2="12"/>
@@ -1202,7 +1243,8 @@
         chartSelaCount: { default: 'stacked' }, chartSelaAvg: { default: 'barH' },
         chartRtRange: { default: 'barH' }, chartRtRange2: { default: 'barH' },
         chartKategori: { default: 'doughnut' }, chartJenis: { default: 'barH' },
-        chartBalai: { default: 'barH' }, chartZon: { default: 'pie' }, chartDaerah: { default: 'barH' },
+        chartBalai: { default: 'barH' }, chartBalaiRt: { default: 'stacked' },
+        chartZon: { default: 'pie' }, chartDaerah: { default: 'barH' },
         chartShif: { default: 'pie' }, chartMonsun: { default: 'bar' },
         chartOperasi: { default: 'doughnut' },
         chartJarak: { default: 'scatter' },
@@ -1244,7 +1286,6 @@
         setSelected(keys) { localStorage.setItem(this.STORAGE_KEY, JSON.stringify(keys.filter((k) => TABLE_METRICS[k]))); },
       };
 
-      // ── COLUMN PREFERENCES FOR DATA TABLE ──
       const TableColPrefs = {
         STORAGE_KEY: 'rt-table-cols',
         getVisible() {
@@ -1823,7 +1864,7 @@
         function updateBadge() {
           const badge = document.getElementById('filterCountBadge');
           if (!badge) return;
-          const keys = ['balai','zon','kategori','shif','daerah','monsun','katBalai','kpiRt','melibatkanMangsa','subKategori1','subKategori2','gambut','hari','jenis','tempohOperasi','statusOperasi'];
+          const keys = ['balai','zon','kategori','shif','daerah','monsun','katBalai','kpiRt','melibatkanMangsa','subKategori1','subKategori2','gambut','hari','jenis','tempohOperasi','statusOperasi','rangeRt1','rangeRt2'];
           let count = 0;
           keys.forEach((k) => { if (typeof MultiSelect !== 'undefined') count += MultiSelect.getSelected(k).length; });
           if (count > 0) { badge.textContent = count; badge.classList.remove('hidden'); }
@@ -1943,7 +1984,6 @@
               statusNartYs: clean(r[COL.STATUS_NART_YS]),
               statusNartTkp: clean(r[COL.STATUS_NART_TKP]),
               statusNartKp: clean(r[COL.STATUS_NART_KP]),
-              // ── MASA Columns for Data Table ──
               masaTerima: clean(r[COL.MASA_A]) || '-',
               masaLooping: clean(r[COL.MASA_LOOPING]) || '-',
               masaBerlepas: clean(r[COL.MASA_BERLEPAS]) || '-',
@@ -1960,6 +2000,7 @@
           initTableMetricsDropdown();
           initTableColDropdown();
           initJadualControls();
+          initBalaiRtControl();
           FilterPanel.init();
           initPageNav();
           initRowsPerPage();
@@ -1973,7 +2014,7 @@
         }
       }
 
-      // ── TABLE COLUMNS DEFINITION ──
+      // ── TABLE COLUMNS DEFINITION (Jarak ditambah) ──
       const TABLE_COLS = [
         { key: 'bil', label: 'BIL' },
         { key: 'tahun', label: 'Tahun' },
@@ -1989,6 +2030,7 @@
         { key: 'subKategori1', label: 'Sub Kat 1' },
         { key: 'subKategori2', label: 'Sub Kat 2' },
         { key: 'jenis', label: 'Jenis' },
+        { key: 'jarak', label: 'Jarak' },
         { key: 'masaTerima', label: 'T/P' },
         { key: 'masaLooping', label: 'L/B' },
         { key: 'masaBerlepas', label: 'J/K' },
@@ -2017,6 +2059,7 @@
         if (colKey === 'subKategori1') return d.subKategori1;
         if (colKey === 'subKategori2') return d.subKategori2;
         if (colKey === 'jenis') return d.jenis;
+        if (colKey === 'jarak') return d.jarak > 0 ? d.jarak.toFixed(1) + ' km' : '-';
         if (colKey === 'masaTerima') return d.masaTerima;
         if (colKey === 'masaLooping') return d.masaLooping;
         if (colKey === 'masaBerlepas') return d.masaBerlepas;
@@ -2164,6 +2207,9 @@
         MultiSelect.create('tempohOperasi', document.querySelector('.ms[data-key="tempohOperasi"]'), { items: ['PENDEK', 'SEDERHANA', 'PANJANG', 'MASIH BEROPERASI'], onChange: applyFilter });
         MultiSelect.create('statusOperasi', document.querySelector('.ms[data-key="statusOperasi"]'), { items: ['MASIH BEROPERASI', 'OPERASI TAMAT'], onChange: applyFilter });
         MultiSelect.create('jenis', document.querySelector('.ms[data-key="jenis"]'), { items: uniq(RAW_DATA.map((d) => d.jenis)), onChange: applyFilter });
+        // ── Filter baharu: Range RT (BF) & Range RT (BG) ──
+        MultiSelect.create('rangeRt1', document.querySelector('.ms[data-key="rangeRt1"]'), { items: uniq(RAW_DATA.map((d) => d.rangeRt1)), onChange: applyFilter });
+        MultiSelect.create('rangeRt2', document.querySelector('.ms[data-key="rangeRt2"]'), { items: uniq(RAW_DATA.map((d) => d.rangeRt2)), onChange: applyFilter });
         MultiSelect.attachGlobalListener();
 
         const dates = RAW_DATA.map((d) => d.tarikh).filter(Boolean).filter((d) => d >= MIN_DATE).sort((a, b) => a - b);
@@ -2287,6 +2333,8 @@
         const tempohOperasiSel = MultiSelect.getSelected('tempohOperasi');
         const statusOperasiSel = MultiSelect.getSelected('statusOperasi');
         const jenisSel = MultiSelect.getSelected('jenis');
+        const rangeRt1Sel = MultiSelect.getSelected('rangeRt1');
+        const rangeRt2Sel = MultiSelect.getSelected('rangeRt2');
 
         const fromD = from ? new Date(from.getFullYear(), from.getMonth(), from.getDate(), 0, 0, 0, 0) : null;
         const toD = to ? new Date(to.getFullYear(), to.getMonth(), to.getDate(), 23, 59, 59, 999) : null;
@@ -2310,6 +2358,8 @@
           if (!matchMulti(d.statusOperasi, statusOperasiSel)) return false;
           if (gambutSel.length > 0) { if (!d.gambut || !gambutSel.includes(d.gambut)) return false; }
           if (!matchMulti(d.jenis, jenisSel)) return false;
+          if (!matchMulti(d.rangeRt1, rangeRt1Sel)) return false;
+          if (!matchMulti(d.rangeRt2, rangeRt2Sel)) return false;
           return true;
         });
 
@@ -2702,6 +2752,121 @@
       function getTopData(field, top = 15) { const e = countBy(FILTERED, (d) => d[field]).slice(0, top); return { labels: e.map((x) => x[0]), values: e.map((x) => x[1]) }; }
       function getScatterData() { return FILTERED.filter((d) => d.jarak > 0 && d.rt != null).map((d) => ({ x: d.jarak, y: +d.rt.toFixed(1) })); }
 
+      // ── BALAI × RT CROSSTAB ──
+      let balaiRtField = localStorage.getItem('rt-balai-rt-field') || 'rangeRt1';
+
+      function getBalaiRtCrosstab(fieldKey) {
+        const xMap = {};
+        const rangeSet = new Set();
+        FILTERED.forEach((d) => {
+          const balai = d.balai || '(TIADA)';
+          const range = clean(d[fieldKey]);
+          if (!range) return;
+          rangeSet.add(range);
+          if (!xMap[balai]) xMap[balai] = {};
+          xMap[balai][range] = (xMap[balai][range] || 0) + 1;
+        });
+        const balaiLabels = Object.keys(xMap).sort((a, b) => {
+          const ta = Object.values(xMap[a]).reduce((s, v) => s + v, 0);
+          const tb = Object.values(xMap[b]).reduce((s, v) => s + v, 0);
+          return tb - ta;
+        });
+        const rangeLabels = [...rangeSet].sort((a, b) =>
+          a.localeCompare(b, 'ms', { numeric: true })
+        );
+        return { balaiLabels, rangeLabels, xMap };
+      }
+
+      function renderBalaiRt(chartId, type, showNumbers, canvas, transposed) {
+        const { balaiLabels, rangeLabels, xMap } = getBalaiRtCrosstab(balaiRtField);
+        const wrap = canvas.parentElement;
+        wrap.querySelectorAll('.chart-error').forEach((el) => el.remove());
+
+        const statEl = document.getElementById('statBalaiRt');
+        if (statEl) {
+          const total = balaiLabels.reduce(
+            (s, b) => s + rangeLabels.reduce((ss, r) => ss + (xMap[b][r] || 0), 0), 0
+          );
+          const rangeTotals = rangeLabels.map((r) =>
+            balaiLabels.reduce((s, b) => s + (xMap[b][r] || 0), 0)
+          );
+          const topRange = rangeLabels[rangeTotals.indexOf(Math.max(...rangeTotals))] || '-';
+          statEl.innerHTML = `
+            <div class="stat-mini"><div class="lbl">Jumlah Kes Ditapis</div><div class="val">${total.toLocaleString()}</div><div class="sub">${balaiLabels.length} balai • ${rangeLabels.length} range RT</div></div>
+            <div class="stat-mini"><div class="lbl">Range RT Dominan</div><div class="val" style="color:#3B6EA5">${topRange}</div><div class="sub">${Math.max(...rangeTotals, 0)} kes</div></div>`;
+        }
+
+        if (!balaiLabels.length) {
+          canvas.style.display = 'none';
+          const e = document.createElement('div');
+          e.className = 'chart-error';
+          e.innerHTML = `<strong>Tiada data Balai × RT</strong><small>Pastikan kolum BF / BG ada nilai.</small>`;
+          wrap.appendChild(e);
+          return;
+        }
+        canvas.style.display = '';
+
+        const isCircular = ['pie', 'doughnut', 'polar'].includes(type);
+        if (isCircular) {
+          const totals = balaiLabels.map((b) =>
+            rangeLabels.reduce((s, r) => s + (xMap[b][r] || 0), 0)
+          );
+          const ct = { pie: 'pie', doughnut: 'doughnut', polar: 'polarArea' }[type];
+          return newChart(chartId, canvas, {
+            type: ct,
+            data: {
+              labels: balaiLabels,
+              datasets: [{
+                data: totals,
+                backgroundColor: PALETTE.map((c) => hexToRgba(c, 0.82)),
+                borderColor: '#fff', borderWidth: 2,
+              }],
+            },
+            options: makeOpts({ plugins: { legend: { position: 'right' } }, scales: undefined }),
+          }, showNumbers);
+        }
+
+        const isBarH = (type === 'barH') !== !!transposed;
+        const isLine = type === 'line';
+        const isStacked = type === 'stacked';
+        const datasets = rangeLabels.map((r, i) => ({
+          label: r,
+          data: balaiLabels.map((b) => xMap[b][r] || 0),
+          backgroundColor: isLine ? 'transparent' : hexToRgba(PALETTE[i % PALETTE.length], 0.82),
+          borderColor: PALETTE[i % PALETTE.length],
+          borderWidth: isLine ? 2.5 : 1,
+          borderRadius: isLine ? 0 : 3,
+          tension: 0.35,
+          fill: false,
+        }));
+        const cfg = {
+          type: 'bar',
+          data: { labels: balaiLabels, datasets },
+          options: makeOpts({
+            indexAxis: isBarH ? 'y' : 'x',
+            plugins: { legend: { display: true, position: 'right' } },
+            scales: {
+              x: { stacked: isStacked, ticks: { color: getCSSVar('--text-muted', '#64748b'), font: { size: 10 } }, grid: { color: getCSSVar('--border', 'rgba(0,0,0,.08)') }, beginAtZero: true },
+              y: { stacked: isStacked, ticks: { color: getCSSVar('--text-muted', '#64748b'), font: { size: 10 } }, grid: { color: getCSSVar('--border', 'rgba(0,0,0,.08)') }, beginAtZero: true },
+            },
+          }),
+        };
+        if (isLine) cfg.data.datasets.forEach((ds) => { ds.type = 'line'; });
+        return newChart(chartId, canvas, cfg, showNumbers);
+      }
+
+      function initBalaiRtControl() {
+        const sel = document.getElementById('balaiRtRange');
+        if (!sel || sel.dataset.ready === '1') return;
+        sel.dataset.ready = '1';
+        sel.value = balaiRtField;
+        sel.addEventListener('change', () => {
+          balaiRtField = sel.value;
+          localStorage.setItem('rt-balai-rt-field', balaiRtField);
+          renderSingleChart('chartBalaiRt');
+        });
+      }
+
       function computeStats(values, threshold) {
         const valid = values.filter((v) => v != null && isFinite(v));
         const achieved = valid.filter((v) => v <= threshold).length;
@@ -2743,7 +2908,6 @@
         return { labels: selaLevels.map((s) => s.short), values: selaLevels.map((s) => +s.avg.toFixed(2)), fullLabels: selaLevels.map((s) => s.label) };
       }
 
-      /* ── DYNAMIC FIELDS (X & Y senarai sama) ── */
       const DYN_FIELDS = {
         tarikh:            { kind: 'dim', label: 'Tarikh', get: (d) => d.tarikhStr },
         bulan:             { kind: 'dim', label: 'Bulan', get: (d) => d.bulan || '(TIADA)' },
@@ -2817,7 +2981,6 @@
         const yField = DYN_FIELDS[dynYKey];
         if (!xField || !yField) return { mode: 'empty' };
 
-        // DIM × DIM → crosstab (stacked bar)
         if (xField.kind === 'dim' && yField.kind === 'dim') {
           const xMap = {};
           FILTERED.forEach((d) => {
@@ -2838,7 +3001,6 @@
           return { mode: 'crosstab', xLabels, yLabels, xMap, xField, yField };
         }
 
-        // MET × MET → scatter
         if (xField.kind === 'metric' && yField.kind === 'metric') {
           const points = [];
           FILTERED.forEach((d) => {
@@ -2850,7 +3012,6 @@
           return { mode: 'scatterXY', points, xField, yField };
         }
 
-        // DIM × MET atau MET × DIM → standard
         const dim = xField.kind === 'dim' ? xField : yField;
         const metric = xField.kind === 'metric' ? xField : yField;
         const swapped = xField.kind === 'metric';
@@ -3396,6 +3557,7 @@
           case 'chartKategori': return renderSimple(chartId, type, showNumbers, canvas, getSimpleCountData('kategori'), transposed);
           case 'chartJenis': return renderSimple(chartId, type, showNumbers, canvas, getTopData('jenis', 15), transposed);
           case 'chartBalai': return renderSimple(chartId, type, showNumbers, canvas, getSimpleCountData('balai'), transposed);
+          case 'chartBalaiRt': return renderBalaiRt(chartId, type, showNumbers, canvas, transposed);
           case 'chartZon': return renderSimple(chartId, type, showNumbers, canvas, getSimpleCountData('zon'), transposed);
           case 'chartDaerah': return renderSimple(chartId, type, showNumbers, canvas, getTopData('daerah', 15), transposed);
           case 'chartShif': return renderSimple(chartId, type, showNumbers, canvas, getSimpleCountData('shif'), transposed);
@@ -3562,6 +3724,7 @@
             let va = a[sortCol] ?? '';
             let vb = b[sortCol] ?? '';
             if (sortCol === 'rt') { va = a.rt ?? -1; vb = b.rt ?? -1; }
+            else if (sortCol === 'jarak') { va = a.jarak ?? -1; vb = b.jarak ?? -1; }
             else if (sortCol === 'hari') {
               const numA = parseInt(String(a.hari).replace(/\D/g, ''), 10);
               const numB = parseInt(String(b.hari).replace(/\D/g, ''), 10);
