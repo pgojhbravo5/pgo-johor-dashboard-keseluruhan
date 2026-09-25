@@ -1174,7 +1174,6 @@
       }
       td.jumlah-cell { color: var(--amber); font-weight: 600; }
 
-      /* Kekalkan alignment angka dalam semua jadual */
       table.grid,
       table.bsum,
       table.ketua,
@@ -2051,14 +2050,12 @@
         z-index: 5;
       }
 
-      /* Zebra untuk kolum sticky pada baris genap */
       table.semak-lokasi tbody tr:nth-child(even) td.col-sticky-1,
       table.semak-lokasi tbody tr:nth-child(even) td.col-sticky-2,
       table.semak-lokasi tbody tr:nth-child(even) td.col-sticky-3 {
         background: var(--zebra-solid) !important;
       }
 
-      /* Hover mesti override zebra sticky */
       table.semak-lokasi tbody tr:hover td.col-sticky-1,
       table.semak-lokasi tbody tr:hover td.col-sticky-2,
       table.semak-lokasi tbody tr:hover td.col-sticky-3 {
@@ -2169,6 +2166,23 @@
       table.bkb tbody td.nama-cell.empty, table.bkb tbody td.tel-cell.empty { color: var(--text-faint); font-style: italic; opacity: 0.6; }
       table.bkb tbody td.tel-cell { font-family: 'Inter', system-ui, sans-serif; font-weight: 600; font-size: 0.82rem; color: var(--amber); min-width: 130px; }
       table.bkb tbody td.contact-cell { min-width: 100px; white-space: nowrap; }
+
+      table.bkb thead tr th.bkb-group-bkb {
+        background: linear-gradient(180deg, rgba(139,111,212,0.22), rgba(139,111,212,0.08));
+        color: var(--purple);
+        font-weight: 700;
+        letter-spacing: 0.08em;
+        border-bottom: 2px solid rgba(139,111,212,0.5);
+        font-size: 0.72rem;
+      }
+      table.bkb thead tr th.bkb-group-penyelia {
+        background: linear-gradient(180deg, rgba(31,168,160,0.22), rgba(31,168,160,0.08));
+        color: var(--teal);
+        font-weight: 700;
+        letter-spacing: 0.08em;
+        border-bottom: 2px solid rgba(31,168,160,0.5);
+        font-size: 0.72rem;
+      }
 
       .mers-header { display: flex; flex-wrap: wrap; gap: 1rem 1.5rem; padding: 0.75rem 1rem; margin-bottom: 0.9rem; background: var(--panel-2); border: 1px solid var(--line); border-radius: var(--radius-sm); align-items: flex-end; }
       .mers-header-title { flex: 1 1 100%; font-family: 'Oswald', sans-serif; font-size: 1.05rem; letter-spacing: 0.1em; text-transform: uppercase; text-align: center; color: var(--text); padding: 0.4rem 0; border-bottom: 2px solid var(--red); margin-bottom: 0.4rem; }
@@ -2474,9 +2488,6 @@
         .id-field { flex: 1 1 100%; }
       }
 
-      /* ============================================================
-         EXPORT / ARCHIVE CONFIRM MODAL
-         ============================================================ */
       .archive-modal-overlay {
         position: fixed; inset: 0;
         background: rgba(2, 6, 16, 0.78);
@@ -2658,9 +2669,6 @@
         .archive-modal-overlay { display: none !important; }
       }
 
-      /* ============================================================
-         SOUND TOGGLE BUTANG (di topbar)
-         ============================================================ */
       .sound-toggle.muted {
         color: var(--text-faint);
         border-color: var(--line-soft);
@@ -2962,9 +2970,6 @@
       </div>
     </div>
 
-    <!-- ============================================================
-         MODAL: Export Data? (selepas Simpan Sekarang)
-         ============================================================ -->
     <div class="archive-modal-overlay" id="exportModalOverlay" role="dialog" aria-modal="true" aria-labelledby="exportModalTitle">
       <div class="archive-modal">
         <div class="archive-modal-head">
@@ -3064,9 +3069,6 @@
         return ('<svg class="ico" viewBox="0 0 24 24" aria-hidden="true">' + (ICONS[name] || '') + '</svg>');
       }
 
-      /* ============================================================
-         SOUND STATE — Enable/Disable bunyi + simpan preferens
-         ============================================================ */
       const SOUND_KEY = 'bomba-sound-enabled';
       let soundEnabled = true;
 
@@ -3109,9 +3111,6 @@
         applySoundToggleUI();
       }
 
-      /* ============================================================
-         BUNYI: Tick checkbox (ON/OFF)
-         ============================================================ */
       function playCheckboxTickSound(isOn) {
         if (!soundEnabled) return;
         try {
@@ -3136,9 +3135,6 @@
         } catch (e) { console.warn('[Sound] Gagal main tick:', e); }
       }
 
-      /* ============================================================
-         BUNYI: Error besar (validasi native alert)
-         ============================================================ */
       function playErrorSound() {
         if (!soundEnabled) return;
         try {
@@ -3173,9 +3169,6 @@
         } catch (e) { console.warn('[Sound] Gagal main error:', e); }
       }
 
-      /* ============================================================
-         BUNYI: Chime arkib berjaya (C5→E5→G5→C6)
-         ============================================================ */
       function playArchiveSuccessSound() {
         if (!soundEnabled) return;
         try {
@@ -3206,9 +3199,6 @@
         } catch (e) { console.warn('[Sound] Gagal main chime:', e); }
       }
 
-      /* ============================================================
-         BUNYI: Theme toggle klik
-         ============================================================ */
       function playThemeToggleSound() {
         if (!soundEnabled) return;
         try {
@@ -3232,9 +3222,6 @@
         } catch (e) { console.warn('[Sound] Gagal main theme toggle:', e); }
       }
 
-      /* ============================================================
-         BUNYI: Toast SUCCESS — ding lembut
-         ============================================================ */
       function playToastSuccessSound() {
         if (!soundEnabled) return;
         try {
@@ -3258,9 +3245,6 @@
         } catch (e) { console.warn('[Sound] Gagal main toast success:', e); }
       }
 
-      /* ============================================================
-         BUNYI: Toast ERROR — buzz rendah
-         ============================================================ */
       function playToastErrorSound() {
         if (!soundEnabled) return;
         try {
@@ -3289,9 +3273,6 @@
         } catch (e) { console.warn('[Sound] Gagal main toast error:', e); }
       }
 
-      /* ============================================================
-         BUNYI: Klik tab (double click feel)
-         ============================================================ */
       function playTabClickSound() {
         if (!soundEnabled) return;
         try {
@@ -3321,9 +3302,6 @@
         } catch (e) { console.warn('[Sound] Gagal main tab click:', e); }
       }
 
-      /* ============================================================
-         BUNYI: Import berjaya — thunk + treble
-         ============================================================ */
       function playImportSuccessSound() {
         if (!soundEnabled) return;
         try {
@@ -3356,9 +3334,6 @@
         } catch (e) { console.warn('[Sound] Gagal main import success:', e); }
       }
 
-      /* ============================================================
-         BUNYI: Cetak — printer feed (white noise × 3 burst)
-         ============================================================ */
       function playPrintSound() {
         if (!soundEnabled) return;
         try {
@@ -3396,9 +3371,6 @@
         } catch (e) { console.warn('[Sound] Gagal main print:', e); }
       }
 
-      /* ============================================================
-         TOAST TANPA BUNYI — untuk kes khas (elak double sound)
-         ============================================================ */
       function showToastSilent(msg, type) {
         const c = document.getElementById('toastContainer');
         const t = document.createElement('div');
@@ -4092,6 +4064,122 @@
         { name: 'TANGKAK', zon: 4 },
         { name: 'PAGOH', zon: 4 },
       ];
+
+      const BALAI_MERS_LIST = [
+        { name: 'LARKIN', zon: 1 },
+        { name: 'PASIR GUDANG', zon: 1 },
+        { name: 'JOHOR JAYA', zon: 1 },
+        { name: 'SKUDAI', zon: 1 },
+        { name: 'TEBRAU', zon: 1 },
+        { name: 'PEKAN NENAS', zon: 1 },
+        { name: 'PONTIAN', zon: 1 },
+        { name: 'PONTIAN BARU', zon: 1 },
+        { name: 'KULAI', zon: 1 },
+        { name: 'BANDAR BARU KULAI', zon: 1 },
+        { name: 'ISKANDAR PUTERI', zon: 1 },
+        { name: 'KOTA TINGGI', zon: 2 },
+        { name: 'BANDAR PENAWAR', zon: 2 },
+        { name: 'MERSING', zon: 2 },
+        { name: 'ENDAU', zon: 2 },
+        { name: 'PUNGGAI', zon: 2 },
+        { name: 'SEBANA COVE', zon: 2 },
+        { name: 'SUNGAI RENGIT', zon: 2 },
+        { name: 'KLUANG', zon: 3 },
+        { name: 'BATU PAHAT', zon: 3 },
+        { name: 'PENGGARAM', zon: 3 },
+        { name: 'RENGIT', zon: 3 },
+        { name: 'RENGGAM', zon: 3 },
+        { name: 'YONG PENG', zon: 3 },
+        { name: 'AYER HITAM', zon: 3 },
+        { name: 'MUAR', zon: 4 },
+        { name: 'BANDAR BARU SEGAMAT', zon: 4 },
+        { name: 'SEGAMAT', zon: 4 },
+        { name: 'LABIS', zon: 4 },
+        { name: 'BUKIT GAMBIR', zon: 4 },
+        { name: 'TANGKAK', zon: 4 },
+        { name: 'PAGOH', zon: 4 },
+        { name: 'KEMPAS', zon: 1 },
+        { name: 'BANDAR TENGGARA', zon: 2 },
+      ];
+
+      const BALAI_KETUA_LIST = [
+        { name: 'LARKIN', zon: 1 },
+        { name: 'PASIR GUDANG', zon: 1 },
+        { name: 'JOHOR JAYA', zon: 1 },
+        { name: 'SKUDAI', zon: 1 },
+        { name: 'TEBRAU', zon: 1 },
+        { name: 'PEKAN NENAS', zon: 1 },
+        { name: 'PONTIAN', zon: 1 },
+        { name: 'PONTIAN BARU', zon: 1 },
+        { name: 'KULAI', zon: 1 },
+        { name: 'BANDAR BARU KULAI', zon: 1 },
+        { name: 'ISKANDAR PUTERI', zon: 1 },
+        { name: 'KOTA TINGGI', zon: 2 },
+        { name: 'BANDAR PENAWAR', zon: 2 },
+        { name: 'MERSING', zon: 2 },
+        { name: 'ENDAU', zon: 2 },
+        { name: 'PUNGGAI', zon: 2 },
+        { name: 'SEBANA COVE', zon: 2 },
+        { name: 'SUNGAI RENGIT', zon: 2 },
+        { name: 'KLUANG', zon: 3 },
+        { name: 'BATU PAHAT', zon: 3 },
+        { name: 'PENGGARAM', zon: 3 },
+        { name: 'RENGIT', zon: 3 },
+        { name: 'RENGGAM', zon: 3 },
+        { name: 'YONG PENG', zon: 3 },
+        { name: 'AYER HITAM', zon: 3 },
+        { name: 'MUAR', zon: 4 },
+        { name: 'BANDAR BARU SEGAMAT', zon: 4 },
+        { name: 'SEGAMAT', zon: 4 },
+        { name: 'LABIS', zon: 4 },
+        { name: 'BUKIT GAMBIR', zon: 4 },
+        { name: 'TANGKAK', zon: 4 },
+        { name: 'PAGOH', zon: 4 },
+        { name: 'KEMPAS', zon: 1 },
+        { name: 'BANDAR TENGGARA', zon: 2 },
+        { name: 'FIRE POST BENUT', zon: 1 },
+        { name: 'FIRE POST PARIT SULONG', zon: 3 },
+      ];
+
+      const BALAI_PO3A_LIST = [
+        { name: 'LARKIN', zon: 1 },
+        { name: 'PASIR GUDANG', zon: 1 },
+        { name: 'JOHOR JAYA', zon: 1 },
+        { name: 'SKUDAI', zon: 1 },
+        { name: 'ISKANDAR PUTERI', zon: 1 },
+        { name: 'TEBRAU', zon: 1 },
+        { name: 'KEMPAS', zon: 1 },
+        { name: 'PEKAN NENAS', zon: 1 },
+        { name: 'BANDAR BARU KULAI', zon: 1 },
+        { name: 'KULAI', zon: 1 },
+        { name: 'PONTIAN BARU', zon: 1 },
+        { name: 'PONTIAN', zon: 1 },
+        { name: 'FIRE POST BENUT', zon: 1 },
+        { name: 'KOTA TINGGI', zon: 2 },
+        { name: 'SUNGAI RENGIT', zon: 2 },
+        { name: 'BANDAR PENAWAR', zon: 2 },
+        { name: 'MERSING', zon: 2 },
+        { name: 'ENDAU', zon: 2 },
+        { name: 'SEBANA COVE', zon: 2 },
+        { name: 'PUNGGAI', zon: 2 },
+        { name: 'BANDAR TENGGARA', zon: 2 },
+        { name: 'PENGGARAM', zon: 3 },
+        { name: 'KLUANG', zon: 3 },
+        { name: 'BATU PAHAT', zon: 3 },
+        { name: 'RENGIT', zon: 3 },
+        { name: 'RENGGAM', zon: 3 },
+        { name: 'AYER HITAM', zon: 3 },
+        { name: 'YONG PENG', zon: 3 },
+        { name: 'FIRE POST PARIT SULONG', zon: 3 },
+        { name: 'MUAR', zon: 4 },
+        { name: 'BANDAR BARU SEGAMAT', zon: 4 },
+        { name: 'SEGAMAT', zon: 4 },
+        { name: 'LABIS', zon: 4 },
+        { name: 'BUKIT GAMBIR', zon: 4 },
+        { name: 'TANGKAK', zon: 4 },
+        { name: 'PAGOH', zon: 4 },
+      ];
+
       function getBalaiZon(name) {
         const b = BALAI_LIST.find((x) => x.name === name);
         return b ? b.zon : 1;
@@ -4631,6 +4719,16 @@
         return { nama: bkb.nama || '', telefon: bkb.noTelefon || '' };
       }
 
+      function getPenyeliaOfficer(balaiName) {
+        const b = store && store.balai && store.balai[balaiName];
+        if (!b || !b.personel) return { nama: '', telefon: '' };
+        const penyelia = b.personel.find(function (p) {
+          return p && p.peranan === 'PENYELIA PASUKAN';
+        });
+        if (!penyelia) return { nama: '', telefon: '' };
+        return { nama: penyelia.nama || '', telefon: penyelia.noTelefon || '' };
+      }
+
       function normalizePhone(p) {
         if (!p) return '';
         let s = String(p).replace(/\D/g, '');
@@ -4687,9 +4785,9 @@
         wrap.style.setProperty('--sec-color', 'var(--purple)');
         wrap.innerHTML = `
     <div class="section-head">
-      <h2>NO. TELEFON PETUGAS (BKB)</h2>
+      <h2>NO. TELEFON PETUGAS (BKB) &amp; PENYELIA PASUKAN</h2>
       <div style="display:flex;align-items:center;gap:.6rem;">
-        <span class="hint">Auto-tarik dari data balai (peranan: BILIK KAWALAN)</span>
+        <span class="hint">Auto tarik dari senarai balai · BKB (BILIK KAWALAN) · Penyelia (PENYELIA PASUKAN)</span>
         <button class="btn-fullscreen" type="button" title="Buka skrin penuh">${svgIcon('maximize')}</button>
         <button class="btn-fullscreen btn-print-panel" type="button" title="Cetak panel ini">${svgIcon('print')}</button>
         <span class="chev">${svgIcon('chevronDown')}</span>
@@ -4709,9 +4807,18 @@
         tbl.className = 'bkb';
         const thead = document.createElement('thead');
         thead.innerHTML = `<tr>
-    <th>BIL</th><th>ZON</th><th>GRED</th>
-    <th style="text-align:left;">BALAI</th>
-    <th style="text-align:left;">NAMA PETUGAS BKB</th>
+    <th rowspan="2">BIL</th>
+    <th rowspan="2">ZON</th>
+    <th rowspan="2">GRED</th>
+    <th rowspan="2" style="text-align:left;">BALAI</th>
+    <th colspan="3" class="bkb-group-bkb">PETUGAS BILIK KAWALAN (BKB)</th>
+    <th colspan="3" class="bkb-group-penyelia">PENYELIA PASUKAN</th>
+  </tr>
+  <tr>
+    <th style="text-align:left;">NAMA</th>
+    <th>NO. TELEFON</th>
+    <th class="contact-th">HUBUNGI</th>
+    <th style="text-align:left;">NAMA</th>
     <th>NO. TELEFON</th>
     <th class="contact-th">HUBUNGI</th>
   </tr>`;
@@ -4720,15 +4827,56 @@
         const tbody = document.createElement('tbody');
         BALAI_LIST.forEach((b, idx) => {
           const meta = BALAI_GRED_TURNOUT[b.name] || { gred: '-', turnOut: 0 };
-          const officer = getBkbOfficer(b.name);
+          const bkbOfficer = getBkbOfficer(b.name);
+          const penyelia = getPenyeliaOfficer(b.name);
           const tr = document.createElement('tr');
-          const td1 = document.createElement('td'); td1.className = 'bil-cell'; td1.textContent = idx + 1; tr.appendChild(td1);
-          const td2 = document.createElement('td'); td2.className = 'zon-cell zon-' + b.zon; td2.textContent = b.zon; tr.appendChild(td2);
-          const td3 = document.createElement('td'); td3.className = 'gred-cell-sm gred-' + meta.gred; td3.textContent = meta.gred; tr.appendChild(td3);
-          const td4 = document.createElement('td'); td4.className = 'balai-name'; td4.textContent = b.name; tr.appendChild(td4);
-          const td5 = document.createElement('td'); td5.className = 'nama-cell' + (officer.nama ? '' : ' empty'); td5.textContent = officer.nama || '(Belum diisi)'; tr.appendChild(td5);
-          const td6 = document.createElement('td'); td6.className = 'tel-cell' + (officer.telefon ? '' : ' empty'); td6.textContent = officer.telefon || '(Tiada)'; tr.appendChild(td6);
-          const td7 = document.createElement('td'); td7.className = 'contact-cell'; renderContactButtons(td7, officer.telefon); tr.appendChild(td7);
+
+          const td1 = document.createElement('td');
+          td1.className = 'bil-cell'; td1.textContent = idx + 1;
+          tr.appendChild(td1);
+
+          const td2 = document.createElement('td');
+          td2.className = 'zon-cell zon-' + b.zon; td2.textContent = b.zon;
+          tr.appendChild(td2);
+
+          const td3 = document.createElement('td');
+          td3.className = 'gred-cell-sm gred-' + meta.gred; td3.textContent = meta.gred;
+          tr.appendChild(td3);
+
+          const td4 = document.createElement('td');
+          td4.className = 'balai-name'; td4.textContent = b.name;
+          tr.appendChild(td4);
+
+          const td5 = document.createElement('td');
+          td5.className = 'nama-cell' + (bkbOfficer.nama ? '' : ' empty');
+          td5.textContent = bkbOfficer.nama || '(Belum diisi)';
+          tr.appendChild(td5);
+
+          const td6 = document.createElement('td');
+          td6.className = 'tel-cell' + (bkbOfficer.telefon ? '' : ' empty');
+          td6.textContent = bkbOfficer.telefon || '(Tiada)';
+          tr.appendChild(td6);
+
+          const td7 = document.createElement('td');
+          td7.className = 'contact-cell';
+          renderContactButtons(td7, bkbOfficer.telefon);
+          tr.appendChild(td7);
+
+          const td8 = document.createElement('td');
+          td8.className = 'nama-cell' + (penyelia.nama ? '' : ' empty');
+          td8.textContent = penyelia.nama || '(Belum diisi)';
+          tr.appendChild(td8);
+
+          const td9 = document.createElement('td');
+          td9.className = 'tel-cell' + (penyelia.telefon ? '' : ' empty');
+          td9.textContent = penyelia.telefon || '(Tiada)';
+          tr.appendChild(td9);
+
+          const td10 = document.createElement('td');
+          td10.className = 'contact-cell';
+          renderContactButtons(td10, penyelia.telefon);
+          tr.appendChild(td10);
+
           tbody.appendChild(tr);
         });
         tbl.appendChild(tbody);
@@ -4737,8 +4885,9 @@
         const info = document.createElement('div');
         info.style.cssText = 'margin-top:0.75rem; font-size:0.7rem; color:var(--text-dim); line-height:1.6;';
         info.innerHTML =
-          '<b>Nota:</b> Data NAMA & NO. TELEFON diambil secara <b>automatik</b> dari <b>KEKUATAN PERSONEL</b> setiap balai — ' +
-          'isi pada baris dengan <b>PERANAN = BILIK KAWALAN (BKB)</b>.<br />' +
+          '<b>Nota:</b> Data <b>NAMA</b> &amp; <b>NO. TELEFON</b> diambil secara <b>automatik</b> dari <b>KEKUATAN PERSONEL</b> setiap balai — ' +
+          'isi pada baris dengan <b>PERANAN = BILIK KAWALAN (BKB)</b> untuk petugas BKB, ' +
+          'dan <b>PERANAN = PENYELIA PASUKAN</b> untuk penyelia pasukan.<br />' +
           '<b>Butang HUBUNGI:</b> <b style="color:var(--green)">Telefon</b> — panggil terus, ' +
           '<b style="color:#25d366">WhatsApp</b> — buka WhatsApp.';
         body.appendChild(info);
@@ -4875,7 +5024,7 @@
         tbl.appendChild(thead);
 
         const tbody = document.createElement('tbody');
-        const totalRows = 1 + BALAI_LIST.length;
+        const totalRows = 1 + BALAI_MERS_LIST.length;
         const grandTotalCells = totalRows * 3;
         let grandTotalBaik = 0;
 
@@ -4919,7 +5068,7 @@
           if (mersPgoState[k] === 'B') grandTotalBaik++;
         });
 
-        BALAI_LIST.forEach(function (b) {
+        BALAI_MERS_LIST.forEach(function (b) {
           const st = getMersStatus(b.name);
           const tr = document.createElement('tr');
           const tdBalai = document.createElement('td');
@@ -7041,7 +7190,7 @@
         let totalA = 0, totalC = 0, totalCS = 0, totalTK = 0, totalJumlah = 0;
         let total12Jam = 0, total24Jam = 0;
 
-        BALAI_LIST.forEach((b, idx) => {
+        BALAI_KETUA_LIST.forEach((b, idx) => {
           const d = getKetuaBalaiData(b.name);
           const meta = BALAI_GRED_TURNOUT[b.name] || { gred: '-', turnOut: 0 };
           totalTurnOut += meta.turnOut;
@@ -7393,7 +7542,7 @@
         }
 
         function getZonValues(zn) {
-          const balaiInZon = BALAI_LIST.filter((b) => b.zon === zn);
+          const balaiInZon = BALAI_PO3A_LIST.filter((b) => b.zon === zn);
           if (balaiInZon.length === 0) {
             return {
               cats: Array.from({ length: catList.length }, () => new Array(subColSpan).fill(0)),
@@ -7404,7 +7553,7 @@
         }
 
         function getGrandValues() {
-          return sumValues(BALAI_LIST.map((b) => getRowValues(store.balai[b.name])));
+          return sumValues(BALAI_PO3A_LIST.map((b) => getRowValues(store.balai[b.name])));
         }
 
         const tbl = document.createElement('table');
@@ -7530,7 +7679,7 @@
         sepTr.appendChild(sepTd);
         tbody.appendChild(sepTr);
 
-        BALAI_LIST.forEach((b, idx) => {
+        BALAI_PO3A_LIST.forEach((b, idx) => {
           const { cats, grand } = getRowValues(store.balai[b.name]);
           const tr = document.createElement('tr');
 
@@ -8255,10 +8404,6 @@
         await performArchiveBalai({ btn: btn, label: label });
       });
 
-      /* ============================================================
-         PERFORM EXPORT BALAI — helper dipanggil dari butang Export
-         & modal selepas Simpan Sekarang
-         ============================================================ */
       function performExportBalai() {
         if (store.view !== 'balai') {
           showToast('Export hanya untuk paparan balai', 'error');
@@ -8278,9 +8423,6 @@
         showToast('Balai ' + store.activeBalai + ' berjaya dieksport', 'success');
       }
 
-      /* ============================================================
-         MODAL EXPORT — seakan arkib, tapi untuk export data balai
-         ============================================================ */
       function showExportModal(onYes, onNo) {
         const overlay = document.getElementById('exportModalOverlay');
         if (!overlay) return;
@@ -8562,7 +8704,6 @@
             btn.disabled = false;
           }, 2500);
 
-          // Selepas simpan → tanya Export Data (modal)
           setTimeout(function () {
             showExportModal(
               function () {
@@ -8668,7 +8809,6 @@
         });
       }
 
-      // Butang Export di bar Pengurusan — guna helper yang sama
       document.getElementById('exportCurrentBtn').addEventListener('click', performExportBalai);
 
       document.getElementById('importBtn').addEventListener('click', () =>
