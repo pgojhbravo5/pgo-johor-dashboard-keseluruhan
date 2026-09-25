@@ -616,21 +616,19 @@
                 <label><svg class="ico" viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" /><circle cx="12" cy="7" r="4" /></svg>Melibatkan Mangsa</label>
                 <div class="ms" data-key="melibatkanMangsa"></div>
               </div>
-              <!-- ===== FILTER BAHARU: RT <9 MIN (BF) ===== -->
               <div class="filter-group">
                 <label>
                   <svg class="ico" viewBox="0 0 24 24"><circle cx="12" cy="13" r="8"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="13" x2="16" y2="15"/></svg>
                   RT &lt;9 MIN
-                  <span class="filter-help" data-tip="Tapisan ikut kolum BF — Range Masa T/P (RT ≤9min, 9-9.5min, … , RT >30min).">?</span>
+                  <span class="filter-help" data-tip="Klasifikasi RT (kiraan sendiri dari kolum Masa Terima → Masa Jentera Tiba). Bin: a. RT≤9min hingga m. RT&gt;30min.">?</span>
                 </label>
                 <div class="ms" data-key="rangeRt1"></div>
               </div>
-              <!-- ===== FILTER BAHARU: RT <10 MIN (BG) ===== -->
               <div class="filter-group">
                 <label>
                   <svg class="ico" viewBox="0 0 24 24"><circle cx="12" cy="13" r="8"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="13" x2="16" y2="15"/></svg>
                   RT &lt;10 MIN
-                  <span class="filter-help" data-tip="Tapisan ikut kolum BG — Range Masa T/P (2) (RT ≤10min, 10-11min, … , RT >30min).">?</span>
+                  <span class="filter-help" data-tip="Klasifikasi RT (kiraan sendiri). Bin: A. RT≤10min hingga K. RT&gt;30min.">?</span>
                 </label>
                 <div class="ms" data-key="rangeRt2"></div>
               </div>
@@ -812,7 +810,6 @@
             <button class="tab-btn" data-tab="balai">
               <svg class="ico" viewBox="0 0 24 24"><rect x="1" y="3" width="15" height="13" /><polygon points="16 8 20 8 23 11 23 16 16 16 16 8" /></svg>Balai
             </button>
-            <!-- ===== TAB BAHARU: BALAI × RT ===== -->
             <button class="tab-btn" data-tab="balai-rt">
               <svg class="ico" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>Balai × RT
             </button>
@@ -1000,15 +997,14 @@
             </div>
           </div>
 
-          <!-- ===== PANEL BAHARU: BALAI × RT ===== -->
           <div class="tab-panel" id="panel-balai-rt">
             <div class="card">
               <div class="card-header">
                 <div class="card-title">Balai × Range RT — Jumlah Kes</div>
                 <div class="card-controls">
                   <select id="balaiRtRange" class="dyn-select" style="width:auto;min-height:32px;padding:6px 10px;">
-                    <option value="rangeRt1">RT &lt;9 MIN (BF)</option>
-                    <option value="rangeRt2">RT &lt;10 MIN (BG)</option>
+                    <option value="rangeRt1">RT &lt;9 MIN (a–m)</option>
+                    <option value="rangeRt2">RT &lt;10 MIN (A–K)</option>
                   </select>
                   <div class="chart-type-picker" data-chart="chartBalaiRt"></div>
                   <button class="num-toggle" data-chart="chartBalaiRt" type="button">
@@ -1390,6 +1386,39 @@
         if (d < 0) d += 24 * 60;
         return d > 0 && d < 24 * 60 ? d : null;
       }
+
+      // ── PENGELASAN RT KE DALAM RANGE (mengikut format kolum BF & BG) ──
+      function getRtRangeBf(rt) {
+        if (rt == null || !isFinite(rt)) return '';
+        if (rt <= 9)   return 'a. RT ≤9min';
+        if (rt <= 9.5) return 'b. 9min > RT ≤9.5min';
+        if (rt <= 10)  return 'c. 9.5min > RT ≤10min';
+        if (rt <= 11)  return 'd. 10min > RT ≤11min';
+        if (rt <= 13)  return 'e. 11min > RT ≤13min';
+        if (rt <= 15)  return 'f. 13min > RT ≤15min';
+        if (rt <= 17)  return 'g. 15min > RT ≤17min';
+        if (rt <= 19)  return 'h. 17min > RT ≤19min';
+        if (rt <= 21)  return 'i. 19min > RT ≤21min';
+        if (rt <= 23)  return 'j. 21min > RT ≤23min';
+        if (rt <= 25)  return 'k. 23min > RT ≤25min';
+        if (rt <= 30)  return 'l. 25min > RT ≤30min';
+        return 'm. RT >30min';
+      }
+      function getRtRangeBg(rt) {
+        if (rt == null || !isFinite(rt)) return '';
+        if (rt <= 10)  return 'A. RT ≤10min';
+        if (rt <= 11)  return 'B. 10min > RT ≤11min';
+        if (rt <= 13)  return 'C. 11min > RT ≤13min';
+        if (rt <= 15)  return 'D. 13min > RT ≤15min';
+        if (rt <= 17)  return 'E. 15min > RT ≤17min';
+        if (rt <= 19)  return 'F. 17min > RT ≤19min';
+        if (rt <= 21)  return 'G. 19min > RT ≤21min';
+        if (rt <= 23)  return 'H. 21min > RT ≤23min';
+        if (rt <= 25)  return 'I. 23min > RT ≤25min';
+        if (rt <= 30)  return 'J. 25min > RT ≤30min';
+        return 'K. RT >30min';
+      }
+
       function formatDate(d) {
         if (!d) return '-';
         return `${String(d.getDate()).padStart(2, '0')}/${String(d.getMonth() + 1).padStart(2, '0')}/${d.getFullYear()}`;
@@ -1901,10 +1930,11 @@
             ALAMAT: findCol(['ALAMAT'], 26),
             HOTSPOT: findCol(['KEYWORD HOTSPOT', 'HOTSPOT'], 29),
             JARAK: findCol(['JARAK BALAI'], 30),
-            MASA_A: findCol(['MASA TERIMA'], 32),
+            // ── Kolum AG (32) = Masa Terima/Acknowledge, Kolum AJ (35) = Masa Jentera Tiba
+            MASA_A: findCol(['MASA TERIMA PANGGILAN / ACKNOWLEDGE', 'MASA TERIMA PANGGILAN', 'MASA TERIMA'], 32),
             MASA_LOOPING: findCol(['MASA LOOPING'], 33),
             MASA_BERLEPAS: findCol(['MASA JENTERA BERLEPAS'], 34),
-            MASA_F: findCol(['MASA JENTERA TIBA'], 35),
+            MASA_F: findCol(['MASA JENTERA TIBA DI LOKASI', 'MASA JENTERA TIBA'], 35),
             MASA_OPERASI_MULAI: findCol(['MASA OPERASI DIMULAKAN'], 36),
             TARIKH_OPERASI_MULAI: findCol(['TARIKH OPERASI DIMULAKAN'], 37),
             GAMBUT: findCol(['KEBAKARAN TANAH GAMBUT'], 38),
@@ -1916,8 +1946,6 @@
             AGENSI_LUAR: findCol(['AGENSI LUAR'], 51),
             ZON: findCol(['ZON'], 52),
             DAERAH: findCol(['DAERAH'], 53),
-            RANGE_RT_TP_1: findCol(['RANGE MASA T/P'], 57),
-            RANGE_RT_TP_2: findCol(['RANGE MASA T/P (2)'], 58),
             STATUS_KPI_ACK: findCol(['STATUS ACKNOWLEDGE'], 59),
             STATUS_KPI_ENR: findCol(['STATUS KPI JENTERA KELUAR'], 60),
             KPI_ENROUTE: findCol(['KPI ENROUTE'], 61),
@@ -1941,6 +1969,7 @@
 
           RAW_DATA = dataRows.map((r) => {
             const tarikh = parseDate(r[COL.TARIKH]);
+            const rtValue = responseTime(r);                      // ← kira RT sekali
             const masaOperasiDimulakan = COL.MASA_OPERASI_MULAI >= 0 ? clean(r[COL.MASA_OPERASI_MULAI]) : '';
             const jamOperasi = parseDurHours(r[COL.JAM_OPERASI]);
             const tempohOperasi = normalizeTempohOperasi(r[COL.MASA_OPERASI]);
@@ -1962,14 +1991,16 @@
               shif: clean(r[COL.SHIF]) || '(TIADA)', monsun: clean(r[COL.MONSUN]) || '(TIADA)',
               mangsaSelamat: toNum(r[COL.MANGSA_SELAMAT]),
               mangsaMati: toNum(r[COL.MANGSA_MATI]) + toNum(r[COL.MANGSA_MAUT]),
-              rt: responseTime(r),
+              rt: rtValue,
               zon: clean(r[COL.ZON]) || '(TIADA)',
               daerah: clean(r[COL.DAERAH]) || '(TIADA)',
               katBalai: clean(r[COL.KAT_BALAI]) || '(TIADA)',
               jamOperasi, agensiLuar: clean(r[COL.AGENSI_LUAR]),
               gambut: normalizeGambut(r[COL.GAMBUT]),
               tempohOperasi, masaOperasiDimulakan, masihBeroperasi, statusOperasi,
-              rangeRt1: clean(r[COL.RANGE_RT_TP_1]), rangeRt2: clean(r[COL.RANGE_RT_TP_2]),
+              // ── Klasifikasi RT dari kiraan sendiri ──
+              rangeRt1: getRtRangeBf(rtValue),
+              rangeRt2: getRtRangeBg(rtValue),
               statusKpiAck: normalizeKpiStatus(r[COL.STATUS_KPI_ACK]),
               statusKpiEnr: normalizeKpiStatus(r[COL.STATUS_KPI_ENR]),
               masaOperasi: clean(r[COL.MASA_OPERASI]),
@@ -2014,7 +2045,6 @@
         }
       }
 
-      // ── TABLE COLUMNS DEFINITION (Jarak ditambah) ──
       const TABLE_COLS = [
         { key: 'bil', label: 'BIL' },
         { key: 'tahun', label: 'Tahun' },
@@ -2207,9 +2237,15 @@
         MultiSelect.create('tempohOperasi', document.querySelector('.ms[data-key="tempohOperasi"]'), { items: ['PENDEK', 'SEDERHANA', 'PANJANG', 'MASIH BEROPERASI'], onChange: applyFilter });
         MultiSelect.create('statusOperasi', document.querySelector('.ms[data-key="statusOperasi"]'), { items: ['MASIH BEROPERASI', 'OPERASI TAMAT'], onChange: applyFilter });
         MultiSelect.create('jenis', document.querySelector('.ms[data-key="jenis"]'), { items: uniq(RAW_DATA.map((d) => d.jenis)), onChange: applyFilter });
-        // ── Filter baharu: Range RT (BF) & Range RT (BG) ──
-        MultiSelect.create('rangeRt1', document.querySelector('.ms[data-key="rangeRt1"]'), { items: uniq(RAW_DATA.map((d) => d.rangeRt1)), onChange: applyFilter });
-        MultiSelect.create('rangeRt2', document.querySelector('.ms[data-key="rangeRt2"]'), { items: uniq(RAW_DATA.map((d) => d.rangeRt2)), onChange: applyFilter });
+        // Dropdown RT — susun ikut abjad (a–m untuk BF, A–K untuk BG)
+        MultiSelect.create('rangeRt1', document.querySelector('.ms[data-key="rangeRt1"]'), {
+          items: ['a. RT ≤9min','b. 9min > RT ≤9.5min','c. 9.5min > RT ≤10min','d. 10min > RT ≤11min','e. 11min > RT ≤13min','f. 13min > RT ≤15min','g. 15min > RT ≤17min','h. 17min > RT ≤19min','i. 19min > RT ≤21min','j. 21min > RT ≤23min','k. 23min > RT ≤25min','l. 25min > RT ≤30min','m. RT >30min'],
+          onChange: applyFilter
+        });
+        MultiSelect.create('rangeRt2', document.querySelector('.ms[data-key="rangeRt2"]'), {
+          items: ['A. RT ≤10min','B. 10min > RT ≤11min','C. 11min > RT ≤13min','D. 13min > RT ≤15min','E. 15min > RT ≤17min','F. 17min > RT ≤19min','G. 19min > RT ≤21min','H. 21min > RT ≤23min','I. 23min > RT ≤25min','J. 25min > RT ≤30min','K. RT >30min'],
+          onChange: applyFilter
+        });
         MultiSelect.attachGlobalListener();
 
         const dates = RAW_DATA.map((d) => d.tarikh).filter(Boolean).filter((d) => d >= MIN_DATE).sort((a, b) => a - b);
@@ -2752,7 +2788,7 @@
       function getTopData(field, top = 15) { const e = countBy(FILTERED, (d) => d[field]).slice(0, top); return { labels: e.map((x) => x[0]), values: e.map((x) => x[1]) }; }
       function getScatterData() { return FILTERED.filter((d) => d.jarak > 0 && d.rt != null).map((d) => ({ x: d.jarak, y: +d.rt.toFixed(1) })); }
 
-      // ── BALAI × RT CROSSTAB ──
+      // ── BALAI × RT CROSSTAB (menggunakan rangeRt1/rangeRt2 yg dikira) ──
       let balaiRtField = localStorage.getItem('rt-balai-rt-field') || 'rangeRt1';
 
       function getBalaiRtCrosstab(fieldKey) {
@@ -2771,9 +2807,7 @@
           const tb = Object.values(xMap[b]).reduce((s, v) => s + v, 0);
           return tb - ta;
         });
-        const rangeLabels = [...rangeSet].sort((a, b) =>
-          a.localeCompare(b, 'ms', { numeric: true })
-        );
+        const rangeLabels = [...rangeSet].sort((a, b) => a.localeCompare(b, 'ms', { numeric: true }));
         return { balaiLabels, rangeLabels, xMap };
       }
 
@@ -2784,12 +2818,8 @@
 
         const statEl = document.getElementById('statBalaiRt');
         if (statEl) {
-          const total = balaiLabels.reduce(
-            (s, b) => s + rangeLabels.reduce((ss, r) => ss + (xMap[b][r] || 0), 0), 0
-          );
-          const rangeTotals = rangeLabels.map((r) =>
-            balaiLabels.reduce((s, b) => s + (xMap[b][r] || 0), 0)
-          );
+          const total = balaiLabels.reduce((s, b) => s + rangeLabels.reduce((ss, r) => ss + (xMap[b][r] || 0), 0), 0);
+          const rangeTotals = rangeLabels.map((r) => balaiLabels.reduce((s, b) => s + (xMap[b][r] || 0), 0));
           const topRange = rangeLabels[rangeTotals.indexOf(Math.max(...rangeTotals))] || '-';
           statEl.innerHTML = `
             <div class="stat-mini"><div class="lbl">Jumlah Kes Ditapis</div><div class="val">${total.toLocaleString()}</div><div class="sub">${balaiLabels.length} balai • ${rangeLabels.length} range RT</div></div>
@@ -2800,7 +2830,7 @@
           canvas.style.display = 'none';
           const e = document.createElement('div');
           e.className = 'chart-error';
-          e.innerHTML = `<strong>Tiada data Balai × RT</strong><small>Pastikan kolum BF / BG ada nilai.</small>`;
+          e.innerHTML = `<strong>Tiada data Balai × RT</strong><small>Pastikan kolum Masa Terima & Masa Jentera Tiba ada nilai.</small>`;
           wrap.appendChild(e);
           return;
         }
@@ -2808,20 +2838,11 @@
 
         const isCircular = ['pie', 'doughnut', 'polar'].includes(type);
         if (isCircular) {
-          const totals = balaiLabels.map((b) =>
-            rangeLabels.reduce((s, r) => s + (xMap[b][r] || 0), 0)
-          );
+          const totals = balaiLabels.map((b) => rangeLabels.reduce((s, r) => s + (xMap[b][r] || 0), 0));
           const ct = { pie: 'pie', doughnut: 'doughnut', polar: 'polarArea' }[type];
           return newChart(chartId, canvas, {
             type: ct,
-            data: {
-              labels: balaiLabels,
-              datasets: [{
-                data: totals,
-                backgroundColor: PALETTE.map((c) => hexToRgba(c, 0.82)),
-                borderColor: '#fff', borderWidth: 2,
-              }],
-            },
+            data: { labels: balaiLabels, datasets: [{ data: totals, backgroundColor: PALETTE.map((c) => hexToRgba(c, 0.82)), borderColor: '#fff', borderWidth: 2 }] },
             options: makeOpts({ plugins: { legend: { position: 'right' } }, scales: undefined }),
           }, showNumbers);
         }
@@ -2927,8 +2948,8 @@
         melibatkanMangsa:  { kind: 'dim', label: 'Melibatkan Mangsa', get: (d) => d.melibatkanMangsa || '(TIADA)' },
         tempohOperasi:     { kind: 'dim', label: 'Tempoh Operasi', get: (d) => d.tempohOperasi || '(TIADA)' },
         statusOperasi:     { kind: 'dim', label: 'Status Operasi', get: (d) => d.statusOperasi },
-        rangeRt1:          { kind: 'dim', label: 'Range Masa T/P (1)', get: (d) => d.rangeRt1 || '(TIADA)' },
-        rangeRt2:          { kind: 'dim', label: 'Range Masa T/P (2)', get: (d) => d.rangeRt2 || '(TIADA)' },
+        rangeRt1:          { kind: 'dim', label: 'Range Masa T/P (BF)', get: (d) => d.rangeRt1 || '(TIADA)' },
+        rangeRt2:          { kind: 'dim', label: 'Range Masa T/P (BG)', get: (d) => d.rangeRt2 || '(TIADA)' },
         statusKpiRt10:     { kind: 'dim', label: 'Status KPI RT ≤10min', get: (d) => d.statusKpiRt10 || '(TIADA)' },
         count:             { kind: 'metric', label: 'Bilangan Kes', agg: 'count', decimals: 0 },
         avgRT:             { kind: 'metric', label: 'Purata RT (min)', agg: 'avg', field: 'rt', decimals: 1 },
