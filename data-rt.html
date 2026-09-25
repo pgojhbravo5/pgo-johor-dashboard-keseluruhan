@@ -159,6 +159,11 @@
       .stat-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 20px; }
       @media (max-width: 1100px) { .stat-grid { grid-template-columns: repeat(2, 1fr); } }
       @media (max-width: 600px) { .stat-grid { grid-template-columns: 1fr; } }
+      /* Operasi section — 5 kad */
+      .kpi-section.tone-ops .stat-grid { grid-template-columns: repeat(5, 1fr); }
+      @media (max-width: 1300px) { .kpi-section.tone-ops .stat-grid { grid-template-columns: repeat(3, 1fr); } }
+      @media (max-width: 1100px) { .kpi-section.tone-ops .stat-grid { grid-template-columns: repeat(2, 1fr); } }
+      @media (max-width: 600px)  { .kpi-section.tone-ops .stat-grid { grid-template-columns: 1fr; } }
       .stat-card { background: var(--surface); border: 1px solid var(--border); border-left: 3px solid var(--johor-navy); border-radius: var(--radius); padding: 14px 16px; box-shadow: var(--shadow-sm); transition: box-shadow 0.15s, transform 0.15s; }
       .stat-card:hover { box-shadow: var(--shadow); transform: translateY(-1px); }
       .stat-card .stat-label { font-size: 10.5px; font-weight: 600; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.6px; display: flex; align-items: center; gap: 6px; }
@@ -607,8 +612,8 @@
               <div class="filter-group">
                 <label>
                   <svg class="ico" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" /><polyline points="22 4 12 14.01 9 11.01" /></svg>
-                  Kes Tidak Dikira RT
-                  <span class="filter-help" data-tip="YA = Kes TIDAK DIKIRA sebagai RT.">?</span>
+                  Kes Dikira RT
+                  <span class="filter-help" data-tip="YA = Kes DIKIRA sebagai RT • TIDAK = Kes TIDAK DIKIRA sebagai RT.">?</span>
                 </label>
                 <div class="ms" data-key="kpiRt"></div>
               </div>
@@ -616,19 +621,21 @@
                 <label><svg class="ico" viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" /><circle cx="12" cy="7" r="4" /></svg>Melibatkan Mangsa</label>
                 <div class="ms" data-key="melibatkanMangsa"></div>
               </div>
+              <!-- ===== FILTER RT <9 MIN (BF) ===== -->
               <div class="filter-group">
                 <label>
                   <svg class="ico" viewBox="0 0 24 24"><circle cx="12" cy="13" r="8"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="13" x2="16" y2="15"/></svg>
                   RT &lt;9 MIN
-                  <span class="filter-help" data-tip="Klasifikasi RT (kiraan sendiri dari kolum Masa Terima → Masa Jentera Tiba). Bin: a. RT≤9min hingga m. RT&gt;30min.">?</span>
+                  <span class="filter-help" data-tip="Klasifikasi RT (kiraan sendiri dari Masa Terima → Masa Jentera Tiba). 13 bin: a. RT≤9min hingga m. RT&gt;30min.">?</span>
                 </label>
                 <div class="ms" data-key="rangeRt1"></div>
               </div>
+              <!-- ===== FILTER RT <10 MIN (BG) ===== -->
               <div class="filter-group">
                 <label>
                   <svg class="ico" viewBox="0 0 24 24"><circle cx="12" cy="13" r="8"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="13" x2="16" y2="15"/></svg>
                   RT &lt;10 MIN
-                  <span class="filter-help" data-tip="Klasifikasi RT (kiraan sendiri). Bin: A. RT≤10min hingga K. RT&gt;30min.">?</span>
+                  <span class="filter-help" data-tip="Klasifikasi RT (kiraan sendiri). 11 bin: A. RT≤10min hingga K. RT&gt;30min.">?</span>
                 </label>
                 <div class="ms" data-key="rangeRt2"></div>
               </div>
@@ -720,11 +727,6 @@
                 <div class="stat-value" id="kpiMangsaMeninggal">-</div>
                 <div class="stat-sub" id="kpiMangsaMeninggalSub">-</div>
               </div>
-              <div class="stat-card stat-gold">
-                <div class="stat-label"><svg class="ico" viewBox="0 0 24 24"><path d="M12 2C12 2 6 8 6 14a6 6 0 0 0 12 0c0-6-6-12-6-12z" /><circle cx="12" cy="14" r="2" /></svg>Kebakaran Tanah Gambut</div>
-                <div class="stat-value" id="kpiGambut">-</div>
-                <div class="stat-sub" id="kpiGambutSub">-</div>
-              </div>
             </div>
           </div>
 
@@ -753,6 +755,11 @@
                 <div class="stat-label"><svg class="ico" viewBox="0 0 24 24"><line x1="8" y1="6" x2="21" y2="6" /><line x1="8" y1="12" x2="21" y2="12" /><line x1="8" y1="18" x2="21" y2="18" /></svg>Jumlah Kes</div>
                 <div class="stat-value" id="kpiTotal">-</div>
                 <div class="stat-sub" id="kpiTotalSub">-</div>
+              </div>
+              <div class="stat-card stat-gold">
+                <div class="stat-label"><svg class="ico" viewBox="0 0 24 24"><path d="M12 2C12 2 6 8 6 14a6 6 0 0 0 12 0c0-6-6-12-6-12z" /><circle cx="12" cy="14" r="2" /></svg>Kebakaran Tanah Gambut</div>
+                <div class="stat-value" id="kpiGambut">-</div>
+                <div class="stat-sub" id="kpiGambutSub">-</div>
               </div>
             </div>
           </div>
@@ -847,14 +854,7 @@
                   <option value="value_asc">Nilai Terendah</option>
                   <option value="label_asc">Label (A→Z)</option>
                 </select></div>
-                <div class="dyn-ctrl"><label>Top N</label><select id="dynTopN" class="dyn-select">
-                  <option value="0">Semua</option>
-                  <option value="5">Top 5</option>
-                  <option value="10">Top 10</option>
-                  <option value="15">Top 15</option>
-                  <option value="20">Top 20</option>
-                  <option value="30">Top 30</option>
-                </select></div>
+                <div class="dyn-ctrl"><label>Top N</label><select id="dynTopN" class="dyn-select"></select></div>
               </div>
               <div class="chart-wrap-lg"><canvas id="chartDynamic"></canvas></div>
               <div class="dyn-info" id="dynInfo"><svg class="ico" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" /><line x1="12" y1="16" x2="12" y2="12" /><line x1="12" y1="8" x2="12.01" y2="8" /></svg><span>Memuatkan...</span></div>
@@ -1294,9 +1294,7 @@
           } catch(e) {}
           return new Set(TABLE_COLS.map(c => c.key));
         },
-        setVisible(set) {
-          localStorage.setItem(this.STORAGE_KEY, JSON.stringify([...set]));
-        }
+        setVisible(set) { localStorage.setItem(this.STORAGE_KEY, JSON.stringify([...set])); }
       };
 
       if (typeof ChartDataLabels !== 'undefined') Chart.register(ChartDataLabels);
@@ -1476,12 +1474,6 @@
         if (/TERCAPAI/.test(c)) return 'TERCAPAI';
         if (/^(YA|YES|Y|✓|1)$/.test(c)) return 'TERCAPAI';
         return '';
-      }
-      function hasAgensiLuar(v) {
-        const c = clean(v).trim();
-        if (!c) return false;
-        if (/^(TIADA|TIDAK ADA|TIDAK|NO|NONE|-|–|—|\.|N\/A|NA|0|TIDAK BERKAITAN)$/i.test(c)) return false;
-        return true;
       }
       function normalizeTempohOperasi(v) {
         const c = clean(v).toUpperCase();
@@ -1930,7 +1922,7 @@
             ALAMAT: findCol(['ALAMAT'], 26),
             HOTSPOT: findCol(['KEYWORD HOTSPOT', 'HOTSPOT'], 29),
             JARAK: findCol(['JARAK BALAI'], 30),
-            // ── Kolum AG (32) = Masa Terima/Acknowledge, Kolum AJ (35) = Masa Jentera Tiba
+            // Kolum AG (32) = Masa Terima/Acknowledge, Kolum AJ (35) = Masa Jentera Tiba
             MASA_A: findCol(['MASA TERIMA PANGGILAN / ACKNOWLEDGE', 'MASA TERIMA PANGGILAN', 'MASA TERIMA'], 32),
             MASA_LOOPING: findCol(['MASA LOOPING'], 33),
             MASA_BERLEPAS: findCol(['MASA JENTERA BERLEPAS'], 34),
@@ -1969,7 +1961,7 @@
 
           RAW_DATA = dataRows.map((r) => {
             const tarikh = parseDate(r[COL.TARIKH]);
-            const rtValue = responseTime(r);                      // ← kira RT sekali
+            const rtValue = responseTime(r);
             const masaOperasiDimulakan = COL.MASA_OPERASI_MULAI >= 0 ? clean(r[COL.MASA_OPERASI_MULAI]) : '';
             const jamOperasi = parseDurHours(r[COL.JAM_OPERASI]);
             const tempohOperasi = normalizeTempohOperasi(r[COL.MASA_OPERASI]);
@@ -1998,7 +1990,6 @@
               jamOperasi, agensiLuar: clean(r[COL.AGENSI_LUAR]),
               gambut: normalizeGambut(r[COL.GAMBUT]),
               tempohOperasi, masaOperasiDimulakan, masihBeroperasi, statusOperasi,
-              // ── Klasifikasi RT dari kiraan sendiri ──
               rangeRt1: getRtRangeBf(rtValue),
               rangeRt2: getRtRangeBg(rtValue),
               statusKpiAck: normalizeKpiStatus(r[COL.STATUS_KPI_ACK]),
@@ -2060,7 +2051,7 @@
         { key: 'subKategori1', label: 'Sub Kat 1' },
         { key: 'subKategori2', label: 'Sub Kat 2' },
         { key: 'jenis', label: 'Jenis' },
-        { key: 'jarak', label: 'Jarak' },
+        { key: 'jarak', label: 'Jarak (km)' },
         { key: 'masaTerima', label: 'T/P' },
         { key: 'masaLooping', label: 'L/B' },
         { key: 'masaBerlepas', label: 'J/K' },
@@ -2089,7 +2080,7 @@
         if (colKey === 'subKategori1') return d.subKategori1;
         if (colKey === 'subKategori2') return d.subKategori2;
         if (colKey === 'jenis') return d.jenis;
-        if (colKey === 'jarak') return d.jarak > 0 ? d.jarak.toFixed(1) + ' km' : '-';
+        if (colKey === 'jarak') return d.jarak > 0 ? d.jarak.toFixed(1) : '-';
         if (colKey === 'masaTerima') return d.masaTerima;
         if (colKey === 'masaLooping') return d.masaLooping;
         if (colKey === 'masaBerlepas') return d.masaBerlepas;
@@ -2237,7 +2228,6 @@
         MultiSelect.create('tempohOperasi', document.querySelector('.ms[data-key="tempohOperasi"]'), { items: ['PENDEK', 'SEDERHANA', 'PANJANG', 'MASIH BEROPERASI'], onChange: applyFilter });
         MultiSelect.create('statusOperasi', document.querySelector('.ms[data-key="statusOperasi"]'), { items: ['MASIH BEROPERASI', 'OPERASI TAMAT'], onChange: applyFilter });
         MultiSelect.create('jenis', document.querySelector('.ms[data-key="jenis"]'), { items: uniq(RAW_DATA.map((d) => d.jenis)), onChange: applyFilter });
-        // Dropdown RT — susun ikut abjad (a–m untuk BF, A–K untuk BG)
         MultiSelect.create('rangeRt1', document.querySelector('.ms[data-key="rangeRt1"]'), {
           items: ['a. RT ≤9min','b. 9min > RT ≤9.5min','c. 9.5min > RT ≤10min','d. 10min > RT ≤11min','e. 11min > RT ≤13min','f. 13min > RT ≤15min','g. 15min > RT ≤17min','h. 17min > RT ≤19min','i. 19min > RT ≤21min','j. 21min > RT ≤23min','k. 23min > RT ≤25min','l. 25min > RT ≤30min','m. RT >30min'],
           onChange: applyFilter
@@ -2404,6 +2394,7 @@
     <svg class="ico" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
     Menunjukkan <strong>${FILTERED.length}</strong> daripada <strong>${RAW_DATA.length}</strong> rekod`;
         renderKPI();
+        if (typeof updateTopNOptions === 'function') updateTopNOptions();
         renderCharts();
         renderTable();
         renderJadual();
@@ -2735,6 +2726,53 @@
           },
         };
       }
+      // ── PLUGIN: Label Total di atas bar bertindan / berbilang seri ──
+      function totalLabelPlugin(show) {
+        return {
+          id: 'totalLabel_' + Math.random().toString(36).slice(2, 8),
+          afterDatasetsDraw(chart) {
+            if (!show) return;
+            const type = chart.config.type;
+            if (!['bar', 'line'].includes(type)) return;
+            const ctx = chart.ctx;
+            ctx.save();
+            ctx.font = 'bold 11px Inter, sans-serif';
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'bottom';
+            const datasets = chart.data.datasets;
+            const meta0 = chart.getDatasetMeta(0);
+            if (!meta0 || !meta0.data) return;
+            const pointCount = meta0.data.length;
+            const isHorizontal = chart.options.indexAxis === 'y';
+            for (let i = 0; i < pointCount; i++) {
+              let total = 0, sumX = 0, sumY = 0, count = 0;
+              let maxX = -Infinity, minY = Infinity;
+              datasets.forEach((ds, di) => {
+                const meta = chart.getDatasetMeta(di);
+                if (!meta || meta.hidden || !meta.data[i]) return;
+                const el = meta.data[i];
+                const val = Number(ds.data[i]) || 0;
+                total += val;
+                const pos = el.tooltipPosition ? el.tooltipPosition() : { x: el.x, y: el.y };
+                sumX += pos.x; sumY += pos.y; count++;
+                if (pos.y < minY) minY = pos.y;
+                if (pos.x > maxX) maxX = pos.x;
+              });
+              if (count === 0 || total === 0) continue;
+              let labelX, labelY;
+              if (isHorizontal) { labelX = maxX + 6; labelY = sumY / count; }
+              else { labelX = sumX / count; labelY = minY - 4; }
+              const text = total.toLocaleString();
+              ctx.strokeStyle = 'rgba(255,255,255,0.95)';
+              ctx.lineWidth = 3;
+              ctx.strokeText(text, labelX, labelY);
+              ctx.fillStyle = '#002b5c';
+              ctx.fillText(text, labelX, labelY);
+            }
+            ctx.restore();
+          },
+        };
+      }
 
       function getTrendData() {
         const bulanOrder = ['Januari', 'Februari', 'Mac', 'April', 'Mei', 'Jun', 'Julai', 'Ogos', 'September', 'Oktober', 'November', 'Disember'];
@@ -2788,7 +2826,7 @@
       function getTopData(field, top = 15) { const e = countBy(FILTERED, (d) => d[field]).slice(0, top); return { labels: e.map((x) => x[0]), values: e.map((x) => x[1]) }; }
       function getScatterData() { return FILTERED.filter((d) => d.jarak > 0 && d.rt != null).map((d) => ({ x: d.jarak, y: +d.rt.toFixed(1) })); }
 
-      // ── BALAI × RT CROSSTAB (menggunakan rangeRt1/rangeRt2 yg dikira) ──
+      // ── BALAI × RT CROSSTAB ──
       let balaiRtField = localStorage.getItem('rt-balai-rt-field') || 'rangeRt1';
 
       function getBalaiRtCrosstab(fieldKey) {
@@ -2944,7 +2982,7 @@
         monsun:            { kind: 'dim', label: 'Fasa Monsun', get: (d) => d.monsun },
         katBalai:          { kind: 'dim', label: 'Kategori Balai', get: (d) => d.katBalai },
         gambut:            { kind: 'dim', label: 'Kebakaran Tanah Gambut', get: (d) => d.gambut || '(TIADA)' },
-        kesTidakRt:        { kind: 'dim', label: 'Kes Tidak Dikira RT', get: (d) => d.kesTidakRt || '(TIADA)' },
+        kesTidakRt:        { kind: 'dim', label: 'Kes Dikira RT', get: (d) => d.kesTidakRt || '(TIADA)' },
         melibatkanMangsa:  { kind: 'dim', label: 'Melibatkan Mangsa', get: (d) => d.melibatkanMangsa || '(TIADA)' },
         tempohOperasi:     { kind: 'dim', label: 'Tempoh Operasi', get: (d) => d.tempohOperasi || '(TIADA)' },
         statusOperasi:     { kind: 'dim', label: 'Status Operasi', get: (d) => d.statusOperasi },
@@ -3047,6 +3085,46 @@
         return { mode: 'standard', labels: sliced.map((e) => e.label), values: sliced.map((e) => +e.value.toFixed(dec)), decimals: dec, metric, dim, swapped };
       }
 
+      // Auto-filter Top N ikut X-Axis semasa
+      function updateTopNOptions() {
+        const topNSel = document.getElementById('dynTopN');
+        if (!topNSel) return;
+        const xField = DYN_FIELDS[dynXKey];
+        let uniqueCount = 0;
+        let label = 'Nilai';
+        if (xField && xField.kind === 'dim') {
+          const set = new Set();
+          FILTERED.forEach((d) => {
+            const v = xField.get(d);
+            if (v && v !== '(TIADA)') set.add(v);
+          });
+          uniqueCount = set.size;
+          const fieldLabels = {
+            balai: 'Balai', zon: 'Zon', daerah: 'Daerah', kategori: 'Kategori',
+            subKategori1: 'Sub Kat 1', subKategori2: 'Sub Kat 2', jenis: 'Jenis',
+            shif: 'Shif', monsun: 'Monsun', katBalai: 'Kat Balai', hari: 'Day',
+            bulan: 'Bulan', tarikh: 'Tarikh', gambut: 'Gambut', kesTidakRt: 'Kes Dikira RT',
+            melibatkanMangsa: 'Mangsa', tempohOperasi: 'Tempoh Ops', statusOperasi: 'Status Ops',
+            rangeRt1: 'Range BF', rangeRt2: 'Range BG', statusKpiRt10: 'Status KPI',
+          };
+          label = fieldLabels[dynXKey] || 'Nilai';
+        } else if (xField && xField.kind === 'metric') {
+          label = 'Metrik';
+        }
+        const options = [
+          { value: '0',  text: `Semua ${label}` },
+          { value: '5',  text: 'Top 5' },
+          { value: '10', text: 'Top 10' },
+          { value: '15', text: 'Top 15' },
+          { value: '20', text: 'Top 20' },
+          { value: '30', text: 'Top 30' },
+        ];
+        if (uniqueCount > 0) options.push({ value: String(uniqueCount), text: `📋 Semua ${label} (${uniqueCount})` });
+        topNSel.innerHTML = options.map((o) => `<option value="${o.value}">${o.text}</option>`).join('');
+        topNSel.value = String(dynTopN);
+        if (topNSel.value !== String(dynTopN)) { dynTopN = 0; topNSel.value = '0'; }
+      }
+
       function initDynamicControls() {
         const xSel = document.getElementById('dynX');
         const ySel = document.getElementById('dynY');
@@ -3061,11 +3139,20 @@
         if (DYN_FIELDS[dynXKey]) xSel.value = dynXKey; else { dynXKey = 'balai'; xSel.value = 'balai'; }
         if (DYN_FIELDS[dynYKey]) ySel.value = dynYKey; else { dynYKey = 'count'; ySel.value = 'count'; }
         sortSel.value = dynSortBy;
-        topNSel.value = String(dynTopN);
-        xSel.addEventListener('change', () => { dynXKey = xSel.value; localStorage.setItem(DYN_STORAGE.x, dynXKey); renderSingleChart('chartDynamic'); });
+        updateTopNOptions();
+        xSel.addEventListener('change', () => {
+          dynXKey = xSel.value;
+          localStorage.setItem(DYN_STORAGE.x, dynXKey);
+          updateTopNOptions();
+          renderSingleChart('chartDynamic');
+        });
         ySel.addEventListener('change', () => { dynYKey = ySel.value; localStorage.setItem(DYN_STORAGE.y, dynYKey); renderSingleChart('chartDynamic'); });
         sortSel.addEventListener('change', () => { dynSortBy = sortSel.value; localStorage.setItem(DYN_STORAGE.sort, dynSortBy); renderSingleChart('chartDynamic'); });
-        topNSel.addEventListener('change', () => { dynTopN = parseInt(topNSel.value, 10) || 0; localStorage.setItem(DYN_STORAGE.topN, String(dynTopN)); renderSingleChart('chartDynamic'); });
+        topNSel.addEventListener('change', () => {
+          dynTopN = parseInt(topNSel.value, 10) || 0;
+          localStorage.setItem(DYN_STORAGE.topN, String(dynTopN));
+          renderSingleChart('chartDynamic');
+        });
         xSel.dataset.ready = '1';
       }
 
@@ -3689,6 +3776,13 @@
       function newChart(chartId, canvas, cfg, showNumbers, labelFormatter) {
         const plugins = [];
         if (showNumbers) plugins.push(datalabelsPlugin(true, labelFormatter || null));
+        // Auto-tambah total label untuk carta bar bertindan / berbilang seri
+        const chartJsType = cfg.type;
+        const datasetsCount = cfg.data?.datasets?.length || 0;
+        const isMultiSeries = datasetsCount > 1;
+        const isStackedType = chartId === 'chartBalaiRt' || chartId === 'chartNartCount' || chartId === 'chartSelaCount';
+        const isEligible = ['bar', 'line'].includes(chartJsType) && (isMultiSeries || isStackedType);
+        if (showNumbers && isEligible) plugins.push(totalLabelPlugin(true));
         cfg.plugins = (cfg.plugins || []).concat(plugins);
         CHARTS[chartId] = new Chart(canvas.getContext('2d'), cfg);
         return CHARTS[chartId];
