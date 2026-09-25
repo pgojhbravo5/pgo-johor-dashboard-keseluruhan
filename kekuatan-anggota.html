@@ -57,7 +57,8 @@
         --radius-sm: 5px;
         --bg-glow: #13203a;
         --hover-row: rgba(75, 142, 247, 0.07);
-        --zebra: rgba(255, 255, 255, 0.012);
+        --zebra: rgba(255, 255, 255, 0.045);
+        --zebra-solid: #1d2537;
         --btn-hover-border: #35476a;
         --badge-zon1-bg: rgba(214, 52, 71, 0.16);
         --badge-zon1-fg: #ff8b98;
@@ -125,7 +126,8 @@
         --radius-sm: 5px;
         --bg-glow: #ffffff;
         --hover-row: rgba(44, 111, 216, 0.08);
-        --zebra: rgba(15, 23, 42, 0.015);
+        --zebra: rgba(15, 23, 42, 0.045);
+        --zebra-solid: #f3f5f8;
         --btn-hover-border: #b6c1d1;
         --badge-zon1-bg: rgba(192, 41, 61, 0.12);
         --badge-zon1-fg: #a01f33;
@@ -963,10 +965,12 @@
       .zone-drawer-item .zd-gred.gred-B { color: #f0bd63; }
       .zone-drawer-item .zd-gred.gred-C { color: #8ab4fb; }
       .zone-drawer-item .zd-gred.gred-D { color: #b6c1d1; }
+      .zone-drawer-item .zd-gred.gred-FP { color: #ff5c73; font-weight: 800; }
       [data-theme='light'] .zone-drawer-item .zd-gred.gred-A { color: #a01f33; }
       [data-theme='light'] .zone-drawer-item .zd-gred.gred-B { color: #8a5810; }
       [data-theme='light'] .zone-drawer-item .zd-gred.gred-C { color: #1d4fa5; }
       [data-theme='light'] .zone-drawer-item .zd-gred.gred-D { color: #52607a; }
+      [data-theme='light'] .zone-drawer-item .zd-gred.gred-FP { color: #c0293d; font-weight: 800; }
 
       .zone-drawer-item .zd-dot {
         width: 0.42rem;
@@ -1313,6 +1317,7 @@
       table.ketua .gred-cell.gred-B { color: #d99a2b; }
       table.ketua .gred-cell.gred-C { color: #4b8ef7; }
       table.ketua .gred-cell.gred-D { color: #7c8aa0; }
+      table.ketua .gred-cell.gred-FP { color: #d63447; font-weight: 800; letter-spacing: 0.08em; }
       table.ketua .turnout-cell {
         font-family: 'Inter', system-ui, sans-serif; font-weight: 600;
         color: var(--amber); font-size: 0.82rem;
@@ -2046,6 +2051,20 @@
         z-index: 5;
       }
 
+      /* Zebra untuk kolum sticky pada baris genap */
+      table.semak-lokasi tbody tr:nth-child(even) td.col-sticky-1,
+      table.semak-lokasi tbody tr:nth-child(even) td.col-sticky-2,
+      table.semak-lokasi tbody tr:nth-child(even) td.col-sticky-3 {
+        background: var(--zebra-solid) !important;
+      }
+
+      /* Hover mesti override zebra sticky */
+      table.semak-lokasi tbody tr:hover td.col-sticky-1,
+      table.semak-lokasi tbody tr:hover td.col-sticky-2,
+      table.semak-lokasi tbody tr:hover td.col-sticky-3 {
+        background: var(--panel-3) !important;
+      }
+
       table.semak-lokasi thead .col-sticky-1,
       table.semak-lokasi thead .col-sticky-2,
       table.semak-lokasi thead .col-sticky-3 {
@@ -2144,6 +2163,7 @@
       table.bkb tbody td.gred-cell-sm.gred-B { color: #d99a2b; }
       table.bkb tbody td.gred-cell-sm.gred-C { color: #4b8ef7; }
       table.bkb tbody td.gred-cell-sm.gred-D { color: #7c8aa0; }
+      table.bkb tbody td.gred-cell-sm.gred-FP { color: #d63447; font-weight: 800; }
       table.bkb tbody td.balai-name { text-align: left; font-family: 'Oswald', sans-serif; font-weight: 500; letter-spacing: 0.03em; color: var(--text); background: var(--panel-2); min-width: 160px; padding-left: 0.7rem; }
       table.bkb tbody td.nama-cell { text-align: left; color: var(--text); font-family: 'Inter', system-ui, sans-serif; font-size: 0.78rem; min-width: 180px; }
       table.bkb tbody td.nama-cell.empty, table.bkb tbody td.tel-cell.empty { color: var(--text-faint); font-style: italic; opacity: 0.6; }
@@ -2307,7 +2327,7 @@
           --slate: #63707f !important; --rosak: #c73838 !important; --purple: #6f4fc0 !important;
           --teal: #15847c !important; --zon1: #c0293d !important; --zon2: #b8791c !important;
           --zon3: #2c6fd8 !important; --zon4: #1f8a52 !important; --bg-glow: #ffffff !important;
-          --zebra: rgba(15, 23, 42, 0.02) !important; --hover-row: transparent !important;
+          --zebra: rgba(15, 23, 42, 0.04) !important; --hover-row: transparent !important;
           --col-amber-bg: rgba(165, 104, 26, 0.1) !important; --col-amber-bg-2: rgba(165, 104, 26, 0.07) !important;
           --col-amber-row: rgba(165, 104, 26, 0.1) !important;
         }
@@ -4096,31 +4116,31 @@
         'PASIR GUDANG': { gred: 'A', turnOut: 2 },
         'JOHOR JAYA': { gred: 'B', turnOut: 1 },
         SKUDAI: { gred: 'B', turnOut: 2 },
-        'ISKANDAR PUTERI': { gred: 'D', turnOut: 1 },
-        TEBRAU: { gred: 'B', turnOut: 1 },
+        'ISKANDAR PUTERI': { gred: 'B', turnOut: 1 },
+        TEBRAU: { gred: 'C', turnOut: 1 },
         'PEKAN NENAS': { gred: 'C', turnOut: 1 },
-        PONTIAN: { gred: 'D', turnOut: 1 },
+        PONTIAN: { gred: 'C', turnOut: 1 },
         'PONTIAN BARU': { gred: 'C', turnOut: 1 },
-        KULAI: { gred: 'B', turnOut: 1 },
+        KULAI: { gred: 'C', turnOut: 1 },
         'BANDAR BARU KULAI': { gred: 'C', turnOut: 1 },
-        KEMPAS: { gred: 'D', turnOut: 1 },
-        'FIRE POST BENUT': { gred: 'D', turnOut: 1 },
+        KEMPAS: { gred: 'C', turnOut: 1 },
+        'FIRE POST BENUT': { gred: 'FP', turnOut: 1 },
         'KOTA TINGGI': { gred: 'B', turnOut: 1 },
         'SUNGAI RENGIT': { gred: 'B', turnOut: 1 },
         'BANDAR PENAWAR': { gred: 'B', turnOut: 1 },
         MERSING: { gred: 'C', turnOut: 1 },
         ENDAU: { gred: 'C', turnOut: 1 },
         'SEBANA COVE': { gred: 'C', turnOut: 1 },
-        PUNGGAI: { gred: 'C', turnOut: 1 },
+        PUNGGAI: { gred: 'D', turnOut: 1 },
         'BANDAR TENGGARA': { gred: 'D', turnOut: 1 },
         PENGGARAM: { gred: 'A', turnOut: 2 },
         KLUANG: { gred: 'B', turnOut: 2 },
-        'BATU PAHAT': { gred: 'B', turnOut: 1 },
+        'BATU PAHAT': { gred: 'C', turnOut: 1 },
         RENGIT: { gred: 'C', turnOut: 1 },
         RENGGAM: { gred: 'C', turnOut: 1 },
         'YONG PENG': { gred: 'C', turnOut: 1 },
         'AYER HITAM': { gred: 'C', turnOut: 1 },
-        'FIRE POST PARIT SULONG': { gred: 'D', turnOut: 1 },
+        'FIRE POST PARIT SULONG': { gred: 'FP', turnOut: 1 },
         MUAR: { gred: 'A', turnOut: 2 },
         'BANDAR BARU SEGAMAT': { gred: 'B', turnOut: 2 },
         SEGAMAT: { gred: 'C', turnOut: 1 },
@@ -4618,6 +4638,21 @@
         if (s.startsWith('60')) return s;
         if (s.startsWith('0')) return '60' + s.substring(1);
         return '60' + s;
+      }
+
+      function formatPhoneMY(raw) {
+        let digits = String(raw || '').replace(/\D/g, '');
+        if (!digits) return '';
+        if (digits.startsWith('60')) digits = '0' + digits.slice(2);
+        if (digits.startsWith('01')) {
+          if (digits.length <= 3) return digits;
+          return digits.slice(0, 3) + '-' + digits.slice(3);
+        }
+        if (digits.startsWith('0')) {
+          if (digits.length <= 2) return digits;
+          return digits.slice(0, 2) + '-' + digits.slice(2);
+        }
+        return digits;
       }
 
       function renderContactButtons(container, phone) {
@@ -5669,6 +5704,9 @@
         const invalid = [];
         (balaiState.personel || []).forEach((p, idx) => {
           const missing = MANDATORY_PERSONEL_KEYS.filter(k => !p[k]);
+          if (p.noTelefon && !String(p.noTelefon).includes('-')) {
+            if (!missing.includes('noTelefon')) missing.push('noTelefon');
+          }
           if (missing.length) invalid.push({
             row: idx + 1,
             missing,
@@ -5936,8 +5974,9 @@
         tr.appendChild(tdB);
 
         const tdN = document.createElement('td');
-        const iN = makeInput('text', p.nama, (v) => { p.nama = v; saveState(); markRow(); }, 'NAMA PENUH');
+        const iN = makeInput('text', p.nama, (v) => { p.nama = v.toUpperCase(); saveState(); markRow(); }, 'NAMA PENUH');
         iN.dataset.mf = 'nama'; iN.style.minWidth = '200px';
+        iN.style.textTransform = 'uppercase';
         tdN.appendChild(iN); tr.appendChild(tdN);
 
         const tdP = document.createElement('td');
@@ -5950,8 +5989,27 @@
         iNB.dataset.mf = 'noBadan'; tdNB.appendChild(iNB); tr.appendChild(tdNB);
 
         const tdNT = document.createElement('td');
-        const iNT = makeInput('text', p.noTelefon, (v) => { p.noTelefon = v; saveState(); markRow(); }, '');
-        iNT.dataset.mf = 'noTelefon'; tdNT.appendChild(iNT); tr.appendChild(tdNT);
+        const iNT = document.createElement('input');
+        iNT.type = 'text';
+        iNT.value = p.noTelefon || '';
+        iNT.placeholder = '012-3456789';
+        iNT.inputMode = 'tel';
+        iNT.dataset.mf = 'noTelefon';
+        iNT.addEventListener('input', function () {
+          const caret = iNT.selectionStart;
+          const before = iNT.value;
+          const formatted = formatPhoneMY(before);
+          if (before !== formatted) {
+            iNT.value = formatted;
+            const diff = formatted.length - before.length;
+            const newPos = Math.max(0, Math.min(formatted.length, caret + diff));
+            try { iNT.setSelectionRange(newPos, newPos); } catch (e) {}
+          }
+          p.noTelefon = iNT.value;
+          saveState();
+          markRow();
+        });
+        tdNT.appendChild(iNT); tr.appendChild(tdNT);
 
         let pasukanSelect = null;
         let statusSelect = null;
@@ -6973,6 +7031,7 @@
     <th>KB</th><th>PO</th>
     <th>A</th><th>C</th><th>CS</th><th>TK</th>
     <th>JUMLAH</th>
+    <th>KATEGORI BALAI</th>
     <th>PBB + PBBK II</th>
   </tr>`;
         tbl.appendChild(thead);
@@ -6980,6 +7039,7 @@
         const tbody = document.createElement('tbody');
         let totalTurnOut = 0, totalPBB = 0, totalKB = 0, totalPO = 0;
         let totalA = 0, totalC = 0, totalCS = 0, totalTK = 0, totalJumlah = 0;
+        let total12Jam = 0, total24Jam = 0;
 
         BALAI_LIST.forEach((b, idx) => {
           const d = getKetuaBalaiData(b.name);
@@ -7058,6 +7118,28 @@
           tdJ.textContent = d.jumlah || 0;
           tr.appendChild(tdJ);
 
+          const kategoriBalai = computeKategoriFromShif(
+            (store.balai[b.name] && store.balai[b.name].ident && store.balai[b.name].ident.shif) || ''
+          );
+          const tdKat = document.createElement('td');
+          tdKat.style.fontFamily = "'Oswald', sans-serif";
+          tdKat.style.fontWeight = '700';
+          tdKat.style.fontSize = '0.72rem';
+          tdKat.style.letterSpacing = '0.06em';
+          if (kategoriBalai === '12 JAM') {
+            tdKat.textContent = '12 JAM';
+            tdKat.style.color = 'var(--amber)';
+            total12Jam++;
+          } else if (kategoriBalai === '24 JAM') {
+            tdKat.textContent = '24 JAM';
+            tdKat.style.color = 'var(--blue)';
+            total24Jam++;
+          } else {
+            tdKat.textContent = '—';
+            tdKat.style.color = 'var(--text-faint)';
+          }
+          tr.appendChild(tdKat);
+
           const tdPBB = document.createElement('td');
           tdPBB.className = 'pbb-cell';
           tdPBB.textContent = pbbCount;
@@ -7100,6 +7182,18 @@
         fJum.style.color = 'var(--amber)';
         fJum.style.fontWeight = '700';
         fr.appendChild(fJum);
+
+        const fKat = document.createElement('th');
+        fKat.style.fontFamily = "'Oswald', sans-serif";
+        fKat.style.fontSize = '0.65rem';
+        fKat.style.letterSpacing = '0.04em';
+        fKat.style.whiteSpace = 'nowrap';
+        fKat.innerHTML =
+          '<span style="color:var(--amber);font-weight:700;">' + total12Jam + '×12J</span>' +
+          ' <span style="color:var(--text-faint);">|</span> ' +
+          '<span style="color:var(--blue);font-weight:700;">' + total24Jam + '×24J</span>';
+        fr.appendChild(fKat);
+
         const fPBB = document.createElement('th');
         fPBB.className = 'pbb-cell'; fPBB.textContent = totalPBB;
         fr.appendChild(fPBB);
@@ -7107,7 +7201,7 @@
 
         const fr2 = document.createElement('tr');
         const f2Summary = document.createElement('th');
-        f2Summary.colSpan = 16;
+        f2Summary.colSpan = 17;
         f2Summary.style.textAlign = 'center';
         f2Summary.style.fontSize = '0.7rem';
         f2Summary.style.letterSpacing = '0.06em';
@@ -7119,7 +7213,11 @@
           ' &nbsp;&nbsp;•&nbsp;&nbsp; ' +
           'JUMLAH KESELURUHAN: <b style="color:var(--amber)">' + totalJumlah + '</b>' +
           ' &nbsp;&nbsp;•&nbsp;&nbsp; ' +
-          'PBB + PBBK II: <b style="color:var(--teal)">' + totalPBB + '</b>';
+          'PBB + PBBK II: <b style="color:var(--teal)">' + totalPBB + '</b>' +
+          ' &nbsp;&nbsp;•&nbsp;&nbsp; ' +
+          'BALAI 12J: <b style="color:var(--amber)">' + total12Jam + '</b>' +
+          ' &nbsp;&nbsp;•&nbsp;&nbsp; ' +
+          'BALAI 24J: <b style="color:var(--blue)">' + total24Jam + '</b>';
         fr2.appendChild(f2Summary);
         tf.appendChild(fr2);
         tbl.appendChild(tf);
@@ -7134,6 +7232,7 @@
           'Penyelia Pasukan diambil 1 sahaja (jika ada lebih).<br />' +
           '<b>GRED</b> — mengikut klasifikasi balai. ' +
           '<b>TURN OUT</b> — bilangan jentera keluar bertugas. ' +
+          '<b>KATEGORI BALAI</b> — auto dari shif bertugas (12 JAM / 24 JAM). ' +
           '<b>PBB + PBBK II</b> — jumlah anggota berpangkat PBB dan PBBK II.<br />' +
           '<b>Kolum A (BERTUGAS)</b> — diwarnakan <span style="color:var(--rosak);font-weight:700">MERAH</span> jika 5 orang atau ke bawah.<br />' +
           '<b>Nota kiraan:</b> Peranan <b>KETUA BALAI</b> dan <b>PEGAWAI OPERASI</b> tidak dikira dalam jumlah A/C/CS/TK.';
