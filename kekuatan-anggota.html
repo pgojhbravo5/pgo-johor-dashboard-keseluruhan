@@ -280,6 +280,61 @@
         .main-title .sub { font-size: 0.57rem; letter-spacing: 0.12em; }
       }
 
+      /* --- Live Clock di header --- */
+      .main-title .live-clock {
+        position: absolute;
+        top: 0.7rem;
+        right: 0.95rem;
+        font-family: 'Oswald', sans-serif;
+        font-size: 0.66rem;
+        letter-spacing: 0.09em;
+        text-transform: uppercase;
+        color: var(--text-dim);
+        text-align: right;
+        line-height: 1.4;
+        font-weight: 500;
+        pointer-events: none;
+        z-index: 2;
+      }
+      .main-title .live-clock .lc-day {
+        color: var(--amber);
+        font-weight: 600;
+        letter-spacing: 0.12em;
+      }
+      .main-title .live-clock .lc-time {
+        font-family: 'IBM Plex Sans', system-ui, sans-serif;
+        font-variant-numeric: tabular-nums;
+        color: var(--text);
+        font-weight: 600;
+        font-size: 0.78rem;
+        letter-spacing: 0.05em;
+        margin: 0.08rem 0 0.04rem;
+      }
+      .main-title .live-clock .lc-date {
+        color: var(--text-faint);
+        font-size: 0.6rem;
+        letter-spacing: 0.08em;
+      }
+      @media (max-width: 900px) {
+        .main-title .live-clock {
+          top: 0.55rem;
+          right: 0.7rem;
+          font-size: 0.58rem;
+        }
+        .main-title .live-clock .lc-time { font-size: 0.7rem; }
+        .main-title .live-clock .lc-date { font-size: 0.54rem; }
+      }
+      @media (max-width: 640px) {
+        .main-title .live-clock {
+          position: static;
+          text-align: center;
+          margin-top: 0.55rem;
+          padding-top: 0.55rem;
+          border-top: 1px dashed var(--line);
+          font-size: 0.6rem;
+        }
+      }
+
       .topbar {
         display: flex; flex-wrap: wrap; gap: 0.75rem 1rem; align-items: center;
         background: linear-gradient(180deg, var(--panel-2), var(--panel));
@@ -2354,7 +2409,7 @@
         .manage-bar, .autosave-indicator, .btn-back-dashboard,
         .tabbar, .loading-overlay, .toast-container, .site-footer,
         .print-modal-overlay, .btn-print-po3a, .auto-reload-widget,
-        .semak-toggle-bar { display: none !important; }
+        .semak-toggle-bar, .live-clock { display: none !important; }
         .section, .stat, .topbar, .main-title { box-shadow: none !important; page-break-inside: avoid; }
         .main-title { border-top: 3px solid #16223a !important; border-bottom: 3px solid #16223a !important; }
         body.printing-single #sections > .section.print-target .section-head {
@@ -2700,6 +2755,11 @@
       <div class="main-title">
         <h1>SISTEM KEKUATAN ANGGOTA JBPM NEGERI JOHOR</h1>
         <div class="sub">Jabatan Bomba dan Penyelamat Malaysia — Negeri Johor</div>
+        <div class="live-clock" id="liveClock" aria-live="off">
+          <div class="lc-day" id="lcDay">—</div>
+          <div class="lc-time" id="lcTime">--:--:--</div>
+          <div class="lc-date" id="lcDate">—</div>
+        </div>
       </div>
 
       <div class="topbar">
@@ -3064,6 +3124,7 @@
         search: '<circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>',
         volumeOn: '<polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14"/>',
         volumeOff: '<polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><line x1="23" y1="9" x2="17" y2="15"/><line x1="17" y1="9" x2="23" y2="15"/>',
+        lock: '<rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/>',
       };
       function svgIcon(name) {
         return ('<svg class="ico" viewBox="0 0 24 24" aria-hidden="true">' + (ICONS[name] || '') + '</svg>');
@@ -6237,10 +6298,15 @@
         return tr;
       }
 
+      function isProtectedKomItem(r) {
+        return KOMUNIKASI_DEF.some(function (k) { return k.name === r.kategori; });
+      }
+
       function buildEquipRow(key, r, isKom, katList, title, color, rtb) {
         const tr = document.createElement('tr');
         const markRow = () => markMandatoryEquip(tr, r, isKom);
         const isKategoriDriven = key === 'jentera' || key === 'marin' || key === 'utiliti';
+        const isProtected = isKom && isProtectedKomItem(r);
 
         const tdB = document.createElement('td');
         tdB.className = 'bil-cell';
@@ -6254,6 +6320,14 @@
           globalRecalc(); markRow();
         }, isKategoriDriven ? 'kat-select' : null);
         katSelect.dataset.mf = 'kategori';
+
+        if (isProtected) {
+          katSelect.disabled = true;
+          katSelect.title = 'Kategori tetap — tidak boleh diubah';
+          katSelect.style.opacity = '0.85';
+          katSelect.style.cursor = 'not-allowed';
+        }
+
         tdK.appendChild(katSelect); tr.appendChild(tdK);
 
         if (!isKom) {
@@ -6291,20 +6365,34 @@
         iC.style.minWidth = '130px';
         tdC.appendChild(iC); tr.appendChild(tdC);
 
-        const tdD = document.createElement('td'); tdD.className = 'del-cell';
-        const bD = document.createElement('button');
-        bD.innerHTML = svgIcon('x'); bD.title = 'Padam baris'; bD.setAttribute('aria-label', 'Padam baris');
-        bD.addEventListener('click', () => {
-          if (!confirm('Padam baris ini?')) return;
-          const idx = state.equip[key].indexOf(r);
-          if (idx === -1) return;
-          state.equip[key].splice(idx, 1);
-          saveState();
-          tr.remove();
-          renumberRows(rtb);
-          globalRecalc();
-        });
-        tdD.appendChild(bD); tr.appendChild(tdD);
+        const tdD = document.createElement('td');
+        tdD.className = 'del-cell';
+
+        if (isProtected) {
+          const lock = document.createElement('span');
+          lock.innerHTML = svgIcon('lock');
+          lock.title = 'Baris tetap — tidak boleh dipadam';
+          lock.setAttribute('aria-label', 'Baris tetap');
+          lock.style.cssText = 'display:inline-flex;align-items:center;justify-content:center;width:24px;height:24px;color:var(--text-faint);opacity:0.7;';
+          const icoEl = lock.querySelector('.ico');
+          if (icoEl) icoEl.style.cssText = 'width:0.9rem;height:0.9rem;';
+          tdD.appendChild(lock);
+        } else {
+          const bD = document.createElement('button');
+          bD.innerHTML = svgIcon('x'); bD.title = 'Padam baris'; bD.setAttribute('aria-label', 'Padam baris');
+          bD.addEventListener('click', () => {
+            if (!confirm('Padam baris ini?')) return;
+            const idx = state.equip[key].indexOf(r);
+            if (idx === -1) return;
+            state.equip[key].splice(idx, 1);
+            saveState();
+            tr.remove();
+            renumberRows(rtb);
+            globalRecalc();
+          });
+          tdD.appendChild(bD);
+        }
+        tr.appendChild(tdD);
 
         markMandatoryEquip(tr, r, isKom);
         return tr;
@@ -6573,7 +6661,7 @@
         const isKategoriDriven = key === 'jentera' || key === 'marin' || key === 'utiliti';
         let hintText = 'SENARAI BUTIRAN';
         if (isKategoriDriven) hintText = 'SENARAI BUTIRAN — Pilih KATEGORI dahulu, kemudian MAKLUMAT';
-        if (isKom) hintText = 'SENARAI BUTIRAN PERALATAN KOMUNIKASI';
+        if (isKom) hintText = 'SENARAI BUTIRAN PERALATAN KOMUNIKASI — 9 item tetap tidak boleh dipadam';
         body.appendChild(subTitle(hintText));
 
         const rTbl = document.createElement('table');
@@ -6621,7 +6709,7 @@
         const bClean = document.createElement('button');
         bClean.className = 'btn danger small';
         bClean.textContent = '✕ Padam Baris Kosong';
-        bClean.title = 'Padam semua baris yang belum diisi';
+        bClean.title = 'Padam semua baris yang belum diisi (9 item komunikasi tetap dikecualikan)';
         bClean.addEventListener('click', () => {
           const emptyRows = [];
           rtb.querySelectorAll('tr').forEach((tr) => {
@@ -6629,6 +6717,7 @@
             const rowIdx = parseInt(bilText, 10) - 1;
             const arr = state.equip[key];
             if (rowIdx >= 0 && arr[rowIdx] && isRowEquipEmpty(arr[rowIdx], isKom)) {
+              if (isKom && isProtectedKomItem(arr[rowIdx])) return;
               emptyRows.push({ tr, r: arr[rowIdx] });
             }
           });
@@ -8222,6 +8311,30 @@
         }
       }
 
+      function ensureKomunikasiDefaults() {
+        if (!state || !state.equip) return;
+        if (!Array.isArray(state.equip.komunikasi)) state.equip.komunikasi = [];
+        const arr = state.equip.komunikasi;
+        const defaultSet = new Set(KOMUNIKASI_DEF.map(function (k) { return k.name; }));
+
+        const map = {};
+        const extras = [];
+        arr.forEach(function (r) {
+          if (!r) return;
+          if (defaultSet.has(r.kategori)) {
+            if (!map[r.kategori]) map[r.kategori] = r;
+            else extras.push(r);
+          } else {
+            extras.push(r);
+          }
+        });
+
+        const ordered = KOMUNIKASI_DEF.map(function (k) {
+          return map[k.name] || emptyKom(k.name);
+        });
+        state.equip.komunikasi = ordered.concat(extras);
+      }
+
       function renderAll() {
         document.getElementById('sections').innerHTML = '';
         updateBodyFullscreenClass();
@@ -8244,6 +8357,7 @@
           renderSemakLokasiView();
           document.getElementById('statsRow').innerHTML = '';
         } else {
+          ensureKomunikasiDefaults();
           renderPersonelSection();
           renderEquipSection('jentera', 'KEKUATAN JENTERA UTAMA', 'var(--amber)', JENTERA_KAT, false);
           renderEquipSection('marin', 'KEKUATAN JENTERA MARIN', 'var(--blue)', MARIN_KAT, false);
@@ -8260,6 +8374,44 @@
         const months = ['Januari','Februari','Mac','April','Mei','Jun','Julai','Ogos','September','Oktober','November','Disember'];
         const dateStr = today.getDate() + ' ' + months[today.getMonth()] + ' ' + today.getFullYear();
         el.textContent = 'Johor Bahru, ' + dateStr;
+      }
+
+      function initLiveClock() {
+        const dayEl  = document.getElementById('lcDay');
+        const timeEl = document.getElementById('lcTime');
+        const dateEl = document.getElementById('lcDate');
+        if (!dayEl || !timeEl || !dateEl) return;
+
+        function tick() {
+          const now = new Date();
+          try {
+            const day = new Intl.DateTimeFormat('ms-MY', {
+              timeZone: 'Asia/Kuala_Lumpur', weekday: 'long',
+            }).format(now);
+
+            const date = new Intl.DateTimeFormat('ms-MY', {
+              timeZone: 'Asia/Kuala_Lumpur',
+              day: '2-digit', month: 'long', year: 'numeric',
+            }).format(now);
+
+            const time = new Intl.DateTimeFormat('en-GB', {
+              timeZone: 'Asia/Kuala_Lumpur',
+              hour: '2-digit', minute: '2-digit', second: '2-digit',
+              hour12: false,
+            }).format(now);
+
+            dayEl.textContent  = day.toUpperCase();
+            dateEl.textContent = date;
+            timeEl.textContent = time;
+          } catch (e) {
+            dayEl.textContent  = now.toLocaleDateString('ms-MY', { weekday: 'long' }).toUpperCase();
+            dateEl.textContent = now.toLocaleDateString('ms-MY');
+            timeEl.textContent = now.toLocaleTimeString('en-GB');
+          }
+        }
+
+        tick();
+        setInterval(tick, 1000);
       }
 
       function buildArchiveData() {
@@ -8954,6 +9106,7 @@
         }
       });
 
+      initLiveClock();
       initApp();
     </script>
   </body>
