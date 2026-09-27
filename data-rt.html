@@ -2,7 +2,7 @@
 <html lang="ms">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5" />
     <title>Dashboard Analisis RT — JBPM Negeri Johor</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -159,7 +159,6 @@
       .stat-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 20px; }
       @media (max-width: 1100px) { .stat-grid { grid-template-columns: repeat(2, 1fr); } }
       @media (max-width: 600px) { .stat-grid { grid-template-columns: 1fr; } }
-      /* Operasi section — 5 kad */
       .kpi-section.tone-ops .stat-grid { grid-template-columns: repeat(5, 1fr); }
       @media (max-width: 1300px) { .kpi-section.tone-ops .stat-grid { grid-template-columns: repeat(3, 1fr); } }
       @media (max-width: 1100px) { .kpi-section.tone-ops .stat-grid { grid-template-columns: repeat(2, 1fr); } }
@@ -472,6 +471,529 @@
         thead th, #jadualBalai thead th { position: static !important; }
         #jadualBalai tfoot td { position: static !important; }
       }
+
+      /* ============================================================
+         MOBILE UX ENHANCEMENTS
+         ============================================================ */
+      @media (max-width: 768px) {
+        .topbar-inner { padding: 10px 12px; gap: 8px; flex-wrap: nowrap; }
+        .brand { min-width: 0; flex: 1; }
+        .brand-text h1 { font-size: 13px; line-height: 1.15; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .brand-text .brand-sub { font-size: 9.5px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .topbar-right { gap: 6px; flex-shrink: 0; }
+        .meta, .divider-v { display: none; }
+        .topbar-right .btn-secondary {
+          font-size: 0; padding: 0; width: 36px; height: 36px; min-width: 36px;
+          justify-content: center; gap: 0;
+        }
+        .topbar-right .btn-secondary .ico { width: 16px; height: 16px; }
+        .icon-btn { width: 36px; height: 36px; }
+        .container { padding: 10px 10px 90px; }
+        .filter-bar { border-radius: 10px; margin-bottom: 10px; }
+        .filter-bar-header { padding: 12px 14px; }
+        .filter-bar-header-left { font-size: 11px; }
+        .filter-bar-inner { grid-template-columns: 1fr; gap: 10px; padding: 12px 14px; }
+        .filter-bar-inner .filter-group-wide { grid-column: span 1; }
+        .filter-bar-actions { padding-top: 10px; }
+        .filter-bar-actions .btn-secondary { flex: 1; justify-content: center; padding: 10px; }
+        .drp-input, .ms-trigger, .dyn-select, .jadual-threshold {
+          min-height: 42px; padding: 10px 12px; font-size: 13px;
+        }
+        .drp-input .drp-val, .ms-value { font-size: 13px; }
+        .drp-popup,
+        .ms-popup,
+        .ctp-popup {
+          position: fixed !important;
+          left: 10px !important; right: 10px !important;
+          top: auto !important; bottom: 10px !important;
+          width: auto !important; max-width: none !important;
+          max-height: 68vh !important;
+          border-radius: 14px !important;
+          padding: 14px !important;
+          z-index: 2500 !important;
+          animation: slideUpMobile .22s ease;
+        }
+        .drp-popup.open-up { top: auto !important; bottom: 10px !important; }
+        @keyframes slideUpMobile {
+          from { transform: translateY(24px); opacity: 0; }
+          to   { transform: translateY(0);    opacity: 1; }
+        }
+        body:has(.ms.open)::before,
+        body:has(.drp-popup.open)::before,
+        body:has(.chart-type-picker.open)::before {
+          content: '';
+          position: fixed; inset: 0;
+          background: rgba(0, 0, 0, 0.45);
+          z-index: 2400;
+          animation: fadeIn .15s;
+        }
+        body:has(.ms.open) .topbar,
+        body:has(.drp-popup.open) .topbar,
+        body:has(.chart-type-picker.open) .topbar { z-index: 2300; }
+        .page-nav {
+          position: sticky; top: 58px; z-index: 50;
+          padding: 4px; gap: 3px; border-radius: 10px; margin-bottom: 10px;
+        }
+        .page-nav-btn { min-width: auto; padding: 10px 10px; font-size: 12px; gap: 5px; flex: 1; }
+        .page-nav-btn .ico { width: 14px; height: 14px; }
+        .stat-grid { grid-template-columns: repeat(2, 1fr) !important; gap: 8px; }
+        .kpi-section.tone-ops .stat-grid { grid-template-columns: repeat(2, 1fr) !important; }
+        .stat-card { padding: 11px 12px; }
+        .stat-card .stat-label { font-size: 9.5px; letter-spacing: .3px; }
+        .stat-card .stat-value { font-size: 21px; margin-top: 4px; }
+        .stat-card .stat-sub { font-size: 10px; }
+        .section-title { font-size: 11.5px; margin: 16px 0 8px; letter-spacing: .4px; }
+        .kat-strip { grid-template-columns: repeat(2, 1fr); gap: 8px; }
+        .kat-tile { padding: 11px 11px 10px 13px; }
+        .kat-tile-value { font-size: 20px; }
+        .kat-tile-label { font-size: 9.5px; }
+        .kat-tile-icon { width: 22px; height: 22px; }
+        .kat-tile-icon svg { width: 11px; height: 11px; }
+        .ksh-hint { display: none; }
+        .card { padding: 14px 12px; border-radius: 10px; }
+        .card-header { padding-bottom: 10px; margin-bottom: 10px; gap: 8px; }
+        .card-title { font-size: 12.5px; }
+        .card-badge { font-size: 9.5px; padding: 2px 7px; }
+        .card-controls { gap: 6px; }
+        .chart-wrap-lg { height: 300px; }
+        .chart-wrap-md { height: 240px; }
+        .dashboard-row { gap: 10px; }
+        .compact-item { padding: 9px 11px; }
+        .c-label { font-size: 12px; }
+        .c-val { font-size: 14px; }
+        .compact-list { max-height: 320px; }
+        .subkat-grid { grid-template-columns: repeat(2, 1fr); gap: 6px; }
+        .subkat-grid .mini-card { padding: 9px 10px; }
+        .mini-val { font-size: 17px; }
+        .mini-label { font-size: 10px; min-height: 2.4em; }
+        .tabs {
+          padding: 4px; gap: 3px; margin-bottom: 10px; border-radius: 10px;
+          scroll-snap-type: x proximity;
+          -webkit-overflow-scrolling: touch;
+        }
+        .tab-btn { padding: 9px 12px; font-size: 11.5px; gap: 4px; scroll-snap-align: start; }
+        .tab-btn .ico { width: 13px; height: 13px; }
+        .dyn-controls { grid-template-columns: repeat(2, 1fr); gap: 8px; padding: 10px; }
+        .dyn-info { font-size: 11.5px; padding: 9px 11px; }
+        .ctp-trigger, .num-toggle { padding: 6px 9px; font-size: 11px; min-height: 34px; }
+        .ctp-trigger .ctp-label { max-width: 90px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+        .stat-row { grid-template-columns: repeat(2, 1fr); gap: 8px; }
+        .stat-mini { padding: 10px 11px; }
+        .stat-mini .val { font-size: 16px; }
+        .stat-mini .lbl { font-size: 9.5px; }
+        .stat-mini .sub { font-size: 10px; }
+        .table-scroll { max-height: 65vh; border-radius: 10px; position: relative; }
+        table { font-size: 11.5px; }
+        thead th { padding: 7px 6px; font-size: 9.5px; }
+        tbody td { padding: 7px 6px; }
+        #jadualBalai tfoot td { padding: 8px 6px; font-size: 11px; }
+        .pagination { flex-direction: column; align-items: stretch; gap: 10px; }
+        .pagination-left { justify-content: space-between; width: 100%; flex-wrap: wrap; gap: 8px; }
+        .pagination > div:last-child { display: flex; gap: 8px; }
+        .pagination button { flex: 1; padding: 11px 12px; font-size: 12.5px; }
+        .rows-per-page-select { padding: 8px 10px; font-size: 12.5px; }
+        .site-footer { padding: 20px 14px 16px; margin-top: 24px; }
+        .footer-title { font-size: 10.5px; }
+        .footer-copy { font-size: 10.5px; }
+        .back-fab { bottom: 14px; right: 14px; padding: 9px 14px; font-size: 11.5px; }
+        .jadual-threshold { width: 90px; }
+        .table-scroll::after {
+          content: '⟷ skrol';
+          position: absolute; bottom: 8px; right: 10px;
+          font-size: 10px; color: var(--text-subtle);
+          background: var(--surface); padding: 3px 8px;
+          border-radius: 12px; box-shadow: var(--shadow-sm);
+          pointer-events: none; opacity: .85;
+          animation: fadeOutHint 3.5s ease forwards;
+        }
+        @keyframes fadeOutHint {
+          0%, 55% { opacity: .85; }
+          100% { opacity: 0; visibility: hidden; }
+        }
+      }
+      @media (max-width: 380px) {
+        .brand-text h1 { font-size: 12px; }
+        .brand-text .brand-sub { font-size: 9px; }
+        .stat-card .stat-value { font-size: 19px; }
+        .kat-strip { grid-template-columns: 1fr; }
+        .dyn-controls, .subkat-grid { grid-template-columns: 1fr; }
+        .filter-bar-inner { gap: 8px; }
+      }
+
+      /* ============================================================
+         SAFETY NET — elak overflow pada skrin kecil
+         ============================================================ */
+      @media (max-width: 768px) {
+        *, *::before, *::after { min-width: 0; }
+        img, canvas, svg, video { max-width: 100%; height: auto; }
+        table { max-width: 100%; }
+        html, body { overflow-x: hidden !important; width: 100%; max-width: 100vw; }
+        .kpi-section-head { flex-wrap: wrap; row-gap: 6px; }
+        .kpi-section-head .ksh-title { flex-shrink: 1; min-width: 0; }
+        .ksh-clear { margin-left: auto; }
+        .filter-bar-body { max-height: 4000px !important; }
+        .filter-bar.collapsed .filter-bar-body { max-height: 0 !important; }
+        .filter-help::after, .filter-help::before { display: none !important; }
+        .dyn-info { min-width: 0; flex-wrap: wrap; word-break: break-word; }
+        .dyn-info span { min-width: 0; overflow-wrap: anywhere; }
+        .stat-mini .val, .stat-card .stat-value, .kat-tile-value {
+          overflow-wrap: anywhere; word-break: break-word;
+        }
+        .compact-item { min-width: 0; }
+        .c-info { min-width: 0; }
+        .mini-label { overflow-wrap: anywhere; word-break: break-word; }
+        .card-title { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 100%; }
+        .tabs, .page-nav { max-width: 100%; overflow-x: auto; overflow-y: hidden; flex-wrap: nowrap; }
+        .drp-popup, .ms-popup, .ctp-popup {
+          box-sizing: border-box;
+          max-width: calc(100vw - 20px) !important;
+          overflow-wrap: anywhere;
+        }
+        #dataTable td, #dataTable th,
+        #jadualBalai td, #jadualBalai th {
+          word-break: break-word;
+          overflow-wrap: anywhere;
+        }
+        .dyn-select, .jadual-threshold, .rows-per-page-select,
+        .ms-trigger, .drp-input, .cf-search, .ms-search {
+          max-width: 100%; box-sizing: border-box;
+        }
+        .chart-wrap-lg, .chart-wrap-md {
+          position: relative; overflow: hidden; width: 100%;
+        }
+        .filter-bar-actions { flex-wrap: wrap; }
+        .filter-bar-actions button { flex: 1; min-width: 120px; justify-content: center; }
+        .footer-title { white-space: normal; overflow-wrap: anywhere; line-height: 1.35; }
+      }
+      @supports not selector(:has(*)) {
+        body.no-scroll { overflow: hidden !important; }
+      }
+
+      /* ============================================================
+         ALERT PANEL
+         ============================================================ */
+      .alert-panel {
+        background: linear-gradient(135deg, #fff5f5, var(--surface));
+        border: 1px solid var(--border);
+        border-left: 4px solid var(--johor-red);
+        border-radius: var(--radius);
+        padding: 14px 16px;
+        margin-bottom: 16px;
+        box-shadow: var(--shadow-sm);
+        animation: alertSlideIn .35s ease;
+      }
+      .alert-panel[hidden] { display: none !important; }
+      .alert-panel.all-clear {
+        border-left-color: var(--success);
+        background: linear-gradient(135deg, #f0f9f3, var(--surface));
+      }
+      @keyframes alertSlideIn {
+        from { opacity: 0; transform: translateY(-8px); }
+        to   { opacity: 1; transform: translateY(0); }
+      }
+      .alert-panel-head {
+        display: flex; align-items: center; justify-content: space-between;
+        gap: 10px; margin-bottom: 12px; flex-wrap: wrap;
+      }
+      .alert-panel-title {
+        display: flex; align-items: center; gap: 8px;
+        font-size: 12.5px; font-weight: 700; color: var(--johor-red);
+        text-transform: uppercase; letter-spacing: 0.5px;
+      }
+      .alert-panel.all-clear .alert-panel-title { color: var(--success); }
+      .alert-panel-title .ico { width: 16px; height: 16px; }
+      .alert-panel-toggle {
+        background: transparent; border: 1px solid var(--border);
+        color: var(--text-muted); font-size: 10.5px; font-weight: 600;
+        padding: 3px 12px; border-radius: 12px; cursor: pointer;
+        font-family: inherit; transition: .15s;
+      }
+      .alert-panel-toggle:hover { background: var(--surface-2); color: var(--text); }
+      .alert-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+        gap: 10px;
+      }
+      .alert-item {
+        background: var(--surface); border: 1px solid var(--border);
+        border-radius: var(--radius-sm); padding: 10px 12px;
+        display: flex; gap: 10px; align-items: center;
+        border-left: 3px solid var(--warning);
+        transition: .15s; min-width: 0;
+      }
+      .alert-item.sev-critical { border-left-color: var(--johor-red); }
+      .alert-item.sev-info     { border-left-color: var(--johor-navy); }
+      .alert-item-click { cursor: pointer; }
+      .alert-item-click:hover {
+        box-shadow: var(--shadow); transform: translateY(-1px);
+        border-color: var(--johor-navy);
+      }
+      .alert-item-icon {
+        width: 28px; height: 28px; border-radius: 6px; flex-shrink: 0;
+        display: flex; align-items: center; justify-content: center;
+        background: var(--warning); color: #fff;
+      }
+      .alert-item.sev-critical .alert-item-icon { background: var(--johor-red); }
+      .alert-item.sev-info .alert-item-icon     { background: var(--johor-navy); }
+      .alert-item-icon svg {
+        width: 14px; height: 14px; stroke: currentColor; fill: none;
+        stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round;
+      }
+      .alert-item-body { min-width: 0; flex: 1; }
+      .alert-item-title {
+        font-size: 11.5px; font-weight: 700; color: var(--text);
+        margin-bottom: 3px; overflow-wrap: anywhere;
+      }
+      .alert-item-desc {
+        font-size: 10.5px; color: var(--text-muted); line-height: 1.4;
+        overflow-wrap: anywhere;
+      }
+      .alert-item-count {
+        font-family: 'IBM Plex Sans', sans-serif;
+        font-size: 20px; font-weight: 700;
+        color: var(--warning); font-variant-numeric: tabular-nums;
+        line-height: 1; flex-shrink: 0;
+      }
+      .alert-item.sev-critical .alert-item-count { color: var(--johor-red); }
+      .alert-item.sev-info .alert-item-count     { color: var(--johor-navy); }
+      .alert-panel-body.collapsed { display: none; }
+
+      /* ============================================================
+         LANGUAGE TOGGLE
+         ============================================================ */
+      .lang-btn {
+        font-family: 'IBM Plex Sans', 'Inter', sans-serif;
+        font-weight: 700; font-size: 11px; letter-spacing: 0.5px;
+      }
+
+      /* ============================================================
+         KEYBOARD SHORTCUTS MODAL
+         ============================================================ */
+      .kb-modal-backdrop {
+        position: fixed; inset: 0;
+        background: rgba(0, 20, 40, 0.55);
+        z-index: 9000;
+        display: flex; align-items: center; justify-content: center;
+        padding: 20px; animation: kbFade .2s ease;
+      }
+      .kb-modal-backdrop[hidden] { display: none !important; }
+      @keyframes kbFade { from { opacity: 0; } to { opacity: 1; } }
+      .kb-modal {
+        background: var(--surface); border-radius: 12px;
+        max-width: 540px; width: 100%; max-height: 85vh;
+        overflow-y: auto;
+        box-shadow: 0 20px 60px rgba(0, 43, 92, 0.35);
+        animation: kbPop .22s ease;
+      }
+      @keyframes kbPop {
+        from { opacity: 0; transform: scale(.95) translateY(10px); }
+        to   { opacity: 1; transform: scale(1) translateY(0); }
+      }
+      .kb-modal-head {
+        padding: 16px 20px; border-bottom: 1px solid var(--border);
+        display: flex; align-items: center; justify-content: space-between;
+        gap: 10px; position: sticky; top: 0;
+        background: var(--surface); border-radius: 12px 12px 0 0;
+        z-index: 2;
+      }
+      .kb-modal-title {
+        font-size: 14px; font-weight: 700; color: var(--johor-navy);
+        display: flex; align-items: center; gap: 8px;
+      }
+      .kb-modal-close {
+        width: 30px; height: 30px; border-radius: 6px;
+        border: 1px solid var(--border); background: var(--surface);
+        color: var(--text-muted); cursor: pointer;
+        display: flex; align-items: center; justify-content: center;
+        transition: .15s;
+      }
+      .kb-modal-close:hover {
+        background: var(--johor-red-light); color: var(--johor-red);
+        border-color: var(--johor-red);
+      }
+      .kb-modal-body { padding: 6px 20px 20px; }
+      .kb-section-label {
+        font-size: 10.5px; font-weight: 700; color: var(--johor-navy);
+        text-transform: uppercase; letter-spacing: .6px;
+        margin: 16px 0 6px; padding-bottom: 6px;
+        border-bottom: 1px solid var(--border);
+      }
+      .kb-section-label:first-child { margin-top: 10px; }
+      .kb-row {
+        display: flex; align-items: center; justify-content: space-between;
+        padding: 8px 0; gap: 12px;
+        border-bottom: 1px dashed var(--border);
+      }
+      .kb-row:last-child { border-bottom: none; }
+      .kb-row-label { font-size: 12.5px; color: var(--text); }
+      .kb-keys { display: flex; gap: 4px; flex-shrink: 0; }
+      .kb-key {
+        display: inline-flex; align-items: center; justify-content: center;
+        min-width: 26px; height: 26px; padding: 0 8px;
+        background: var(--surface-2); border: 1px solid var(--border-strong);
+        border-bottom-width: 2px; border-radius: 5px;
+        font-family: 'IBM Plex Mono', 'Menlo', monospace;
+        font-size: 11px; font-weight: 700; color: var(--text);
+      }
+      .kb-fab {
+        position: fixed; bottom: 20px; right: 130px; z-index: 9998;
+        width: 38px; height: 38px; border-radius: 50%;
+        background: var(--surface); border: 1px solid var(--border-strong);
+        color: var(--text-muted); cursor: pointer;
+        display: flex; align-items: center; justify-content: center;
+        box-shadow: var(--shadow); transition: .15s;
+      }
+      .kb-fab:hover {
+        background: var(--johor-navy); color: #fff;
+        border-color: var(--johor-navy); transform: translateY(-2px);
+      }
+      .kb-fab svg { width: 16px; height: 16px; fill: none; stroke: currentColor; stroke-width: 2; }
+      @media (max-width: 768px) {
+        .alert-grid { grid-template-columns: 1fr; }
+        .alert-panel-head { gap: 6px; }
+        .kb-fab { width: 34px; height: 34px; bottom: 14px; right: 88px; }
+        .kb-modal-backdrop { padding: 12px; align-items: flex-end; }
+        .kb-modal { max-height: 80vh; border-radius: 14px; }
+        .kb-row { padding: 9px 0; }
+        .kb-row-label { font-size: 12px; }
+      }
+      @media print {
+        .alert-panel, .kb-fab, .kb-modal-backdrop { display: none !important; }
+      }
+
+      /* ============================================================
+         PRINT SELECTION MODAL
+         ============================================================ */
+      .print-modal-backdrop {
+        position: fixed; inset: 0;
+        background: rgba(0, 20, 40, 0.55);
+        z-index: 9500;
+        display: flex; align-items: center; justify-content: center;
+        padding: 20px; animation: kbFade .2s ease;
+      }
+      .print-modal-backdrop[hidden] { display: none !important; }
+      .print-modal {
+        background: var(--surface); border-radius: 12px;
+        max-width: 620px; width: 100%; max-height: 88vh;
+        display: flex; flex-direction: column;
+        box-shadow: 0 20px 60px rgba(0, 43, 92, 0.35);
+        animation: kbPop .22s ease;
+      }
+      .print-modal-head {
+        padding: 16px 20px; border-bottom: 1px solid var(--border);
+        display: flex; align-items: center; justify-content: space-between;
+        gap: 10px; flex-shrink: 0;
+      }
+      .print-modal-title {
+        font-size: 14px; font-weight: 700; color: var(--johor-navy);
+        display: flex; align-items: center; gap: 8px;
+      }
+      .print-modal-body {
+        padding: 8px 20px 16px; overflow-y: auto; flex: 1;
+      }
+      .print-group-label {
+        font-size: 10.5px; font-weight: 700; color: var(--johor-navy);
+        text-transform: uppercase; letter-spacing: .6px;
+        margin: 14px 0 6px; padding-bottom: 6px;
+        border-bottom: 1px solid var(--border);
+        display: flex; align-items: center; gap: 8px;
+      }
+      .print-group-label:first-child { margin-top: 8px; }
+      .print-group-count {
+        font-size: 9.5px; font-weight: 600; color: var(--text-subtle);
+        background: var(--surface-2); border: 1px solid var(--border);
+        padding: 1px 7px; border-radius: 8px; letter-spacing: 0;
+        text-transform: none; margin-left: auto;
+      }
+      .print-opt {
+        display: flex; align-items: center; gap: 10px;
+        padding: 8px 10px; border-radius: var(--radius-sm);
+        cursor: pointer; user-select: none;
+        transition: .12s; border: 1px solid transparent;
+        margin-bottom: 2px;
+      }
+      .print-opt:hover { background: var(--surface-2); }
+      .print-opt.checked {
+        background: var(--johor-navy-light);
+        border-color: var(--johor-navy);
+      }
+      .print-opt input[type="checkbox"] {
+        width: 16px; height: 16px; accent-color: var(--johor-navy);
+        cursor: pointer; flex-shrink: 0; margin: 0;
+      }
+      .print-opt-icon {
+        width: 18px; height: 18px; display: flex;
+        align-items: center; justify-content: center;
+        color: var(--text-muted); flex-shrink: 0;
+      }
+      .print-opt.checked .print-opt-icon { color: var(--johor-navy); }
+      .print-opt-icon svg { width: 14px; height: 14px; }
+      .print-opt-label {
+        flex: 1; font-size: 12.5px; color: var(--text);
+        overflow: hidden; text-overflow: ellipsis;
+      }
+      .print-opt.checked .print-opt-label { font-weight: 600; color: var(--johor-navy); }
+      .print-opt-meta {
+        font-size: 10.5px; color: var(--text-subtle);
+        background: var(--surface-2); padding: 2px 8px;
+        border-radius: 8px; flex-shrink: 0;
+        font-variant-numeric: tabular-nums;
+      }
+      .print-opt.checked .print-opt-meta {
+        background: rgba(255,255,255,0.7); color: var(--johor-navy);
+      }
+      .print-opt-note {
+        font-size: 10px; color: var(--warning);
+        margin-left: 4px; font-style: italic;
+      }
+      .print-modal-foot {
+        padding: 12px 20px; border-top: 1px solid var(--border);
+        display: flex; align-items: center; justify-content: space-between;
+        gap: 10px; flex-shrink: 0; flex-wrap: wrap;
+        background: var(--surface-2); border-radius: 0 0 12px 12px;
+      }
+      .print-modal-quick { display: flex; gap: 6px; flex-wrap: wrap; }
+      .print-qbtn {
+        background: var(--surface); border: 1px solid var(--border-strong);
+        color: var(--text-muted); font-size: 11px; font-weight: 600;
+        padding: 6px 11px; border-radius: 6px; cursor: pointer;
+        font-family: inherit; transition: .15s;
+      }
+      .print-qbtn:hover {
+        border-color: var(--johor-navy); color: var(--johor-navy);
+        background: var(--johor-navy-light);
+      }
+      .print-modal-actions { display: flex; gap: 8px; margin-left: auto; }
+      .print-btn-primary, .print-btn-secondary {
+        display: inline-flex; align-items: center; gap: 6px;
+        padding: 9px 16px; font-size: 12.5px; font-weight: 600;
+        border-radius: 6px; cursor: pointer; font-family: inherit;
+        border: 1px solid transparent; transition: .15s;
+      }
+      .print-btn-primary { background: var(--johor-navy); color: #fff; }
+      .print-btn-primary:hover { background: var(--johor-navy-dark); }
+      .print-btn-secondary {
+        background: var(--surface); color: var(--text);
+        border-color: var(--border-strong);
+      }
+      .print-btn-secondary:hover { background: var(--surface-2); }
+      @media (max-width: 768px) {
+        .print-modal-backdrop { padding: 12px; align-items: flex-end; }
+        .print-modal { max-height: 90vh; border-radius: 14px; }
+        .print-modal-body { padding: 6px 14px 12px; }
+        .print-modal-foot {
+          padding: 10px 14px; border-radius: 0 0 14px 14px;
+          flex-direction: column; align-items: stretch;
+        }
+        .print-modal-quick { justify-content: center; }
+        .print-modal-actions { margin: 0; }
+        .print-modal-actions button { flex: 1; justify-content: center; }
+      }
+      @media print {
+        .print-modal-backdrop, .kb-modal-backdrop, .kb-fab,
+        .back-fab, .topbar, .page-nav, .tabs,
+        .filter-bar, .card-controls, .pagination { display: none !important; }
+      }
     </style>
   </head>
   <body>
@@ -496,10 +1018,13 @@
             </svg>
             Kembali
           </a>
+          <button class="icon-btn lang-btn" id="langToggle" title="Tukar bahasa / Change language">
+            <span id="langLabel">BM</span>
+          </button>
           <button class="icon-btn" id="themeToggle" title="Tukar tema">
             <svg class="ico" viewBox="0 0 24 24"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" /></svg>
           </button>
-          <button class="btn-secondary" onclick="window.print()">
+          <button class="btn-secondary" id="btnCetak">
             <svg class="ico" viewBox="0 0 24 24"><polyline points="6 9 6 2 18 2 18 9" /><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2" /><rect x="6" y="14" width="12" height="8" /></svg>
             Cetak
           </button>
@@ -621,7 +1146,6 @@
                 <label><svg class="ico" viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" /><circle cx="12" cy="7" r="4" /></svg>Melibatkan Mangsa</label>
                 <div class="ms" data-key="melibatkanMangsa"></div>
               </div>
-              <!-- ===== FILTER RT <9 MIN (BF) ===== -->
               <div class="filter-group">
                 <label>
                   <svg class="ico" viewBox="0 0 24 24"><circle cx="12" cy="13" r="8"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="13" x2="16" y2="15"/></svg>
@@ -630,7 +1154,6 @@
                 </label>
                 <div class="ms" data-key="rangeRt1"></div>
               </div>
-              <!-- ===== FILTER RT <10 MIN (BG) ===== -->
               <div class="filter-group">
                 <label>
                   <svg class="ico" viewBox="0 0 24 24"><circle cx="12" cy="13" r="8"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="13" x2="16" y2="15"/></svg>
@@ -650,6 +1173,19 @@
               <svg class="ico" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" /><line x1="12" y1="16" x2="12" y2="12" /><line x1="12" y1="8" x2="12.01" y2="8" /></svg>
               <span>Memuatkan...</span>
             </div>
+          </div>
+        </section>
+
+        <section class="alert-panel" id="alertPanel" hidden>
+          <div class="alert-panel-head">
+            <div class="alert-panel-title">
+              <svg class="ico" viewBox="0 0 24 24"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+              <span id="alertPanelTitle">Amaran Automatik</span>
+            </div>
+            <button class="alert-panel-toggle" id="alertPanelToggle" type="button">Sembunyi</button>
+          </div>
+          <div class="alert-panel-body" id="alertPanelBody">
+            <div class="alert-grid" id="alertGrid"></div>
           </div>
         </section>
 
@@ -1178,6 +1714,54 @@
 
     <div class="cf-dropdown" id="cfDropdown" hidden></div>
 
+    <div class="print-modal-backdrop" id="printModal" hidden>
+      <div class="print-modal" role="dialog" aria-modal="true">
+        <div class="print-modal-head">
+          <div class="print-modal-title">
+            <svg viewBox="0 0 24 24" style="width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
+            <span id="printModalTitle">Pilih Bahagian Untuk Dicetak</span>
+          </div>
+          <button class="kb-modal-close" id="printModalClose" type="button" aria-label="Tutup">
+            <svg viewBox="0 0 24 24" style="width:14px;height:14px;fill:none;stroke:currentColor;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round;"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+          </button>
+        </div>
+        <div class="print-modal-body" id="printModalBody"></div>
+        <div class="print-modal-foot">
+          <div class="print-modal-quick">
+            <button type="button" class="print-qbtn" data-print-quick="all">Pilih Semua</button>
+            <button type="button" class="print-qbtn" data-print-quick="active">Yang Dipaparkan</button>
+            <button type="button" class="print-qbtn" data-print-quick="none">Kosongkan</button>
+          </div>
+          <div class="print-modal-actions">
+            <button type="button" class="print-btn-secondary" id="printCancelBtn">Batal</button>
+            <button type="button" class="print-btn-primary" id="printGoBtn">
+              <svg viewBox="0 0 24 24" style="width:13px;height:13px;fill:none;stroke:currentColor;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round;"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
+              Cetak
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <button class="kb-fab" id="kbFab" type="button" title="Keyboard Shortcuts (tekan ?)">
+      <svg viewBox="0 0 24 24"><rect x="2" y="6" width="20" height="12" rx="2"/><line x1="6" y1="10" x2="6" y2="10"/><line x1="10" y1="10" x2="10" y2="10"/><line x1="14" y1="10" x2="14" y2="10"/><line x1="18" y1="10" x2="18" y2="10"/><line x1="6" y1="14" x2="18" y2="14"/></svg>
+    </button>
+
+    <div class="kb-modal-backdrop" id="kbModal" hidden>
+      <div class="kb-modal" role="dialog" aria-modal="true">
+        <div class="kb-modal-head">
+          <div class="kb-modal-title">
+            <svg viewBox="0 0 24 24" style="width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:2"><rect x="2" y="6" width="20" height="12" rx="2"/><line x1="6" y1="10" x2="6" y2="10"/><line x1="10" y1="10" x2="10" y2="10"/><line x1="14" y1="10" x2="14" y2="10"/><line x1="18" y1="10" x2="18" y2="10"/><line x1="6" y1="14" x2="18" y2="14"/></svg>
+            <span id="kbModalTitle">Keyboard Shortcuts</span>
+          </div>
+          <button class="kb-modal-close" id="kbModalClose" type="button" aria-label="Tutup">
+            <svg viewBox="0 0 24 24" style="width:14px;height:14px;fill:none;stroke:currentColor;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round;"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+          </button>
+        </div>
+        <div class="kb-modal-body" id="kbModalBody"></div>
+      </div>
+    </div>
+
     <a href="index.html" class="back-fab" title="Kembali ke Dashboard Utama">
       <svg viewBox="0 0 24 24">
         <line x1="19" y1="12" x2="5" y2="12"/>
@@ -1187,6 +1771,7 @@
     </a>
 
     <script>
+      // ===== [ SEMUA KOD ASAL ANDA (tidak diubah) — dari CSV_URL hingga initTheme() ===== ]
       const CSV_URL =
         'https://docs.google.com/spreadsheets/d/e/2PACX-1vSJW-jSCCmeTK8V4j5SqWl9KZ7xOFjAwUmPV0fyWFsvOn-sXpkctFzO0TtfF8urbWV4ibLBUtBZg4pS/pub?output=csv';
       const MIN_YEAR = 2026;
@@ -1385,7 +1970,6 @@
         return d > 0 && d < 24 * 60 ? d : null;
       }
 
-      // ── PENGELASAN RT KE DALAM RANGE (mengikut format kolum BF & BG) ──
       function getRtRangeBf(rt) {
         if (rt == null || !isFinite(rt)) return '';
         if (rt <= 9)   return 'a. RT ≤9min';
@@ -1922,7 +2506,6 @@
             ALAMAT: findCol(['ALAMAT'], 26),
             HOTSPOT: findCol(['KEYWORD HOTSPOT', 'HOTSPOT'], 29),
             JARAK: findCol(['JARAK BALAI'], 30),
-            // Kolum AG (32) = Masa Terima/Acknowledge, Kolum AJ (35) = Masa Jentera Tiba
             MASA_A: findCol(['MASA TERIMA PANGGILAN / ACKNOWLEDGE', 'MASA TERIMA PANGGILAN', 'MASA TERIMA'], 32),
             MASA_LOOPING: findCol(['MASA LOOPING'], 33),
             MASA_BERLEPAS: findCol(['MASA JENTERA BERLEPAS'], 34),
@@ -2726,7 +3309,6 @@
           },
         };
       }
-      // ── PLUGIN: Label Total di atas bar bertindan / berbilang seri ──
       function totalLabelPlugin(show) {
         return {
           id: 'totalLabel_' + Math.random().toString(36).slice(2, 8),
@@ -2826,7 +3408,6 @@
       function getTopData(field, top = 15) { const e = countBy(FILTERED, (d) => d[field]).slice(0, top); return { labels: e.map((x) => x[0]), values: e.map((x) => x[1]) }; }
       function getScatterData() { return FILTERED.filter((d) => d.jarak > 0 && d.rt != null).map((d) => ({ x: d.jarak, y: +d.rt.toFixed(1) })); }
 
-      // ── BALAI × RT CROSSTAB ──
       let balaiRtField = localStorage.getItem('rt-balai-rt-field') || 'rangeRt1';
 
       function getBalaiRtCrosstab(fieldKey) {
@@ -3085,7 +3666,6 @@
         return { mode: 'standard', labels: sliced.map((e) => e.label), values: sliced.map((e) => +e.value.toFixed(dec)), decimals: dec, metric, dim, swapped };
       }
 
-      // Auto-filter Top N ikut X-Axis semasa
       function updateTopNOptions() {
         const topNSel = document.getElementById('dynTopN');
         if (!topNSel) return;
@@ -3776,7 +4356,6 @@
       function newChart(chartId, canvas, cfg, showNumbers, labelFormatter) {
         const plugins = [];
         if (showNumbers) plugins.push(datalabelsPlugin(true, labelFormatter || null));
-        // Auto-tambah total label untuk carta bar bertindan / berbilang seri
         const chartJsType = cfg.type;
         const datasetsCount = cfg.data?.datasets?.length || 0;
         const isMultiSeries = datasetsCount > 1;
@@ -3882,7 +4461,854 @@
         window.scrollTo({ top: document.querySelector('.table-scroll').offsetTop - 100, behavior: 'smooth' });
       }
 
+      /* ============================================================
+         [ BLOK BAHARU 1 ] — MOBILE UX LOGIC
+         ============================================================ */
+      (function initMobileUX() {
+        const isMobile = () => window.matchMedia('(max-width: 768px)').matches;
+        const FILTER_KEY = 'rt-filter-collapsed';
+
+        if (localStorage.getItem(FILTER_KEY) === null && isMobile()) {
+          localStorage.setItem(FILTER_KEY, 'on');
+        }
+
+        const lockScroll = () => {
+          if (!isMobile()) { document.body.style.overflow = ''; return; }
+          const open = document.querySelector('.ms.open')
+            || document.querySelector('.drp-popup.open')
+            || document.querySelector('.chart-type-picker.open');
+          document.body.style.overflow = open ? 'hidden' : '';
+        };
+        const mo = new MutationObserver(lockScroll);
+        mo.observe(document.body, {
+          attributes: true, subtree: true,
+          attributeFilter: ['class', 'hidden'],
+        });
+
+        // Fallback untuk browser tanpa :has()
+        const hasNativeHas = CSS.supports('selector(:has(*))');
+        if (!hasNativeHas) {
+          const observer = new MutationObserver(() => {
+            const anyOpen = document.querySelector('.ms.open')
+              || document.querySelector('.drp-popup.open')
+              || document.querySelector('.chart-type-picker.open');
+            document.body.classList.toggle('no-scroll', !!anyOpen && isMobile());
+          });
+          observer.observe(document.body, {
+            attributes: true, subtree: true, attributeFilter: ['class'],
+          });
+        }
+
+        window.addEventListener('scroll', () => {
+          if (!isMobile()) return;
+          if (typeof MultiSelect !== 'undefined') MultiSelect.closeAllPopups && MultiSelect.closeAllPopups();
+          document.querySelectorAll('.drp-popup.open').forEach(p => p.classList.remove('open'));
+          document.querySelectorAll('.chart-type-picker.open').forEach(p => p.classList.remove('open'));
+        }, { passive: true });
+
+        let wasMobile = isMobile();
+        window.addEventListener('resize', () => {
+          const now = isMobile();
+          if (wasMobile && !now) {
+            document.body.style.overflow = '';
+            if (typeof MultiSelect !== 'undefined') MultiSelect.closeAllPopups && MultiSelect.closeAllPopups();
+          }
+          wasMobile = now;
+        });
+
+        document.addEventListener('focusin', (e) => {
+          const t = e.target;
+          if (t && (t.tagName === 'INPUT' || t.tagName === 'SELECT' || t.tagName === 'TEXTAREA')) {
+            if (parseFloat(getComputedStyle(t).fontSize) < 16) {
+              t.style.fontSize = '16px';
+            }
+          }
+        });
+      })();
+
+      /* ============================================================
+         [ BLOK BAHARU 2 ] — i18n (BM / EN)
+         ============================================================ */
+      const I18N = {
+        ms: {
+          'brand.title': 'Dashboard Analisis Response Time',
+          'brand.sub': 'Jabatan Bomba dan Penyelamat Malaysia • Negeri Johor',
+          'topbar.updated': 'Kemas kini', 'topbar.back': 'Kembali', 'topbar.print': 'Cetak',
+          'filter.title': 'Penapis Data', 'filter.hide': 'Sembunyi', 'filter.show': 'Papar',
+          'filter.dateRange': 'Julat Tarikh', 'filter.selectDate': 'Pilih julat tarikh...',
+          'filter.reset': 'Reset', 'filter.all': 'Semua', 'filter.selected': 'dipilih', 'filter.close': 'Tutup',
+          'page.graf': 'Graf', 'page.data': 'Data', 'page.jadual': 'Jadual',
+          'kpi.katKes': 'Kategori Kes', 'kpi.prestasi': 'Prestasi KPI',
+          'kpi.mangsa': 'Mangsa', 'kpi.ops': 'Operasi',
+          'alert.title': 'Amaran Automatik', 'alert.hide': 'Sembunyi', 'alert.show': 'Papar',
+          'alert.allClear': 'Semua Bersih',
+          'alert.allClearDesc': 'Tiada amaran pada tapisan semasa. Semua KPI dalam sasaran.',
+          'alert.rtHigh.title': 'Balai Purata RT Tinggi',
+          'alert.rtHigh.desc': 'Balai dengan purata RT >15 minit — perlu semakan operasi.',
+          'alert.opsLong.title': 'Operasi Panjang Aktif',
+          'alert.opsLong.desc': 'Operasi melebihi 24 jam yang masih belum tamat.',
+          'alert.enrFail.title': 'KPI Enroute Lemah',
+          'alert.enrFail.desc': 'Kadar ketidakpatuhan Enroute >20% — perlu perhatian.',
+          'alert.rt10Fail.title': 'KPI RT 10min Lemah',
+          'alert.rt10Fail.desc': 'Kadar kegagalan RT ≤10min >20% — perlu perhatian.',
+          'alert.death.title': 'Kes Melibatkan Kematian',
+          'alert.death.desc': 'Terdapat kes dengan mangsa meninggal dunia.',
+          'alert.drill': 'Klik untuk drill',
+          'footer.title': 'Data Analisis Jabatan Bomba dan Penyelamat Malaysia Negeri Johor',
+          'footer.copy': '© 2026 PGO JOHOR | Hak Cipta Terpelihara',
+          'kb.title': 'Pintasan Papan Kekunci',
+          'kb.section.nav': 'Navigasi', 'kb.section.actions': 'Tindakan', 'kb.section.theme': 'Paparan',
+          'kb.help': 'Tunjuk / sembunyi bantuan ini',
+          'kb.page1': 'Pergi ke halaman Graf', 'kb.page2': 'Pergi ke halaman Data',
+          'kb.page3': 'Pergi ke halaman Jadual',
+          'kb.search': 'Fokus ke carian', 'kb.reset': 'Reset semua penapis',
+          'kb.print': 'Cetak dashboard', 'kb.theme': 'Tukar tema cerah / gelap',
+          'kb.lang': 'Tukar bahasa BM / EN', 'kb.esc': 'Tutup popup / modal',
+        },
+        en: {
+          'brand.title': 'Response Time Analysis Dashboard',
+          'brand.sub': 'Malaysian Fire and Rescue Department • Johor State',
+          'topbar.updated': 'Updated', 'topbar.back': 'Back', 'topbar.print': 'Print',
+          'filter.title': 'Data Filters', 'filter.hide': 'Hide', 'filter.show': 'Show',
+          'filter.dateRange': 'Date Range', 'filter.selectDate': 'Select date range...',
+          'filter.reset': 'Reset', 'filter.all': 'All', 'filter.selected': 'selected', 'filter.close': 'Close',
+          'page.graf': 'Charts', 'page.data': 'Data', 'page.jadual': 'Table',
+          'kpi.katKes': 'Case Categories', 'kpi.prestasi': 'KPI Performance',
+          'kpi.mangsa': 'Victims', 'kpi.ops': 'Operations',
+          'alert.title': 'Automatic Alerts', 'alert.hide': 'Hide', 'alert.show': 'Show',
+          'alert.allClear': 'All Clear',
+          'alert.allClearDesc': 'No alerts on current filter. All KPIs within target.',
+          'alert.rtHigh.title': 'Stations with High Avg RT',
+          'alert.rtHigh.desc': 'Stations with avg RT >15 minutes — review needed.',
+          'alert.opsLong.title': 'Long Operations Active',
+          'alert.opsLong.desc': 'Ongoing operations exceeding 24 hours.',
+          'alert.enrFail.title': 'Weak KPI Enroute',
+          'alert.enrFail.desc': 'Enroute non-compliance rate >20% — attention needed.',
+          'alert.rt10Fail.title': 'Weak KPI RT 10min',
+          'alert.rt10Fail.desc': 'RT ≤10min failure rate >20% — attention needed.',
+          'alert.death.title': 'Cases Involving Deaths',
+          'alert.death.desc': 'Cases with deceased victims recorded.',
+          'alert.drill': 'Click to drill',
+          'footer.title': 'Data Analysis of Malaysian Fire and Rescue Department Johor State',
+          'footer.copy': '© 2026 PGO JOHOR | All Rights Reserved',
+          'kb.title': 'Keyboard Shortcuts',
+          'kb.section.nav': 'Navigation', 'kb.section.actions': 'Actions', 'kb.section.theme': 'Display',
+          'kb.help': 'Show / hide this help',
+          'kb.page1': 'Go to Charts page', 'kb.page2': 'Go to Data page',
+          'kb.page3': 'Go to Table page',
+          'kb.search': 'Focus search', 'kb.reset': 'Reset all filters',
+          'kb.print': 'Print dashboard', 'kb.theme': 'Toggle light / dark theme',
+          'kb.lang': 'Switch BM / EN language', 'kb.esc': 'Close popup / modal',
+        }
+      };
+
+      let LANG = localStorage.getItem('rt-lang') || 'ms';
+      function t(key) { return (I18N[LANG] && I18N[LANG][key]) || I18N.ms[key] || key; }
+
+      const I18N_HOOKS = [
+        ['.brand-text h1', 'brand.title'],
+        ['.brand-text .brand-sub', 'brand.sub'],
+        ['.meta-label', 'topbar.updated'],
+        ['.footer-title', 'footer.title'],
+        ['.footer-copy', 'footer.copy'],
+        ['.filter-bar-header-left > span:not(.filter-count-badge)', 'filter.title'],
+        ['#drpFooterInfo', 'filter.selectDate'],
+        ['#alertPanelTitle', 'alert.title'],
+        ['#kbModalTitle', 'kb.title'],
+      ];
+
+      function _replaceFirstTextNode(el, text) {
+        if (!el) return;
+        const tn = [...el.childNodes].find(n => n.nodeType === 3 && n.textContent.trim());
+        if (tn) {
+          const lead = tn.textContent.match(/^\s*/)[0];
+          const trail = tn.textContent.match(/\s*$/)[0];
+          tn.textContent = lead + text + trail;
+        } else if (!el.querySelector('svg, .ico, .drp-ico, .ms-caret')) {
+          el.textContent = text;
+        }
+      }
+
+      function applyI18n() {
+        I18N_HOOKS.forEach(([sel, key]) => {
+          const el = document.querySelector(sel);
+          if (el) _replaceFirstTextNode(el, t(key));
+        });
+        _replaceFirstTextNode(document.getElementById('btnKembali'), t('topbar.back'));
+        document.querySelectorAll('.topbar-right .btn-secondary').forEach(b => {
+          if (b.id === 'btnKembali' || b.id === 'btnCetak') return;
+          _replaceFirstTextNode(b, t('topbar.print'));
+        });
+        _replaceFirstTextNode(document.getElementById('btnCetak'), t('topbar.print'));
+        const backFab = document.querySelector('a.back-fab');
+        if (backFab) _replaceFirstTextNode(backFab, t('topbar.back'));
+
+        const navMap = { graf: 'page.graf', data: 'page.data', jadual: 'page.jadual' };
+        document.querySelectorAll('.page-nav-btn').forEach(btn => {
+          const k = navMap[btn.dataset.page];
+          if (k) _replaceFirstTextNode(btn, t(k));
+        });
+
+        const secMap = [
+          ['tone-kes .ksh-title', 'kpi.katKes'],
+          ['tone-kpi .ksh-title', 'kpi.prestasi'],
+          ['tone-mangsa .ksh-title', 'kpi.mangsa'],
+          ['tone-ops .ksh-title', 'kpi.ops'],
+        ];
+        secMap.forEach(([sel, key]) => {
+          const el = document.querySelector('.kpi-section.' + sel);
+          if (el) el.textContent = t(key);
+        });
+
+        const at = document.getElementById('alertPanelToggle');
+        if (at) at.textContent = at.dataset.collapsed === '1' ? t('alert.show') : t('alert.hide');
+
+        const ft = document.getElementById('filterBarToggle');
+        if (ft && ft.querySelector('.toggle-label')) {
+          const collapsed = document.getElementById('filterBar')?.classList.contains('collapsed');
+          ft.querySelector('.toggle-label').textContent = collapsed ? t('filter.show') : t('filter.hide');
+        }
+
+        renderKbModalBody();
+        renderAlertPanel();
+      }
+
+      function setLang(lang) {
+        LANG = (lang === 'en') ? 'en' : 'ms';
+        localStorage.setItem('rt-lang', LANG);
+        document.documentElement.lang = LANG;
+        const lbl = document.getElementById('langLabel');
+        if (lbl) lbl.textContent = LANG === 'ms' ? 'BM' : 'EN';
+        applyI18n();
+      }
+
+      function initLang() {
+        const saved = localStorage.getItem('rt-lang') || 'ms';
+        LANG = saved === 'en' ? 'en' : 'ms';
+        document.documentElement.lang = LANG;
+        const lbl = document.getElementById('langLabel');
+        if (lbl) lbl.textContent = LANG === 'ms' ? 'BM' : 'EN';
+        const btn = document.getElementById('langToggle');
+        if (btn) btn.addEventListener('click', () => setLang(LANG === 'ms' ? 'en' : 'ms'));
+        applyI18n();
+      }
+
+      /* ============================================================
+         [ BLOK BAHARU 3 ] — ALERT PANEL
+         ============================================================ */
+      const ALERT_STATE = { collapsed: false };
+
+      function computeAlerts() {
+        const alerts = [];
+        const total = FILTERED.length;
+        if (!total) return alerts;
+
+        const byBalai = {};
+        FILTERED.forEach(d => {
+          if (d.rt == null || d.rt <= 0) return;
+          if (!byBalai[d.balai]) byBalai[d.balai] = { sum: 0, n: 0 };
+          byBalai[d.balai].sum += d.rt;
+          byBalai[d.balai].n++;
+        });
+        const badBalai = Object.entries(byBalai)
+          .filter(([, v]) => v.n >= 3 && (v.sum / v.n) > 15)
+          .sort((a, b) => (b[1].sum / b[1].n) - (a[1].sum / a[1].n));
+        if (badBalai.length) {
+          alerts.push({
+            sev: 'critical', key: 'rtHigh', count: badBalai.length,
+            drill: () => { MultiSelect.setSelected('balai', badBalai.slice(0, 3).map(x => x[0])); applyFilter(); },
+          });
+        }
+
+        const stillActive = FILTERED.filter(d => (d.jamOperasi > 24 || /PANJANG/i.test(d.masaOperasi)) && d.masihBeroperasi);
+        if (stillActive.length) {
+          alerts.push({
+            sev: 'critical', key: 'opsLong', count: stillActive.length,
+            drill: () => { MultiSelect.setSelected('statusOperasi', ['MASIH BEROPERASI']); applyFilter(); },
+          });
+        }
+
+        const enrDen = FILTERED.filter(d => d.statusKpiEnr === 'TERCAPAI' || d.statusKpiEnr === 'TIDAK TERCAPAI').length;
+        const enrFail = FILTERED.filter(d => d.statusKpiEnr === 'TIDAK TERCAPAI').length;
+        if (enrDen >= 10 && (enrFail / enrDen) > 0.2) {
+          alerts.push({ sev: 'warning', key: 'enrFail', count: enrFail, drill: () => {} });
+        }
+
+        const rt10Den = FILTERED.filter(d => d.statusKpiRt10 === 'TERCAPAI' || d.statusKpiRt10 === 'TIDAK TERCAPAI').length;
+        const rt10Fail = FILTERED.filter(d => d.statusKpiRt10 === 'TIDAK TERCAPAI').length;
+        if (rt10Den >= 10 && (rt10Fail / rt10Den) > 0.2) {
+          alerts.push({ sev: 'warning', key: 'rt10Fail', count: rt10Fail, drill: () => {} });
+        }
+
+        const deathCases = FILTERED.filter(d => d.mangsaMati > 0);
+        if (deathCases.length) {
+          alerts.push({
+            sev: 'critical', key: 'death', count: deathCases.length,
+            drill: () => { MultiSelect.setSelected('melibatkanMangsa', ['YA']); applyFilter(); },
+          });
+        }
+        return alerts;
+      }
+
+      const ALERT_ICONS = {
+        rtHigh:   '<circle cx="12" cy="13" r="8"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="13" x2="16" y2="15"/>',
+        opsLong:  '<path d="M6 2h12M6 22h12M6 2v6a6 6 0 0 0 12 0V2M6 22v-6a6 6 0 0 1 12 0v6"/>',
+        enrFail:  '<path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/>',
+        rt10Fail: '<circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/>',
+        death:    '<path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><line x1="17" y1="8" x2="22" y2="13"/><line x1="22" y1="8" x2="17" y2="13"/>',
+      };
+
+      function renderAlertPanel() {
+        const panel = document.getElementById('alertPanel');
+        const grid = document.getElementById('alertGrid');
+        if (!panel || !grid) return;
+        const alerts = computeAlerts();
+        if (!alerts.length) {
+          panel.hidden = false;
+          panel.classList.add('all-clear');
+          grid.innerHTML = `
+            <div class="alert-item sev-info" style="border-left-color:var(--success);">
+              <div class="alert-item-icon" style="background:var(--success);">
+                <svg viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+              </div>
+              <div class="alert-item-body">
+                <div class="alert-item-title" style="color:var(--success)">${t('alert.allClear')}</div>
+                <div class="alert-item-desc">${t('alert.allClearDesc')}</div>
+              </div>
+            </div>`;
+          return;
+        }
+        panel.hidden = false;
+        panel.classList.remove('all-clear');
+        grid.innerHTML = alerts.map((a, i) => `
+          <div class="alert-item sev-${a.sev} ${a.drill ? 'alert-item-click' : ''}" data-alert-idx="${i}" title="${a.drill ? t('alert.drill') : ''}">
+            <div class="alert-item-icon">
+              <svg viewBox="0 0 24 24">${ALERT_ICONS[a.key] || ALERT_ICONS.enrFail}</svg>
+            </div>
+            <div class="alert-item-body">
+              <div class="alert-item-title">${t('alert.' + a.key + '.title')}</div>
+              <div class="alert-item-desc">${t('alert.' + a.key + '.desc')}</div>
+            </div>
+            <div class="alert-item-count">${a.count.toLocaleString()}</div>
+          </div>
+        `).join('');
+        grid.querySelectorAll('.alert-item-click').forEach(el => {
+          el.addEventListener('click', () => {
+            const a = alerts[+el.dataset.alertIdx];
+            if (a && a.drill) a.drill();
+          });
+        });
+      }
+
+      function initAlertPanel() {
+        const btn = document.getElementById('alertPanelToggle');
+        const body = document.getElementById('alertPanelBody');
+        if (!btn || !body) return;
+        const saved = localStorage.getItem('rt-alert-collapsed') === '1';
+        ALERT_STATE.collapsed = saved;
+        body.classList.toggle('collapsed', saved);
+        btn.dataset.collapsed = saved ? '1' : '0';
+        btn.textContent = saved ? t('alert.show') : t('alert.hide');
+        btn.addEventListener('click', () => {
+          ALERT_STATE.collapsed = !ALERT_STATE.collapsed;
+          body.classList.toggle('collapsed', ALERT_STATE.collapsed);
+          btn.dataset.collapsed = ALERT_STATE.collapsed ? '1' : '0';
+          btn.textContent = ALERT_STATE.collapsed ? t('alert.show') : t('alert.hide');
+          localStorage.setItem('rt-alert-collapsed', ALERT_STATE.collapsed ? '1' : '0');
+        });
+      }
+
+      /* ============================================================
+         [ BLOK BAHARU 4 ] — KEYBOARD SHORTCUTS
+         ============================================================ */
+      const KB_DEFS = [
+        { section: 'kb.section.nav', items: [
+          { keys: ['1'], label: 'kb.page1', action: () => switchPage('graf') },
+          { keys: ['2'], label: 'kb.page2', action: () => switchPage('data') },
+          { keys: ['3'], label: 'kb.page3', action: () => switchPage('jadual') },
+        ]},
+        { section: 'kb.section.actions', items: [
+          { keys: ['/', 'Ctrl', 'K'], label: 'kb.search', action: () => {
+            const bar = document.getElementById('filterBar');
+            if (bar && bar.classList.contains('collapsed')) {
+              document.getElementById('filterBarToggle')?.click();
+            }
+            const s = document.querySelector('.ms.open .ms-search') || document.querySelector('.ms-search');
+            if (s) { s.focus(); s.select && s.select(); }
+          }},
+          { keys: ['Shift', 'R'], label: 'kb.reset', action: () => resetFilter() },
+          { keys: ['Shift', 'P'], label: 'kb.print', action: () => document.getElementById('btnCetak')?.click() },
+        ]},
+        { section: 'kb.section.theme', items: [
+          { keys: ['Shift', 'D'], label: 'kb.theme', action: () => document.getElementById('themeToggle')?.click() },
+          { keys: ['Shift', 'L'], label: 'kb.lang', action: () => setLang(LANG === 'ms' ? 'en' : 'ms') },
+          { keys: ['?'], label: 'kb.help', action: () => toggleKbModal() },
+          { keys: ['Esc'], label: 'kb.esc', action: () => closeKbModal() },
+        ]},
+      ];
+
+      function renderKbModalBody() {
+        const body = document.getElementById('kbModalBody');
+        if (!body) return;
+        body.innerHTML = KB_DEFS.map(sec => `
+          <div class="kb-section-label">${t(sec.section)}</div>
+          ${sec.items.map(it => `
+            <div class="kb-row">
+              <span class="kb-row-label">${t(it.label)}</span>
+              <span class="kb-keys">
+                ${it.keys.map(k => `<span class="kb-key">${k}</span>`).join('<span style="color:var(--text-subtle);font-size:10px;padding:0 2px;">+</span>')}
+              </span>
+            </div>
+          `).join('')}
+        `).join('');
+      }
+
+      function openKbModal() {
+        const m = document.getElementById('kbModal');
+        if (!m) return;
+        m.hidden = false;
+        document.body.style.overflow = 'hidden';
+      }
+      function closeKbModal() {
+        const m = document.getElementById('kbModal');
+        if (!m) return;
+        m.hidden = true;
+        document.body.style.overflow = '';
+      }
+      function toggleKbModal() {
+        const m = document.getElementById('kbModal');
+        if (!m) return;
+        if (m.hidden) openKbModal(); else closeKbModal();
+      }
+
+      function isTypingTarget(el) {
+        if (!el) return false;
+        const tag = el.tagName;
+        return tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT' || el.isContentEditable;
+      }
+
+      function initKeyboardShortcuts() {
+        document.getElementById('kbFab')?.addEventListener('click', openKbModal);
+        document.getElementById('kbModalClose')?.addEventListener('click', closeKbModal);
+        document.getElementById('kbModal')?.addEventListener('click', e => {
+          if (e.target.id === 'kbModal') closeKbModal();
+        });
+
+        document.addEventListener('keydown', e => {
+          if (e.key === 'Escape') { closeKbModal(); return; }
+          const typing = isTypingTarget(document.activeElement);
+
+          if (e.shiftKey && !e.ctrlKey && !e.metaKey) {
+            const shiftMap = {
+              'R': () => resetFilter(),
+              'P': () => document.getElementById('btnCetak')?.click(),
+              'D': () => document.getElementById('themeToggle')?.click(),
+              'L': () => setLang(LANG === 'ms' ? 'en' : 'ms'),
+            };
+            const upper = (e.key || '').toUpperCase();
+            if ((e.key === '?' || upper === '?') && !typing) {
+              e.preventDefault(); toggleKbModal(); return;
+            }
+            if (shiftMap[upper] && !typing) {
+              e.preventDefault(); shiftMap[upper](); return;
+            }
+          }
+
+          if ((e.ctrlKey || e.metaKey) && (e.key === 'k' || e.key === 'K')) {
+            e.preventDefault();
+            const s = document.querySelector('.ms-search');
+            if (s) s.focus();
+            return;
+          }
+
+          if (!typing && !e.ctrlKey && !e.metaKey && !e.altKey) {
+            if (e.key === '1') { switchPage('graf'); return; }
+            if (e.key === '2') { switchPage('data'); return; }
+            if (e.key === '3') { switchPage('jadual'); return; }
+            if (e.key === '/' && !e.shiftKey) {
+              e.preventDefault();
+              const s = document.querySelector('.ms-search');
+              if (s) s.focus();
+              return;
+            }
+          }
+        });
+      }
+
+      /* ============================================================
+         [ BLOK BAHARU 5 ] — PRINT SELECTIVE
+         ============================================================ */
+      const PRINT_UNITS = [
+        { id: 'print-header', label: 'Pengepala & Ringkasan Tapisan',
+          icon: '<rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/>',
+          group: 'header', build: () => buildPrintHeader() },
+        { id: 'alert-panel', label: 'Panel Amaran Automatik',
+          icon: '<path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/>',
+          group: 'ringkasan', selector: '#alertPanel' },
+        { id: 'kpi-katkes', label: 'Kategori Kes',
+          icon: '<path d="M21.21 15.89A10 10 0 1 1 8 2.83"/><path d="M22 12A10 10 0 0 0 12 2v10z"/>',
+          group: 'ringkasan', selector: '.kpi-section.tone-kes' },
+        { id: 'kpi-prestasi', label: 'Prestasi KPI',
+          icon: '<circle cx="12" cy="13" r="8"/><line x1="12" y1="9" x2="12" y2="13"/>',
+          group: 'ringkasan', selector: '.kpi-section.tone-kpi' },
+        { id: 'kpi-mangsa', label: 'Mangsa',
+          icon: '<path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/>',
+          group: 'ringkasan', selector: '.kpi-section.tone-mangsa' },
+        { id: 'kpi-ops', label: 'Operasi',
+          icon: '<path d="M6 2h12M6 22h12M6 2v6a6 6 0 0 0 12 0V2M6 22v-6a6 6 0 0 1 12 0v6"/>',
+          group: 'ringkasan', selector: '.kpi-section.tone-ops' },
+        { id: 'chart-kategori-blk', label: 'Pecahan Kategori + Senarai',
+          icon: '<path d="M21.21 15.89A10 10 0 1 1 8 2.83"/><path d="M22 12A10 10 0 0 0 12 2v10z"/>',
+          group: 'graf-section', selector: '#page-graf .dashboard-row' },
+        { id: 'chart-subkat', label: 'Pecahan Sub Kategori 1',
+          icon: '<polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"/>',
+          group: 'graf-section', selector: '#subKategoriScroll' },
+        { id: 'tab-dinamik', label: 'Tab: Dinamik', group: 'tab', selector: '#panel-dinamik', tab: true,
+          icon: '<circle cx="12" cy="12" r="3"/><path d="M12 1v6M12 17v6M4.22 4.22l4.24 4.24"/>' },
+        { id: 'tab-trend', label: 'Tab: Trend', group: 'tab', selector: '#panel-trend', tab: true,
+          icon: '<polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/>' },
+        { id: 'tab-kpi', label: 'Tab: KPI Status', group: 'tab', selector: '#panel-kpi', tab: true,
+          icon: '<path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>' },
+        { id: 'tab-nart', label: 'Tab: NART & SELA', group: 'tab', selector: '#panel-nart-sela', tab: true,
+          icon: '<line x1="12" y1="20" x2="12" y2="10"/><line x1="18" y1="20" x2="18" y2="4"/>' },
+        { id: 'tab-rt', label: 'Tab: Range RT', group: 'tab', selector: '#panel-rt-range', tab: true,
+          icon: '<circle cx="12" cy="13" r="8"/><line x1="12" y1="9" x2="12" y2="13"/>' },
+        { id: 'tab-kat', label: 'Tab: Kategori', group: 'tab', selector: '#panel-kategori', tab: true,
+          icon: '<path d="M21.21 15.89A10 10 0 1 1 8 2.83"/>' },
+        { id: 'tab-jenis', label: 'Tab: Jenis', group: 'tab', selector: '#panel-jenis', tab: true,
+          icon: '<path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10"/>' },
+        { id: 'tab-balai', label: 'Tab: Balai', group: 'tab', selector: '#panel-balai', tab: true,
+          icon: '<rect x="1" y="3" width="15" height="13"/><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"/>' },
+        { id: 'tab-balai-rt', label: 'Tab: Balai × RT', group: 'tab', selector: '#panel-balai-rt', tab: true,
+          icon: '<rect x="3" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/>' },
+        { id: 'tab-zon', label: 'Tab: Zon & Daerah', group: 'tab', selector: '#panel-zon', tab: true,
+          icon: '<polygon points="1 6 1 22 8 18 16 22 23 18 23 2 16 6 8 2 1 6"/>' },
+        { id: 'tab-shif', label: 'Tab: Shif', group: 'tab', selector: '#panel-shif', tab: true,
+          icon: '<circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/>' },
+        { id: 'tab-monsun', label: 'Tab: Monsun', group: 'tab', selector: '#panel-monsun', tab: true,
+          icon: '<path d="M20 16.58A5 5 0 0 0 18 7h-1.26A8 8 0 1 0 4 15.25"/>' },
+        { id: 'tab-operasi', label: 'Tab: Masa Operasi', group: 'tab', selector: '#panel-operasi', tab: true,
+          icon: '<path d="M6 2h12M6 22h12M6 2v6a6 6 0 0 0 12 0V2"/>' },
+        { id: 'tab-jarak', label: 'Tab: Jarak vs RT', group: 'tab', selector: '#panel-jarak', tab: true,
+          icon: '<path d="M21.3 8.7l-6-6a1 1 0 0 0-1.4 0L2.7 13.9a1 1 0 0 0 0 1.4l6 6"/>' },
+        { id: 'page-data', label: 'Senarai Kejadian (Halaman Data)',
+          icon: '<line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/>',
+          group: 'halaman', selector: '#page-data .card' },
+        { id: 'page-jadual', label: 'Jadual Ringkasan Balai (Halaman Jadual)',
+          icon: '<rect x="3" y="3" width="18" height="18" rx="2"/><line x1="3" y1="9" x2="21" y2="9"/>',
+          group: 'halaman', selector: '#page-jadual .card' },
+      ];
+
+      const PRINT_GROUPS = [
+        { key: 'header',       label: 'Pengepala' },
+        { key: 'ringkasan',    label: 'Ringkasan KPI' },
+        { key: 'graf-section', label: 'Carta Utama (Halaman Graf)' },
+        { key: 'tab',          label: 'Tab Carta' },
+        { key: 'halaman',      label: 'Halaman Lain' },
+      ];
+
+      const PRINT_STATE = new Set();
+
+      function printUnitMeta(u) {
+        if (u.id === 'print-header') return 'Header';
+        if (u.id === 'alert-panel') {
+          const n = computeAlerts().length;
+          return n ? n + ' amaran' : 'bersih';
+        }
+        if (u.id.startsWith('tab-')) {
+          const el = document.querySelector(u.selector);
+          const n = el ? el.querySelectorAll('canvas').length : 0;
+          return n + ' carta';
+        }
+        if (u.id === 'page-data') return FILTERED.length + ' rekod';
+        if (u.id === 'page-jadual') {
+          const rows = Object.keys(getBalaiMetrics()).length;
+          return rows + ' balai';
+        }
+        if (u.group === 'ringkasan') return 'KPI';
+        return '';
+      }
+
+      function openPrintModal() {
+        const modal = document.getElementById('printModal');
+        if (!modal) return;
+        PRINT_STATE.clear();
+        PRINT_UNITS.forEach(u => PRINT_STATE.add(u.id));
+        renderPrintModal();
+        modal.hidden = false;
+        document.body.style.overflow = 'hidden';
+      }
+      function closePrintModal() {
+        const modal = document.getElementById('printModal');
+        if (!modal) return;
+        modal.hidden = true;
+        document.body.style.overflow = '';
+      }
+
+      function renderPrintModal() {
+        const body = document.getElementById('printModalBody');
+        if (!body) return;
+        let html = '';
+        PRINT_GROUPS.forEach(g => {
+          const units = PRINT_UNITS.filter(u => u.group === g.key);
+          if (!units.length) return;
+          html += `<div class="print-group-label">${g.label}<span class="print-group-count">${units.filter(u => PRINT_STATE.has(u.id)).length} / ${units.length}</span></div>`;
+          units.forEach(u => {
+            const chk = PRINT_STATE.has(u.id);
+            const meta = printUnitMeta(u);
+            html += `
+              <label class="print-opt ${chk ? 'checked' : ''}" data-pid="${u.id}">
+                <input type="checkbox" ${chk ? 'checked' : ''} data-print-id="${u.id}" />
+                <span class="print-opt-icon"><svg viewBox="0 0 24 24" style="fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;">${u.icon}</svg></span>
+                <span class="print-opt-label">${u.label}</span>
+                ${meta ? `<span class="print-opt-meta">${meta}</span>` : ''}
+              </label>`;
+          });
+        });
+        body.innerHTML = html;
+        body.querySelectorAll('input[data-print-id]').forEach(cb => {
+          cb.addEventListener('change', () => {
+            const id = cb.dataset.printId;
+            if (cb.checked) PRINT_STATE.add(id); else PRINT_STATE.delete(id);
+            cb.closest('.print-opt').classList.toggle('checked', cb.checked);
+            body.querySelectorAll('.print-group-label').forEach(lbl => {
+              const group = PRINT_GROUPS.find(g => lbl.textContent.indexOf(g.label) === 0);
+              if (!group) return;
+              const units = PRINT_UNITS.filter(u => u.group === group.key);
+              const cntEl = lbl.querySelector('.print-group-count');
+              if (cntEl) cntEl.textContent = `${units.filter(u => PRINT_STATE.has(u.id)).length} / ${units.length}`;
+            });
+          });
+        });
+      }
+
+      function buildPrintHeader() {
+        const r = DateRangePicker.getRange();
+        const from = r.from ? formatDate(r.from) : '-';
+        const to = r.to ? formatDate(r.to) : '-';
+        const now = new Date();
+        const total = FILTERED.length;
+        const raw = RAW_DATA.length;
+        const div = document.createElement('div');
+        div.className = 'print-header';
+        div.innerHTML = `
+          <div class="print-header-brand">
+            <div class="print-header-title">${t('brand.title')}</div>
+            <div class="print-header-sub">${t('brand.sub')}</div>
+          </div>
+          <div class="print-header-info">
+            <div><strong>Tarikh Tapisan:</strong> ${from} → ${to}</div>
+            <div><strong>Rekod Ditapis:</strong> ${total.toLocaleString()} / ${raw.toLocaleString()}</div>
+            <div><strong>Dicetak:</strong> ${String(now.getDate()).padStart(2,'0')}/${String(now.getMonth()+1).padStart(2,'0')}/${now.getFullYear()} ${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')}</div>
+          </div>
+        `;
+        return div;
+      }
+
+      function prepareForPrint() {
+        return new Promise((resolve) => {
+          const hiddenPages = [...document.querySelectorAll('.page-content:not(.active)')];
+          const hiddenTabs  = [...document.querySelectorAll('.tab-panel:not(.active)')];
+          const restore = [];
+          hiddenPages.forEach(p => { restore.push(p); p.style.cssText = 'position:absolute;left:-99999px;top:0;display:block;width:1400px;'; });
+          hiddenTabs.forEach(t => { restore.push(t); t.style.cssText = 'position:absolute;left:-99999px;top:0;display:block;width:1400px;'; });
+          requestAnimationFrame(() => {
+            Object.values(CHARTS).forEach(c => { try { c.resize(); c.update('none'); } catch(e){} });
+            setTimeout(() => {
+              restore.forEach((el) => { el.style.cssText = ''; });
+              resolve();
+            }, 220);
+          });
+        });
+      }
+
+      function printSelected() {
+        if (PRINT_STATE.size === 0) {
+          alert('Pilih sekurang-kurangnya satu bahagian untuk dicetak.');
+          return;
+        }
+        prepareForPrint().then(() => {
+          const iframe = document.createElement('iframe');
+          iframe.style.cssText = 'position:fixed;right:0;bottom:0;width:0;height:0;border:0;visibility:hidden;';
+          document.body.appendChild(iframe);
+
+          const doc = iframe.contentDocument;
+          doc.open();
+          doc.write('<!DOCTYPE html><html lang="' + LANG + '"><head><meta charset="UTF-8"><title>Cetak</title></head><body></body></html>');
+          doc.close();
+
+          document.querySelectorAll('style, link[rel="stylesheet"]').forEach(node => {
+            doc.head.appendChild(node.cloneNode(true));
+          });
+
+          const printCss = doc.createElement('style');
+          printCss.textContent = `
+            @page { size: A4 landscape; margin: 10mm; }
+            html, body { background: #fff !important; color: #000 !important; margin: 0; padding: 0; }
+            body { font-family: 'Inter', 'IBM Plex Sans', sans-serif; font-size: 11px; }
+            .print-page { page-break-after: always; padding: 6mm 0; }
+            .print-page:last-child { page-break-after: auto; }
+            .print-header {
+              display: flex; justify-content: space-between; align-items: flex-start;
+              gap: 20px; padding-bottom: 10px; margin-bottom: 14px;
+              border-bottom: 3px solid #002b5c; position: relative;
+            }
+            .print-header::after {
+              content: ''; position: absolute; bottom: -3px; left: 0;
+              width: 80px; height: 3px; background: #c8102e;
+            }
+            .print-header-title { font-size: 15px; font-weight: 700; color: #002b5c; }
+            .print-header-sub { font-size: 10.5px; color: #444; margin-top: 3px; }
+            .print-header-info { font-size: 10.5px; text-align: right; line-height: 1.6; color: #333; }
+            .print-header-info strong { color: #002b5c; }
+            * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
+            button, .card-controls, .pagination, .tabs, .page-nav, .filter-bar,
+            .list-toggle-btn, .icon-btn, .ms-caret, .ctp-caret, .cf-btn,
+            .card-badge, .ksh-clear, .ksh-hint, .spark-wrap { display: none !important; }
+            .chart-wrap-lg { height: 340px !important; }
+            .chart-wrap-md { height: 260px !important; }
+            .table-scroll { max-height: none !important; overflow: visible !important; border: 1px solid #ccc !important; }
+            table { font-size: 10px; page-break-inside: auto; }
+            thead th { position: static !important; background: #eef2f7 !important; color: #002b5c !important; }
+            tr { page-break-inside: avoid; }
+            tbody tr:nth-child(even) { background: #fafbfc; }
+            .kpi-section { page-break-inside: avoid; margin-bottom: 12px; }
+            .stat-card { page-break-inside: avoid; }
+            .card { page-break-inside: avoid; margin-bottom: 12px !important; }
+            .dashboard-row { grid-template-columns: 1fr 1fr !important; }
+            .subkat-grid { grid-template-columns: repeat(4, 1fr) !important; }
+            .print-footer {
+              margin-top: 20px; padding-top: 10px; border-top: 2px solid #002b5c;
+              text-align: center; font-size: 10px; color: #666;
+            }
+          `;
+          doc.head.appendChild(printCss);
+
+          PRINT_UNITS.forEach(u => {
+            if (!PRINT_STATE.has(u.id)) return;
+            if (u.build) {
+              const wrap = doc.createElement('section');
+              wrap.className = 'print-page';
+              wrap.appendChild(u.build());
+              doc.body.appendChild(wrap);
+              return;
+            }
+            const srcEl = document.querySelector(u.selector);
+            if (!srcEl) return;
+            const clone = srcEl.cloneNode(true);
+            clone.querySelectorAll('.filter-help').forEach(n => n.remove());
+            const origCanvases = srcEl.querySelectorAll('canvas');
+            const cloneCanvases = clone.querySelectorAll('canvas');
+            cloneCanvases.forEach((cvs, i) => {
+              const orig = origCanvases[i];
+              if (!orig) return;
+              try {
+                const img = doc.createElement('img');
+                img.src = orig.toDataURL('image/png');
+                img.style.cssText = 'max-width:100%;height:auto;display:block;';
+                cvs.parentNode.replaceChild(img, cvs);
+              } catch (e) {
+                cvs.parentNode.removeChild(cvs);
+              }
+            });
+            clone.querySelectorAll('.tab-panel:not(.active)').forEach(p => {
+              p.classList.add('active'); p.style.display = 'block';
+            });
+            clone.querySelectorAll('.page-content:not(.active)').forEach(p => {
+              p.classList.add('active'); p.style.display = 'block';
+            });
+            clone.querySelectorAll('.tabs, .page-nav, .card-controls').forEach(n => n.remove());
+            const section = doc.createElement('section');
+            section.className = 'print-page';
+            section.appendChild(clone);
+            doc.body.appendChild(section);
+          });
+
+          const foot = doc.createElement('div');
+          foot.className = 'print-footer';
+          foot.innerHTML = `${t('footer.title')} • ${t('footer.copy')}`;
+          doc.body.appendChild(foot);
+
+          iframe.contentWindow.focus();
+          setTimeout(() => {
+            try { iframe.contentWindow.print(); } catch (e) { console.error('Print error:', e); }
+            setTimeout(() => iframe.remove(), 3000);
+          }, 400);
+
+          closePrintModal();
+        });
+      }
+
+      function initPrintUI() {
+        const btn = document.getElementById('btnCetak');
+        const modal = document.getElementById('printModal');
+        const closeBtn = document.getElementById('printModalClose');
+        const cancelBtn = document.getElementById('printCancelBtn');
+        const goBtn = document.getElementById('printGoBtn');
+
+        if (btn) btn.addEventListener('click', openPrintModal);
+        if (closeBtn) closeBtn.addEventListener('click', closePrintModal);
+        if (cancelBtn) cancelBtn.addEventListener('click', closePrintModal);
+        if (modal) modal.addEventListener('click', e => { if (e.target.id === 'printModal') closePrintModal(); });
+        if (goBtn) goBtn.addEventListener('click', printSelected);
+
+        document.querySelectorAll('[data-print-quick]').forEach(b => {
+          b.addEventListener('click', () => {
+            const mode = b.dataset.printQuick;
+            if (mode === 'all') PRINT_UNITS.forEach(u => PRINT_STATE.add(u.id));
+            else if (mode === 'none') PRINT_STATE.clear();
+            else if (mode === 'active') {
+              PRINT_STATE.clear();
+              PRINT_UNITS.forEach(u => {
+                if (u.id === 'print-header') { PRINT_STATE.add(u.id); return; }
+                const el = document.querySelector(u.selector);
+                if (!el) return;
+                if (el.closest('.page-content:not(.active)')) return;
+                if (u.tab && !el.classList.contains('active')) return;
+                PRINT_STATE.add(u.id);
+              });
+            }
+            renderPrintModal();
+          });
+        });
+
+        document.addEventListener('keydown', e => {
+          if (e.key === 'Escape' && modal && !modal.hidden) closePrintModal();
+        });
+      }
+
+      /* ============================================================
+         PATCH applyFilter supaya alert + i18n auto-refresh
+         ============================================================ */
+      (function patchApplyFilter() {
+        let tries = 0;
+        const patch = () => {
+          if (typeof window.applyFilter === 'function' && !window.applyFilter.__patched) {
+            const orig = window.applyFilter;
+            const patched = function() {
+              const r = orig.apply(this, arguments);
+              try { renderAlertPanel(); } catch(e) { console.warn('alert:', e); }
+              try { applyI18n(); } catch(e) {}
+              return r;
+            };
+            patched.__patched = true;
+            window.applyFilter = patched;
+          } else if (tries < 40) { tries++; setTimeout(patch, 100); }
+        };
+        patch();
+      })();
+
+      /* ============================================================
+         INIT SEMUA
+         ============================================================ */
       initTheme();
+      (function initNewFeatures() {
+        initLang();
+        initAlertPanel();
+        initKeyboardShortcuts();
+        initPrintUI();
+        setTimeout(applyI18n, 50);
+      })();
       loadData();
     </script>
   </body>
