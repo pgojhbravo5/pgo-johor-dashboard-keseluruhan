@@ -620,9 +620,7 @@
         .filter-bar-inner { gap: 8px; }
       }
 
-      /* ============================================================
-         SAFETY NET — elak overflow pada skrin kecil
-         ============================================================ */
+      /* SAFETY NET */
       @media (max-width: 768px) {
         *, *::before, *::after { min-width: 0; }
         img, canvas, svg, video { max-width: 100%; height: auto; }
@@ -669,9 +667,7 @@
         body.no-scroll { overflow: hidden !important; }
       }
 
-      /* ============================================================
-         ALERT PANEL
-         ============================================================ */
+      /* ALERT PANEL */
       .alert-panel {
         background: linear-gradient(135deg, #fff5f5, var(--surface));
         border: 1px solid var(--border);
@@ -758,17 +754,11 @@
       .alert-item.sev-info .alert-item-count     { color: var(--johor-navy); }
       .alert-panel-body.collapsed { display: none; }
 
-      /* ============================================================
-         LANGUAGE TOGGLE
-         ============================================================ */
       .lang-btn {
         font-family: 'IBM Plex Sans', 'Inter', sans-serif;
         font-weight: 700; font-size: 11px; letter-spacing: 0.5px;
       }
 
-      /* ============================================================
-         KEYBOARD SHORTCUTS MODAL
-         ============================================================ */
       .kb-modal-backdrop {
         position: fixed; inset: 0;
         background: rgba(0, 20, 40, 0.55);
@@ -861,9 +851,6 @@
         .alert-panel, .kb-fab, .kb-modal-backdrop { display: none !important; }
       }
 
-      /* ============================================================
-         PRINT SELECTION MODAL
-         ============================================================ */
       .print-modal-backdrop {
         position: fixed; inset: 0;
         background: rgba(0, 20, 40, 0.55);
@@ -888,9 +875,7 @@
         font-size: 14px; font-weight: 700; color: var(--johor-navy);
         display: flex; align-items: center; gap: 8px;
       }
-      .print-modal-body {
-        padding: 8px 20px 16px; overflow-y: auto; flex: 1;
-      }
+      .print-modal-body { padding: 8px 20px 16px; overflow-y: auto; flex: 1; }
       .print-group-label {
         font-size: 10.5px; font-weight: 700; color: var(--johor-navy);
         text-transform: uppercase; letter-spacing: .6px;
@@ -913,10 +898,7 @@
         margin-bottom: 2px;
       }
       .print-opt:hover { background: var(--surface-2); }
-      .print-opt.checked {
-        background: var(--johor-navy-light);
-        border-color: var(--johor-navy);
-      }
+      .print-opt.checked { background: var(--johor-navy-light); border-color: var(--johor-navy); }
       .print-opt input[type="checkbox"] {
         width: 16px; height: 16px; accent-color: var(--johor-navy);
         cursor: pointer; flex-shrink: 0; margin: 0;
@@ -928,10 +910,7 @@
       }
       .print-opt.checked .print-opt-icon { color: var(--johor-navy); }
       .print-opt-icon svg { width: 14px; height: 14px; }
-      .print-opt-label {
-        flex: 1; font-size: 12.5px; color: var(--text);
-        overflow: hidden; text-overflow: ellipsis;
-      }
+      .print-opt-label { flex: 1; font-size: 12.5px; color: var(--text); overflow: hidden; text-overflow: ellipsis; }
       .print-opt.checked .print-opt-label { font-weight: 600; color: var(--johor-navy); }
       .print-opt-meta {
         font-size: 10.5px; color: var(--text-subtle);
@@ -939,13 +918,7 @@
         border-radius: 8px; flex-shrink: 0;
         font-variant-numeric: tabular-nums;
       }
-      .print-opt.checked .print-opt-meta {
-        background: rgba(255,255,255,0.7); color: var(--johor-navy);
-      }
-      .print-opt-note {
-        font-size: 10px; color: var(--warning);
-        margin-left: 4px; font-style: italic;
-      }
+      .print-opt.checked .print-opt-meta { background: rgba(255,255,255,0.7); color: var(--johor-navy); }
       .print-modal-foot {
         padding: 12px 20px; border-top: 1px solid var(--border);
         display: flex; align-items: center; justify-content: space-between;
@@ -959,10 +932,7 @@
         padding: 6px 11px; border-radius: 6px; cursor: pointer;
         font-family: inherit; transition: .15s;
       }
-      .print-qbtn:hover {
-        border-color: var(--johor-navy); color: var(--johor-navy);
-        background: var(--johor-navy-light);
-      }
+      .print-qbtn:hover { border-color: var(--johor-navy); color: var(--johor-navy); background: var(--johor-navy-light); }
       .print-modal-actions { display: flex; gap: 8px; margin-left: auto; }
       .print-btn-primary, .print-btn-secondary {
         display: inline-flex; align-items: center; gap: 6px;
@@ -972,10 +942,7 @@
       }
       .print-btn-primary { background: var(--johor-navy); color: #fff; }
       .print-btn-primary:hover { background: var(--johor-navy-dark); }
-      .print-btn-secondary {
-        background: var(--surface); color: var(--text);
-        border-color: var(--border-strong);
-      }
+      .print-btn-secondary { background: var(--surface); color: var(--text); border-color: var(--border-strong); }
       .print-btn-secondary:hover { background: var(--surface-2); }
       @media (max-width: 768px) {
         .print-modal-backdrop { padding: 12px; align-items: flex-end; }
@@ -1771,7 +1738,6 @@
     </a>
 
     <script>
-      // ===== [ SEMUA KOD ASAL ANDA (tidak diubah) — dari CSV_URL hingga initTheme() ===== ]
       const CSV_URL =
         'https://docs.google.com/spreadsheets/d/e/2PACX-1vSJW-jSCCmeTK8V4j5SqWl9KZ7xOFjAwUmPV0fyWFsvOn-sXpkctFzO0TtfF8urbWV4ibLBUtBZg4pS/pub?output=csv';
       const MIN_YEAR = 2026;
@@ -2316,18 +2282,18 @@
           const el = document.getElementById('drpVal');
           if (from && to) { el.textContent = `${fmt(from)}  →  ${fmt(to)}`; el.classList.remove('empty'); }
           else if (from || tempFrom) { el.textContent = `${fmt(from || tempFrom)}  →  ...`; el.classList.remove('empty'); }
-          else { el.textContent = 'Pilih julat tarikh...'; el.classList.add('empty'); }
+          else { el.textContent = (typeof t === 'function' ? t('filter.selectDate') : 'Pilih julat tarikh...'); el.classList.add('empty'); }
         }
         function updateFooter() {
           const info = document.getElementById('drpFooterInfo');
           if (from && to) info.textContent = `${fmt(from)} — ${fmt(to)}`;
-          else if (tempFrom || from) info.textContent = `${fmt(tempFrom || from)} → pilih tarikh akhir`;
-          else info.textContent = 'Klik tarikh mula';
+          else if (tempFrom || from) info.textContent = `${fmt(tempFrom || from)} ${typeof t === 'function' ? t('filter.chooseEnd') : '→ pilih tarikh akhir'}`;
+          else info.textContent = typeof t === 'function' ? t('filter.clickStart') : 'Klik tarikh mula';
         }
         return {
           init,
           getRange: () => ({ from, to }),
-          setRange: (f, t) => { from = f ? new Date(f) : null; to = t ? new Date(t) : null; tempFrom = null; if (from) { viewY = Math.max(from.getFullYear(), MIN_YEAR); viewM = from.getMonth(); } updateInput(); render(); },
+          setRange: (f, t2) => { from = f ? new Date(f) : null; to = t2 ? new Date(t2) : null; tempFrom = null; if (from) { viewY = Math.max(from.getFullYear(), MIN_YEAR); viewM = from.getMonth(); } updateInput(); render(); },
           clear: () => { from = null; to = null; tempFrom = null; updateInput(); render(); },
         };
       })();
@@ -2337,8 +2303,8 @@
         function closeAll() {
           document.querySelectorAll('.chart-type-picker').forEach((el) => {
             el.classList.remove('open');
-            const t = el.querySelector('.ctp-trigger'), p = el.querySelector('.ctp-popup');
-            if (t) t.classList.remove('open');
+            const tr = el.querySelector('.ctp-trigger'), p = el.querySelector('.ctp-popup');
+            if (tr) tr.classList.remove('open');
             if (p) p.hidden = true;
           });
         }
@@ -2357,9 +2323,9 @@
       </button>
       <div class="ctp-popup" data-ctp-popup hidden>
         <div class="ctp-options">
-          ${Object.entries(CHART_TYPES).map(([key, t]) => `
+          ${Object.entries(CHART_TYPES).map(([key, tr]) => `
             <button type="button" class="ctp-opt ${key === currentType ? 'active' : ''}" data-ctp-type="${key}">
-              <span class="ctp-check"></span><span class="ctp-opt-icon">${t.icon}</span><span class="ctp-opt-label">${t.label}</span>
+              <span class="ctp-check"></span><span class="ctp-opt-icon">${tr.icon}</span><span class="ctp-opt-label">${tr.label}</span>
             </button>`).join('')}
         </div>
       </div>`;
@@ -2464,7 +2430,9 @@
         function applyState(bar, btn) {
           bar.classList.toggle('collapsed', collapsed);
           const lbl = btn.querySelector('.toggle-label');
-          if (lbl) lbl.textContent = collapsed ? 'Papar' : 'Sembunyi';
+          if (lbl) lbl.textContent = collapsed
+            ? (typeof t === 'function' ? t('filter.show') : 'Papar')
+            : (typeof t === 'function' ? t('filter.hide') : 'Sembunyi');
         }
         function updateBadge() {
           const badge = document.getElementById('filterCountBadge');
@@ -2693,7 +2661,7 @@
             const col = th.dataset.col;
             if (sortCol === col) sortDir = sortDir === 'asc' ? 'desc' : 'asc';
             else { sortCol = col; sortDir = 'asc'; }
-            thead.querySelectorAll('th').forEach((t) => t.classList.remove('sorted-asc', 'sorted-desc'));
+            thead.querySelectorAll('th').forEach((tr) => tr.classList.remove('sorted-asc', 'sorted-desc'));
             th.classList.add(sortDir === 'asc' ? 'sorted-asc' : 'sorted-desc');
             renderTable();
           });
@@ -2973,9 +2941,10 @@
         });
 
         currentPage = 1;
+        const _t = (k, fb) => (typeof t === 'function' ? t(k) : fb);
         document.getElementById('filterInfo').innerHTML = `
     <svg class="ico" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
-    Menunjukkan <strong>${FILTERED.length}</strong> daripada <strong>${RAW_DATA.length}</strong> rekod`;
+    ${_t('info.showing','Menunjukkan')} <strong>${FILTERED.length}</strong> ${_t('info.of','daripada')} <strong>${RAW_DATA.length}</strong> ${_t('info.record','rekod')}`;
         renderKPI();
         if (typeof updateTopNOptions === 'function') updateTopNOptions();
         renderCharts();
@@ -3074,7 +3043,7 @@
           const zonLabel = multiZon ? `Zon ${dominantZon} +${zonCount - 1}` : `Zon ${dominantZon}`;
           const icon = (KAT_STYLE_MAP.find((s) => s.match(String(cat).toUpperCase())) || {}).icon || KAT_FALLBACK_ICON;
           return `
-        <div class="kat-tile ${isActive}" style="--tile-accent:${accent};" data-kat="${safe}" title="${safe} — Zon dominan: ${safeZon} (${domCount} kes)">
+        <div class="kat-tile ${isActive}" style="--tile-accent:${accent};" data-kat="${safe}" title="${safe} — ${zonLabel} (${domCount})">
           <div class="kat-tile-head">
             <div class="kat-tile-icon"><svg viewBox="0 0 24 24">${icon}</svg></div>
             <div class="kat-tile-label">${cat}</div>
@@ -3181,12 +3150,12 @@
           const pctVal = total ? ((count / total) * 100).toFixed(1) + '%' : '0%';
           const tone = kategoriToneClass(cat);
           const safe = String(cat).replace(/"/g, '&quot;');
-          return `<div class="compact-item ${tone}"><div class="c-info"><div class="c-label" title="${safe}">${cat}</div><div class="c-sub">${pctVal} daripada total</div></div><div class="c-val">${count.toLocaleString()}</div></div>`;
+          return `<div class="compact-item ${tone}"><div class="c-info"><div class="c-label" title="${safe}">${cat}</div><div class="c-sub">${pctVal}</div></div><div class="c-val">${count.toLocaleString()}</div></div>`;
         }).join('');
         const btn = document.getElementById('kategoriToggleBtn');
         if (btn) {
           if (entries.length <= 5) btn.style.display = 'none';
-          else { btn.style.display = 'block'; btn.textContent = kategoriShowAll ? 'Tunjuk Ringkas (Top 5)' : `Lihat Semua (${entries.length})`; }
+          else { btn.style.display = 'block'; btn.textContent = kategoriShowAll ? (typeof t === 'function' ? t('card.listShowLess') : 'Tunjuk Ringkas (Top 5)') : `${typeof t === 'function' ? t('card.listShowAll') : 'Lihat Semua'} (${entries.length})`; }
         }
         renderKatCompactChart(entries);
       }
@@ -3233,7 +3202,7 @@
         const counts = {};
         FILTERED.forEach((d) => { const k = d.subKategori1 || '(TIADA)'; counts[k] = (counts[k] || 0) + 1; });
         const entries = Object.entries(counts).sort((a, b) => b[1] - a[1]);
-        if (badge) badge.textContent = `${entries.length} sub kategori`;
+        if (badge) badge.textContent = `${entries.length} sub`;
         if (entries.length === 0) {
           gridEl.innerHTML = `<div class="mini-card"><div class="mini-label">Tiada Data</div><div class="mini-val">-</div></div>`;
           return;
@@ -3244,11 +3213,11 @@
           const tone = subToneClass(sub);
           const safe = String(sub).replace(/"/g, '&quot;');
           const barW = ((count / maxVal) * 100).toFixed(1);
-          return `<div class="mini-card ${tone}" title="${safe} — ${count} kes (${pctVal})">
+          return `<div class="mini-card ${tone}" title="${safe} — ${count} (${pctVal})">
             <div class="mini-label">${sub}</div>
             <div class="mini-val">${count.toLocaleString()}</div>
             <div class="mini-bar"><span style="width:${barW}%"></span></div>
-            <div class="mini-sub">${pctVal} daripada total</div>
+            <div class="mini-sub">${pctVal}</div>
           </div>`;
         }).join('');
       }
@@ -3691,15 +3660,17 @@
         } else if (xField && xField.kind === 'metric') {
           label = 'Metrik';
         }
+        const allPrefix = (typeof t === 'function' ? t('dyn.allPrefix') : 'Semua');
+        const topPrefix = (typeof t === 'function' ? t('dyn.topPrefix') : 'Top');
         const options = [
-          { value: '0',  text: `Semua ${label}` },
-          { value: '5',  text: 'Top 5' },
-          { value: '10', text: 'Top 10' },
-          { value: '15', text: 'Top 15' },
-          { value: '20', text: 'Top 20' },
-          { value: '30', text: 'Top 30' },
+          { value: '0',  text: `${allPrefix} ${label}` },
+          { value: '5',  text: `${topPrefix} 5` },
+          { value: '10', text: `${topPrefix} 10` },
+          { value: '15', text: `${topPrefix} 15` },
+          { value: '20', text: `${topPrefix} 20` },
+          { value: '30', text: `${topPrefix} 30` },
         ];
-        if (uniqueCount > 0) options.push({ value: String(uniqueCount), text: `📋 Semua ${label} (${uniqueCount})` });
+        if (uniqueCount > 0) options.push({ value: String(uniqueCount), text: `📋 ${allPrefix} ${label} (${uniqueCount})` });
         topNSel.innerHTML = options.map((o) => `<option value="${o.value}">${o.text}</option>`).join('');
         topNSel.value = String(dynTopN);
         if (topNSel.value !== String(dynTopN)) { dynTopN = 0; topNSel.value = '0'; }
@@ -3751,7 +3722,7 @@
 
         if (agg.mode === 'standard') {
           const { labels, values, decimals, metric, dim, swapped } = agg;
-          if (infoEl) infoEl.innerHTML = `<svg class="ico" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg><span><strong>${metric.label}</strong> mengikut <strong>${dim.label}</strong> • ${labels.length} kategori</span>`;
+          if (infoEl) infoEl.innerHTML = `<svg class="ico" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg><span><strong>${metric.label}</strong> · ${dim.label} • ${labels.length}</span>`;
           canvas.style.display = '';
           const isBarH = (type === 'barH') !== !!(swapped || transposed);
           const isCircular = ['pie', 'doughnut', 'polar'].includes(type);
@@ -3779,12 +3750,12 @@
 
         if (agg.mode === 'scatterXY') {
           const { points, xField, yField } = agg;
-          if (infoEl) infoEl.innerHTML = `<svg class="ico" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/></svg><span>Taburan <strong>${yField.label}</strong> vs <strong>${xField.label}</strong> • ${points.length} titik</span>`;
+          if (infoEl) infoEl.innerHTML = `<svg class="ico" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/></svg><span>${yField.label} · ${xField.label} • ${points.length}</span>`;
           canvas.style.display = '';
           if (points.length === 0) {
             canvas.style.display = 'none';
             const e = document.createElement('div'); e.className = 'chart-error';
-            e.innerHTML = `<strong>Tiada titik data</strong><small>Pastikan kedua metrik ada nilai > 0.</small>`;
+            e.innerHTML = `<strong>Tiada titik data</strong>`;
             wrap.appendChild(e); return;
           }
           return newChart(chartId, canvas, {
@@ -3802,7 +3773,7 @@
 
         if (agg.mode === 'crosstab') {
           const { xLabels, yLabels, xMap, xField, yField } = agg;
-          if (infoEl) infoEl.innerHTML = `<svg class="ico" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/></svg><span>Crosstab: <strong>${yField.label}</strong> mengikut <strong>${xField.label}</strong> • ${xLabels.length}×${yLabels.length}</span>`;
+          if (infoEl) infoEl.innerHTML = `<svg class="ico" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/></svg><span>${yField.label} · ${xField.label} • ${xLabels.length}×${yLabels.length}</span>`;
           canvas.style.display = '';
           if (xLabels.length === 0) {
             canvas.style.display = 'none';
@@ -4380,8 +4351,8 @@
         const statKpiEl = document.getElementById('statKpi');
         if (statKpiEl) statKpiEl.innerHTML = `
     <div class="stat-mini"><div class="lbl">Total Kes</div><div class="val">${total}</div></div>
-    <div class="stat-mini"><div class="lbl">KPI Enroute ≤60s</div><div class="val" style="color:#3B6EA5">${pct(kpiData.series[0].values[1], total)}</div><div class="sub">${kpiData.series[0].values[1]} tercapai • ${kpiData.series[1].values[1]} tidak</div></div>
-    <div class="stat-mini"><div class="lbl">KPI RT ≤10min</div><div class="val" style="color:#C4A45C">${pct(kpiData.series[0].values[2], total)}</div><div class="sub">${kpiData.series[0].values[2]} tercapai • ${kpiData.series[1].values[2]} tidak</div></div>`;
+    <div class="stat-mini"><div class="lbl">KPI Enroute ≤60s</div><div class="val" style="color:#3B6EA5">${pct(kpiData.series[0].values[1], total)}</div><div class="sub">${kpiData.series[0].values[1]} / ${kpiData.series[1].values[1]}</div></div>
+    <div class="stat-mini"><div class="lbl">KPI RT ≤10min</div><div class="val" style="color:#C4A45C">${pct(kpiData.series[0].values[2], total)}</div><div class="sub">${kpiData.series[0].values[2]} / ${kpiData.series[1].values[2]}</div></div>`;
         const katData = getSimpleCountData('kategori');
         const statKatEl = document.getElementById('statKategori');
         if (statKatEl) statKatEl.innerHTML = katData.labels.map((k, i) => `<div class="stat-mini"><div class="lbl">${k}</div><div class="val">${katData.values[i]}</div></div>`).join('');
@@ -4394,13 +4365,13 @@
     <div class="stat-mini"><div class="lbl">Operasi Pendek (≤12j)</div><div class="val">${pendek}</div></div>
     <div class="stat-mini"><div class="lbl">Operasi Sederhana (12-24j)</div><div class="val">${sederhana}</div></div>
     <div class="stat-mini"><div class="lbl">Operasi Panjang (&gt;24j)</div><div class="val">${panjang}</div></div>
-    <div class="stat-mini"><div class="lbl">Masih Beroperasi</div><div class="val" style="color:#D97757">${masihOps}</div><div class="sub">tiada masa mula ops</div></div>`;
+    <div class="stat-mini"><div class="lbl">Masih Beroperasi</div><div class="val" style="color:#D97757">${masihOps}</div></div>`;
         const { nartLevels, selaLevels } = getNartStats();
         const statNartSelaEl = document.getElementById('statNartSela');
         if (statNartSelaEl) {
           statNartSelaEl.innerHTML = [
-            ...nartLevels.map((l) => `<div class="stat-mini"><div class="lbl">${l.short} — Purata NART</div><div class="val" style="color:${l.avg <= NART_TARGET ? '#0F7B4F' : '#D97757'}">${l.avg.toFixed(1)} min</div><div class="sub">${l.achieved} tercapai • ${l.failed} melebihi • min ${l.min} / max ${l.max}</div></div>`),
-            ...selaLevels.map((s) => `<div class="stat-mini"><div class="lbl">${s.short} — Purata Sela</div><div class="val" style="color:${s.avg <= SELA_TARGET ? '#0F7B4F' : '#D97757'}">${s.avg.toFixed(1)} min</div><div class="sub">${s.achieved} dalam sasaran • ${s.failed} melebihi • n=${s.count}</div></div>`),
+            ...nartLevels.map((l) => `<div class="stat-mini"><div class="lbl">${l.short} — Purata NART</div><div class="val" style="color:${l.avg <= NART_TARGET ? '#0F7B4F' : '#D97757'}">${l.avg.toFixed(1)} min</div><div class="sub">${l.achieved} / ${l.failed} • min ${l.min} / max ${l.max}</div></div>`),
+            ...selaLevels.map((s) => `<div class="stat-mini"><div class="lbl">${s.short} — Purata Sela</div><div class="val" style="color:${s.avg <= SELA_TARGET ? '#0F7B4F' : '#D97757'}">${s.avg.toFixed(1)} min</div><div class="sub">${s.achieved} / ${s.failed} • n=${s.count}</div></div>`),
           ].join('');
         }
         Object.keys(CHART_REGISTRY).forEach((chartId) => renderSingleChart(chartId));
@@ -4462,7 +4433,7 @@
       }
 
       /* ============================================================
-         [ BLOK BAHARU 1 ] — MOBILE UX LOGIC
+         MOBILE UX LOGIC
          ============================================================ */
       (function initMobileUX() {
         const isMobile = () => window.matchMedia('(max-width: 768px)').matches;
@@ -4480,12 +4451,8 @@
           document.body.style.overflow = open ? 'hidden' : '';
         };
         const mo = new MutationObserver(lockScroll);
-        mo.observe(document.body, {
-          attributes: true, subtree: true,
-          attributeFilter: ['class', 'hidden'],
-        });
+        mo.observe(document.body, { attributes: true, subtree: true, attributeFilter: ['class', 'hidden'] });
 
-        // Fallback untuk browser tanpa :has()
         const hasNativeHas = CSS.supports('selector(:has(*))');
         if (!hasNativeHas) {
           const observer = new MutationObserver(() => {
@@ -4494,9 +4461,7 @@
               || document.querySelector('.chart-type-picker.open');
             document.body.classList.toggle('no-scroll', !!anyOpen && isMobile());
           });
-          observer.observe(document.body, {
-            attributes: true, subtree: true, attributeFilter: ['class'],
-          });
+          observer.observe(document.body, { attributes: true, subtree: true, attributeFilter: ['class'] });
         }
 
         window.addEventListener('scroll', () => {
@@ -4527,20 +4492,104 @@
       })();
 
       /* ============================================================
-         [ BLOK BAHARU 2 ] — i18n (BM / EN)
+         i18n (BM / EN)
          ============================================================ */
       const I18N = {
         ms: {
           'brand.title': 'Dashboard Analisis Response Time',
           'brand.sub': 'Jabatan Bomba dan Penyelamat Malaysia • Negeri Johor',
           'topbar.updated': 'Kemas kini', 'topbar.back': 'Kembali', 'topbar.print': 'Cetak',
-          'filter.title': 'Penapis Data', 'filter.hide': 'Sembunyi', 'filter.show': 'Papar',
-          'filter.dateRange': 'Julat Tarikh', 'filter.selectDate': 'Pilih julat tarikh...',
-          'filter.reset': 'Reset', 'filter.all': 'Semua', 'filter.selected': 'dipilih', 'filter.close': 'Tutup',
+          'lang.title': 'Tukar bahasa / Change language',
+          'filter.title': 'Penapis Data', 'filter.count': 'Penapis',
+          'filter.hide': 'Sembunyi', 'filter.show': 'Papar',
+          'filter.reset': 'Reset', 'filter.selectDate': 'Pilih julat tarikh...',
+          'filter.clickStart': 'Klik tarikh mula', 'filter.chooseEnd': '→ pilih tarikh akhir',
+          'filter.clearShort': 'Kosongkan',
+          'filter.dateRange': 'Julat Tarikh',
+          'filter.day': 'Hari', 'filter.balai': 'Balai', 'filter.zon': 'Zon',
+          'filter.daerah': 'Daerah', 'filter.kategori': 'Kategori',
+          'filter.subKat1': 'Sub Kategori 1', 'filter.subKat2': 'Sub Kategori 2',
+          'filter.jenis': 'Jenis', 'filter.gambut': 'Kebakaran Tanah Gambut',
+          'filter.tempohOps': 'Tempoh Operasi', 'filter.statusOps': 'Status Operasi',
+          'filter.shif': 'Shif', 'filter.monsun': 'Monsun',
+          'filter.katBalai': 'Kategori Balai', 'filter.kesDikiraRt': 'Kes Dikira RT',
+          'filter.melibatkanMangsa': 'Melibatkan Mangsa',
+          'filter.rt9min': 'RT <9 MIN', 'filter.rt10min': 'RT <10 MIN',
+          'common.all': 'Semua', 'common.search': 'Cari...',
+          'common.selectAll': 'Pilih Semua', 'common.clearAll': 'Kosongkan',
+          'common.close': 'Tutup', 'common.selected': 'dipilih',
+          'common.noMatch': 'Tiada padanan',
+          'common.minutes': 'minit', 'common.hours': 'jam', 'common.km': 'km',
+          'common.person': 'orang', 'common.hoursCollected': 'jam terkumpul',
+          'common.rows': 'baris', 'common.csv': 'CSV',
+          'common.compact': 'Compact', 'common.detailed': 'Detailed',
+          'common.lessEqual': '≤ Nilai', 'common.showPage': 'Papar',
+          'pg.prev': '‹ Sebelum', 'pg.next': 'Seterusnya ›',
+          'pg.page': 'Halaman', 'pg.record': 'rekod', 'pg.perPage': 'halaman',
           'page.graf': 'Graf', 'page.data': 'Data', 'page.jadual': 'Jadual',
           'kpi.katKes': 'Kategori Kes', 'kpi.prestasi': 'Prestasi KPI',
           'kpi.mangsa': 'Mangsa', 'kpi.ops': 'Operasi',
-          'alert.title': 'Amaran Automatik', 'alert.hide': 'Sembunyi', 'alert.show': 'Papar',
+          'kpi.targetJbpm': 'Sasaran JBPM',
+          'kpi.katCount': '— kategori', 'kpi.mangsaCount': '— orang',
+          'kpi.opsCount': '— jam terkumpul',
+          'kpi.purataRt': 'Purata RT', 'kpi.enroute': 'KPI Enroute',
+          'kpi.rt10': 'KPI RT 10min',
+          'kpi.jumlahMangsa': 'Jumlah Mangsa', 'kpi.mangsaSelamat': 'Mangsa Selamat',
+          'kpi.mangsaMati': 'Mangsa Meninggal', 'kpi.jumlahJam': 'Jumlah Jam Operasi',
+          'kpi.opsPanjang': 'Operasi Panjang >24j', 'kpi.purataJarak': 'Purata Jarak',
+          'kpi.jumlahKes': 'Jumlah Kes', 'kpi.gambut': 'Kebakaran Tanah Gambut',
+          'sub.enroute': '≤ 60 saat', 'sub.rt10': '≤ 10 minit',
+          'sub.mangsa': 'selamat + mati', 'sub.jamOps': 'jumlah jam',
+          'sub.km': 'km',
+          'hint.clickCard': 'Klik kad untuk tapis ikut kategori',
+          'hint.removeFilter': 'Buang tapisan',
+          'hint.tableHeader': 'klik teks header untuk sort • klik ikon tapis untuk tapis kolum',
+          'info.showing': 'Menunjukkan', 'info.of': 'daripada',
+          'info.record': 'rekod', 'info.loading': 'Memuatkan...',
+          'section.pecahanKategori': 'Pecahan Mengikut Kategori',
+          'section.pecahanSubkat': 'Pecahan Mengikut Sub Kategori 1',
+          'card.cartaKategori': 'Carta Kategori',
+          'card.senaraiKategori': 'Senarai Kategori',
+          'card.semuaSubkat': 'Semua Sub Kategori',
+          'card.grafDinamik': 'Graf Dinamik — Pilih X & Y Sendiri',
+          'card.trendBulan': 'Trend Kes Mengikut Bulan',
+          'card.pencapaianKpi': 'Pencapaian KPI Utama',
+          'card.nartCount': 'NART — Bilangan Kes Tercapai vs Melebihi',
+          'card.nartAvg': 'NART — Purata Nilai RT (minit)',
+          'card.selaCount': 'SELA — Bilangan Dalam Sasaran vs Melebihi',
+          'card.selaAvg': 'SELA — Purata Sela Masa (minit)',
+          'card.pecahanRt': 'Pecahan Range Masa T/P (RT)',
+          'card.rangeRt2': 'Range Masa T/P (2)',
+          'card.pecahanKatOps': 'Pecahan Kategori Panggilan Operasi',
+          'card.top15Jenis': 'Top 15 Jenis Panggilan Operasi',
+          'card.kesBalai': 'Bilangan Kes Mengikut Balai',
+          'card.balaiRt': 'Balai × Range RT — Jumlah Kes',
+          'card.kesZon': 'Kes Mengikut Zon',
+          'card.top15Daerah': 'Top 15 Daerah',
+          'card.pecahanShif': 'Pecahan Mengikut Shif',
+          'card.kesMonsun': 'Kes Mengikut Fasa Monsun',
+          'card.katMasaOps': 'Kategori Masa Operasi',
+          'card.jarakRt': 'Hubungan Jarak (km) vs RT (minit)',
+          'card.senaraiKejadian': 'Senarai Kejadian',
+          'card.jadualBalai': 'Jadual Ringkasan Mengikut Balai',
+          'card.listShowAll': 'Lihat Semua',
+          'card.listShowLess': 'Tunjuk Ringkas (Top 5)',
+          'card.lihatSemua': 'Lihat Semua',
+          'tab.dinamik': 'Dinamik', 'tab.trend': 'Trend',
+          'tab.kpi': 'KPI Status', 'tab.nartSela': 'NART & SELA',
+          'tab.rangeRt': 'Range RT', 'tab.kategori': 'Kategori',
+          'tab.jenis': 'Jenis', 'tab.balai': 'Balai',
+          'tab.balaiRt': 'Balai × RT', 'tab.zonDaerah': 'Zon & Daerah',
+          'tab.shif': 'Shif', 'tab.monsun': 'Monsun',
+          'tab.masaOps': 'Masa Operasi', 'tab.jarakRt': 'Jarak vs RT',
+          'dyn.xAxis': 'X-Axis', 'dyn.yAxis': 'Y-Axis',
+          'dyn.sort': 'Susun', 'dyn.topN': 'Top N',
+          'dyn.sortDesc': 'Nilai Tertinggi', 'dyn.sortAsc': 'Nilai Terendah',
+          'dyn.sortAz': 'Label (A→Z)',
+          'dyn.allPrefix': 'Semua', 'dyn.topPrefix': 'Top',
+          'balaiRt.range1': 'RT <9 MIN (a–m)', 'balaiRt.range2': 'RT <10 MIN (A–K)',
+          'alert.title': 'Amaran Automatik',
+          'alert.hide': 'Sembunyi', 'alert.show': 'Papar',
           'alert.allClear': 'Semua Bersih',
           'alert.allClearDesc': 'Tiada amaran pada tapisan semasa. Semua KPI dalam sasaran.',
           'alert.rtHigh.title': 'Balai Purata RT Tinggi',
@@ -4564,18 +4613,142 @@
           'kb.search': 'Fokus ke carian', 'kb.reset': 'Reset semua penapis',
           'kb.print': 'Cetak dashboard', 'kb.theme': 'Tukar tema cerah / gelap',
           'kb.lang': 'Tukar bahasa BM / EN', 'kb.esc': 'Tutup popup / modal',
+          'print.title': 'Pilih Bahagian Untuk Dicetak',
+          'print.all': 'Pilih Semua', 'print.active': 'Yang Dipaparkan',
+          'print.none': 'Kosongkan', 'print.cancel': 'Batal', 'print.go': 'Cetak',
+          'print.group.header': 'Pengepala',
+          'print.group.ringkasan': 'Ringkasan KPI',
+          'print.group.grafSection': 'Carta Utama (Halaman Graf)',
+          'print.group.tab': 'Tab Carta',
+          'print.group.halaman': 'Halaman Lain',
+          'print.unit.printHeader': 'Pengepala & Ringkasan Tapisan',
+          'print.unit.alertPanel': 'Panel Amaran Automatik',
+          'print.unit.kpiKatkes': 'Kategori Kes',
+          'print.unit.kpiPrestasi': 'Prestasi KPI',
+          'print.unit.kpiMangsa': 'Mangsa',
+          'print.unit.kpiOps': 'Operasi',
+          'print.unit.chartKategoriBlk': 'Pecahan Kategori + Senarai',
+          'print.unit.chartSubkat': 'Pecahan Sub Kategori 1',
+          'print.unit.tabDinamik': 'Tab: Dinamik',
+          'print.unit.tabTrend': 'Tab: Trend',
+          'print.unit.tabKpi': 'Tab: KPI Status',
+          'print.unit.tabNart': 'Tab: NART & SELA',
+          'print.unit.tabRt': 'Tab: Range RT',
+          'print.unit.tabKat': 'Tab: Kategori',
+          'print.unit.tabJenis': 'Tab: Jenis',
+          'print.unit.tabBalai': 'Tab: Balai',
+          'print.unit.tabBalaiRt': 'Tab: Balai × RT',
+          'print.unit.tabZon': 'Tab: Zon & Daerah',
+          'print.unit.tabShif': 'Tab: Shif',
+          'print.unit.tabMonsun': 'Tab: Monsun',
+          'print.unit.tabOperasi': 'Tab: Masa Operasi',
+          'print.unit.tabJarak': 'Tab: Jarak vs RT',
+          'print.unit.pageData': 'Senarai Kejadian (Halaman Data)',
+          'print.unit.pageJadual': 'Jadual Ringkasan Balai (Halaman Jadual)',
+          'print.header.dateRange': 'Tarikh Tapisan',
+          'print.header.records': 'Rekod Ditapis',
+          'print.header.printed': 'Dicetak',
+          'print.meta.header': 'Header', 'print.meta.alerts': 'amaran',
+          'print.meta.clean': 'bersih', 'print.meta.charts': 'carta',
+          'print.meta.records': 'rekod', 'print.meta.balai': 'balai',
+          'print.meta.kpi': 'KPI',
+          'print.alertSelect': 'Pilih sekurang-kurangnya satu bahagian untuk dicetak.',
         },
         en: {
           'brand.title': 'Response Time Analysis Dashboard',
           'brand.sub': 'Malaysian Fire and Rescue Department • Johor State',
           'topbar.updated': 'Updated', 'topbar.back': 'Back', 'topbar.print': 'Print',
-          'filter.title': 'Data Filters', 'filter.hide': 'Hide', 'filter.show': 'Show',
-          'filter.dateRange': 'Date Range', 'filter.selectDate': 'Select date range...',
-          'filter.reset': 'Reset', 'filter.all': 'All', 'filter.selected': 'selected', 'filter.close': 'Close',
+          'lang.title': 'Change language / Tukar bahasa',
+          'filter.title': 'Data Filters', 'filter.count': 'Filters',
+          'filter.hide': 'Hide', 'filter.show': 'Show',
+          'filter.reset': 'Reset', 'filter.selectDate': 'Select date range...',
+          'filter.clickStart': 'Click start date', 'filter.chooseEnd': '→ choose end date',
+          'filter.clearShort': 'Clear',
+          'filter.dateRange': 'Date Range',
+          'filter.day': 'Day', 'filter.balai': 'Station', 'filter.zon': 'Zone',
+          'filter.daerah': 'District', 'filter.kategori': 'Category',
+          'filter.subKat1': 'Sub Category 1', 'filter.subKat2': 'Sub Category 2',
+          'filter.jenis': 'Type', 'filter.gambut': 'Peatland Fire',
+          'filter.tempohOps': 'Operation Duration', 'filter.statusOps': 'Operation Status',
+          'filter.shif': 'Shift', 'filter.monsun': 'Monsoon',
+          'filter.katBalai': 'Station Category', 'filter.kesDikiraRt': 'Cases Counted in RT',
+          'filter.melibatkanMangsa': 'Involves Victims',
+          'filter.rt9min': 'RT <9 MIN', 'filter.rt10min': 'RT <10 MIN',
+          'common.all': 'All', 'common.search': 'Search...',
+          'common.selectAll': 'Select All', 'common.clearAll': 'Clear All',
+          'common.close': 'Close', 'common.selected': 'selected',
+          'common.noMatch': 'No match',
+          'common.minutes': 'minutes', 'common.hours': 'hours', 'common.km': 'km',
+          'common.person': 'persons', 'common.hoursCollected': 'hours collected',
+          'common.rows': 'rows', 'common.csv': 'CSV',
+          'common.compact': 'Compact', 'common.detailed': 'Detailed',
+          'common.lessEqual': '≤ Value', 'common.showPage': 'Show',
+          'pg.prev': '‹ Prev', 'pg.next': 'Next ›',
+          'pg.page': 'Page', 'pg.record': 'records', 'pg.perPage': 'per page',
           'page.graf': 'Charts', 'page.data': 'Data', 'page.jadual': 'Table',
           'kpi.katKes': 'Case Categories', 'kpi.prestasi': 'KPI Performance',
           'kpi.mangsa': 'Victims', 'kpi.ops': 'Operations',
-          'alert.title': 'Automatic Alerts', 'alert.hide': 'Hide', 'alert.show': 'Show',
+          'kpi.targetJbpm': 'JBPM Target',
+          'kpi.katCount': '— categories', 'kpi.mangsaCount': '— persons',
+          'kpi.opsCount': '— hours collected',
+          'kpi.purataRt': 'Average RT', 'kpi.enroute': 'KPI Enroute',
+          'kpi.rt10': 'KPI RT 10min',
+          'kpi.jumlahMangsa': 'Total Victims', 'kpi.mangsaSelamat': 'Victims Saved',
+          'kpi.mangsaMati': 'Victims Deceased', 'kpi.jumlahJam': 'Total Operation Hours',
+          'kpi.opsPanjang': 'Long Operations >24h', 'kpi.purataJarak': 'Average Distance',
+          'kpi.jumlahKes': 'Total Cases', 'kpi.gambut': 'Peatland Fire',
+          'sub.enroute': '≤ 60 seconds', 'sub.rt10': '≤ 10 minutes',
+          'sub.mangsa': 'saved + deceased', 'sub.jamOps': 'total hours',
+          'sub.km': 'km',
+          'hint.clickCard': 'Click card to filter by category',
+          'hint.removeFilter': 'Remove filter',
+          'hint.tableHeader': 'click header text to sort • click filter icon to filter column',
+          'info.showing': 'Showing', 'info.of': 'of',
+          'info.record': 'records', 'info.loading': 'Loading...',
+          'section.pecahanKategori': 'Breakdown by Category',
+          'section.pecahanSubkat': 'Breakdown by Sub Category 1',
+          'card.cartaKategori': 'Category Chart',
+          'card.senaraiKategori': 'Category List',
+          'card.semuaSubkat': 'All Sub Categories',
+          'card.grafDinamik': 'Dynamic Chart — Choose Your Own X & Y',
+          'card.trendBulan': 'Case Trend by Month',
+          'card.pencapaianKpi': 'Main KPI Achievement',
+          'card.nartCount': 'NART — Achieved vs Exceeded Cases',
+          'card.nartAvg': 'NART — Average RT Value (minutes)',
+          'card.selaCount': 'SELA — Within Target vs Exceeded',
+          'card.selaAvg': 'SELA — Average Time Gap (minutes)',
+          'card.pecahanRt': 'Breakdown of T/P Range (RT)',
+          'card.rangeRt2': 'T/P Range (2)',
+          'card.pecahanKatOps': 'Breakdown of Operation Call Category',
+          'card.top15Jenis': 'Top 15 Operation Call Types',
+          'card.kesBalai': 'Cases by Station',
+          'card.balaiRt': 'Station × RT Range — Total Cases',
+          'card.kesZon': 'Cases by Zone',
+          'card.top15Daerah': 'Top 15 Districts',
+          'card.pecahanShif': 'Breakdown by Shift',
+          'card.kesMonsun': 'Cases by Monsoon Phase',
+          'card.katMasaOps': 'Operation Duration Category',
+          'card.jarakRt': 'Relation of Distance (km) vs RT (minutes)',
+          'card.senaraiKejadian': 'Incident List',
+          'card.jadualBalai': 'Summary Table by Station',
+          'card.listShowAll': 'Show All',
+          'card.listShowLess': 'Show Short (Top 5)',
+          'card.lihatSemua': 'Show All',
+          'tab.dinamik': 'Dynamic', 'tab.trend': 'Trend',
+          'tab.kpi': 'KPI Status', 'tab.nartSela': 'NART & SELA',
+          'tab.rangeRt': 'RT Range', 'tab.kategori': 'Category',
+          'tab.jenis': 'Type', 'tab.balai': 'Station',
+          'tab.balaiRt': 'Station × RT', 'tab.zonDaerah': 'Zone & District',
+          'tab.shif': 'Shift', 'tab.monsun': 'Monsoon',
+          'tab.masaOps': 'Operation Time', 'tab.jarakRt': 'Distance vs RT',
+          'dyn.xAxis': 'X-Axis', 'dyn.yAxis': 'Y-Axis',
+          'dyn.sort': 'Sort', 'dyn.topN': 'Top N',
+          'dyn.sortDesc': 'Highest Value', 'dyn.sortAsc': 'Lowest Value',
+          'dyn.sortAz': 'Label (A→Z)',
+          'dyn.allPrefix': 'All', 'dyn.topPrefix': 'Top',
+          'balaiRt.range1': 'RT <9 MIN (a–m)', 'balaiRt.range2': 'RT <10 MIN (A–K)',
+          'alert.title': 'Automatic Alerts',
+          'alert.hide': 'Hide', 'alert.show': 'Show',
           'alert.allClear': 'All Clear',
           'alert.allClearDesc': 'No alerts on current filter. All KPIs within target.',
           'alert.rtHigh.title': 'Stations with High Avg RT',
@@ -4599,6 +4772,46 @@
           'kb.search': 'Focus search', 'kb.reset': 'Reset all filters',
           'kb.print': 'Print dashboard', 'kb.theme': 'Toggle light / dark theme',
           'kb.lang': 'Switch BM / EN language', 'kb.esc': 'Close popup / modal',
+          'print.title': 'Choose Sections to Print',
+          'print.all': 'Select All', 'print.active': 'Currently Displayed',
+          'print.none': 'Clear All', 'print.cancel': 'Cancel', 'print.go': 'Print',
+          'print.group.header': 'Header',
+          'print.group.ringkasan': 'KPI Summary',
+          'print.group.grafSection': 'Main Charts (Charts Page)',
+          'print.group.tab': 'Chart Tabs',
+          'print.group.halaman': 'Other Pages',
+          'print.unit.printHeader': 'Header & Filter Summary',
+          'print.unit.alertPanel': 'Automatic Alert Panel',
+          'print.unit.kpiKatkes': 'Case Categories',
+          'print.unit.kpiPrestasi': 'KPI Performance',
+          'print.unit.kpiMangsa': 'Victims',
+          'print.unit.kpiOps': 'Operations',
+          'print.unit.chartKategoriBlk': 'Category Breakdown + List',
+          'print.unit.chartSubkat': 'Sub Category 1 Breakdown',
+          'print.unit.tabDinamik': 'Tab: Dynamic',
+          'print.unit.tabTrend': 'Tab: Trend',
+          'print.unit.tabKpi': 'Tab: KPI Status',
+          'print.unit.tabNart': 'Tab: NART & SELA',
+          'print.unit.tabRt': 'Tab: RT Range',
+          'print.unit.tabKat': 'Tab: Category',
+          'print.unit.tabJenis': 'Tab: Type',
+          'print.unit.tabBalai': 'Tab: Station',
+          'print.unit.tabBalaiRt': 'Tab: Station × RT',
+          'print.unit.tabZon': 'Tab: Zone & District',
+          'print.unit.tabShif': 'Tab: Shift',
+          'print.unit.tabMonsun': 'Tab: Monsoon',
+          'print.unit.tabOperasi': 'Tab: Operation Time',
+          'print.unit.tabJarak': 'Tab: Distance vs RT',
+          'print.unit.pageData': 'Incident List (Data Page)',
+          'print.unit.pageJadual': 'Station Summary Table (Table Page)',
+          'print.header.dateRange': 'Filter Date',
+          'print.header.records': 'Filtered Records',
+          'print.header.printed': 'Printed',
+          'print.meta.header': 'Header', 'print.meta.alerts': 'alerts',
+          'print.meta.clean': 'clean', 'print.meta.charts': 'charts',
+          'print.meta.records': 'records', 'print.meta.balai': 'stations',
+          'print.meta.kpi': 'KPI',
+          'print.alertSelect': 'Please select at least one section to print.',
         }
       };
 
@@ -4611,11 +4824,250 @@
         ['.meta-label', 'topbar.updated'],
         ['.footer-title', 'footer.title'],
         ['.footer-copy', 'footer.copy'],
-        ['.filter-bar-header-left > span:not(.filter-count-badge)', 'filter.title'],
-        ['#drpFooterInfo', 'filter.selectDate'],
         ['#alertPanelTitle', 'alert.title'],
         ['#kbModalTitle', 'kb.title'],
+        ['#printModalTitle', 'print.title'],
       ];
+
+      /* ============================================================
+         STATIC TEXT MAP — auto terjemah semua label statik
+         ============================================================ */
+      const STATIC_TEXT_MAP = {
+        // Filter labels
+        'Julat Tarikh': 'filter.dateRange',
+        'Day': 'filter.day', 'Hari': 'filter.day',
+        'Balai': 'filter.balai', 'Zon': 'filter.zon',
+        'Daerah': 'filter.daerah', 'Kategori': 'filter.kategori',
+        'Sub Kategori 1': 'filter.subKat1', 'Sub Kategori 2': 'filter.subKat2',
+        'Jenis': 'filter.jenis',
+        'Kebakaran Tanah Gambut': 'filter.gambut',
+        'Tempoh Operasi': 'filter.tempohOps',
+        'Status Operasi': 'filter.statusOps',
+        'Shif': 'filter.shif', 'Monsun': 'filter.monsun',
+        'Kategori Balai': 'filter.katBalai',
+        'Kes Dikira RT': 'filter.kesDikiraRt',
+        'Melibatkan Mangsa': 'filter.melibatkanMangsa',
+
+        // Common
+        'Semua': 'common.all', 'All': 'common.all',
+        'Cari...': 'common.search', 'Search...': 'common.search',
+        'Pilih Semua': 'common.selectAll', 'Select All': 'common.selectAll',
+        'Kosongkan': 'common.clearAll', 'Clear All': 'common.clearAll',
+        'Tutup': 'common.close', 'Close': 'common.close',
+        'Tiada padanan': 'common.noMatch', 'No match': 'common.noMatch',
+        'minit': 'common.minutes', 'minutes': 'common.minutes',
+        'jam': 'common.hours', 'hours': 'common.hours',
+        'km': 'common.km',
+        'orang': 'common.person', 'persons': 'common.person',
+        'jam terkumpul': 'common.hoursCollected', 'hours collected': 'common.hoursCollected',
+        'baris': 'common.rows', 'rows': 'common.rows',
+        'CSV': 'common.csv',
+        'Compact': 'common.compact',
+        'Detailed': 'common.detailed',
+        '≤ Nilai': 'common.lessEqual', '≤ Value': 'common.lessEqual',
+        'Papar': 'common.showPage', 'Show': 'common.showPage',
+
+        // KPI section heads
+        'Kategori Kes': 'kpi.katKes', 'Case Categories': 'kpi.katKes',
+        'Prestasi KPI': 'kpi.prestasi', 'KPI Performance': 'kpi.prestasi',
+        'Mangsa': 'kpi.mangsa', 'Victims': 'kpi.mangsa',
+        'Operasi': 'kpi.ops', 'Operations': 'kpi.ops',
+        'Sasaran JBPM': 'kpi.targetJbpm', 'JBPM Target': 'kpi.targetJbpm',
+        '— kategori': 'kpi.katCount', '— categories': 'kpi.katCount',
+        '— orang': 'kpi.mangsaCount', '— persons': 'kpi.mangsaCount',
+        '— jam terkumpul': 'kpi.opsCount', '— hours collected': 'kpi.opsCount',
+
+        // KPI stat labels
+        'Purata RT': 'kpi.purataRt', 'Average RT': 'kpi.purataRt',
+        'KPI Enroute': 'kpi.enroute',
+        'KPI RT 10min': 'kpi.rt10',
+        'Jumlah Mangsa': 'kpi.jumlahMangsa', 'Total Victims': 'kpi.jumlahMangsa',
+        'Mangsa Selamat': 'kpi.mangsaSelamat', 'Victims Saved': 'kpi.mangsaSelamat',
+        'Mangsa Meninggal': 'kpi.mangsaMati', 'Victims Deceased': 'kpi.mangsaMati',
+        'Jumlah Jam Operasi': 'kpi.jumlahJam', 'Total Operation Hours': 'kpi.jumlahJam',
+        'Operasi Panjang >24j': 'kpi.opsPanjang', 'Long Operations >24h': 'kpi.opsPanjang',
+        'Purata Jarak': 'kpi.purataJarak', 'Average Distance': 'kpi.purataJarak',
+        'Jumlah Kes': 'kpi.jumlahKes', 'Total Cases': 'kpi.jumlahKes',
+        'Peatland Fire': 'kpi.gambut',
+
+        // KPI sub
+        '≤ 60 saat': 'sub.enroute', '≤ 60 seconds': 'sub.enroute',
+        '≤ 10 minit': 'sub.rt10', '≤ 10 minutes': 'sub.rt10',
+        'selamat + mati': 'sub.mangsa', 'saved + deceased': 'sub.mangsa',
+        'jumlah jam': 'sub.jamOps', 'total hours': 'sub.jamOps',
+
+        // Hints
+        'Klik kad untuk tapis ikut kategori': 'hint.clickCard',
+        'Click card to filter by category': 'hint.clickCard',
+        'Buang tapisan': 'hint.removeFilter',
+        'Remove filter': 'hint.removeFilter',
+        'klik teks header untuk sort • klik ikon tapis untuk tapis kolum': 'hint.tableHeader',
+        'click header text to sort • click filter icon to filter column': 'hint.tableHeader',
+
+        // Section titles
+        'Pecahan Mengikut Kategori': 'section.pecahanKategori',
+        'Breakdown by Category': 'section.pecahanKategori',
+        'Pecahan Mengikut Sub Kategori 1': 'section.pecahanSubkat',
+        'Breakdown by Sub Category 1': 'section.pecahanSubkat',
+
+        // Card titles
+        'Carta Kategori': 'card.cartaKategori', 'Category Chart': 'card.cartaKategori',
+        'Senarai Kategori': 'card.senaraiKategori', 'Category List': 'card.senaraiKategori',
+        'Semua Sub Kategori': 'card.semuaSubkat', 'All Sub Categories': 'card.semuaSubkat',
+        'Graf Dinamik — Pilih X & Y Sendiri': 'card.grafDinamik',
+        'Dynamic Chart — Choose Your Own X & Y': 'card.grafDinamik',
+        'Trend Kes Mengikut Bulan': 'card.trendBulan', 'Case Trend by Month': 'card.trendBulan',
+        'Pencapaian KPI Utama': 'card.pencapaianKpi', 'Main KPI Achievement': 'card.pencapaianKpi',
+        'NART — Bilangan Kes Tercapai vs Melebihi': 'card.nartCount',
+        'NART — Achieved vs Exceeded Cases': 'card.nartCount',
+        'NART — Purata Nilai RT (minit)': 'card.nartAvg',
+        'NART — Average RT Value (minutes)': 'card.nartAvg',
+        'SELA — Bilangan Dalam Sasaran vs Melebihi': 'card.selaCount',
+        'SELA — Within Target vs Exceeded': 'card.selaCount',
+        'SELA — Purata Sela Masa (minit)': 'card.selaAvg',
+        'SELA — Average Time Gap (minutes)': 'card.selaAvg',
+        'Pecahan Range Masa T/P (RT)': 'card.pecahanRt',
+        'Breakdown of T/P Range (RT)': 'card.pecahanRt',
+        'Range Masa T/P (2)': 'card.rangeRt2', 'T/P Range (2)': 'card.rangeRt2',
+        'Pecahan Kategori Panggilan Operasi': 'card.pecahanKatOps',
+        'Breakdown of Operation Call Category': 'card.pecahanKatOps',
+        'Top 15 Jenis Panggilan Operasi': 'card.top15Jenis',
+        'Top 15 Operation Call Types': 'card.top15Jenis',
+        'Bilangan Kes Mengikut Balai': 'card.kesBalai', 'Cases by Station': 'card.kesBalai',
+        'Balai × Range RT — Jumlah Kes': 'card.balaiRt',
+        'Station × RT Range — Total Cases': 'card.balaiRt',
+        'Kes Mengikut Zon': 'card.kesZon', 'Cases by Zone': 'card.kesZon',
+        'Top 15 Daerah': 'card.top15Daerah', 'Top 15 Districts': 'card.top15Daerah',
+        'Pecahan Mengikut Shif': 'card.pecahanShif', 'Breakdown by Shift': 'card.pecahanShif',
+        'Kes Mengikut Fasa Monsun': 'card.kesMonsun', 'Cases by Monsoon Phase': 'card.kesMonsun',
+        'Kategori Masa Operasi': 'card.katMasaOps', 'Operation Duration Category': 'card.katMasaOps',
+        'Hubungan Jarak (km) vs RT (minit)': 'card.jarakRt',
+        'Relation of Distance (km) vs RT (minutes)': 'card.jarakRt',
+        'Senarai Kejadian': 'card.senaraiKejadian', 'Incident List': 'card.senaraiKejadian',
+        'Jadual Ringkasan Mengikut Balai': 'card.jadualBalai',
+        'Summary Table by Station': 'card.jadualBalai',
+        'Lihat Semua': 'card.listShowAll', 'Show All': 'card.listShowAll',
+
+        // Tabs
+        'Dinamik': 'tab.dinamik', 'Dynamic': 'tab.dinamik',
+        'KPI Status': 'tab.kpi', 'NART & SELA': 'tab.nartSela',
+        'Range RT': 'tab.rangeRt', 'RT Range': 'tab.rangeRt',
+        'Jenis': 'tab.jenis', 'Type': 'tab.jenis',
+        'Balai × RT': 'tab.balaiRt', 'Station × RT': 'tab.balaiRt',
+        'Zon & Daerah': 'tab.zonDaerah', 'Zone & District': 'tab.zonDaerah',
+        'Masa Operasi': 'tab.masaOps', 'Operation Time': 'tab.masaOps',
+        'Jarak vs RT': 'tab.jarakRt', 'Distance vs RT': 'tab.jarakRt',
+
+        // Dyn controls
+        'Susun': 'dyn.sort', 'Sort': 'dyn.sort',
+        'Nilai Tertinggi': 'dyn.sortDesc', 'Highest Value': 'dyn.sortDesc',
+        'Nilai Terendah': 'dyn.sortAsc', 'Lowest Value': 'dyn.sortAsc',
+        'Label (A→Z)': 'dyn.sortAz',
+
+        // Buttons
+        'Reset': 'filter.reset',
+        'Kembali': 'topbar.back', 'Back': 'topbar.back',
+        'Cetak': 'topbar.print', 'Print': 'topbar.print',
+        'Sembunyi': 'filter.hide', 'Hide': 'filter.hide',
+        'Batal': 'print.cancel', 'Cancel': 'print.cancel',
+
+        // Pagination
+        '‹ Sebelum': 'pg.prev', '‹ Prev': 'pg.prev',
+        'Seterusnya ›': 'pg.next', 'Next ›': 'pg.next',
+
+        // Page nav
+        'Graf': 'page.graf', 'Charts': 'page.graf',
+        'Data': 'page.data',
+        'Jadual': 'page.jadual', 'Table': 'page.jadual',
+      };
+
+      // Reverse map: BM atau EN → i18n key
+      const REVERSE_TEXT_MAP = (() => {
+        const r = {};
+        Object.entries(STATIC_TEXT_MAP).forEach(([text, key]) => {
+          r[text] = key;
+          if (I18N.ms[key]) r[I18N.ms[key]] = key;
+          if (I18N.en[key]) r[I18N.en[key]] = key;
+        });
+        return r;
+      })();
+
+      const TRANSLATE_SELECTORS = [
+        '.filter-group > label',
+        '.kpi-section-head .ksh-title',
+        '.kpi-section-head .ksh-count',
+        '.kpi-section-head .ksh-hint',
+        '.kpi-section-head .ksh-clear',
+        '.section-title',
+        '.card-title',
+        '.card-badge',
+        '.tab-btn',
+        '.dyn-ctrl label',
+        '.page-nav-btn',
+        '.stat-label',
+        '.stat-sub',
+        '.stat-mini .lbl',
+        '.stat-mini .sub',
+        '.ms-action',
+        '.ms-apply',
+        '.ms-footer > span:first-child',
+        '.ms-empty',
+        '.drp-clear',
+        '.drp-footer .info',
+        '.filter-bar-header-left > span:not(.filter-count-badge)',
+        '.filter-bar-toggle-btn .toggle-label',
+        '.filter-bar-actions button',
+        '.alert-panel-title > span',
+        '.alert-panel-toggle',
+        '.kb-modal-title > span',
+        '.kb-section-label',
+        '.kb-row-label',
+        '.print-modal-title > span',
+        '.print-group-label',
+        '.print-qbtn',
+        '.print-btn-primary',
+        '.print-btn-secondary',
+        '.ctp-opt-label',
+        '.dyn-select option',
+        '.num-toggle',
+        'button.btn-secondary',
+        'button.btn-ghost',
+        'button.btn-primary',
+        '.list-toggle-btn',
+        '.footer-title',
+        '.footer-copy',
+        '.dyn-info span',
+      ];
+
+      function _translateTextNode(node) {
+        const raw = node.textContent;
+        const trimmed = raw.trim();
+        if (!trimmed) return;
+        const key = REVERSE_TEXT_MAP[trimmed];
+        if (!key) return;
+        const translated = t(key);
+        if (translated === trimmed) return;
+        const lead = raw.match(/^\s*/)[0];
+        const trail = raw.match(/\s*$/)[0];
+        node.textContent = lead + translated + trail;
+      }
+
+      function _translateContainer(root) {
+        const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT, null);
+        const nodes = [];
+        let n;
+        while ((n = walker.nextNode())) nodes.push(n);
+        nodes.forEach(_translateTextNode);
+      }
+
+      function _translateAttr(el, attr) {
+        if (!el.hasAttribute(attr)) return;
+        const cur = el.getAttribute(attr);
+        if (!cur) return;
+        const key = REVERSE_TEXT_MAP[cur.trim()];
+        if (!key) return;
+        el.setAttribute(attr, t(key));
+      }
 
       function _replaceFirstTextNode(el, text) {
         if (!el) return;
@@ -4630,47 +5082,65 @@
       }
 
       function applyI18n() {
-        I18N_HOOKS.forEach(([sel, key]) => {
-          const el = document.querySelector(sel);
-          if (el) _replaceFirstTextNode(el, t(key));
+        // 1) Terjemah semua text-node dalam container terpilih
+        const seen = new Set();
+        TRANSLATE_SELECTORS.forEach(sel => {
+          document.querySelectorAll(sel).forEach(el => {
+            if (seen.has(el)) return;
+            seen.add(el);
+            _translateContainer(el);
+          });
         });
-        _replaceFirstTextNode(document.getElementById('btnKembali'), t('topbar.back'));
-        document.querySelectorAll('.topbar-right .btn-secondary').forEach(b => {
-          if (b.id === 'btnKembali' || b.id === 'btnCetak') return;
-          _replaceFirstTextNode(b, t('topbar.print'));
-        });
-        _replaceFirstTextNode(document.getElementById('btnCetak'), t('topbar.print'));
+
+        // 2) Placeholder & title attributes
+        document.querySelectorAll('input, textarea').forEach(el => _translateAttr(el, 'placeholder'));
+        document.querySelectorAll('[title]').forEach(el => _translateAttr(el, 'title'));
+
+        // 3) Butang topbar
+        const btnBack = document.getElementById('btnKembali');
+        if (btnBack) _replaceFirstTextNode(btnBack, t('topbar.back'));
+        const btnPrint = document.getElementById('btnCetak');
+        if (btnPrint) _replaceFirstTextNode(btnPrint, t('topbar.print'));
         const backFab = document.querySelector('a.back-fab');
         if (backFab) _replaceFirstTextNode(backFab, t('topbar.back'));
 
-        const navMap = { graf: 'page.graf', data: 'page.data', jadual: 'page.jadual' };
-        document.querySelectorAll('.page-nav-btn').forEach(btn => {
-          const k = navMap[btn.dataset.page];
-          if (k) _replaceFirstTextNode(btn, t(k));
-        });
-
-        const secMap = [
-          ['tone-kes .ksh-title', 'kpi.katKes'],
-          ['tone-kpi .ksh-title', 'kpi.prestasi'],
-          ['tone-mangsa .ksh-title', 'kpi.mangsa'],
-          ['tone-ops .ksh-title', 'kpi.ops'],
-        ];
-        secMap.forEach(([sel, key]) => {
-          const el = document.querySelector('.kpi-section.' + sel);
-          if (el) el.textContent = t(key);
-        });
-
+        // 4) Alert panel toggle — teks ikut state
         const at = document.getElementById('alertPanelToggle');
         if (at) at.textContent = at.dataset.collapsed === '1' ? t('alert.show') : t('alert.hide');
 
+        // 5) Filter toggle — ikut state collapse
         const ft = document.getElementById('filterBarToggle');
-        if (ft && ft.querySelector('.toggle-label')) {
+        if (ft) {
+          const lbl = ft.querySelector('.toggle-label');
           const collapsed = document.getElementById('filterBar')?.classList.contains('collapsed');
-          ft.querySelector('.toggle-label').textContent = collapsed ? t('filter.show') : t('filter.hide');
+          if (lbl) lbl.textContent = collapsed ? t('filter.show') : t('filter.hide');
         }
 
+        // 6) Re-render modal shortcut & alert
         renderKbModalBody();
         renderAlertPanel();
+
+        // 7) Modal cetak tajuk
+        const pmt = document.getElementById('printModalTitle');
+        if (pmt) pmt.textContent = t('print.title');
+
+        // 8) Top N + balaiRtRange
+        if (typeof updateTopNOptions === 'function') {
+          try { updateTopNOptions(); } catch(e) {}
+        }
+        const brSel = document.getElementById('balaiRtRange');
+        if (brSel) {
+          if (brSel.options[0]) brSel.options[0].textContent = t('balaiRt.range1');
+          if (brSel.options[1]) brSel.options[1].textContent = t('balaiRt.range2');
+        }
+
+        // 9) Update filter info
+        const fi = document.getElementById('filterInfo');
+        if (fi && typeof FILTERED !== 'undefined' && typeof RAW_DATA !== 'undefined') {
+          fi.innerHTML = `
+    <svg class="ico" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+    ${t('info.showing')} <strong>${FILTERED.length}</strong> ${t('info.of')} <strong>${RAW_DATA.length}</strong> ${t('info.record')}`;
+        }
       }
 
       function setLang(lang) {
@@ -4694,7 +5164,7 @@
       }
 
       /* ============================================================
-         [ BLOK BAHARU 3 ] — ALERT PANEL
+         ALERT PANEL
          ============================================================ */
       const ALERT_STATE = { collapsed: false };
 
@@ -4819,7 +5289,7 @@
       }
 
       /* ============================================================
-         [ BLOK BAHARU 4 ] — KEYBOARD SHORTCUTS
+         KEYBOARD SHORTCUTS
          ============================================================ */
       const KB_DEFS = [
         { section: 'kb.section.nav', items: [
@@ -4936,33 +5406,26 @@
       }
 
       /* ============================================================
-         [ BLOK BAHARU 5 ] — PRINT SELECTIVE
+         PRINT SELECTIVE
          ============================================================ */
       const PRINT_UNITS = [
-        { id: 'print-header', label: 'Pengepala & Ringkasan Tapisan',
+        { id: 'print-header', label: 'Pengepala & Ringkasan Tapisan', group: 'header',
           icon: '<rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/>',
-          group: 'header', build: () => buildPrintHeader() },
-        { id: 'alert-panel', label: 'Panel Amaran Automatik',
-          icon: '<path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/>',
-          group: 'ringkasan', selector: '#alertPanel' },
-        { id: 'kpi-katkes', label: 'Kategori Kes',
-          icon: '<path d="M21.21 15.89A10 10 0 1 1 8 2.83"/><path d="M22 12A10 10 0 0 0 12 2v10z"/>',
-          group: 'ringkasan', selector: '.kpi-section.tone-kes' },
-        { id: 'kpi-prestasi', label: 'Prestasi KPI',
-          icon: '<circle cx="12" cy="13" r="8"/><line x1="12" y1="9" x2="12" y2="13"/>',
-          group: 'ringkasan', selector: '.kpi-section.tone-kpi' },
-        { id: 'kpi-mangsa', label: 'Mangsa',
-          icon: '<path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/>',
-          group: 'ringkasan', selector: '.kpi-section.tone-mangsa' },
-        { id: 'kpi-ops', label: 'Operasi',
-          icon: '<path d="M6 2h12M6 22h12M6 2v6a6 6 0 0 0 12 0V2M6 22v-6a6 6 0 0 1 12 0v6"/>',
-          group: 'ringkasan', selector: '.kpi-section.tone-ops' },
-        { id: 'chart-kategori-blk', label: 'Pecahan Kategori + Senarai',
-          icon: '<path d="M21.21 15.89A10 10 0 1 1 8 2.83"/><path d="M22 12A10 10 0 0 0 12 2v10z"/>',
-          group: 'graf-section', selector: '#page-graf .dashboard-row' },
-        { id: 'chart-subkat', label: 'Pecahan Sub Kategori 1',
-          icon: '<polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"/>',
-          group: 'graf-section', selector: '#subKategoriScroll' },
+          build: () => buildPrintHeader() },
+        { id: 'alert-panel', label: 'Panel Amaran Automatik', group: 'ringkasan', selector: '#alertPanel',
+          icon: '<path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/>' },
+        { id: 'kpi-katkes', label: 'Kategori Kes', group: 'ringkasan', selector: '.kpi-section.tone-kes',
+          icon: '<path d="M21.21 15.89A10 10 0 1 1 8 2.83"/><path d="M22 12A10 10 0 0 0 12 2v10z"/>' },
+        { id: 'kpi-prestasi', label: 'Prestasi KPI', group: 'ringkasan', selector: '.kpi-section.tone-kpi',
+          icon: '<circle cx="12" cy="13" r="8"/><line x1="12" y1="9" x2="12" y2="13"/>' },
+        { id: 'kpi-mangsa', label: 'Mangsa', group: 'ringkasan', selector: '.kpi-section.tone-mangsa',
+          icon: '<path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/>' },
+        { id: 'kpi-ops', label: 'Operasi', group: 'ringkasan', selector: '.kpi-section.tone-ops',
+          icon: '<path d="M6 2h12M6 22h12M6 2v6a6 6 0 0 0 12 0V2M6 22v-6a6 6 0 0 1 12 0v6"/>' },
+        { id: 'chart-kategori-blk', label: 'Pecahan Kategori + Senarai', group: 'graf-section', selector: '#page-graf .dashboard-row',
+          icon: '<path d="M21.21 15.89A10 10 0 1 1 8 2.83"/><path d="M22 12A10 10 0 0 0 12 2v10z"/>' },
+        { id: 'chart-subkat', label: 'Pecahan Sub Kategori 1', group: 'graf-section', selector: '#subKategoriScroll',
+          icon: '<polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"/>' },
         { id: 'tab-dinamik', label: 'Tab: Dinamik', group: 'tab', selector: '#panel-dinamik', tab: true,
           icon: '<circle cx="12" cy="12" r="3"/><path d="M12 1v6M12 17v6M4.22 4.22l4.24 4.24"/>' },
         { id: 'tab-trend', label: 'Tab: Trend', group: 'tab', selector: '#panel-trend', tab: true,
@@ -4991,12 +5454,10 @@
           icon: '<path d="M6 2h12M6 22h12M6 2v6a6 6 0 0 0 12 0V2"/>' },
         { id: 'tab-jarak', label: 'Tab: Jarak vs RT', group: 'tab', selector: '#panel-jarak', tab: true,
           icon: '<path d="M21.3 8.7l-6-6a1 1 0 0 0-1.4 0L2.7 13.9a1 1 0 0 0 0 1.4l6 6"/>' },
-        { id: 'page-data', label: 'Senarai Kejadian (Halaman Data)',
-          icon: '<line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/>',
-          group: 'halaman', selector: '#page-data .card' },
-        { id: 'page-jadual', label: 'Jadual Ringkasan Balai (Halaman Jadual)',
-          icon: '<rect x="3" y="3" width="18" height="18" rx="2"/><line x1="3" y1="9" x2="21" y2="9"/>',
-          group: 'halaman', selector: '#page-jadual .card' },
+        { id: 'page-data', label: 'Senarai Kejadian (Halaman Data)', group: 'halaman', selector: '#page-data .card',
+          icon: '<line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/>' },
+        { id: 'page-jadual', label: 'Jadual Ringkasan Balai (Halaman Jadual)', group: 'halaman', selector: '#page-jadual .card',
+          icon: '<rect x="3" y="3" width="18" height="18" rx="2"/><line x1="3" y1="9" x2="21" y2="9"/>' },
       ];
 
       const PRINT_GROUPS = [
@@ -5010,22 +5471,22 @@
       const PRINT_STATE = new Set();
 
       function printUnitMeta(u) {
-        if (u.id === 'print-header') return 'Header';
+        if (u.id === 'print-header') return t('print.meta.header');
         if (u.id === 'alert-panel') {
           const n = computeAlerts().length;
-          return n ? n + ' amaran' : 'bersih';
+          return n ? n + ' ' + t('print.meta.alerts') : t('print.meta.clean');
         }
         if (u.id.startsWith('tab-')) {
           const el = document.querySelector(u.selector);
           const n = el ? el.querySelectorAll('canvas').length : 0;
-          return n + ' carta';
+          return n + ' ' + t('print.meta.charts');
         }
-        if (u.id === 'page-data') return FILTERED.length + ' rekod';
+        if (u.id === 'page-data') return FILTERED.length + ' ' + t('print.meta.records');
         if (u.id === 'page-jadual') {
           const rows = Object.keys(getBalaiMetrics()).length;
-          return rows + ' balai';
+          return rows + ' ' + t('print.meta.balai');
         }
-        if (u.group === 'ringkasan') return 'KPI';
+        if (u.group === 'ringkasan') return t('print.meta.kpi');
         return '';
       }
 
@@ -5048,19 +5509,56 @@
       function renderPrintModal() {
         const body = document.getElementById('printModalBody');
         if (!body) return;
+
+        const GROUP_LABEL_MAP = {
+          header: 'print.group.header',
+          ringkasan: 'print.group.ringkasan',
+          'graf-section': 'print.group.grafSection',
+          tab: 'print.group.tab',
+          halaman: 'print.group.halaman',
+        };
+        const UNIT_LABEL_MAP = {
+          'print-header': 'print.unit.printHeader',
+          'alert-panel': 'print.unit.alertPanel',
+          'kpi-katkes': 'print.unit.kpiKatkes',
+          'kpi-prestasi': 'print.unit.kpiPrestasi',
+          'kpi-mangsa': 'print.unit.kpiMangsa',
+          'kpi-ops': 'print.unit.kpiOps',
+          'chart-kategori-blk': 'print.unit.chartKategoriBlk',
+          'chart-subkat': 'print.unit.chartSubkat',
+          'tab-dinamik': 'print.unit.tabDinamik',
+          'tab-trend': 'print.unit.tabTrend',
+          'tab-kpi': 'print.unit.tabKpi',
+          'tab-nart': 'print.unit.tabNart',
+          'tab-rt': 'print.unit.tabRt',
+          'tab-kat': 'print.unit.tabKat',
+          'tab-jenis': 'print.unit.tabJenis',
+          'tab-balai': 'print.unit.tabBalai',
+          'tab-balai-rt': 'print.unit.tabBalaiRt',
+          'tab-zon': 'print.unit.tabZon',
+          'tab-shif': 'print.unit.tabShif',
+          'tab-monsun': 'print.unit.tabMonsun',
+          'tab-operasi': 'print.unit.tabOperasi',
+          'tab-jarak': 'print.unit.tabJarak',
+          'page-data': 'print.unit.pageData',
+          'page-jadual': 'print.unit.pageJadual',
+        };
+
         let html = '';
         PRINT_GROUPS.forEach(g => {
           const units = PRINT_UNITS.filter(u => u.group === g.key);
           if (!units.length) return;
-          html += `<div class="print-group-label">${g.label}<span class="print-group-count">${units.filter(u => PRINT_STATE.has(u.id)).length} / ${units.length}</span></div>`;
+          const groupLabel = GROUP_LABEL_MAP[g.key] ? t(GROUP_LABEL_MAP[g.key]) : g.label;
+          html += `<div class="print-group-label">${groupLabel}<span class="print-group-count">${units.filter(u => PRINT_STATE.has(u.id)).length} / ${units.length}</span></div>`;
           units.forEach(u => {
             const chk = PRINT_STATE.has(u.id);
             const meta = printUnitMeta(u);
+            const unitLabel = UNIT_LABEL_MAP[u.id] ? t(UNIT_LABEL_MAP[u.id]) : u.label;
             html += `
               <label class="print-opt ${chk ? 'checked' : ''}" data-pid="${u.id}">
                 <input type="checkbox" ${chk ? 'checked' : ''} data-print-id="${u.id}" />
                 <span class="print-opt-icon"><svg viewBox="0 0 24 24" style="fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;">${u.icon}</svg></span>
-                <span class="print-opt-label">${u.label}</span>
+                <span class="print-opt-label">${unitLabel}</span>
                 ${meta ? `<span class="print-opt-meta">${meta}</span>` : ''}
               </label>`;
           });
@@ -5072,7 +5570,7 @@
             if (cb.checked) PRINT_STATE.add(id); else PRINT_STATE.delete(id);
             cb.closest('.print-opt').classList.toggle('checked', cb.checked);
             body.querySelectorAll('.print-group-label').forEach(lbl => {
-              const group = PRINT_GROUPS.find(g => lbl.textContent.indexOf(g.label) === 0);
+              const group = PRINT_GROUPS.find(g => lbl.textContent.indexOf((GROUP_LABEL_MAP[g.key] ? t(GROUP_LABEL_MAP[g.key]) : g.label)) === 0);
               if (!group) return;
               const units = PRINT_UNITS.filter(u => u.group === group.key);
               const cntEl = lbl.querySelector('.print-group-count');
@@ -5097,9 +5595,9 @@
             <div class="print-header-sub">${t('brand.sub')}</div>
           </div>
           <div class="print-header-info">
-            <div><strong>Tarikh Tapisan:</strong> ${from} → ${to}</div>
-            <div><strong>Rekod Ditapis:</strong> ${total.toLocaleString()} / ${raw.toLocaleString()}</div>
-            <div><strong>Dicetak:</strong> ${String(now.getDate()).padStart(2,'0')}/${String(now.getMonth()+1).padStart(2,'0')}/${now.getFullYear()} ${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')}</div>
+            <div><strong>${t('print.header.dateRange')}:</strong> ${from} → ${to}</div>
+            <div><strong>${t('print.header.records')}:</strong> ${total.toLocaleString()} / ${raw.toLocaleString()}</div>
+            <div><strong>${t('print.header.printed')}:</strong> ${String(now.getDate()).padStart(2,'0')}/${String(now.getMonth()+1).padStart(2,'0')}/${now.getFullYear()} ${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')}</div>
           </div>
         `;
         return div;
@@ -5124,7 +5622,7 @@
 
       function printSelected() {
         if (PRINT_STATE.size === 0) {
-          alert('Pilih sekurang-kurangnya satu bahagian untuk dicetak.');
+          alert(t('print.alertSelect'));
           return;
         }
         prepareForPrint().then(() => {
@@ -5134,7 +5632,7 @@
 
           const doc = iframe.contentDocument;
           doc.open();
-          doc.write('<!DOCTYPE html><html lang="' + LANG + '"><head><meta charset="UTF-8"><title>Cetak</title></head><body></body></html>');
+          doc.write('<!DOCTYPE html><html lang="' + LANG + '"><head><meta charset="UTF-8"><title>Print</title></head><body></body></html>');
           doc.close();
 
           document.querySelectorAll('style, link[rel="stylesheet"]').forEach(node => {
