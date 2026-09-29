@@ -4886,7 +4886,7 @@
         tbl.appendChild(thead);
 
         const tbody = document.createElement('tbody');
-        BALAI_LIST.forEach((b, idx) => {
+        BALAI_KETUA_LIST.forEach((b, idx) => {
           const meta = BALAI_GRED_TURNOUT[b.name] || { gred: '-', turnOut: 0 };
           const bkbOfficer = getBkbOfficer(b.name);
           const penyelia = getPenyeliaOfficer(b.name);
@@ -7265,7 +7265,6 @@
     <th style="text-align:left;">KETUA BALAI</th>
     <th>NO TEL</th>
     <th style="text-align:left;">PENYELIA PASUKAN</th>
-    <th>NO TEL</th>
     <th>KB</th><th>PO</th>
     <th>A</th><th>C</th><th>CS</th><th>TK</th>
     <th>JUMLAH</th>
@@ -7325,10 +7324,6 @@
           if (namaPenyelia) tdP.textContent = namaPenyelia;
           else { tdP.className = 'txt no-data'; tdP.textContent = '—'; }
           tr.appendChild(tdP);
-
-          const tdTP = document.createElement('td');
-          tdTP.textContent = d.penyelia && d.penyelia.noTelefon ? d.penyelia.noTelefon : '—';
-          tr.appendChild(tdTP);
 
           const tdSK = document.createElement('td');
           tdSK.className = d.statusKetua ? 's1' : 's0';
@@ -7402,7 +7397,7 @@
         fTO.textContent = totalTurnOut;
         fr.appendChild(fTO);
         const fSpacer = document.createElement('th');
-        fSpacer.colSpan = 5;
+        fSpacer.colSpan = 4;
         fr.appendChild(fSpacer);
         const fKB = document.createElement('th');
         fKB.className = 's1'; fKB.textContent = totalKB;
@@ -7439,7 +7434,7 @@
 
         const fr2 = document.createElement('tr');
         const f2Summary = document.createElement('th');
-        f2Summary.colSpan = 17;
+        f2Summary.colSpan = 16;
         f2Summary.style.textAlign = 'center';
         f2Summary.style.fontSize = '0.7rem';
         f2Summary.style.letterSpacing = '0.06em';
