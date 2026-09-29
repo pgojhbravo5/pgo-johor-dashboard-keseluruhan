@@ -582,7 +582,7 @@
         .stat-mini .val { font-size: 16px; }
         .stat-mini .lbl { font-size: 9.5px; }
         .stat-mini .sub { font-size: 10px; }
-        .table-scroll { max-height: 65vh; border-radius: 10px; position: relative; }
+        .table-scroll { max-height: 70vh; border-radius: 10px; position: relative; }
         table { font-size: 11.5px; }
         thead th { padding: 7px 6px; font-size: 9.5px; }
         tbody td { padding: 7px 6px; }
@@ -963,7 +963,7 @@
       }
 
       /* ============================================================
-         PERUBAHAN BARU: TARIKH/MASA 1 BARIS & MARGIN DESKTOP 20% KECIL
+         PERUBAHAN BARU: TARIKH/MASA 1 BARIS
          ============================================================ */
       #dataTable th[data-col="tarikhStr"],
       #dataTable td[data-col="tarikhStr"],
@@ -998,13 +998,13 @@
         .dashboard-row { gap: 12px !important; margin-bottom: 12px !important; }
         .subkat-grid { gap: 6px !important; }
         .compact-list { gap: 5px !important; }
-        .table-scroll { max-height: 80vh !important; }
+        .table-scroll { max-height: 75vh !important; }
       }
       @media (max-width: 768px) {
         .topbar-inner { padding: 10px 12px !important; }
         .container { padding: 10px 10px 90px !important; }
         .card { padding: 14px 12px !important; margin-bottom: 10px !important; }
-        .table-scroll { max-height: 75vh !important; }
+        .table-scroll { max-height: 70vh !important; }
       }
 
       /* ============================================================
@@ -1173,96 +1173,113 @@
       }
 
       /* ============================================================
-         OVERRIDE: BUANG SCROLL DALAMAN, BIARKAN PANEL MEMANJANG KE BAWAH
+         PILIHAN B: STICKY HEADER + SCROLL CONTAINER DALAMAN
          ============================================================ */
       .table-scroll, #jadualScroll {
-        max-height: none !important;      /* Buang had ketinggian */
-        overflow-y: visible !important;   /* Benarkan kandungan keluar & memanjang ke bawah */
-        overflow-x: auto !important;      /* Kekalkan skrol mendatar jika lajur terlalu banyak */
+        max-height: 75vh !important;
+        overflow-y: auto !important;
+        overflow-x: auto !important;
+        border-radius: var(--radius);
       }
 
-      /* Pelarasan untuk header jadual (sticky) supaya tidak ditutupi topbar apabila skrol page */
-      thead th, #jadualBalai thead th {
-        top: var(--topbar-h) !important;  /* Melekat 67px dari atas (bawah topbar) */
-        z-index: 5 !important;            /* Pastikan ia berada di atas baris data */
+      /* Header jadual: sticky di dalam scroll container */
+      thead th,
+      #dataTable thead th,
+      #jadualBalai thead th {
+        position: sticky !important;
+        top: 0 !important;
+        z-index: 5 !important;
+        background: var(--surface-2) !important;
+      }
+
+      /* Footer jadual (Page Jadual): sticky di bawah */
+      #jadualBalai tfoot td {
+        position: sticky !important;
+        bottom: 0 !important;
+        z-index: 4 !important;
+        background: var(--surface-2) !important;
       }
 
       /* ============================================================
-         MOBILE: JADUAL TAB DATA — KOMPAK
-         - Teks: wrap pada sempang perkataan (min 2 patah perkataan / baris)
-         - Nombor / masa / tarikh: kekal 1 baris sahaja
+         HEADER JADUAL: 1 BARIS SAHAJA + LARASKAN KOLUM
          ============================================================ */
-      @media (max-width: 768px) {
-        #dataTable {
-          font-size: 10.5px;
-          line-height: 1.2;
-          table-layout: auto;
-        }
+      #dataTable {
+        table-layout: fixed;
+        width: 100%;
+      }
 
-        /* Header lebih kecil & padat */
+      #dataTable thead th {
+        white-space: nowrap !important;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        word-break: keep-all !important;
+        overflow-wrap: normal !important;
+        hyphens: none;
+        vertical-align: middle;
+        line-height: 1.25;
+        padding: 8px 26px 8px 6px !important;
+        position: sticky;
+        top: 0;
+        z-index: 5;
+        background: var(--surface-2);
+      }
+
+      #dataTable thead th .th-label {
+        display: inline-block;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        max-width: 100%;
+        vertical-align: middle;
+      }
+
+      #dataTable thead th {
+        position: sticky;
+      }
+
+      /* Cadangan lebar kolum supaya header muat 1 baris */
+      #dataTable thead th[data-col="bil"]        { width: 48px;  }
+      #dataTable thead th[data-col="tahun"]      { width: 56px;  }
+      #dataTable thead th[data-col="monsun"]     { width: 140px; }
+      #dataTable thead th[data-col="bulan"]      { width: 88px;  }
+      #dataTable thead th[data-col="hari"]       { width: 64px;  }
+      #dataTable thead th[data-col="tarikhStr"]  { width: 96px;  }
+      #dataTable thead th[data-col="daerah"]     { width: 110px; }
+      #dataTable thead th[data-col="zon"]        { width: 72px;  }
+      #dataTable thead th[data-col="balai"]      { width: 140px; }
+      #dataTable thead th[data-col="callCard"]   { width: 110px; }
+      #dataTable thead th[data-col="kategori"]   { width: 130px; }
+      #dataTable thead th[data-col="subKategori1"] { width: 140px; }
+      #dataTable thead th[data-col="subKategori2"] { width: 140px; }
+      #dataTable thead th[data-col="jenis"]      { width: 150px; }
+      #dataTable thead th[data-col="jarak"]      { width: 80px;  }
+      #dataTable thead th[data-col="masaTerima"],
+      #dataTable thead th[data-col="masaLooping"],
+      #dataTable thead th[data-col="masaBerlepas"],
+      #dataTable thead th[data-col="masaTiba"],
+      #dataTable thead th[data-col="masaTamat"]  { width: 78px;  }
+      #dataTable thead th[data-col="rt"]         { width: 74px;  }
+      #dataTable thead th[data-col="statusOperasi"] { width: 110px; }
+
+      /* Untuk #jadualBalai — 1 baris juga */
+      #jadualBalai thead th {
+        white-space: nowrap !important;
+        word-break: keep-all !important;
+        overflow-wrap: normal !important;
+        vertical-align: middle;
+        line-height: 1.25;
+      }
+
+      /* Mobile: header tetap 1 baris */
+      @media (max-width: 768px) {
         #dataTable thead th {
-          padding: 4px 5px !important;
+          padding: 5px 18px 5px 5px !important;
           font-size: 9px !important;
           line-height: 1.15;
-          word-break: normal !important;
-          overflow-wrap: break-word !important;
-          hyphens: none;
-          white-space: normal;
-        }
-
-        /* Sel data: wrap hanya pada sempang perkataan */
-        #dataTable tbody td {
-          padding: 4px 5px !important;
-          font-size: 10.5px !important;
-          line-height: 1.2;
-          vertical-align: top;
-          word-break: normal !important;        /* jangan potong perkataan */
-          overflow-wrap: break-word !important; /* pecah hanya jika terlalu panjang */
-          hyphens: none;
-        }
-
-        /* === Kolum TEKS: benarkan wrap, min lebar utk 2 patah perkataan === */
-        #dataTable td[data-col="balai"],
-        #dataTable td[data-col="daerah"],
-        #dataTable td[data-col="zon"],
-        #dataTable td[data-col="bulan"],
-        #dataTable td[data-col="hari"],
-        #dataTable td[data-col="monsun"],
-        #dataTable td[data-col="kategori"],
-        #dataTable td[data-col="subKategori1"],
-        #dataTable td[data-col="subKategori2"],
-        #dataTable td[data-col="jenis"],
-        #dataTable td[data-col="statusOperasi"] {
-          min-width: 80px;         /* muat sekurang-kurangnya 2 patah perkataan pendek */
-          max-width: 150px;
-          white-space: normal;
-        }
-
-        /* === Kolum NOMBOR / TARIKH / MASA — kekal 1 baris === */
-        #dataTable td[data-col="bil"],
-        #dataTable td[data-col="tahun"],
-        #dataTable td[data-col="tarikhStr"],
-        #dataTable td[data-col="jarak"],
-        #dataTable td[data-col="rt"],
-        #dataTable td[data-col="masaTerima"],
-        #dataTable td[data-col="masaLooping"],
-        #dataTable td[data-col="masaBerlepas"],
-        #dataTable td[data-col="masaTiba"],
-        #dataTable td[data-col="masaTamat"],
-        #dataTable td[data-col="callCard"] {
           white-space: nowrap !important;
           word-break: keep-all !important;
           overflow-wrap: normal !important;
           hyphens: none;
-        }
-
-        /* Penjajaran nombor: kanan + tabular */
-        #dataTable td[data-col="bil"],
-        #dataTable td[data-col="tahun"],
-        #dataTable td[data-col="jarak"],
-        #dataTable td[data-col="rt"] {
-          text-align: right;
-          font-variant-numeric: tabular-nums;
         }
       }
     </style>
@@ -1938,9 +1955,9 @@
                   <span>Papar</span>
                   <select id="rowsPerPageSelect" class="rows-per-page-select">
                     <option value="10">10</option>
-                    <option value="15" selected>15</option>
+                    <option value="15">15</option>
                     <option value="25">25</option>
-                    <option value="50">50</option>
+                    <option value="50" selected>50</option>
                     <option value="100">100</option>
                     <option value="200">200</option>
                     <option value="300">300</option>
@@ -2170,7 +2187,7 @@
 
       let HEADERS = [], COL = {}, RAW_DATA = [], FILTERED = [], CHARTS = {};
       let currentPage = 1;
-      let rowsPerPage = 15;
+      let rowsPerPage = 50;
       let sortCol = null, sortDir = 'asc';
       let activeTab = 'dinamik';
       let currentPageView = 'graf';
@@ -3190,6 +3207,10 @@
             sel.value = String(v);
             rowsPerPage = v === 0 ? Infinity : v;
           }
+        } else {
+          // Default baharu: 50 baris/halaman
+          rowsPerPage = 50;
+          sel.value = '50';
         }
         sel.addEventListener('change', () => {
           const v = parseInt(sel.value, 10);
