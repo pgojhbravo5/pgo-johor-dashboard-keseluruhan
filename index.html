@@ -2384,6 +2384,7 @@
             font-size: 0.72rem;
             padding: 0.2rem 0;
             color: var(--text-secondary);
+            flex-wrap: wrap; /* KEMASKINI: Membolehkan teks turun ke baris baru */
         }
         .popup-jentera-row .jrow-name {
             color: var(--text-primary);
@@ -2393,6 +2394,12 @@
             color: var(--text-secondary);
             font-weight: 500;
             font-size: 0.65rem;
+        }
+        /* KEMASKINI: Gaya untuk teks model jentera */
+        .popup-jentera-row .jrow-model {
+            color: var(--hazard-gold);
+            font-size: 0.65rem;
+            font-weight: 600;
         }
         .popup-jentera-badge {
             font-size: 0.6rem;
@@ -5497,8 +5504,12 @@
                     senaraiJentera.forEach(j => {
                         const kelas = j.kelas;
                         const label = kelas === 'baik' ? 'BAIK' : kelas === 'minor' ? 'ROSAK MINOR' : 'ROSAK';
+                        
+                        // KEMASKINI: Tambah teks model jika ada
+                        const modelText = j.model ? ` <span class="jrow-model">(${j.model})</span>` : '';
+                        
                         baris += `<div class="popup-jentera-row">
-                            <span class="jrow-name">${j.callsign || j.plate || '-'}${j.callsign && j.plate ? ` <span class="jrow-plate">${j.plate}</span>` : ''}</span>
+                            <span class="jrow-name">${j.callsign || j.plate || '-'}${j.callsign && j.plate ? ` <span class="jrow-plate">${j.plate}</span>` : ''}${modelText}</span>
                             <span class="popup-jentera-badge ${kelas}">${label}</span>
                         </div>`;
                     });
@@ -5528,6 +5539,7 @@
                     const idxKerosakan = pgoColIdx(headers, 'STATUS KEROSAKKAN');
                     const idxCallsign = pgoColIdx(headers, 'CALLSIGN');
                     const idxPlate = pgoColIdx(headers, 'PLATE');
+                    const idxModel = pgoColIdx(headers, 'MODEL'); // KEMASKINI: Baca kolum MODEL
 
                     const jenteraIkutBalai = {};
                     const namaAsalIkutKunci = {};
@@ -5545,6 +5557,7 @@
                         const item = {
                             callsign: idxCallsign >= 0 ? (row[idxCallsign] || '').trim() : '',
                             plate: idxPlate >= 0 ? (row[idxPlate] || '').trim() : '',
+                            model: idxModel >= 0 ? (row[idxModel] || '').trim() : '', // KEMASKINI: Simpan data model
                             status,
                             kelas
                         };
