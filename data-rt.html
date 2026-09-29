@@ -961,6 +961,231 @@
         .back-fab, .topbar, .page-nav, .tabs,
         .filter-bar, .card-controls, .pagination { display: none !important; }
       }
+
+      /* ============================================================
+         PERUBAHAN BARU: TARIKH/MASA 1 BARIS & MARGIN DESKTOP 20% KECIL
+         ============================================================ */
+      #dataTable th[data-col="tarikhStr"],
+      #dataTable td[data-col="tarikhStr"],
+      #dataTable th[data-col="masaTerima"],
+      #dataTable td[data-col="masaTerima"],
+      #dataTable th[data-col="masaLooping"],
+      #dataTable td[data-col="masaLooping"],
+      #dataTable th[data-col="masaBerlepas"],
+      #dataTable td[data-col="masaBerlepas"],
+      #dataTable th[data-col="masaTiba"],
+      #dataTable td[data-col="masaTiba"],
+      #dataTable th[data-col="masaTamat"],
+      #dataTable td[data-col="masaTamat"],
+      #dataTable th[data-col="rt"],
+      #dataTable td[data-col="rt"],
+      #jadualBalai th[data-col="avgRT"],
+      #jadualBalai td[data-col="avgRT"] {
+        white-space: nowrap !important;
+        word-break: normal !important;
+      }
+      @media (min-width: 769px) {
+        .topbar-inner, .container { max-width: 1920px !important; }
+        .topbar-inner { padding: 11px 19px !important; }
+        .container { padding: 16px 19px 32px !important; }
+        .card { padding: 14px 16px !important; margin-bottom: 12px !important; }
+        .filter-bar { margin-bottom: 12px !important; }
+        .filter-bar-inner { padding: 11px 14px !important; gap: 10px !important; }
+        .filter-bar-header { padding: 8px 14px !important; }
+        .stat-grid { gap: 10px !important; margin-bottom: 16px !important; }
+        .kpi-section { margin-bottom: 16px !important; }
+        .section-title { margin: 19px 0 10px !important; }
+        .dashboard-row { gap: 12px !important; margin-bottom: 12px !important; }
+        .subkat-grid { gap: 6px !important; }
+        .compact-list { gap: 5px !important; }
+        .table-scroll { max-height: 80vh !important; }
+      }
+      @media (max-width: 768px) {
+        .topbar-inner { padding: 10px 12px !important; }
+        .container { padding: 10px 10px 90px !important; }
+        .card { padding: 14px 12px !important; margin-bottom: 10px !important; }
+        .table-scroll { max-height: 75vh !important; }
+      }
+
+      /* ============================================================
+         TAB DROPDOWN UNTUK MOBILE
+         ============================================================ */
+      .tab-dropdown-mobile {
+        display: none;
+        position: relative;
+        margin-bottom: 12px;
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: 10px;
+        box-shadow: var(--shadow-sm);
+      }
+      .tab-dropdown-trigger {
+        width: 100%;
+        padding: 12px 14px;
+        background: transparent;
+        border: none;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 10px;
+        cursor: pointer;
+        font-family: inherit;
+        font-size: 13px;
+        font-weight: 600;
+        color: var(--johor-navy);
+        text-align: left;
+      }
+      .tab-dropdown-trigger .tdm-left {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        min-width: 0;
+        flex: 1;
+      }
+      .tab-dropdown-trigger .tdm-left .ico {
+        width: 16px;
+        height: 16px;
+        color: var(--johor-navy);
+        flex-shrink: 0;
+      }
+      .tab-dropdown-trigger .tdm-label {
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+      .tab-dropdown-trigger .tdm-caret {
+        color: var(--text-subtle);
+        transition: transform 0.2s;
+        display: inline-flex;
+        flex-shrink: 0;
+      }
+      .tab-dropdown-mobile.open .tdm-caret {
+        transform: rotate(180deg);
+        color: var(--johor-navy);
+      }
+      .tab-dropdown-popup {
+        position: absolute;
+        top: calc(100% + 4px);
+        left: 0;
+        right: 0;
+        z-index: 300;
+        background: var(--surface);
+        border: 1px solid var(--border-strong);
+        border-radius: 10px;
+        box-shadow: var(--shadow-lg);
+        padding: 6px;
+        max-height: 60vh;
+        overflow-y: auto;
+      }
+      .tab-dropdown-popup[hidden] { display: none !important; }
+      .tab-dropdown-item {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 10px 12px;
+        border-radius: 6px;
+        cursor: pointer;
+        font-size: 13px;
+        color: var(--text);
+        background: transparent;
+        border: none;
+        width: 100%;
+        text-align: left;
+        font-family: inherit;
+        transition: background 0.12s;
+      }
+      .tab-dropdown-item:hover { background: var(--surface-2); }
+      .tab-dropdown-item.active {
+        background: var(--johor-navy);
+        color: #fff;
+        font-weight: 600;
+      }
+      .tab-dropdown-item .ico {
+        width: 15px;
+        height: 15px;
+        flex-shrink: 0;
+      }
+      @media (max-width: 768px) {
+        .tab-dropdown-mobile {
+          display: block;
+          position: sticky;
+          top: 106px;
+          z-index: 45;
+        }
+        .tabs { display: none !important; }
+      }
+
+      /* ============================================================
+         KOMPAK 5% — KECILKAN MARGIN KESELURUHAN
+         ============================================================ */
+      @media (min-width: 769px) {
+        .topbar-inner,
+        .container {
+          max-width: 2016px !important;
+        }
+        .topbar-inner { padding: 11px 12px !important; }
+        .container { padding: 15px 12px 30px !important; }
+        .card { padding: 13px 14px !important; }
+        .stat-grid          { gap: 9px !important; }
+        .dashboard-row      { gap: 10px !important; }
+        .subkat-grid        { gap: 5px !important; }
+        .compact-list       { gap: 4px !important; }
+        .stat-row           { gap: 8px !important; }
+        .dyn-controls       { gap: 10px !important; padding: 12px !important; }
+        .filter-bar-inner   { padding: 10px 12px !important; gap: 9px !important; }
+        .filter-bar-header  { padding: 8px 12px !important; }
+        thead th,
+        tbody td {
+          padding: 7px 6px !important;
+        }
+        #jadualBalai tfoot td {
+          padding: 8px 8px !important;
+        }
+        .kat-tile { padding: 12px 12px 10px 14px !important; }
+        .mini-card { padding: 9px 10px !important; }
+        .section-title { margin: 18px 0 9px !important; }
+        .stat-card { padding: 12px 13px !important; }
+        .site-footer { padding: 26px 12px 20px !important; }
+      }
+      @media (max-width: 768px) {
+        .container { padding: 8px 8px 85px !important; }
+        .topbar-inner { padding: 9px 10px !important; }
+        .card {
+          padding: 12px 10px !important;
+          margin-bottom: 9px !important;
+        }
+        .stat-grid      { gap: 7px !important; }
+        .dashboard-row  { gap: 8px !important; }
+        .subkat-grid    { gap: 5px !important; }
+        .filter-bar-inner { padding: 10px 12px !important; gap: 8px !important; }
+        .filter-bar-header { padding: 10px 12px !important; }
+        thead th,
+        tbody td {
+          padding: 6px 5px !important;
+        }
+        .kat-tile { padding: 10px 10px 9px 12px !important; }
+        .site-footer { padding: 18px 12px 14px !important; }
+      }
+      @media (max-width: 380px) {
+        .container { padding: 6px 6px 80px !important; }
+        .topbar-inner { padding: 8px 8px !important; }
+        .card { padding: 10px 9px !important; }
+      }
+
+      /* ============================================================
+         OVERRIDE: BUANG SCROLL DALAMAN, BIARKAN PANEL MEMANJANG KE BAWAH
+         ============================================================ */
+      .table-scroll, #jadualScroll {
+        max-height: none !important;      /* Buang had ketinggian */
+        overflow-y: visible !important;   /* Benarkan kandungan keluar & memanjang ke bawah */
+        overflow-x: auto !important;      /* Kekalkan skrol mendatar jika lajur terlalu banyak */
+      }
+
+      /* Pelarasan untuk header jadual (sticky) supaya tidak ditutupi topbar apabila skrol page */
+      thead th, #jadualBalai thead th {
+        top: var(--topbar-h) !important;  /* Melekat 67px dari atas (bawah topbar) */
+        z-index: 5 !important;            /* Pastikan ia berada di atas baris data */
+      }
     </style>
   </head>
   <body>
@@ -1293,6 +1518,20 @@
               <span class="card-badge" id="badgeSubKategori">-</span>
             </div>
             <div class="subkat-grid" id="subKategoriScroll"></div>
+          </div>
+
+          <!-- Dropdown Tab (Mobile sahaja) -->
+          <div class="tab-dropdown-mobile" id="tabDropdownMobile">
+            <button class="tab-dropdown-trigger" id="tabDropdownTrigger" type="button">
+              <span class="tdm-left">
+                <svg class="ico" id="tabDropdownIcon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M12 1v6M12 17v6M4.22 4.22l4.24 4.24M15.54 15.54l4.24 4.24M1 12h6M17 12h6M4.22 19.78l4.24-4.24M15.54 8.46l4.24-4.24"/></svg>
+                <span class="tdm-label" id="tabDropdownLabel">Dinamik</span>
+              </span>
+              <span class="tdm-caret">
+                <svg viewBox="0 0 24 24" style="width:12px;height:12px;fill:none;stroke:currentColor;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round;"><polyline points="6 9 12 15 18 9"/></svg>
+              </span>
+            </button>
+            <div class="tab-dropdown-popup" id="tabDropdownPopup" hidden></div>
           </div>
 
           <div class="tabs" id="tabs">
@@ -2576,6 +2815,7 @@
           initBalaiRtControl();
           FilterPanel.init();
           initPageNav();
+          initTabDropdownMobile();
           initRowsPerPage();
           applyFilter();
           set('lastUpdate', formatDateTime(new Date()));
@@ -2977,6 +3217,99 @@
           setTimeout(() => renderCharts(), 50);
         });
       });
+
+      function initTabDropdownMobile() {
+        const dropdown = document.getElementById('tabDropdownMobile');
+        const trigger = document.getElementById('tabDropdownTrigger');
+        const popup = document.getElementById('tabDropdownPopup');
+        const labelEl = document.getElementById('tabDropdownLabel');
+        const iconEl = document.getElementById('tabDropdownIcon');
+        if (!dropdown || !trigger || !popup) return;
+
+        const tabs = [...document.querySelectorAll('.tab-btn')];
+
+        function buildOptions() {
+          popup.innerHTML = tabs.map(tab => {
+            const isActive = tab.classList.contains('active');
+            const iconSvg = tab.querySelector('svg') ? tab.querySelector('svg').outerHTML : '';
+            const label = tab.textContent.trim();
+            return `
+              <button class="tab-dropdown-item ${isActive ? 'active' : ''}" data-tab-target="${tab.dataset.tab}" type="button">
+                ${iconSvg}
+                <span>${label}</span>
+              </button>`;
+          }).join('');
+
+          popup.querySelectorAll('.tab-dropdown-item').forEach(item => {
+            item.addEventListener('click', (e) => {
+              e.stopPropagation();
+              const target = item.dataset.tabTarget;
+              const original = tabs.find(t => t.dataset.tab === target);
+              if (original) original.click();
+              updateActiveState();
+              closePopup();
+            });
+          });
+        }
+
+        function updateActiveState() {
+          const active = tabs.find(t => t.classList.contains('active'));
+          if (!active) return;
+          const label = active.textContent.trim();
+          labelEl.textContent = label;
+          const svg = active.querySelector('svg');
+          if (svg) iconEl.outerHTML = svg.outerHTML;
+
+          popup.querySelectorAll('.tab-dropdown-item').forEach(item => {
+            item.classList.toggle('active', item.dataset.tabTarget === active.dataset.tab);
+          });
+        }
+
+        function openPopup() {
+          buildOptions();
+          updateActiveState();
+          popup.hidden = false;
+          dropdown.classList.add('open');
+        }
+
+        function closePopup() {
+          popup.hidden = true;
+          dropdown.classList.remove('open');
+        }
+
+        function togglePopup() {
+          if (popup.hidden) openPopup(); else closePopup();
+        }
+
+        trigger.addEventListener('click', (e) => {
+          e.stopPropagation();
+          togglePopup();
+        });
+
+        popup.addEventListener('click', (e) => e.stopPropagation());
+
+        document.addEventListener('click', (e) => {
+          if (!e.target.closest('#tabDropdownMobile')) closePopup();
+        });
+
+        document.addEventListener('keydown', (e) => {
+          if (e.key === 'Escape') closePopup();
+        });
+
+        tabs.forEach(tab => {
+          tab.addEventListener('click', () => {
+            setTimeout(updateActiveState, 10);
+          });
+        });
+
+        window.addEventListener('scroll', () => {
+          if (window.matchMedia('(max-width: 768px)').matches && !popup.hidden) {
+            closePopup();
+          }
+        }, { passive: true });
+
+        updateActiveState();
+      }
 
       function pct(num, den) { return den ? ((num / den) * 100).toFixed(1) + '%' : '-'; }
       function set(id, v) { const el = document.getElementById(id); if (el) el.textContent = v; }
@@ -4415,9 +4748,9 @@
       ${cols.map(c => {
         let val = getColDisplayValue(d, c.key);
         if (c.key === 'statusOperasi') {
-          return `<td>${val === 'MASIH BEROPERASI' ? '<span style="color:#D97757;font-weight:600;">MASIH BEROPERASI</span>' : val}</td>`;
+          return `<td data-col="${c.key}">${val === 'MASIH BEROPERASI' ? '<span style="color:#D97757;font-weight:600;">MASIH BEROPERASI</span>' : val}</td>`;
         }
-        return `<td>${val}</td>`;
+        return `<td data-col="${c.key}">${val}</td>`;
       }).join('')}
     </tr>`).join('');
         const perPageLabel = rowsPerPage === Infinity || rowsPerPage <= 0 ? 'semua' : rowsPerPage;
@@ -4432,9 +4765,6 @@
         window.scrollTo({ top: document.querySelector('.table-scroll').offsetTop - 100, behavior: 'smooth' });
       }
 
-      /* ============================================================
-         MOBILE UX LOGIC
-         ============================================================ */
       (function initMobileUX() {
         const isMobile = () => window.matchMedia('(max-width: 768px)').matches;
         const FILTER_KEY = 'rt-filter-collapsed';
@@ -4491,9 +4821,6 @@
         });
       })();
 
-      /* ============================================================
-         i18n (BM / EN)
-         ============================================================ */
       const I18N = {
         ms: {
           'brand.title': 'Dashboard Analisis Response Time',
@@ -4818,22 +5145,7 @@
       let LANG = localStorage.getItem('rt-lang') || 'ms';
       function t(key) { return (I18N[LANG] && I18N[LANG][key]) || I18N.ms[key] || key; }
 
-      const I18N_HOOKS = [
-        ['.brand-text h1', 'brand.title'],
-        ['.brand-text .brand-sub', 'brand.sub'],
-        ['.meta-label', 'topbar.updated'],
-        ['.footer-title', 'footer.title'],
-        ['.footer-copy', 'footer.copy'],
-        ['#alertPanelTitle', 'alert.title'],
-        ['#kbModalTitle', 'kb.title'],
-        ['#printModalTitle', 'print.title'],
-      ];
-
-      /* ============================================================
-         STATIC TEXT MAP — auto terjemah semua label statik
-         ============================================================ */
       const STATIC_TEXT_MAP = {
-        // Filter labels
         'Julat Tarikh': 'filter.dateRange',
         'Day': 'filter.day', 'Hari': 'filter.day',
         'Balai': 'filter.balai', 'Zon': 'filter.zon',
@@ -4847,8 +5159,6 @@
         'Kategori Balai': 'filter.katBalai',
         'Kes Dikira RT': 'filter.kesDikiraRt',
         'Melibatkan Mangsa': 'filter.melibatkanMangsa',
-
-        // Common
         'Semua': 'common.all', 'All': 'common.all',
         'Cari...': 'common.search', 'Search...': 'common.search',
         'Pilih Semua': 'common.selectAll', 'Select All': 'common.selectAll',
@@ -4866,8 +5176,6 @@
         'Detailed': 'common.detailed',
         '≤ Nilai': 'common.lessEqual', '≤ Value': 'common.lessEqual',
         'Papar': 'common.showPage', 'Show': 'common.showPage',
-
-        // KPI section heads
         'Kategori Kes': 'kpi.katKes', 'Case Categories': 'kpi.katKes',
         'Prestasi KPI': 'kpi.prestasi', 'KPI Performance': 'kpi.prestasi',
         'Mangsa': 'kpi.mangsa', 'Victims': 'kpi.mangsa',
@@ -4876,8 +5184,6 @@
         '— kategori': 'kpi.katCount', '— categories': 'kpi.katCount',
         '— orang': 'kpi.mangsaCount', '— persons': 'kpi.mangsaCount',
         '— jam terkumpul': 'kpi.opsCount', '— hours collected': 'kpi.opsCount',
-
-        // KPI stat labels
         'Purata RT': 'kpi.purataRt', 'Average RT': 'kpi.purataRt',
         'KPI Enroute': 'kpi.enroute',
         'KPI RT 10min': 'kpi.rt10',
@@ -4889,28 +5195,20 @@
         'Purata Jarak': 'kpi.purataJarak', 'Average Distance': 'kpi.purataJarak',
         'Jumlah Kes': 'kpi.jumlahKes', 'Total Cases': 'kpi.jumlahKes',
         'Peatland Fire': 'kpi.gambut',
-
-        // KPI sub
         '≤ 60 saat': 'sub.enroute', '≤ 60 seconds': 'sub.enroute',
         '≤ 10 minit': 'sub.rt10', '≤ 10 minutes': 'sub.rt10',
         'selamat + mati': 'sub.mangsa', 'saved + deceased': 'sub.mangsa',
         'jumlah jam': 'sub.jamOps', 'total hours': 'sub.jamOps',
-
-        // Hints
         'Klik kad untuk tapis ikut kategori': 'hint.clickCard',
         'Click card to filter by category': 'hint.clickCard',
         'Buang tapisan': 'hint.removeFilter',
         'Remove filter': 'hint.removeFilter',
         'klik teks header untuk sort • klik ikon tapis untuk tapis kolum': 'hint.tableHeader',
         'click header text to sort • click filter icon to filter column': 'hint.tableHeader',
-
-        // Section titles
         'Pecahan Mengikut Kategori': 'section.pecahanKategori',
         'Breakdown by Category': 'section.pecahanKategori',
         'Pecahan Mengikut Sub Kategori 1': 'section.pecahanSubkat',
         'Breakdown by Sub Category 1': 'section.pecahanSubkat',
-
-        // Card titles
         'Carta Kategori': 'card.cartaKategori', 'Category Chart': 'card.cartaKategori',
         'Senarai Kategori': 'card.senaraiKategori', 'Category List': 'card.senaraiKategori',
         'Semua Sub Kategori': 'card.semuaSubkat', 'All Sub Categories': 'card.semuaSubkat',
@@ -4947,8 +5245,6 @@
         'Jadual Ringkasan Mengikut Balai': 'card.jadualBalai',
         'Summary Table by Station': 'card.jadualBalai',
         'Lihat Semua': 'card.listShowAll', 'Show All': 'card.listShowAll',
-
-        // Tabs
         'Dinamik': 'tab.dinamik', 'Dynamic': 'tab.dinamik',
         'KPI Status': 'tab.kpi', 'NART & SELA': 'tab.nartSela',
         'Range RT': 'tab.rangeRt', 'RT Range': 'tab.rangeRt',
@@ -4957,31 +5253,22 @@
         'Zon & Daerah': 'tab.zonDaerah', 'Zone & District': 'tab.zonDaerah',
         'Masa Operasi': 'tab.masaOps', 'Operation Time': 'tab.masaOps',
         'Jarak vs RT': 'tab.jarakRt', 'Distance vs RT': 'tab.jarakRt',
-
-        // Dyn controls
         'Susun': 'dyn.sort', 'Sort': 'dyn.sort',
         'Nilai Tertinggi': 'dyn.sortDesc', 'Highest Value': 'dyn.sortDesc',
         'Nilai Terendah': 'dyn.sortAsc', 'Lowest Value': 'dyn.sortAsc',
         'Label (A→Z)': 'dyn.sortAz',
-
-        // Buttons
         'Reset': 'filter.reset',
         'Kembali': 'topbar.back', 'Back': 'topbar.back',
         'Cetak': 'topbar.print', 'Print': 'topbar.print',
         'Sembunyi': 'filter.hide', 'Hide': 'filter.hide',
         'Batal': 'print.cancel', 'Cancel': 'print.cancel',
-
-        // Pagination
         '‹ Sebelum': 'pg.prev', '‹ Prev': 'pg.prev',
         'Seterusnya ›': 'pg.next', 'Next ›': 'pg.next',
-
-        // Page nav
         'Graf': 'page.graf', 'Charts': 'page.graf',
         'Data': 'page.data',
         'Jadual': 'page.jadual', 'Table': 'page.jadual',
       };
 
-      // Reverse map: BM atau EN → i18n key
       const REVERSE_TEXT_MAP = (() => {
         const r = {};
         Object.entries(STATIC_TEXT_MAP).forEach(([text, key]) => {
@@ -5082,7 +5369,6 @@
       }
 
       function applyI18n() {
-        // 1) Terjemah semua text-node dalam container terpilih
         const seen = new Set();
         TRANSLATE_SELECTORS.forEach(sel => {
           document.querySelectorAll(sel).forEach(el => {
@@ -5092,11 +5378,9 @@
           });
         });
 
-        // 2) Placeholder & title attributes
         document.querySelectorAll('input, textarea').forEach(el => _translateAttr(el, 'placeholder'));
         document.querySelectorAll('[title]').forEach(el => _translateAttr(el, 'title'));
 
-        // 3) Butang topbar
         const btnBack = document.getElementById('btnKembali');
         if (btnBack) _replaceFirstTextNode(btnBack, t('topbar.back'));
         const btnPrint = document.getElementById('btnCetak');
@@ -5104,11 +5388,9 @@
         const backFab = document.querySelector('a.back-fab');
         if (backFab) _replaceFirstTextNode(backFab, t('topbar.back'));
 
-        // 4) Alert panel toggle — teks ikut state
         const at = document.getElementById('alertPanelToggle');
         if (at) at.textContent = at.dataset.collapsed === '1' ? t('alert.show') : t('alert.hide');
 
-        // 5) Filter toggle — ikut state collapse
         const ft = document.getElementById('filterBarToggle');
         if (ft) {
           const lbl = ft.querySelector('.toggle-label');
@@ -5116,15 +5398,12 @@
           if (lbl) lbl.textContent = collapsed ? t('filter.show') : t('filter.hide');
         }
 
-        // 6) Re-render modal shortcut & alert
         renderKbModalBody();
         renderAlertPanel();
 
-        // 7) Modal cetak tajuk
         const pmt = document.getElementById('printModalTitle');
         if (pmt) pmt.textContent = t('print.title');
 
-        // 8) Top N + balaiRtRange
         if (typeof updateTopNOptions === 'function') {
           try { updateTopNOptions(); } catch(e) {}
         }
@@ -5134,12 +5413,17 @@
           if (brSel.options[1]) brSel.options[1].textContent = t('balaiRt.range2');
         }
 
-        // 9) Update filter info
         const fi = document.getElementById('filterInfo');
         if (fi && typeof FILTERED !== 'undefined' && typeof RAW_DATA !== 'undefined') {
           fi.innerHTML = `
     <svg class="ico" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
     ${t('info.showing')} <strong>${FILTERED.length}</strong> ${t('info.of')} <strong>${RAW_DATA.length}</strong> ${t('info.record')}`;
+        }
+
+        const tabDropdownLabel = document.getElementById('tabDropdownLabel');
+        if (tabDropdownLabel) {
+          const activeTab = document.querySelector('.tab-btn.active');
+          if (activeTab) tabDropdownLabel.textContent = activeTab.textContent.trim();
         }
       }
 
@@ -5163,9 +5447,6 @@
         applyI18n();
       }
 
-      /* ============================================================
-         ALERT PANEL
-         ============================================================ */
       const ALERT_STATE = { collapsed: false };
 
       function computeAlerts() {
@@ -5288,9 +5569,6 @@
         });
       }
 
-      /* ============================================================
-         KEYBOARD SHORTCUTS
-         ============================================================ */
       const KB_DEFS = [
         { section: 'kb.section.nav', items: [
           { keys: ['1'], label: 'kb.page1', action: () => switchPage('graf') },
@@ -5405,9 +5683,6 @@
         });
       }
 
-      /* ============================================================
-         PRINT SELECTIVE
-         ============================================================ */
       const PRINT_UNITS = [
         { id: 'print-header', label: 'Pengepala & Ringkasan Tapisan', group: 'header',
           icon: '<rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/>',
@@ -5775,9 +6050,6 @@
         });
       }
 
-      /* ============================================================
-         PATCH applyFilter supaya alert + i18n auto-refresh
-         ============================================================ */
       (function patchApplyFilter() {
         let tries = 0;
         const patch = () => {
@@ -5796,9 +6068,6 @@
         patch();
       })();
 
-      /* ============================================================
-         INIT SEMUA
-         ============================================================ */
       initTheme();
       (function initNewFeatures() {
         initLang();
