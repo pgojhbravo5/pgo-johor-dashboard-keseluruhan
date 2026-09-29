@@ -1186,6 +1186,85 @@
         top: var(--topbar-h) !important;  /* Melekat 67px dari atas (bawah topbar) */
         z-index: 5 !important;            /* Pastikan ia berada di atas baris data */
       }
+
+      /* ============================================================
+         MOBILE: JADUAL TAB DATA — KOMPAK
+         - Teks: wrap pada sempang perkataan (min 2 patah perkataan / baris)
+         - Nombor / masa / tarikh: kekal 1 baris sahaja
+         ============================================================ */
+      @media (max-width: 768px) {
+        #dataTable {
+          font-size: 10.5px;
+          line-height: 1.2;
+          table-layout: auto;
+        }
+
+        /* Header lebih kecil & padat */
+        #dataTable thead th {
+          padding: 4px 5px !important;
+          font-size: 9px !important;
+          line-height: 1.15;
+          word-break: normal !important;
+          overflow-wrap: break-word !important;
+          hyphens: none;
+          white-space: normal;
+        }
+
+        /* Sel data: wrap hanya pada sempang perkataan */
+        #dataTable tbody td {
+          padding: 4px 5px !important;
+          font-size: 10.5px !important;
+          line-height: 1.2;
+          vertical-align: top;
+          word-break: normal !important;        /* jangan potong perkataan */
+          overflow-wrap: break-word !important; /* pecah hanya jika terlalu panjang */
+          hyphens: none;
+        }
+
+        /* === Kolum TEKS: benarkan wrap, min lebar utk 2 patah perkataan === */
+        #dataTable td[data-col="balai"],
+        #dataTable td[data-col="daerah"],
+        #dataTable td[data-col="zon"],
+        #dataTable td[data-col="bulan"],
+        #dataTable td[data-col="hari"],
+        #dataTable td[data-col="monsun"],
+        #dataTable td[data-col="kategori"],
+        #dataTable td[data-col="subKategori1"],
+        #dataTable td[data-col="subKategori2"],
+        #dataTable td[data-col="jenis"],
+        #dataTable td[data-col="statusOperasi"] {
+          min-width: 80px;         /* muat sekurang-kurangnya 2 patah perkataan pendek */
+          max-width: 150px;
+          white-space: normal;
+        }
+
+        /* === Kolum NOMBOR / TARIKH / MASA — kekal 1 baris === */
+        #dataTable td[data-col="bil"],
+        #dataTable td[data-col="tahun"],
+        #dataTable td[data-col="tarikhStr"],
+        #dataTable td[data-col="jarak"],
+        #dataTable td[data-col="rt"],
+        #dataTable td[data-col="masaTerima"],
+        #dataTable td[data-col="masaLooping"],
+        #dataTable td[data-col="masaBerlepas"],
+        #dataTable td[data-col="masaTiba"],
+        #dataTable td[data-col="masaTamat"],
+        #dataTable td[data-col="callCard"] {
+          white-space: nowrap !important;
+          word-break: keep-all !important;
+          overflow-wrap: normal !important;
+          hyphens: none;
+        }
+
+        /* Penjajaran nombor: kanan + tabular */
+        #dataTable td[data-col="bil"],
+        #dataTable td[data-col="tahun"],
+        #dataTable td[data-col="jarak"],
+        #dataTable td[data-col="rt"] {
+          text-align: right;
+          font-variant-numeric: tabular-nums;
+        }
+      }
     </style>
   </head>
   <body>
