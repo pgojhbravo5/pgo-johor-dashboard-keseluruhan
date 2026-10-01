@@ -4374,6 +4374,15 @@
         'ROSAK & TIDAK BOLEH BEROPERASI','DALAM PROSES LUPUS','LUPUS',
       ];
 
+      // ← TAMBAHAN: Status khas untuk PERALATAN KOMUNIKASI sahaja.
+      // 'TIADA' & 'LUPUS' & 'DALAM PROSES LUPUS' tidak akan dikira dalam
+      // mana-mana ringkasan (B/R/J, MERS999, PO3A, dsb.) kerana
+      // mapEquipStatus() akan pulangkan null untuk status-status tersebut.
+      const KOMUNIKASI_STATUSES = [
+        'BAIK & BOLEH BEROPERASI','ROSAK MINOR & BOLEH BEROPERASI',
+        'ROSAK & TIDAK BOLEH BEROPERASI','DALAM PROSES LUPUS','LUPUS','TIADA',
+      ];
+
       const JENTERA_KAT = ['FRT','LFRT','CFRT','RFRT','Rapid Rescue Vehicle (RRV)','ALP','SKYLIFT','TTL','High Performance Pump Module (HPPM)','High Capacity Foam Tender (HCFM)','PRIME MOVER','FOAM TENDER','Breathing Apparatus Tender Vehicle (BATV)','WATER TANKER 10,000','WATER TANKER 20,000','JEN. HAZMAT','KOMUNIKASI','RIM','EMRS','MOBILE COMMAND POST','KEMBALIK','SIASATAN (FORENSICS)'];
 
       const JENTERA_KAT_PO3A = ['FRT','LFRT','CFRT','RFRT','Rapid Rescue Vehicle (RRV)','Fire Rescue Vehicle (FRV)','ALP','SKYLIFT','TTL','High Performance Pump Module (HPPM)','High Capacity Foam Tender (HCFM)','FOAM TENDER','Breathing Apparatus Tender Vehicle (BATV)','WATER TANKER 10,000 LITER','WATER TANKER 20,000 LITER','JEN. HAZMAT','KOMUNIKASI','RIM','EMRS','MOBILE COMMAND POST','KEMBALIK','NISSAN SAFARI'];
@@ -6061,6 +6070,7 @@
         if (s === 'BAIK & BOLEH BEROPERASI') return 'B';
         if (s === 'ROSAK MINOR & BOLEH BEROPERASI') return 'B';
         if (s === 'ROSAK & TIDAK BOLEH BEROPERASI') return 'R';
+        // 'DALAM PROSES LUPUS', 'LUPUS', 'TIADA' → null (tidak dikira)
         return null;
       }
 
@@ -6387,7 +6397,9 @@
         }
 
         const tdS = document.createElement('td');
-        const selS = makeSelect(EQUIP_STATUSES, r.status, (v) => { r.status = v; saveState(); globalRecalc(); markRow(); });
+        // ← TAMBAHAN: Guna senarai status khas untuk panel KOMUNIKASI (ada 'TIADA')
+        const statusOptions = isKom ? KOMUNIKASI_STATUSES : EQUIP_STATUSES;
+        const selS = makeSelect(statusOptions, r.status, (v) => { r.status = v; saveState(); globalRecalc(); markRow(); });
         selS.dataset.mf = 'status';
         tdS.appendChild(selS); tr.appendChild(tdS);
 
