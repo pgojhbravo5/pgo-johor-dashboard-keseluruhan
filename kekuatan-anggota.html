@@ -2741,6 +2741,37 @@
         background: rgba(46, 158, 99, 0.08);
       }
       .sound-toggle .ico { font-size: 1rem; }
+
+      /* ============================================================
+         FIX: Dropdown Option Dark Mode
+         ============================================================ */
+      select {
+        color-scheme: dark;
+      }
+      [data-theme='light'] select {
+        color-scheme: light;
+      }
+
+      select option,
+      select optgroup {
+        background-color: var(--panel-2);
+        color: var(--text);
+      }
+
+      select option:checked,
+      select option:hover,
+      select option:focus {
+        background-color: var(--panel-3);
+        color: var(--text-strong);
+      }
+
+      select optgroup {
+        font-weight: 600;
+        color: var(--amber);
+      }
+      [data-theme='light'] select optgroup {
+        color: var(--amber);
+      }
     </style>
   </head>
   <body>
@@ -4325,7 +4356,7 @@
         '11. PBB': 'PBB (PBBK II + PBB)',
       };
 
-      const EXCLUDED_ROLES_FROM_COUNT = ['KETUA BALAI', 'PEGAWAI OPERASI'];
+      const EXCLUDED_ROLES_FROM_COUNT = ['KETUA BALAI', 'PEMANGKU KETUA BALAI', 'PEGAWAI OPERASI'];
 
       const DEFAULT_STATUS_FOR_ROLES = {
         'BILIK KAWALAN (BKB)': 'BERTUGAS',
@@ -4334,7 +4365,7 @@
       const UNITS = ['PEMADAM', 'EMRS', 'HAZMAT', 'PPDA', 'RIM', 'STORM / MUST'];
       const STATUS_P = ['A', 'C', 'CS', 'TK'];
       const PERSONEL_STATUSES = ['BERTUGAS', 'CUTI', 'CUTI SAKIT', 'TUGAS KHAS', 'HRM'];
-      const PERANAN_OPTS = ['KETUA BALAI', 'PEGAWAI OPERASI', 'PENYELIA PASUKAN', 'PEMANDU', 'BILIK KAWALAN (BKB)', 'ANGGOTA PEMADAMAN'];
+      const PERANAN_OPTS = ['KETUA BALAI', 'PEMANGKU KETUA BALAI', 'PEGAWAI OPERASI', 'PENYELIA PASUKAN', 'PEMANDU', 'BILIK KAWALAN (BKB)', 'ANGGOTA PEMADAMAN'];
       const PASUKAN_OPTS = ['A', 'B', 'C', 'WAKTU PEJABAT'];
       const SHIF_OPTS = ['0800-2000', '2000-0800', '0800-0800'];
       const KATEGORI_BALAI_OPTS = ['12 JAM', '24 JAM'];
@@ -5848,7 +5879,7 @@
         status: 'STATUS', unit1: 'UNIT 1',
         kategori: 'KATEGORI', maklumat: 'MAKLUMAT', jumlah: 'JUMLAH',
       };
-      const LOCKED_PASUKAN_ROLES = ['KETUA BALAI', 'PEGAWAI OPERASI'];
+      const LOCKED_PASUKAN_ROLES = ['KETUA BALAI', 'PEMANGKU KETUA BALAI', 'PEGAWAI OPERASI'];
       const LOCKED_STATUS_ROLES = {
         'BILIK KAWALAN (BKB)': 'BERTUGAS',
       };
@@ -7072,49 +7103,58 @@
         document.getElementById('sections').appendChild(wrap);
         const body = wrap.querySelector('.section-body');
 
-        const tbl = document.createElement('table');
-        tbl.className = 'grid';
-        body.appendChild(tbl);
+        const m = katMapSummary
+          ? computeAllEquipGridSummary(key, katList, katMapSummary)
+          : computeAllEquipGrid(key);
 
-        const gr = document.createElement('tr');
-        gr.className = 'groups';
-        const sr = document.createElement('tr');
-        sr.className = 'subs';
+        function buildTable(items, showJumlah, grandItems) {
+          const tbl = document.createElement('table');
+          tbl.className = 'grid';
 
-        if (isKom) {
-          KOMUNIKASI_DEF.forEach((k) => {
-            const gh = document.createElement('th');
-            gh.colSpan = 3; gh.textContent = k.name;
-            gr.appendChild(gh);
-            [
-              { lbl: k.l1, cls: 's-' + k.l1 },
-              { lbl: 'R', cls: 's-R' },
-              { lbl: 'J', cls: '' },
-            ].forEach((c) => {
-              const th = document.createElement('th');
-              th.textContent = c.lbl;
-              if (c.cls) th.className = c.cls;
-              sr.appendChild(th);
+          const gr = document.createElement('tr');
+          gr.className = 'groups';
+          const sr = document.createElement('tr');
+          sr.className = 'subs';
+
+          if (isKom) {
+            items.forEach((k) => {
+              const kd = KOMUNIKASI_DEF.find(function (x) { return x.name === k; }) || { l1: 'B', l2: 'R' };
+              const gh = document.createElement('th');
+              gh.colSpan = 3; gh.textContent = k;
+              gr.appendChild(gh);
+              [
+                { lbl: kd.l1, cls: 's-' + kd.l1 },
+                { lbl: 'R', cls: 's-R' },
+                { lbl: 'J', cls: '' },
+              ].forEach((c) => {
+                const th = document.createElement('th');
+                th.textContent = c.lbl;
+                if (c.cls) th.className = c.cls;
+                sr.appendChild(th);
+              });
             });
-          });
-          const gj = document.createElement('th');
-          gj.colSpan = 3; gj.textContent = 'JUMLAH'; gj.className = 'jumlah-col';
-          gr.appendChild(gj);
-          [
-            { lbl: 'B', cls: 's-B' },
-            { lbl: 'R', cls: 's-R' },
-            { lbl: 'J', cls: '' },
-          ].forEach((c) => {
-            const th = document.createElement('th');
-            th.textContent = c.lbl;
-            th.className = (c.cls ? c.cls + ' ' : '') + 'jumlah-col';
-            sr.appendChild(th);
-          });
-        } else {
-          katList.forEach((name) => {
-            const gh = document.createElement('th');
-            gh.colSpan = 3; gh.textContent = name;
-            gr.appendChild(gh);
+          } else {
+            items.forEach((name) => {
+              const gh = document.createElement('th');
+              gh.colSpan = 3; gh.textContent = name;
+              gr.appendChild(gh);
+              [
+                { lbl: 'B', cls: 's-B' },
+                { lbl: 'R', cls: 's-R' },
+                { lbl: 'J', cls: '' },
+              ].forEach((c) => {
+                const th = document.createElement('th');
+                th.textContent = c.lbl;
+                if (c.cls) th.className = c.cls;
+                sr.appendChild(th);
+              });
+            });
+          }
+
+          if (showJumlah) {
+            const gj = document.createElement('th');
+            gj.colSpan = 3; gj.textContent = 'JUMLAH'; gj.className = 'jumlah-col';
+            gr.appendChild(gj);
             [
               { lbl: 'B', cls: 's-B' },
               { lbl: 'R', cls: 's-R' },
@@ -7122,65 +7162,73 @@
             ].forEach((c) => {
               const th = document.createElement('th');
               th.textContent = c.lbl;
-              if (c.cls) th.className = c.cls;
+              th.className = (c.cls ? c.cls + ' ' : '') + 'jumlah-col';
               sr.appendChild(th);
             });
+          }
+
+          const thead = document.createElement('thead');
+          thead.appendChild(gr); thead.appendChild(sr);
+          tbl.appendChild(thead);
+
+          const tbody = document.createElement('tbody');
+          const tr = document.createElement('tr');
+
+          items.forEach((name) => {
+            const d = m[name] || { B: 0, R: 0 };
+            const tdB = document.createElement('td');
+            tdB.textContent = d.B;
+            tr.appendChild(tdB);
+            const tdR = document.createElement('td');
+            tdR.textContent = d.R;
+            tr.appendChild(tdR);
+            const tdJ = document.createElement('td');
+            tdJ.className = 'jumlah-cell';
+            tdJ.textContent = d.B + d.R;
+            tr.appendChild(tdJ);
           });
-          const gj = document.createElement('th');
-          gj.colSpan = 3; gj.textContent = 'JUMLAH'; gj.className = 'jumlah-col';
-          gr.appendChild(gj);
-          [
-            { lbl: 'B', cls: 's-B' },
-            { lbl: 'R', cls: 's-R' },
-            { lbl: 'J', cls: '' },
-          ].forEach((c) => {
-            const th = document.createElement('th');
-            th.textContent = c.lbl;
-            th.className = (c.cls ? c.cls + ' ' : '') + 'jumlah-col';
-            sr.appendChild(th);
-          });
+
+          if (showJumlah) {
+            let totalB = 0, totalR = 0;
+            const src = grandItems || items;
+            src.forEach((name) => {
+              const d = m[name] || { B: 0, R: 0 };
+              totalB += d.B;
+              totalR += d.R;
+            });
+            const gtB = document.createElement('td');
+            gtB.className = 'jumlah-cell'; gtB.textContent = totalB;
+            tr.appendChild(gtB);
+            const gtR = document.createElement('td');
+            gtR.className = 'jumlah-cell'; gtR.textContent = totalR;
+            tr.appendChild(gtR);
+            const gtJ = document.createElement('td');
+            gtJ.className = 'jumlah-cell'; gtJ.textContent = totalB + totalR;
+            tr.appendChild(gtJ);
+          }
+
+          tbody.appendChild(tr);
+          tbl.appendChild(tbody);
+          return tbl;
         }
 
-        const thead = document.createElement('thead');
-        thead.appendChild(gr); thead.appendChild(sr);
-        tbl.appendChild(thead);
+        const SPLIT_POINT = 11;
+        const shouldSplit = !isKom && key === 'jentera' && katList.length > SPLIT_POINT;
 
-        const m = katMapSummary
-          ? computeAllEquipGridSummary(key, katList, katMapSummary)
-          : computeAllEquipGrid(key);
-        const tbody = document.createElement('tbody');
-        const tr = document.createElement('tr');
-        const items = isKom ? KOMUNIKASI_DEF.map((k) => k.name) : katList;
-        const grand = { B: 0, R: 0 };
+        if (shouldSplit) {
+          const topItems = katList.slice(0, SPLIT_POINT);
+          const bottomItems = katList.slice(SPLIT_POINT);
 
-        items.forEach((name) => {
-          const d = m[name] || { B: 0, R: 0 };
-          const tdB = document.createElement('td');
-          tdB.textContent = d.B;
-          tr.appendChild(tdB);
-          grand.B += d.B;
-          const tdR = document.createElement('td');
-          tdR.textContent = d.R;
-          tr.appendChild(tdR);
-          grand.R += d.R;
-          const tdJ = document.createElement('td');
-          tdJ.className = 'jumlah-cell';
-          tdJ.textContent = d.B + d.R;
-          tr.appendChild(tdJ);
-        });
+          body.appendChild(buildTable(topItems, false));
 
-        const gtB = document.createElement('td');
-        gtB.className = 'jumlah-cell'; gtB.textContent = grand.B;
-        tr.appendChild(gtB);
-        const gtR = document.createElement('td');
-        gtR.className = 'jumlah-cell'; gtR.textContent = grand.R;
-        tr.appendChild(gtR);
-        const gtJ = document.createElement('td');
-        gtJ.className = 'jumlah-cell'; gtJ.textContent = grand.B + grand.R;
-        tr.appendChild(gtJ);
+          const spacer = document.createElement('div');
+          spacer.style.height = '12px';
+          body.appendChild(spacer);
 
-        tbody.appendChild(tr);
-        tbl.appendChild(tbody);
+          body.appendChild(buildTable(bottomItems, true, katList));
+        } else {
+          body.appendChild(buildTable(katList, true));
+        }
       }
 
       function getKetuaBalaiData(balaiName) {
@@ -7192,11 +7240,15 @@
           A: 0, C: 0, CS: 0, TK: 0, jumlah: 0,
         };
         if (!s) return result;
+        let ketuaUtama = null;
+        let ketuaPemangku = null;
         (s.personel || []).forEach((p) => {
-          if (p.peranan === 'KETUA BALAI' && !result.ketua) result.ketua = p;
+          if (p.peranan === 'KETUA BALAI' && !ketuaUtama) ketuaUtama = p;
+          if (p.peranan === 'PEMANGKU KETUA BALAI' && !ketuaPemangku) ketuaPemangku = p;
           if (p.peranan === 'PEGAWAI OPERASI' && !result.po) result.po = p;
           if (p.peranan === 'PENYELIA PASUKAN' && !result.penyelia) result.penyelia = p;
         });
+        result.ketua = ketuaUtama || ketuaPemangku;
         result.statusKetua = result.ketua && result.ketua.status === 'BERTUGAS' ? 1 : 0;
         result.statusPO = result.po && result.po.status === 'BERTUGAS' ? 1 : 0;
         (s.personel || []).forEach(function (p) {
@@ -7262,7 +7314,7 @@
         thead.innerHTML = `<tr>
     <th>BIL</th><th>GRED</th><th>TURN OUT</th>
     <th style="text-align:left;">BALAI</th>
-    <th style="text-align:left;">KETUA BALAI</th>
+    <th style="text-align:left;">KETUA BALAI/PEMANGKU KETUA BALAI</th>
     <th>NO TEL</th>
     <th style="text-align:left;">PENYELIA PASUKAN</th>
     <th>KB</th><th>PO</th>
@@ -7460,7 +7512,7 @@
         const info = document.createElement('div');
         info.style.cssText = 'margin-top:0.75rem; font-size:0.7rem; color:var(--text-dim); line-height:1.6;';
         info.innerHTML =
-          '<b>Nota:</b> KB = 1 jika Ketua Balai BERTUGAS, 0 jika sebaliknya. ' +
+          '<b>Nota:</b> KB = 1 jika Ketua Balai <b>atau Pemangku Ketua Balai</b> BERTUGAS, 0 jika sebaliknya. ' +
           'PO = 1 jika Pegawai Operasi BERTUGAS, 0 jika sebaliknya. ' +
           'Penyelia Pasukan diambil 1 sahaja (jika ada lebih).<br />' +
           '<b>GRED</b> — mengikut klasifikasi balai. ' +
@@ -7468,7 +7520,7 @@
           '<b>KATEGORI BALAI</b> — auto dari shif bertugas (12 JAM / 24 JAM). ' +
           '<b>PBB + PBBK II</b> — jumlah anggota berpangkat PBB dan PBBK II.<br />' +
           '<b>Kolum A (BERTUGAS)</b> — diwarnakan <span style="color:var(--rosak);font-weight:700">MERAH</span> jika 5 orang atau ke bawah.<br />' +
-          '<b>Nota kiraan:</b> Peranan <b>KETUA BALAI</b> dan <b>PEGAWAI OPERASI</b> tidak dikira dalam jumlah A/C/CS/TK.';
+          '<b>Nota kiraan:</b> Peranan <b>KETUA BALAI</b>, <b>PEMANGKU KETUA BALAI</b> dan <b>PEGAWAI OPERASI</b> tidak dikira dalam jumlah A/C/CS/TK.';
         body.appendChild(info);
       }
 
