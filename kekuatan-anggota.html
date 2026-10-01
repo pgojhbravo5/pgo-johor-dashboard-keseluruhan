@@ -280,7 +280,6 @@
         .main-title .sub { font-size: 0.57rem; letter-spacing: 0.12em; }
       }
 
-      /* --- Live Clock di header --- */
       .main-title .live-clock {
         position: absolute;
         top: 0.7rem;
@@ -2271,6 +2270,23 @@
       .mers-check:not(.readonly):hover { transform: scale(1.12); }
       .mers-check.readonly { cursor: default; opacity: 0.9; }
 
+      /* ← TAMBAHAN: penunjuk status khas (TIADA / LUPUS / DALAM PROSES LUPUS) */
+      .mers-na {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 22px;
+        height: 22px;
+        border: 1.5px dashed var(--line);
+        border-radius: 4px;
+        color: var(--text-faint);
+        font-size: 0.9rem;
+        font-weight: 700;
+        line-height: 1;
+        opacity: 0.7;
+        cursor: help;
+      }
+
       .mers-footer { display: flex; flex-wrap: wrap; gap: 0.75rem 1.5rem; margin-top: 0.9rem; padding: 0.7rem 1rem; background: var(--panel-2); border: 1px solid var(--line); border-radius: var(--radius-sm); align-items: center; justify-content: space-between; }
       .mers-footer .mf-label { font-family: 'Oswald', sans-serif; font-size: 0.75rem; letter-spacing: 0.08em; text-transform: uppercase; font-weight: 600; color: var(--text); }
       .mers-footer .mf-value { font-family: 'Inter', system-ui, sans-serif; font-size: 1.1rem; font-weight: 700; color: var(--amber); margin-left: 0.4rem; }
@@ -2436,6 +2452,7 @@
         .mers-check.active.tak { background: #c73838 !important; color: #fff !important; border-color: #c73838 !important; }
         .mers-check.cek:not(.active) { color: #1f8a52 !important; }
         .mers-check.tak:not(.active) { color: #c73838 !important; }
+        .mers-na { border-color: #999 !important; color: #666 !important; }
         .mers-footer { background: #f5f5f5 !important; border-color: #999 !important; }
         .mers-footer .mf-value { color: #8a5810 !important; }
         table.semak-lokasi { border-color: #999 !important; }
@@ -2742,9 +2759,6 @@
       }
       .sound-toggle .ico { font-size: 1rem; }
 
-      /* ============================================================
-         FIX: Dropdown Option Dark Mode
-         ============================================================ */
       select {
         color-scheme: dark;
       }
@@ -4374,10 +4388,9 @@
         'ROSAK & TIDAK BOLEH BEROPERASI','DALAM PROSES LUPUS','LUPUS',
       ];
 
-      // ← TAMBAHAN: Status khas untuk PERALATAN KOMUNIKASI sahaja.
-      // 'TIADA' & 'LUPUS' & 'DALAM PROSES LUPUS' tidak akan dikira dalam
-      // mana-mana ringkasan (B/R/J, MERS999, PO3A, dsb.) kerana
-      // mapEquipStatus() akan pulangkan null untuk status-status tersebut.
+      // ← Status khas untuk PERALATAN KOMUNIKASI sahaja.
+      // 'TIADA' & 'LUPUS' & 'DALAM PROSES LUPUS' tidak dikira dalam
+      // mana-mana ringkasan (mapEquipStatus → null).
       const KOMUNIKASI_STATUSES = [
         'BAIK & BOLEH BEROPERASI','ROSAK MINOR & BOLEH BEROPERASI',
         'ROSAK & TIDAK BOLEH BEROPERASI','DALAM PROSES LUPUS','LUPUS','TIADA',
@@ -4996,19 +5009,42 @@
 
       let mersPgoState = { cad: null, wic: null, bomra: null };
 
-      function getKomStatus(balaiName, itemName) {
+      /* ================================================================
+         KOMUNIKASI ↔ MERS999 MAPPING
+         ---------------------------------------------------------------
+         Kolum MERS999  →  Item dalam KEKUATAN PERALATAN KOMUNIKASI
+         COMPUTER AIDED DISPATCH (CAD)  →  NG999
+         WEB INTEGRATED CONSOLE (WIC)   →  WEB INTEGRATED CONSOLE (WIC)
+         BOMBA RESPONDER APPS (BOMRA)   →  BOMBA RESPONDER APPS (BOMRA)
+         ================================================================ */
+
+      // Cari item komunikasi dengan padanan nama yang tidak sensitif huruf besar/kecil
+      function getKomItem(balaiName, itemName) {
         const b = store && store.balai && store.balai[balaiName];
         if (!b || !b.equip || !b.equip.komunikasi) return null;
-        const item = b.equip.komunikasi.find(function (r) {
-          return r && r.kategori === itemName;
-        });
+        const needle = String(itemName || '').trim().toUpperCase();
+        return b.equip.komunikasi.find(function (r) {
+          return r && String(r.kategori || '').trim().toUpperCase() === needle;
+        }) || null;
+      }
+
+      // Pulangkan status B/R/null (untuk kiraan)
+      function getKomStatus(balaiName, itemName) {
+        const item = getKomItem(balaiName, itemName);
         if (!item || !item.status) return null;
         return mapEquipStatus(item.status);
       }
 
+      // Pulangkan status mentah (untuk tooltip & penunjuk '—')
+      function getKomStatusRaw(balaiName, itemName) {
+        const item = getKomItem(balaiName, itemName);
+        return item ? (item.status || '') : '';
+      }
+
+      // CAD = NG999  ←  penting!
       function getMersStatus(balaiName) {
         return {
-          cad: getKomStatus(balaiName, 'SISTEM LITE CAD'),
+          cad: getKomStatus(balaiName, 'NG999'),
           wic: getKomStatus(balaiName, 'WEB INTEGRATED CONSOLE (WIC)'),
           bomra: getKomStatus(balaiName, 'BOMBA RESPONDER APPS (BOMRA)'),
         };
@@ -5078,7 +5114,7 @@
     <div class="section-head">
       <h2>LAPORAN HARIAN STATUS NG MERS999 JBPM JOHOR</h2>
       <div style="display:flex;align-items:center;gap:.6rem;">
-        <span class="hint">PGO manual tick · balai auto dari data KOMUNIKASI</span>
+        <span class="hint">PGO manual tick · balai auto dari data KOMUNIKASI (CAD = NG999)</span>
         <button class="btn-fullscreen" type="button" title="Buka skrin penuh">${svgIcon('maximize')}</button>
         <button class="btn-fullscreen btn-print-panel" type="button" title="Cetak panel ini">${svgIcon('print')}</button>
         <span class="chev">${svgIcon('chevronDown')}</span>
@@ -5171,26 +5207,62 @@
 
         BALAI_MERS_LIST.forEach(function (b) {
           const st = getMersStatus(b.name);
+          const raw = {
+            cad: getKomStatusRaw(b.name, 'NG999'),
+            wic: getKomStatusRaw(b.name, 'WEB INTEGRATED CONSOLE (WIC)'),
+            bomra: getKomStatusRaw(b.name, 'BOMBA RESPONDER APPS (BOMRA)'),
+          };
           const tr = document.createElement('tr');
           const tdBalai = document.createElement('td');
           tdBalai.className = 'balai-cell'; tdBalai.textContent = b.name;
           tr.appendChild(tdBalai);
           const pctCell = document.createElement('td');
           pctCell.className = 'percent-cell';
+
           ['cad', 'wic', 'bomra'].forEach(function (key) {
             const val = st[key];
+            const rv  = raw[key];
             const tdOk = document.createElement('td');
             const tdNo = document.createElement('td');
+
+            const tip = rv
+              ? ('Status: ' + rv + (val ? '' : '  (tidak dikira dalam peratusan)'))
+              : 'Status belum diisi';
+            tdOk.title = tip;
+            tdNo.title = tip;
+
             const boxOk = document.createElement('div'); boxOk.className = 'mers-boxes';
-            boxOk.appendChild(makeMersCheckbox('cek', val === 'B', true, null));
             const boxNo = document.createElement('div'); boxNo.className = 'mers-boxes';
-            boxNo.appendChild(makeMersCheckbox('tak', val === 'R', true, null));
+
+            if (val === 'B') {
+              boxOk.appendChild(makeMersCheckbox('cek', true, true, null));
+              boxNo.appendChild(makeMersCheckbox('tak', false, true, null));
+            } else if (val === 'R') {
+              boxOk.appendChild(makeMersCheckbox('cek', false, true, null));
+              boxNo.appendChild(makeMersCheckbox('tak', true, true, null));
+            } else if (rv) {
+              // Status diisi tetapi bukan B/R (TIADA / LUPUS / DALAM PROSES LUPUS)
+              // Tunjuk '—' supaya nampak status telah diisi
+              const naOk = document.createElement('span');
+              naOk.className = 'mers-na'; naOk.textContent = '—';
+              const naNo = document.createElement('span');
+              naNo.className = 'mers-na'; naNo.textContent = '—';
+              boxOk.appendChild(naOk);
+              boxNo.appendChild(naNo);
+            } else {
+              // Status benar-benar kosong
+              boxOk.appendChild(makeMersCheckbox('cek', false, true, null));
+              boxNo.appendChild(makeMersCheckbox('tak', false, true, null));
+            }
+
             tdOk.appendChild(boxOk); tdNo.appendChild(boxNo);
             tr.appendChild(tdOk); tr.appendChild(tdNo);
             if (val === 'B') grandTotalBaik++;
           });
+
           pctCell.textContent = fmtPercent(computeMersPercent(st));
           tr.appendChild(pctCell);
+
           const tdCatatan = document.createElement('td');
           tdCatatan.className = 'catatan-cell';
           const inp = document.createElement('input');
@@ -6397,7 +6469,7 @@
         }
 
         const tdS = document.createElement('td');
-        // ← TAMBAHAN: Guna senarai status khas untuk panel KOMUNIKASI (ada 'TIADA')
+        // Guna senarai status khas untuk panel KOMUNIKASI (ada 'TIADA')
         const statusOptions = isKom ? KOMUNIKASI_STATUSES : EQUIP_STATUSES;
         const selS = makeSelect(statusOptions, r.status, (v) => { r.status = v; saveState(); globalRecalc(); markRow(); });
         selS.dataset.mf = 'status';
