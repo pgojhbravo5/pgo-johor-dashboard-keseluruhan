@@ -6302,11 +6302,11 @@
         return KOMUNIKASI_DEF.some(function (k) { return k.name === r.kategori; });
       }
 
-      function buildEquipRow(key, r, isKom, katList, title, color, rtb) {
+      function buildEquipRow(key, r, idx, isKom, katList, title, color, rtb) {
         const tr = document.createElement('tr');
         const markRow = () => markMandatoryEquip(tr, r, isKom);
         const isKategoriDriven = key === 'jentera' || key === 'marin' || key === 'utiliti';
-        const isProtected = isKom && isProtectedKomItem(r);
+        const isProtected = isKom && idx < 9;
 
         const tdB = document.createElement('td');
         tdB.className = 'bil-cell';
@@ -6382,9 +6382,9 @@
           bD.innerHTML = svgIcon('x'); bD.title = 'Padam baris'; bD.setAttribute('aria-label', 'Padam baris');
           bD.addEventListener('click', () => {
             if (!confirm('Padam baris ini?')) return;
-            const idx = state.equip[key].indexOf(r);
-            if (idx === -1) return;
-            state.equip[key].splice(idx, 1);
+            const idx2 = state.equip[key].indexOf(r);
+            if (idx2 === -1) return;
+            state.equip[key].splice(idx2, 1);
             saveState();
             tr.remove();
             renumberRows(rtb);
@@ -6677,8 +6677,8 @@
         rTbl.appendChild(thead);
         const rtb = document.createElement('tbody');
 
-        state.equip[key].forEach((r) => {
-          rtb.appendChild(buildEquipRow(key, r, isKom, katList, title, color, rtb));
+        state.equip[key].forEach((r, idx) => {
+          rtb.appendChild(buildEquipRow(key, r, idx, isKom, katList, title, color, rtb));
         });
         renumberRows(rtb);
         rTbl.appendChild(rtb); body.appendChild(rTbl);
@@ -6692,7 +6692,7 @@
           const newR = isKom ? emptyKom('') : emptyEquip('');
           state.equip[key].push(newR);
           saveState();
-          const newTr = buildEquipRow(key, newR, isKom, katList, title, color, rtb);
+          const newTr = buildEquipRow(key, newR, state.equip[key].length - 1, isKom, katList, title, color, rtb);
           rtb.appendChild(newTr);
           renumberRows(rtb);
           globalRecalc();
@@ -6717,7 +6717,7 @@
             const rowIdx = parseInt(bilText, 10) - 1;
             const arr = state.equip[key];
             if (rowIdx >= 0 && arr[rowIdx] && isRowEquipEmpty(arr[rowIdx], isKom)) {
-              if (isKom && isProtectedKomItem(arr[rowIdx])) return;
+              if (isKom && rowIdx < 9) return;
               emptyRows.push({ tr, r: arr[rowIdx] });
             }
           });
@@ -6730,7 +6730,7 @@
           if (state.equip[key].length === 0) {
             const newR = isKom ? emptyKom('') : emptyEquip('');
             state.equip[key].push(newR);
-            rtb.appendChild(buildEquipRow(key, newR, isKom, katList, title, color, rtb));
+            rtb.appendChild(buildEquipRow(key, newR, 0, isKom, katList, title, color, rtb));
           }
           saveState();
           renumberRows(rtb);
