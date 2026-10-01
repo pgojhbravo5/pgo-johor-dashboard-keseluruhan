@@ -347,26 +347,40 @@
         border-radius: var(--radius) 0 0 var(--radius);
       }
 
-      /* ============================================================
-         STICKY HEADER — main-title & topbar kekal di atas semasa scroll
-         ============================================================ */
-      .main-title {
-        position: sticky;
-        top: 0;
-        z-index: 200;
-      }
-      .topbar {
-        position: sticky;
-        top: var(--header-sticky-top, 130px);
-        z-index: 190;
-      }
-      @media print {
-        .main-title,
-        .topbar {
-          position: static !important;
-        }
-      }
+/* ============================================================
+   STICKY HEADER — main-title & topbar kekal di atas semasa scroll
+   -------------------------------------------------------------
+   Hanya aktif pada desktop (>900px). Pada mobile/tablet kecil,
+   kedua-duanya kekal static supaya tidak makan ruang skrin.
+   ============================================================ */
+   @media (min-width: 901px) {
+  .main-title {
+    position: sticky;
+    top: 0;
+    z-index: 200;
+  }
+  .topbar {
+    position: sticky;
+    top: var(--header-sticky-top, 130px);
+    z-index: 190;
+  }
+}
 
+/* Pastikan static pada mobile & masa print */
+@media (max-width: 900px) {
+  .main-title,
+  .topbar {
+    position: static !important;
+    top: auto !important;
+  }
+}
+@media print {
+  .main-title,
+  .topbar {
+    position: static !important;
+    top: auto !important;
+  }
+}
       .crest {
         font-family: 'Oswald', sans-serif; font-weight: 700; font-size: 1.15rem;
         letter-spacing: 0.03em; display: flex; align-items: center;
