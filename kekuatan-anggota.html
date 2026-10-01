@@ -346,6 +346,27 @@
         width: 4px; background: var(--red);
         border-radius: var(--radius) 0 0 var(--radius);
       }
+
+      /* ============================================================
+         STICKY HEADER — main-title & topbar kekal di atas semasa scroll
+         ============================================================ */
+      .main-title {
+        position: sticky;
+        top: 0;
+        z-index: 200;
+      }
+      .topbar {
+        position: sticky;
+        top: var(--header-sticky-top, 130px);
+        z-index: 190;
+      }
+      @media print {
+        .main-title,
+        .topbar {
+          position: static !important;
+        }
+      }
+
       .crest {
         font-family: 'Oswald', sans-serif; font-weight: 700; font-size: 1.15rem;
         letter-spacing: 0.03em; display: flex; align-items: center;
@@ -2189,6 +2210,45 @@
         }
       }
 
+      /* ============================================================
+         FIX STICKY: Semak Lokasi — kolum BIL/KATEGORI/MAKLUMAT
+         -------------------------------------------------------------
+         .section ada overflow: hidden yang memecahkan position: sticky.
+         Fix: buat overflow visible khas untuk section semak_lokasi.
+         ============================================================ */
+      #sec-semak_lokasi {
+        overflow: visible !important;
+        border-radius: var(--radius);
+      }
+      #sec-semak_lokasi .section-head {
+        border-radius: var(--radius) var(--radius) 0 0;
+        overflow: hidden;
+        position: relative;
+        z-index: 12;
+      }
+      #sec-semak_lokasi .section-body {
+        border-radius: 0 0 var(--radius) var(--radius);
+        overflow-x: auto !important;
+        overflow-y: visible !important;
+        border-bottom-left-radius: var(--radius);
+        border-bottom-right-radius: var(--radius);
+      }
+      table.semak-lokasi .col-sticky-1,
+      table.semak-lokasi .col-sticky-2,
+      table.semak-lokasi .col-sticky-3 {
+        background-clip: padding-box !important;
+      }
+      table.semak-lokasi tbody tr:nth-child(even) td.col-sticky-1,
+      table.semak-lokasi tbody tr:nth-child(even) td.col-sticky-2,
+      table.semak-lokasi tbody tr:nth-child(even) td.col-sticky-3 {
+        background: var(--zebra-solid) !important;
+      }
+      table.semak-lokasi tbody tr:hover td.col-sticky-1,
+      table.semak-lokasi tbody tr:hover td.col-sticky-2,
+      table.semak-lokasi tbody tr:hover td.col-sticky-3 {
+        background: var(--panel-3) !important;
+      }
+
       .btn-contact { display: inline-flex; align-items: center; justify-content: center; width: 32px; height: 32px; border-radius: 6px; border: 1px solid; cursor: pointer; text-decoration: none; transition: all 0.15s ease; margin: 0 0.15rem; flex-shrink: 0; }
       .btn-contact svg { width: 15px; height: 15px; }
       .btn-call { background: rgba(46,158,99,0.12); color: var(--green); border-color: rgba(46,158,99,0.4); }
@@ -2270,7 +2330,7 @@
       .mers-check:not(.readonly):hover { transform: scale(1.12); }
       .mers-check.readonly { cursor: default; opacity: 0.9; }
 
-      /* ← TAMBAHAN: penunjuk status khas (TIADA / LUPUS / DALAM PROSES LUPUS) */
+      /* ← Penunjuk status khas (TIADA / LUPUS / DALAM PROSES LUPUS) */
       .mers-na {
         display: inline-flex;
         align-items: center;
@@ -4488,7 +4548,7 @@
       };
 
       const CATALOG_MARIN = {
-        'ALUMINIUM BOT': ['04-14 ALUMINIUM BOT','BP 34 ALUMINIUM BOT','34-14 ALUMINIUM BOT','BP 048-10 ALUMINIUM BOT','BP 059-10 ALUMINIUM BOT','047-10 ALUMINIUM BOT','BP 06 ALUMINIUM BOT','BP 37 ALUMINIUM BOT','BP 050-10 ALUMINIUM BOT','BP 07-14 ALUMINIUM BOT','BP 44 ALUMINIUM BOT','036-10 ALUMINIUM BOT','042-10 ALUMINIUM BOT','BP 36 ALUMINIUM BOT','B040-10 ALUMINIUM BOT','- ALUMINIUM BOT','BP 56 ALUMINIUM BOT','02-JB ALUMINIUM BOT','BP O35-10 ALUMINIUM BOT','ISTANA ALUMINIUM BOT','BP 049-10 ALUMINIUM BOT','BP 40 ALUMINIUM BOT','BP 046-10 ALUMINIUM BOT','BP 39 ALUMINIUM BOT','PGH 41 ALUMINIUM BOT','01-PSG ALUMINIUM BOT','03-PSG ALUMINIUM BOT','038-10 PSG ALUMINIUM BOT','02-PNS ALUMINIUM BOT','BP 041-10 ALUMINIUM BOT','BP 46 ALUMINIUM BOT','BP-044 ALUMINIUM BOT','PTN 039-10 ALUMINIUM BOT','BP 32/14 ALUMINIUM BOT','BP 037 ALUMINIUM BOT','BP 08-14 ALUMINIUM BOT','RGT-04 ALUMINIUM BOT','BP 04 ALUMINIUM BOT','BP 38 ALUMINIUM BOT','BP 47-10 ALUMINIUM BOT','136-10 ALUMINIUM BOT','BP 037-10 ALUMINIUM BOT','TGK07 ALUMINIUM BOT','WC 122 ALUMINIUM BOT','BP-05 ALUMINIUM BOT'],
+        'ALUMINIUM BOT': ['04-14 ALUMINIUM BOT','BP 34 ALUMINIUM BOT','34-14 ALUMINIUM BOT','BP 048-10 ALUMINIUM BOT','BP 059-10 ALUMINIUM BOT','043-10 ALUMINIUM BOT','BP 06 ALUMINIUM BOT','BP 37 ALUMINIUM BOT','BP 050-10 ALUMINIUM BOT','BP 07-14 ALUMINIUM BOT','BP 44 ALUMINIUM BOT','036-10 ALUMINIUM BOT','042-10 ALUMINIUM BOT','BP 36 ALUMINIUM BOT','B040-10 ALUMINIUM BOT','- ALUMINIUM BOT','BP 56 ALUMINIUM BOT','02-JB ALUMINIUM BOT','BP O35-10 ALUMINIUM BOT','ISTANA ALUMINIUM BOT','BP 049-10 ALUMINIUM BOT','BP 40 ALUMINIUM BOT','BP 046-10 ALUMINIUM BOT','BP 39 ALUMINIUM BOT','PGH 41 ALUMINIUM BOT','01-PSG ALUMINIUM BOT','03-PSG ALUMINIUM BOT','038-10 PSG ALUMINIUM BOT','02-PNS ALUMINIUM BOT','BP 041-10 ALUMINIUM BOT','BP 46 ALUMINIUM BOT','BP-044 ALUMINIUM BOT','PTN 039-10 ALUMINIUM BOT','BP 32/14 ALUMINIUM BOT','BP 037 ALUMINIUM BOT','BP 08-14 ALUMINIUM BOT','RGT-04 ALUMINIUM BOT','BP 04 ALUMINIUM BOT','BP 38 ALUMINIUM BOT','BP 47-10 ALUMINIUM BOT','136-10 ALUMINIUM BOT','BP 037-10 ALUMINIUM BOT','TGK07 ALUMINIUM BOT','WC 122 ALUMINIUM BOT','BP-05 ALUMINIUM BOT'],
         'ARIB BOT': ['- ARIB BOT','O7 ARIB BOT'],
         'FIBER BOT': ['N/A FIBER BOT','N/A FIBER','PL 02 FIBER BOT'],
         'JETSKI BOT': ['WC 1 JETSKI BOT','WC 3 JETSKI BOT'],
@@ -5018,7 +5078,7 @@
          BOMBA RESPONDER APPS (BOMRA)   →  BOMBA RESPONDER APPS (BOMRA)
          ================================================================ */
 
-      // Cari item komunikasi dengan padanan nama yang tidak sensitif huruf besar/kecil
+      // Cari item komunikasi — padanan tidak sensitif huruf besar/kecil & trim
       function getKomItem(balaiName, itemName) {
         const b = store && store.balai && store.balai[balaiName];
         if (!b || !b.equip || !b.equip.komunikasi) return null;
@@ -5242,7 +5302,6 @@
               boxNo.appendChild(makeMersCheckbox('tak', true, true, null));
             } else if (rv) {
               // Status diisi tetapi bukan B/R (TIADA / LUPUS / DALAM PROSES LUPUS)
-              // Tunjuk '—' supaya nampak status telah diisi
               const naOk = document.createElement('span');
               naOk.className = 'mers-na'; naOk.textContent = '—';
               const naNo = document.createElement('span');
@@ -5250,7 +5309,6 @@
               boxOk.appendChild(naOk);
               boxNo.appendChild(naNo);
             } else {
-              // Status benar-benar kosong
               boxOk.appendChild(makeMersCheckbox('cek', false, true, null));
               boxNo.appendChild(makeMersCheckbox('tak', false, true, null));
             }
@@ -8545,6 +8603,28 @@
         setInterval(tick, 1000);
       }
 
+      // ============================================================
+      // STICKY HEADER — kira tinggi main-title supaya topbar
+      // sentiasa stick tepat di bawahnya
+      // ============================================================
+      function updateHeaderStickyOffset() {
+        const mt = document.querySelector('.main-title');
+        if (!mt) return;
+        const style = window.getComputedStyle(mt);
+        const mb = parseFloat(style.marginBottom) || 0;
+        const h  = mt.getBoundingClientRect().height;
+        const total = Math.round(h + mb);
+        document.documentElement.style.setProperty('--header-sticky-top', total + 'px');
+      }
+
+      window.addEventListener('resize', updateHeaderStickyOffset);
+      window.addEventListener('orientationchange', function () {
+        setTimeout(updateHeaderStickyOffset, 120);
+      });
+      window.addEventListener('load', function () {
+        setTimeout(updateHeaderStickyOffset, 60);
+      });
+
       function buildArchiveData() {
         const tarikh = state.ident.tarikh;
         const shif = state.ident.shif;
@@ -9238,7 +9318,10 @@
       });
 
       initLiveClock();
+      updateHeaderStickyOffset();
       initApp();
+      // Recalculate sekali lagi selepas data selesai load
+      setTimeout(updateHeaderStickyOffset, 400);
     </script>
   </body>
 </html>
