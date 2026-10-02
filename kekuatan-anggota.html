@@ -6041,6 +6041,7 @@
         const printPo3aBtn = document.getElementById('printPo3aBtn');
         const importBtn = document.getElementById('importBtn');
         const exportCurrentBtn = document.getElementById('exportCurrentBtn');
+        const feedbackBtn = document.getElementById('feedbackBtn');   /* === Q&A: butang Q&A === */
 
         const isBalai = store.view === 'balai';
 
@@ -6051,6 +6052,9 @@
 
         if (importBtn)         importBtn.style.display         = isBalai ? '' : 'none';
         if (exportCurrentBtn)  exportCurrentBtn.style.display  = isBalai ? '' : 'none';
+
+        /* === Q&A: butang Q&A hanya untuk paparan balai sahaja === */
+        if (feedbackBtn) feedbackBtn.style.display = isBalai ? '' : 'none';
 
         if (store.view === 'summary') {
           prefix.style.display = 'none';
