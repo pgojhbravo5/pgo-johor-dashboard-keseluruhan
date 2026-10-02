@@ -165,9 +165,6 @@
       * { box-sizing: border-box; }
       html, body { margin: 0; padding: 0; }
 
-      /* ============================================================
-         === GAMBAR LATAR BELAKANG: TEPUK&DENGKIS.jpg (MOD MALAM) ===
-         ============================================================ */
       body {
         background-image:
           linear-gradient(
@@ -189,9 +186,6 @@
         transition: background-color 0.25s ease, color 0.25s ease;
       }
 
-      /* ============================================================
-         === GAMBAR LATAR BELAKANG: TEPUK&DENGKIS.jpg (MOD SIANG) ===
-         ============================================================ */
       :root[data-theme='light'] body {
         background-image:
           linear-gradient(
@@ -6281,14 +6275,30 @@
           el.classList.toggle('field-invalid', !p[key]);
         });
       }
-      function markMandatoryEquip(tr, r, isKom) {
+      function markMandatoryEquip(tr, r, isKom, key) {
         if (!tr || !r) return;
         const keys = isKom ? MANDATORY_KOM_KEYS : MANDATORY_EQUIP_KEYS;
         tr.querySelectorAll('[data-mf]').forEach(el => {
-          const key = el.dataset.mf;
-          if (!keys.includes(key)) return;
-          el.classList.toggle('field-invalid', !r[key]);
+          const fieldKey = el.dataset.mf;
+          if (!keys.includes(fieldKey)) return;
+
+          let invalid = !r[fieldKey];
+
+          // Semakan tambahan: MAKLUMAT mesti wujud dalam katalog kategori
+          if (!invalid && fieldKey === 'maklumat' && !isKom && key) {
+            invalid = !isMaklumatInCatalog(key, r.kategori, r.maklumat);
+          }
+
+          el.classList.toggle('field-invalid', invalid);
         });
+      }
+
+      function isMaklumatInCatalog(key, kategori, maklumat) {
+        if (!kategori || !maklumat) return false;
+        const catalog = getCatalogForSection(key);
+        const list = catalog[kategori] || [];
+        if (list.length === 0) return true;
+        return list.includes(maklumat);
       }
 
       function validatePersonelBalai(balaiState) {
@@ -6320,12 +6330,21 @@
           const arr = (balaiState.equip && balaiState.equip[key]) || [];
           arr.forEach((r, idx) => {
             const missing = keys.filter(k => !r[k]);
-            if (missing.length) invalid.push({
-              panel: label,
-              row: idx + 1,
-              missing,
-              empty: isRowEquipEmpty(r, isKom),
-            });
+            let invalidMaklumat = false;
+            if (!isKom && r.kategori && r.maklumat && !isMaklumatInCatalog(key, r.kategori, r.maklumat)) {
+              invalidMaklumat = true;
+            }
+            if (missing.length || invalidMaklumat) {
+              invalid.push({
+                panel: label,
+                row: idx + 1,
+                missing,
+                empty: isRowEquipEmpty(r, isKom),
+                invalidMaklumat,
+                maklumatValue: r.maklumat || '',
+                kategoriValue: r.kategori || '',
+              });
+            }
           });
         });
         return invalid;
@@ -6347,54 +6366,136 @@
           if (lines.length) lines.push('');
           lines.push('PERALATAN:');
           v.equip.forEach(r => {
-            if (r.empty) lines.push('  • ' + r.panel + ' Baris ' + r.row + ' — KOSONG. Sila PADAM baris ini (tekan butang ✕) atau isi maklumat.');
-            else lines.push('  • ' + r.panel + ' Baris ' + r.row + ' — belum isi: ' + r.missing.map(k => FIELD_LABELS[k] || k).join(', '));
+            if (r.empty) {
+              lines.push('  • ' + r.panel + ' Baris ' + r.row + ' — KOSONG. Sila PADAM baris ini (tekan butang ✕) atau isi maklumat.');
+            } else if (r.invalidMaklumat && r.missing.length) {
+              lines.push('  • ' + r.panel + ' Baris ' + r.row + ' — belum isi: ' + r.missing.map(k => FIELD_LABELS[k] || k).join(', '));
+              lines.push('       └─ MAKLUMAT "' + r.maklumatValue + '" TIDAK SAH untuk kategori "' + r.kategoriValue + '". Sila pilih dari dropdown sahaja.');
+            } else if (r.invalidMaklumat) {
+              lines.push('  • ' + r.panel + ' Baris ' + r.row + ' — MAKLUMAT tidak sah:');
+              lines.push('       └─ Nilai: "' + r.maklumatValue + '"');
+              lines.push('       └─ Kategori: "' + r.kategoriValue + '"');
+              lines.push('       └─ Sila pilih semula dari dropdown (tiada taip manual).');
+            } else {
+              lines.push('  • ' + r.panel + ' Baris ' + r.row + ' — belum isi: ' + r.missing.map(k => FIELD_LABELS[k] || k).join(', '));
+            }
           });
         }
         return 'Balai "' + balaiName + '":\n\n' + lines.join('\n');
       }
 
-      let dlCounter = 0;
       function makeKategoriDrivenInput(key, currentKat, currentMaklumat, onMaklumatChange) {
         const catalog = getCatalogForSection(key);
-        const listId = 'veh-' + key + '-' + ++dlCounter;
-        const dl = document.createElement('datalist');
-        dl.id = listId;
-        const inp = document.createElement('input');
-        inp.type = 'text';
-        inp.value = currentMaklumat || '';
-        inp.dataset.mf = 'maklumat';
-        inp.setAttribute('list', listId);
-        inp.style.width = '100%';
-        inp.style.minWidth = '100%';
-        inp.style.boxSizing = 'border-box';
-        function refresh(kat) {
-          dl.innerHTML = '';
-          const list = catalog[kat] || [];
+        const wrapper = document.createElement('span');
+        wrapper.style.display = 'contents';
+
+        let currentControl = null;
+        let currentValue = currentMaklumat || '';
+        let currentKategori = currentKat || '';
+
+        function handleChange(v) {
+          currentValue = v;
+          onMaklumatChange(v);
+        }
+
+        function buildControl() {
+          if (currentControl && currentControl.parentNode === wrapper) {
+            wrapper.removeChild(currentControl);
+          }
+          currentControl = null;
+
+          const list = catalog[currentKategori] || [];
+
+          // KES 1: Kategori belum dipilih — disabled
+          if (!currentKategori) {
+            const sel = document.createElement('select');
+            sel.disabled = true;
+            sel.dataset.mf = 'maklumat';
+            const opt = document.createElement('option');
+            opt.value = '';
+            opt.textContent = 'Pilih KATEGORI dahulu…';
+            sel.appendChild(opt);
+            sel.style.cssText = 'width:100%;min-width:100%;box-sizing:border-box;';
+            wrapper.appendChild(sel);
+            currentControl = sel;
+            return;
+          }
+
+          // KES 2: Kategori tiada katalog — benarkan taip manual
+          if (list.length === 0) {
+            const inp = document.createElement('input');
+            inp.type = 'text';
+            inp.value = currentValue;
+            inp.dataset.mf = 'maklumat';
+            inp.placeholder = 'Tiada senarai rasmi — taip manual';
+            inp.style.cssText = 'width:100%;min-width:100%;box-sizing:border-box;';
+            inp.addEventListener('input', () => handleChange(inp.value));
+            wrapper.appendChild(inp);
+            currentControl = inp;
+            return;
+          }
+
+          // KES 3: Paksa dropdown
+          const sel = document.createElement('select');
+          sel.dataset.mf = 'maklumat';
+          sel.style.cssText = 'width:100%;min-width:100%;box-sizing:border-box;';
+          sel.title = 'Pilih dari senarai sahaja — tiada taip manual dibenarkan';
+
+          const blank = document.createElement('option');
+          blank.value = '';
+          blank.textContent = '— Pilih MAKLUMAT (' + list.length + ' unit) —';
+          sel.appendChild(blank);
+
           list.forEach((v) => {
             const o = document.createElement('option');
             o.value = v;
-            dl.appendChild(o);
+            o.textContent = v;
+            if (v === currentValue) o.selected = true;
+            sel.appendChild(o);
           });
-          if (!kat) { inp.placeholder = 'Pilih KATEGORI dahulu…'; inp.disabled = true; }
-          else if (list.length === 0) { inp.placeholder = 'Tiada senarai — taip manual'; inp.disabled = false; }
-          else { inp.placeholder = 'Pilih atau taip (' + list.length + ' unit)…'; inp.disabled = false; }
+
+          // Kalau nilai lama tak sah, tunjuk sebagai opsyen khas
+          if (currentValue && !list.includes(currentValue)) {
+            const inv = document.createElement('option');
+            inv.value = currentValue;
+            inv.textContent = '⚠ ' + currentValue + '  —  TIDAK SAH (pilih semula)';
+            inv.selected = true;
+            sel.appendChild(inv);
+            sel.style.borderColor = 'var(--rosak)';
+            sel.style.boxShadow = '0 0 0 2px rgba(214,69,69,0.25)';
+          } else if (!currentValue) {
+            sel.value = '';
+          }
+
+          sel.addEventListener('change', () => {
+            const v = sel.value;
+            handleChange(v);
+            // Buang opsyen "tidak sah" selepas user pilih nilai sah
+            if (list.includes(v)) {
+              const invOpt = Array.from(sel.options).find(o => o.value && !list.includes(o.value));
+              if (invOpt) invOpt.remove();
+              sel.style.borderColor = '';
+              sel.style.boxShadow = '';
+            }
+          });
+
+          wrapper.appendChild(sel);
+          currentControl = sel;
         }
-        refresh(currentKat);
-        inp.addEventListener('input', () => onMaklumatChange(inp.value));
-        const wrapper = document.createElement('span');
-        wrapper.style.display = 'contents';
-        wrapper.appendChild(dl);
-        wrapper.appendChild(inp);
+
+        buildControl();
+
         return {
           element: wrapper,
           updateForKategori(newKat) {
-            refresh(newKat);
-            const list = catalog[newKat] || [];
-            if (inp.value && newKat && list.length && !list.includes(inp.value)) {
-              inp.value = '';
+            currentKategori = newKat || '';
+            const list = catalog[currentKategori] || [];
+            // Kosongkan kalau nilai lama tak wujud dalam senarai baru
+            if (currentValue && list.length > 0 && !list.includes(currentValue)) {
+              currentValue = '';
               onMaklumatChange('');
             }
+            buildControl();
           },
         };
       }
@@ -6685,7 +6786,7 @@
 
       function buildEquipRow(key, r, idx, isKom, katList, title, color, rtb) {
         const tr = document.createElement('tr');
-        const markRow = () => markMandatoryEquip(tr, r, isKom);
+        const markRow = () => markMandatoryEquip(tr, r, isKom, key);
         const isKategoriDriven = key === 'jentera' || key === 'marin' || key === 'utiliti';
         const isProtected = isKom && idx < 9;
 
@@ -6776,7 +6877,7 @@
         }
         tr.appendChild(tdD);
 
-        markMandatoryEquip(tr, r, isKom);
+        markMandatoryEquip(tr, r, isKom, key);
         return tr;
       }
 
@@ -7042,7 +7143,7 @@
 
         const isKategoriDriven = key === 'jentera' || key === 'marin' || key === 'utiliti';
         let hintText = 'SENARAI BUTIRAN';
-        if (isKategoriDriven) hintText = 'SENARAI BUTIRAN — Pilih KATEGORI dahulu, kemudian MAKLUMAT';
+        if (isKategoriDriven) hintText = 'SENARAI BUTIRAN — Pilih KATEGORI dahulu, kemudian MAKLUMAT (paksa pilih dari dropdown)';
         if (isKom) hintText = 'SENARAI BUTIRAN PERALATAN KOMUNIKASI — 9 item tetap tidak boleh dipadam';
         body.appendChild(subTitle(hintText));
 
