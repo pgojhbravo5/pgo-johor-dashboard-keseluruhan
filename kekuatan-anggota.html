@@ -164,9 +164,22 @@
 
       * { box-sizing: border-box; }
       html, body { margin: 0; padding: 0; }
+
+      /* ============================================================
+         === GAMBAR LATAR BELAKANG: TEPUK&DENGKIS.jpg (MOD MALAM) ===
+         ============================================================ */
       body {
-        background: radial-gradient(1200px 600px at 50% -10%, var(--bg-glow) 0%, transparent 60%), var(--bg);
+        background-image:
+          linear-gradient(
+            rgba(10, 17, 32, 0.82),
+            rgba(10, 17, 32, 0.82)
+          ),
+          url('https://raw.githubusercontent.com/pgojhbravo5/pgo-johor-dashboard-keseluruhan/main/TEPUK%26DENGKIS.jpg');
+        background-size: cover;
+        background-position: center center;
+        background-repeat: no-repeat;
         background-attachment: fixed;
+        background-color: var(--bg);
         color: var(--text);
         font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', sans-serif;
         font-size: 14px;
@@ -175,6 +188,24 @@
         text-rendering: optimizeLegibility;
         transition: background-color 0.25s ease, color 0.25s ease;
       }
+
+      /* ============================================================
+         === GAMBAR LATAR BELAKANG: TEPUK&DENGKIS.jpg (MOD SIANG) ===
+         ============================================================ */
+      :root[data-theme='light'] body {
+        background-image:
+          linear-gradient(
+            rgba(238, 241, 246, 0.88),
+            rgba(238, 241, 246, 0.88)
+          ),
+          url('https://raw.githubusercontent.com/pgojhbravo5/pgo-johor-dashboard-keseluruhan/main/TEPUK%26DENGKIS.jpg');
+        background-size: cover;
+        background-position: center center;
+        background-repeat: no-repeat;
+        background-attachment: fixed;
+        background-color: var(--bg);
+      }
+
       h1, h2, h3, .label-font {
         font-family: 'Oswald', sans-serif;
         letter-spacing: 0.02em;
@@ -572,7 +603,6 @@
       }
       .btn-back-dashboard .ico { font-size: 1rem; }
 
-      /* === Q&A BARU: Butang Q&A === */
       .btn-feedback {
         display: inline-flex; align-items: center; gap: 0.45rem;
         background: var(--panel-2);
@@ -603,7 +633,6 @@
         box-shadow: 0 0 0 3px rgba(31, 168, 160, 0.28);
       }
       .btn-feedback .ico { font-size: 1rem; }
-      /* === Q&A BARU: TAMAT === */
 
       .manage-bar {
         display: flex;
@@ -2470,7 +2499,6 @@
         background: var(--panel-2);
       }
 
-      /* === Q&A BARU: Modal Feedback === */
       .feedback-modal-overlay {
         position: fixed; inset: 0;
         background: rgba(2, 6, 16, 0.78);
@@ -2550,7 +2578,6 @@
       }
       .feedback-modal-foot .btn { min-width: 100px; justify-content: center; }
       .feedback-modal-foot .btn.primary:disabled { opacity: 0.6; cursor: wait; }
-      /* === Q&A BARU: TAMAT === */
 
       @media print {
         body.printing-po3a .stats,
@@ -2596,7 +2623,7 @@
           --col-amber-bg: rgba(165, 104, 26, 0.1) !important; --col-amber-bg-2: rgba(165, 104, 26, 0.07) !important;
           --col-amber-row: rgba(165, 104, 26, 0.1) !important;
         }
-        body { background: #fff !important; color: var(--text) !important; }
+        body { background: #fff !important; color: var(--text) !important; background-image: none !important; }
         body.has-fullscreen-panel { overflow: visible !important; }
         .section.fullscreen-active { position: static !important; inset: auto !important; box-shadow: none !important; z-index: auto !important; }
         .btn-fullscreen { display: none !important; }
@@ -3043,14 +3070,12 @@
 
           <button class="theme-toggle" id="themeToggle" type="button"></button>
 
-          <!-- === Q&A BARU: Butang Q&A === -->
           <button class="btn-feedback" id="feedbackBtn" type="button" title="Hantar Soalan / Maklum Balas">
             <svg class="ico" viewBox="0 0 24 24" aria-hidden="true">
               <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
             </svg>
             <span>Q&amp;A</span>
           </button>
-          <!-- === Q&A BARU: TAMAT === -->
 
           <a href="index.html" class="btn-back-dashboard" title="Kembali ke Dashboard">
             <svg class="ico" viewBox="0 0 24 24" aria-hidden="true">
@@ -3323,7 +3348,6 @@
       </div>
     </div>
 
-    <!-- === Q&A BARU: Modal Feedback === -->
     <div class="feedback-modal-overlay" id="feedbackModalOverlay" role="dialog" aria-modal="true" aria-labelledby="feedbackModalTitle">
       <div class="feedback-modal">
         <div class="feedback-modal-head">
@@ -3332,13 +3356,10 @@
         </div>
         <form class="feedback-modal-body" id="feedbackForm" method="POST">
 
-          <!-- ===== Web3Forms Config ===== -->
           <input type="hidden" name="access_key" value="f853f38e-2751-4e0e-8d0a-dac13e7eead6">
           <input type="hidden" name="subject" value="Q&A Sistem Kekuatan Anggota — Feedback Baru">
           <input type="hidden" name="from_name" value="Sistem Kekuatan JBPM Johor">
-          <!-- Honeypot anti-spam — JANGAN alih keluar -->
           <input type="checkbox" name="botcheck" style="display:none;" tabindex="-1" autocomplete="off">
-          <!-- ============================ -->
 
           <div class="feedback-field">
             <label for="fb_nama">Nama</label>
@@ -3393,7 +3414,6 @@
         </form>
       </div>
     </div>
-    <!-- === Q&A BARU: TAMAT === -->
 
     <script>
       const SUPABASE_CONFIG = {
@@ -6046,7 +6066,7 @@
         const printPo3aBtn = document.getElementById('printPo3aBtn');
         const importBtn = document.getElementById('importBtn');
         const exportCurrentBtn = document.getElementById('exportCurrentBtn');
-        const feedbackBtn = document.getElementById('feedbackBtn');   /* === Q&A: butang Q&A === */
+        const feedbackBtn = document.getElementById('feedbackBtn');
 
         const isBalai = store.view === 'balai';
 
@@ -6058,7 +6078,6 @@
         if (importBtn)         importBtn.style.display         = isBalai ? '' : 'none';
         if (exportCurrentBtn)  exportCurrentBtn.style.display  = isBalai ? '' : 'none';
 
-        /* === Q&A: butang Q&A hanya untuk paparan balai sahaja === */
         if (feedbackBtn) feedbackBtn.style.display = isBalai ? '' : 'none';
 
         if (store.view === 'summary') {
@@ -7687,7 +7706,6 @@
           tdTO.className = 'turnout-cell'; tdTO.textContent = meta.turnOut;
           tr.appendChild(tdTO);
 
-          // Kolum BALAI — pecahan 2 sel (nampak 1 di skrin, jadi 2 kolum di Excel)
           const tdBalai = document.createElement('td');
           tdBalai.className = 'balai-name';
           tdBalai.textContent = d.balai;
@@ -9179,7 +9197,7 @@
       async function initApp() {
         initTheme();
         initSound();
-        initFeedbackModal();   /* === Q&A BARU === */
+        initFeedbackModal();
         updatePrintFooterDate();
         fillPrintFooter(loadPrintInfo());
         setLoading(true, 'Memuatkan data dari Supabase…');
@@ -9221,7 +9239,6 @@
         }
       }
 
-      /* === Q&A BARU: FUNGSI MODAL FEEDBACK === */
       function initFeedbackModal() {
         const overlay    = document.getElementById('feedbackModalOverlay');
         const form       = document.getElementById('feedbackForm');
@@ -9233,7 +9250,6 @@
 
         if (!overlay || !form || !btnOpen) return;
 
-        // Buka modal
         btnOpen.addEventListener('click', function () {
           if (inputBalai) {
             inputBalai.value = (store && store.activeBalai)
@@ -9247,7 +9263,6 @@
           }, 80);
         });
 
-        // Tutup modal
         function closeModal() {
           overlay.classList.remove('active');
           form.reset();
@@ -9261,14 +9276,12 @@
           if (e.target === overlay) closeModal();
         });
 
-        // Tutup dengan Escape
         document.addEventListener('keydown', function (e) {
           if ((e.key === 'Escape' || e.key === 'Esc') && overlay.classList.contains('active')) {
             closeModal();
           }
         });
 
-        // Hantar borang
         form.addEventListener('submit', async function (e) {
           e.preventDefault();
 
@@ -9276,7 +9289,6 @@
           const kategori = document.getElementById('fb_kategori').value;
           const mesej    = document.getElementById('fb_mesej').value.trim();
 
-          // Validasi e-mel
           if (!email) {
             showToast('Sila masukkan e-mel', 'error');
             document.getElementById('fb_email').focus();
@@ -9289,19 +9301,16 @@
             return;
           }
 
-          // Validasi kategori
           if (!kategori) {
             showToast('Sila pilih kategori', 'error');
             return;
           }
 
-          // Validasi mesej
           if (!mesej) {
             showToast('Sila tulis mesej / soalan', 'error');
             return;
           }
 
-          // UI state semasa menghantar
           btnSubmit.disabled = true;
           const originalHTML = btnSubmit.innerHTML;
           btnSubmit.innerHTML = '<span>Menghantar…</span>';
@@ -9310,7 +9319,6 @@
             const formData = new FormData(form);
             const object = Object.fromEntries(formData.entries());
 
-            // Buang botcheck — hanya sebagai umpan
             delete object.botcheck;
 
             const response = await fetch('https://api.web3forms.com/submit', {
@@ -9341,7 +9349,6 @@
           }
         });
       }
-      /* === Q&A BARU: TAMAT === */
 
       document.getElementById('saveSheetBtn').addEventListener('click', async function () {
         const btn = this;
