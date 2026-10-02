@@ -347,40 +347,33 @@
         border-radius: var(--radius) 0 0 var(--radius);
       }
 
-/* ============================================================
-   STICKY HEADER — main-title & topbar kekal di atas semasa scroll
-   -------------------------------------------------------------
-   Hanya aktif pada desktop (>900px). Pada mobile/tablet kecil,
-   kedua-duanya kekal static supaya tidak makan ruang skrin.
-   ============================================================ */
-   @media (min-width: 901px) {
-  .main-title {
-    position: sticky;
-    top: 0;
-    z-index: 200;
-  }
-  .topbar {
-    position: sticky;
-    top: var(--header-sticky-top, 130px);
-    z-index: 190;
-  }
-}
+      @media (min-width: 901px) {
+        .main-title {
+          position: sticky;
+          top: 0;
+          z-index: 200;
+        }
+        .topbar {
+          position: sticky;
+          top: var(--header-sticky-top, 130px);
+          z-index: 190;
+        }
+      }
 
-/* Pastikan static pada mobile & masa print */
-@media (max-width: 900px) {
-  .main-title,
-  .topbar {
-    position: static !important;
-    top: auto !important;
-  }
-}
-@media print {
-  .main-title,
-  .topbar {
-    position: static !important;
-    top: auto !important;
-  }
-}
+      @media (max-width: 900px) {
+        .main-title,
+        .topbar {
+          position: static !important;
+          top: auto !important;
+        }
+      }
+      @media print {
+        .main-title,
+        .topbar {
+          position: static !important;
+          top: auto !important;
+        }
+      }
       .crest {
         font-family: 'Oswald', sans-serif; font-weight: 700; font-size: 1.15rem;
         letter-spacing: 0.03em; display: flex; align-items: center;
@@ -578,6 +571,39 @@
         box-shadow: 0 0 0 3px rgba(214, 52, 71, 0.28);
       }
       .btn-back-dashboard .ico { font-size: 1rem; }
+
+      /* === Q&A BARU: Butang Q&A === */
+      .btn-feedback {
+        display: inline-flex; align-items: center; gap: 0.45rem;
+        background: var(--panel-2);
+        border: 1px solid rgba(31, 168, 160, 0.55);
+        color: var(--teal);
+        padding: 0.55rem 0.8rem;
+        border-radius: var(--radius-sm);
+        cursor: pointer;
+        font-family: 'Oswald', sans-serif;
+        font-size: 0.68rem;
+        letter-spacing: 0.09em;
+        text-transform: uppercase;
+        font-weight: 600;
+        transition: background 0.15s, color 0.15s, border-color 0.15s, transform 0.12s;
+        flex-shrink: 0;
+        white-space: nowrap;
+      }
+      .btn-feedback:hover {
+        background: linear-gradient(180deg, #1fa8a0, #15847c);
+        color: #fff;
+        border-color: transparent;
+        transform: translateY(-1px);
+        box-shadow: 0 4px 14px rgba(31, 168, 160, 0.45);
+      }
+      .btn-feedback:active { transform: translateY(0); }
+      .btn-feedback:focus-visible {
+        outline: none;
+        box-shadow: 0 0 0 3px rgba(31, 168, 160, 0.28);
+      }
+      .btn-feedback .ico { font-size: 1rem; }
+      /* === Q&A BARU: TAMAT === */
 
       .manage-bar {
         display: flex;
@@ -2224,12 +2250,6 @@
         }
       }
 
-      /* ============================================================
-         FIX STICKY: Semak Lokasi — kolum BIL/KATEGORI/MAKLUMAT
-         -------------------------------------------------------------
-         .section ada overflow: hidden yang memecahkan position: sticky.
-         Fix: buat overflow visible khas untuk section semak_lokasi.
-         ============================================================ */
       #sec-semak_lokasi {
         overflow: visible !important;
         border-radius: var(--radius);
@@ -2344,7 +2364,6 @@
       .mers-check:not(.readonly):hover { transform: scale(1.12); }
       .mers-check.readonly { cursor: default; opacity: 0.9; }
 
-      /* ← Penunjuk status khas (TIADA / LUPUS / DALAM PROSES LUPUS) */
       .mers-na {
         display: inline-flex;
         align-items: center;
@@ -2446,6 +2465,88 @@
         background: var(--panel-2);
       }
 
+      /* === Q&A BARU: Modal Feedback === */
+      .feedback-modal-overlay {
+        position: fixed; inset: 0;
+        background: rgba(2, 6, 16, 0.78);
+        display: none; align-items: center; justify-content: center;
+        z-index: 10010; padding: 1rem;
+        backdrop-filter: blur(4px);
+      }
+      .feedback-modal-overlay.active { display: flex; }
+
+      .feedback-modal {
+        background: var(--panel);
+        border: 1px solid var(--line);
+        border-radius: var(--radius);
+        max-width: 540px; width: 100%;
+        box-shadow: var(--shadow);
+        max-height: 92vh; overflow: auto;
+        animation: modalIn 0.2s ease;
+      }
+
+      .feedback-modal-head {
+        display: flex; align-items: center; justify-content: space-between;
+        padding: 0.85rem 1.15rem;
+        border-bottom: 1px solid var(--line);
+        background: linear-gradient(180deg, var(--panel-3), var(--panel-2));
+        position: relative;
+      }
+      .feedback-modal-head::before {
+        content: ''; position: absolute; left: 0; top: 0; bottom: 0;
+        width: 4px; background: var(--teal);
+      }
+      .feedback-modal-head h3 {
+        margin: 0; font-size: 0.85rem; letter-spacing: 0.08em;
+        text-transform: uppercase; color: var(--text);
+        padding-left: 0.35rem;
+        font-family: 'Oswald', sans-serif;
+      }
+      .feedback-modal-close {
+        background: transparent; border: none; color: var(--text-dim);
+        font-size: 1.4rem; cursor: pointer; line-height: 1; padding: 0 0.4rem;
+        border-radius: 4px;
+      }
+      .feedback-modal-close:hover { color: var(--red); background: rgba(214, 52, 71, 0.12); }
+
+      .feedback-modal-body {
+        padding: 1.15rem 1.25rem;
+        display: flex; flex-direction: column; gap: 0.85rem;
+      }
+      .feedback-field { display: flex; flex-direction: column; gap: 0.25rem; }
+      .feedback-field label {
+        font-size: 0.6rem; letter-spacing: 0.1em; color: var(--text-faint);
+        font-family: 'Oswald', sans-serif; text-transform: uppercase; font-weight: 600;
+      }
+      .feedback-field input,
+      .feedback-field select,
+      .feedback-field textarea {
+        background: var(--bg-2); border: 1px solid var(--line); color: var(--text);
+        font-family: 'Inter', system-ui, sans-serif; font-size: 0.8rem;
+        padding: 0.5rem 0.65rem; border-radius: var(--radius-sm); width: 100%;
+        transition: border-color 0.15s, box-shadow 0.15s;
+      }
+      .feedback-field input:focus,
+      .feedback-field select:focus,
+      .feedback-field textarea:focus {
+        outline: none; border-color: var(--teal);
+        box-shadow: 0 0 0 3px rgba(31, 168, 160, 0.16);
+      }
+      .feedback-field input[readonly] {
+        background: var(--panel-3);
+        color: var(--text-dim);
+        cursor: default;
+      }
+      .feedback-field textarea { resize: vertical; min-height: 110px; font-family: 'Inter', system-ui, sans-serif; }
+
+      .feedback-modal-foot {
+        display: flex; justify-content: flex-end; gap: 0.55rem;
+        padding-top: 0.35rem;
+      }
+      .feedback-modal-foot .btn { min-width: 100px; justify-content: center; }
+      .feedback-modal-foot .btn.primary:disabled { opacity: 0.6; cursor: wait; }
+      /* === Q&A BARU: TAMAT === */
+
       @media print {
         body.printing-po3a .stats,
         body.printing-po3a .topbar { display: none !important; }
@@ -2499,7 +2600,8 @@
         .manage-bar, .autosave-indicator, .btn-back-dashboard,
         .tabbar, .loading-overlay, .toast-container, .site-footer,
         .print-modal-overlay, .btn-print-po3a, .auto-reload-widget,
-        .semak-toggle-bar, .live-clock { display: none !important; }
+        .semak-toggle-bar, .live-clock,
+        .feedback-modal-overlay, .btn-feedback { display: none !important; }
         .section, .stat, .topbar, .main-title { box-shadow: none !important; page-break-inside: avoid; }
         .main-title { border-top: 3px solid #16223a !important; border-bottom: 3px solid #16223a !important; }
         body.printing-single #sections > .section.print-target .section-head {
@@ -2627,6 +2729,7 @@
         .topbar-actions .btn-save-sheet,
         .topbar-actions .btn-print-po3a,
         .topbar-actions .theme-toggle,
+        .topbar-actions .btn-feedback,
         .topbar-actions .btn-back-dashboard { flex: 1 1 auto; justify-content: center; }
       }
       @media (max-width: 640px) {
@@ -2935,6 +3038,15 @@
 
           <button class="theme-toggle" id="themeToggle" type="button"></button>
 
+          <!-- === Q&A BARU: Butang Q&A === -->
+          <button class="btn-feedback" id="feedbackBtn" type="button" title="Hantar Soalan / Maklum Balas">
+            <svg class="ico" viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
+            </svg>
+            <span>Q&amp;A</span>
+          </button>
+          <!-- === Q&A BARU: TAMAT === -->
+
           <a href="index.html" class="btn-back-dashboard" title="Kembali ke Dashboard">
             <svg class="ico" viewBox="0 0 24 24" aria-hidden="true">
               <line x1="19" y1="12" x2="5" y2="12" />
@@ -3205,6 +3317,78 @@
         </div>
       </div>
     </div>
+
+    <!-- === Q&A BARU: Modal Feedback === -->
+    <div class="feedback-modal-overlay" id="feedbackModalOverlay" role="dialog" aria-modal="true" aria-labelledby="feedbackModalTitle">
+      <div class="feedback-modal">
+        <div class="feedback-modal-head">
+          <h3 id="feedbackModalTitle">Q&amp;A Sistem Kekuatan Anggota</h3>
+          <button class="feedback-modal-close" id="feedbackModalClose" type="button" aria-label="Tutup">×</button>
+        </div>
+        <form class="feedback-modal-body" id="feedbackForm" method="POST">
+
+          <!-- ===== Web3Forms Config ===== -->
+          <input type="hidden" name="access_key" value="f853f38e-2751-4e0e-8d0a-dac13e7eead6">
+          <input type="hidden" name="subject" value="Q&A Sistem Kekuatan Anggota — Feedback Baru">
+          <input type="hidden" name="from_name" value="Sistem Kekuatan JBPM Johor">
+          <!-- Honeypot anti-spam — JANGAN alih keluar -->
+          <input type="checkbox" name="botcheck" style="display:none;" tabindex="-1" autocomplete="off">
+          <!-- ============================ -->
+
+          <div class="feedback-field">
+            <label for="fb_nama">Nama</label>
+            <input id="fb_nama" name="nama" type="text" placeholder="Nama penuh (optional)" autocomplete="off" />
+          </div>
+
+          <div class="feedback-field">
+            <label for="fb_jawatan">Jawatan</label>
+            <input id="fb_jawatan" name="jawatan" type="text" placeholder="Jawatan (optional)" autocomplete="off" />
+          </div>
+
+          <div class="feedback-field">
+            <label for="fb_email">E-mel <span style="color:var(--rosak)">*</span></label>
+            <input id="fb_email" name="email" type="email" placeholder="nama@email.com" required autocomplete="email" inputmode="email" />
+            <span style="font-size:0.62rem; color:var(--text-faint); margin-top:0.25rem; line-height:1.4;">
+              E-mel diperlukan supaya kami boleh membalas soalan anda.
+            </span>
+          </div>
+
+          <div class="feedback-field">
+            <label for="fb_balai">Balai</label>
+            <input id="fb_balai" name="balai" type="text" placeholder="Balai semasa (auto)" readonly />
+          </div>
+
+          <div class="feedback-field">
+            <label for="fb_kategori">Kategori <span style="color:var(--rosak)">*</span></label>
+            <select id="fb_kategori" name="kategori" required>
+              <option value="">— Pilih Kategori —</option>
+              <option value="Pujian">Pujian</option>
+              <option value="Cadangan">Cadangan</option>
+              <option value="Soalan">Soalan</option>
+              <option value="Masalah">Masalah / Bug</option>
+              <option value="Lain-lain">Lain-lain</option>
+            </select>
+          </div>
+
+          <div class="feedback-field">
+            <label for="fb_mesej">Mesej / Soalan <span style="color:var(--rosak)">*</span></label>
+            <textarea id="fb_mesej" name="mesej" rows="5" placeholder="Tulis soalan atau maklum balas anda di sini…" required></textarea>
+          </div>
+
+          <div class="feedback-modal-foot">
+            <button class="btn" id="feedbackCancel" type="button">Batal</button>
+            <button class="btn primary" id="feedbackSubmit" type="submit">
+              <svg class="ico" viewBox="0 0 24 24" aria-hidden="true">
+                <line x1="22" y1="2" x2="11" y2="13" />
+                <polygon points="22 2 15 22 11 13 2 9 22 2" />
+              </svg>
+              <span>Hantar</span>
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+    <!-- === Q&A BARU: TAMAT === -->
 
     <script>
       const SUPABASE_CONFIG = {
@@ -4185,6 +4369,8 @@
           if (printModal && printModal.classList.contains('active')) return;
           const exportModal = document.getElementById('exportModalOverlay');
           if (exportModal && exportModal.classList.contains('active')) return;
+          const feedbackModal = document.getElementById('feedbackModalOverlay');
+          if (feedbackModal && feedbackModal.classList.contains('active')) return;
           if (document.querySelector('.section.fullscreen-active')) {
             closeAllFullscreenPanels();
           }
@@ -4462,9 +4648,6 @@
         'ROSAK & TIDAK BOLEH BEROPERASI','DALAM PROSES LUPUS','LUPUS',
       ];
 
-      // ← Status khas untuk PERALATAN KOMUNIKASI sahaja.
-      // 'TIADA' & 'LUPUS' & 'DALAM PROSES LUPUS' tidak dikira dalam
-      // mana-mana ringkasan (mapEquipStatus → null).
       const KOMUNIKASI_STATUSES = [
         'BAIK & BOLEH BEROPERASI','ROSAK MINOR & BOLEH BEROPERASI',
         'ROSAK & TIDAK BOLEH BEROPERASI','DALAM PROSES LUPUS','LUPUS','TIADA',
@@ -5083,16 +5266,6 @@
 
       let mersPgoState = { cad: null, wic: null, bomra: null };
 
-      /* ================================================================
-         KOMUNIKASI ↔ MERS999 MAPPING
-         ---------------------------------------------------------------
-         Kolum MERS999  →  Item dalam KEKUATAN PERALATAN KOMUNIKASI
-         COMPUTER AIDED DISPATCH (CAD)  →  NG999
-         WEB INTEGRATED CONSOLE (WIC)   →  WEB INTEGRATED CONSOLE (WIC)
-         BOMBA RESPONDER APPS (BOMRA)   →  BOMBA RESPONDER APPS (BOMRA)
-         ================================================================ */
-
-      // Cari item komunikasi — padanan tidak sensitif huruf besar/kecil & trim
       function getKomItem(balaiName, itemName) {
         const b = store && store.balai && store.balai[balaiName];
         if (!b || !b.equip || !b.equip.komunikasi) return null;
@@ -5102,20 +5275,17 @@
         }) || null;
       }
 
-      // Pulangkan status B/R/null (untuk kiraan)
       function getKomStatus(balaiName, itemName) {
         const item = getKomItem(balaiName, itemName);
         if (!item || !item.status) return null;
         return mapEquipStatus(item.status);
       }
 
-      // Pulangkan status mentah (untuk tooltip & penunjuk '—')
       function getKomStatusRaw(balaiName, itemName) {
         const item = getKomItem(balaiName, itemName);
         return item ? (item.status || '') : '';
       }
 
-      // CAD = NG999  ←  penting!
       function getMersStatus(balaiName) {
         return {
           cad: getKomStatus(balaiName, 'NG999'),
@@ -5315,7 +5485,6 @@
               boxOk.appendChild(makeMersCheckbox('cek', false, true, null));
               boxNo.appendChild(makeMersCheckbox('tak', true, true, null));
             } else if (rv) {
-              // Status diisi tetapi bukan B/R (TIADA / LUPUS / DALAM PROSES LUPUS)
               const naOk = document.createElement('span');
               naOk.className = 'mers-na'; naOk.textContent = '—';
               const naNo = document.createElement('span');
@@ -6214,7 +6383,6 @@
         if (s === 'BAIK & BOLEH BEROPERASI') return 'B';
         if (s === 'ROSAK MINOR & BOLEH BEROPERASI') return 'B';
         if (s === 'ROSAK & TIDAK BOLEH BEROPERASI') return 'R';
-        // 'DALAM PROSES LUPUS', 'LUPUS', 'TIADA' → null (tidak dikira)
         return null;
       }
 
@@ -6541,7 +6709,6 @@
         }
 
         const tdS = document.createElement('td');
-        // Guna senarai status khas untuk panel KOMUNIKASI (ada 'TIADA')
         const statusOptions = isKom ? KOMUNIKASI_STATUSES : EQUIP_STATUSES;
         const selS = makeSelect(statusOptions, r.status, (v) => { r.status = v; saveState(); globalRecalc(); markRow(); });
         selS.dataset.mf = 'status';
@@ -8617,10 +8784,6 @@
         setInterval(tick, 1000);
       }
 
-      // ============================================================
-      // STICKY HEADER — kira tinggi main-title supaya topbar
-      // sentiasa stick tepat di bawahnya
-      // ============================================================
       function updateHeaderStickyOffset() {
         const mt = document.querySelector('.main-title');
         if (!mt) return;
@@ -9000,6 +9163,7 @@
       async function initApp() {
         initTheme();
         initSound();
+        initFeedbackModal();   /* === Q&A BARU === */
         updatePrintFooterDate();
         fillPrintFooter(loadPrintInfo());
         setLoading(true, 'Memuatkan data dari Supabase…');
@@ -9040,6 +9204,128 @@
           setLoading(false);
         }
       }
+
+      /* === Q&A BARU: FUNGSI MODAL FEEDBACK === */
+      function initFeedbackModal() {
+        const overlay    = document.getElementById('feedbackModalOverlay');
+        const form       = document.getElementById('feedbackForm');
+        const btnOpen    = document.getElementById('feedbackBtn');
+        const btnClose   = document.getElementById('feedbackModalClose');
+        const btnCancel  = document.getElementById('feedbackCancel');
+        const btnSubmit  = document.getElementById('feedbackSubmit');
+        const inputBalai = document.getElementById('fb_balai');
+
+        if (!overlay || !form || !btnOpen) return;
+
+        // Buka modal
+        btnOpen.addEventListener('click', function () {
+          if (inputBalai) {
+            inputBalai.value = (store && store.activeBalai)
+              ? store.activeBalai
+              : (store && store.view ? '(' + store.view + ')' : '');
+          }
+          overlay.classList.add('active');
+          setTimeout(function () {
+            const firstField = document.getElementById('fb_nama');
+            if (firstField) firstField.focus();
+          }, 80);
+        });
+
+        // Tutup modal
+        function closeModal() {
+          overlay.classList.remove('active');
+          form.reset();
+          if (inputBalai) inputBalai.value = '';
+        }
+
+        btnClose.addEventListener('click', closeModal);
+        btnCancel.addEventListener('click', closeModal);
+
+        overlay.addEventListener('click', function (e) {
+          if (e.target === overlay) closeModal();
+        });
+
+        // Tutup dengan Escape
+        document.addEventListener('keydown', function (e) {
+          if ((e.key === 'Escape' || e.key === 'Esc') && overlay.classList.contains('active')) {
+            closeModal();
+          }
+        });
+
+        // Hantar borang
+        form.addEventListener('submit', async function (e) {
+          e.preventDefault();
+
+          const email    = document.getElementById('fb_email').value.trim();
+          const kategori = document.getElementById('fb_kategori').value;
+          const mesej    = document.getElementById('fb_mesej').value.trim();
+
+          // Validasi e-mel
+          if (!email) {
+            showToast('Sila masukkan e-mel', 'error');
+            document.getElementById('fb_email').focus();
+            return;
+          }
+          const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+          if (!emailRegex.test(email)) {
+            showToast('Format e-mel tidak sah', 'error');
+            document.getElementById('fb_email').focus();
+            return;
+          }
+
+          // Validasi kategori
+          if (!kategori) {
+            showToast('Sila pilih kategori', 'error');
+            return;
+          }
+
+          // Validasi mesej
+          if (!mesej) {
+            showToast('Sila tulis mesej / soalan', 'error');
+            return;
+          }
+
+          // UI state semasa menghantar
+          btnSubmit.disabled = true;
+          const originalHTML = btnSubmit.innerHTML;
+          btnSubmit.innerHTML = '<span>Menghantar…</span>';
+
+          try {
+            const formData = new FormData(form);
+            const object = Object.fromEntries(formData.entries());
+
+            // Buang botcheck — hanya sebagai umpan
+            delete object.botcheck;
+
+            const response = await fetch('https://api.web3forms.com/submit', {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json',
+              },
+              body: JSON.stringify(object),
+            });
+
+            const result = await response.json();
+
+            if (response.status === 200 && result.success) {
+              playToastSuccessSound();
+              showToast('Terima kasih! Maklum balas anda telah dihantar. Kami akan balas ke e-mel anda.', 'success');
+              closeModal();
+            } else {
+              throw new Error(result.message || 'Ralat tidak diketahui');
+            }
+          } catch (err) {
+            console.error('[Feedback] Gagal hantar:', err);
+            playToastErrorSound();
+            showToast('Gagal hantar: ' + err.message, 'error');
+          } finally {
+            btnSubmit.disabled = false;
+            btnSubmit.innerHTML = originalHTML;
+          }
+        });
+      }
+      /* === Q&A BARU: TAMAT === */
 
       document.getElementById('saveSheetBtn').addEventListener('click', async function () {
         const btn = this;
@@ -9334,7 +9620,6 @@
       initLiveClock();
       updateHeaderStickyOffset();
       initApp();
-      // Recalculate sekali lagi selepas data selesai load
       setTimeout(updateHeaderStickyOffset, 400);
     </script>
   </body>
