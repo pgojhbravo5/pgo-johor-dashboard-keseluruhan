@@ -214,6 +214,22 @@
         pointer-events: none;
       }
 
+      /* ============================================================
+         SEARCHABLE DROPDOWN — Highlight padanan & butang clear
+         ============================================================ */
+      mark.dd-hl {
+        background: #f5c542;
+        color: #1a1206;
+        border-radius: 2px;
+        padding: 0 1px;
+        font-weight: 700;
+      }
+
+      .dd-clear-btn:focus {
+        outline: none;
+        box-shadow: 0 0 0 2px rgba(214, 69, 69, 0.3);
+      }
+
       .loading-overlay {
         position: fixed; inset: 0;
         background: rgba(10, 17, 32, 0.92);
@@ -6284,7 +6300,6 @@
 
           let invalid = !r[fieldKey];
 
-          // Semakan tambahan: MAKLUMAT mesti wujud dalam katalog kategori
           if (!invalid && fieldKey === 'maklumat' && !isKom && key) {
             invalid = !isMaklumatInCatalog(key, r.kategori, r.maklumat);
           }
@@ -6384,40 +6399,80 @@
         return 'Balai "' + balaiName + '":\n\n' + lines.join('\n');
       }
 
+      // ============================================================
+      // SEARCHABLE COMBOBOX untuk MAKLUMAT (Jentera/Marin/Utiliti)
+      // — Taip untuk cari + butang ✕ clear + highlight padanan
+      // ============================================================
       function makeKategoriDrivenInput(key, currentKat, currentMaklumat, onMaklumatChange) {
         const catalog = getCatalogForSection(key);
         const wrapper = document.createElement('span');
-        wrapper.style.display = 'contents';
+        wrapper.style.display = 'block';
+        wrapper.style.width = '100%';
 
         let currentControl = null;
         let currentValue = currentMaklumat || '';
         let currentKategori = currentKat || '';
+        let dropdownEl = null;
+        let cleanupFns = [];
 
         function handleChange(v) {
           currentValue = v;
           onMaklumatChange(v);
         }
 
-        function buildControl() {
+        function cleanupPrev() {
+          cleanupFns.forEach(function (fn) { try { fn(); } catch (e) {} });
+          cleanupFns = [];
+          if (dropdownEl && dropdownEl.parentNode) {
+            dropdownEl.parentNode.removeChild(dropdownEl);
+          }
+          dropdownEl = null;
           if (currentControl && currentControl.parentNode === wrapper) {
             wrapper.removeChild(currentControl);
           }
           currentControl = null;
+        }
+
+        // Escape HTML supaya nilai katalog selamat dipaparkan
+        function escHtml(s) {
+          return String(s)
+            .replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;');
+        }
+
+        // Bina HTML dengan highlight teks padanan
+        function highlightMatch(text, filter) {
+          if (!filter) return escHtml(text);
+          const lowerText = text.toLowerCase();
+          const lowerFilter = filter.toLowerCase();
+          const idx = lowerText.indexOf(lowerFilter);
+          if (idx === -1) return escHtml(text);
+
+          const before = text.slice(0, idx);
+          const match = text.slice(idx, idx + filter.length);
+          const after = text.slice(idx + filter.length);
+
+          return escHtml(before) +
+            '<mark class="dd-hl">' + escHtml(match) + '</mark>' +
+            escHtml(after);
+        }
+
+        function buildControl() {
+          cleanupPrev();
 
           const list = catalog[currentKategori] || [];
 
           // KES 1: Kategori belum dipilih — disabled
           if (!currentKategori) {
-            const sel = document.createElement('select');
-            sel.disabled = true;
-            sel.dataset.mf = 'maklumat';
-            const opt = document.createElement('option');
-            opt.value = '';
-            opt.textContent = 'Pilih KATEGORI dahulu…';
-            sel.appendChild(opt);
-            sel.style.cssText = 'width:100%;min-width:100%;box-sizing:border-box;';
-            wrapper.appendChild(sel);
-            currentControl = sel;
+            const inp = document.createElement('input');
+            inp.type = 'text';
+            inp.disabled = true;
+            inp.dataset.mf = 'maklumat';
+            inp.placeholder = 'Pilih KATEGORI dahulu…';
+            inp.style.cssText = 'width:100%;min-width:100%;box-sizing:border-box;';
+            wrapper.appendChild(inp);
+            currentControl = inp;
             return;
           }
 
@@ -6429,68 +6484,319 @@
             inp.dataset.mf = 'maklumat';
             inp.placeholder = 'Tiada senarai rasmi — taip manual';
             inp.style.cssText = 'width:100%;min-width:100%;box-sizing:border-box;';
-            inp.addEventListener('input', () => handleChange(inp.value));
+            inp.addEventListener('input', function () { handleChange(inp.value); });
             wrapper.appendChild(inp);
             currentControl = inp;
             return;
           }
 
-          // KES 3: Paksa dropdown
-          const sel = document.createElement('select');
-          sel.dataset.mf = 'maklumat';
-          sel.style.cssText = 'width:100%;min-width:100%;box-sizing:border-box;';
-          sel.title = 'Pilih dari senarai sahaja — tiada taip manual dibenarkan';
+          // KES 3: Searchable combobox (paksa pilih dari senarai)
+          const inp = document.createElement('input');
+          inp.type = 'text';
+          inp.value = currentValue;
+          inp.dataset.mf = 'maklumat';
+          inp.autocomplete = 'off';
+          inp.placeholder = 'Taip untuk cari… (' + list.length + ' unit)';
+          inp.style.cssText =
+            'width:100%;min-width:100%;box-sizing:border-box;' +
+            'padding-right:44px;';
 
-          const blank = document.createElement('option');
-          blank.value = '';
-          blank.textContent = '— Pilih MAKLUMAT (' + list.length + ' unit) —';
-          sel.appendChild(blank);
+          // Butang clear ✕
+          const clearBtn = document.createElement('button');
+          clearBtn.type = 'button';
+          clearBtn.className = 'dd-clear-btn';
+          clearBtn.innerHTML = '✕';
+          clearBtn.title = 'Kosongkan';
+          clearBtn.tabIndex = -1;
+          clearBtn.style.cssText =
+            'position:absolute;right:22px;top:50%;transform:translateY(-50%);' +
+            'width:16px;height:16px;padding:0;border:none;border-radius:50%;' +
+            'background:rgba(255,255,255,0.08);color:var(--text-dim);' +
+            'font-size:9px;line-height:1;cursor:pointer;display:none;' +
+            'align-items:center;justify-content:center;transition:all 0.12s;';
 
-          list.forEach((v) => {
-            const o = document.createElement('option');
-            o.value = v;
-            o.textContent = v;
-            if (v === currentValue) o.selected = true;
-            sel.appendChild(o);
+          // Arrow ▾
+          const arrow = document.createElement('span');
+          arrow.textContent = '▾';
+          arrow.style.cssText =
+            'position:absolute;right:6px;top:50%;transform:translateY(-50%);' +
+            'pointer-events:none;color:var(--text-faint);font-size:0.7rem;';
+
+          const cont = document.createElement('div');
+          cont.style.cssText = 'position:relative;width:100%;';
+          cont.appendChild(inp);
+          cont.appendChild(clearBtn);
+          cont.appendChild(arrow);
+          wrapper.appendChild(cont);
+          currentControl = cont;
+
+          // Fungsi update visibility butang clear
+          function updateClearBtn() {
+            if (inp.value && inp.value.length > 0) {
+              clearBtn.style.display = 'inline-flex';
+            } else {
+              clearBtn.style.display = 'none';
+            }
+          }
+          updateClearBtn();
+
+          clearBtn.addEventListener('mouseenter', function () {
+            clearBtn.style.background = 'rgba(214,69,69,0.25)';
+            clearBtn.style.color = 'var(--rosak)';
+          });
+          clearBtn.addEventListener('mouseleave', function () {
+            clearBtn.style.background = 'rgba(255,255,255,0.08)';
+            clearBtn.style.color = 'var(--text-dim)';
+          });
+          clearBtn.addEventListener('mousedown', function (e) {
+            e.preventDefault(); // elak blur input
+          });
+          clearBtn.addEventListener('click', function (e) {
+            e.preventDefault();
+            e.stopPropagation();
+            inp.value = '';
+            handleChange('');
+            updateClearBtn();
+            setValidState();
+            inp.focus();
+            openDropdown();
+            renderDropdown('');
           });
 
-          // Kalau nilai lama tak sah, tunjuk sebagai opsyen khas
-          if (currentValue && !list.includes(currentValue)) {
-            const inv = document.createElement('option');
-            inv.value = currentValue;
-            inv.textContent = '⚠ ' + currentValue + '  —  TIDAK SAH (pilih semula)';
-            inv.selected = true;
-            sel.appendChild(inv);
-            sel.style.borderColor = 'var(--rosak)';
-            sel.style.boxShadow = '0 0 0 2px rgba(214,69,69,0.25)';
-          } else if (!currentValue) {
-            sel.value = '';
+          // Portal dropdown (append ke body supaya tak dipotong oleh overflow table)
+          const dd = document.createElement('div');
+          dd.className = 'searchable-dd-portal';
+          dd.style.cssText =
+            'position:fixed;z-index:9999;display:none;' +
+            'max-height:220px;overflow-y:auto;' +
+            'background:var(--panel);border:1px solid var(--line);' +
+            'border-radius:var(--radius-sm);' +
+            'box-shadow:0 10px 32px rgba(0,0,0,0.45),0 2px 8px rgba(0,0,0,0.3);' +
+            'font-family:Inter,system-ui,sans-serif;font-size:0.72rem;' +
+            'padding:2px 0;';
+          document.body.appendChild(dd);
+          dropdownEl = dd;
+
+          let filteredList = [];
+          let highlightedIndex = -1;
+          let currentFilter = '';
+
+          function positionDropdown() {
+            const rect = inp.getBoundingClientRect();
+            const spaceBelow = window.innerHeight - rect.bottom - 8;
+            const spaceAbove = rect.top - 8;
+            const maxH = 220;
+
+            if (spaceBelow < 120 && spaceAbove > spaceBelow) {
+              dd.style.top = 'auto';
+              dd.style.bottom = (window.innerHeight - rect.top + 2) + 'px';
+              dd.style.maxHeight = Math.min(maxH, spaceAbove) + 'px';
+            } else {
+              dd.style.top = (rect.bottom + 2) + 'px';
+              dd.style.bottom = 'auto';
+              dd.style.maxHeight = Math.min(maxH, Math.max(spaceBelow, 80)) + 'px';
+            }
+            dd.style.left = rect.left + 'px';
+            dd.style.width = Math.max(rect.width, 240) + 'px';
           }
 
-          sel.addEventListener('change', () => {
-            const v = sel.value;
+          function renderDropdown(filter) {
+            dd.innerHTML = '';
+            currentFilter = filter || '';
+            const f = currentFilter.toLowerCase().trim();
+            filteredList = f
+              ? list.filter(function (v) { return v.toLowerCase().indexOf(f) !== -1; })
+              : list.slice();
+
+            if (filteredList.length === 0) {
+              const empty = document.createElement('div');
+              empty.textContent = 'Tiada padanan — pilih dari senarai sahaja';
+              empty.style.cssText =
+                'padding:0.6rem;color:var(--text-faint);' +
+                'font-style:italic;text-align:center;font-size:0.68rem;';
+              dd.appendChild(empty);
+              return;
+            }
+
+            filteredList.forEach(function (v, i) {
+              const item = document.createElement('div');
+              item.dataset.value = v;
+              // Highlight teks padanan
+              item.innerHTML = highlightMatch(v, f);
+              item.style.cssText =
+                'padding:0.42rem 0.6rem;cursor:pointer;' +
+                'border-bottom:1px solid var(--line-soft);' +
+                'transition:background 0.1s;';
+
+              if (v === currentValue) {
+                item.style.background = 'var(--col-amber-bg)';
+                item.style.color = 'var(--amber)';
+                item.style.fontWeight = '600';
+              }
+              item.addEventListener('mouseenter', function () {
+                highlightedIndex = i;
+                updateHighlight();
+              });
+              item.addEventListener('mousedown', function (e) {
+                e.preventDefault();
+                selectValue(v);
+              });
+              dd.appendChild(item);
+            });
+            updateHighlight();
+          }
+
+          function updateHighlight() {
+            Array.from(dd.children).forEach(function (el, i) {
+              if (i === highlightedIndex) {
+                el.style.background = 'var(--panel-3)';
+                el.style.color = 'var(--text-strong)';
+              } else {
+                if (filteredList[i] === currentValue) {
+                  el.style.background = 'var(--col-amber-bg)';
+                  el.style.color = 'var(--amber)';
+                  el.style.fontWeight = '600';
+                } else {
+                  el.style.background = '';
+                  el.style.color = '';
+                  el.style.fontWeight = '';
+                }
+              }
+            });
+            if (highlightedIndex >= 0 && dd.children[highlightedIndex]) {
+              dd.children[highlightedIndex].scrollIntoView({ block: 'nearest' });
+            }
+          }
+
+          function setValidState() {
+            inp.style.borderColor = '';
+            inp.style.boxShadow = '';
+            inp.title = 'Taip untuk cari — pilih dari senarai sahaja';
+          }
+
+          function setInvalidState(val) {
+            inp.style.borderColor = 'var(--rosak)';
+            inp.style.boxShadow = '0 0 0 2px rgba(214,69,69,0.25)';
+            inp.title = 'Nilai tidak sah: "' + val + '" — sila pilih dari senarai';
+          }
+
+          function selectValue(v) {
+            currentValue = v;
+            inp.value = v;
             handleChange(v);
-            // Buang opsyen "tidak sah" selepas user pilih nilai sah
-            if (list.includes(v)) {
-              const invOpt = Array.from(sel.options).find(o => o.value && !list.includes(o.value));
-              if (invOpt) invOpt.remove();
-              sel.style.borderColor = '';
-              sel.style.boxShadow = '';
+            closeDropdown();
+            setValidState();
+            updateClearBtn();
+          }
+
+          function openDropdown() {
+            if (dd.style.display === 'block') return;
+            highlightedIndex = -1;
+            renderDropdown('');
+            positionDropdown();
+            dd.style.display = 'block';
+            const idx = filteredList.indexOf(currentValue);
+            if (idx >= 0) {
+              highlightedIndex = idx;
+              updateHighlight();
+            }
+          }
+
+          function closeDropdown() {
+            dd.style.display = 'none';
+          }
+
+          // Initial state
+          if (currentValue && !list.includes(currentValue)) {
+            setInvalidState(currentValue);
+          } else {
+            setValidState();
+          }
+
+          inp.addEventListener('focus', function () { openDropdown(); });
+
+          inp.addEventListener('input', function () {
+            openDropdown();
+            highlightedIndex = -1;
+            renderDropdown(inp.value);
+            updateClearBtn();
+          });
+
+          inp.addEventListener('keydown', function (e) {
+            if (e.key === 'ArrowDown') {
+              e.preventDefault();
+              if (dd.style.display !== 'block') { openDropdown(); return; }
+              if (highlightedIndex < filteredList.length - 1) {
+                highlightedIndex++;
+                updateHighlight();
+              }
+            } else if (e.key === 'ArrowUp') {
+              e.preventDefault();
+              if (highlightedIndex > 0) {
+                highlightedIndex--;
+                updateHighlight();
+              }
+            } else if (e.key === 'Enter') {
+              e.preventDefault();
+              if (highlightedIndex >= 0 && filteredList[highlightedIndex]) {
+                selectValue(filteredList[highlightedIndex]);
+              } else if (filteredList.length === 1) {
+                selectValue(filteredList[0]);
+              }
+            } else if (e.key === 'Escape') {
+              e.preventDefault();
+              closeDropdown();
+              inp.value = currentValue;
+              updateClearBtn();
+              if (currentValue && !list.includes(currentValue)) {
+                setInvalidState(currentValue);
+              } else {
+                setValidState();
+              }
+              inp.blur();
+            } else if (e.key === 'Tab') {
+              closeDropdown();
             }
           });
 
-          wrapper.appendChild(sel);
-          currentControl = sel;
+          inp.addEventListener('blur', function () {
+            setTimeout(function () {
+              closeDropdown();
+              const typed = inp.value.trim();
+              if (typed === currentValue) return;
+              if (list.includes(typed)) {
+                selectValue(typed);
+              } else {
+                // Bukan dari senarai → pulihkan nilai asal
+                inp.value = currentValue;
+                updateClearBtn();
+                if (currentValue && !list.includes(currentValue)) {
+                  setInvalidState(currentValue);
+                } else {
+                  setValidState();
+                }
+              }
+            }, 130);
+          });
+
+          const reposition = function () {
+            if (dd.style.display === 'block') positionDropdown();
+          };
+          window.addEventListener('scroll', reposition, true);
+          window.addEventListener('resize', reposition);
+          cleanupFns.push(function () {
+            window.removeEventListener('scroll', reposition, true);
+            window.removeEventListener('resize', reposition);
+          });
         }
 
         buildControl();
 
         return {
           element: wrapper,
-          updateForKategori(newKat) {
+          updateForKategori: function (newKat) {
             currentKategori = newKat || '';
             const list = catalog[currentKategori] || [];
-            // Kosongkan kalau nilai lama tak wujud dalam senarai baru
             if (currentValue && list.length > 0 && !list.includes(currentValue)) {
               currentValue = '';
               onMaklumatChange('');
@@ -7143,7 +7449,7 @@
 
         const isKategoriDriven = key === 'jentera' || key === 'marin' || key === 'utiliti';
         let hintText = 'SENARAI BUTIRAN';
-        if (isKategoriDriven) hintText = 'SENARAI BUTIRAN — Pilih KATEGORI dahulu, kemudian MAKLUMAT (paksa pilih dari dropdown)';
+        if (isKategoriDriven) hintText = 'SENARAI BUTIRAN — Pilih KATEGORI dahulu, kemudian MAKLUMAT (taip untuk cari, pilih dari senarai)';
         if (isKom) hintText = 'SENARAI BUTIRAN PERALATAN KOMUNIKASI — 9 item tetap tidak boleh dipadam';
         body.appendChild(subTitle(hintText));
 
@@ -8840,7 +9146,15 @@
         state.equip.komunikasi = ordered.concat(extras);
       }
 
+      // Bersihkan portal dropdown yang tertinggal sebelum render baru
+      function cleanupSearchableDropdowns() {
+        document.querySelectorAll('.searchable-dd-portal').forEach(function (el) {
+          if (el.parentNode) el.parentNode.removeChild(el);
+        });
+      }
+
       function renderAll() {
+        cleanupSearchableDropdowns();
         document.getElementById('sections').innerHTML = '';
         updateBodyFullscreenClass();
         if (store.view === 'summary') {
