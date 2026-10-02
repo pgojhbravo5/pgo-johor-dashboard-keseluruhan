@@ -3192,6 +3192,16 @@
           j.includes('kebakaran bengkel') ||
           j.includes('kebakaran warung') ||
           j.includes('kebakaran gerai') ||
+          // ➕ BARU — GERAI / STALL BURGER (masuk KEBAKARAN BANGUNAN)
+          j.includes('kebakaran stall') ||
+          j.includes('kebakaran gerai burger') ||
+          j.includes('kebakaran stall burger') ||
+          j.includes('stall burger') ||
+          j.includes('gerai burger') ||
+          j.includes('kebakaran kedai makan') ||
+          (j.includes('kebakaran') && j.includes('burger')) ||
+          (j.includes('kebakaran') && j.includes('stall')) ||
+          // sambung senarai asal
           j.includes('kebakaran pondok') ||
           j.includes('kebakaran kiosk') ||
           j.includes('kebakaran restoran') ||
@@ -3455,6 +3465,17 @@
         )
           return 'tugas_khas';
         if (
+          // ➕ BARU — BANTUAN AGENSI LUAR (PDRM, JPJ, APM, dsb.)
+          j.includes('bantuan pdrm') ||
+          j.includes('bantuan polis') ||
+          j.includes('bantuan jpj') ||
+          j.includes('bantuan apm') ||
+          j.includes('bantuan atr') ||
+          j.includes('bantuan rel') ||
+          j.includes('bantuan bomba') ||
+          j.includes('tugas-tugas khas') ||
+          j.includes('tugasan khas') ||
+          // sambung senarai asal
           j.includes('standby') ||
           j.includes('stand by') ||
           j.includes('bantuan agensi') ||
