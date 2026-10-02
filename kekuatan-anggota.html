@@ -1416,6 +1416,11 @@
         color: var(--text); text-align: left; min-width: 150px;
         background: var(--panel-2); letter-spacing: 0.03em;
       }
+      table.ketua tbody td.balai-name-spacer {
+        background: var(--panel-2);
+        padding: 0;
+        min-width: 0;
+      }
       table.ketua tbody tr:nth-child(even) td { background: var(--zebra); }
       table.ketua tbody tr:hover td { background: var(--hover-row); }
       table.ketua .s1 { color: var(--green); font-weight: 600; }
@@ -7313,7 +7318,7 @@
           gr.appendChild(th);
         });
         const bth = document.createElement('th');
-        bth.colSpan = 5; bth.textContent = 'BREAKDOWN';
+        bth.colSpan = 4; bth.textContent = 'BREAKDOWN';
         gr.appendChild(bth);
         const jth = document.createElement('th');
         jth.colSpan = 4; jth.textContent = 'JUMLAH'; jth.className = 'jumlah-col';
@@ -7332,7 +7337,7 @@
             sr.appendChild(th);
           });
         });
-        ['A', 'C', 'CS', 'TK', 'J'].forEach((s) => {
+        ['A', 'C', 'CS', 'TK'].forEach((s) => {
           const th = document.createElement('th');
           th.textContent = s;
           th.className = 's-' + s;
@@ -7365,7 +7370,7 @@
               tr.appendChild(td);
             });
           });
-          ['A', 'C', 'CS', 'TK', 'J'].forEach(() => {
+          ['A', 'C', 'CS', 'TK'].forEach(() => {
             const td = document.createElement('td');
             td.textContent = '0';
             tr.appendChild(td);
@@ -7398,7 +7403,7 @@
             fr.appendChild(td);
           });
         });
-        ['A', 'C', 'CS', 'TK', 'J'].forEach(() => {
+        ['A', 'C', 'CS', 'TK'].forEach(() => {
           const td = document.createElement('td');
           td.textContent = '0';
           fr.appendChild(td);
@@ -7640,7 +7645,7 @@
         const thead = document.createElement('thead');
         thead.innerHTML = `<tr>
     <th>BIL</th><th>GRED</th><th>TURN OUT</th>
-    <th style="text-align:left;">BALAI</th>
+    <th colspan="2" style="text-align:left;">BALAI</th>
     <th style="text-align:left;">KETUA BALAI/PEMANGKU KETUA BALAI</th>
     <th>NO TEL</th>
     <th style="text-align:left;">PENYELIA PASUKAN</th>
@@ -7682,9 +7687,16 @@
           tdTO.className = 'turnout-cell'; tdTO.textContent = meta.turnOut;
           tr.appendChild(tdTO);
 
+          // Kolum BALAI — pecahan 2 sel (nampak 1 di skrin, jadi 2 kolum di Excel)
           const tdBalai = document.createElement('td');
-          tdBalai.className = 'balai-name'; tdBalai.textContent = d.balai;
+          tdBalai.className = 'balai-name';
+          tdBalai.textContent = d.balai;
+          tdBalai.style.borderRight = 'none';
           tr.appendChild(tdBalai);
+
+          const tdBalaiSpacer = document.createElement('td');
+          tdBalaiSpacer.className = 'balai-name-spacer';
+          tr.appendChild(tdBalaiSpacer);
 
           const tdK = document.createElement('td');
           tdK.className = 'txt';
@@ -7776,7 +7788,7 @@
         fTO.textContent = totalTurnOut;
         fr.appendChild(fTO);
         const fSpacer = document.createElement('th');
-        fSpacer.colSpan = 4;
+        fSpacer.colSpan = 5;
         fr.appendChild(fSpacer);
         const fKB = document.createElement('th');
         fKB.className = 's1'; fKB.textContent = totalKB;
@@ -7813,7 +7825,7 @@
 
         const fr2 = document.createElement('tr');
         const f2Summary = document.createElement('th');
-        f2Summary.colSpan = 16;
+        f2Summary.colSpan = 17;
         f2Summary.style.textAlign = 'center';
         f2Summary.style.fontSize = '0.7rem';
         f2Summary.style.letterSpacing = '0.06em';
