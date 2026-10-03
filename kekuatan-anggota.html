@@ -2586,9 +2586,6 @@
       .feedback-modal-foot .btn { min-width: 100px; justify-content: center; }
       .feedback-modal-foot .btn.primary:disabled { opacity: 0.6; cursor: wait; }
 
-      /* ============================================================
-         AUTO-RESET NOTIFICATION POPUP
-         ============================================================ */
       .auto-reset-notice-overlay {
         position: fixed; inset: 0;
         background: rgba(2, 6, 16, 0.85);
@@ -2698,7 +2695,6 @@
         font-style: italic;
       }
 
-      /* Kotak peringatan dalam popup */
       .auto-reset-notice-warning {
         margin: 0.85rem 0 0.5rem;
         padding: 0.85rem 0.95rem;
@@ -2983,9 +2979,6 @@
           padding: 0.18rem 0.24rem !important;
         }
 
-        /* ============================================================
-           RINGKASAN KEKUATAN ANGGOTA — fit-to-page A4 landscape
-           ============================================================ */
         body.printing-single table.ketua,
         body.printing-full   table.ketua {
           width: 100% !important;
@@ -5487,9 +5480,6 @@
         }
       }
 
-      // ============================================================
-      // POPUP NOTIFIKASI AUTO-RESET
-      // ============================================================
       function showAutoResetNotice() {
         const overlay = document.getElementById('autoResetNoticeOverlay');
         if (!overlay) return;
@@ -5524,10 +5514,6 @@
         }, true);
       }
 
-      // ============================================================
-      // AUTO ARKIB + RESET SEMUA BALAI + HARD RELOAD
-      // Trigger pada 07:59 & 19:59 (waktu Malaysia)
-      // ============================================================
       function checkScheduledArchiveReset() {
         if (scheduledRunInProgress) return;
 
@@ -10479,6 +10465,16 @@
         const btn = this;
         const label = document.getElementById('resetBalaiLabel');
         if (btn.disabled) return;
+
+        // ✅ Password protection — sama dengan Reset Semua Balai
+        const pwd = prompt('Masukkan kata laluan untuk RESET BALAI:');
+        if (pwd === null) return;
+        if (pwd !== RESET_PASSWORD) {
+          playErrorSound();
+          alert('Ralat: Kata laluan salah. Reset dibatalkan.');
+          return;
+        }
+
         const namaBalai = store.activeBalai;
         if (!confirm('AMARAN: Reset akan padam SEMUA data untuk balai "' + namaBalai + '".\n\nData personel, jentera, marin, utiliti, dan komunikasi akan dikosongkan.\n\nTeruskan?')) return;
         if (!confirm('SAHKAN SEKALI LAGI — Data balai "' + namaBalai + '" akan dipadam dan tidak boleh dikembalikan.\n\nBetul-betul pasti?')) return;
@@ -10661,6 +10657,7 @@
         const pwd = prompt('Masukkan kata laluan untuk RESET SEMUA BALAI:');
         if (pwd === null) return;
         if (pwd !== RESET_PASSWORD) {
+          playErrorSound();
           alert('Ralat: Kata laluan salah. Reset dibatalkan.');
           return;
         }
