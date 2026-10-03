@@ -2603,7 +2603,9 @@
         background: var(--panel);
         border: 1px solid var(--line);
         border-radius: var(--radius);
-        max-width: 460px; width: 100%;
+        max-width: 500px; width: 100%;
+        max-height: 92vh;
+        overflow-y: auto;
         padding: 1.75rem 1.5rem 1.25rem;
         box-shadow: 0 20px 60px rgba(0, 0, 0, 0.55), 0 4px 16px rgba(0, 0, 0, 0.35);
         text-align: center;
@@ -2629,6 +2631,7 @@
         border-radius: 4px;
         transition: color 0.14s, background 0.14s;
         font-family: inherit;
+        z-index: 3;
       }
       .auto-reset-notice-close:hover {
         color: var(--red);
@@ -2693,6 +2696,118 @@
         color: var(--text-faint);
         letter-spacing: 0.04em;
         font-style: italic;
+      }
+
+      /* Kotak peringatan dalam popup */
+      .auto-reset-notice-warning {
+        margin: 0.85rem 0 0.5rem;
+        padding: 0.85rem 0.95rem;
+        background: linear-gradient(180deg,
+          rgba(217, 154, 43, 0.14),
+          rgba(217, 154, 43, 0.06));
+        border: 1.5px solid rgba(217, 154, 43, 0.55);
+        border-left: 4px solid var(--amber);
+        border-radius: var(--radius-sm);
+        text-align: left;
+      }
+
+      .arnw-head {
+        display: flex;
+        align-items: center;
+        gap: 0.45rem;
+        margin-bottom: 0.6rem;
+        padding-bottom: 0.5rem;
+        border-bottom: 1px dashed rgba(217, 154, 43, 0.4);
+      }
+
+      .arnw-icon {
+        font-size: 1rem;
+        line-height: 1;
+      }
+
+      .arnw-title {
+        font-family: 'Oswald', sans-serif;
+        font-size: 0.72rem;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+        font-weight: 700;
+        color: var(--amber);
+      }
+
+      .arnw-text {
+        margin: 0 0 0.5rem;
+        font-size: 0.78rem;
+        line-height: 1.5;
+        color: var(--text);
+      }
+      .arnw-text:last-of-type {
+        margin-bottom: 0.55rem;
+      }
+      .arnw-text b {
+        color: var(--amber);
+        font-weight: 700;
+      }
+      .arnw-text u {
+        text-decoration-color: var(--amber);
+        text-underline-offset: 3px;
+        font-weight: 700;
+      }
+
+      .arnw-times {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.5rem;
+        margin: 0.4rem 0 0.65rem;
+        padding: 0.5rem 0.7rem;
+        background: var(--panel-2);
+        border: 1px solid var(--line);
+        border-radius: var(--radius-sm);
+      }
+
+      .arnw-time {
+        font-family: 'IBM Plex Sans', system-ui, sans-serif;
+        font-size: 0.85rem;
+        font-weight: 700;
+        color: var(--amber);
+        letter-spacing: 0.06em;
+        font-variant-numeric: tabular-nums;
+      }
+
+      .arnw-sep {
+        color: var(--text-faint);
+        font-weight: 700;
+      }
+
+      .arnw-warn {
+        margin: 0;
+        padding: 0.55rem 0.7rem;
+        background: rgba(214, 52, 71, 0.1);
+        border: 1px solid rgba(214, 52, 71, 0.35);
+        border-radius: 4px;
+        font-size: 0.74rem;
+        line-height: 1.5;
+        color: var(--text);
+        font-weight: 500;
+      }
+      .arnw-warn b {
+        color: var(--rosak);
+        font-weight: 700;
+        letter-spacing: 0.02em;
+      }
+
+      @media (max-width: 640px) {
+        .auto-reset-notice {
+          padding: 1.25rem 1rem 1rem;
+        }
+        .auto-reset-notice-icon { font-size: 2.4rem; }
+        .auto-reset-notice h3 { font-size: 0.9rem; }
+        .arnw-times {
+          flex-direction: column;
+          gap: 0.3rem;
+        }
+        .arnw-sep { display: none; }
+        .arnw-time { font-size: 0.95rem; }
       }
 
       @media print {
@@ -3669,7 +3784,31 @@
           Halaman ini akan <b>dimuat semula</b> sebentar lagi.
         </p>
         <p class="auto-reset-notice-progress" id="autoResetNoticeProgress">Sedia…</p>
-        <p class="auto-reset-notice-hint">Tiada tindakan diperlukan.</p>
+
+        <div class="auto-reset-notice-warning">
+          <div class="arnw-head">
+            <span class="arnw-icon">📌</span>
+            <span class="arnw-title">PERINGATAN PENTING</span>
+          </div>
+          <p class="arnw-text">
+            Sila isi <b>maklumat kekuatan anggota</b> <u>SELEPAS</u> proses ini selesai
+            &amp; halaman dimuat semula.
+          </p>
+          <p class="arnw-text">
+            Pengisian hanya sah bermula pada waktu bertugas:
+          </p>
+          <div class="arnw-times">
+            <span class="arnw-time">0800 PAGI</span>
+            <span class="arnw-sep">•</span>
+            <span class="arnw-time">2000 MALAM</span>
+          </div>
+          <p class="arnw-warn">
+            ⚠ Maklumat yang diisi <b>SEBELUM</b> waktu tersebut akan
+            <b>HILANG</b> dan perlu diisi semula.
+          </p>
+        </div>
+
+        <p class="auto-reset-notice-hint">Tiada tindakan diperlukan sekarang.</p>
       </div>
     </div>
 
@@ -5180,8 +5319,6 @@
 
       const AUTO_REFRESH_SECONDS = 5 * 60;
 
-      // ====== SCHEDULED AUTO ARCHIVE + RESET ======
-      // Slot masa (waktu Malaysia) — auto arkib + reset + hard reload
       const SCHEDULED_SLOTS = [
         { hour: 7,  minute: 59, label: 'Pagi (07:59)' },
         { hour: 19, minute: 59, label: 'Petang (19:59)' },
@@ -5237,7 +5374,6 @@
         const s = autoReloadRemaining % 60;
         timeEl.textContent = m + ':' + String(s).padStart(2, '0');
 
-        // Tooltip: bila slot seterusnya
         try {
           const now = getMalaysiaNow();
           const nowMin = now.hour * 60 + now.minute;
