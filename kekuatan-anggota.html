@@ -2061,6 +2061,19 @@
         color: #fff;
       }
 
+      .semak-toggle[data-mode="duplicate"] .st-count {
+        color: var(--amber);
+      }
+      .semak-toggle[data-mode="duplicate"].active {
+        background: linear-gradient(180deg, #d99a2b, #a5681a);
+        box-shadow: 0 3px 12px rgba(217, 154, 43, 0.35);
+      }
+      .semak-toggle[data-mode="duplicate"].active .st-count {
+        color: #1a1206;
+        background: rgba(255, 255, 255, 0.28);
+        border-color: transparent;
+      }
+
       table.semak-lokasi tbody tr.empty-row td {
         text-align: center;
         padding: 2rem 1rem;
@@ -9414,6 +9427,7 @@
 
         const assignedItems   = allItems.filter(function (it) { return it.count > 0; });
         const unassignedItems = allItems.filter(function (it) { return it.count === 0; });
+        const duplicateItems  = allItems.filter(function (it) { return it.count > 1; });
 
         const wrap = document.createElement('div');
         wrap.className = 'section';
@@ -9442,16 +9456,21 @@
         document.getElementById('sections').appendChild(wrap);
         const body = wrap.querySelector('.section-body');
 
+        // ✅ TOGGLE BAR — 3 BUTANG
         const toggleBar = document.createElement('div');
         toggleBar.className = 'semak-toggle-bar';
         toggleBar.innerHTML = `
     <button type="button" class="semak-toggle ${semakViewMode === 'assigned' ? 'active' : ''}" data-mode="assigned">
       <span class="st-count">${assignedItems.length}</span>
-      <span>DIPILIH (≥ 1 BALAI)</span>
+      <span>SEMUA JENTERA DIPILIH</span>
     </button>
     <button type="button" class="semak-toggle ${semakViewMode === 'unassigned' ? 'active' : ''}" data-mode="unassigned">
       <span class="st-count">${unassignedItems.length}</span>
       <span>TIDAK DIPILIH</span>
+    </button>
+    <button type="button" class="semak-toggle ${semakViewMode === 'duplicate' ? 'active' : ''}" data-mode="duplicate">
+      <span class="st-count">${duplicateItems.length}</span>
+      <span>⚠ DUPLIKAT</span>
     </button>`;
         body.appendChild(toggleBar);
 
@@ -9483,7 +9502,28 @@
         tbl.className = 'semak-lokasi';
         tbl.id = 'semakTable';
 
-        const isAssigned = (semakViewMode === 'assigned');
+        const isAssigned   = (semakViewMode === 'assigned');
+        const isUnassigned = (semakViewMode === 'unassigned');
+        const isDuplicate  = (semakViewMode === 'duplicate');
+        const showBalaiCols = isAssigned || isDuplicate;
+
+        // ✅ Kirakan balai yang perlu ditunjuk (semua untuk tab 1, hanya yang terlibat untuk tab 3)
+        let viewBalaiIndices = [];
+        if (showBalaiCols) {
+          if (isDuplicate) {
+            const involvedSet = new Set();
+            duplicateItems.forEach(function (it) {
+              it.flags.forEach(function (has, bi) { if (has) involvedSet.add(bi); });
+            });
+            viewBalaiIndices = Array.from(involvedSet).sort(function (a, b) { return a - b; });
+          } else {
+            viewBalaiIndices = balaiNames.map(function (_, i) { return i; });
+          }
+        }
+
+        const viewBalaiNames = viewBalaiIndices.map(function (i) { return balaiNames[i]; });
+        const viewBalaiZon   = viewBalaiIndices.map(function (i) { return balaiZon[i]; });
+        const viewBalaiCount = viewBalaiIndices.length;
 
         const thead = document.createElement('thead');
         const hRow = document.createElement('tr');
@@ -9491,33 +9531,33 @@
 
         const thBil = document.createElement('th');
         thBil.textContent = 'BIL';
-        thBil.rowSpan = isAssigned ? 3 : 2;
+        thBil.rowSpan = showBalaiCols ? 3 : 2;
         thBil.className = 'col-sticky-1';
         hRow.appendChild(thBil);
 
         const thKat = document.createElement('th');
         thKat.textContent = 'KATEGORI';
-        thKat.rowSpan = isAssigned ? 3 : 2;
+        thKat.rowSpan = showBalaiCols ? 3 : 2;
         thKat.className = 'col-sticky-2';
         hRow.appendChild(thKat);
 
         const thMak = document.createElement('th');
         thMak.textContent = 'MAKLUMAT JENTERA / KENDERAAN';
         thMak.style.textAlign = 'left';
-        thMak.rowSpan = isAssigned ? 3 : 2;
+        thMak.rowSpan = showBalaiCols ? 3 : 2;
         thMak.className = 'col-sticky-3';
         hRow.appendChild(thMak);
 
-        if (isAssigned) {
+        if (showBalaiCols) {
           let zStart = 0;
-          for (let i = 0; i < balaiZon.length; i++) {
-            if (i === balaiZon.length - 1 || balaiZon[i + 1] !== balaiZon[i]) {
+          for (let i = 0; i < viewBalaiZon.length; i++) {
+            if (i === viewBalaiZon.length - 1 || viewBalaiZon[i + 1] !== viewBalaiZon[i]) {
               const span = i - zStart + 1;
               const th = document.createElement('th');
               th.colSpan = span;
-              th.className = 'zon-header zon-' + balaiZon[i];
-              th.textContent = 'ZON ' + balaiZon[i];
-              th.style.color = 'var(--zon' + balaiZon[i] + ')';
+              th.className = 'zon-header zon-' + viewBalaiZon[i];
+              th.textContent = 'ZON ' + viewBalaiZon[i];
+              th.style.color = 'var(--zon' + viewBalaiZon[i] + ')';
               hRow.appendChild(th);
               zStart = i + 1;
             }
@@ -9531,15 +9571,15 @@
 
         const thJumTop = document.createElement('th');
         thJumTop.textContent = 'JUMLAH';
-        thJumTop.rowSpan = isAssigned ? 3 : 2;
+        thJumTop.rowSpan = showBalaiCols ? 3 : 2;
         thJumTop.className = 'jumlah-col';
         hRow.appendChild(thJumTop);
         thead.appendChild(hRow);
 
-        if (isAssigned) {
+        if (showBalaiCols) {
           const hRow2 = document.createElement('tr');
           hRow2.className = 'balai-header';
-          balaiNames.forEach(function (bn) {
+          viewBalaiNames.forEach(function (bn) {
             const th = document.createElement('th');
             th.className = 'balai-col';
             th.textContent = bn;
@@ -9559,7 +9599,7 @@
           const thEmptyMak = document.createElement('th');
           thEmptyMak.className = 'col-sticky-3 filter-empty';
           hRowFilter.appendChild(thEmptyMak);
-          balaiNames.forEach(function () {
+          viewBalaiNames.forEach(function () {
             const th = document.createElement('th');
             th.className = 'filter-check';
             th.innerHTML = '<span style="opacity:.35;font-size:.9rem;">•</span>';
@@ -9585,9 +9625,9 @@
         tbl.appendChild(thead);
 
         const tbody = document.createElement('tbody');
-        const itemsToShow = isAssigned ? assignedItems : unassignedItems;
+        const itemsToShow = isAssigned ? assignedItems : (isUnassigned ? unassignedItems : duplicateItems);
 
-        const balaiTotals = new Array(nBalai).fill(0);
+        const balaiTotals = new Array(viewBalaiCount).fill(0);
         let grandTotal = 0;
 
         const bySection = {};
@@ -9597,7 +9637,7 @@
           bySection[it.section].push(it);
         });
 
-        const totalColSpan = isAssigned ? (3 + nBalai + 1) : (3 + 2 + 1);
+        const totalColSpan = showBalaiCols ? (3 + viewBalaiCount + 1) : (3 + 2 + 1);
 
         SECTIONS.forEach(function (sec) {
           const itemsInSec = bySection[sec.label] || [];
@@ -9617,7 +9657,9 @@
             tr.dataset.kategori = it.kategori.toLowerCase();
             tr.dataset.maklumat = it.maklumat.toLowerCase();
             tr.dataset.section = sec.label;
-            if (isAssigned && it.count > 1) {
+
+            // ✅ Hanya tab DUPLIKAT yang tanda merah
+            if (isDuplicate) {
               tr.classList.add('row-duplicate');
               tr.title = '⚠ Jentera ini dipilih oleh ' + it.count + ' balai berlainan';
             }
@@ -9637,16 +9679,17 @@
             td3.textContent = it.maklumat;
             tr.appendChild(td3);
 
-            if (isAssigned) {
-              it.flags.forEach(function (has, bi) {
+            if (showBalaiCols) {
+              viewBalaiIndices.forEach(function (origIdx, vi) {
+                const has = it.flags[origIdx];
                 const td = document.createElement('td');
                 td.className = 'check-cell';
                 if (has) {
                   const dot = document.createElement('span');
                   dot.className = 'loc-dot';
-                  dot.title = 'Ada di ' + balaiNames[bi];
+                  dot.title = 'Ada di ' + balaiNames[origIdx];
                   td.appendChild(dot);
-                  balaiTotals[bi]++;
+                  balaiTotals[vi]++;
                   grandTotal++;
                 }
                 tr.appendChild(td);
@@ -9673,14 +9716,18 @@
           emptyTr.className = 'empty-row';
           const emptyTd = document.createElement('td');
           emptyTd.colSpan = totalColSpan;
-          emptyTd.textContent = isAssigned
-            ? 'Tiada jentera dipilih oleh mana-mana balai.'
-            : '✓ Semua jentera telah dipilih oleh sekurang-kurangnya 1 balai.';
+          if (isDuplicate) {
+            emptyTd.textContent = '✓ Tiada duplikasi — semua jentera unik di setiap balai.';
+          } else if (isUnassigned) {
+            emptyTd.textContent = '✓ Semua jentera telah dipilih oleh sekurang-kurangnya 1 balai.';
+          } else {
+            emptyTd.textContent = 'Tiada jentera dipilih oleh mana-mana balai.';
+          }
           emptyTr.appendChild(emptyTd);
           tbody.appendChild(emptyTr);
         }
 
-        if (isAssigned && itemsToShow.length > 0) {
+        if (showBalaiCols && itemsToShow.length > 0) {
           const totalTr = document.createElement('tr');
           totalTr.className = 'total-row';
 
@@ -9710,31 +9757,35 @@
 
         setupSemakDragScroll(body);
 
-        if (isAssigned) {
+        if (showBalaiCols) {
           const hint = document.createElement('div');
           hint.className = 'semak-scroll-hint';
           hint.innerHTML = svgIcon('arrowLeft') + '<span>Kolum <b style="color:var(--amber)">BIL, KATEGORI &amp; MAKLUMAT</b> kekal beku — hanya kolum balai bergerak. <b style="color:var(--amber)">Klik + Tahan + Gerak mouse</b> untuk skrol, atau guna butang ◀ ▶.</span>';
           body.appendChild(hint);
         }
 
-        if (isAssigned && assignedItems.length > 0) {
+        if (isDuplicate && duplicateItems.length > 0) {
           const legend = document.createElement('div');
           legend.className = 'semak-legend';
-          const nDup = assignedItems.filter(function (it) { return it.count > 1; }).length;
           legend.innerHTML = `
-    <span class="lg-item"><span class="lg-swatch sw-normal"></span> <b>Unik</b> — dipilih oleh 1 balai sahaja</span>
-    <span class="lg-item"><span class="lg-swatch sw-duplicate"></span> <b style="color:var(--rosak);">Duplikat</b> — dipilih oleh &gt; 1 balai (${nDup} item)</span>`;
+    <span class="lg-item"><span class="lg-swatch sw-duplicate"></span> <b style="color:var(--rosak);">Duplikat</b> — jentera dipilih oleh &gt; 1 balai (${duplicateItems.length} item)</span>
+    <span class="lg-item" style="color:var(--text-dim);">📌 Kolum balai hanya memaparkan <b style="color:var(--amber);">${viewBalaiCount} balai</b> yang terlibat dalam duplikasi.</span>`;
           body.appendChild(legend);
         }
 
         const info = document.createElement('div');
         info.style.cssText = 'margin-top:0.75rem; font-size:0.7rem; color:var(--text-dim); line-height:1.6;';
-        info.innerHTML = isAssigned
-          ? '<b>Nota:</b> Senarai ini memaparkan jentera / kenderaan yang <b>telah dipilih</b> oleh sekurang-kurangnya <b>1 balai</b>. ' +
-            'Baris berwarna <b style="color:var(--rosak)">MERAH</b> bermaksud jentera tersebut dipilih oleh <b>lebih dari 1 balai</b> (duplikat — perlu disemak). ' +
-            'Titik <span class="loc-dot" style="vertical-align:middle;display:inline-block;"></span> hijau = unik 1 balai, titik <span class="loc-dot" style="background:var(--rosak);vertical-align:middle;display:inline-block;"></span> merah = ada di beberapa balai. ' +
-            'Data diambil dari <b>KEKUATAN JENTERA UTAMA</b>, <b>JENTERA MARIN</b> & <b>KENDERAAN UTILITI</b>.'
-          : '<b>Nota:</b> Senarai ini memaparkan jentera / kenderaan yang <b>langsung tidak dipilih</b> oleh mana-mana balai dalam sistem. Jika ada item yang tersenarai di sini, ia bermakna item tersebut masih belum diisi dalam <b>KEKUATAN JENTERA UTAMA</b> / <b>JENTERA MARIN</b> / <b>KENDERAAN UTILITI</b> mana-mana balai.';
+        if (isAssigned) {
+          info.innerHTML = '<b>Nota:</b> Senarai ini memaparkan <b>semua jentera yang telah dipilih</b> oleh sekurang-kurangnya <b>1 balai</b> dalam sistem. ' +
+            'Data diambil dari <b>KEKUATAN JENTERA UTAMA</b>, <b>JENTERA MARIN</b> & <b>KENDERAAN UTILITI</b>. ' +
+            'Untuk menyemak konflik duplikasi, sila rujuk tab <b style="color:var(--rosak)">⚠ DUPLIKAT</b>.';
+        } else if (isUnassigned) {
+          info.innerHTML = '<b>Nota:</b> Senarai ini memaparkan jentera / kenderaan yang <b>langsung tidak dipilih</b> oleh mana-mana balai dalam sistem. Jika ada item yang tersenarai di sini, ia bermakna item tersebut masih belum diisi dalam <b>KEKUATAN JENTERA UTAMA</b> / <b>JENTERA MARIN</b> / <b>KENDERAAN UTILITI</b> mana-mana balai.';
+        } else {
+          info.innerHTML = '<b>Nota:</b> Senarai ini memaparkan jentera / kenderaan yang <b>dipilih oleh lebih dari 1 balai</b> (duplikat). ' +
+            'Baris berwarna <b style="color:var(--rosak)">MERAH</b> menandakan konflik yang perlu disemak. ' +
+            'Kolum balai di bawah hanya memaparkan <b style="color:var(--amber)">' + viewBalaiCount + ' balai</b> yang terlibat dalam duplikasi ini sahaja.';
+        }
         body.appendChild(info);
 
         const searchInput = document.getElementById('semakSearchInput');
@@ -9771,7 +9822,7 @@
         if (infoBar) infoBar.textContent = itemsToShow.length + ' baris';
         applySemakSearch();
       }
-
+      
       function applySemakSearch() {
         const tbody = document.querySelector('#sec-semak_lokasi tbody');
         if (!tbody) return;
