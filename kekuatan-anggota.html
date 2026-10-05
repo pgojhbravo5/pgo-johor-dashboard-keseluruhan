@@ -6965,6 +6965,21 @@
         return list.includes(maklumat);
       }
 
+      function getBalaiUsingItem(equipKey, maklumat, excludeBalai) {
+        const users = [];
+        if (!store || !store.balai || !maklumat) return users;
+        Object.keys(store.balai).forEach(function (bn) {
+          if (bn === excludeBalai) return;
+          const b = store.balai[bn];
+          if (!b || !b.equip || !b.equip[equipKey]) return;
+          const found = b.equip[equipKey].some(function (r) {
+            return r && String(r.maklumat || '').trim() === String(maklumat).trim();
+          });
+          if (found) users.push(bn);
+        });
+        return users;
+      }
+
       function validatePersonelBalai(balaiState) {
         const invalid = [];
         let hasBkb = false; // <--- Tambahan baru
@@ -7348,8 +7363,18 @@
             closeDropdown();
             setValidState();
             updateClearBtn();
-          }
 
+            // ✅ Kaedah 3: Toast Amaran Duplikasi
+            const otherBalai = getBalaiUsingItem(key, v, store.activeBalai);
+            if (otherBalai.length > 0) {
+              playErrorSound();
+              showToast(
+                '⚠️ "' + v + '" sudah dipilih oleh balai: ' + otherBalai.join(', '),
+                'error'
+              );
+            }
+          }
+          
           function openDropdown() {
             if (dd.style.display === 'block') return;
             highlightedIndex = -1;
