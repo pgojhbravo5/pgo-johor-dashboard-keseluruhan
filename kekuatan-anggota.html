@@ -6967,7 +6967,14 @@
 
       function validatePersonelBalai(balaiState) {
         const invalid = [];
+        let hasBkb = false; // <--- Tambahan baru
+
         (balaiState.personel || []).forEach((p, idx) => {
+          // Semak jika ada BKB
+          if (p.peranan === 'BILIK KAWALAN (BKB)') {
+            hasBkb = true;
+          }
+
           const missing = MANDATORY_PERSONEL_KEYS.filter(k => !p[k]);
           if (p.noTelefon && !String(p.noTelefon).includes('-')) {
             if (!missing.includes('noTelefon')) missing.push('noTelefon');
@@ -6978,9 +6985,20 @@
             empty: isRowPersonelEmpty(p),
           });
         });
+
+        // <--- Tambahan baru: Jika tiada BKB langsung
+        if (!hasBkb) {
+          invalid.push({
+            row: 'SISTEM',
+            missing: ['Peranan wajib: BILIK KAWALAN (BKB)'],
+            empty: false,
+            isSystemError: true
+          });
+        }
+
         return invalid;
       }
-      function validateEquipBalai(balaiState) {
+            function validateEquipBalai(balaiState) {
         const invalid = [];
         const panels = [
           { key: 'jentera', label: 'Jentera Utama' },
@@ -7022,10 +7040,18 @@
         if (v.personel.length) {
           lines.push('PERSONEL:');
           v.personel.forEach(r => {
-            if (r.empty) lines.push('  • Baris ' + r.row + ' — KOSONG. Sila PADAM baris ini (tekan butang ✕) atau isi maklumat.');
-            else lines.push('  • Baris ' + r.row + ' — belum isi: ' + r.missing.map(k => FIELD_LABELS[k] || k).join(', '));
+            if (r.isSystemError) {
+              // <--- Paparan khas untuk ralat BKB
+              lines.push('  • ⚠️ ' + r.missing[0]);
+              lines.push('     Sila tambah sekurang-kurangnya 1 anggota untuk peranan ini.');
+            } else if (r.empty) {
+              lines.push('  • Baris ' + r.row + ' — KOSONG. Sila PADAM baris ini (tekan butang ✕) atau isi maklumat.');
+            } else {
+              lines.push('  • Baris ' + r.row + ' — belum isi: ' + r.missing.map(k => FIELD_LABELS[k] || k).join(', '));
+            }
           });
         }
+        
         if (v.equip.length) {
           if (lines.length) lines.push('');
           lines.push('PERALATAN:');
@@ -10561,8 +10587,42 @@
         r.onload = async (ev) => {
           try {
             const p = JSON.parse(ev.target.result);
+            
+            // Dapatkan tarikh hari ini (Waktu Malaysia)
+            const malaysiaNow = getMalaysiaNow();
+            const todayDate = malaysiaNow.year + '-' + malaysiaNow.month + '-' + malaysiaNow.day;
+
             if (p.balai && typeof p.balai === 'object') {
               if (!confirm('Fail SEMUA BALAI dikesan. Import akan GANTIKAN semua data di Supabase. Teruskan?')) return;
+              
+              // --- SEMAKAN TARIKH LAPUK (SEMUA BALAI) ---
+              let hasOldDate = false;
+              let oldDates = new Set();
+              Object.keys(p.balai).forEach(name => {
+                const b = p.balai[name];
+                if (b.ident && b.ident.tarikh && b.ident.tarikh !== todayDate) {
+                  hasOldDate = true;
+                  oldDates.add(b.ident.tarikh);
+                }
+              });
+
+              if (hasOldDate) {
+                const oldDateStr = Array.from(oldDates).join(', ');
+                const changeDate = confirm(
+                  '⚠️ AMARAN TARIKH LAPUK!\n\n' +
+                  'Fail ini mengandungi tarikh lampau: ' + oldDateStr + '\n' +
+                  'Tarikh hari ini: ' + todayDate + '\n\n' +
+                  'Adakah anda ingin menukar SEMUA tarikh kepada HARI INI (' + todayDate + ')?'
+                );
+                if (changeDate) {
+                  Object.keys(p.balai).forEach(name => {
+                    if (!p.balai[name].ident) p.balai[name].ident = {};
+                    p.balai[name].ident.tarikh = todayDate;
+                  });
+                }
+              }
+              // --- TAMAT SEMAKAN TARIKH ---
+
               setLoading(true, 'Mengimport semua balai…');
               const names = Object.keys(p.balai);
               for (let i = 0; i < names.length; i++) {
@@ -10573,12 +10633,30 @@
               await initApp();
               playImportSuccessSound();
               showToast('Import SEMUA BALAI berjaya', 'success');
+
             } else if (p.personel || p.equip) {
               if (store.view !== 'balai') {
                 alert('Sila pilih tab balai dahulu sebelum import fail satu balai.');
                 return;
               }
               if (!confirm('Fail SATU BALAI dikesan. Import ke dalam tab "' + store.activeBalai + '"? Data sedia ada di Supabase akan digantikan.')) return;
+
+              // --- SEMAKAN TARIKH LAPUK (SATU BALAI) ---
+              let importedDate = p.ident && p.ident.tarikh ? p.ident.tarikh : '';
+              if (importedDate && importedDate !== todayDate) {
+                const changeDate = confirm(
+                  '⚠️ AMARAN TARIKH LAPUK!\n\n' +
+                  'Fail ini mengandungi tarikh: ' + importedDate + '\n' +
+                  'Tarikh hari ini: ' + todayDate + '\n\n' +
+                  'Adakah anda ingin menukar tarikh kepada HARI INI (' + todayDate + ')?'
+                );
+                if (changeDate) {
+                  if (!p.ident) p.ident = {};
+                  p.ident.tarikh = todayDate;
+                }
+              }
+              // --- TAMAT SEMAKAN TARIKH ---
+
               setLoading(true, 'Mengimport ke ' + store.activeBalai + '…');
               const def = defaultState(store.activeBalai);
               const newState = {
@@ -10617,7 +10695,7 @@
         };
         r.readAsText(f);
       });
-
+      
       document.getElementById('printBtn').addEventListener('click', () => {
         closeAllFullscreenPanels();
         updatePrintFooterDate();
