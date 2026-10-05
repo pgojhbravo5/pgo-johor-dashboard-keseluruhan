@@ -2238,27 +2238,35 @@
         if (!v) return null;
         const s = String(v).trim();
         if (!s) return null;
+        
         let d = null;
-        const isoTest = new Date(s);
-        if (!isNaN(isoTest.getTime())) d = isoTest;
-        if (!d) {
-          const m = s.match(/^(\d{1,2})[\/\-\.](\d{1,2})[\/\-\.](\d{2,4})/);
-          if (m) {
-            let [, dd, mm, yy] = m;
-            if (yy.length === 2) yy = '20' + yy;
-            const year = +yy;
-            if (year < MIN_YEAR || year > MAX_YEAR) return null;
+        
+        // 1. Cuba padankan format DD/MM/YYYY, DD-MM-YYYY, atau DD.MM.YYYY terlebih dahulu
+        const m = s.match(/^(\d{1,2})[\/\-\.](\d{1,2})[\/\-\.](\d{2,4})/);
+        if (m) {
+          let [, dd, mm, yy] = m;
+          if (yy.length === 2) yy = '20' + yy;
+          const year = +yy;
+          if (year >= MIN_YEAR && year <= MAX_YEAR) {
+            // Nota: new Date(year, monthIndex, day) -> monthIndex bermula dari 0 (Januari = 0)
             const t = new Date(year, +mm - 1, +dd);
             if (!isNaN(t.getTime())) d = t;
           }
         }
+        
+        // 2. Jika format DD/MM/YYYY tiada, barulah cuba format ISO atau format lain
+        if (!d) {
+          const isoTest = new Date(s);
+          if (!isNaN(isoTest.getTime())) d = isoTest;
+        }
+        
         if (!d) return null;
         if (d < MIN_DATE) return null;
         const year = d.getFullYear();
         if (year < MIN_YEAR || year > MAX_YEAR) return null;
         return d;
       }
-      function parseTime(v) {
+            function parseTime(v) {
         if (!v) return null;
         const m = String(v).match(/(\d{1,2})[:\.](\d{1,2})(?:[:\.](\d{1,2}))?/);
         return m ? +m[1] * 60 + +m[2] + (+m[3] || 0) / 60 : null;
