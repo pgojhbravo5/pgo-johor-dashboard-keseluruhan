@@ -1232,6 +1232,59 @@
         box-shadow: 0 0 0 3px rgba(217, 154, 43, 0.28);
       }
 
+      /* ✅ PANEL LOCK BUTTON STYLES */
+      .btn-panel-lock {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.35rem;
+        border-radius: var(--radius-sm);
+        cursor: pointer;
+        transition: all 0.15s ease;
+        border-width: 1px;
+        border-style: solid;
+      }
+      .btn-panel-lock.locked {
+        background: linear-gradient(180deg, rgba(214, 52, 71, 0.18), rgba(214, 52, 71, 0.08));
+        border-color: rgba(214, 52, 71, 0.6);
+        color: #ff8a94;
+      }
+      .btn-panel-lock.locked:hover {
+        background: linear-gradient(180deg, rgba(214, 52, 71, 0.3), rgba(214, 52, 71, 0.15));
+        color: #fff;
+        transform: translateY(-1px);
+      }
+      .btn-panel-lock.unlocked {
+        background: linear-gradient(180deg, rgba(46, 158, 99, 0.18), rgba(46, 158, 99, 0.08));
+        border-color: rgba(46, 158, 99, 0.6);
+        color: #6fd39b;
+      }
+      .btn-panel-lock.unlocked:hover {
+        background: linear-gradient(180deg, rgba(46, 158, 99, 0.3), rgba(46, 158, 99, 0.15));
+        color: #fff;
+        transform: translateY(-1px);
+      }
+      .btn-panel-lock .ico {
+        font-size: 0.95rem;
+      }
+
+      /* Visual indicator bila panel locked */
+      .section.panel-locked > .section-head {
+        background: linear-gradient(180deg,
+          rgba(214, 52, 71, 0.08),
+          var(--panel-2)) !important;
+      }
+      .section.panel-locked > .section-head::before {
+        background: var(--rosak) !important;
+        box-shadow: 0 0 8px rgba(214, 52, 71, 0.5);
+      }
+      .section.panel-locked .section-body input:disabled,
+      .section.panel-locked .section-body select:disabled {
+        opacity: 0.6;
+        cursor: not-allowed;
+        background: var(--bg);
+      }
+
       body.has-fullscreen-panel { overflow: hidden; }
 
       .section.fullscreen-active {
@@ -1268,6 +1321,14 @@
       }
       .section.fullscreen-active .btn-fullscreen:hover {
         background: rgba(214, 52, 71, 0.2);
+        color: #fff;
+      }
+      .section.fullscreen-active .btn-panel-lock.locked {
+        background: linear-gradient(180deg, rgba(214, 52, 71, 0.3), rgba(214, 52, 71, 0.15));
+        color: #fff;
+      }
+      .section.fullscreen-active .btn-panel-lock.unlocked {
+        background: linear-gradient(180deg, rgba(46, 158, 99, 0.3), rgba(46, 158, 99, 0.15));
         color: #fff;
       }
 
@@ -2871,6 +2932,7 @@
         body.has-fullscreen-panel { overflow: visible !important; }
         .section.fullscreen-active { position: static !important; inset: auto !important; box-shadow: none !important; z-index: auto !important; }
         .btn-fullscreen { display: none !important; }
+        .btn-panel-lock { display: none !important; }
         .actions, .legend, .saved-note, .roster-toolbar, .del-cell,
         .section-head .chev, .theme-toggle, .btn-save-sheet,
         .manage-bar, .autosave-indicator, .btn-back-dashboard,
@@ -3856,6 +3918,7 @@
         volumeOn: '<polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14"/>',
         volumeOff: '<polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><line x1="23" y1="9" x2="17" y2="15"/><line x1="17" y1="9" x2="23" y2="15"/>',
         lock: '<rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/>',
+        lockOpen: '<rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 9.9-1"/>',
       };
       function svgIcon(name) {
         return ('<svg class="ico" viewBox="0 0 24 24" aria-hidden="true">' + (ICONS[name] || '') + '</svg>');
@@ -4259,7 +4322,7 @@
       function closeAllFullscreenPanels() {
         document.querySelectorAll('.section.fullscreen-active').forEach(function (sec) {
           sec.classList.remove('fullscreen-active');
-          const btn = sec.querySelector('.btn-fullscreen:not(.btn-print-panel)');
+          const btn = sec.querySelector('.btn-fullscreen:not(.btn-print-panel):not(.btn-panel-lock)');
           if (btn) {
             btn.innerHTML = svgIcon('maximize');
             btn.title = 'Buka skrin penuh';
@@ -5117,13 +5180,11 @@
       const PASUKAN_OPTS = ['A', 'B', 'C', 'WAKTU PEJABAT'];
       const SHIF_OPTS = ['0800-2000', '2000-0800', '0800-0800'];
       const KATEGORI_BALAI_OPTS = ['12 JAM', '24 JAM'];
-      // ✅ DIUBAH — Tambah 'TIADA DI BALAI' untuk Jentera Utama, Marin & Utiliti
       const EQUIP_STATUSES = [
         'BAIK & BOLEH BEROPERASI','ROSAK MINOR & BOLEH BEROPERASI',
         'ROSAK & TIDAK BOLEH BEROPERASI','DALAM PROSES LUPUS','LUPUS','TIADA DI BALAI',
       ];
 
-      // ✅ DIUBAH — Tukar 'TIADA' kepada 'TIADA DI BALAI' untuk Peralatan Komunikasi
       const KOMUNIKASI_STATUSES = [
         'BAIK & BOLEH BEROPERASI','ROSAK MINOR & BOLEH BEROPERASI',
         'ROSAK & TIDAK BOLEH BEROPERASI','DALAM PROSES LUPUS','LUPUS','TIADA DI BALAI',
@@ -5265,6 +5326,144 @@
       }
 
       const RESET_PASSWORD = 'pgo1234';
+
+      // ✅ PANEL LOCK SYSTEM — Default OFF (terbuka)
+      const PANEL_LOCK_LS_KEY = 'bomba-panel-lock';
+      const panelLockStates = {
+        personel: false,
+        jentera: false,
+        marin: false,
+        utiliti: false,
+        komunikasi: false,
+      };
+
+      function loadPanelLockStates() {
+        try {
+          const saved = localStorage.getItem(PANEL_LOCK_LS_KEY);
+          if (saved) {
+            const parsed = JSON.parse(saved);
+            Object.keys(panelLockStates).forEach(function (k) {
+              if (typeof parsed[k] === 'boolean') panelLockStates[k] = parsed[k];
+            });
+          }
+        } catch (e) {}
+      }
+
+      function savePanelLockStates() {
+        try {
+          localStorage.setItem(PANEL_LOCK_LS_KEY, JSON.stringify(panelLockStates));
+        } catch (e) {}
+      }
+
+      function isPanelLocked(key) {
+        return panelLockStates[key] === true;
+      }
+
+      function applyPanelLock(sectionEl, key) {
+        if (!sectionEl) return;
+        const locked = isPanelLocked(key);
+
+        sectionEl.querySelectorAll('input, select, textarea').forEach(function (el) {
+          if (el.dataset.lockIgnore === '1') return;
+          if (el.dataset.lockOriginalDisabled === undefined) {
+            el.dataset.lockOriginalDisabled = el.disabled ? '1' : '0';
+          }
+          if (locked) {
+            el.disabled = true;
+          } else {
+            el.disabled = el.dataset.lockOriginalDisabled === '1';
+          }
+        });
+
+        const headEl = sectionEl.querySelector('.section-head');
+        if (headEl) {
+          if (locked) {
+            sectionEl.classList.add('panel-locked');
+          } else {
+            sectionEl.classList.remove('panel-locked');
+          }
+        }
+      }
+
+      function refreshAllPanelLocks() {
+        ['personel', 'jentera', 'marin', 'utiliti', 'komunikasi'].forEach(function (key) {
+          const sec = document.getElementById('sec-' + key);
+          if (sec) applyPanelLock(sec, key);
+        });
+        updateAllLockButtonsUI();
+      }
+
+      function updateAllLockButtonsUI() {
+        document.querySelectorAll('.btn-panel-lock').forEach(function (btn) {
+          const key = btn.dataset.lockKey;
+          if (!key) return;
+          const locked = isPanelLocked(key);
+          btn.classList.toggle('locked', locked);
+          btn.classList.toggle('unlocked', !locked);
+          btn.innerHTML = (locked ? svgIcon('lock') : svgIcon('lockOpen')) +
+            '<span>' + (locked ? 'LOCKED' : 'UNLOCKED') + '</span>';
+          btn.title = locked
+            ? 'Panel dikunci — klik untuk buka (perlu password)'
+            : 'Panel dibuka — klik untuk kunci (perlu password)';
+          btn.setAttribute('aria-label', btn.title);
+        });
+      }
+
+      function createLockButton(key) {
+        const btn = document.createElement('button');
+        btn.type = 'button';
+        btn.className = 'btn-panel-lock btn-fullscreen';
+        btn.dataset.lockKey = key;
+        btn.style.minWidth = '95px';
+        btn.style.fontFamily = "'Oswald', sans-serif";
+        btn.style.fontSize = '0.62rem';
+        btn.style.letterSpacing = '0.06em';
+        btn.style.fontWeight = '700';
+        btn.style.padding = '0.35rem 0.55rem';
+        btn.style.gap = '0.35rem';
+
+        btn.addEventListener('click', function (e) {
+          e.stopPropagation();
+          handleLockToggle(key, btn);
+        });
+
+        return btn;
+      }
+
+      function handleLockToggle(key) {
+        const currentlyLocked = isPanelLocked(key);
+
+        if (currentlyLocked) {
+          // UNLOCK → minta password
+          const pwd = prompt('🔓 BUKA KUNCI PANEL\n\nMasukkan kata laluan untuk edit panel ini:');
+          if (pwd === null) return;
+          if (pwd !== RESET_PASSWORD) {
+            playErrorSound();
+            alert('❌ Kata laluan salah. Panel kekal dikunci.');
+            return;
+          }
+          panelLockStates[key] = false;
+          savePanelLockStates();
+          playCheckboxTickSound(true);
+          showToast('🔓 Panel dibuka — anda boleh edit sekarang', 'success');
+        } else {
+          // LOCK → juga perlu password (default OFF)
+          const pwd = prompt('🔒 KUNCI PANEL\n\nMasukkan kata laluan untuk kunci panel ini:');
+          if (pwd === null) return;
+          if (pwd !== RESET_PASSWORD) {
+            playErrorSound();
+            alert('❌ Kata laluan salah. Panel kekal dibuka.');
+            return;
+          }
+          panelLockStates[key] = true;
+          savePanelLockStates();
+          playCheckboxTickSound(false);
+          showToast('🔒 Panel dikunci — edit tidak dibenarkan', 'success');
+        }
+
+        refreshAllPanelLocks();
+      }
+      // ✅ END PANEL LOCK SYSTEM
 
       async function deleteBalaiRows(table, balaiName) {
         const { error } = await sb.from(table).delete().eq('balai', balaiName);
@@ -7765,6 +7964,11 @@
         const bD = document.createElement('button');
         bD.innerHTML = svgIcon('x'); bD.title = 'Padam baris'; bD.setAttribute('aria-label', 'Padam baris');
         bD.addEventListener('click', () => {
+          if (isPanelLocked('personel')) {
+            playErrorSound();
+            showToast('Panel dikunci — buka kunci dahulu untuk padam', 'error');
+            return;
+          }
           if (!confirm('Padam baris ini?')) return;
           const idx = state.personel.indexOf(p);
           if (idx === -1) return;
@@ -7864,6 +8068,11 @@
           const bD = document.createElement('button');
           bD.innerHTML = svgIcon('x'); bD.title = 'Padam baris'; bD.setAttribute('aria-label', 'Padam baris');
           bD.addEventListener('click', () => {
+            if (isPanelLocked(key)) {
+              playErrorSound();
+              showToast('Panel dikunci — buka kunci dahulu untuk padam', 'error');
+              return;
+            }
             if (!confirm('Padam baris ini?')) return;
             const idx2 = state.equip[key].indexOf(r);
             if (idx2 === -1) return;
@@ -7889,13 +8098,18 @@
         wrap.innerHTML = `
     <div class="section-head">
       <h2>KEKUATAN PERSONEL</h2>
-      <div style="display:flex;align-items:center;gap:.75rem;">
+      <div style="display:flex;align-items:center;gap:.6rem;">
         <span class="hint">Kolum bertanda <b style="color:var(--rosak)">*</b> wajib (NAMA → UNIT 1) · ringkasan auto-kira di bawah</span>
+        <span class="lock-btn-container"></span>
         <span class="chev">${svgIcon('chevronDown')}</span>
       </div>
     </div>
     <div class="section-body"></div>`;
         wrap.querySelector('.section-head').addEventListener('click', () => wrap.classList.toggle('collapsed'));
+
+        const lockContainer = wrap.querySelector('.lock-btn-container');
+        if (lockContainer) lockContainer.appendChild(createLockButton('personel'));
+
         document.getElementById('sections').appendChild(wrap);
         const body = wrap.querySelector('.section-body');
 
@@ -7938,6 +8152,11 @@
         bA.className = 'btn primary small';
         bA.textContent = '+ Tambah Baris';
         bA.addEventListener('click', () => {
+          if (isPanelLocked('personel')) {
+            playErrorSound();
+            showToast('Panel dikunci — buka kunci dahulu untuk tambah', 'error');
+            return;
+          }
           const newP = emptyPersonel();
           state.personel.push(newP);
           saveState();
@@ -7960,6 +8179,11 @@
         bClean.textContent = '✕ Padam Baris Kosong';
         bClean.title = 'Padam semua baris yang belum diisi';
         bClean.addEventListener('click', () => {
+          if (isPanelLocked('personel')) {
+            playErrorSound();
+            showToast('Panel dikunci — buka kunci dahulu untuk padam', 'error');
+            return;
+          }
           const emptyRows = [];
           rtb.querySelectorAll('tr').forEach((tr) => {
             const bilText = tr.querySelector('.bil-cell')?.textContent || '';
@@ -7987,6 +8211,10 @@
         tb.appendChild(bClean);
 
         body.appendChild(tb);
+
+        // ✅ Apply lock state
+        applyPanelLock(wrap, 'personel');
+        updateAllLockButtonsUI();
       }
 
       function renderPersonelGrid(tbl) {
@@ -8124,13 +8352,18 @@
         wrap.innerHTML = `
     <div class="section-head">
       <h2>${title}</h2>
-      <div style="display:flex;align-items:center;gap:.75rem;">
+      <div style="display:flex;align-items:center;gap:.6rem;">
         <span class="hint">Kolum bertanda <b style="color:var(--rosak)">*</b> wajib · ringkasan auto-kira di bawah</span>
+        <span class="lock-btn-container"></span>
         <span class="chev">${svgIcon('chevronDown')}</span>
       </div>
     </div>
     <div class="section-body"></div>`;
         wrap.querySelector('.section-head').addEventListener('click', () => wrap.classList.toggle('collapsed'));
+
+        const lockContainer = wrap.querySelector('.lock-btn-container');
+        if (lockContainer) lockContainer.appendChild(createLockButton(key));
+
         document.getElementById('sections').appendChild(wrap);
         const body = wrap.querySelector('.section-body');
 
@@ -8172,6 +8405,11 @@
         bA.className = 'btn primary small';
         bA.textContent = '+ Tambah Baris';
         bA.addEventListener('click', () => {
+          if (isPanelLocked(key)) {
+            playErrorSound();
+            showToast('Panel dikunci — buka kunci dahulu untuk tambah', 'error');
+            return;
+          }
           const newR = isKom ? emptyKom('') : emptyEquip('');
           state.equip[key].push(newR);
           saveState();
@@ -8194,6 +8432,11 @@
         bClean.textContent = '✕ Padam Baris Kosong';
         bClean.title = 'Padam semua baris yang belum diisi (9 item komunikasi tetap dikecualikan)';
         bClean.addEventListener('click', () => {
+          if (isPanelLocked(key)) {
+            playErrorSound();
+            showToast('Panel dikunci — buka kunci dahulu untuk padam', 'error');
+            return;
+          }
           const emptyRows = [];
           rtb.querySelectorAll('tr').forEach((tr) => {
             const bilText = tr.querySelector('.bil-cell')?.textContent || '';
@@ -8223,6 +8466,10 @@
         tb.appendChild(bClean);
 
         body.appendChild(tb);
+
+        // ✅ Apply lock state
+        applyPanelLock(wrap, key);
+        updateAllLockButtonsUI();
       }
 
       function buildEquipThead(katList, isKom, mode) {
@@ -8359,7 +8606,7 @@
         renderStats();
       }
 
-      // ✅ PATCHED: renderStats() — kira Jentera Baik/Rosak hanya FRT, LFRT, CFRT
+      // ✅ renderStats() — kira Jentera Baik/Rosak hanya FRT, LFRT, CFRT
       function renderStats() {
         const el = document.getElementById('statsRow');
         if (store.view !== 'balai') { renderAggregateStats(); return; }
@@ -8368,7 +8615,6 @@
         RANKS.forEach((r) => UNITS.forEach((u) => {
           A += g[r][u].A; C += g[r][u].C; CS += g[r][u].CS; TK += g[r][u].TK;
         }));
-        // ✅ KIRA JENTERA BAIK/ROSAK — HANYA FRT, LFRT, CFRT
         const JENTERA_UTAMA_KIRA = ['FRT', 'LFRT', 'CFRT'];
         let jB = 0, jR = 0;
         (state.equip.jentera || []).forEach(function (r) {
@@ -8387,7 +8633,7 @@
     <div class="stat" style="--stat-color:var(--rosak)"><div class="n">${jR}</div><div class="t">JENTERA ROSAK (FRT/LFRT/CFRT)</div></div>`;
       }
 
-      // ✅ PATCHED: renderAggregateStats() — kira Jentera Baik/Rosak hanya FRT, LFRT, CFRT
+      // ✅ renderAggregateStats() — kira Jentera Baik/Rosak hanya FRT, LFRT, CFRT
       function renderAggregateStats() {
         const el = document.getElementById('statsRow');
         const g = computeAllPersonelGrid();
@@ -8395,7 +8641,6 @@
         RANKS.forEach((r) => UNITS.forEach((u) => {
           A += g[r][u].A; C += g[r][u].C; CS += g[r][u].CS; TK += g[r][u].TK;
         }));
-        // ✅ KIRA JENTERA BAIK/ROSAK — HANYA FRT, LFRT, CFRT
         const JENTERA_UTAMA_KIRA = ['FRT', 'LFRT', 'CFRT'];
         let jB = 0, jR = 0;
         Object.values(store.balai).forEach(function (b) {
@@ -9393,7 +9638,7 @@
         }
       });
 
-      // ✅ PATCHED: renderSemakLokasiView() — skip status "TIADA DI BALAI" supaya tak muncul dalam DUPLIKAT
+      // ✅ renderSemakLokasiView() — skip status "TIADA DI BALAI" supaya tak muncul dalam DUPLIKAT
       function renderSemakLokasiView() {
         document.getElementById('sec-semak_lokasi')?.remove();
 
@@ -9409,7 +9654,7 @@
             ['jentera', 'marin', 'utiliti'].forEach(function (key) {
               (s.equip[key] || []).forEach(function (r) {
                 if (r && r.maklumat && String(r.maklumat).trim()) {
-                  // ✅ SKIP jika status "TIADA DI BALAI" — tak dikira sebagai "dipilih"
+                  // ✅ SKIP jika status "TIADA DI BALAI"
                   var st = String(r.status || '').trim().toUpperCase();
                   if (st === 'TIADA DI BALAI') return;
                   set.add(String(r.maklumat).trim());
@@ -10365,6 +10610,7 @@
       async function initApp() {
         initTheme();
         initSound();
+        loadPanelLockStates();
         initAutoResetNotice();
         initFeedbackModal();
         updatePrintFooterDate();
