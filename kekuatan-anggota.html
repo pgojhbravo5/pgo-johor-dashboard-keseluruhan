@@ -9386,20 +9386,23 @@
         const nBalai     = balaiNames.length;
 
         const balaiItems = {};
-        balaiNames.forEach(function (bn) {
-          const set = new Set();
-          const s = store.balai[bn];
-          if (s && s.equip) {
-            ['jentera', 'marin', 'utiliti'].forEach(function (key) {
-              (s.equip[key] || []).forEach(function (r) {
-                if (r && r.maklumat && String(r.maklumat).trim()) {
-                  set.add(String(r.maklumat).trim());
-                }
-              });
-            });
-          }
-          balaiItems[bn] = set;
-        });
+balaiNames.forEach(function (bn) {
+  const set = new Set();
+  const s = store.balai[bn];
+  if (s && s.equip) {
+    ['jentera', 'marin', 'utiliti'].forEach(function (key) {
+      (s.equip[key] || []).forEach(function (r) {
+        if (r && r.maklumat && String(r.maklumat).trim()) {
+          // ✅ SKIP jika status "TIADA DI BALAI" — tak dikira sebagai "dipilih"
+          var st = String(r.status || '').trim().toUpperCase();
+if (st === 'TIADA DI BALAI' || st === 'LUPUS' || st === 'DALAM PROSES LUPUS') return;
+          set.add(String(r.maklumat).trim());
+        }
+      });
+    });
+  }
+  balaiItems[bn] = set;
+});
 
         const SECTIONS = [
           { label: 'JENTERA UTAMA',     catalog: CATALOG_JENTERA, kats: JENTERA_KAT },
