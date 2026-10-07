@@ -5637,15 +5637,14 @@
           );
 
           setTimeout(function () {
-  try {
-    localStorage.setItem('bomba-ui-prefs', JSON.stringify({
-      view: 'balai',
-      activeBalai: BALAI_LIST[0].name,
-    }));
-  } catch (e) {}
-  // ✅ Guna cache-buster untuk elak isu cache
-  location.href = location.pathname + '?v=' + Date.now();
-}, 1500);
+            try {
+              localStorage.setItem('bomba-ui-prefs', JSON.stringify({
+                view: 'balai',
+                activeBalai: BALAI_LIST[0].name,
+              }));
+            } catch (e) {}
+            location.href = location.pathname + '?v=' + Date.now();
+          }, 1500);
 
         } catch (err) {
           console.error('[Scheduled] Gagal:', err);
@@ -6996,10 +6995,9 @@
 
       function validatePersonelBalai(balaiState) {
         const invalid = [];
-        let hasBkb = false; // <--- Tambahan baru
+        let hasBkb = false;
 
         (balaiState.personel || []).forEach((p, idx) => {
-          // Semak jika ada BKB
           if (p.peranan === 'BILIK KAWALAN (BKB)') {
             hasBkb = true;
           }
@@ -7015,7 +7013,6 @@
           });
         });
 
-        // <--- Tambahan baru: Jika tiada BKB langsung
         if (!hasBkb) {
           invalid.push({
             row: 'SISTEM',
@@ -7027,7 +7024,8 @@
 
         return invalid;
       }
-            function validateEquipBalai(balaiState) {
+
+      function validateEquipBalai(balaiState) {
         const invalid = [];
         const panels = [
           { key: 'jentera', label: 'Jentera Utama' },
@@ -7070,7 +7068,6 @@
           lines.push('PERSONEL:');
           v.personel.forEach(r => {
             if (r.isSystemError) {
-              // <--- Paparan khas untuk ralat BKB
               lines.push('  • ⚠️ ' + r.missing[0]);
               lines.push('     Sila tambah sekurang-kurangnya 1 anggota untuk peranan ini.');
             } else if (r.empty) {
@@ -7378,7 +7375,6 @@
             setValidState();
             updateClearBtn();
 
-            // ✅ Kaedah 3: Toast Amaran Duplikasi
             const otherBalai = getBalaiUsingItem(key, v, store.activeBalai);
             if (otherBalai.length > 0) {
               playErrorSound();
@@ -8363,6 +8359,7 @@
         renderStats();
       }
 
+      // ✅ PATCHED: renderStats() — kira Jentera Baik/Rosak hanya FRT, LFRT, CFRT
       function renderStats() {
         const el = document.getElementById('statsRow');
         if (store.view !== 'balai') { renderAggregateStats(); return; }
@@ -8371,18 +8368,26 @@
         RANKS.forEach((r) => UNITS.forEach((u) => {
           A += g[r][u].A; C += g[r][u].C; CS += g[r][u].CS; TK += g[r][u].TK;
         }));
-        const ge = computeEquipGrid('jentera');
+        // ✅ KIRA JENTERA BAIK/ROSAK — HANYA FRT, LFRT, CFRT
+        const JENTERA_UTAMA_KIRA = ['FRT', 'LFRT', 'CFRT'];
         let jB = 0, jR = 0;
-        Object.values(ge).forEach((v) => { jB += v.B || 0; jR += v.R || 0; });
+        (state.equip.jentera || []).forEach(function (r) {
+          if (!r || !r.kategori) return;
+          if (!JENTERA_UTAMA_KIRA.includes(r.kategori)) return;
+          const c = mapEquipStatus(r.status);
+          if (c === 'B') jB++;
+          else if (c === 'R') jR++;
+        });
         el.innerHTML = `
     <div class="stat" style="--stat-color:var(--green)"><div class="n">${A}</div><div class="t">ANGGOTA BERTUGAS</div></div>
     <div class="stat" style="--stat-color:var(--amber)"><div class="n">${C}</div><div class="t">ANGGOTA CUTI</div></div>
     <div class="stat" style="--stat-color:var(--slate)"><div class="n">${CS}</div><div class="t">CUTI SAKIT</div></div>
     <div class="stat" style="--stat-color:var(--blue)"><div class="n">${TK}</div><div class="t">TUGAS KHAS</div></div>
-    <div class="stat" style="--stat-color:var(--green)"><div class="n">${jB}</div><div class="t">JENTERA BAIK</div></div>
-    <div class="stat" style="--stat-color:var(--rosak)"><div class="n">${jR}</div><div class="t">JENTERA ROSAK</div></div>`;
+    <div class="stat" style="--stat-color:var(--green)"><div class="n">${jB}</div><div class="t">JENTERA BAIK (FRT/LFRT/CFRT)</div></div>
+    <div class="stat" style="--stat-color:var(--rosak)"><div class="n">${jR}</div><div class="t">JENTERA ROSAK (FRT/LFRT/CFRT)</div></div>`;
       }
 
+      // ✅ PATCHED: renderAggregateStats() — kira Jentera Baik/Rosak hanya FRT, LFRT, CFRT
       function renderAggregateStats() {
         const el = document.getElementById('statsRow');
         const g = computeAllPersonelGrid();
@@ -8390,17 +8395,27 @@
         RANKS.forEach((r) => UNITS.forEach((u) => {
           A += g[r][u].A; C += g[r][u].C; CS += g[r][u].CS; TK += g[r][u].TK;
         }));
-        const ge = computeAllEquipGrid('jentera');
+        // ✅ KIRA JENTERA BAIK/ROSAK — HANYA FRT, LFRT, CFRT
+        const JENTERA_UTAMA_KIRA = ['FRT', 'LFRT', 'CFRT'];
         let jB = 0, jR = 0;
-        Object.values(ge).forEach((v) => { jB += v.B || 0; jR += v.R || 0; });
+        Object.values(store.balai).forEach(function (b) {
+          const arr = (b && b.equip && b.equip.jentera) || [];
+          arr.forEach(function (r) {
+            if (!r || !r.kategori) return;
+            if (!JENTERA_UTAMA_KIRA.includes(r.kategori)) return;
+            const c = mapEquipStatus(r.status);
+            if (c === 'B') jB++;
+            else if (c === 'R') jR++;
+          });
+        });
         const nBalai = Object.keys(store.balai).length;
         el.innerHTML = `
     <div class="stat" style="--stat-color:var(--green)"><div class="n">${A}</div><div class="t">ANGGOTA BERTUGAS (${nBalai} BALAI)</div></div>
     <div class="stat" style="--stat-color:var(--amber)"><div class="n">${C}</div><div class="t">ANGGOTA CUTI</div></div>
     <div class="stat" style="--stat-color:var(--slate)"><div class="n">${CS}</div><div class="t">CUTI SAKIT</div></div>
     <div class="stat" style="--stat-color:var(--blue)"><div class="n">${TK}</div><div class="t">TUGAS KHAS</div></div>
-    <div class="stat" style="--stat-color:var(--green)"><div class="n">${jB}</div><div class="t">JENTERA BAIK</div></div>
-    <div class="stat" style="--stat-color:var(--rosak)"><div class="n">${jR}</div><div class="t">JENTERA ROSAK</div></div>`;
+    <div class="stat" style="--stat-color:var(--green)"><div class="n">${jB}</div><div class="t">JENTERA BAIK (FRT/LFRT/CFRT)</div></div>
+    <div class="stat" style="--stat-color:var(--rosak)"><div class="n">${jR}</div><div class="t">JENTERA ROSAK (FRT/LFRT/CFRT)</div></div>`;
       }
 
       function renderSummaryView() {
@@ -9378,6 +9393,7 @@
         }
       });
 
+      // ✅ PATCHED: renderSemakLokasiView() — skip status "TIADA DI BALAI" supaya tak muncul dalam DUPLIKAT
       function renderSemakLokasiView() {
         document.getElementById('sec-semak_lokasi')?.remove();
 
@@ -9386,23 +9402,23 @@
         const nBalai     = balaiNames.length;
 
         const balaiItems = {};
-balaiNames.forEach(function (bn) {
-  const set = new Set();
-  const s = store.balai[bn];
-  if (s && s.equip) {
-    ['jentera', 'marin', 'utiliti'].forEach(function (key) {
-      (s.equip[key] || []).forEach(function (r) {
-        if (r && r.maklumat && String(r.maklumat).trim()) {
-          // ✅ SKIP jika status "TIADA DI BALAI" — tak dikira sebagai "dipilih"
-          var st = String(r.status || '').trim().toUpperCase();
-if (st === 'TIADA DI BALAI' || st === 'LUPUS' || st === 'DALAM PROSES LUPUS') return;
-          set.add(String(r.maklumat).trim());
-        }
-      });
-    });
-  }
-  balaiItems[bn] = set;
-});
+        balaiNames.forEach(function (bn) {
+          const set = new Set();
+          const s = store.balai[bn];
+          if (s && s.equip) {
+            ['jentera', 'marin', 'utiliti'].forEach(function (key) {
+              (s.equip[key] || []).forEach(function (r) {
+                if (r && r.maklumat && String(r.maklumat).trim()) {
+                  // ✅ SKIP jika status "TIADA DI BALAI" — tak dikira sebagai "dipilih"
+                  var st = String(r.status || '').trim().toUpperCase();
+                  if (st === 'TIADA DI BALAI') return;
+                  set.add(String(r.maklumat).trim());
+                }
+              });
+            });
+          }
+          balaiItems[bn] = set;
+        });
 
         const SECTIONS = [
           { label: 'JENTERA UTAMA',     catalog: CATALOG_JENTERA, kats: JENTERA_KAT },
@@ -9460,7 +9476,6 @@ if (st === 'TIADA DI BALAI' || st === 'LUPUS' || st === 'DALAM PROSES LUPUS') re
         document.getElementById('sections').appendChild(wrap);
         const body = wrap.querySelector('.section-body');
 
-        // ✅ TOGGLE BAR — 3 BUTANG
         const toggleBar = document.createElement('div');
         toggleBar.className = 'semak-toggle-bar';
         toggleBar.innerHTML = `
@@ -9511,7 +9526,6 @@ if (st === 'TIADA DI BALAI' || st === 'LUPUS' || st === 'DALAM PROSES LUPUS') re
         const isDuplicate  = (semakViewMode === 'duplicate');
         const showBalaiCols = isAssigned || isDuplicate;
 
-        // ✅ Kirakan balai yang perlu ditunjuk (semua untuk tab 1, hanya yang terlibat untuk tab 3)
         let viewBalaiIndices = [];
         if (showBalaiCols) {
           if (isDuplicate) {
@@ -9662,7 +9676,6 @@ if (st === 'TIADA DI BALAI' || st === 'LUPUS' || st === 'DALAM PROSES LUPUS') re
             tr.dataset.maklumat = it.maklumat.toLowerCase();
             tr.dataset.section = sec.label;
 
-            // ✅ Hanya tab DUPLIKAT yang tanda merah
             if (isDuplicate) {
               tr.classList.add('row-duplicate');
               tr.title = '⚠ Jentera ini dipilih oleh ' + it.count + ' balai berlainan';
@@ -9782,13 +9795,15 @@ if (st === 'TIADA DI BALAI' || st === 'LUPUS' || st === 'DALAM PROSES LUPUS') re
         if (isAssigned) {
           info.innerHTML = '<b>Nota:</b> Senarai ini memaparkan <b>semua jentera yang telah dipilih</b> oleh sekurang-kurangnya <b>1 balai</b> dalam sistem. ' +
             'Data diambil dari <b>KEKUATAN JENTERA UTAMA</b>, <b>JENTERA MARIN</b> & <b>KENDERAAN UTILITI</b>. ' +
-            'Untuk menyemak konflik duplikasi, sila rujuk tab <b style="color:var(--rosak)">⚠ DUPLIKAT</b>.';
+            'Untuk menyemak konflik duplikasi, sila rujuk tab <b style="color:var(--rosak)">⚠ DUPLIKAT</b>.<br />' +
+            '<b style="color:var(--amber)">Nota:</b> Jentera dengan status <b>TIADA DI BALAI</b> <u>tidak dikira</u> sebagai dipilih.';
         } else if (isUnassigned) {
-          info.innerHTML = '<b>Nota:</b> Senarai ini memaparkan jentera / kenderaan yang <b>langsung tidak dipilih</b> oleh mana-mana balai dalam sistem. Jika ada item yang tersenarai di sini, ia bermakna item tersebut masih belum diisi dalam <b>KEKUATAN JENTERA UTAMA</b> / <b>JENTERA MARIN</b> / <b>KENDERAAN UTILITI</b> mana-mana balai.';
+          info.innerHTML = '<b>Nota:</b> Senarai ini memaparkan jentera / kenderaan yang <b>langsung tidak dipilih</b> oleh mana-mana balai dalam sistem. Jika ada item yang tersenarai di sini, ia bermakna item tersebut masih belum diisi dalam <b>KEKUATAN JENTERA UTAMA</b> / <b>JENTERA MARIN</b> / <b>KENDERAAN UTILITI</b> mana-mana balai (atau statusnya <b>TIADA DI BALAI</b>).';
         } else {
           info.innerHTML = '<b>Nota:</b> Senarai ini memaparkan jentera / kenderaan yang <b>dipilih oleh lebih dari 1 balai</b> (duplikat). ' +
             'Baris berwarna <b style="color:var(--rosak)">MERAH</b> menandakan konflik yang perlu disemak. ' +
-            'Kolum balai di bawah hanya memaparkan <b style="color:var(--amber)">' + viewBalaiCount + ' balai</b> yang terlibat dalam duplikasi ini sahaja.';
+            'Kolum balai di bawah hanya memaparkan <b style="color:var(--amber)">' + viewBalaiCount + ' balai</b> yang terlibat dalam duplikasi ini sahaja.<br />' +
+            '<b style="color:var(--amber)">Nota:</b> Jentera dengan status <b>TIADA DI BALAI</b> <u>tidak dikira</u> dalam duplikasi.';
         }
         body.appendChild(info);
 
@@ -10574,7 +10589,6 @@ if (st === 'TIADA DI BALAI' || st === 'LUPUS' || st === 'DALAM PROSES LUPUS') re
         const label = document.getElementById('resetBalaiLabel');
         if (btn.disabled) return;
 
-        // ✅ Password protection — sama dengan Reset Semua Balai
         const pwd = prompt('Masukkan kata laluan untuk RESET BALAI:');
         if (pwd === null) return;
         if (pwd !== RESET_PASSWORD) {
@@ -10668,14 +10682,12 @@ if (st === 'TIADA DI BALAI' || st === 'LUPUS' || st === 'DALAM PROSES LUPUS') re
           try {
             const p = JSON.parse(ev.target.result);
             
-            // Dapatkan tarikh hari ini (Waktu Malaysia)
             const malaysiaNow = getMalaysiaNow();
             const todayDate = malaysiaNow.year + '-' + malaysiaNow.month + '-' + malaysiaNow.day;
 
             if (p.balai && typeof p.balai === 'object') {
               if (!confirm('Fail SEMUA BALAI dikesan. Import akan GANTIKAN semua data di Supabase. Teruskan?')) return;
               
-              // --- SEMAKAN TARIKH LAPUK (SEMUA BALAI) ---
               let hasOldDate = false;
               let oldDates = new Set();
               Object.keys(p.balai).forEach(name => {
@@ -10701,7 +10713,6 @@ if (st === 'TIADA DI BALAI' || st === 'LUPUS' || st === 'DALAM PROSES LUPUS') re
                   });
                 }
               }
-              // --- TAMAT SEMAKAN TARIKH ---
 
               setLoading(true, 'Mengimport semua balai…');
               const names = Object.keys(p.balai);
@@ -10721,7 +10732,6 @@ if (st === 'TIADA DI BALAI' || st === 'LUPUS' || st === 'DALAM PROSES LUPUS') re
               }
               if (!confirm('Fail SATU BALAI dikesan. Import ke dalam tab "' + store.activeBalai + '"? Data sedia ada di Supabase akan digantikan.')) return;
 
-              // --- SEMAKAN TARIKH LAPUK (SATU BALAI) ---
               let importedDate = p.ident && p.ident.tarikh ? p.ident.tarikh : '';
               if (importedDate && importedDate !== todayDate) {
                 const changeDate = confirm(
@@ -10735,7 +10745,6 @@ if (st === 'TIADA DI BALAI' || st === 'LUPUS' || st === 'DALAM PROSES LUPUS') re
                   p.ident.tarikh = todayDate;
                 }
               }
-              // --- TAMAT SEMAKAN TARIKH ---
 
               setLoading(true, 'Mengimport ke ' + store.activeBalai + '…');
               const def = defaultState(store.activeBalai);
