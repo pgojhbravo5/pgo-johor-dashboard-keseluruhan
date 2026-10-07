@@ -7708,11 +7708,11 @@
         return null;
       }
       function mapEquipStatus(s) {
-  if (s === 'BAIK & BOLEH BEROPERASI') return 'B';
-  if (s === 'ROSAK MINOR & BOLEH BEROPERASI') return 'R';   // ✅ FIX: ROSAK MINOR = ROSAK
-  if (s === 'ROSAK & TIDAK BOLEH BEROPERASI') return 'R';
-  return null;
-}
+        if (s === 'BAIK & BOLEH BEROPERASI') return 'B';
+        if (s === 'ROSAK MINOR & BOLEH BEROPERASI') return 'B';
+        if (s === 'ROSAK & TIDAK BOLEH BEROPERASI') return 'R';
+        return null;
+      }
 
       function computePersonelGridForState(s) {
         const m = {};
