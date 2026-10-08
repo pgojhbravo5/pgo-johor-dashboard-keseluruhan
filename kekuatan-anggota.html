@@ -9601,30 +9601,36 @@ function switchView(v) {
           });
 
           ['jentera', 'marin', 'utiliti', 'komunikasi'].forEach(function (key) {
-            const arr = (b.equip && b.equip[key]) || [];
-            arr.forEach(function (r) {
-              if (!r || !r.kategori) return;
-              const qty = (key === 'komunikasi') ? (parseInt(r.jumlah, 10) || 0) : 1;
-              if (qty <= 0 && key === 'komunikasi') return;
-              const addQty = (key === 'komunikasi') ? qty : 1;
+  const arr = (b.equip && b.equip[key]) || [];
+  arr.forEach(function (r) {
+    if (!r || !r.kategori) return;
+    const qty = (key === 'komunikasi') ? (parseInt(r.jumlah, 10) || 0) : 1;
+    if (qty <= 0 && key === 'komunikasi') return;
+    const addQty = (key === 'komunikasi') ? qty : 1;
 
-              data[key].kategori[r.kategori] = (data[key].kategori[r.kategori] || 0) + addQty;
-              data[key].total += addQty;
+    const c = mapEquipStatus(r.status);
 
-              if (!data[key].kategoriStatus[r.kategori]) {
-                data[key].kategoriStatus[r.kategori] = { B: 0, R: 0 };
-              }
-              const c = mapEquipStatus(r.status);
-              if (c === 'B') {
-                data[key].status.B += addQty;
-                data[key].kategoriStatus[r.kategori].B += addQty;
-              } else if (c === 'R') {
-                data[key].status.R += addQty;
-                data[key].kategoriStatus[r.kategori].R += addQty;
-              }
-            });
-          });
-        });
+    // ✅ HANYA kira BAIK (B) dan ROSAK (R) untuk statistik.
+    // Status lain (TIADA DI BALAI, LUPUS, DALAM PROSES LUPUS)
+    // TIDAK dikira dalam nombor kad, tetapi masih muncul dalam
+    // senarai butiran apabila kad diklik.
+    if (c !== 'B' && c !== 'R') return;
+
+    data[key].kategori[r.kategori] = (data[key].kategori[r.kategori] || 0) + addQty;
+    data[key].total += addQty;
+
+    if (!data[key].kategoriStatus[r.kategori]) {
+      data[key].kategoriStatus[r.kategori] = { B: 0, R: 0 };
+    }
+    if (c === 'B') {
+      data[key].status.B += addQty;
+      data[key].kategoriStatus[r.kategori].B += addQty;
+    } else if (c === 'R') {
+      data[key].status.R += addQty;
+      data[key].kategoriStatus[r.kategori].R += addQty;
+    }
+  });
+});
 
         return data;
       }
