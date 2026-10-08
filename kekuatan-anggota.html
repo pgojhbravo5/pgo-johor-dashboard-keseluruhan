@@ -5987,12 +5987,12 @@ function updateAllLockButtonsUI() {
       '<span>' + (locked ? 'LOCKED' : 'UNLOCKED') + '</span>';
 
     let title = locked
-      ? 'Panel [' + balai + '] dikunci — klik untuk buka (perlu password)'
-      : 'Panel [' + balai + '] dibuka — klik untuk kunci (perlu password)';
+      ? 'Panel dikunci — klik untuk buka (perlu password)'
+      : 'Panel dibuka — klik untuk kunci (perlu password)';
 
-    if (locked && meta && meta.by) {
-      title += '\n\n🔒 Dikunci oleh: ' + meta.by;
-      if (meta.at) {
+    if (locked) {
+      title += '\n\n🔒 Dikunci oleh: Pentadbir Aplikasi';
+      if (meta && meta.at) {
         try {
           const d = new Date(meta.at);
           title += '\n⏰ Pada: ' + d.toLocaleString('ms-MY');
