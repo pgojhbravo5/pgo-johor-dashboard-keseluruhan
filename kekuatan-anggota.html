@@ -3519,19 +3519,27 @@
         top: 0; left: 0; right: 0; bottom: 0;
         width: 100vw;
         height: 100vh;
-        background: rgba(2, 6, 16, 0.88);
+        background: rgba(2, 6, 16, 0.92);
         display: none;
         align-items: center;
         justify-content: center;
-        z-index: 99999;
+        z-index: 2147483647;
         padding: 1rem;
-        backdrop-filter: blur(6px);
-        -webkit-backdrop-filter: blur(6px);
+        visibility: hidden;
+        opacity: 0;
+        margin: 0;
+        border: 0;
+        transform: none;
+        filter: none;
+        backdrop-filter: none;
+        -webkit-backdrop-filter: none;
       }
       .validation-modal-overlay.active {
         display: flex !important;
+        visibility: visible !important;
+        opacity: 1 !important;
       }
-
+      
       .validation-modal {
         background: var(--panel);
         border: 1px solid var(--line);
@@ -7948,7 +7956,7 @@ localStorage.setItem(runKey, 'done');
         return 'Balai "' + balaiName + '":\n\n' + lines.join('\n');
       }
 
-      // ✅ VALIDATION MODAL — VERSI ROBUST (inline style, tak bergantung CSS class)
+      // ✅ VALIDATION MODAL — VERSI FIX (tanpa backdrop-filter)
       function showValidationModal(opts) {
         opts = opts || {};
 
@@ -7956,7 +7964,7 @@ localStorage.setItem(runKey, 'done');
 
         const overlay = document.getElementById('validationModalOverlay');
         if (!overlay) {
-          console.error('[ValidationModal] ❌ Overlay element NOT FOUND — HTML missing!');
+          console.error('[ValidationModal] ❌ Overlay element NOT FOUND');
           alert((opts.title || '') + '\n\n' + (opts.intro || '') + '\n\n' + (opts.content || ''));
           if (typeof opts.onClose === 'function') opts.onClose();
           return;
@@ -7970,10 +7978,7 @@ localStorage.setItem(runKey, 'done');
         const btnClose= document.getElementById('validationModalClose');
 
         if (!titleEl || !introEl || !listEl || !checkEl || !labelEl || !btnClose) {
-          console.error('[ValidationModal] ❌ Inner elements missing!', {
-            titleEl: !!titleEl, introEl: !!introEl, listEl: !!listEl,
-            checkEl: !!checkEl, labelEl: !!labelEl, btnClose: !!btnClose
-          });
+          console.error('[ValidationModal] ❌ Inner elements missing!');
           alert((opts.title || '') + '\n\n' + (opts.intro || '') + '\n\n' + (opts.content || ''));
           if (typeof opts.onClose === 'function') opts.onClose();
           return;
@@ -7987,7 +7992,7 @@ localStorage.setItem(runKey, 'done');
         labelEl.classList.remove('checked');
         btnClose.disabled = true;
 
-        // ✅ FORCE SHOW guna inline style — tak bergantung pada CSS class
+        // ✅ FIX: TANPA backdrop-filter — guna background gelap solid
         overlay.style.cssText = [
           'position: fixed',
           'top: 0',
@@ -7996,15 +8001,29 @@ localStorage.setItem(runKey, 'done');
           'bottom: 0',
           'width: 100vw',
           'height: 100vh',
-          'background: rgba(2, 6, 16, 0.88)',
+          'background: rgba(2, 6, 16, 0.92)',
           'display: flex',
           'align-items: center',
           'justify-content: center',
-          'z-index: 99999',
+          'z-index: 2147483647',
           'padding: 1rem',
-          'backdrop-filter: blur(6px)',
-          '-webkit-backdrop-filter: blur(6px)',
-        ].join(';');
+          'visibility: visible',
+          'opacity: 1',
+          'margin: 0',
+          'border: 0',
+          'transform: none',
+          'filter: none',
+          'backdrop-filter: none',
+          '-webkit-backdrop-filter: none',
+        ].join(' !important; ') + ' !important;';
+
+        // ✅ Pastikan modal child nampak
+        const modalEl = overlay.querySelector('.validation-modal');
+        if (modalEl) {
+          modalEl.style.visibility = 'visible';
+          modalEl.style.opacity = '1';
+          modalEl.style.display = 'flex';
+        }
 
         document.documentElement.classList.add('validation-modal-open');
 
@@ -8040,6 +8059,7 @@ localStorage.setItem(runKey, 'done');
             return;
           }
           overlay.style.display = 'none';
+          overlay.style.visibility = 'hidden';
           document.documentElement.classList.remove('validation-modal-open');
           checkEl.removeEventListener('change', onCheck);
           btnClose.removeEventListener('click', closeModal);
