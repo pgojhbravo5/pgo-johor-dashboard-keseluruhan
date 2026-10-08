@@ -3985,8 +3985,24 @@
       </div>
     </div>
 
+    <div class="auto-reset-notice-overlay" id="hardReloadOverlay" role="dialog" aria-modal="true">
+      <div class="auto-reset-notice">
+        <div class="auto-reset-notice-icon">🔄</div>
+        <h3>RELOAD SISTEM</h3>
+        <p class="auto-reset-notice-text">
+          Sistem akan dimuat semula sebentar lagi.
+        </p>
+        <p class="auto-reset-notice-text" style="margin-top:0.5rem;">
+          Dicetuskan oleh: <b id="hardReloadWho">—</b>
+        </p>
+        <p class="auto-reset-notice-progress">Memuat semula…</p>
+        <p class="auto-reset-notice-hint">Sila tunggu sebentar. Jangan tutup browser.</p>
+      </div>
+    </div>
+
     <script>
-      const SUPABASE_CONFIG = {
+    
+    const SUPABASE_CONFIG = {
         url: 'https://nstmylzvqckhrpxmbufx.supabase.co',
         anonKey: 'sb_publishable_6i7rUdjTRmOYMcookS6CFQ_lwXyRJJL',
       };
@@ -5026,6 +5042,7 @@
         try { stopScheduledArchiveResetTimer(); } catch (e) {}
         try { stopAutoResetCountdown(); } catch (e) {}
         try { unsubscribeFromPanelLockChanges(); } catch (e) {}
+        try { unsubscribeFromSystemControl(); } catch (e) {}
         try {
           if (typeof store !== 'undefined' && store) {
                         localStorage.setItem('bomba-ui-prefs', JSON.stringify({
@@ -5696,6 +5713,105 @@ function unsubscribeFromPanelLockChanges() {
     console.log('[Realtime] Unsubscribed dari panel_lock');
   }
 }
+
+      // ✅ MANUAL HARD-RELOAD SYSTEM
+      let systemControlChannel = null;
+
+      function subscribeToSystemControl() {
+        if (systemControlChannel) return;
+
+        systemControlChannel = sb
+          .channel('system_control_realtime')
+          .on(
+            'postgres_changes',
+            { event: 'INSERT', schema: 'public', table: 'system_control' },
+            function (payload) {
+              const row = payload.new;
+              if (!row || row.command !== 'hard_reload') return;
+
+              if (recentLocalChanges['__reload__'] === row.request_id) {
+                console.log('[SystemControl] Skip own reload trigger');
+                return;
+              }
+
+              console.log('[SystemControl] 🔄 Hard reload triggered by', row.triggered_by);
+
+              showHardReloadNotice(row.triggered_by);
+            }
+          )
+          .subscribe(function (status) {
+            if (status === 'SUBSCRIBED') {
+              console.log('[SystemControl] ✅ Subscribed ke system_control');
+            } else if (status === 'CHANNEL_ERROR' || status === 'TIMED_OUT') {
+              console.warn('[SystemControl] ⚠️ Connection issue:', status);
+            }
+          });
+      }
+
+      function unsubscribeFromSystemControl() {
+        if (systemControlChannel) {
+          sb.removeChannel(systemControlChannel);
+          systemControlChannel = null;
+          console.log('[SystemControl] Unsubscribed');
+        }
+      }
+
+      function showHardReloadNotice(triggeredBy) {
+        const overlay = document.getElementById('hardReloadOverlay');
+        const whoEl = document.getElementById('hardReloadWho');
+        if (whoEl) whoEl.textContent = triggeredBy || 'Pengguna lain';
+        if (overlay) overlay.classList.add('active');
+
+        playCheckboxTickSound(true);
+
+        setTimeout(function () {
+          location.href = location.pathname + '?v=' + Date.now();
+        }, 2200);
+      }
+
+      async function triggerHardReloadAll() {
+        const pwd = prompt('🔐 HARD RELOAD SEMUA PENGGUNA\n\nMasukkan kata laluan:');
+        if (pwd === null) return;
+        if (pwd !== RESET_PASSWORD) {
+          playErrorSound();
+          alert('❌ Kata laluan salah. Reload dibatalkan.');
+          return;
+        }
+
+        const confirmed = confirm(
+          '⚠️ AMARAN\n\n' +
+          'Semua pengguna yang sedang buka sistem akan di-RELOAD secara automatik.\n\n' +
+          '• Data yang belum disimpan akan HILANG\n' +
+          '• Semua browser akan refresh dalam 1-2 saat\n\n' +
+          'Teruskan?'
+        );
+        if (!confirmed) return;
+
+        const requestId = Date.now() + '-' + Math.random().toString(36).slice(2, 9);
+        recentLocalChanges['__reload__'] = requestId;
+
+        const row = {
+          command: 'hard_reload',
+          triggered_by: Admin Aplikasi,
+          request_id: requestId,
+          triggered_at: new Date().toISOString(),
+        };
+
+        try {
+          const { error } = await sb.from('system_control').insert(row);
+          if (error) throw error;
+
+          showToast('✅ Signal reload dihantar ke semua pengguna', 'success');
+
+          setTimeout(function () {
+            location.href = location.pathname + '?v=' + Date.now();
+          }, 1500);
+        } catch (err) {
+          playErrorSound();
+          showToast('Gagal trigger reload: ' + err.message, 'error');
+        }
+      }
+      // ✅ END MANUAL HARD-RELOAD SYSTEM
 
       async function deleteBalaiRows(table, balaiName) {
         const { error } = await sb.from(table).delete().eq('balai', balaiName);
@@ -10957,8 +11073,9 @@ localStorage.setItem(runKey, 'done');
         initSound();
         await loadPanelLockStates();
         subscribeToPanelLockChanges();
+        subscribeToSystemControl();
         initAutoResetNotice();
-                initFeedbackModal();
+                        initFeedbackModal();
         updatePrintFooterDate();
         fillPrintFooter(loadPrintInfo());
         setLoading(true, 'Memuatkan data dari Supabase…');
@@ -11458,10 +11575,22 @@ localStorage.setItem(runKey, 'done');
         }
       });
 
+      // ✅ KEYBOARD SHORTCUT — Ctrl+Shift+H untuk Hard Reload Semua
+      document.addEventListener('keydown', function (e) {
+        if (e.ctrlKey && e.shiftKey && (e.key === 'H' || e.key === 'h')) {
+          const activeEl = document.activeElement;
+          if (activeEl && (activeEl.tagName === 'INPUT' || activeEl.tagName === 'TEXTAREA' || activeEl.tagName === 'SELECT')) {
+            return;
+          }
+          e.preventDefault();
+          triggerHardReloadAll();
+        }
+      });
+
       initLiveClock();
       updateHeaderStickyOffset();
       initApp();
       setTimeout(updateHeaderStickyOffset, 400);
     </script>
-  </body>
+      </body>
 </html>
