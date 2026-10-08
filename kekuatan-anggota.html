@@ -10789,11 +10789,13 @@
         const btn = this;
         const label = document.getElementById('saveSheetLabel');
         if (btn.disabled) return;
-        if (store.view === 'balai' && !state.ident.shif) {
-          showToast('Sila pilih Shif Bertugas sebelum simpan', 'error');
-          return;
-        }
-
+        if (store.view === 'balai' && (!state.ident.shif || !state.ident.tarikh)) {
+  const missing = [];
+  if (!state.ident.shif)   missing.push('Shif Bertugas');
+  if (!state.ident.tarikh) missing.push('Tarikh');
+  showToast('Sila isi: ' + missing.join(' & ') + ' sebelum simpan', 'error');
+  return;
+}
         const v = validateBalaiFull(state);
         if (hasInvalid(v)) {
           alert('Tidak boleh simpan — kolum mandatori belum lengkap:\n\n' + formatInvalidMsg(store.activeBalai, v));
