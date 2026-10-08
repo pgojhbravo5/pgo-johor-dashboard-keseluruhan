@@ -10044,13 +10044,42 @@ localStorage.setItem(runKey, 'done');
 
       let semakDragState = null;
 
+      // ✅ Helper: cek sama ada element ada teks yang boleh dipilih (select & copy)
+      function isTextSelectableTarget(el) {
+        if (!el) return false;
+        const tag = (el.tagName || '').toUpperCase();
+
+        if (['INPUT', 'TEXTAREA', 'SELECT', 'BUTTON', 'A', 'LABEL', 'MARK'].includes(tag)) {
+          return true;
+        }
+
+        const txt = (el.textContent || '').replace(/\s+/g, '');
+        if (txt.length > 0) return true;
+
+        const kids = el.querySelectorAll('*');
+        for (let i = 0; i < kids.length; i++) {
+          const t = (kids[i].textContent || '').replace(/\s+/g, '');
+          if (t.length > 0) return true;
+        }
+        return false;
+      }
+
       function setupSemakDragScroll(el) {
         if (!el || el.dataset.dragBound === '1') return;
         el.dataset.dragBound = '1';
+
         el.addEventListener('mousedown', function (e) {
           if (e.button !== 0) return;
+
           if (e.target.closest('input, textarea, select, button, a, label, .semak-clear')) return;
+
+          // ✅ Benarkan SELECT TEXT jika user mula drag pada teks
+          if (isTextSelectableTarget(e.target)) {
+            return;
+          }
+
           if (el.scrollWidth <= el.clientWidth + 2) return;
+
           semakDragState = {
             el: el,
             startX: e.pageX,
@@ -10463,7 +10492,7 @@ localStorage.setItem(runKey, 'done');
         if (showBalaiCols) {
           const hint = document.createElement('div');
           hint.className = 'semak-scroll-hint';
-          hint.innerHTML = svgIcon('arrowLeft') + '<span>Kolum <b style="color:var(--amber)">BIL, KATEGORI &amp; MAKLUMAT</b> kekal beku — hanya kolum balai bergerak. <b style="color:var(--amber)">Klik + Tahan + Gerak mouse</b> untuk skrol, atau guna butang ◀ ▶.</span>';
+          hint.innerHTML = svgIcon('arrowLeft') + '<span>Kolum <b style="color:var(--amber)">BIL, KATEGORI &amp; MAKLUMAT</b> kekal beku — hanya kolum balai bergerak. <b style="color:var(--amber)">Klik + Tahan + Gerak mouse</b> untuk skrol, atau guna butang ◀ ▶. <b style="color:var(--green)">Teks boleh di-select &amp; copy.</b></span>';
           body.appendChild(hint);
         }
 
@@ -11593,4 +11622,4 @@ localStorage.setItem(runKey, 'done');
       setTimeout(updateHeaderStickyOffset, 400);
     </script>
       </body>
-</html> 
+</html>
