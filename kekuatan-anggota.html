@@ -4917,9 +4917,10 @@
         removePrintLandscapeStyle();
         try { stopAutoRefresh(); } catch (e) {}
         try { stopScheduledArchiveResetTimer(); } catch (e) {}
+        try { unsubscribeFromPanelLockChanges(); } catch (e) {}
         try {
           if (typeof store !== 'undefined' && store) {
-            localStorage.setItem('bomba-ui-prefs', JSON.stringify({
+                        localStorage.setItem('bomba-ui-prefs', JSON.stringify({
               view: store.view,
               activeBalai: store.activeBalai,
             }));
@@ -5325,34 +5326,80 @@
 
       const RESET_PASSWORD = 'pgo1234';
 
-      // ✅ PANEL LOCK SYSTEM — Default OFF (terbuka)
-      const PANEL_LOCK_LS_KEY = 'bomba-panel-lock';
-      const panelLockStates = {
-        personel: false,
-        jentera: false,
-        marin: false,
-        utiliti: false,
-        komunikasi: false,
-      };
+// ✅ PANEL LOCK SYSTEM — SEGERA (Supabase + Realtime)
+const PANEL_LOCK_KEYS = ['personel', 'jentera', 'marin', 'utiliti', 'komunikasi'];
+const PANEL_LABELS = {
+  personel: 'Kekuatan Personel',
+  jentera: 'Jentera Utama',
+  marin: 'Jentera Marin',
+  utiliti: 'Kenderaan Utiliti',
+  komunikasi: 'Peralatan Komunikasi',
+};
 
-      function loadPanelLockStates() {
-        try {
-          const saved = localStorage.getItem(PANEL_LOCK_LS_KEY);
-          if (saved) {
-            const parsed = JSON.parse(saved);
-            Object.keys(panelLockStates).forEach(function (k) {
-              if (typeof parsed[k] === 'boolean') panelLockStates[k] = parsed[k];
-            });
-          }
-        } catch (e) {}
-      }
+const panelLockStates = {
+  personel: false,
+  jentera: false,
+  marin: false,
+  utiliti: false,
+  komunikasi: false,
+};
 
-      function savePanelLockStates() {
-        try {
-          localStorage.setItem(PANEL_LOCK_LS_KEY, JSON.stringify(panelLockStates));
-        } catch (e) {}
-      }
+const panelLockMeta = {
+  personel: null,
+  jentera: null,
+  marin: null,
+  utiliti: null,
+  komunikasi: null,
+};
 
+// Simpan timestamp perubahan sendiri (elak double-toast dari Realtime)
+const recentLocalChanges = {};
+
+// Label pengguna = nama balai semasa
+function getCurrentUserLabel() {
+  if (store && store.activeBalai) return store.activeBalai;
+  if (store && store.view) return '(' + store.view + ')';
+  return 'Pengguna Tidak Dikenali';
+}
+
+async function loadPanelLockStates() {
+  try {
+    const { data, error } = await sb.from('panel_lock').select('*');
+    if (error) throw error;
+    (data || []).forEach(function (row) {
+      if (!PANEL_LOCK_KEYS.includes(row.panel_key)) return;
+      panelLockStates[row.panel_key] = !!row.locked;
+      panelLockMeta[row.panel_key] = (row.locked && row.locked_by)
+        ? { by: row.locked_by, at: row.locked_at }
+        : null;
+    });
+    console.log('[PanelLock] Loaded dari Supabase:', panelLockStates);
+  } catch (e) {
+    console.warn('[PanelLock] Gagal load dari Supabase:', e.message);
+  }
+}
+
+async function savePanelLockStates(key) {
+  const isLocked = panelLockStates[key];
+
+  const row = {
+    panel_key: key,
+    locked: isLocked,
+    locked_by: isLocked ? getCurrentUserLabel() : null,
+    locked_at: isLocked ? new Date().toISOString() : null,
+    updated_at: new Date().toISOString(),
+  };
+
+  const { error } = await sb
+    .from('panel_lock')
+    .upsert(row, { onConflict: 'panel_key' });
+
+  if (error) throw new Error(error.message);
+
+  // Tanda perubahan sendiri (Realtime akan skip)
+  recentLocalChanges[key] = Date.now();
+  console.log('[PanelLock] Saved ke Supabase:', key, '=', isLocked);
+}
       function isPanelLocked(key) {
         return panelLockStates[key] === true;
       }
@@ -5396,14 +5443,29 @@
           const key = btn.dataset.lockKey;
           if (!key) return;
           const locked = isPanelLocked(key);
+          const meta = panelLockMeta[key];
+
           btn.classList.toggle('locked', locked);
           btn.classList.toggle('unlocked', !locked);
           btn.innerHTML = (locked ? svgIcon('lock') : svgIcon('lockOpen')) +
             '<span>' + (locked ? 'LOCKED' : 'UNLOCKED') + '</span>';
-          btn.title = locked
+
+          let title = locked
             ? 'Panel dikunci — klik untuk buka (perlu password)'
             : 'Panel dibuka — klik untuk kunci (perlu password)';
-          btn.setAttribute('aria-label', btn.title);
+
+          if (locked && meta && meta.by) {
+            title += '\n\n🔒 Dikunci oleh: ' + meta.by;
+            if (meta.at) {
+              try {
+                const d = new Date(meta.at);
+                title += '\n⏰ Pada: ' + d.toLocaleString('ms-MY');
+              } catch (e) {}
+            }
+          }
+
+          btn.title = title;
+          btn.setAttribute('aria-label', title);
         });
       }
 
@@ -5428,11 +5490,10 @@
         return btn;
       }
 
-      function handleLockToggle(key) {
+      async function handleLockToggle(key) {
         const currentlyLocked = isPanelLocked(key);
 
         if (currentlyLocked) {
-          // UNLOCK → minta password
           const pwd = prompt('🔓 BUKA KUNCI PANEL\n\nMasukkan kata laluan untuk edit panel ini:');
           if (pwd === null) return;
           if (pwd !== RESET_PASSWORD) {
@@ -5441,11 +5502,7 @@
             return;
           }
           panelLockStates[key] = false;
-          savePanelLockStates();
-          playCheckboxTickSound(true);
-          showToast('🔓 Panel dibuka — anda boleh edit sekarang', 'success');
         } else {
-          // LOCK → juga perlu password (default OFF)
           const pwd = prompt('🔒 KUNCI PANEL\n\nMasukkan kata laluan untuk kunci panel ini:');
           if (pwd === null) return;
           if (pwd !== RESET_PASSWORD) {
@@ -5454,14 +5511,83 @@
             return;
           }
           panelLockStates[key] = true;
-          savePanelLockStates();
-          playCheckboxTickSound(false);
-          showToast('🔒 Panel dikunci — edit tidak dibenarkan', 'success');
         }
 
-        refreshAllPanelLocks();
+        try {
+          await savePanelLockStates(key);
+          playCheckboxTickSound(!panelLockStates[key]);
+          showToast(
+            panelLockStates[key]
+              ? '🔒 Panel dikunci — semua pengguna tidak boleh edit'
+              : '🔓 Panel dibuka — semua pengguna boleh edit',
+            'success'
+          );
+          refreshAllPanelLocks();
+        } catch (err) {
+          panelLockStates[key] = currentlyLocked;
+          playErrorSound();
+          showToast('Gagal simpan lock: ' + err.message, 'error');
+          refreshAllPanelLocks();
+        }
       }
-      // ✅ END PANEL LOCK SYSTEM
+            // ✅ END PANEL LOCK SYSTEM
+                  // ✅ REALTIME SUBSCRIPTION — Segerakkan lock antara semua pengguna
+      let panelLockChannel = null;
+
+function subscribeToPanelLockChanges() {
+  if (panelLockChannel) return;
+
+  panelLockChannel = sb
+    .channel('panel_lock_realtime')
+    .on(
+      'postgres_changes',
+      { event: '*', schema: 'public', table: 'panel_lock' },
+      function (payload) {
+        const row = payload.new || payload.old;
+        if (!row || !row.panel_key) return;
+        if (!PANEL_LOCK_KEYS.includes(row.panel_key)) return;
+
+        const recent = recentLocalChanges[row.panel_key];
+        if (recent && Date.now() - recent < 2000) {
+          console.log('[Realtime] Skip own change:', row.panel_key);
+          return;
+        }
+
+        panelLockStates[row.panel_key] = !!row.locked;
+        panelLockMeta[row.panel_key] = (row.locked && row.locked_by)
+          ? { by: row.locked_by, at: row.locked_at }
+          : null;
+
+        refreshAllPanelLocks();
+
+        const label = PANEL_LABELS[row.panel_key] || row.panel_key;
+        const who = row.locked_by || 'pengguna lain';
+        const msg = row.locked
+          ? '🔒 ' + label + ' telah DIKUNCI oleh ' + who
+          : '🔓 ' + label + ' telah DIBUKA oleh ' + who;
+
+        playCheckboxTickSound(!row.locked);
+        showToast(msg, row.locked ? 'error' : 'success');
+
+        console.log('[Realtime] Panel lock updated:', row.panel_key, '=', row.locked);
+      }
+    )
+    .subscribe(function (status) {
+      if (status === 'SUBSCRIBED') {
+        console.log('[Realtime] ✅ Subscribed ke panel_lock changes');
+      } else if (status === 'CHANNEL_ERROR' || status === 'TIMED_OUT') {
+        console.warn('[Realtime] ⚠️ Connection issue:', status, '— akan retry automatik');
+      }
+    });
+}
+
+function unsubscribeFromPanelLockChanges() {
+  if (panelLockChannel) {
+    sb.removeChannel(panelLockChannel);
+    panelLockChannel = null;
+    console.log('[Realtime] Unsubscribed dari panel_lock');
+  }
+}
 
       async function deleteBalaiRows(table, balaiName) {
         const { error } = await sb.from(table).delete().eq('balai', balaiName);
@@ -5650,9 +5776,12 @@
 
         autoRefreshInProgress = true;
         try {
+          // Fallback sync lock (kalau Realtime terputus)
+          await loadPanelLockStates();
+          refreshAllPanelLocks();
+
           const apiData = await loadAllFromAPI();
           const newSignature = computeDataSignature(apiData);
-
           if (newSignature === lastDataSignature) {
             autoRefreshInProgress = false;
             return;
@@ -10628,9 +10757,10 @@
       async function initApp() {
         initTheme();
         initSound();
-        loadPanelLockStates();
+        await loadPanelLockStates();
+        subscribeToPanelLockChanges();
         initAutoResetNotice();
-        initFeedbackModal();
+                initFeedbackModal();
         updatePrintFooterDate();
         fillPrintFooter(loadPrintInfo());
         setLoading(true, 'Memuatkan data dari Supabase…');
