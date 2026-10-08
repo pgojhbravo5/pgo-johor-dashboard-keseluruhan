@@ -6520,19 +6520,33 @@ function stopAutoResetCountdown() {
           const currentView = store.view;
 
           store.balai = newBalai;
-          if (!store.balai[currentBalai]) {
-            store.activeBalai = BALAI_LIST[0].name;
-          } else {
-            store.activeBalai = currentBalai;
-          }
-          store.view = currentView;
-          state = store.balai[store.activeBalai] || defaultState(store.activeBalai);
-          state.ident.balai = store.activeBalai;
 
-          renderTabbar();
-          renderTopBar();
-          renderAll();
-          updateDirtyUI();
+// ═══ Kekalkan draf setempat — jangan timpa ═══
+const localDrafts = loadAllDrafts();
+Object.keys(localDrafts).forEach(function (balaiName) {
+  if (store.balai[balaiName] && localDrafts[balaiName]) {
+    store.balai[balaiName] = localDrafts[balaiName];
+    dirtyBalai.add(balaiName);
+  }
+});
+
+if (!store.balai[currentBalai]) {
+  store.activeBalai = BALAI_LIST[0].name;
+} else {
+  store.activeBalai = currentBalai;
+}
+store.view = currentView;
+state = store.balai[store.activeBalai] || defaultState(store.activeBalai);
+state.ident.balai = store.activeBalai;
+
+renderTabbar();
+renderTopBar();
+renderAll();
+updateDirtyUI();
+
+
+
+
 
           setAutosaveIndicator('saved', 'Dikemaskini ' + new Date().toLocaleTimeString('ms-MY'));
           setTimeout(() => {
@@ -6672,7 +6686,7 @@ function stopAutoResetCountdown() {
 
           console.log('[Scheduled] Arkib selesai: ' + archived.length + ' balai, ' + skippedEmpty.length + ' kosong');
 
-for (let i = 0; i < names.length; i++) {
+          for (let i = 0; i < names.length; i++) {
   setAutoResetNoticeProgress('Mereset ' + names[i] + '… (' + (i + 1) + '/' + names.length + ')');
   await deleteBalaiFromAPI(names[i]);
 }
@@ -6681,7 +6695,13 @@ for (let i = 0; i < names.length; i++) {
 setAutoResetNoticeProgress('Membuka kunci semua panel…');
 await unlockAllPanels();
 
+// ✅ Padam semua draf setempat (shif baharu)
+clearAllDrafts();
+
 localStorage.setItem(runKey, 'done');
+
+
+
           setAutoResetNoticeProgress('✓ Selesai! Memuat semula sistem…');
 
           playToastSuccessSound();
@@ -7415,8 +7435,66 @@ localStorage.setItem(runKey, 'done');
       }
 
       let store = null;
-      let state = null;
-      const dirtyBalai = new Set();
+let state = null;
+const dirtyBalai = new Set();
+
+/* ═══════════════════════════════════════════════════
+   DRAF TEMPATAN (localStorage) — TIDAK SENTUH SUPABASE
+   Data ditaip/import disimpan di sini sahaja.
+   Hanya "Hantar PGO" akan tulis ke Supabase.
+   ═══════════════════════════════════════════════════ */
+const DRAFT_KEY = 'bomba-draft-per-balai';
+
+function loadAllDrafts() {
+  try {
+    const raw = localStorage.getItem(DRAFT_KEY);
+    if (!raw) return {};
+    const parsed = JSON.parse(raw);
+    return (parsed && typeof parsed === 'object') ? parsed : {};
+  } catch (e) {
+    console.warn('[Draft] Gagal muat draf:', e);
+    return {};
+  }
+}
+
+function saveAllDrafts(drafts) {
+  try {
+    const keys = Object.keys(drafts || {});
+    if (keys.length === 0) {
+      localStorage.removeItem(DRAFT_KEY);
+    } else {
+      localStorage.setItem(DRAFT_KEY, JSON.stringify(drafts));
+    }
+  } catch (e) {
+    console.warn('[Draft] Gagal simpan draf:', e);
+    showToastSilent('⚠ Draf setempat gagal disimpan (storage penuh?)', 'error');
+  }
+}
+
+function saveDraftForBalai(balaiName, balaiState) {
+  if (!balaiName || !balaiState) return;
+  const drafts = loadAllDrafts();
+  drafts[balaiName] = balaiState;
+  saveAllDrafts(drafts);
+}
+
+function clearDraftForBalai(balaiName) {
+  if (!balaiName) return;
+  const drafts = loadAllDrafts();
+  if (!drafts[balaiName]) return;
+  delete drafts[balaiName];
+  saveAllDrafts(drafts);
+}
+
+function clearAllDrafts() {
+  try { localStorage.removeItem(DRAFT_KEY); } catch (e) {}
+}
+
+function hasDraftForBalai(balaiName) {
+  if (!balaiName) return false;
+  const drafts = loadAllDrafts();
+  return !!drafts[balaiName];
+}
 
       function persistUI() {
         try {
@@ -7425,22 +7503,21 @@ localStorage.setItem(runKey, 'done');
       }
 
       function updateDirtyUI() {
-        const activeDirty = dirtyBalai.has(store.activeBalai);
-        const anyDirty = dirtyBalai.size > 0;
-        const n = document.getElementById('savedNote');
-        if (activeDirty) {
-          setAutosaveIndicator('saving', 'Belum disimpan');
-          if (n) n.textContent = '⚠ Perubahan belum disimpan pada "' + store.activeBalai + '"';
-        } else if (anyDirty) {
-          setAutosaveIndicator('saving', 'Ada perubahan lain');
-          if (n) n.textContent = '⚠ ' + dirtyBalai.size + ' balai ada perubahan belum disimpan';
-        } else {
-          setAutosaveIndicator('saved', 'Sedia');
-          if (n) n.textContent = '';
-        }
-        refreshZoneDrawerIfOpen();
-      }
-
+  const activeDirty = dirtyBalai.has(store.activeBalai);
+  const anyDirty = dirtyBalai.size > 0;
+  const n = document.getElementById('savedNote');
+  if (activeDirty) {
+    setAutosaveIndicator('saving', 'Draf setempat');
+    if (n) n.textContent = '📝 Draf "' + store.activeBalai + '" disimpan setempat — belum dihantar ke server. Tekan "Hantar PGO".';
+  } else if (anyDirty) {
+    setAutosaveIndicator('saving', 'Ada draf lain');
+    if (n) n.textContent = '📝 ' + dirtyBalai.size + ' balai ada draf setempat belum dihantar';
+  } else {
+    setAutosaveIndicator('saved', 'Sedia');
+    if (n) n.textContent = '';
+  }
+  refreshZoneDrawerIfOpen();
+}
       function markDirty() {
         dirtyBalai.add(store.activeBalai);
         updateDirtyUI();
@@ -7456,10 +7533,11 @@ localStorage.setItem(runKey, 'done');
         }
       }
       function saveState() {
-        store.balai[store.activeBalai] = state;
-        persistUI();
-        markDirty();
-      }
+  store.balai[store.activeBalai] = state;
+  persistUI();
+  markDirty();
+  saveDraftForBalai(store.activeBalai, state);
+}
       function escAttr(s) {
         return String(s).replace(/\\/g, '\\\\').replace(/"/g, '\\"');
       }
@@ -7474,9 +7552,16 @@ localStorage.setItem(runKey, 'done');
   }
   closeZoneDrawer();
   closeAllFullscreenPanels();
-  store.balai[store.activeBalai] = state;
-  store.view = 'balai';
-  store.activeBalai = name;
+
+
+store.balai[store.activeBalai] = state;
+if (dirtyBalai.has(store.activeBalai)) {
+  saveDraftForBalai(store.activeBalai, state);
+}
+store.view = 'balai';
+store.activeBalai = name;
+
+
   if (!store.balai[name]) store.balai[name] = defaultState(name);
   state = store.balai[name];
   state.ident.balai = name;
@@ -12223,16 +12308,34 @@ function switchView(v) {
             const saved = localStorage.getItem('bomba-ui-prefs');
             if (saved) uiPrefs = Object.assign(uiPrefs, JSON.parse(saved));
           } catch (e) {}
+
           if (!balai[uiPrefs.activeBalai]) uiPrefs.activeBalai = BALAI_LIST[0].name;
-          store = { view: uiPrefs.view, activeBalai: uiPrefs.activeBalai, balai: balai };
-          state = store.balai[store.activeBalai];
-          state.ident.balai = store.activeBalai;
-          renderTabbar();
-          renderTopBar();
-          renderAll();
-          dirtyBalai.clear();
-          updateDirtyUI();
-          lastDataSignature = computeDataSignature(apiData);
+store = { view: uiPrefs.view, activeBalai: uiPrefs.activeBalai, balai: balai };
+
+// ═══ Muat draf setempat — timpa data server untuk balai yang ada draf ═══
+const localDrafts = loadAllDrafts();
+let draftCount = 0;
+Object.keys(localDrafts).forEach(function (balaiName) {
+  if (store.balai[balaiName] && localDrafts[balaiName]) {
+    store.balai[balaiName] = localDrafts[balaiName];
+    dirtyBalai.add(balaiName);
+    draftCount++;
+  }
+});
+if (draftCount > 0) {
+  setTimeout(function () {
+    showToastSilent('📝 ' + draftCount + ' balai ada draf setempat — belum dihantar ke server', 'success');
+  }, 800);
+}
+
+state = store.balai[store.activeBalai];
+state.ident.balai = store.activeBalai;
+renderTabbar();
+renderTopBar();
+renderAll();
+updateDirtyUI();
+lastDataSignature = computeDataSignature(apiData);
+
           startAutoRefresh();
           startScheduledArchiveResetTimer();
           startAutoResetCountdown();
@@ -12395,16 +12498,23 @@ function switchView(v) {
         try {
           store.balai[store.activeBalai] = state;
           await saveBalaiToAPI(store.activeBalai, state);
+
+
           btn.classList.remove('saving');
-          btn.classList.add('saved');
-          label.textContent = 'Disimpan!';
-          const t = new Date().toLocaleTimeString('ms-MY');
-          markClean(t);
-          try {
-            const fresh = await loadAllFromAPI();
-            lastDataSignature = computeDataSignature(fresh);
-          } catch (e) {}
-          showToast('Data ' + store.activeBalai + ' berjaya disimpan ke Supabase', 'success');
+btn.classList.add('saved');
+label.textContent = 'Disimpan!';
+const t = new Date().toLocaleTimeString('ms-MY');
+markClean(t);
+clearDraftForBalai(store.activeBalai);   // ⬅️ Padam draf balai ini
+try {
+  const fresh = await loadAllFromAPI();
+  lastDataSignature = computeDataSignature(fresh);
+} catch (e) {}
+showToast('Data ' + store.activeBalai + ' berjaya dihantar ke Supabase', 'success');
+
+
+
+
           setTimeout(function () {
             btn.classList.remove('saved');
             label.textContent = 'Simpan Sekarang';
@@ -12454,12 +12564,17 @@ function switchView(v) {
         btn.classList.add('resetting');
         label.textContent = 'Mereset…';
         try {
-          state = defaultState(namaBalai);
-          state.ident.balai = namaBalai;
-          store.balai[namaBalai] = state;
-          await saveBalaiToAPI(namaBalai, state);
-          dirtyBalai.delete(namaBalai);
-          updateDirtyUI();
+
+
+state = defaultState(namaBalai);
+state.ident.balai = namaBalai;
+store.balai[namaBalai] = state;
+await saveBalaiToAPI(namaBalai, state);
+dirtyBalai.delete(namaBalai);
+clearDraftForBalai(namaBalai);   // ⬅️ Padam draf balai ini
+updateDirtyUI();
+
+
           try {
             const fresh = await loadAllFromAPI();
             lastDataSignature = computeDataSignature(fresh);
@@ -12536,46 +12651,68 @@ function switchView(v) {
             const todayDate = malaysiaNow.year + '-' + malaysiaNow.month + '-' + malaysiaNow.day;
 
             if (p.balai && typeof p.balai === 'object') {
-              if (!confirm('Fail SEMUA BALAI dikesan. Import akan GANTIKAN semua data di Supabase. Teruskan?')) return;
-              
-              let hasOldDate = false;
-              let oldDates = new Set();
-              Object.keys(p.balai).forEach(name => {
-                const b = p.balai[name];
-                if (b.ident && b.ident.tarikh && b.ident.tarikh !== todayDate) {
-                  hasOldDate = true;
-                  oldDates.add(b.ident.tarikh);
-                }
-              });
+  if (!confirm('Fail SEMUA BALAI dikesan.\n\nImport akan disimpan sebagai DRAF SETEMPAT sahaja — TIDAK dihantar ke Supabase sehingga anda tekan "Hantar PGO" pada setiap balai.\n\nTeruskan?')) return;
+  
+  let hasOldDate = false;
+  let oldDates = new Set();
+  Object.keys(p.balai).forEach(name => {
+    const b = p.balai[name];
+    if (b.ident && b.ident.tarikh && b.ident.tarikh !== todayDate) {
+      hasOldDate = true;
+      oldDates.add(b.ident.tarikh);
+    }
+  });
 
-              if (hasOldDate) {
-                const oldDateStr = Array.from(oldDates).join(', ');
-                const changeDate = confirm(
-                  '⚠️ AMARAN TARIKH LAPUK!\n\n' +
-                  'Fail ini mengandungi tarikh lampau: ' + oldDateStr + '\n' +
-                  'Tarikh hari ini: ' + todayDate + '\n\n' +
-                  'Adakah anda ingin menukar SEMUA tarikh kepada HARI INI (' + todayDate + ')?'
-                );
-                if (changeDate) {
-                  Object.keys(p.balai).forEach(name => {
-                    if (!p.balai[name].ident) p.balai[name].ident = {};
-                    p.balai[name].ident.tarikh = todayDate;
-                  });
-                }
-              }
+  if (hasOldDate) {
+    const oldDateStr = Array.from(oldDates).join(', ');
+    const changeDate = confirm(
+      '⚠️ AMARAN TARIKH LAPUK!\n\n' +
+      'Fail ini mengandungi tarikh lampau: ' + oldDateStr + '\n' +
+      'Tarikh hari ini: ' + todayDate + '\n\n' +
+      'Adakah anda ingin menukar SEMUA tarikh kepada HARI INI (' + todayDate + ')?'
+    );
+    if (changeDate) {
+      Object.keys(p.balai).forEach(name => {
+        if (!p.balai[name].ident) p.balai[name].ident = {};
+        p.balai[name].ident.tarikh = todayDate;
+      });
+    }
+  }
 
-              setLoading(true, 'Mengimport semua balai…');
-              const names = Object.keys(p.balai);
-              for (let i = 0; i < names.length; i++) {
-                const name = names[i];
-                setLoading(true, 'Mengimport ' + name + '… (' + (i + 1) + '/' + names.length + ')');
-                await saveBalaiToAPI(name, p.balai[name]);
-              }
-              await initApp();
-              playImportSuccessSound();
-              showToast('Import SEMUA BALAI berjaya', 'success');
+  setLoading(true, 'Mengimport semua balai ke draf setempat…');
 
-            } else if (p.personel || p.equip) {
+  // ═══ Simpan hanya ke store + localStorage — TIDAK ke Supabase ═══
+  const importNames = Object.keys(p.balai);
+  importNames.forEach(function (name) {
+    const def = defaultState(name);
+    const imported = p.balai[name] || {};
+    store.balai[name] = {
+      ident: Object.assign(def.ident, imported.ident || {}, { balai: name }),
+      personel: Array.isArray(imported.personel) ? imported.personel : def.personel,
+      equip: {
+        jentera:    (imported.equip && imported.equip.jentera)    || def.equip.jentera,
+        marin:      (imported.equip && imported.equip.marin)      || def.equip.marin,
+        utiliti:    (imported.equip && imported.equip.utiliti)    || def.equip.utiliti,
+        komunikasi: (imported.equip && imported.equip.komunikasi) || def.equip.komunikasi,
+      },
+    };
+    dirtyBalai.add(name);
+    saveDraftForBalai(name, store.balai[name]);
+  });
+
+  state = store.balai[store.activeBalai];
+  renderTabbar();
+  renderTopBar();
+  renderAll();
+  updateDirtyUI();
+
+  playImportSuccessSound();
+  showToast('Import berjaya — ' + importNames.length + ' balai disimpan sebagai DRAF SETEMPAT. Tekan "Hantar PGO" pada setiap balai untuk hantar ke server.', 'success');
+
+} else if (p.personel || p.equip) {
+
+
+
               if (store.view !== 'balai') {
                 alert('Sila pilih tab balai dahulu sebelum import fail satu balai.');
                 return;
@@ -12596,32 +12733,32 @@ function switchView(v) {
                 }
               }
 
-              setLoading(true, 'Mengimport ke ' + store.activeBalai + '…');
-              const def = defaultState(store.activeBalai);
-              const newState = {
-                ident: Object.assign(def.ident, p.ident || {}),
-                personel: Array.isArray(p.personel) ? p.personel : def.personel,
-                equip: {
-                  jentera: (p.equip && p.equip.jentera) || def.equip.jentera,
-                  marin: (p.equip && p.equip.marin) || def.equip.marin,
-                  utiliti: (p.equip && p.equip.utiliti) || def.equip.utiliti,
-                  komunikasi: (p.equip && p.equip.komunikasi) || def.equip.komunikasi,
-                },
-              };
-              newState.ident.balai = store.activeBalai;
-              await saveBalaiToAPI(store.activeBalai, newState);
-              store.balai[store.activeBalai] = newState;
-              state = newState;
-              dirtyBalai.delete(store.activeBalai);
-              updateDirtyUI();
-              try {
-                const fresh = await loadAllFromAPI();
-                lastDataSignature = computeDataSignature(fresh);
-              } catch (e) {}
-              renderTopBar();
-              renderAll();
-              playImportSuccessSound();
-              showToast('Import ke balai "' + store.activeBalai + '" berjaya', 'success');
+              setLoading(true, 'Mengimport ke ' + store.activeBalai + ' (draf setempat)…');
+const def = defaultState(store.activeBalai);
+const newState = {
+  ident: Object.assign(def.ident, p.ident || {}),
+  personel: Array.isArray(p.personel) ? p.personel : def.personel,
+  equip: {
+    jentera: (p.equip && p.equip.jentera) || def.equip.jentera,
+    marin: (p.equip && p.equip.marin) || def.equip.marin,
+    utiliti: (p.equip && p.equip.utiliti) || def.equip.utiliti,
+    komunikasi: (p.equip && p.equip.komunikasi) || def.equip.komunikasi,
+  },
+};
+newState.ident.balai = store.activeBalai;
+
+// ═══ Simpan hanya ke store + localStorage — TIDAK ke Supabase ═══
+store.balai[store.activeBalai] = newState;
+state = newState;
+dirtyBalai.add(store.activeBalai);
+saveDraftForBalai(store.activeBalai, newState);
+updateDirtyUI();
+renderTopBar();
+renderAll();
+playImportSuccessSound();
+showToast('Import ke balai "' + store.activeBalai + '" berjaya — disimpan sebagai DRAF SETEMPAT. Tekan "Hantar PGO" untuk hantar ke server.', 'success');
+
+
             } else {
               throw new Error('Struktur fail tidak dikenali.');
             }
@@ -12690,13 +12827,18 @@ function switchView(v) {
             setLoading(true, 'Memadam ' + names[i] + '… (' + (i + 1) + '/' + names.length + ')');
             await deleteBalaiFromAPI(names[i]);
           }
-          store.balai = {};
-          store.view = 'balai';
-          store.activeBalai = BALAI_LIST[0].name;
-          store.balai[store.activeBalai] = defaultState(store.activeBalai);
-          state = store.balai[store.activeBalai];
-          try { localStorage.removeItem(IDENT_LS_KEY); } catch (e) {}
-          dirtyBalai.clear();
+
+
+store.balai = {};
+store.view = 'balai';
+store.activeBalai = BALAI_LIST[0].name;
+store.balai[store.activeBalai] = defaultState(store.activeBalai);
+state = store.balai[store.activeBalai];
+try { localStorage.removeItem(IDENT_LS_KEY); } catch (e) {}
+clearAllDrafts();   // ⬅️ Padam semua draf
+dirtyBalai.clear();
+
+
           updateDirtyUI();
           persistUI();
           lastDataSignature = null;
