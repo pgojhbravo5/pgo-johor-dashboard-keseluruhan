@@ -5946,13 +5946,16 @@ function unsubscribeFromPanelLockChanges() {
 
           console.log('[Scheduled] Arkib selesai: ' + archived.length + ' balai, ' + skippedEmpty.length + ' kosong');
 
-          for (let i = 0; i < names.length; i++) {
-            setAutoResetNoticeProgress('Mereset ' + names[i] + '… (' + (i + 1) + '/' + names.length + ')');
-            await deleteBalaiFromAPI(names[i]);
-          }
+for (let i = 0; i < names.length; i++) {
+  setAutoResetNoticeProgress('Mereset ' + names[i] + '… (' + (i + 1) + '/' + names.length + ')');
+  await deleteBalaiFromAPI(names[i]);
+}
 
-          localStorage.setItem(runKey, 'done');
+// ✅ Auto-unlock semua panel (untuk shif baharu)
+setAutoResetNoticeProgress('Membuka kunci semua panel…');
+await unlockAllPanels();
 
+localStorage.setItem(runKey, 'done');
           setAutoResetNoticeProgress('✓ Selesai! Memuat semula sistem…');
 
           playToastSuccessSound();
@@ -6077,6 +6080,24 @@ function unsubscribeFromPanelLockChanges() {
         const { error } = await sb.from('ident').delete().eq('balai', balaiName);
         if (error) throw new Error(error.message);
         return { ok: true };
+      }
+            // ✅ Auto-unlock semua panel (untuk shif baharu)
+            async function unlockAllPanels() {
+        try {
+          const { error } = await sb
+            .from('panel_lock')
+            .update({
+              locked: false,
+              locked_by: null,
+              locked_at: null,
+              updated_at: new Date().toISOString(),
+            })
+            .neq('panel_key', '');
+          if (error) throw error;
+          console.log('[PanelLock] Auto-unlock semua panel semasa reset');
+        } catch (e) {
+          console.warn('[PanelLock] Gagal auto-unlock:', e.message);
+        }
       }
 
       async function archiveBalaiToAPI(opts) {
