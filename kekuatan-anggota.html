@@ -774,6 +774,102 @@
         content: ' PAUSED';
         color: var(--amber);
       }
+            /* ✅ AUTO-RESET COUNTDOWN WIDGET */
+            .auto-reset-widget {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.4rem;
+        padding: 0.32rem 0.7rem;
+        background: linear-gradient(180deg,
+          rgba(217, 154, 43, 0.08),
+          rgba(217, 154, 43, 0.03));
+        border: 1px solid rgba(217, 154, 43, 0.35);
+        border-radius: var(--radius-sm);
+        font-family: 'Inter', system-ui, sans-serif;
+        font-size: 0.72rem;
+        color: var(--text-dim);
+        white-space: nowrap;
+        transition: border-color 0.2s, background 0.2s, box-shadow 0.2s;
+        cursor: help;
+      }
+      .auto-reset-widget .arw-icon {
+        font-size: 0.9rem;
+        width: 0.9rem;
+        height: 0.9rem;
+        color: var(--amber);
+        animation: spin 8s linear infinite;
+        flex-shrink: 0;
+      }
+      .auto-reset-widget .arw-label {
+        font-family: 'Oswald', sans-serif;
+        font-size: 0.6rem;
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
+        color: var(--text-faint);
+        font-weight: 600;
+      }
+      .auto-reset-widget .arw-time {
+        font-family: 'IBM Plex Sans', system-ui, sans-serif;
+        font-variant-numeric: tabular-nums;
+        font-weight: 700;
+        color: var(--amber);
+        min-width: 62px;
+        text-align: center;
+        letter-spacing: 0.02em;
+      }
+      .auto-reset-widget .arw-slot {
+        font-family: 'Oswald', sans-serif;
+        font-size: 0.58rem;
+        letter-spacing: 0.06em;
+        color: var(--amber);
+        background: var(--col-amber-bg);
+        border: 1px solid var(--col-amber-row-bd);
+        padding: 0.05rem 0.4rem;
+        border-radius: 999px;
+        font-weight: 600;
+      }
+
+      /* State: imminent (kurang 5 minit) */
+      .auto-reset-widget.imminent {
+        border-color: rgba(214, 52, 71, 0.7);
+        background: linear-gradient(180deg,
+          rgba(214, 52, 71, 0.14),
+          rgba(214, 52, 71, 0.04));
+        animation: pulse-red 1.5s infinite;
+        cursor: pointer;
+      }
+      .auto-reset-widget.imminent .arw-icon {
+        color: var(--rosak);
+        animation: none;
+      }
+      .auto-reset-widget.imminent .arw-time {
+        color: #ff8a94;
+      }
+      .auto-reset-widget.imminent .arw-slot {
+        background: rgba(214, 52, 71, 0.2);
+        border-color: rgba(214, 52, 71, 0.55);
+        color: #ff8a94;
+      }
+
+      /* Responsive */
+      @media (max-width: 640px) {
+        .auto-reset-widget {
+          padding: 0.3rem 0.55rem;
+          font-size: 0.68rem;
+        }
+        .auto-reset-widget .arw-time {
+          font-size: 0.7rem;
+          min-width: 55px;
+        }
+        .auto-reset-widget .arw-slot {
+          display: none;
+        }
+      }
+
+      /* Print — sembunyi */
+      @media print {
+        .auto-reset-widget { display: none !important; }
+      }
 
       .manage-bar .btn-archive {
         background: linear-gradient(180deg, #4b8ef7, #2c6fd8);
@@ -3542,6 +3638,17 @@
                 <svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><rect x="6" y="4" width="4" height="16" rx="1"/><rect x="14" y="4" width="4" height="16" rx="1"/></svg>
               </button>
             </div>
+            <!-- ✅ AUTO-RESET COUNTDOWN -->
+            <div class="auto-reset-widget" id="autoResetWidget" title="Auto-arkib &amp; reset semua balai">
+              <svg class="ico arw-icon" viewBox="0 0 24 24" aria-hidden="true">
+                <polyline points="23 4 23 10 17 10"/>
+                <polyline points="1 20 1 14 7 14"/>
+                <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/>
+              </svg>
+              <span class="arw-label">Auto-Reset:</span>
+              <span class="arw-time" id="autoResetTime">--:--:--</span>
+              <span class="arw-slot" id="autoResetSlot">—</span>
+            </div>
           </div>
         </div>
 
@@ -4917,6 +5024,7 @@
         removePrintLandscapeStyle();
         try { stopAutoRefresh(); } catch (e) {}
         try { stopScheduledArchiveResetTimer(); } catch (e) {}
+        try { stopAutoResetCountdown(); } catch (e) {}
         try { unsubscribeFromPanelLockChanges(); } catch (e) {}
         try {
           if (typeof store !== 'undefined' && store) {
@@ -5768,6 +5876,75 @@ function unsubscribeFromPanelLockChanges() {
         autoReloadPaused = !autoReloadPaused;
         updateAutoReloadUI();
       }
+            // ✅ AUTO-RESET COUNTDOWN
+            let autoResetCountdownTimer = null;
+
+function updateAutoResetCountdown() {
+  const widget = document.getElementById('autoResetWidget');
+  const timeEl = document.getElementById('autoResetTime');
+  const slotEl = document.getElementById('autoResetSlot');
+  if (!widget || !timeEl || !slotEl) return;
+
+  try {
+    const now = getMalaysiaNow();
+    const nowSec = now.hour * 3600 + now.minute * 60 + now.second;
+
+    let nearest = null;
+    for (const slot of SCHEDULED_SLOTS) {
+      const slotSec = slot.hour * 3600 + slot.minute * 60;
+      let delta = slotSec - nowSec;
+      if (delta <= 0) delta += 24 * 3600;
+      if (!nearest || delta < nearest.delta) {
+        nearest = { slot: slot, delta: delta };
+      }
+    }
+
+    if (!nearest) {
+      timeEl.textContent = '--:--:--';
+      slotEl.textContent = '—';
+      return;
+    }
+
+    const h = Math.floor(nearest.delta / 3600);
+    const m = Math.floor((nearest.delta % 3600) / 60);
+    const s = nearest.delta % 60;
+    const hStr = String(h).padStart(2, '0');
+    const mStr = String(m).padStart(2, '0');
+    const sStr = String(s).padStart(2, '0');
+    timeEl.textContent = hStr + ':' + mStr + ':' + sStr;
+
+    const isPagi = nearest.slot.hour === 7;
+    slotEl.textContent = isPagi ? '07:59 PAGI' : '19:59 PETANG';
+
+    const isImminent = nearest.delta <= 5 * 60;
+    widget.classList.toggle('imminent', isImminent);
+
+    if (isImminent) {
+      const timeStr = (m > 0 ? m + ' minit ' + s + ' saat' : s + ' saat');
+      widget.title = '⚠️ Auto-arkib + reset akan bermula dalam ' + timeStr +
+        '\n(' + nearest.slot.label + ')';
+    } else {
+      widget.title = 'Auto-arkib + reset seterusnya: ' + nearest.slot.label +
+        '\nMasa berbaki: ' + h + 'j ' + m + 'm ' + s + 's' +
+        '\n\nSistem akan: arkib semua balai → reset → auto-unlock panel → reload';
+    }
+  } catch (e) {
+    // Silent fail
+  }
+}
+
+function startAutoResetCountdown() {
+  stopAutoResetCountdown();
+  updateAutoResetCountdown();
+  autoResetCountdownTimer = setInterval(updateAutoResetCountdown, 1000);
+}
+
+function stopAutoResetCountdown() {
+  if (autoResetCountdownTimer) {
+    clearInterval(autoResetCountdownTimer);
+    autoResetCountdownTimer = null;
+  }
+}
 
       async function pollForUpdates() {
         if (dirtyBalai && dirtyBalai.size > 0) return;
@@ -10805,7 +10982,9 @@ localStorage.setItem(runKey, 'done');
           lastDataSignature = computeDataSignature(apiData);
           startAutoRefresh();
           startScheduledArchiveResetTimer();
+          startAutoResetCountdown();
           showToast('Data berjaya dimuatkan dari Supabase', 'success');
+        
         } catch (err) {
           console.error('Init error:', err);
           showToast('Gagal memuat data: ' + err.message + '. Menggunakan data kosong.', 'error');
@@ -10820,8 +10999,9 @@ localStorage.setItem(runKey, 'done');
           updateDirtyUI();
           try { startAutoRefresh(); } catch (e) {}
           try { startScheduledArchiveResetTimer(); } catch (e) {}
+          try { startAutoResetCountdown(); } catch (e) {}
         } finally {
-          setLoading(false);
+                    setLoading(false);
         }
       }
 
