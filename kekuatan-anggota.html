@@ -3978,7 +3978,7 @@
               <polyline points="17 21 17 13 7 13 7 21" />
               <polyline points="7 3 7 8 15 8" />
             </svg>
-            <span id="saveSheetLabel">Simpan Sekarang</span>
+            <span id="saveSheetLabel">Hantar PGO</span>
           </button>
 
           <button class="btn-print-po3a" id="printPo3aBtn" type="button" style="display:none;">
@@ -5850,7 +5850,7 @@
 
       const RESET_PASSWORD = 'pgo1234';
 
-// ✅ PANEL LOCK SYSTEM — SEGERA (Supabase + Realtime)
+// ✅ PANEL LOCK SYSTEM — PER BALAI (Supabase + Realtime)
 const PANEL_LOCK_KEYS = ['personel', 'jentera', 'marin', 'utiliti', 'komunikasi'];
 const PANEL_LABELS = {
   personel: 'Kekuatan Personel',
@@ -5860,26 +5860,26 @@ const PANEL_LABELS = {
   komunikasi: 'Peralatan Komunikasi',
 };
 
-const panelLockStates = {
-  personel: false,
-  jentera: false,
-  marin: false,
-  utiliti: false,
-  komunikasi: false,
-};
-
-const panelLockMeta = {
-  personel: null,
-  jentera: null,
-  marin: null,
-  utiliti: null,
-  komunikasi: null,
-};
-
-// Simpan timestamp perubahan sendiri (elak double-toast dari Realtime)
+// Cache: panelLockStates["BALAI::panel_key"] = true|false
+const panelLockStates = {};
+const panelLockMeta = {};
 const recentLocalChanges = {};
 
-// Label pengguna = nama balai semasa
+// ── Helper: composite key per balai
+function makeLockKey(balai, panelKey) {
+  return String(balai || '') + '::' + String(panelKey || '');
+}
+function parseLockKey(compositeKey) {
+  const s = String(compositeKey || '');
+  const idx = s.indexOf('::');
+  if (idx === -1) return { balai: '', panelKey: '' };
+  return { balai: s.substring(0, idx), panelKey: s.substring(idx + 2) };
+}
+function getActiveBalaiName() {
+  return (typeof store !== 'undefined' && store && store.activeBalai)
+    ? store.activeBalai : '';
+}
+
 function getCurrentUserLabel() {
   if (store && store.activeBalai) return store.activeBalai;
   if (store && store.view) return '(' + store.view + ')';
@@ -5890,24 +5890,34 @@ async function loadPanelLockStates() {
   try {
     const { data, error } = await sb.from('panel_lock').select('*');
     if (error) throw error;
+
+    Object.keys(panelLockStates).forEach(function (k) { delete panelLockStates[k]; });
+    Object.keys(panelLockMeta).forEach(function (k) { delete panelLockMeta[k]; });
+
     (data || []).forEach(function (row) {
-      if (!PANEL_LOCK_KEYS.includes(row.panel_key)) return;
-      panelLockStates[row.panel_key] = !!row.locked;
-      panelLockMeta[row.panel_key] = (row.locked && row.locked_by)
+      const compositeKey = row && row.panel_key ? String(row.panel_key) : '';
+      if (compositeKey.indexOf('::') === -1) return; // skip legacy
+
+      const parsed = parseLockKey(compositeKey);
+      if (!PANEL_LOCK_KEYS.includes(parsed.panelKey)) return;
+
+      panelLockStates[compositeKey] = !!row.locked;
+      panelLockMeta[compositeKey] = (row.locked && row.locked_by)
         ? { by: row.locked_by, at: row.locked_at }
         : null;
     });
-    console.log('[PanelLock] Loaded dari Supabase:', panelLockStates);
+    console.log('[PanelLock] Loaded:', Object.keys(panelLockStates).length, 'rekod');
   } catch (e) {
     console.warn('[PanelLock] Gagal load dari Supabase:', e.message);
   }
 }
 
-async function savePanelLockStates(key) {
-  const isLocked = panelLockStates[key];
+async function savePanelLockState(panelKey, balai) {
+  const compositeKey = makeLockKey(balai, panelKey);
+  const isLocked = panelLockStates[compositeKey] === true;
 
   const row = {
-    panel_key: key,
+    panel_key: compositeKey,
     locked: isLocked,
     locked_by: isLocked ? getCurrentUserLabel() : null,
     locked_at: isLocked ? new Date().toISOString() : null,
@@ -5920,143 +5930,158 @@ async function savePanelLockStates(key) {
 
   if (error) throw new Error(error.message);
 
-  // Tanda perubahan sendiri (Realtime akan skip)
-  recentLocalChanges[key] = Date.now();
-  console.log('[PanelLock] Saved ke Supabase:', key, '=', isLocked);
+  recentLocalChanges[compositeKey] = Date.now();
+  console.log('[PanelLock] Saved:', compositeKey, '=', isLocked);
 }
-      function isPanelLocked(key) {
-        return panelLockStates[key] === true;
-      }
 
-      function applyPanelLock(sectionEl, key) {
-        if (!sectionEl) return;
-        const locked = isPanelLocked(key);
+function isPanelLocked(key, balai) {
+  const b = balai || getActiveBalaiName();
+  if (!b) return false;
+  return panelLockStates[makeLockKey(b, key)] === true;
+}
 
-        sectionEl.querySelectorAll('input, select, textarea').forEach(function (el) {
-          if (el.dataset.lockIgnore === '1') return;
-          if (el.dataset.lockOriginalDisabled === undefined) {
-            el.dataset.lockOriginalDisabled = el.disabled ? '1' : '0';
-          }
-          if (locked) {
-            el.disabled = true;
-          } else {
-            el.disabled = el.dataset.lockOriginalDisabled === '1';
-          }
-        });
+function applyPanelLock(sectionEl, key) {
+  if (!sectionEl) return;
+  const locked = isPanelLocked(key);
 
-        const headEl = sectionEl.querySelector('.section-head');
-        if (headEl) {
-          if (locked) {
-            sectionEl.classList.add('panel-locked');
-          } else {
-            sectionEl.classList.remove('panel-locked');
-          }
-        }
-      }
+  sectionEl.querySelectorAll('input, select, textarea').forEach(function (el) {
+    if (el.dataset.lockIgnore === '1') return;
+    if (el.dataset.lockOriginalDisabled === undefined) {
+      el.dataset.lockOriginalDisabled = el.disabled ? '1' : '0';
+    }
+    if (locked) {
+      el.disabled = true;
+    } else {
+      el.disabled = el.dataset.lockOriginalDisabled === '1';
+    }
+  });
 
-      function refreshAllPanelLocks() {
-        ['personel', 'jentera', 'marin', 'utiliti', 'komunikasi'].forEach(function (key) {
-          const sec = document.getElementById('sec-' + key);
-          if (sec) applyPanelLock(sec, key);
-        });
-        updateAllLockButtonsUI();
-      }
+  if (locked) {
+    sectionEl.classList.add('panel-locked');
+  } else {
+    sectionEl.classList.remove('panel-locked');
+  }
+}
 
-      function updateAllLockButtonsUI() {
-        document.querySelectorAll('.btn-panel-lock').forEach(function (btn) {
-          const key = btn.dataset.lockKey;
-          if (!key) return;
-          const locked = isPanelLocked(key);
-          const meta = panelLockMeta[key];
+function refreshAllPanelLocks() {
+  PANEL_LOCK_KEYS.forEach(function (key) {
+    const sec = document.getElementById('sec-' + key);
+    if (sec) applyPanelLock(sec, key);
+  });
+  updateAllLockButtonsUI();
+}
 
-          btn.classList.toggle('locked', locked);
-          btn.classList.toggle('unlocked', !locked);
-          btn.innerHTML = (locked ? svgIcon('lock') : svgIcon('lockOpen')) +
-            '<span>' + (locked ? 'LOCKED' : 'UNLOCKED') + '</span>';
+function updateAllLockButtonsUI() {
+  const balai = getActiveBalaiName();
 
-          let title = locked
-            ? 'Panel dikunci — klik untuk buka (perlu password)'
-            : 'Panel dibuka — klik untuk kunci (perlu password)';
+  document.querySelectorAll('.btn-panel-lock').forEach(function (btn) {
+    const key = btn.dataset.lockKey;
+    if (!key) return;
 
-          if (locked && meta && meta.by) {
-            title += '\n\n🔒 Dikunci oleh: ' + meta.by;
-            if (meta.at) {
-              try {
-                const d = new Date(meta.at);
-                title += '\n⏰ Pada: ' + d.toLocaleString('ms-MY');
-              } catch (e) {}
-            }
-          }
+    const locked = isPanelLocked(key, balai);
+    const meta = panelLockMeta[makeLockKey(balai, key)];
 
-          btn.title = title;
-          btn.setAttribute('aria-label', title);
-        });
-      }
+    btn.classList.toggle('locked', locked);
+    btn.classList.toggle('unlocked', !locked);
+    btn.innerHTML = (locked ? svgIcon('lock') : svgIcon('lockOpen')) +
+      '<span>' + (locked ? 'LOCKED' : 'UNLOCKED') + '</span>';
 
-      function createLockButton(key) {
-        const btn = document.createElement('button');
-        btn.type = 'button';
-        btn.className = 'btn-panel-lock btn-fullscreen';
-        btn.dataset.lockKey = key;
-        btn.style.minWidth = '95px';
-        btn.style.fontFamily = "'Oswald', sans-serif";
-        btn.style.fontSize = '0.62rem';
-        btn.style.letterSpacing = '0.06em';
-        btn.style.fontWeight = '700';
-        btn.style.padding = '0.35rem 0.55rem';
-        btn.style.gap = '0.35rem';
+    let title = locked
+      ? 'Panel [' + balai + '] dikunci — klik untuk buka (perlu password)'
+      : 'Panel [' + balai + '] dibuka — klik untuk kunci (perlu password)';
 
-        btn.addEventListener('click', function (e) {
-          e.stopPropagation();
-          handleLockToggle(key, btn);
-        });
-
-        return btn;
-      }
-
-      async function handleLockToggle(key) {
-        const currentlyLocked = isPanelLocked(key);
-
-        if (currentlyLocked) {
-          const pwd = prompt('🔓 BUKA KUNCI PANEL\n\nMasukkan kata laluan untuk edit panel ini:');
-          if (pwd === null) return;
-          if (pwd !== RESET_PASSWORD) {
-            playErrorSound();
-            alert('❌ Kata laluan salah. Panel kekal dikunci.');
-            return;
-          }
-          panelLockStates[key] = false;
-        } else {
-          const pwd = prompt('🔒 KUNCI PANEL\n\nMasukkan kata laluan untuk kunci panel ini:');
-          if (pwd === null) return;
-          if (pwd !== RESET_PASSWORD) {
-            playErrorSound();
-            alert('❌ Kata laluan salah. Panel kekal dibuka.');
-            return;
-          }
-          panelLockStates[key] = true;
-        }
-
+    if (locked && meta && meta.by) {
+      title += '\n\n🔒 Dikunci oleh: ' + meta.by;
+      if (meta.at) {
         try {
-          await savePanelLockStates(key);
-          playCheckboxTickSound(!panelLockStates[key]);
-          showToast(
-            panelLockStates[key]
-              ? '🔒 Panel dikunci — semua pengguna tidak boleh edit'
-              : '🔓 Panel dibuka — semua pengguna boleh edit',
-            'success'
-          );
-          refreshAllPanelLocks();
-        } catch (err) {
-          panelLockStates[key] = currentlyLocked;
-          playErrorSound();
-          showToast('Gagal simpan lock: ' + err.message, 'error');
-          refreshAllPanelLocks();
-        }
+          const d = new Date(meta.at);
+          title += '\n⏰ Pada: ' + d.toLocaleString('ms-MY');
+        } catch (e) {}
       }
-            // ✅ END PANEL LOCK SYSTEM
-                  // ✅ REALTIME SUBSCRIPTION — Segerakkan lock antara semua pengguna
-      let panelLockChannel = null;
+    }
+
+    btn.title = title;
+    btn.setAttribute('aria-label', title);
+  });
+}
+
+function createLockButton(key) {
+  const btn = document.createElement('button');
+  btn.type = 'button';
+  btn.className = 'btn-panel-lock btn-fullscreen';
+  btn.dataset.lockKey = key;
+  btn.style.minWidth = '95px';
+  btn.style.fontFamily = "'Oswald', sans-serif";
+  btn.style.fontSize = '0.62rem';
+  btn.style.letterSpacing = '0.06em';
+  btn.style.fontWeight = '700';
+  btn.style.padding = '0.35rem 0.55rem';
+  btn.style.gap = '0.35rem';
+
+  btn.addEventListener('click', function (e) {
+    e.stopPropagation();
+    handleLockToggle(key, btn);
+  });
+
+  return btn;
+}
+
+async function handleLockToggle(key) {
+  const balai = getActiveBalaiName();
+  if (!balai) {
+    playErrorSound();
+    showToast('Tiada balai aktif', 'error');
+    return;
+  }
+
+  const compositeKey = makeLockKey(balai, key);
+  const currentlyLocked = panelLockStates[compositeKey] === true;
+
+  if (currentlyLocked) {
+    const pwd = prompt(
+      '🔓 BUKA KUNCI PANEL\n\nBalai: ' + balai + '\nMasukkan kata laluan untuk edit panel ini:'
+    );
+    if (pwd === null) return;
+    if (pwd !== RESET_PASSWORD) {
+      playErrorSound();
+      alert('❌ Kata laluan salah. Panel kekal dikunci.');
+      return;
+    }
+    panelLockStates[compositeKey] = false;
+  } else {
+    const pwd = prompt(
+      '🔒 KUNCI PANEL\n\nBalai: ' + balai + '\nMasukkan kata laluan untuk kunci panel ini:'
+    );
+    if (pwd === null) return;
+    if (pwd !== RESET_PASSWORD) {
+      playErrorSound();
+      alert('❌ Kata laluan salah. Panel kekal dibuka.');
+      return;
+    }
+    panelLockStates[compositeKey] = true;
+  }
+
+  try {
+    await savePanelLockState(key, balai);
+    playCheckboxTickSound(!panelLockStates[compositeKey]);
+    showToast(
+      panelLockStates[compositeKey]
+        ? '🔒 Panel [' + balai + '] dikunci — semua pengguna tidak boleh edit'
+        : '🔓 Panel [' + balai + '] dibuka — semua pengguna boleh edit',
+      'success'
+    );
+    refreshAllPanelLocks();
+  } catch (err) {
+    panelLockStates[compositeKey] = currentlyLocked;
+    playErrorSound();
+    showToast('Gagal simpan lock: ' + err.message, 'error');
+    refreshAllPanelLocks();
+  }
+}
+// ✅ END PANEL LOCK SYSTEM
+
+// ✅ REALTIME SUBSCRIPTION — Segerakkan lock antara semua pengguna
+let panelLockChannel = null;
 
 function subscribeToPanelLockChanges() {
   if (panelLockChannel) return;
@@ -6069,38 +6094,47 @@ function subscribeToPanelLockChanges() {
       function (payload) {
         const row = payload.new || payload.old;
         if (!row || !row.panel_key) return;
-        if (!PANEL_LOCK_KEYS.includes(row.panel_key)) return;
 
-        const recent = recentLocalChanges[row.panel_key];
+        const compositeKey = String(row.panel_key);
+        if (compositeKey.indexOf('::') === -1) return; // skip legacy
+
+        const parsed = parseLockKey(compositeKey);
+        if (!PANEL_LOCK_KEYS.includes(parsed.panelKey)) return;
+
+        const recent = recentLocalChanges[compositeKey];
         if (recent && Date.now() - recent < 2000) {
-          console.log('[Realtime] Skip own change:', row.panel_key);
+          console.log('[Realtime] Skip own change:', compositeKey);
           return;
         }
 
-        panelLockStates[row.panel_key] = !!row.locked;
-        panelLockMeta[row.panel_key] = (row.locked && row.locked_by)
+        panelLockStates[compositeKey] = !!row.locked;
+        panelLockMeta[compositeKey] = (row.locked && row.locked_by)
           ? { by: row.locked_by, at: row.locked_at }
           : null;
 
         refreshAllPanelLocks();
 
-        const label = PANEL_LABELS[row.panel_key] || row.panel_key;
-        const who = row.locked_by || 'pengguna lain';
-        const msg = row.locked
-          ? '🔒 ' + label + ' telah DIKUNCI oleh ' + who
-          : '🔓 ' + label + ' telah DIBUKA oleh ' + who;
+        // Toast hanya jika melibatkan balai aktif
+        const activeBalai = getActiveBalaiName();
+        if (parsed.balai === activeBalai) {
+          const label = PANEL_LABELS[parsed.panelKey] || parsed.panelKey;
+          const who = row.locked_by || 'pengguna lain';
+          const msg = row.locked
+            ? '🔒 ' + label + ' DIKUNCI oleh ' + who
+            : '🔓 ' + label + ' DIBUKA oleh ' + who;
 
-        playCheckboxTickSound(!row.locked);
-        showToast(msg, row.locked ? 'error' : 'success');
+          playCheckboxTickSound(!row.locked);
+          showToast(msg, row.locked ? 'error' : 'success');
+        }
 
-        console.log('[Realtime] Panel lock updated:', row.panel_key, '=', row.locked);
+        console.log('[Realtime] Lock updated:', compositeKey, '=', row.locked);
       }
     )
     .subscribe(function (status) {
       if (status === 'SUBSCRIBED') {
         console.log('[Realtime] ✅ Subscribed ke panel_lock changes');
       } else if (status === 'CHANNEL_ERROR' || status === 'TIMED_OUT') {
-        console.warn('[Realtime] ⚠️ Connection issue:', status, '— akan retry automatik');
+        console.warn('[Realtime] ⚠️ Connection issue:', status);
       }
     });
 }
@@ -6775,22 +6809,29 @@ localStorage.setItem(runKey, 'done');
       }
             // ✅ Auto-unlock semua panel (untuk shif baharu)
             async function unlockAllPanels() {
-        try {
-          const { error } = await sb
-            .from('panel_lock')
-            .update({
-              locked: false,
-              locked_by: null,
-              locked_at: null,
-              updated_at: new Date().toISOString(),
-            })
-            .neq('panel_key', '');
-          if (error) throw error;
-          console.log('[PanelLock] Auto-unlock semua panel semasa reset');
-        } catch (e) {
-          console.warn('[PanelLock] Gagal auto-unlock:', e.message);
-        }
-      }
+  try {
+    const { error } = await sb
+      .from('panel_lock')
+      .update({
+        locked: false,
+        locked_by: null,
+        locked_at: null,
+        updated_at: new Date().toISOString(),
+      })
+      .neq('panel_key', '');
+    if (error) throw error;
+
+    // Reset cache setempat supaya UI terus reflect
+    Object.keys(panelLockStates).forEach(function (k) {
+      panelLockStates[k] = false;
+      panelLockMeta[k] = null;
+    });
+
+    console.log('[PanelLock] Auto-unlock semua panel semasa reset');
+  } catch (e) {
+    console.warn('[PanelLock] Gagal auto-unlock:', e.message);
+  }
+}
 
       async function archiveBalaiToAPI(opts) {
         const { tarikh, shif, balai, zon, personelRows, jenteraRows } = opts;
@@ -7424,47 +7465,50 @@ localStorage.setItem(runKey, 'done');
       }
 
       async function switchBalai(name) {
-        if (store.view === 'balai' && name === store.activeBalai) return;
+  if (store.view === 'balai' && name === store.activeBalai) return;
 
-        playTabClickSound();
+  playTabClickSound();
 
-        if (dirtyBalai.has(store.activeBalai)) {
-          if (!confirm('Ada perubahan belum disimpan untuk "' + store.activeBalai + '".\n\nTeruskan tanpa simpan?')) return;
-        }
-        closeZoneDrawer();
-        closeAllFullscreenPanels();
-        store.balai[store.activeBalai] = state;
-        store.view = 'balai';
-        store.activeBalai = name;
-        if (!store.balai[name]) store.balai[name] = defaultState(name);
-        state = store.balai[name];
-        state.ident.balai = name;
-        persistUI();
-        renderTabbar();
-        renderTopBar();
-        renderAll();
-        updateDirtyUI();
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-      }
-      function switchView(v) {
-        if (store.view === v) return;
+  if (dirtyBalai.has(store.activeBalai)) {
+    if (!confirm('Ada perubahan belum disimpan untuk "' + store.activeBalai + '".\n\nTeruskan tanpa simpan?')) return;
+  }
+  closeZoneDrawer();
+  closeAllFullscreenPanels();
+  store.balai[store.activeBalai] = state;
+  store.view = 'balai';
+  store.activeBalai = name;
+  if (!store.balai[name]) store.balai[name] = defaultState(name);
+  state = store.balai[name];
+  state.ident.balai = name;
+  persistUI();
+  renderTabbar();
+  renderTopBar();
+  renderAll();
+  updateDirtyUI();
+  refreshAllPanelLocks();          // ⬅️ TAMBAH BARIS INI
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
 
-        playTabClickSound();
+function switchView(v) {
+  if (store.view === v) return;
 
-        if (store.view === 'balai' && dirtyBalai.has(store.activeBalai)) {
-          if (!confirm('Ada perubahan belum disimpan untuk "' + store.activeBalai + '".\n\nTeruskan tanpa simpan?')) return;
-        }
-        closeZoneDrawer();
-        closeAllFullscreenPanels();
-        store.balai[store.activeBalai] = state;
-        store.view = v;
-        persistUI();
-        renderTabbar();
-        renderTopBar();
-        renderAll();
-        updateDirtyUI();
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-      }
+  playTabClickSound();
+
+  if (store.view === 'balai' && dirtyBalai.has(store.activeBalai)) {
+    if (!confirm('Ada perubahan belum disimpan untuk "' + store.activeBalai + '".\n\nTeruskan tanpa simpan?')) return;
+  }
+  closeZoneDrawer();
+  closeAllFullscreenPanels();
+  store.balai[store.activeBalai] = state;
+  store.view = v;
+  persistUI();
+  renderTabbar();
+  renderTopBar();
+  renderAll();
+  updateDirtyUI();
+  refreshAllPanelLocks();          // ⬅️ TAMBAH BARIS INI
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
 
       function renderTabbar() {
         const container = document.getElementById('tabbar');
