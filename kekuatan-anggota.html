@@ -9571,69 +9571,70 @@ function switchView(v) {
          DASHBOARD KESELURUHAN — Statistik Kad
          ═══════════════════════════════════════════════════ */
 
-      function computeDashboardData() {
-        const data = {
-          personel: { pangkat: {}, peranan: {}, pasukan: {}, status: {}, unit: {}, total: 0 },
-          jentera:  { kategori: {}, kategoriStatus: {}, status: { B: 0, R: 0 }, total: 0 },
-          marin:    { kategori: {}, kategoriStatus: {}, status: { B: 0, R: 0 }, total: 0 },
-          utiliti:  { kategori: {}, kategoriStatus: {}, status: { B: 0, R: 0 }, total: 0 },
-          komunikasi:{ kategori: {}, kategoriStatus: {}, status: { B: 0, R: 0 }, total: 0 },
-        };
+         function computeDashboardData() {
+  const data = {
+    personel: { pangkat: {}, peranan: {}, pasukan: {}, status: {}, unit: {}, total: 0 },
+    jentera:  { kategori: {}, kategoriStatus: {}, status: { B: 0, R: 0 }, total: 0 },
+    marin:    { kategori: {}, kategoriStatus: {}, status: { B: 0, R: 0 }, total: 0 },
+    utiliti:  { kategori: {}, kategoriStatus: {}, status: { B: 0, R: 0 }, total: 0 },
+    komunikasi:{ kategori: {}, kategoriStatus: {}, status: { B: 0, R: 0 }, total: 0 },
+  };
 
-        Object.keys(store.balai).forEach(function (bn) {
-          const b = store.balai[bn];
-          if (!b) return;
+  Object.keys(store.balai).forEach(function (bn) {
+    const b = store.balai[bn];
+    if (!b) return;
 
-          (b.personel || []).forEach(function (p) {
-            if (!p) return;
-            const isEmpty = !p.nama && !p.pangkat && !p.peranan && !p.status;
-            if (isEmpty) return;
+    (b.personel || []).forEach(function (p) {
+      if (!p) return;
+      const isEmpty = !p.nama && !p.pangkat && !p.peranan && !p.status;
+      if (isEmpty) return;
 
-            data.personel.total++;
-            if (p.pangkat)  data.personel.pangkat[p.pangkat]   = (data.personel.pangkat[p.pangkat]   || 0) + 1;
-            if (p.peranan)  data.personel.peranan[p.peranan]   = (data.personel.peranan[p.peranan]   || 0) + 1;
-            if (p.pasukan)  data.personel.pasukan[p.pasukan]   = (data.personel.pasukan[p.pasukan]   || 0) + 1;
-            if (p.status)   data.personel.status[p.status]     = (data.personel.status[p.status]     || 0) + 1;
+      data.personel.total++;
+      if (p.pangkat)  data.personel.pangkat[p.pangkat]   = (data.personel.pangkat[p.pangkat]   || 0) + 1;
+      if (p.peranan)  data.personel.peranan[p.peranan]   = (data.personel.peranan[p.peranan]   || 0) + 1;
+      if (p.pasukan)  data.personel.pasukan[p.pasukan]   = (data.personel.pasukan[p.pasukan]   || 0) + 1;
+      if (p.status)   data.personel.status[p.status]     = (data.personel.status[p.status]     || 0) + 1;
 
-            ['unit1', 'unit2', 'unit3', 'unit4'].forEach(function (k) {
-              if (p[k]) data.personel.unit[p[k]] = (data.personel.unit[p[k]] || 0) + 1;
-            });
-          });
+      ['unit1', 'unit2', 'unit3', 'unit4'].forEach(function (k) {
+        if (p[k]) data.personel.unit[p[k]] = (data.personel.unit[p[k]] || 0) + 1;
+      });
+    });
 
-          ['jentera', 'marin', 'utiliti', 'komunikasi'].forEach(function (key) {
-  const arr = (b.equip && b.equip[key]) || [];
-  arr.forEach(function (r) {
-    if (!r || !r.kategori) return;
-    const qty = (key === 'komunikasi') ? (parseInt(r.jumlah, 10) || 0) : 1;
-    if (qty <= 0 && key === 'komunikasi') return;
-    const addQty = (key === 'komunikasi') ? qty : 1;
+    ['jentera', 'marin', 'utiliti', 'komunikasi'].forEach(function (key) {
+      const arr = (b.equip && b.equip[key]) || [];
+      arr.forEach(function (r) {
+        if (!r || !r.kategori) return;
+        const qty = (key === 'komunikasi') ? (parseInt(r.jumlah, 10) || 0) : 1;
+        if (qty <= 0 && key === 'komunikasi') return;
+        const addQty = (key === 'komunikasi') ? qty : 1;
 
-    const c = mapEquipStatus(r.status);
+        const c = mapEquipStatus(r.status);
 
-    // ✅ HANYA kira BAIK (B) dan ROSAK (R) untuk statistik.
-    // Status lain (TIADA DI BALAI, LUPUS, DALAM PROSES LUPUS)
-    // TIDAK dikira dalam nombor kad, tetapi masih muncul dalam
-    // senarai butiran apabila kad diklik.
-    if (c !== 'B' && c !== 'R') return;
+        // ✅ HANYA kira BAIK (B) dan ROSAK (R) untuk statistik.
+        // Status lain (TIADA DI BALAI, LUPUS, DALAM PROSES LUPUS)
+        // TIDAK dikira dalam nombor kad, tetapi masih muncul dalam
+        // senarai butiran apabila kad diklik.
+        if (c !== 'B' && c !== 'R') return;
 
-    data[key].kategori[r.kategori] = (data[key].kategori[r.kategori] || 0) + addQty;
-    data[key].total += addQty;
+        data[key].kategori[r.kategori] = (data[key].kategori[r.kategori] || 0) + addQty;
+        data[key].total += addQty;
 
-    if (!data[key].kategoriStatus[r.kategori]) {
-      data[key].kategoriStatus[r.kategori] = { B: 0, R: 0 };
-    }
-    if (c === 'B') {
-      data[key].status.B += addQty;
-      data[key].kategoriStatus[r.kategori].B += addQty;
-    } else if (c === 'R') {
-      data[key].status.R += addQty;
-      data[key].kategoriStatus[r.kategori].R += addQty;
-    }
+        if (!data[key].kategoriStatus[r.kategori]) {
+          data[key].kategoriStatus[r.kategori] = { B: 0, R: 0 };
+        }
+        if (c === 'B') {
+          data[key].status.B += addQty;
+          data[key].kategoriStatus[r.kategori].B += addQty;
+        } else if (c === 'R') {
+          data[key].status.R += addQty;
+          data[key].kategoriStatus[r.kategori].R += addQty;
+        }
+      });
+    });
   });
-});
 
-        return data;
-      }
+  return data;
+}
 
       function getDashboardDetailItems(section, key, value) {
         const items = [];
