@@ -666,6 +666,46 @@
       table.ketua .s0 { color: var(--text-faint); }
       table.ketua td.jumlah-cell { color: var(--amber); font-weight: 600; }
       table.ketua .no-data { color: var(--text-faint); font-style: italic; }
+      /* ✅ Row merah penuh bila kolum A = 0 */
+table.ketua tbody tr.row-zero-a > td {
+  background: rgba(199, 56, 56, 0.18) !important;
+  border-bottom-color: rgba(199, 56, 56, 0.45) !important;
+}
+table.ketua tbody tr.row-zero-a > td.balai-name {
+  background: rgba(199, 56, 56, 0.30) !important;
+}
+table.ketua tbody tr.row-zero-a > td.balai-name-spacer {
+  background: rgba(199, 56, 56, 0.30) !important;
+}
+table.ketua tbody tr.row-zero-a > td,
+table.ketua tbody tr.row-zero-a > td.gred-cell,
+table.ketua tbody tr.row-zero-a > td.turnout-cell,
+table.ketua tbody tr.row-zero-a > td.jumlah-cell,
+table.ketua tbody tr.row-zero-a > td.pbb-cell,
+table.ketua tbody tr.row-zero-a > td.txt,
+table.ketua tbody tr.row-zero-a > td.s0,
+table.ketua tbody tr.row-zero-a > td.s1 {
+  color: #ff8a94 !important;
+}
+table.ketua tbody tr.row-zero-a:hover > td {
+  background: rgba(199, 56, 56, 0.32) !important;
+}
+
+/* Print: pastikan row merah masih kelihatan */
+@media print {
+  body.printing-single table.ketua tbody tr.row-zero-a > td,
+  body.printing-full   table.ketua tbody tr.row-zero-a > td {
+    background: #ffe0e4 !important;
+    color: #7a1520 !important;
+    border-bottom-color: #c0293d !important;
+  }
+}
+
+
+
+
+
+
       table.ketua .gred-cell { font-family: 'Oswald', sans-serif; font-weight: 700;
         font-size: 0.85rem; letter-spacing: 0.06em; }
       table.ketua .gred-cell.gred-A { color: #d63447; }
@@ -1770,7 +1810,7 @@
           <b>©2026 PGO JOHOR</b><span class="sep">|</span>HAK CIPTA TERPELIHARA
         </div>
         <div class="sf-layer-bottom">
-          <div class="sf-item">Versi Sistem: <b>v2.3.0</b></div>
+          <div class="sf-item">Versi Sistem: <b>v2.3.1</b></div>
           <div class="sf-item">Pembina Aplikasi & Sistem: <b>PB Mohamad Aidil bin Zainal Abidin</b></div>
           <div class="sf-item">Penyedia Tutorial (Cara Penggunaan): <b>PB Jevinson Justin</b></div>
         </div>
@@ -5837,7 +5877,14 @@
           totalPO += d.statusPO;
           totalA += d.A; totalC += d.C; totalCS += d.CS; totalTK += d.TK;
           totalJumlah += d.jumlah;
+
           const tr = document.createElement('tr');
+
+// ✅ Kecualikan FIRE POST dari highlight merah
+const EXCLUDE_ZERO_A = ['FIRE POST BENUT', 'FIRE POST PARIT SULONG'];
+if (d.A === 0 && !EXCLUDE_ZERO_A.includes(b.name)) {
+  tr.classList.add('row-zero-a');
+}
           const tdNo = document.createElement('td'); tdNo.className = 'bil-cell'; tdNo.textContent = idx + 1; tr.appendChild(tdNo);
           const tdGred = document.createElement('td'); tdGred.className = 'gred-cell gred-' + meta.gred; tdGred.textContent = meta.gred; tr.appendChild(tdGred);
           const tdTO = document.createElement('td'); tdTO.className = 'turnout-cell'; tdTO.textContent = meta.turnOut; tr.appendChild(tdTO);
