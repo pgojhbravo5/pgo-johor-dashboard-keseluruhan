@@ -3740,8 +3740,8 @@
             <h4>Yang Akan Dieksport:</h4>
             <ul>
               <li><b>Identiti Balai</b> — Nama balai, shif bertugas, tarikh, dan kategori balai</li>
-              <li><b>Data Personel</b> — Semua butiran anggota (nama, pangkat, no badan, telefon, peranan, pasukan, status, unit, catatan)</li>
-              <li><b>Data Jentera &amp; Kenderaan</b> — Jentera Utama, Marin, Utiliti &amp; Komunikasi (maklumat, kategori, status, catatan)</li>
+              <li><b>Data Personel</b> — Semua butiran anggota (nama, pangkat, no badan, telefon, peranan, pasukan, unit, catatan)</li>
+              <li><b>Data Jentera &amp; Kenderaan</b> — Jentera Utama, Marin, Utiliti &amp; Komunikasi (maklumat, kategori, catatan)</li>
             </ul>
 
             <h4>Maklumat Export:</h4>
@@ -3752,12 +3752,12 @@
               <div><span style="color:var(--text-dim);">Format Fail:</span> <b>JSON (.json)</b></div>
             </div>
 
-            <div class="ae-note">
-              <span class="ae-warn">ℹ Nota:</span> Fail export <b>tidak menjejaskan</b> data di Supabase.
-              Ia hanya salinan setempat untuk rujukan/backup anda.
-            </div>
-          </div>
-
+<div class="ae-note">
+  <span class="ae-warn">ℹ Nota:</span> Fail export <b>tidak menjejaskan</b> data di Supabase.
+  Ia hanya salinan setempat untuk rujukan/backup anda.<br />
+  <span class="ae-warn">⚠ Penting:</span> Kolum <b>STATUS</b> <u>tidak disertakan</u> dalam fail export —
+  jika fail ini di-<b>import semula</b> ke sistem, semua <b>STATUS</b> akan menjadi <b>kosong</b> dan perlu diisi manual.
+</div>
           <label class="archive-confirm" id="exportConfirmLabel">
             <input type="checkbox" id="exportConfirmCheck" />
             <span class="ac-text">
@@ -10392,23 +10392,43 @@
       });
 
       function performExportBalai() {
-        if (store.view !== 'balai') {
-          showToast('Export hanya untuk paparan balai', 'error');
-          return;
-        }
-        const blob = new Blob([JSON.stringify(state, null, 2)], { type: 'application/json' });
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        const tk = state.ident.tarikh || new Date().toISOString().slice(0, 10);
-        const bl = (store.activeBalai || 'BALAI').replace(/\s+/g, '_');
-        a.href = url;
-        a.download = `kekuatan_${bl}_${tk}.json`;
-        document.body.appendChild(a);
-        a.click();
-        document.body.removeChild(a);
-        URL.revokeObjectURL(url);
-        showToast('Balai ' + store.activeBalai + ' berjaya dieksport', 'success');
+  if (store.view !== 'balai') {
+    showToast('Export hanya untuk paparan balai', 'error');
+    return;
+  }
+
+  // Buat salinan data & buang field 'status' (personel + equipment)
+  const exportState = JSON.parse(JSON.stringify(state));
+
+  if (Array.isArray(exportState.personel)) {
+    exportState.personel.forEach(function (p) {
+      if (p && typeof p === 'object') delete p.status;
+    });
+  }
+
+  if (exportState.equip) {
+    ['jentera', 'marin', 'utiliti', 'komunikasi'].forEach(function (key) {
+      if (Array.isArray(exportState.equip[key])) {
+        exportState.equip[key].forEach(function (r) {
+          if (r && typeof r === 'object') delete r.status;
+        });
       }
+    });
+  }
+
+  const blob = new Blob([JSON.stringify(exportState, null, 2)], { type: 'application/json' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  const tk = state.ident.tarikh || new Date().toISOString().slice(0, 10);
+  const bl = (store.activeBalai || 'BALAI').replace(/\s+/g, '_');
+  a.href = url;
+  a.download = `kekuatan_${bl}_${tk}.json`;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+  showToast('Balai ' + store.activeBalai + ' berjaya dieksport', 'success');
+}
 
       function showExportModal(onYes, onNo) {
         const overlay = document.getElementById('exportModalOverlay');
