@@ -2325,12 +2325,30 @@
       }
       #sec-semak_lokasi .section-body.dragging {
         cursor: grabbing;
+      }
+      /* ✅ Benarkan select & copy text dalam jadual semak lokasi */
+      #sec-semak_lokasi .section-body td,
+      #sec-semak_lokasi .section-body th,
+      #sec-semak_lokasi .section-body td *,
+      #sec-semak_lokasi .section-body th * {
+        user-select: text;
+        -webkit-user-select: text;
+      }
+      #sec-semak_lokasi .section-body.dragging td,
+      #sec-semak_lokasi .section-body.dragging th,
+      #sec-semak_lokasi .section-body.dragging td *,
+      #sec-semak_lokasi .section-body.dragging th * {
+        user-select: text;
+        -webkit-user-select: text;
+      }
+      /* Kekalkan none pada butang/toolbar supaya drag tak terganggu */
+      #sec-semak_lokasi .section-body input,
+      #sec-semak_lokasi .section-body button,
+      #sec-semak_lokasi .section-body .semak-toggle,
+      #sec-semak_lokasi .section-body .semak-scroll-btn,
+      #sec-semak_lokasi .section-body .semak-clear {
         user-select: none;
         -webkit-user-select: none;
-      }
-      #sec-semak_lokasi .section-body.dragging * {
-        user-select: none !important;
-        -webkit-user-select: none !important;
       }
       #sec-semak_lokasi .section-body::-webkit-scrollbar {
         height: 12px;
@@ -3631,14 +3649,14 @@
               </svg>
               Export
             </button>
-            <div class="auto-reload-widget" id="autoReloadWidget" title="Auto-reload data dari pelayan" style="display:none;">
+            <div class="auto-reload-widget" id="autoReloadWidget" title="Auto-reload data dari pelayan">
               <span class="ar-label">Auto-Reload:</span>
               <span class="ar-time" id="autoReloadTime">5:00</span>
               <button class="ar-btn" id="autoReloadPauseBtn" type="button" title="Pause auto-reload" aria-label="Pause auto-reload">
                 <svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><rect x="6" y="4" width="4" height="16" rx="1"/><rect x="14" y="4" width="4" height="16" rx="1"/></svg>
               </button>
             </div>
-                        <!-- ✅ AUTO-RESET COUNTDOWN -->
+            <!-- ✅ AUTO-RESET COUNTDOWN -->
             <div class="auto-reset-widget" id="autoResetWidget" title="Auto-arkib &amp; reset semua balai">
               <svg class="ico arw-icon" viewBox="0 0 24 24" aria-hidden="true">
                 <polyline points="23 4 23 10 17 10"/>
@@ -10044,21 +10062,52 @@ localStorage.setItem(runKey, 'done');
 
       let semakDragState = null;
 
+      // ✅ Setup drag-scroll untuk jadual semak lokasi
+      // - Klik pada text (td/span/mark/dll) → biar select/copy natural
+      // - Klik pada ruang kosong → enable drag-scroll
       function setupSemakDragScroll(el) {
         if (!el || el.dataset.dragBound === '1') return;
         el.dataset.dragBound = '1';
+
         el.addEventListener('mousedown', function (e) {
           if (e.button !== 0) return;
-          if (e.target.closest('input, textarea, select, button, a, label, .semak-clear')) return;
+
+          // Skip drag kalau klik pada elemen interaktif
+          if (e.target.closest('input, textarea, select, button, a, label, .semak-clear, .semak-toggle, .semak-scroll-btn')) {
+            return;
+          }
+
+          // Skip drag kalau klik pada sel/jadual yang ada TEXT — biar user select & copy
+          const textHost = e.target.closest('td, th, span, mark, b, i, u, strong, em, .loc-dot, .maklumat-cell, .kat-cell, .bil-cell, .jumlah-cell, .balai-cell, .zone-drawer-item');
+          if (textHost) {
+            const hasText = (textHost.textContent || '').trim().length > 0;
+            if (hasText) {
+              // Benarkan browser select text secara natural
+              return;
+            }
+          }
+
           if (el.scrollWidth <= el.clientWidth + 2) return;
+
           semakDragState = {
             el: el,
             startX: e.pageX,
             startY: e.pageY,
             startScrollLeft: el.scrollLeft,
+            moved: false,
           };
           el.classList.add('dragging');
           e.preventDefault();
+        });
+
+        el.addEventListener('mousemove', function (e) {
+          if (!semakDragState) return;
+          const walkX = e.pageX - semakDragState.startX;
+          const walkY = e.pageY - semakDragState.startY;
+          if (!semakDragState.moved && Math.abs(walkX) < 4 && Math.abs(walkY) < 4) {
+            return;
+          }
+          semakDragState.moved = true;
         });
       }
 
@@ -10067,11 +10116,13 @@ localStorage.setItem(runKey, 'done');
         const walkX = e.pageX - semakDragState.startX;
         semakDragState.el.scrollLeft = semakDragState.startScrollLeft - walkX;
       });
+
       document.addEventListener('mouseup', function () {
         if (!semakDragState) return;
         semakDragState.el.classList.remove('dragging');
         semakDragState = null;
       });
+
       window.addEventListener('blur', function () {
         if (semakDragState) {
           semakDragState.el.classList.remove('dragging');
