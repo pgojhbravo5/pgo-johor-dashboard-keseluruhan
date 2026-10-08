@@ -3739,7 +3739,7 @@
 
             <h4>Yang Akan Dieksport:</h4>
             <ul>
-              <li><b>Identiti Balai</b> — Nama balai, shif bertugas, tarikh, dan kategori balai</li>
+              <li><b>Identiti Balai</b> — Nama balai dan kategori balai</li>
               <li><b>Data Personel</b> — Semua butiran anggota (nama, pangkat, no badan, telefon, peranan, pasukan, unit, catatan)</li>
               <li><b>Data Jentera &amp; Kenderaan</b> — Jentera Utama, Marin, Utiliti &amp; Komunikasi (maklumat, kategori, catatan)</li>
             </ul>
@@ -3747,8 +3747,6 @@
             <h4>Maklumat Export:</h4>
             <div style="display:flex; flex-direction:column; gap:0.28rem;">
               <div><span style="color:var(--text-dim);">Balai:</span> <b id="exportModalBalai2">—</b></div>
-              <div><span style="color:var(--text-dim);">Tarikh:</span> <b id="exportModalTarikh">—</b></div>
-              <div><span style="color:var(--text-dim);">Shif:</span> <b id="exportModalShif">—</b></div>
               <div><span style="color:var(--text-dim);">Format Fail:</span> <b>JSON (.json)</b></div>
             </div>
 
@@ -10400,6 +10398,12 @@
   // Buat salinan data & buang field 'status' (personel + equipment)
   const exportState = JSON.parse(JSON.stringify(state));
 
+  // ✅ BARU: buang shif & tarikh dari ident
+  if (exportState.ident && typeof exportState.ident === 'object') {
+    delete exportState.ident.shif;
+    delete exportState.ident.tarikh;
+  }
+
   if (Array.isArray(exportState.personel)) {
     exportState.personel.forEach(function (p) {
       if (p && typeof p === 'object') delete p.status;
@@ -10436,8 +10440,6 @@
 
         const balaiEl  = document.getElementById('exportModalBalai');
         const balai2El = document.getElementById('exportModalBalai2');
-        const tarikhEl = document.getElementById('exportModalTarikh');
-        const shifEl   = document.getElementById('exportModalShif');
         const checkEl  = document.getElementById('exportConfirmCheck');
         const lblEl    = document.getElementById('exportConfirmLabel');
         const btnYes   = document.getElementById('exportModalYes');
@@ -10445,12 +10447,8 @@
         const btnClose = document.getElementById('exportModalClose');
 
         const namaBalai = store.activeBalai;
-        const tarikhStr = state.ident.tarikh || '—';
-        const shifStr   = state.ident.shif || '—';
         if (balaiEl)  balaiEl.textContent  = namaBalai;
         if (balai2El) balai2El.textContent = namaBalai;
-        if (tarikhEl) tarikhEl.textContent = tarikhStr;
-        if (shifEl)   shifEl.textContent   = shifStr;
 
         checkEl.checked = false;
         lblEl.classList.remove('checked');
