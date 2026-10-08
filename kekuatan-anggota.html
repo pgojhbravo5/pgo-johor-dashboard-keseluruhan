@@ -2543,18 +2543,17 @@
         font-size: 0.72rem;
       }
 
-      .mers-header { display: flex; flex-wrap: wrap; gap: 1rem 1.5rem; padding: 0.75rem 1rem; margin-bottom: 0.9rem; background: var(--panel-2); border: 1px solid var(--line); border-radius: var(--radius-sm); align-items: flex-end; }
-      .mers-header-title { flex: 1 1 100%; font-family: 'Oswald', sans-serif; font-size: 1.05rem; letter-spacing: 0.1em; text-transform: uppercase; text-align: center; color: var(--text); padding: 0.4rem 0; border-bottom: 2px solid var(--red); margin-bottom: 0.4rem; }
-      .mers-header-field { display: flex; flex-direction: column; gap: 0.2rem; min-width: 160px; flex: 1 1 160px; }
+      .mers-header { display: flex; flex-wrap: wrap; gap: 0.3rem 0.8rem; padding: 0.25rem 0.7rem 0.3rem; margin-bottom: 0; background: var(--panel-2); border: 1px solid var(--line); border-bottom: none; border-radius: var(--radius-sm) var(--radius-sm) 0 0; align-items: flex-end; }      .mers-header-title { flex: 1 1 100%; font-family: 'Oswald', sans-serif; font-size: 1.05rem; letter-spacing: 0.1em; text-transform: uppercase; text-align: center; color: var(--text); padding: 0.15rem 0; border-bottom: 2px solid var(--red); margin-bottom: 0.2rem; }
+      .mers-header-field { display: flex; flex-direction: column; gap: 0.1rem; min-width: 160px; flex: 1 1 160px; }
       .mers-header-field label { font-size: 0.58rem; letter-spacing: 0.1em; color: var(--text-faint); text-transform: uppercase; font-weight: 600; }
-      .mers-header-field input { background: var(--bg-2); border: 1px solid var(--line); color: var(--text); font-family: 'Inter', system-ui, sans-serif; font-size: 0.8rem; padding: 0.38rem 0.55rem; border-radius: var(--radius-sm); width: 100%; }
+      .mers-header-field input { background: var(--bg-2); border: 1px solid var(--line); color: var(--text); font-family: 'Inter', system-ui, sans-serif; font-size: 0.8rem; padding: 0.22rem 0.55rem; border-radius: var(--radius-sm); width: 100%; }
       .mers-header-field input:focus { outline: none; border-color: var(--red); box-shadow: 0 0 0 3px rgba(214,52,71,0.16); }
 
-      table.mers { border-collapse: separate; border-spacing: 0; font-size: 0.72rem; white-space: nowrap; min-width: 100%; border: 1px solid var(--line); border-radius: var(--radius-sm); overflow: hidden; }
-      table.mers th, table.mers td { border-right: 1px solid var(--line-soft); border-bottom: 1px solid var(--line-soft); padding: 0.35rem 0.4rem; text-align: center; vertical-align: middle; }
-      table.mers thead th { background: var(--panel-3); color: var(--text); font-family: 'Oswald', sans-serif; font-weight: 600; font-size: 0.68rem; letter-spacing: 0.05em; text-transform: uppercase; }
+      table.mers { border-collapse: separate; border-spacing: 0; font-size: 0.72rem; white-space: nowrap; min-width: 100%; border: 1px solid var(--line); border-top: none; border-bottom: none; border-radius: 0; overflow: hidden; }
+      table.mers th, table.mers td { border-right: 1px solid var(--line-soft); border-bottom: 1px solid var(--line-soft); padding: 0.05rem 0.4rem; text-align: center; vertical-align: middle; line-height: 1.15; }
+      table.mers thead th { background: var(--panel-3); color: var(--text); font-family: 'Oswald', sans-serif; font-weight: 600; font-size: 0.68rem; letter-spacing: 0.05em; text-transform: uppercase; padding: 0.15rem 0.4rem; }
       table.mers thead tr.groups th { background: var(--panel-3); font-size: 0.72rem; }
-      table.mers thead tr.subs th { background: var(--panel-2); color: var(--text-dim); font-family: 'Oswald', sans-serif; font-weight: 500; font-size: 0.6rem; letter-spacing: 0.03em; }
+      table.mers thead tr.subs th { background: var(--panel-2); color: var(--text-dim); font-family: 'Oswald', sans-serif; font-weight: 500; font-size: 0.6rem; letter-spacing: 0.03em; padding: 0.1rem 0.3rem; }
       table.mers thead tr.subs th.sub-ok { color: var(--green); }
       table.mers thead tr.subs th.sub-no { color: var(--rosak); }
       table.mers tbody tr:nth-child(even) td:not(.balai-cell) { background: var(--zebra); }
@@ -2562,8 +2561,8 @@
       table.mers tbody tr.pgo-row td.balai-cell { background: rgba(217,154,43,0.15) !important; color: var(--amber) !important; font-weight: 700; }
       table.mers tbody td.balai-cell { text-align: left; font-family: 'Oswald', sans-serif; font-weight: 500; letter-spacing: 0.03em; background: var(--panel-2); color: var(--text); padding-left: 0.7rem; min-width: 160px; }
       table.mers tbody td.percent-cell { font-family: 'Inter', system-ui, sans-serif; font-weight: 600; color: var(--amber); font-size: 0.78rem; min-width: 85px; }
-      table.mers tbody td.catatan-cell { min-width: 130px; padding: 0.25rem; }
-      table.mers tbody td.catatan-cell input { background: var(--bg-2); border: 1px solid var(--line); color: var(--text); font-family: 'Inter', system-ui, sans-serif; font-size: 0.68rem; padding: 0.25rem 0.35rem; border-radius: 4px; width: 100%; min-width: 110px; }
+      table.mers tbody td.catatan-cell { min-width: 130px; padding: 0.02rem; }
+      table.mers tbody td.catatan-cell input { background: var(--bg-2); border: 1px solid var(--line); color: var(--text); font-family: 'Inter', system-ui, sans-serif; font-size: 0.68rem; padding: 0.1rem 0.35rem; border-radius: 4px; width: 100%; min-width: 110px; }
       table.mers tbody td.catatan-cell input:focus { outline: none; border-color: var(--red); box-shadow: 0 0 0 3px rgba(214,52,71,0.15); }
 
       .mers-boxes { display: inline-flex; gap: 0.25rem; }
@@ -2591,10 +2590,10 @@
         cursor: help;
       }
 
-      .mers-footer { display: flex; flex-wrap: wrap; gap: 0.75rem 1.5rem; margin-top: 0.9rem; padding: 0.7rem 1rem; background: var(--panel-2); border: 1px solid var(--line); border-radius: var(--radius-sm); align-items: center; justify-content: space-between; }
+      .mers-footer { display: flex; flex-wrap: wrap; gap: 0.4rem 1rem; margin-top: 0; padding: 0.3rem 0.8rem; background: var(--panel-2); border: 1px solid var(--line); border-top: none; border-radius: 0 0 var(--radius-sm) var(--radius-sm); align-items: center; justify-content: space-between; }
       .mers-footer .mf-label { font-family: 'Oswald', sans-serif; font-size: 0.75rem; letter-spacing: 0.08em; text-transform: uppercase; font-weight: 600; color: var(--text); }
       .mers-footer .mf-value { font-family: 'Inter', system-ui, sans-serif; font-size: 1.1rem; font-weight: 700; color: var(--amber); margin-left: 0.4rem; }
-      .mers-footer .mf-meta { font-family: 'Inter', system-ui, sans-serif; font-size: 0.68rem; color: var(--text-dim); text-align: right; }
+      .mers-footer .mf-meta { font-family: 'Inter', system-ui, sans-serif; font-size: 0.68rem; color: var(--text-dim); text-align: right; line-height: 1.3; }
 
       .print-modal-overlay {
         position: fixed; inset: 0;
