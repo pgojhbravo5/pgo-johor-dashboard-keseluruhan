@@ -1613,7 +1613,6 @@
       table.ketua td.jumlah-cell { color: var(--amber); font-weight: 600; }
       table.ketua .no-data { color: var(--text-faint); font-style: italic; }
 
-      /* ✅ Row merah penuh bila kolum A = 0 (kecuali Fire Post) */
       table.ketua tbody tr.row-zero-a > td {
         background: rgba(199, 56, 56, 0.18) !important;
         border-bottom-color: rgba(199, 56, 56, 0.45) !important;
@@ -3545,7 +3544,7 @@
       }
 
       /* ═══════════════════════════════════════════════════
-         DASHBOARD KESELURUHAN — Inline Expandable
+         DASHBOARD KESELURUHAN — Inline Expandable + Pills
          ═══════════════════════════════════════════════════ */
       .tab.special.dashboard { border-color: rgba(214, 52, 71, 0.6); color: #ff8b98; }
       .tab.special.dashboard:hover { background: rgba(214, 52, 71, 0.14); }
@@ -3665,6 +3664,70 @@
         font-family: 'Inter', system-ui, sans-serif;
         font-size: 0.58rem; color: var(--text-faint);
         letter-spacing: 0.03em; margin-top: 0.1rem;
+      }
+
+      /* Pil status Baik/Rosak bawah setiap kad kategori */
+      .dash-card .dc-pills {
+        display: flex;
+        gap: 0.35rem;
+        margin-top: 0.45rem;
+      }
+      .dash-card .dc-pill {
+        flex: 1 1 0;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.25rem;
+        padding: 0.22rem 0.35rem;
+        font-family: 'IBM Plex Sans', system-ui, sans-serif;
+        font-size: 0.66rem;
+        font-weight: 700;
+        letter-spacing: 0.02em;
+        border-radius: 3px;
+        border: 1px solid;
+        cursor: pointer;
+        background: transparent;
+        transition: all 0.14s ease;
+        font-variant-numeric: tabular-nums;
+      }
+      .dash-card .dc-pill .pl {
+        font-family: 'Oswald', sans-serif;
+        font-size: 0.58rem;
+        opacity: 0.85;
+        letter-spacing: 0.04em;
+      }
+      .dash-card .dc-pill.pill-B {
+        color: var(--green);
+        border-color: rgba(46, 158, 99, 0.55);
+        background: rgba(46, 158, 99, 0.08);
+      }
+      .dash-card .dc-pill.pill-B:hover {
+        background: var(--green);
+        color: #fff;
+        border-color: var(--green);
+        transform: translateY(-1px);
+      }
+      .dash-card .dc-pill.pill-R {
+        color: var(--rosak);
+        border-color: rgba(214, 69, 69, 0.55);
+        background: rgba(214, 69, 69, 0.08);
+      }
+      .dash-card .dc-pill.pill-R:hover {
+        background: var(--rosak);
+        color: #fff;
+        border-color: var(--rosak);
+        transform: translateY(-1px);
+      }
+      .dash-card .dc-pill.active {
+        box-shadow: 0 0 0 2px currentColor;
+      }
+      .dash-card .dc-pill.pill-B.active {
+        background: var(--green);
+        color: #fff;
+      }
+      .dash-card .dc-pill.pill-R.active {
+        background: var(--rosak);
+        color: #fff;
       }
 
       @media (max-width: 640px) {
@@ -9467,10 +9530,10 @@ localStorage.setItem(runKey, 'done');
       function computeDashboardData() {
         const data = {
           personel: { pangkat: {}, peranan: {}, pasukan: {}, status: {}, unit: {}, total: 0 },
-          jentera:  { kategori: {}, status: { B: 0, R: 0 }, total: 0 },
-          marin:    { kategori: {}, status: { B: 0, R: 0 }, total: 0 },
-          utiliti:  { kategori: {}, status: { B: 0, R: 0 }, total: 0 },
-          komunikasi:{ kategori: {}, status: { B: 0, R: 0 }, total: 0 },
+          jentera:  { kategori: {}, kategoriStatus: {}, status: { B: 0, R: 0 }, total: 0 },
+          marin:    { kategori: {}, kategoriStatus: {}, status: { B: 0, R: 0 }, total: 0 },
+          utiliti:  { kategori: {}, kategoriStatus: {}, status: { B: 0, R: 0 }, total: 0 },
+          komunikasi:{ kategori: {}, kategoriStatus: {}, status: { B: 0, R: 0 }, total: 0 },
         };
 
         Object.keys(store.balai).forEach(function (bn) {
@@ -9483,7 +9546,6 @@ localStorage.setItem(runKey, 'done');
             if (isEmpty) return;
 
             data.personel.total++;
-
             if (p.pangkat)  data.personel.pangkat[p.pangkat]   = (data.personel.pangkat[p.pangkat]   || 0) + 1;
             if (p.peranan)  data.personel.peranan[p.peranan]   = (data.personel.peranan[p.peranan]   || 0) + 1;
             if (p.pasukan)  data.personel.pasukan[p.pasukan]   = (data.personel.pasukan[p.pasukan]   || 0) + 1;
@@ -9505,9 +9567,17 @@ localStorage.setItem(runKey, 'done');
               data[key].kategori[r.kategori] = (data[key].kategori[r.kategori] || 0) + addQty;
               data[key].total += addQty;
 
+              if (!data[key].kategoriStatus[r.kategori]) {
+                data[key].kategoriStatus[r.kategori] = { B: 0, R: 0 };
+              }
               const c = mapEquipStatus(r.status);
-              if (c === 'B') data[key].status.B += addQty;
-              else if (c === 'R') data[key].status.R += addQty;
+              if (c === 'B') {
+                data[key].status.B += addQty;
+                data[key].kategoriStatus[r.kategori].B += addQty;
+              } else if (c === 'R') {
+                data[key].status.R += addQty;
+                data[key].kategoriStatus[r.kategori].R += addQty;
+              }
             });
           });
         });
@@ -9547,6 +9617,15 @@ localStorage.setItem(runKey, 'done');
                 const c = mapEquipStatus(r.status);
                 if (c === value) match = true;
               }
+              if (key === 'kategori_status') {
+                const parts = String(value).split('|');
+                const kat = parts[0];
+                const st  = parts[1];
+                if (r.kategori === kat) {
+                  const c = mapEquipStatus(r.status);
+                  if (c === st) match = true;
+                }
+              }
               if (match) {
                 const qty = (section === 'komunikasi') ? (parseInt(r.jumlah, 10) || 0) : 1;
                 items.push({ balai: bn, data: r, qty: qty });
@@ -9563,7 +9642,7 @@ localStorage.setItem(runKey, 'done');
       let dashSearchTerm = '';
 
       function renderDashboardCardsGrid(opts) {
-        const { section, key, label, color, countMap, order } = opts;
+        const { section, key, label, color, countMap, order, statusMap } = opts;
         const sub = document.createElement('div');
         sub.className = 'dash-subsection';
         sub.dataset.section = section;
@@ -9610,8 +9689,56 @@ localStorage.setItem(runKey, 'done');
           h.textContent = 'Lihat senarai →';
           card.appendChild(h);
 
+          // PIL status (hanya kalau statusMap diberi & ada data)
+          if (statusMap && statusMap[k]) {
+            const pills = document.createElement('div');
+            pills.className = 'dc-pills';
+
+            const baikN  = statusMap[k].B || 0;
+            const rosakN = statusMap[k].R || 0;
+
+            const pillB = document.createElement('button');
+            pillB.type = 'button';
+            pillB.className = 'dc-pill pill-B';
+            pillB.dataset.section = section;
+            pillB.dataset.key = 'kategori_status';
+            pillB.dataset.value = k + '|B';
+            pillB.title = 'Lihat senarai ' + k + ' — BAIK (' + baikN + ')';
+            pillB.innerHTML = '<span class="pl">B</span> ' + baikN;
+            if (dashActivePanel.section === section &&
+                dashActivePanel.key === 'kategori_status' &&
+                dashActivePanel.value === (k + '|B')) {
+              pillB.classList.add('active');
+            }
+            pillB.addEventListener('click', function (e) {
+              e.stopPropagation();
+              handleCategoryStatusClick(section, k, 'B', color);
+            });
+            pills.appendChild(pillB);
+
+            const pillR = document.createElement('button');
+            pillR.type = 'button';
+            pillR.className = 'dc-pill pill-R';
+            pillR.dataset.section = section;
+            pillR.dataset.key = 'kategori_status';
+            pillR.dataset.value = k + '|R';
+            pillR.title = 'Lihat senarai ' + k + ' — ROSAK (' + rosakN + ')';
+            pillR.innerHTML = '<span class="pl">R</span> ' + rosakN;
+            if (dashActivePanel.section === section &&
+                dashActivePanel.key === 'kategori_status' &&
+                dashActivePanel.value === (k + '|R')) {
+              pillR.classList.add('active');
+            }
+            pillR.addEventListener('click', function (e) {
+              e.stopPropagation();
+              handleCategoryStatusClick(section, k, 'R', color);
+            });
+            pills.appendChild(pillR);
+
+            card.appendChild(pills);
+          }
+
           card.addEventListener('click', function () {
-            // Toggle: kalau sama, tutup
             if (dashActivePanel.section === section &&
                 dashActivePanel.key === key &&
                 dashActivePanel.value === k) {
@@ -9626,20 +9753,18 @@ localStorage.setItem(runKey, 'done');
             dashShowAll = false;
             dashSearchTerm = '';
 
-            // Buang panel sedia ada
             sub.querySelectorAll('.dash-expand-panel').forEach(function (p) { p.remove(); });
 
-            // Bina panel baru
             const panel = buildDashboardExpandPanel(section, key, k, color);
             sub.appendChild(panel);
 
-            // Update active state pada semua card
             grid.querySelectorAll('.dash-card').forEach(function (cc) {
               cc.classList.toggle('active',
                 cc.dataset.section === section &&
                 cc.dataset.key === key &&
                 cc.dataset.value === k
               );
+              cc.querySelectorAll('.dc-pill').forEach(function (pp) { pp.classList.remove('active'); });
             });
 
             setTimeout(function () {
@@ -9652,17 +9777,69 @@ localStorage.setItem(runKey, 'done');
 
         sub.appendChild(grid);
 
-        // Kalau panel aktif untuk section/key ini → rebuild bila render
+        // Rebuild panel kalau aktif
         if (dashActivePanel.section === section &&
-            dashActivePanel.key === key &&
+            (dashActivePanel.key === key || dashActivePanel.key === 'kategori_status') &&
             dashActivePanel.value) {
-          const panel = buildDashboardExpandPanel(
-            section, key, dashActivePanel.value, color
-          );
-          sub.appendChild(panel);
+          if (dashActivePanel.key === key) {
+            const panel = buildDashboardExpandPanel(
+              section, key, dashActivePanel.value, color
+            );
+            sub.appendChild(panel);
+          } else if (dashActivePanel.key === 'kategori_status') {
+            const parts = String(dashActivePanel.value).split('|');
+            if (keys.indexOf(parts[0]) !== -1) {
+              const panel = buildDashboardExpandPanel(
+                section, 'kategori_status', dashActivePanel.value, color
+              );
+              sub.appendChild(panel);
+            }
+          }
         }
 
         return sub;
+      }
+
+      // Handler klik pil — toggle & render
+      function handleCategoryStatusClick(section, kategori, status, color) {
+        const value = kategori + '|' + status;
+
+        if (dashActivePanel.section === section &&
+            dashActivePanel.key === 'kategori_status' &&
+            dashActivePanel.value === value) {
+          dashActivePanel = { section: null, key: null, value: null };
+          dashShowAll = false;
+          dashSearchTerm = '';
+          renderAll();
+          return;
+        }
+
+        dashActivePanel = { section: section, key: 'kategori_status', value: value };
+        dashShowAll = false;
+        dashSearchTerm = '';
+
+        document.querySelectorAll('#dashboardWrap .dash-expand-panel').forEach(function (p) { p.remove(); });
+        document.querySelectorAll('#dashboardWrap .dash-card.active, #dashboardWrap .dc-pill.active').forEach(function (el) {
+          el.classList.remove('active');
+        });
+
+        document.querySelectorAll(
+          '.dc-pill[data-section="' + section + '"][data-value="' + CSS.escape(value) + '"]'
+        ).forEach(function (el) { el.classList.add('active'); });
+
+        const sub = Array.from(document.querySelectorAll('#dashboardWrap .dash-subsection'))
+          .find(function (s) {
+            return s.dataset.section === section && s.dataset.key === 'kategori';
+          });
+
+        if (!sub) return;
+
+        const panel = buildDashboardExpandPanel(section, 'kategori_status', value, color);
+        sub.appendChild(panel);
+
+        setTimeout(function () {
+          panel.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }, 60);
       }
 
       function buildDashboardExpandPanel(section, key, value, color) {
@@ -9678,6 +9855,14 @@ localStorage.setItem(runKey, 'done');
           displayLabel = (value === 'B')
             ? 'BAIK & BOLEH BEROPERASI'
             : 'ROSAK & TIDAK BOLEH BEROPERASI';
+        } else if (key === 'kategori_status') {
+          const parts = String(value).split('|');
+          const kat = parts[0];
+          const st  = parts[1];
+          const stLabel = (st === 'B')
+            ? 'BAIK & BOLEH BEROPERASI'
+            : 'ROSAK & TIDAK BOLEH BEROPERASI';
+          displayLabel = kat + '  —  ' + stLabel;
         }
 
         const titleEl = document.createElement('span');
@@ -9715,11 +9900,9 @@ localStorage.setItem(runKey, 'done');
           dashSearchTerm = '';
           panel.remove();
           document.querySelectorAll(
-            '.dash-card.active[data-section="' + section + '"]' +
-            '[data-key="' + key + '"]'
-          ).forEach(function (c) {
-            if (c.dataset.value === value) c.classList.remove('active');
-          });
+            '.dash-card.active[data-section="' + section + '"], ' +
+            '.dc-pill.active[data-section="' + section + '"]'
+          ).forEach(function (c) { c.classList.remove('active'); });
         });
         head.appendChild(closeBtn);
 
@@ -9934,7 +10117,7 @@ localStorage.setItem(runKey, 'done');
           color: 'var(--amber)',
           total: data.jentera.total,
           subsections: [
-            { section: 'jentera', key: 'kategori', label: 'MENGIKUT KATEGORI', countMap: data.jentera.kategori, order: JENTERA_KAT,         color: 'var(--amber)' },
+            { section: 'jentera', key: 'kategori', label: 'MENGIKUT KATEGORI', countMap: data.jentera.kategori, order: JENTERA_KAT,         color: 'var(--amber)', statusMap: data.jentera.kategoriStatus },
             { section: 'jentera', key: 'status',   label: 'MENGIKUT STATUS',   countMap: data.jentera.status,   order: STATUS_EQUIP_ORDER,  color: 'var(--green)' },
           ],
         });
@@ -9944,7 +10127,7 @@ localStorage.setItem(runKey, 'done');
           color: 'var(--blue)',
           total: data.marin.total,
           subsections: [
-            { section: 'marin', key: 'kategori', label: 'MENGIKUT KATEGORI', countMap: data.marin.kategori, order: MARIN_KAT,          color: 'var(--blue)' },
+            { section: 'marin', key: 'kategori', label: 'MENGIKUT KATEGORI', countMap: data.marin.kategori, order: MARIN_KAT,          color: 'var(--blue)', statusMap: data.marin.kategoriStatus },
             { section: 'marin', key: 'status',   label: 'MENGIKUT STATUS',   countMap: data.marin.status,   order: STATUS_EQUIP_ORDER, color: 'var(--green)' },
           ],
         });
@@ -9954,7 +10137,7 @@ localStorage.setItem(runKey, 'done');
           color: 'var(--slate)',
           total: data.utiliti.total,
           subsections: [
-            { section: 'utiliti', key: 'kategori', label: 'MENGIKUT KATEGORI', countMap: data.utiliti.kategori, order: UTILITI_KAT,         color: 'var(--slate)' },
+            { section: 'utiliti', key: 'kategori', label: 'MENGIKUT KATEGORI', countMap: data.utiliti.kategori, order: UTILITI_KAT,         color: 'var(--slate)', statusMap: data.utiliti.kategoriStatus },
             { section: 'utiliti', key: 'status',   label: 'MENGIKUT STATUS',   countMap: data.utiliti.status,   order: STATUS_EQUIP_ORDER, color: 'var(--green)' },
           ],
         });
@@ -9965,7 +10148,7 @@ localStorage.setItem(runKey, 'done');
           color: 'var(--green)',
           total: data.komunikasi.total,
           subsections: [
-            { section: 'komunikasi', key: 'kategori', label: 'MENGIKUT KATEGORI', countMap: data.komunikasi.kategori, order: komOrder,           color: 'var(--green)' },
+            { section: 'komunikasi', key: 'kategori', label: 'MENGIKUT KATEGORI', countMap: data.komunikasi.kategori, order: komOrder,           color: 'var(--green)', statusMap: data.komunikasi.kategoriStatus },
             { section: 'komunikasi', key: 'status',   label: 'MENGIKUT STATUS',   countMap: data.komunikasi.status,   order: STATUS_EQUIP_ORDER, color: 'var(--green)' },
           ],
         });
