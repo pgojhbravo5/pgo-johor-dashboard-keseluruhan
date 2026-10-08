@@ -6114,18 +6114,18 @@ function subscribeToPanelLockChanges() {
 
         refreshAllPanelLocks();
 
-        // Toast hanya jika melibatkan balai aktif
-        const activeBalai = getActiveBalaiName();
-        if (parsed.balai === activeBalai) {
-          const label = PANEL_LABELS[parsed.panelKey] || parsed.panelKey;
-          const who = row.locked_by || 'pengguna lain';
-          const msg = row.locked
-            ? '🔒 ' + label + ' DIKUNCI oleh ' + who
-            : '🔓 ' + label + ' DIBUKA oleh ' + who;
+// Toast hanya jika melibatkan balai aktif
+const activeBalai = getActiveBalaiName();
+if (parsed.balai === activeBalai) {
+  const label = PANEL_LABELS[parsed.panelKey] || parsed.panelKey;
+  const who = 'Pentadbir Aplikasi';   // ⬅️ Paksa label tetap
+  const msg = row.locked
+    ? '🔒 ' + label + ' DIKUNCI oleh ' + who
+    : '🔓 ' + label + ' DIBUKA oleh ' + who;
 
-          playCheckboxTickSound(!row.locked);
-          showToast(msg, row.locked ? 'error' : 'success');
-        }
+  playCheckboxTickSound(!row.locked);
+  showToast(msg, row.locked ? 'error' : 'success');
+}
 
         console.log('[Realtime] Lock updated:', compositeKey, '=', row.locked);
       }
