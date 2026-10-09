@@ -3680,6 +3680,49 @@
         letter-spacing: 0.03em; margin-top: 0.1rem;
       }
 
+      /* ═══════════════════════════════════════════════════
+         KAD UTAMA (GABUNGAN) — Highlight
+         ═══════════════════════════════════════════════════ */
+      .dash-card.dash-card-main {
+        border-color: var(--card-color, var(--amber));
+        box-shadow:
+          0 0 0 2px var(--card-color, var(--amber)),
+          0 6px 22px -8px rgba(217, 154, 43, 0.7);
+        background: linear-gradient(180deg, var(--col-amber-bg), var(--panel));
+      }
+      .dash-card.dash-card-main::before {
+        width: 5px;
+        background: var(--card-color, var(--amber));
+        box-shadow: 0 0 12px var(--card-color, var(--amber));
+      }
+      .dash-card.dash-card-main .dc-count {
+        font-size: 2.1rem;
+        text-shadow: 0 0 14px rgba(217, 154, 43, 0.48);
+      }
+      .dash-card.dash-card-main .dc-label {
+        color: var(--card-color, var(--amber));
+        font-weight: 700;
+      }
+      .dash-card .dc-badge-main {
+        position: absolute;
+        top: 0.35rem;
+        right: 0.4rem;
+        font-family: 'Oswald', sans-serif;
+        font-size: 0.5rem;
+        letter-spacing: 0.15em;
+        font-weight: 700;
+        padding: 0.1rem 0.4rem;
+        border-radius: 999px;
+        background: linear-gradient(180deg, #f0c14a, #d99a2b);
+        color: #1a1206;
+        text-transform: uppercase;
+        box-shadow: 0 2px 8px rgba(217, 154, 43, 0.55);
+      }
+      @media (max-width: 640px) {
+        .dash-card.dash-card-main .dc-count { font-size: 1.7rem; }
+        .dash-card .dc-badge-main { font-size: 0.45rem; padding: 0.08rem 0.32rem; }
+      }
+
       /* Pil status Baik/Rosak bawah setiap kad kategori */
       .dash-card .dc-pills {
         display: flex;
@@ -9822,10 +9865,23 @@ function switchView(v) {
               if (!r || !r.kategori) return;
               let match = false;
               if (key === 'kategori' && r.kategori === value) match = true;
+              if (key === 'kategori_group') {
+                const list = String(value).split(',');
+                if (list.indexOf(r.kategori) !== -1) match = true;
+              }
+              if (key === 'kategori_group_status') {
+                const parts = String(value).split('|');
+                const katList = parts[0].split(',');
+                const st = parts[1];
+                if (katList.indexOf(r.kategori) !== -1) {
+                  const c = mapEquipStatus(r.status);
+                  if (c === st) match = true;
+                }
+              }
               if (key === 'status') {
                 const c = mapEquipStatus(r.status);
                 if (c === value) match = true;
-              }
+              }              
               if (key === 'kategori_status') {
                 const parts = String(value).split('|');
                 const kat = parts[0];
@@ -9851,7 +9907,7 @@ function switchView(v) {
       let dashSearchTerm = '';
 
       function renderDashboardCardsGrid(opts) {
-        const { section, key, label, color, countMap, order, statusMap } = opts;
+        const { section, key, label, color, countMap, order, statusMap, mainCard } = opts;
         const sub = document.createElement('div');
         sub.className = 'dash-subsection';
         sub.dataset.section = section;
@@ -9866,7 +9922,138 @@ function switchView(v) {
         grid.className = 'dash-cards-grid';
 
         const keys = order || Object.keys(countMap);
+
+        // ⭐ KAD UTAMA (GABUNGAN) — jika ditakrifkan
+        if (mainCard) {
+          let mainCount = 0;
+          (mainCard.categories || []).forEach(function (k) {
+            mainCount += (countMap[k] || 0);
+          });
+
+          const mainEl = document.createElement('button');
+          mainEl.type = 'button';
+          mainEl.className = 'dash-card dash-card-main';
+          mainEl.style.setProperty('--card-color', mainCard.color || color);
+          mainEl.dataset.section = section;
+          mainEl.dataset.key = mainCard.key;
+          mainEl.dataset.value = mainCard.value;
+          mainEl.title = 'Klik untuk lihat senarai gabungan — ' + mainCard.label;
+
+          if (dashActivePanel.section === section &&
+              dashActivePanel.key === mainCard.key &&
+              dashActivePanel.value === mainCard.value) {
+            mainEl.classList.add('active');
+          }
+
+          const badge = document.createElement('span');
+          badge.className = 'dc-badge-main';
+          badge.textContent = 'UTAMA';
+          mainEl.appendChild(badge);
+
+          const cMain = document.createElement('div');
+          cMain.className = 'dc-count';
+          cMain.textContent = mainCount;
+          mainEl.appendChild(cMain);
+
+          const lMain = document.createElement('div');
+          lMain.className = 'dc-label';
+          lMain.textContent = mainCard.label;
+          mainEl.appendChild(lMain);
+
+          const hMain = document.createElement('div');
+          hMain.className = 'dc-hint';
+          hMain.textContent = 'Lihat senarai gabungan →';
+          mainEl.appendChild(hMain);
+
+          // ⭐ PIL BAIK / ROSAK untuk kad utama
+          if (statusMap && mainCard.categories) {
+            let mainBaik = 0;
+            let mainRosak = 0;
+            mainCard.categories.forEach(function (k) {
+              if (statusMap[k]) {
+                mainBaik  += (statusMap[k].B || 0);
+                mainRosak += (statusMap[k].R || 0);
+              }
+            });
+
+            const pillsMain = document.createElement('div');
+            pillsMain.className = 'dc-pills';
+
+            const pillBMain = document.createElement('button');
+            pillBMain.type = 'button';
+            pillBMain.className = 'dc-pill pill-B';
+            pillBMain.title = 'Lihat senarai gabungan — BAIK (' + mainBaik + ')';
+            pillBMain.innerHTML = '<span class="pl">B</span> ' + mainBaik;
+            if (dashActivePanel.section === section &&
+                dashActivePanel.key === 'kategori_group_status' &&
+                dashActivePanel.value === (mainCard.value + '|B')) {
+              pillBMain.classList.add('active');
+            }
+            pillBMain.addEventListener('click', function (e) {
+              e.stopPropagation();
+              handleCategoryGroupStatusClick(section, mainCard.value, 'B', mainCard.color || color);
+            });
+            pillsMain.appendChild(pillBMain);
+
+            const pillRMain = document.createElement('button');
+            pillRMain.type = 'button';
+            pillRMain.className = 'dc-pill pill-R';
+            pillRMain.title = 'Lihat senarai gabungan — ROSAK (' + mainRosak + ')';
+            pillRMain.innerHTML = '<span class="pl">R</span> ' + mainRosak;
+            if (dashActivePanel.section === section &&
+                dashActivePanel.key === 'kategori_group_status' &&
+                dashActivePanel.value === (mainCard.value + '|R')) {
+              pillRMain.classList.add('active');
+            }
+            pillRMain.addEventListener('click', function (e) {
+              e.stopPropagation();
+              handleCategoryGroupStatusClick(section, mainCard.value, 'R', mainCard.color || color);
+            });
+            pillsMain.appendChild(pillRMain);
+
+            mainEl.appendChild(pillsMain);
+          }
+
+          mainEl.addEventListener('click', function () {
+            
+            if (dashActivePanel.section === section &&
+                dashActivePanel.key === mainCard.key &&
+                dashActivePanel.value === mainCard.value) {
+              dashActivePanel = { section: null, key: null, value: null };
+              dashShowAll = false;
+              dashSearchTerm = '';
+              renderAll();
+              return;
+            }
+
+            dashActivePanel = { section: section, key: mainCard.key, value: mainCard.value };
+            dashShowAll = false;
+            dashSearchTerm = '';
+
+            sub.querySelectorAll('.dash-expand-panel').forEach(function (p) { p.remove(); });
+
+            const panel = buildDashboardExpandPanel(section, mainCard.key, mainCard.value, mainCard.color || color);
+            sub.appendChild(panel);
+
+            grid.querySelectorAll('.dash-card').forEach(function (cc) {
+              cc.classList.toggle('active',
+                cc.dataset.section === section &&
+                cc.dataset.key === mainCard.key &&
+                cc.dataset.value === mainCard.value
+              );
+              cc.querySelectorAll('.dc-pill').forEach(function (pp) { pp.classList.remove('active'); });
+            });
+
+            setTimeout(function () {
+              panel.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+            }, 60);
+          });
+
+          grid.appendChild(mainEl);
+        }
+
         keys.forEach(function (k) {
+
           const count = countMap[k] || 0;
           const card = document.createElement('button');
           card.type = 'button';
@@ -10051,7 +10238,49 @@ function switchView(v) {
         }, 60);
       }
 
+      function handleCategoryGroupStatusClick(section, categoriesStr, status, color) {
+        const value = categoriesStr + '|' + status;
+
+        if (dashActivePanel.section === section &&
+            dashActivePanel.key === 'kategori_group_status' &&
+            dashActivePanel.value === value) {
+          dashActivePanel = { section: null, key: null, value: null };
+          dashShowAll = false;
+          dashSearchTerm = '';
+          renderAll();
+          return;
+        }
+
+        dashActivePanel = { section: section, key: 'kategori_group_status', value: value };
+        dashShowAll = false;
+        dashSearchTerm = '';
+
+        document.querySelectorAll('#dashboardWrap .dash-expand-panel').forEach(function (p) { p.remove(); });
+        document.querySelectorAll('#dashboardWrap .dash-card.active, #dashboardWrap .dc-pill.active').forEach(function (el) {
+          el.classList.remove('active');
+        });
+
+        document.querySelectorAll(
+          '.dc-pill[data-section="' + section + '"][data-value="' + CSS.escape(value) + '"]'
+        ).forEach(function (el) { el.classList.add('active'); });
+
+        const sub = Array.from(document.querySelectorAll('#dashboardWrap .dash-subsection'))
+          .find(function (s) {
+            return s.dataset.section === section && s.dataset.key === 'kategori';
+          });
+
+        if (!sub) return;
+
+        const panel = buildDashboardExpandPanel(section, 'kategori_group_status', value, color);
+        sub.appendChild(panel);
+
+        setTimeout(function () {
+          panel.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }, 60);
+      }
+
       function buildDashboardExpandPanel(section, key, value, color) {
+        
         const panel = document.createElement('div');
         panel.className = 'dash-expand-panel';
         panel.style.setProperty('--expand-color', color || 'var(--amber)');
@@ -10064,7 +10293,7 @@ function switchView(v) {
           displayLabel = (value === 'B')
             ? 'BAIK & BOLEH BEROPERASI'
             : 'ROSAK & TIDAK BOLEH BEROPERASI';
-        } else if (key === 'kategori_status') {
+          } else if (key === 'kategori_status') {
           const parts = String(value).split('|');
           const kat = parts[0];
           const st  = parts[1];
@@ -10072,8 +10301,17 @@ function switchView(v) {
             ? 'BAIK & BOLEH BEROPERASI'
             : 'ROSAK & TIDAK BOLEH BEROPERASI';
           displayLabel = kat + '  —  ' + stLabel;
+        } else if (key === 'kategori_group') {
+          displayLabel = String(value).split(',').join('  +  ');
+        } else if (key === 'kategori_group_status') {
+          const parts = String(value).split('|');
+          const katStr = parts[0].split(',').join('  +  ');
+          const st = parts[1];
+          const stLabel = (st === 'B')
+            ? 'BAIK & BOLEH BEROPERASI'
+            : 'ROSAK & TIDAK BOLEH BEROPERASI';
+          displayLabel = katStr + '  —  ' + stLabel;
         }
-
         const titleEl = document.createElement('span');
         titleEl.className = 'dash-expand-title';
         titleEl.textContent = displayLabel;
@@ -10326,7 +10564,22 @@ function switchView(v) {
           color: 'var(--amber)',
           total: data.jentera.total,
           subsections: [
-            { section: 'jentera', key: 'kategori', label: 'MENGIKUT KATEGORI', countMap: data.jentera.kategori, order: JENTERA_KAT,         color: 'var(--amber)', statusMap: data.jentera.kategoriStatus },
+            {
+              section: 'jentera',
+              key: 'kategori',
+              label: 'MENGIKUT KATEGORI',
+              countMap: data.jentera.kategori,
+              order: JENTERA_KAT,
+              color: 'var(--amber)',
+              statusMap: data.jentera.kategoriStatus,
+              mainCard: {
+                key: 'kategori_group',
+                value: 'FRT,LFRT,CFRT',
+                label: 'KESELURUHAN FRT + LFRT + CFRT',
+                color: 'var(--amber)',
+                categories: ['FRT', 'LFRT', 'CFRT'],
+              },
+            },
             { section: 'jentera', key: 'status',   label: 'MENGIKUT STATUS',   countMap: data.jentera.status,   order: STATUS_EQUIP_ORDER,  color: 'var(--green)' },
           ],
         });
