@@ -429,6 +429,8 @@
       .zone-badge.zon2 { background: var(--badge-zon2-bg); color: var(--badge-zon2-fg); border: 1px solid var(--badge-zon2-bd); }
       .zone-badge.zon3 { background: var(--badge-zon3-bg); color: var(--badge-zon3-fg); border: 1px solid var(--badge-zon3-bd); }
       .zone-badge.zon4 { background: var(--badge-zon4-bg); color: var(--badge-zon4-fg); border: 1px solid var(--badge-zon4-bd); }
+      /* ✅ HQ BADGE */
+      .zone-badge.hq { background: rgba(139, 111, 212, 0.16); color: #b9a3ea; border: 1px solid rgba(139, 111, 212, 0.5); }
 
       .id-fields {
         display: flex; flex-wrap: wrap; gap: 0.75rem 1rem;
@@ -1062,6 +1064,15 @@
       .zone-tab.zon2.zone-active { background: var(--zon2); color: #1a1206; }
       .zone-tab.zon3.zone-active { background: var(--zon3); }
       .zone-tab.zon4.zone-active { background: var(--zon4); }
+      /* ✅ HQ TAB — gaya sama seperti zon, warna ungu */
+      .zone-tab.hq-tab.zone-active {
+        background: var(--purple);
+        color: #fff;
+      }
+      .zone-tab.hq-tab.has-active::after {
+        background: var(--purple);
+        box-shadow: 0 0 6px var(--purple);
+      }
 
       .zone-tab.has-active {
         color: var(--text);
@@ -1207,11 +1218,13 @@
       .zone-drawer-item .zd-gred.gred-C { color: #8ab4fb; }
       .zone-drawer-item .zd-gred.gred-D { color: #b6c1d1; }
       .zone-drawer-item .zd-gred.gred-FP { color: #ff5c73; font-weight: 800; }
+      .zone-drawer-item .zd-gred.gred-HQ { color: #b9a3ea; }
       [data-theme='light'] .zone-drawer-item .zd-gred.gred-A { color: #a01f33; }
       [data-theme='light'] .zone-drawer-item .zd-gred.gred-B { color: #8a5810; }
       [data-theme='light'] .zone-drawer-item .zd-gred.gred-C { color: #1d4fa5; }
       [data-theme='light'] .zone-drawer-item .zd-gred.gred-D { color: #52607a; }
       [data-theme='light'] .zone-drawer-item .zd-gred.gred-FP { color: #c0293d; font-weight: 800; }
+      [data-theme='light'] .zone-drawer-item .zd-gred.gred-HQ { color: #5b3fae; }
 
       .zone-drawer-item .zd-dot {
         width: 0.42rem;
@@ -1743,6 +1756,7 @@
       table.bsum tbody tr.zon-row td.zon-label.zon-2 { color: var(--zon2); }
       table.bsum tbody tr.zon-row td.zon-label.zon-3 { color: var(--zon3); }
       table.bsum tbody tr.zon-row td.zon-label.zon-4 { color: var(--zon4); }
+      table.bsum tbody tr.zon-row td.zon-label.zon-hq { color: var(--purple); }
       table.bsum tbody tr.grand-row td {
         background: var(--col-amber-bg) !important;
         font-weight: 700; color: var(--amber);
@@ -5489,6 +5503,9 @@
         { name: 'BUKIT GAMBIR', zon: 4 },
         { name: 'TANGKAK', zon: 4 },
         { name: 'PAGOH', zon: 4 },
+        /* ✅ HQ — PGO JOHOR & KEJURUTERAAN/BENGKEL SWASTA */
+        { name: 'PGO JOHOR', zon: 0 },
+        { name: 'KEJURUTERAAN/BENGKEL SWASTA', zon: 0 },
       ];
 
       const BALAI_MERS_LIST = [
@@ -5604,6 +5621,9 @@
         { name: 'BUKIT GAMBIR', zon: 4 },
         { name: 'TANGKAK', zon: 4 },
         { name: 'PAGOH', zon: 4 },
+        /* ✅ HQ — di bawah PAGOH, sebelum JUMLAH */
+        { name: 'PGO JOHOR', zon: 0 },
+        { name: 'KEJURUTERAAN/BENGKEL SWASTA', zon: 0 },
       ];
 
       function getBalaiZon(name) {
@@ -5662,6 +5682,9 @@
         'BUKIT GAMBIR': { gred: 'C', turnOut: 1 },
         TANGKAK: { gred: 'C', turnOut: 1 },
         PAGOH: { gred: 'C', turnOut: 1 },
+        // HQ
+        'PGO JOHOR': { gred: 'HQ', turnOut: 0 },
+        'KEJURUTERAAN/BENGKEL SWASTA': { gred: 'HQ', turnOut: 0 },
       };
 
       const RANKS = [
@@ -7061,8 +7084,6 @@ localStorage.setItem(runKey, 'done');
         body.appendChild(info);
       }
 
-      let mersPgoState = { cad: null, wic: null, bomra: null };
-
       function getKomItem(balaiName, itemName) {
         const b = store && store.balai && store.balai[balaiName];
         if (!b || !b.equip || !b.equip.komunikasi) return null;
@@ -7155,7 +7176,7 @@ localStorage.setItem(runKey, 'done');
     <div class="section-head">
       <h2>LAPORAN HARIAN STATUS NG MERS999 JBPM JOHOR</h2>
       <div style="display:flex;align-items:center;gap:.6rem;">
-        <span class="hint">PGO manual tick · balai auto dari data KOMUNIKASI (CAD = NG999)</span>
+        <span class="hint">Semua balai (termasuk PGO JOHOR) auto-tarik dari data KOMUNIKASI — CAD = NG999</span>
         <button class="btn-fullscreen" type="button" title="Buka skrin penuh">${svgIcon('maximize')}</button>
         <button class="btn-fullscreen btn-print-panel" type="button" title="Cetak panel ini">${svgIcon('print')}</button>
         <span class="chev">${svgIcon('chevronDown')}</span>
@@ -7206,6 +7227,15 @@ localStorage.setItem(runKey, 'done');
         const grandTotalCells = totalRows * 3;
         let grandTotalBaik = 0;
 
+        // ✅ PGO JOHOR — auto-tarik dari tab balai PGO JOHOR → KOMUNIKASI
+        const PGO_BALAI_NAME = 'PGO JOHOR';
+        const pgoSt  = getMersStatus(PGO_BALAI_NAME);
+        const pgoRaw = {
+          cad:   getKomStatusRaw(PGO_BALAI_NAME, 'NG999'),
+          wic:   getKomStatusRaw(PGO_BALAI_NAME, 'WEB INTEGRATED CONSOLE (WIC)'),
+          bomra: getKomStatusRaw(PGO_BALAI_NAME, 'BOMBA RESPONDER APPS (BOMRA)'),
+        };
+
         const pgoTr = document.createElement('tr');
         pgoTr.className = 'pgo-row';
         const pgoBalai = document.createElement('td');
@@ -7215,23 +7245,44 @@ localStorage.setItem(runKey, 'done');
         pgoPercentCell.className = 'percent-cell';
 
         ['cad', 'wic', 'bomra'].forEach(function (key) {
+          const val = pgoSt[key];
+          const rv  = pgoRaw[key];
           const tdOk = document.createElement('td');
           const tdNo = document.createElement('td');
-          const boxesOk = document.createElement('div'); boxesOk.className = 'mers-boxes';
-          const boxesNo = document.createElement('div'); boxesNo.className = 'mers-boxes';
-          const btnOk = makeMersCheckbox('cek', mersPgoState[key] === 'B', false, function () {
-            mersPgoState[key] = mersPgoState[key] === 'B' ? null : 'B';
-            rerenderMersBody();
-          });
-          const btnNo = makeMersCheckbox('tak', mersPgoState[key] === 'R', false, function () {
-            mersPgoState[key] = mersPgoState[key] === 'R' ? null : 'R';
-            rerenderMersBody();
-          });
-          boxesOk.appendChild(btnOk); boxesNo.appendChild(btnNo);
-          tdOk.appendChild(boxesOk); tdNo.appendChild(boxesNo);
+
+          const tip = rv
+            ? ('Status: ' + rv + (val ? '' : '  (tidak dikira dalam peratusan)'))
+            : 'Status belum diisi — isi di tab balai PGO JOHOR → KOMUNIKASI';
+          tdOk.title = tip;
+          tdNo.title = tip;
+
+          const boxOk = document.createElement('div'); boxOk.className = 'mers-boxes';
+          const boxNo = document.createElement('div'); boxNo.className = 'mers-boxes';
+
+          if (val === 'B') {
+            boxOk.appendChild(makeMersCheckbox('cek', true, true, null));
+            boxNo.appendChild(makeMersCheckbox('tak', false, true, null));
+          } else if (val === 'R') {
+            boxOk.appendChild(makeMersCheckbox('cek', false, true, null));
+            boxNo.appendChild(makeMersCheckbox('tak', true, true, null));
+          } else if (rv) {
+            const naOk = document.createElement('span');
+            naOk.className = 'mers-na'; naOk.textContent = '—';
+            const naNo = document.createElement('span');
+            naNo.className = 'mers-na'; naNo.textContent = '—';
+            boxOk.appendChild(naOk);
+            boxNo.appendChild(naNo);
+          } else {
+            boxOk.appendChild(makeMersCheckbox('cek', false, true, null));
+            boxNo.appendChild(makeMersCheckbox('tak', false, true, null));
+          }
+
+          tdOk.appendChild(boxOk); tdNo.appendChild(boxNo);
           pgoTr.appendChild(tdOk); pgoTr.appendChild(tdNo);
+          if (val === 'B') grandTotalBaik++;
         });
-        pgoPercentCell.textContent = fmtPercent(computeMersPercent(mersPgoState));
+
+        pgoPercentCell.textContent = fmtPercent(computeMersPercent(pgoSt));
         pgoTr.appendChild(pgoPercentCell);
 
         const pgoCatatan = document.createElement('td');
@@ -7242,9 +7293,7 @@ localStorage.setItem(runKey, 'done');
         pgoTr.appendChild(pgoCatatan);
         tbody.appendChild(pgoTr);
 
-        ['cad', 'wic', 'bomra'].forEach(function (k) {
-          if (mersPgoState[k] === 'B') grandTotalBaik++;
-        });
+
 
         BALAI_MERS_LIST.forEach(function (b) {
           const st = getMersStatus(b.name);
@@ -7660,6 +7709,21 @@ function switchView(v) {
 
         const activeZon = store.view === 'balai' ? getBalaiZon(store.activeBalai) : null;
 
+        // ✅ HQ TAB — sebelum ZON 1
+        const hqBtn = document.createElement('button');
+        hqBtn.type = 'button';
+        hqBtn.className = 'tab zone-tab hq-tab';
+        hqBtn.dataset.zon = 'HQ';
+        if (activeZon === 0) hqBtn.classList.add('has-active');
+        hqBtn.innerHTML =
+          '<span class="zt-label">HQ</span>' +
+          '<span class="zt-chev">' + svgIcon('chevronDown') + '</span>';
+        hqBtn.addEventListener('click', function (e) {
+          e.stopPropagation();
+          toggleZoneDrawer('HQ', hqBtn);
+        });
+        desktop.appendChild(hqBtn);
+
         [1, 2, 3, 4].forEach(function (zn) {
           const zBtn = document.createElement('button');
           zBtn.type = 'button';
@@ -7746,7 +7810,7 @@ function switchView(v) {
         BALAI_LIST.forEach(function (b) {
           if (b.zon !== curZon) {
             og = document.createElement('optgroup');
-            og.label = 'ZON ' + b.zon;
+            og.label = (b.zon === 0) ? 'HQ' : ('ZON ' + b.zon);
             sel.appendChild(og);
             curZon = b.zon;
           }
@@ -7779,12 +7843,16 @@ function switchView(v) {
         if (!drawer) return;
         drawer.innerHTML = '';
 
-        const balaiInZon = BALAI_LIST.filter(function (b) { return b.zon === zon; });
+        const isHQ = (zon === 'HQ' || zon === 0);
+        const balaiInZon = isHQ
+          ? BALAI_LIST.filter(function (b) { return b.zon === 0; })
+          : BALAI_LIST.filter(function (b) { return b.zon === zon; });
+        const zonLabel = isHQ ? 'HQ' : ('ZON ' + zon);
 
         const title = document.createElement('div');
         title.className = 'zone-drawer-title';
         title.innerHTML =
-          '<span>SENARAI BALAI — ZON ' + zon + '</span>' +
+          '<span>SENARAI BALAI — ' + zonLabel + '</span>' +
           '<span class="zd-count">' + balaiInZon.length + ' BALAI</span>';
         drawer.appendChild(title);
 
@@ -7801,7 +7869,7 @@ function switchView(v) {
           const meta = BALAI_GRED_TURNOUT[b.name] || { gred: '-', turnOut: 0 };
 
           if (isActive) item.classList.add('active');
-          item.title = b.name + '  •  Zon ' + b.zon + '  •  Gred ' + meta.gred + '  •  Turn-Out ' + meta.turnOut + (isDirty ? '  •  ⚠ Belum disimpan' : '');
+          item.title = b.name + '  •  ' + (b.zon === 0 ? 'HQ' : ('Zon ' + b.zon)) + '  •  Gred ' + meta.gred + '  •  Turn-Out ' + meta.turnOut + (isDirty ? '  •  ⚠ Belum disimpan' : '');
 
           const nameEl = document.createElement('span');
           nameEl.className = 'zd-name';
@@ -7896,7 +7964,7 @@ function switchView(v) {
       function refreshZoneDrawerIfOpen() {
         const drawer = document.getElementById('zoneDrawer');
         if (!drawer || !drawer.classList.contains('open')) return;
-        const zon = parseInt(drawer.dataset.zon, 10);
+        const zon = drawer.dataset.zon;
         if (!zon) return;
         const currentZoneTab = document.querySelector('.zone-tab.zone-active');
         buildZoneDrawerContent(zon);
@@ -7996,8 +8064,13 @@ function switchView(v) {
           prefix.style.display = '';
           dp.textContent = store.activeBalai;
           const zon = getBalaiZon(store.activeBalai);
-          zb.textContent = 'ZON ' + zon;
-          zb.className = 'zone-badge zon' + zon;
+          if (zon === 0) {
+            zb.textContent = 'HQ';
+            zb.className = 'zone-badge hq';
+          } else {
+            zb.textContent = 'ZON ' + zon;
+            zb.className = 'zone-badge zon' + zon;
+          }
           zb.style.display = '';
           idFields.style.display = '';
           if (saveBtn) saveBtn.style.display = '';
@@ -11141,9 +11214,47 @@ function switchView(v) {
           tbody.appendChild(tr);
         });
 
+        // ✅⬇️⬇️⬇️ PASTE KOD BARU DI SINI ⬇️⬇️⬇️
+        (function addHqRow() {
+          const hqBalai = BALAI_PO3A_LIST.filter(function (b) { return b.zon === 0; });
+          if (hqBalai.length === 0) return;
+          const { cats, grand } = getZonValues(0);
+          const tr = document.createElement('tr');
+          tr.className = 'zon-row';
+
+          const td1 = document.createElement('td');
+          tr.appendChild(td1);
+
+          const td2 = document.createElement('td');
+          td2.className = 'zon-label zon-hq';
+          td2.textContent = 'HQ';
+          tr.appendChild(td2);
+
+          cats.forEach((arr) => {
+            arr.forEach((v) => {
+              const td = document.createElement('td');
+              td.textContent = v || '';
+              td.className = 'jumlah-cell';
+              tr.appendChild(td);
+            });
+          });
+
+          grand.forEach((v) => {
+            const td = document.createElement('td');
+            td.textContent = v || '';
+            td.className = 'jumlah-cell';
+            tr.appendChild(td);
+          });
+          tbody.appendChild(tr);
+        })();
+        // ✅⬆️⬆️⬆️ HABIS KOD BARU ⬆️⬆️⬆️
+
         const grandZon = getGrandValues();
         const gzTr = document.createElement('tr');
         gzTr.className = 'grand-row';
+
+
+
         const gz1 = document.createElement('td');
         gzTr.appendChild(gz1);
         const gz2 = document.createElement('td');
@@ -11480,8 +11591,12 @@ function switchView(v) {
               const th = document.createElement('th');
               th.colSpan = span;
               th.className = 'zon-header zon-' + viewBalaiZon[i];
-              th.textContent = 'ZON ' + viewBalaiZon[i];
-              th.style.color = 'var(--zon' + viewBalaiZon[i] + ')';
+              th.textContent = (viewBalaiZon[i] === 0 ? 'HQ' : ('ZON ' + viewBalaiZon[i]));
+              if (viewBalaiZon[i] === 0) {
+                th.style.color = 'var(--purple)';
+              } else {
+                th.style.color = 'var(--zon' + viewBalaiZon[i] + ')';
+              }
               hRow.appendChild(th);
               zStart = i + 1;
             }
