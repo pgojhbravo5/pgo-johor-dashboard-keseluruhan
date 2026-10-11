@@ -5853,7 +5853,7 @@
         try { unsubscribeFromSystemControl(); } catch (e) {}
         try { unsubscribeFromBalaiUpdates(); } catch (e) {}
         try { if (window.__pollLockTimer) clearInterval(window.__pollLockTimer); } catch (e) {}
-        
+        try { if (window.__pollReloadTimer) clearInterval(window.__pollReloadTimer); } catch (e) {}        
         try {
           if (typeof store !== 'undefined' && store) {
                         localStorage.setItem('bomba-ui-prefs', JSON.stringify({
@@ -13566,8 +13566,7 @@ lastDataSignature = computeDataSignature(apiData);
           startScheduledArchiveResetTimer();
           startAutoResetCountdown();
 
-          // ✅ OPTIMASI: Polling panel_lock & system_control setiap 5 minit sahaja
-          // (ganti realtime subscription yang dimatikan di atas)
+          // ✅ OPTIMASI: Polling panel_lock setiap 5 minit
           if (window.__pollLockTimer) clearInterval(window.__pollLockTimer);
           window.__pollLockTimer = setInterval(async function () {
             if (document.hidden) return;
@@ -13576,6 +13575,39 @@ lastDataSignature = computeDataSignature(apiData);
               refreshAllPanelLocks();
             } catch (e) { /* silent */ }
           }, 5 * 60 * 1000); // 5 minit
+
+          // ✅ OPTIMASI: Polling hard_reload flag setiap 30 saat (ganti realtime)
+          if (window.__pollReloadTimer) clearInterval(window.__pollReloadTimer);
+          window.__lastReloadId = null;
+          window.__pollReloadTimer = setInterval(async function () {
+            if (document.hidden) return;
+            try {
+              const { data, error } = await sb
+                .from('system_control')
+                .select('id, request_id, triggered_by, triggered_at')
+                .eq('command', 'hard_reload')
+                .order('id', { ascending: false })
+                .limit(1);
+
+              if (error || !data || data.length === 0) return;
+
+              const latest = data[0];
+              if (!latest || !latest.request_id) return;
+
+              // First time load — ingat ID supaya tak reload sendiri
+              if (window.__lastReloadId === null) {
+                window.__lastReloadId = latest.request_id;
+                return;
+              }
+
+              // Jika ada request_id BARU → reload
+              if (latest.request_id !== window.__lastReloadId) {
+                window.__lastReloadId = latest.request_id;
+                console.log('[PollReload] 🔄 Hard reload diterima:', latest.triggered_by);
+                showHardReloadNotice(latest.triggered_by);
+              }
+            } catch (e) { /* silent */ }
+          }, 60 * 1000); // 60 saat
 
           showToast('Data berjaya dimuatkan dari Supabase', 'success');
 
