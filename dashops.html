@@ -383,8 +383,126 @@
         letter-spacing: 0.5px;
       }
 
+      /* ============ IPU (KUALITI UDARA) TICKER ============ */
+      .ipu-ticker-container {
+        width: 100%;
+        overflow: hidden;
+        background: linear-gradient(90deg, #0a1a0f 0%, #0f2415 50%, #0a1a0f 100%);
+        border-top: 1px solid #1a4020;
+        border-bottom: 1px solid #1a4020;
+        padding: 5px 0;
+        margin-bottom: 0;
+        flex-shrink: 0;
+        position: relative;
+      }
+      .ipu-ticker-container::before,
+      .ipu-ticker-container::after {
+        content: '';
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        width: 40px;
+        z-index: 2;
+        pointer-events: none;
+      }
+      .ipu-ticker-container::before {
+        left: 0;
+        background: linear-gradient(90deg, #0a1a0f 0%, transparent 100%);
+      }
+      .ipu-ticker-container::after {
+        right: 0;
+        background: linear-gradient(270deg, #0a1a0f 0%, transparent 100%);
+      }
+      .ipu-ticker {
+        display: flex;
+        flex-wrap: nowrap;
+        white-space: nowrap;
+        animation: ipu-ticker-scroll 45s linear infinite;
+        padding: 0;
+        will-change: transform;
+        width: max-content;
+      }
+      .ipu-ticker-container:hover .ipu-ticker {
+        animation-play-state: paused;
+      }
+      @keyframes ipu-ticker-scroll {
+        0% { transform: translateX(0); }
+        100% { transform: translateX(-50%); }
+      }
+      .ipu-item {
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+        padding: 3px 10px;
+        margin: 0 6px;
+        font-size: 0.62rem;
+        font-weight: 600;
+        letter-spacing: 0.3px;
+        border-radius: 12px;
+        cursor: pointer;
+        transition: all 0.2s;
+        border: 1px solid transparent;
+        flex-shrink: 0;
+      }
+      .ipu-item:hover {
+        background: rgba(255, 255, 255, 0.08);
+        border-color: var(--text-gold);
+        transform: scale(1.05);
+      }
+      .ipu-item:active { transform: scale(0.95); }
+      .ipu-badge {
+        font-weight: 800;
+        font-size: 0.68rem;
+        padding: 1px 7px;
+        border-radius: 8px;
+        background: rgba(0, 0, 0, 0.35);
+        border: 1px solid currentColor;
+      }
+      .ipu-value {
+        font-weight: 700;
+        font-size: 0.68rem;
+      }
+      .ipu-location {
+        color: #8899b0;
+        font-size: 0.6rem;
+      }
+      .ipu-separator {
+        color: #3a4a6e;
+        opacity: 0.6;
+        margin: 0 2px;
+      }
+      .ipu-loading {
+        display: inline-block;
+        color: #7a8ba0;
+        font-size: 0.62rem;
+        padding: 2px 20px;
+        animation: pulse 2s ease-in-out infinite;
+      }
+      .ipu-baik            { color: #2ecc71; }
+      .ipu-sederhana       { color: #ffd93d; }
+      .ipu-tidak-sihat     { color: #ff9f43; }
+      .ipu-sangat-tidak-sihat { color: #ff4757; }
+      .ipu-berbahaya       { color: #c0392b; }
+
+      body.light-mode .ipu-ticker-container {
+        background: linear-gradient(90deg, #e8f5ec 0%, #f0faf3 50%, #e8f5ec 100%);
+        border-color: #b8dcc4;
+      }
+      body.light-mode .ipu-ticker-container::before {
+        background: linear-gradient(90deg, #e8f5ec 0%, transparent 100%);
+      }
+      body.light-mode .ipu-ticker-container::after {
+        background: linear-gradient(270deg, #e8f5ec 0%, transparent 100%);
+      }
+      body.light-mode .ipu-item { color: #2a4a35; }
+      body.light-mode .ipu-item:hover { background: rgba(0, 0, 0, 0.05); }
+      body.light-mode .ipu-location { color: #5a7a65; }
+
       /* ============ ONGOING (KES BELUM SELESAI) TICKER ============ */
       .ongoing-ticker-container {
+
+
+
         width: 100%;
         overflow: hidden;
         background: linear-gradient(
@@ -1904,26 +2022,32 @@
           padding: 6px 12px !important;
         }
         .weather-ticker-container,
+        .ipu-ticker-container,
         .ongoing-ticker-container {
           padding: 3px 0;
         }
         .weather-item,
+        .ipu-item,
         .ongoing-item {
           font-size: 0.55rem;
           padding: 3px 8px;
           margin: 0 3px;
         }
         .weather-icon,
+        .ipu-badge,
         .ongoing-item .ongoing-emoji {
           font-size: 0.75rem;
         }
-        .weather-temp {
+        .weather-temp,
+        .ipu-value {
           font-size: 0.6rem;
         }
         .weather-location,
+        .ipu-location,
         .ongoing-item .ongoing-balai {
           font-size: 0.55rem;
         }
+        
         .ticker-hint {
           font-size: 0.45rem;
         }
@@ -2177,7 +2301,25 @@
         background: rgba(0, 0, 0, 0.05);
         border-color: #d97706;
       }
+
+      /* ============ LIGHT MODE - IPU MODAL OVERRIDES ============ */
+      body.light-mode .weather-modal [style*="rgba(0,0,0,0.2)"] {
+        background: #f1f5f9 !important;
+      }
+      body.light-mode .weather-modal [style*="rgba(0,0,0,0.25)"] {
+        background: #e2e8f0 !important;
+      }
+      body.light-mode .weather-modal [style*="color:#aaa"] {
+        color: #4a5568 !important;
+      }
+      body.light-mode .weather-modal [style*="color:#8899b0"] {
+        color: #64748b !important;
+      }
+      body.light-mode .weather-modal [style*="color:#5a6a80"] {
+        color: #94a3b8 !important;
+      }
     </style>
+    
     <link
       rel="stylesheet"
       href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
@@ -2224,7 +2366,24 @@
           </button>
         </div>
         <div class="weather-modal-subtitle" id="weatherModalDate"></div>
+
         <div class="weather-forecast-grid" id="weatherForecastGrid">
+          <div class="weather-loading-forecast">⏳ Memuat data...</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- IPU (KUALITI UDARA) DETAIL MODAL -->
+    <div class="weather-modal-overlay" id="ipuModalOverlay" onclick="closeIPUModal(event)">
+      <div class="weather-modal" id="ipuModal" onclick="event.stopPropagation()">
+        <button class="weather-modal-close" onclick="closeIPUModal()">✕</button>
+        <div class="weather-modal-nav">
+          <button class="weather-nav-arrow" onclick="navigateIPUCity(-1)">⬅️</button>
+          <div class="weather-modal-title" id="ipuModalTitle">🌬️ KUALITI UDARA</div>
+          <button class="weather-nav-arrow" onclick="navigateIPUCity(1)">➡️</button>
+        </div>
+        <div class="weather-modal-subtitle" id="ipuModalDate"></div>
+        <div id="ipuModalContent">
           <div class="weather-loading-forecast">⏳ Memuat data...</div>
         </div>
       </div>
@@ -2232,6 +2391,8 @@
 
     <!-- HEADER -->
     <header>
+
+
       <div class="header-left">
         <span class="day-badge-large" id="dayBadge">📅 DAY -</span>
         <div class="datetime-display">
@@ -2275,15 +2436,23 @@
       </div>
     </div>
 
+    <!-- IPU (KUALITI UDARA) TICKER -->
+    <div class="ipu-ticker-container" id="ipuTickerContainer">
+      <div class="ipu-ticker" id="ipuTicker">
+        <span class="ipu-loading">🌬️ Memuat data IPU...</span>
+      </div>
+    </div>
+
     <!-- ONGOING (KES BELUM SELESAI) TICKER -->
     <div class="ongoing-ticker-container" id="ongoingTickerContainer">
+
       <div class="ongoing-ticker" id="ongoingTicker">
         <span class="ongoing-loading">⏳ Memuat kes...</span>
       </div>
     </div>
 
     <div class="ticker-hint">
-      👆 RAMALAN CUACA 12 JAM · PAPARAN KES BELUM SELESAI/ SEDANG BEROPERASI 👆
+      👆 CUACA · IPU (KUALITI UDARA) · KES BELUM SELESAI 👆
     </div>
 
     <!-- MAIN GRID -->
@@ -2683,10 +2852,16 @@
         popupStartX = 0,
         popupStartY = 0,
         dragTarget = null;
+
       let weatherData = [],
         weatherForecastData = [],
         currentWeatherCityIndex = 0,
         forecastFetchPromise = null;
+
+      // IPU STATE
+      let ipuData = [],
+        currentIPUCityIndex = 0,
+        ipuFetchPromise = null;
 
       // SEARCH STATE (PANEL)
       let searchAllQuery = '';
@@ -4087,8 +4262,165 @@
       }
 
       // ================================================================
+      // IPU (KUALITI UDARA)
+      // ================================================================
+      function getIPULevel(aqi) {
+        if (aqi <= 50)
+          return { label: 'Baik', cssClass: 'ipu-baik', emoji: '🟢', color: '#2ecc71' };
+        if (aqi <= 100)
+          return { label: 'Sederhana', cssClass: 'ipu-sederhana', emoji: '🟡', color: '#ffd93d' };
+        if (aqi <= 200)
+          return { label: 'Tidak Sihat', cssClass: 'ipu-tidak-sihat', emoji: '🟠', color: '#ff9f43' };
+        if (aqi <= 300)
+          return { label: 'Sangat Tidak Sihat', cssClass: 'ipu-sangat-tidak-sihat', emoji: '🔴', color: '#ff4757' };
+        return { label: 'Berbahaya', cssClass: 'ipu-berbahaya', emoji: '⚫', color: '#c0392b' };
+      }
+
+      async function fetchIPUData() {
+        try {
+          const lats = JOHOR_CITIES.map((c) => c.lat).join(',');
+          const lngs = JOHOR_CITIES.map((c) => c.lng).join(',');
+          const url =
+            'https://air-quality-api.open-meteo.com/v1/air-quality' +
+            '?latitude=' + lats +
+            '&longitude=' + lngs +
+            '&current=pm10,pm2_5,carbon_monoxide,nitrogen_dioxide,sulphur_dioxide,ozone,us_aqi' +
+            '&timezone=Asia%2FSingapore';
+          const r = await fetch(url);
+          if (!r.ok) throw new Error('HTTP ' + r.status);
+          const d = await r.json();
+
+          function mapCity(base, name) {
+            return {
+              name: name,
+              aqi: Math.round(base.us_aqi || 0),
+              pm10: base.pm10,
+              pm25: base.pm2_5,
+              co: base.carbon_monoxide,
+              no2: base.nitrogen_dioxide,
+              so2: base.sulphur_dioxide,
+              o3: base.ozone,
+              time: base.time,
+            };
+          }
+
+          if (Array.isArray(d)) {
+            ipuData = d.map((city, i) => mapCity(city.current, JOHOR_CITIES[i].name));
+          } else {
+            ipuData = JOHOR_CITIES.map((c) => mapCity(d.current, c.name));
+          }
+          updateIPUTicker();
+        } catch (e) {
+          console.error('IPU error:', e.message);
+          const t = document.getElementById('ipuTicker');
+          if (t) t.innerHTML = '<span class="ipu-loading">⚠️ Data IPU tidak tersedia</span>';
+        }
+      }
+
+      function updateIPUTicker() {
+        const t = document.getElementById('ipuTicker');
+        if (!t || !ipuData.length) return;
+
+        let h = '';
+        ipuData.forEach((c, i) => {
+          const level = getIPULevel(c.aqi);
+          h +=
+            '<span class="ipu-item" onclick="event.stopPropagation();openIPUDetail(' + i + ')" ' +
+            'title="Klik untuk maklumat IPU ' + c.name + '">' +
+              '<span class="ipu-badge ' + level.cssClass + '">' + level.emoji + ' ' + c.aqi + '</span>' +
+              '<span class="ipu-value ' + level.cssClass + '">' + level.label + '</span>' +
+              '<span class="ipu-location">' + c.name + '</span>' +
+            '</span>';
+          if (i < ipuData.length - 1)
+            h += '<span class="ipu-separator">|</span>';
+        });
+        t.innerHTML = h + h;
+      }
+
+      function openIPUDetail(cityIndex) {
+        currentIPUCityIndex = cityIndex;
+        document.getElementById('ipuModalOverlay').classList.add('active');
+        document.body.style.overflow = 'hidden';
+        renderIPUDetail();
+        if (!ipuData.length && !ipuFetchPromise) {
+          ipuFetchPromise = fetchIPUData().finally(() => { ipuFetchPromise = null; });
+        }
+      }
+
+      function closeIPUModal(e) {
+        if (e && e.target !== e.currentTarget) return;
+        document.getElementById('ipuModalOverlay').classList.remove('active');
+        document.body.style.overflow = '';
+      }
+
+      function navigateIPUCity(dir) {
+        currentIPUCityIndex += dir;
+        if (currentIPUCityIndex < 0) currentIPUCityIndex = JOHOR_CITIES.length - 1;
+        if (currentIPUCityIndex >= JOHOR_CITIES.length) currentIPUCityIndex = 0;
+        renderIPUDetail();
+      }
+
+      function renderIPUPollutant(name, value, unit) {
+        const v = (value == null || isNaN(value)) ? '-' : Number(value).toFixed(1);
+        return (
+          '<div style="background:rgba(0,0,0,0.25);padding:8px 6px;border-radius:6px;text-align:center;">' +
+            '<div style="font-size:0.6rem;color:#8899b0;font-weight:600;">' + name + '</div>' +
+            '<div style="font-size:1rem;font-weight:800;color:#5b9bd5;">' + v + '</div>' +
+            '<div style="font-size:0.5rem;color:#5a6a80;">' + unit + '</div>' +
+          '</div>'
+        );
+      }
+
+      function renderIPUDetail() {
+        const title = document.getElementById('ipuModalTitle');
+        const dateEl = document.getElementById('ipuModalDate');
+        const content = document.getElementById('ipuModalContent');
+        if (!title || !content) return;
+
+        const city = ipuData[currentIPUCityIndex];
+        if (!city) {
+          title.textContent = '🌬️ KUALITI UDARA';
+          content.innerHTML =
+            '<div class="weather-loading-forecast">⏳ Memuat data...</div>';
+          return;
+        }
+
+        const level = getIPULevel(city.aqi);
+        title.textContent = '🌬️ KUALITI UDARA - ' + city.name;
+        dateEl.textContent = '🕒 Kemaskini: ' +
+          (city.time ? city.time.replace('T', ' ') : '-');
+
+        content.innerHTML =
+          '<div style="text-align:center;padding:20px 10px;background:rgba(0,0,0,0.2);' +
+              'border-radius:12px;margin-bottom:15px;border:2px solid ' + level.color + ';">' +
+            '<div style="font-size:3rem;font-weight:900;color:' + level.color + ';line-height:1;">' +
+              city.aqi + '</div>' +
+            '<div style="font-size:1rem;font-weight:700;color:' + level.color + ';margin-top:6px;">' +
+              level.emoji + ' ' + level.label.toUpperCase() + '</div>' +
+            '<div style="font-size:0.7rem;color:#8899b0;margin-top:6px;">' +
+              'Indeks Pencemaran Udara (US AQI / IPU)</div>' +
+          '</div>' +
+          '<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;">' +
+            renderIPUPollutant('PM2.5', city.pm25, 'µg/m³') +
+            renderIPUPollutant('PM10',  city.pm10, 'µg/m³') +
+            renderIPUPollutant('O₃',    city.o3,   'µg/m³') +
+            renderIPUPollutant('NO₂',   city.no2,  'µg/m³') +
+            renderIPUPollutant('SO₂',   city.so2,  'µg/m³') +
+            renderIPUPollutant('CO',    city.co,   'µg/m³') +
+          '</div>' +
+          '<div style="margin-top:15px;padding:12px;background:rgba(0,0,0,0.2);' +
+              'border-radius:8px;font-size:0.7rem;color:#aaa;line-height:1.7;">' +
+            '<strong style="color:#ffaa00;">📖 PANDUAN IPU:</strong><br>' +
+            '🟢 0–50 <b>Baik</b> · 🟡 51–100 <b>Sederhana</b><br>' +
+            '🟠 101–200 <b>Tidak Sihat</b> · 🔴 201–300 <b>Sangat Tidak Sihat</b><br>' +
+            '⚫ 301+ <b>Berbahaya</b>' +
+          '</div>';
+      }
+
+      // ================================================================
       // DATA FETCHING
       // ================================================================
+
       async function fetchSingleCSV(url, label) {
         try {
           const response = await fetch(url, { cache: 'no-cache' });
@@ -5326,6 +5658,14 @@
         if (event.key === 'Escape') {
           if (
             document
+              .getElementById('ipuModalOverlay')
+              .classList.contains('active')
+          ) {
+            closeIPUModal();
+            return;
+          }
+          if (
+            document
               .getElementById('weatherModalOverlay')
               .classList.contains('active')
           ) {
@@ -5340,6 +5680,7 @@
           }
           if (expandedPanel) collapseAllPanels();
         }
+        
         if (event.ctrlKey && event.key === 'r') {
           event.preventDefault();
           forceRefresh();
@@ -5366,10 +5707,12 @@
         fetchAllData();
 
         setTimeout(() => fetchWeatherData(), 3000);
+        setTimeout(() => fetchIPUData(), 4500);
         setTimeout(() => fetchWeatherForecast(), 6000);
 
         setInterval(fetchAllData, 60000);
         setInterval(fetchWeatherData, 600000);
+        setInterval(fetchIPUData, 600000);
         setInterval(fetchWeatherForecast, 600000);
 
         updateFullscreenButton();
