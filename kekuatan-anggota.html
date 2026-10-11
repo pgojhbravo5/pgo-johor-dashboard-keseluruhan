@@ -6424,9 +6424,10 @@ const SCHEDULED_WINDOW_MIN = 5;
         const widget = document.getElementById('autoReloadWidget');
         if (!timeEl || !pauseBtn || !widget) return;
 
-        const m = Math.floor(autoReloadRemaining / 60);
-        const s = autoReloadRemaining % 60;
-        timeEl.textContent = m + ':' + String(s).padStart(2, '0');
+        const h = Math.floor(autoReloadRemaining / 3600);
+const m = Math.floor((autoReloadRemaining % 3600) / 60);
+const s = autoReloadRemaining % 60;
+timeEl.textContent = h + ':' + String(m).padStart(2, '0') + ':' + String(s).padStart(2, '0');
 
         try {
           const now = getMalaysiaNow();
