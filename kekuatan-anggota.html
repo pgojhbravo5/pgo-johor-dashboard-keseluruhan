@@ -4407,7 +4407,7 @@
         <div class="auto-reset-notice-icon">⚠</div>
         <h3 id="autoResetNoticeTitle">MAKLUMAN SISTEM</h3>
         <p class="auto-reset-notice-text">
-          Sistem sedang menjalankan <b>auto-arkib &amp; reset balai</b>.
+          Sistem sedang menjalankan <b>auto-reset balai</b>.
         </p>
         <p class="auto-reset-notice-text">
           Halaman ini akan <b>dimuat semula</b> sebentar lagi.
@@ -6536,14 +6536,14 @@ function updateAutoResetCountdown() {
 
     if (isImminent) {
       const timeStr = (m > 0 ? m + ' minit ' + s + ' saat' : s + ' saat');
-      widget.title = '⚠️ Auto-arkib + reset akan bermula dalam ' + timeStr +
+      widget.title = '⚠️ Auto-reset akan bermula dalam ' + timeStr +
         '\n(' + nearest.slot.label + ')';
     } else {
-      widget.title = 'Auto-arkib + reset seterusnya: ' + nearest.slot.label +
+      widget.title = 'Auto-reset seterusnya: ' + nearest.slot.label +
         '\nMasa berbaki: ' + h + 'j ' + m + 'm ' + s + 's' +
-        '\n\nSistem akan: arkib semua balai → reset → auto-unlock panel → reload';
+        '\n\nSistem akan: reset semua balai → auto-unlock panel → reload';
     }
-  } catch (e) {
+    } catch (e) {
     // Silent fail
   }
 }
@@ -6750,7 +6750,7 @@ updateDirtyUI();
           showToast('Auto-reset gagal: ' + err.message, 'error');
         }
       }
-      
+
       function startScheduledArchiveResetTimer() {
         stopScheduledArchiveResetTimer();
         scheduledTickTimer = setInterval(checkScheduledArchiveReset, 20 * 1000);
