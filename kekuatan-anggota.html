@@ -6371,13 +6371,13 @@ function unsubscribeFromPanelLockChanges() {
         };
       }
 
-      const AUTO_REFRESH_SECONDS = 5 * 60;
+      const AUTO_REFRESH_SECONDS = 60 * 60;
 
-      const SCHEDULED_SLOTS = [
-        { hour: 7,  minute: 59, label: 'Pagi (07:59)' },
-        { hour: 19, minute: 59, label: 'Petang (19:59)' },
-      ];
-      const SCHEDULED_WINDOW_MIN = 5;
+const SCHEDULED_SLOTS = [
+  { hour: 7,  minute: 59, label: 'Pagi (07:59)' },
+  { hour: 19, minute: 59, label: 'Petang (19:59)' },
+];
+const SCHEDULED_WINDOW_MIN = 5;
       const SCHEDULED_KEY_PREFIX = 'bomba-slot-';
 
       let autoReloadRemaining = AUTO_REFRESH_SECONDS;
@@ -6446,9 +6446,10 @@ function unsubscribeFromPanelLockChanges() {
           const h = Math.floor(nearest.delta / 60);
           const mm = nearest.delta % 60;
           widget.title =
-            'Soft reload: setiap 5 min\n' +
-            'Auto-arkib + reset + reload: ' + nearest.slot.label +
-            ' (~' + h + 'j ' + mm + 'm lagi)';
+          widget.title =
+  'Soft reload: setiap 1 jam\n' +
+  'Auto-arkib + reset + reload: ' + nearest.slot.label +
+  ' (~' + h + 'j ' + mm + 'm lagi)';
         } catch (e) {}
 
         if (autoReloadPaused) {
