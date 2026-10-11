@@ -2986,39 +2986,41 @@
       let cfTempSelected = new Set();
 
       function getColDisplayValue(d, colKey) {
-        // Tambah logik ini di bahagian paling atas fungsi:
+        // 1. Kolum mentah tanpa pemetaan (contoh: raw_25)
         if (colKey.startsWith('raw_')) {
           const index = parseInt(colKey.replace('raw_', ''), 10);
           return clean(d.raw[index]) || '-';
         }
-        
+
+        // 2. Kes khas yang perlu format khas
         if (colKey === 'bil') return d.bil || '-';
-        if (colKey === 'tahun') return d.tahun || '-';
-
-
-        if (colKey === 'monsun') return d.monsun;
-        if (colKey === 'bulan') return d.bulan || '-';
-        if (colKey === 'hari') return d.hari || '-';
-        if (colKey === 'tarikhStr') return d.tarikhStr;
-        if (colKey === 'daerah') return d.daerah;
-        if (colKey === 'zon') return d.zon;
-        if (colKey === 'balai') return d.balai;
-        if (colKey === 'callCard') return d.callCard || '-';
-        if (colKey === 'kategori') return d.kategori;
-        if (colKey === 'subKategori1') return d.subKategori1;
-        if (colKey === 'subKategori2') return d.subKategori2;
-        if (colKey === 'jenis') return d.jenis;
         if (colKey === 'jarak') return d.jarak > 0 ? d.jarak.toFixed(1) : '-';
-        if (colKey === 'masaTerima') return d.masaTerima;
-        if (colKey === 'masaLooping') return d.masaLooping;
-        if (colKey === 'masaBerlepas') return d.masaBerlepas;
-        if (colKey === 'masaTiba') return d.masaTiba;
-        if (colKey === 'masaTamat') return d.masaTamat;
         if (colKey === 'rt') return d.rt != null ? d.rt.toFixed(1) : '-';
-        if (colKey === 'statusOperasi') return d.statusOperasi;
-        return '';
-      }
+        if (colKey === 'tarikhStr') return d.tarikhStr || '-';
 
+        // 3. Kalau nilai wujud dalam objek data, guna terus
+        if (Object.prototype.hasOwnProperty.call(d, colKey)) {
+          const v = d[colKey];
+          if (v == null) return '-';
+          if (typeof v === 'number') {
+            // Format nombor perpuluhan (nart, sela, dll.)
+            return Number.isInteger(v) ? String(v) : v.toFixed(2);
+          }
+          if (v === '') return '-';
+          return v;
+        }
+
+        // 4. Fallback: ambil dari raw data guna index dari TABLE_COLS
+        const colDef = TABLE_COLS.find((c) => c.key === colKey);
+        if (colDef && colDef.index != null) {
+          const rawVal = clean(d.raw[colDef.index]);
+          return rawVal || '-';
+        }
+
+        // 5. Fallback terakhir
+        return '-';
+      }
+      
       function buildTableHeaders() {
         const thead = document.getElementById('tableHead');
         const visible = TableColPrefs.getVisible();
