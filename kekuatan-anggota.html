@@ -5499,6 +5499,7 @@
         try { stopAutoResetCountdown(); } catch (e) {}
         try { unsubscribeFromPanelLockChanges(); } catch (e) {}
         try { unsubscribeFromSystemControl(); } catch (e) {}
+        try { unsubscribeFromBalaiUpdates(); } catch (e) {}   // ⬅️ TAMBAH BARIS INI
         try {
           if (typeof store !== 'undefined' && store) {
                         localStorage.setItem('bomba-ui-prefs', JSON.stringify({
@@ -6312,6 +6313,207 @@ function unsubscribeFromPanelLockChanges() {
       }
       // ✅ END MANUAL HARD-RELOAD SYSTEM
 
+      // ✅ REALTIME BROADCAST — Segerakkan data balai antara semua pengguna
+      // Strategi "Pilihan Tengah":
+      //   • Butang "Hantar PGO" KEKAL (validasi + draf setempat)
+      //   • Selepas simpan berjaya → hantar 1 mesej Broadcast kecil (nama balai sahaja)
+      //   • Klien lain terima → tarik semula DATA BALAI ITU SAHAJA
+      //   • Auto-reload 1 jam kekal sebagai sandaran (fallback)
+      // Ini turunkan mesej Realtime dari ~11,500 → ~48 per simpan,
+      // dan egress rendah (6 query kecil berbanding keseluruhan DB).
+
+      let balaiUpdateChannel = null;
+      const BALAI_UPDATE_EVENT = 'balai_updated';
+      const RECENT_LOCAL_BALAI_TTL_MS = 3000;
+
+      function subscribeToBalaiUpdates() {
+        if (balaiUpdateChannel) return;
+
+        balaiUpdateChannel = sb
+          .channel('balai_updates_realtime')
+          .on(
+            'broadcast',
+            { event: BALAI_UPDATE_EVENT },
+            function (msg) {
+              const payload = msg && msg.payload ? msg.payload : {};
+              const balaiName = payload.balai;
+              if (!balaiName) return;
+
+              // Abaikan mesej sendiri (baru simpan)
+              const recent = recentLocalChanges['balai_' + balaiName];
+              if (recent && Date.now() - recent < RECENT_LOCAL_BALAI_TTL_MS) {
+                console.log('[BalaiUpdate] Skip own broadcast:', balaiName);
+                return;
+              }
+
+              // Jangan timpa draf setempat yang belum dihantar
+              if (dirtyBalai && dirtyBalai.has(balaiName)) {
+                console.log('[BalaiUpdate] Skip — ada draf setempat untuk', balaiName);
+                return;
+              }
+
+              console.log('[BalaiUpdate] Menerima isyarat untuk balai:', balaiName);
+              refetchBalaiData(balaiName);
+            }
+          )
+          .subscribe(function (status) {
+            if (status === 'SUBSCRIBED') {
+              console.log('[Realtime] ✅ Subscribed ke balai_updates');
+            } else if (status === 'CHANNEL_ERROR' || status === 'TIMED_OUT') {
+              console.warn('[Realtime] ⚠️ balai_updates connection issue:', status);
+            }
+          });
+      }
+
+      function unsubscribeFromBalaiUpdates() {
+        if (balaiUpdateChannel) {
+          sb.removeChannel(balaiUpdateChannel);
+          balaiUpdateChannel = null;
+          console.log('[Realtime] Unsubscribed dari balai_updates');
+        }
+      }
+
+      function broadcastBalaiUpdate(balaiName) {
+        if (!balaiUpdateChannel || !balaiName) return;
+        recentLocalChanges['balai_' + balaiName] = Date.now();
+        try {
+          balaiUpdateChannel.send({
+            type: 'broadcast',
+            event: BALAI_UPDATE_EVENT,
+            payload: { balai: balaiName, at: new Date().toISOString() },
+          });
+          console.log('[BalaiUpdate] Broadcast dihantar untuk balai:', balaiName);
+        } catch (e) {
+          console.warn('[BalaiUpdate] Gagal broadcast:', e.message);
+        }
+      }
+
+      // Bina balai state dari rows Supabase (untuk 1 balai sahaja)
+      function buildBalaiStateFromRows(balaiName, rows) {
+        const identRow = (rows.ident && rows.ident[0]) || null;
+        const identData = {
+          balai: balaiName,
+          shif: (identRow && identRow.shif) || '',
+          tarikh: (identRow && identRow.tarikh) || '',
+          kategori: (identRow && identRow.kategori) || '',
+        };
+
+        const personelList = (rows.personel || []).map(function (r) {
+          return {
+            nama: r.nama || '', pangkat: r.pangkat || '',
+            noBadan: r.no_badan || '', noTelefon: r.no_telefon || '',
+            peranan: r.peranan || '', pasukan: r.pasukan || '',
+            status: r.status || '',
+            unit1: r.unit1 || '', unit2: r.unit2 || '',
+            unit3: r.unit3 || '', unit4: r.unit4 || '',
+            catatan: r.catatan || '',
+          };
+        });
+
+        function mapEquip(list) {
+          return (list || []).map(function (r) {
+            return {
+              maklumat: r.maklumat || '', kategori: r.kategori || '',
+              status: r.status || '', catatan: r.catatan || '',
+            };
+          });
+        }
+
+        const komList = (rows.komunikasi || []).map(function (r) {
+          return {
+            maklumat: r.maklumat || '', kategori: r.kategori || '',
+            jumlah: r.jumlah || '', status: r.status || '', catatan: r.catatan || '',
+          };
+        });
+
+        const jenteraList = mapEquip(rows.jentera);
+        const marinList = mapEquip(rows.marin);
+        const utilitiList = mapEquip(rows.utiliti);
+
+        return {
+          ident: identData,
+          personel: personelList.length > 0
+            ? personelList
+            : Array.from({ length: 1 }, emptyPersonel),
+          equip: {
+            jentera: jenteraList.length > 0
+              ? jenteraList
+              : Array.from({ length: 1 }, function () { return emptyEquip(''); }),
+            marin: marinList.length > 0
+              ? marinList
+              : Array.from({ length: 1 }, function () { return emptyEquip(''); }),
+            utiliti: utilitiList.length > 0
+              ? utilitiList
+              : Array.from({ length: 1 }, function () { return emptyEquip(''); }),
+            komunikasi: komList.length > 0
+              ? komList
+              : KOMUNIKASI_DEF.map(function (k) { return emptyKom(k.name); }),
+          },
+        };
+      }
+
+      // Tarik semula data 1 balai SAHAJA (6 query kecil)
+      async function refetchBalaiData(balaiName) {
+        try {
+          const tables = ['ident', 'personel', 'jentera', 'marin', 'utiliti', 'komunikasi'];
+          const results = await Promise.all(
+            tables.map(function (t) {
+              return sb.from(t).select('*').eq('balai', balaiName);
+            })
+          );
+
+          for (let i = 0; i < results.length; i++) {
+            if (results[i].error) {
+              throw new Error(tables[i] + ': ' + results[i].error.message);
+            }
+          }
+
+          const rows = {
+            ident: results[0].data || [],
+            personel: results[1].data || [],
+            jentera: results[2].data || [],
+            marin: results[3].data || [],
+            utiliti: results[4].data || [],
+            komunikasi: results[5].data || [],
+          };
+
+          const newBalaiState = buildBalaiStateFromRows(balaiName, rows);
+
+          // Double-check: jangan timpa draf setempat
+          if (dirtyBalai && dirtyBalai.has(balaiName)) {
+            console.log('[RefetchBalai] Skip — ada draf setempat untuk', balaiName);
+            return;
+          }
+
+          store.balai[balaiName] = newBalaiState;
+
+          const isBalaiView = (store.view === 'balai');
+          const isActiveBalai = isBalaiView && (store.activeBalai === balaiName);
+
+          if (isActiveBalai) {
+            state = newBalaiState;
+            state.ident.balai = balaiName;
+            renderTopBar();
+            renderAll();
+            refreshAllPanelLocks();
+          } else if (isBalaiView) {
+            // Balai lain — cukup update tabbar (indikator)
+            renderTabbar();
+            renderStats();
+          } else {
+            // Paparan agregat (dashboard / summary / ketua / balai_sum / mers / bkb / semak_lokasi)
+            renderAll();
+          }
+
+          playToastSuccessSound();
+          showToast('🔄 Balai "' + balaiName + '" dikemaskini oleh pengguna lain', 'success');
+
+        } catch (e) {
+          console.warn('[RefetchBalai] Gagal tarik data balai:', e.message);
+        }
+      }
+      // ✅ END REALTIME BROADCAST BALAI
+
       async function deleteBalaiRows(table, balaiName) {
         const { error } = await sb.from(table).delete().eq('balai', balaiName);
         if (error) throw new Error('delete ' + table + ': ' + error.message);
@@ -6446,7 +6648,6 @@ timeEl.textContent = h + ':' + String(m).padStart(2, '0') + ':' + String(s).padS
           }
           const h = Math.floor(nearest.delta / 60);
           const mm = nearest.delta % 60;
-          widget.title =
           widget.title =
   'Soft reload: setiap 1 jam\n' +
   'Auto-arkib + reset + reload: ' + nearest.slot.label +
@@ -12616,8 +12817,10 @@ function switchView(v) {
         await loadPanelLockStates();
         subscribeToPanelLockChanges();
         subscribeToSystemControl();
+        subscribeToBalaiUpdates();          // ⬅️ TAMBAH BARIS INI
         initAutoResetNotice();
-                        initFeedbackModal();
+        
+        initFeedbackModal();
         updatePrintFooterDate();
         fillPrintFooter(loadPrintInfo());
         setLoading(true, 'Memuatkan data dari Supabase…');
@@ -12826,13 +13029,16 @@ btn.classList.add('saved');
 label.textContent = 'Disimpan!';
 const t = new Date().toLocaleTimeString('ms-MY');
 markClean(t);
-clearDraftForBalai(store.activeBalai);   // ⬅️ Padam draf balai ini
-try {
-  const fresh = await loadAllFromAPI();
-  lastDataSignature = computeDataSignature(fresh);
-} catch (e) {}
-showToast('Data ' + store.activeBalai + ' berjaya dihantar ke Supabase', 'success');
+          clearDraftForBalai(store.activeBalai);   // ⬅️ Padam draf balai ini
+          try {
+            const fresh = await loadAllFromAPI();
+            lastDataSignature = computeDataSignature(fresh);
+          } catch (e) {}
 
+          // ✅ Beritahu klien lain — hanya nama balai, bukan data penuh
+          broadcastBalaiUpdate(store.activeBalai);
+
+          showToast('Data ' + store.activeBalai + ' berjaya dihantar ke Supabase', 'success');
 
 
 
@@ -12887,14 +13093,14 @@ showToast('Data ' + store.activeBalai + ' berjaya dihantar ke Supabase', 'succes
         try {
 
 
-state = defaultState(namaBalai);
-state.ident.balai = namaBalai;
-store.balai[namaBalai] = state;
-await saveBalaiToAPI(namaBalai, state);
-dirtyBalai.delete(namaBalai);
-clearDraftForBalai(namaBalai);   // ⬅️ Padam draf balai ini
-updateDirtyUI();
-
+          state = defaultState(namaBalai);
+          state.ident.balai = namaBalai;
+          store.balai[namaBalai] = state;
+          await saveBalaiToAPI(namaBalai, state);
+          dirtyBalai.delete(namaBalai);
+          clearDraftForBalai(namaBalai);   // ⬅️ Padam draf balai ini
+          broadcastBalaiUpdate(namaBalai); // ⬅️ TAMBAH — beritahu klien lain
+          updateDirtyUI();
 
           try {
             const fresh = await loadAllFromAPI();
