@@ -13085,18 +13085,25 @@ tr.appendChild(rowTh);
       showToast('Berjaya sync dari HQ.KENDERAAN BHG', 'success');
     });
   }
+    // ✅ Paksa kira jumlah di hujung setiap table masa render pertama
+    recomputeIbuPejabatTotals(wrap);
 }
+
 
 function recomputeIbuPejabatTotals(wrap) {
   wrap.querySelectorAll('table.grid[data-ibu-row]').forEach(function (tbl) {
     const tr = tbl.querySelector('tbody tr');
     if (!tr) return;
-    const inputs = tr.querySelectorAll('td:not(.jumlah-cell) input[type="number"]');
+
+    // ✅ Betulkan selector — input guna type="text", class "ibu-pejabat-input"
+    const inputs = tr.querySelectorAll('td:not(.jumlah-cell) input.ibu-pejabat-input');
+
     let totalB = 0, totalR = 0;
     for (let i = 0; i < inputs.length; i += 2) {
       totalB += parseInt(inputs[i].value, 10) || 0;
       totalR += parseInt(inputs[i + 1].value, 10) || 0;
     }
+
     const totalCells = tr.querySelectorAll('td[data-ibu-total]');
     totalCells.forEach(function (td) {
       const t = td.dataset.ibuTotal;
@@ -13106,7 +13113,6 @@ function recomputeIbuPejabatTotals(wrap) {
     });
   });
 }
-
 
 
       function cleanupSearchableDropdowns() {
