@@ -429,7 +429,6 @@
       .zone-badge.zon2 { background: var(--badge-zon2-bg); color: var(--badge-zon2-fg); border: 1px solid var(--badge-zon2-bd); }
       .zone-badge.zon3 { background: var(--badge-zon3-bg); color: var(--badge-zon3-fg); border: 1px solid var(--badge-zon3-bd); }
       .zone-badge.zon4 { background: var(--badge-zon4-bg); color: var(--badge-zon4-fg); border: 1px solid var(--badge-zon4-bd); }
-      /* ✅ HQ BADGE */
       .zone-badge.hq { background: rgba(139, 111, 212, 0.16); color: #b9a3ea; border: 1px solid rgba(139, 111, 212, 0.5); }
 
       .id-fields {
@@ -1064,7 +1063,6 @@
       .zone-tab.zon2.zone-active { background: var(--zon2); color: #1a1206; }
       .zone-tab.zon3.zone-active { background: var(--zon3); }
       .zone-tab.zon4.zone-active { background: var(--zon4); }
-      /* ✅ HQ TAB — gaya sama seperti zon, warna ungu */
       .zone-tab.hq-tab.zone-active {
         background: var(--purple);
         color: #fff;
@@ -1239,8 +1237,7 @@
         .zone-drawer { display: none !important; }
       }
 
-            /* ✅ Sembunyikan spinner arrow pada input number (untuk table Ibu Pejabat) */
-            input[type="number"]::-webkit-outer-spin-button,
+      input[type="number"]::-webkit-outer-spin-button,
       input[type="number"]::-webkit-inner-spin-button {
         -webkit-appearance: none;
         margin: 0;
@@ -1250,7 +1247,6 @@
         appearance: textfield;
       }
 
-      /* ✅ Style input dalam table Ibu Pejabat supaya sama seperti table PO3A lain */
       .ibu-pejabat-input {
         width: 52px !important;
         text-align: center !important;
@@ -1270,7 +1266,6 @@
         box-shadow: 0 0 0 3px rgba(214, 52, 71, 0.15) !important;
       }
 
-      /* ✅ Style untuk input Jumlah (read-only, warna amber) */
       .ibu-pejabat-total {
         width: 52px !important;
         text-align: center !important;
@@ -1284,46 +1279,34 @@
         border-radius: 4px !important;
       }
 
-            /* ═══════════════════════════════════════════════════
-         TABLE IBU PEJABAT — Fit screen, tiada scroll horizontal
-         ═══════════════════════════════════════════════════ */
-               /* ═══════════════════════════════════════════════════
-              /* ═══════════════════════════════════════════════════
-               /* ═══════════════════════════════════════════════════
-             /* ═══════════════════════════════════════════════════
-               /* ═══════════════════════════════════════════════════
-         TABLE IBU PEJABAT — Sama persis dengan table.grid
-         • Tidak guna table-layout: fixed → column auto-size
-         • Input dikunci tinggi = 1em supaya row sama tinggi
+      /* ═══════════════════════════════════════════════════
+         TABLE IBU PEJABAT — Selaras dgn table.grid
          ═══════════════════════════════════════════════════ */
       table.grid[data-ibu-row] {
-        /* ✅ TIDAK set table-layout — biar auto seperti table.grid */
         width: 100% !important;
-        font-size: 0.75rem !important;
+        font-size: 0.68rem !important;
       }
 
-      /* Sel — SAMA PERSIS dengan table.grid th/td */
       table.grid[data-ibu-row] th,
-table.grid[data-ibu-row] td {
-  padding: 0.32rem 0.4rem !important;      /* ⬅️ rapatkan sikit */
-  font-size: 0.68rem !important;            /* ⬅️ samakan dgn print */
-  font-family: 'Inter', system-ui, sans-serif !important;
-  font-variant-numeric: tabular-nums !important;  /* ⬅️ angka sejajar */
-  text-align: center !important;
-  vertical-align: middle !important;
-  white-space: nowrap !important;
-  border-right: 1px solid var(--line-soft) !important;
-  border-bottom: 1px solid var(--line-soft) !important;
-  border-top: none !important;
-  border-left: none !important;
-  line-height: 1.15 !important;
-}
+      table.grid[data-ibu-row] td {
+        padding: 0.32rem 0.4rem !important;
+        font-size: 0.68rem !important;
+        font-family: 'Inter', system-ui, sans-serif !important;
+        font-variant-numeric: tabular-nums !important;
+        text-align: center !important;
+        vertical-align: middle !important;
+        white-space: nowrap !important;
+        border-right: 1px solid var(--line-soft) !important;
+        border-bottom: 1px solid var(--line-soft) !important;
+        border-top: none !important;
+        border-left: none !important;
+        line-height: 1.15 !important;
+      }
 
       table.grid[data-ibu-row] tr > *:last-child {
         border-right: none !important;
       }
 
-      /* Header KATEGORI — SAMA dengan table.grid thead tr.groups th */
       table.grid[data-ibu-row] thead tr.groups th {
         background: var(--panel-3) !important;
         color: var(--text) !important;
@@ -1340,13 +1323,12 @@ table.grid[data-ibu-row] td {
         word-break: break-word !important;
         vertical-align: middle !important;
       }
-      
+
       table.grid[data-ibu-row] thead tr.groups th.jumlah-col {
         color: var(--amber) !important;
         background: var(--col-amber-bg) !important;
       }
 
-      /* Header B / R / J — SAMA dengan table.grid thead tr.subs th */
       table.grid[data-ibu-row] thead tr.subs th {
         background: var(--panel-2) !important;
         color: var(--text-dim) !important;
@@ -1367,66 +1349,52 @@ table.grid[data-ibu-row] td {
         color: var(--amber) !important;
       }
 
-      /* ✅ Input — kunci tinggi tepat 1.125rem (0.75rem × 1.5 line-height) */
       table.grid[data-ibu-row] input.ibu-pejabat-input,
-table.grid[data-ibu-row] input.ibu-pejabat-total {
-  display: inline-block !important;
-  width: 100% !important;
-  max-width: 100% !important;
-  min-width: 0 !important;
+      table.grid[data-ibu-row] input.ibu-pejabat-total {
+        display: inline-block !important;
+        width: 100% !important;
+        max-width: 100% !important;
+        min-width: 0 !important;
+        height: 1rem !important;
+        min-height: 1rem !important;
+        max-height: 1rem !important;
+        line-height: 1rem !important;
+        padding: 0 !important;
+        margin: 0 !important;
+        box-sizing: border-box !important;
+        text-align: center !important;
+        vertical-align: middle !important;
+        font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif !important;
+        font-size: 0.68rem !important;
+        font-weight: 400 !important;
+        font-style: normal !important;
+        letter-spacing: normal !important;
+        font-variant-numeric: tabular-nums !important;
+        text-transform: none !important;
+        -webkit-font-smoothing: antialiased !important;
+        -moz-osx-font-smoothing: grayscale !important;
+        background: transparent !important;
+        border: none !important;
+        border-radius: 0 !important;
+        color: inherit !important;
+        box-shadow: none !important;
+        outline: none !important;
+        -webkit-appearance: none !important;
+        -moz-appearance: textfield !important;
+        appearance: textfield !important;
+        overflow: visible !important;
+      }
 
-  /* ⬇️ Saiz selaras dgn print landscape */
-  height: 1rem !important;
-  min-height: 1rem !important;
-  max-height: 1rem !important;
-  line-height: 1rem !important;
-
-  padding: 0 !important;
-  margin: 0 !important;
-  box-sizing: border-box !important;
-  text-align: center !important;
-  vertical-align: middle !important;
-
-  font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif !important;
-  font-size: 0.68rem !important;        /* ⬅️ 0.75 → 0.68 */
-  font-weight: 400 !important;
-  font-style: normal !important;
-  letter-spacing: normal !important;
-  font-variant-numeric: tabular-nums !important;  /* ⬅️ angka sejajar */
-  text-transform: none !important;
-  -webkit-font-smoothing: antialiased !important;
-  -moz-osx-font-smoothing: grayscale !important;
-
-  background: transparent !important;
-  border: none !important;
-  border-radius: 0 !important;
-  color: inherit !important;
-  box-shadow: none !important;
-  outline: none !important;
-  -webkit-appearance: none !important;
-  -moz-appearance: textfield !important;
-  appearance: textfield !important;
-  overflow: visible !important;
-}
-
-/* Jumlah (read-only) — warna amber, tebal, sama dgn print */
-table.grid[data-ibu-row] input.ibu-pejabat-total {
-  color: var(--amber) !important;
-  font-weight: 700 !important;
-}
-
-      /* Focus state */
       table.grid[data-ibu-row] input.ibu-pejabat-input:focus {
         background: rgba(217, 154, 43, 0.14) !important;
         outline: 1px solid var(--amber) !important;
         outline-offset: -1px !important;
       }
 
-      /* Sel JUMLAH — warna amber */
       table.grid[data-ibu-row] td.jumlah-cell {
         color: var(--amber) !important;
         font-weight: 700 !important;
-        font-size: 0.75rem !important;
+        font-size: 0.68rem !important;
         background: var(--col-amber-bg-2) !important;
       }
       table.grid[data-ibu-row] input.ibu-pejabat-total {
@@ -1437,7 +1405,7 @@ table.grid[data-ibu-row] input.ibu-pejabat-total {
       @media (max-width: 900px) {
         table.grid[data-ibu-row] th,
         table.grid[data-ibu-row] td {
-          font-size: 0.7rem !important;
+          font-size: 0.68rem !important;
           padding: 0.35rem 0.45rem !important;
         }
         table.grid[data-ibu-row] thead tr.groups th {
@@ -1450,11 +1418,11 @@ table.grid[data-ibu-row] input.ibu-pejabat-total {
         }
         table.grid[data-ibu-row] input.ibu-pejabat-input,
         table.grid[data-ibu-row] input.ibu-pejabat-total {
-          font-size: 0.7rem !important;
-          height: 1.05rem !important;
-          min-height: 1.05rem !important;
-          max-height: 1.05rem !important;
-          line-height: 1.05rem !important;
+          font-size: 0.68rem !important;
+          height: 1rem !important;
+          min-height: 1rem !important;
+          max-height: 1rem !important;
+          line-height: 1rem !important;
         }
       }
 
@@ -1667,7 +1635,7 @@ table.grid[data-ibu-row] input.ibu-pejabat-total {
         table-layout: fixed !important;
         width: 100% !important;
       }
-      
+
       table.grid th,
       table.grid td {
         border-right: 1px solid var(--line-soft);
@@ -1677,7 +1645,7 @@ table.grid[data-ibu-row] input.ibu-pejabat-total {
         vertical-align: middle !important;
         font-size: 0.72rem !important;
       }
-      
+
       table.grid tr > *:last-child { border-right: none; }
       table.grid thead th {
         background: var(--panel-2); color: var(--text-dim);
@@ -1698,7 +1666,7 @@ table.grid[data-ibu-row] input.ibu-pejabat-total {
         padding: 0.4rem 0.3rem !important;
         text-transform: uppercase !important;
       }
-      
+
       table.grid thead tr.groups th.jumlah-col {
         color: var(--amber); background: var(--col-amber-bg);
       }
@@ -1718,35 +1686,23 @@ table.grid[data-ibu-row] input.ibu-pejabat-total {
         font-size: 0.71rem; letter-spacing: 0.03em;
         position: sticky; left: 0; min-width: 175px;
       }
+
       /* ✅ Kolum GRED ringkas — hanya nombor / PBB (tab PO3A) */
-table.grid tbody th.rowname.gred-short {
-  min-width: 62px;
-  width: 62px;
-  max-width: 62px;
-  text-align: center;
-  font-family: 'IBM Plex Sans', system-ui, sans-serif;
-  font-weight: 700;
-  font-size: 0.82rem;
-  letter-spacing: 0.04em;
-  color: var(--amber);
-  font-variant-numeric: tabular-nums;
-  cursor: help;
-  padding: 0.4rem 0.4rem;
-}
+      table.grid tbody th.rowname.gred-short {
+        min-width: 62px;
+        width: 62px;
+        max-width: 62px;
+        text-align: center;
+        font-family: 'IBM Plex Sans', system-ui, sans-serif;
+        font-weight: 700;
+        font-size: 0.82rem;
+        letter-spacing: 0.04em;
+        color: var(--amber);
+        font-variant-numeric: tabular-nums;
+        cursor: help;
+        padding: 0.4rem 0.4rem;
+      }
 
-/* Print — kekalkan bentuk ringkas & jimat ruang */
-@media print {
-  table.grid tbody th.rowname.gred-short {
-    min-width: 38px !important;
-    width: 38px !important;
-    max-width: 38px !important;
-    font-size: 0.62rem !important;
-    padding: 0.13rem 0.2rem !important;
-    color: #8a5810 !important;
-  }
-}
-
-      
       table.grid tbody tr:nth-child(even) td { background: var(--zebra); }
       table.grid tbody tr:hover td,
       table.grid tbody tr:hover th.rowname { background: var(--hover-row); }
@@ -1760,7 +1716,6 @@ table.grid tbody th.rowname.gred-short {
       }
       td.jumlah-cell { color: var(--amber); font-weight: 600; }
 
-      /* ✅ TAMBAH BAHARU — tinggi row seragam */
       table.grid tbody tr,
       table.grid tfoot tr {
         height: 2em;
@@ -1929,22 +1884,21 @@ table.grid tbody th.rowname.gred-short {
         background: rgba(199, 56, 56, 0.32) !important;
       }
 
+      /* ✅ GRED — nampak penuh (screen) */
       table.ketua .gred-cell {
-  font-family: 'Oswald', sans-serif; font-weight: 700;
-  font-size: 0.85rem; letter-spacing: 0.06em;
-  min-width: 52px;             /* ⬅️ BARU — kunci lebar GRED */
-  width: 52px;
-  padding: 0.45rem 0.5rem;
-  text-align: center;
-  white-space: nowrap;
-}
-/* Header GRED pun kena sama lebar */
-table.ketua thead th:nth-child(2) {
-  min-width: 52px;
-  width: 52px;
-}
-
-table.ketua .gred-cell.gred-A { color: #d63447; }
+        font-family: 'Oswald', sans-serif; font-weight: 700;
+        font-size: 0.85rem; letter-spacing: 0.06em;
+        min-width: 52px;
+        width: 52px;
+        padding: 0.45rem 0.5rem;
+        text-align: center;
+        white-space: nowrap;
+      }
+      table.ketua thead th:nth-child(2) {
+        min-width: 52px;
+        width: 52px;
+      }
+      table.ketua .gred-cell.gred-A { color: #d63447; }
       table.ketua .gred-cell.gred-B { color: #d99a2b; }
       table.ketua .gred-cell.gred-C { color: #4b8ef7; }
       table.ketua .gred-cell.gred-D { color: #7c8aa0; }
@@ -3300,6 +3254,10 @@ table.ketua .gred-cell.gred-A { color: #d63447; }
         .auto-reset-notice-overlay { display: none !important; }
       }
 
+      /* ═══════════════════════════════════════════════════
+         PRINT — PO3A LANDSCAPE
+         Semua font diselaraskan ke 0.55rem (sama dgn Ibu Pejabat)
+         ═══════════════════════════════════════════════════ */
       @media print {
         body.printing-po3a .stats,
         body.printing-po3a .topbar { display: none !important; }
@@ -3313,12 +3271,23 @@ table.ketua .gred-cell.gred-A { color: #d63447; }
         body.printing-po3a .section-head .hint { display: none !important; }
         body.printing-po3a .section-body { padding: 0.3rem 0.35rem !important; overflow: visible !important; }
         body.printing-po3a .sub-title { font-size: 0.52rem !important; margin: 0.35rem 0 0.15rem !important; padding-left: 0.4rem !important; }
-        body.printing-po3a table.grid { font-size: 0.5rem !important; }
+        body.printing-po3a table.grid { font-size: 0.55rem !important; }
         body.printing-po3a table.grid th,
-        body.printing-po3a table.grid td { padding: 0.13rem 0.18rem !important; }
+        body.printing-po3a table.grid td {
+          font-size: 0.55rem !important;
+          padding: 0.13rem 0.18rem !important;
+        }
         body.printing-po3a table.grid thead tr.groups th { font-size: 0.44rem !important; padding: 0.13rem 0.1rem !important; line-height: 1.05 !important; }
         body.printing-po3a table.grid thead tr.subs th { font-size: 0.42rem !important; padding: 0.08rem 0.1rem !important; }
         body.printing-po3a table.grid tbody th.rowname { font-size: 0.5rem !important; min-width: 95px !important; padding: 0.13rem 0.3rem !important; }
+        body.printing-po3a table.grid tbody th.rowname.gred-short {
+          min-width: 38px !important;
+          width: 38px !important;
+          max-width: 38px !important;
+          font-size: 0.62rem !important;
+          padding: 0.13rem 0.2rem !important;
+          color: #8a5810 !important;
+        }
         body.printing-po3a table.grid tfoot th,
         body.printing-po3a table.grid tfoot td { font-size: 0.5rem !important; padding: 0.13rem 0.18rem !important; }
         body.printing-po3a .po3a-split-wrapper { display: block !important; width: 100% !important; }
@@ -3326,16 +3295,14 @@ table.ketua .gred-cell.gred-A { color: #d63447; }
         body.printing-po3a .po3a-split-wrapper > table.grid:last-child { margin-bottom: 0 !important; }
       }
 
-            /* ═══════════════════════════════════════════════════
+      /* ═══════════════════════════════════════════════════
          PRINT OVERRIDE — Table Ibu Pejabat
-         Selaraskan dengan print style table.grid lain
          ═══════════════════════════════════════════════════ */
-         @media print {
-        /* Table & cell */
+      @media print {
         body.printing-po3a table.grid[data-ibu-row],
         body.printing-full table.grid[data-ibu-row],
         body.printing-single table.grid[data-ibu-row] {
-          font-size: 0.5rem !important;
+          font-size: 0.55rem !important;
         }
 
         body.printing-po3a table.grid[data-ibu-row] th,
@@ -3344,12 +3311,11 @@ table.ketua .gred-cell.gred-A { color: #d63447; }
         body.printing-full table.grid[data-ibu-row] td,
         body.printing-single table.grid[data-ibu-row] th,
         body.printing-single table.grid[data-ibu-row] td {
-          font-size: 0.5rem !important;
+          font-size: 0.55rem !important;
           padding: 0.13rem 0.18rem !important;
           line-height: 1.2 !important;
         }
 
-        /* Header KATEGORI (baris atas) */
         body.printing-po3a table.grid[data-ibu-row] thead tr.groups th,
         body.printing-full table.grid[data-ibu-row] thead tr.groups th,
         body.printing-single table.grid[data-ibu-row] thead tr.groups th {
@@ -3359,7 +3325,6 @@ table.ketua .gred-cell.gred-A { color: #d63447; }
           letter-spacing: 0.01em !important;
         }
 
-        /* Header B / R / J (baris bawah) */
         body.printing-po3a table.grid[data-ibu-row] thead tr.subs th,
         body.printing-full table.grid[data-ibu-row] thead tr.subs th,
         body.printing-single table.grid[data-ibu-row] thead tr.subs th {
@@ -3368,31 +3333,29 @@ table.ketua .gred-cell.gred-A { color: #d63447; }
           line-height: 1.1 !important;
         }
 
-        /* ✅ Input — selaraskan dengan cell */
         body.printing-po3a table.grid[data-ibu-row] input.ibu-pejabat-input,
-body.printing-po3a table.grid[data-ibu-row] input.ibu-pejabat-total,
-body.printing-full table.grid[data-ibu-row] input.ibu-pejabat-input,
-body.printing-full table.grid[data-ibu-row] input.ibu-pejabat-total,
-body.printing-single table.grid[data-ibu-row] input.ibu-pejabat-input,
-body.printing-single table.grid[data-ibu-row] input.ibu-pejabat-total {
-  font-size: 0.55rem !important;        /* ⬅️ 0.5 → 0.55 */
-  height: 0.7rem !important;
-  min-height: 0.7rem !important;
-  max-height: 0.7rem !important;
-  line-height: 0.7rem !important;
-  padding: 0 !important;
-  -webkit-print-color-adjust: exact !important;
-  print-color-adjust: exact !important;
-}
-        /* Sel JUMLAH */
+        body.printing-po3a table.grid[data-ibu-row] input.ibu-pejabat-total,
+        body.printing-full table.grid[data-ibu-row] input.ibu-pejabat-input,
+        body.printing-full table.grid[data-ibu-row] input.ibu-pejabat-total,
+        body.printing-single table.grid[data-ibu-row] input.ibu-pejabat-input,
+        body.printing-single table.grid[data-ibu-row] input.ibu-pejabat-total {
+          font-size: 0.55rem !important;
+          height: 0.7rem !important;
+          min-height: 0.7rem !important;
+          max-height: 0.7rem !important;
+          line-height: 0.7rem !important;
+          padding: 0 !important;
+          -webkit-print-color-adjust: exact !important;
+          print-color-adjust: exact !important;
+        }
+
         body.printing-po3a table.grid[data-ibu-row] td.jumlah-cell,
         body.printing-full table.grid[data-ibu-row] td.jumlah-cell,
         body.printing-single table.grid[data-ibu-row] td.jumlah-cell {
-          font-size: 0.5rem !important;
+          font-size: 0.55rem !important;
           padding: 0.13rem 0.18rem !important;
         }
 
-        /* Print — paksa warna text supaya konsisten (warna hilang bila print) */
         body.printing-po3a table.grid[data-ibu-row] input.ibu-pejabat-input,
         body.printing-full table.grid[data-ibu-row] input.ibu-pejabat-input,
         body.printing-single table.grid[data-ibu-row] input.ibu-pejabat-input {
@@ -3409,6 +3372,22 @@ body.printing-single table.grid[data-ibu-row] input.ibu-pejabat-total {
         body.printing-single table.grid[data-ibu-row] td.jumlah-cell {
           color: #8a5810 !important;
         }
+      }
+
+      /* ═══════════════════════════════════════════════════
+         PRINT — BSUS (PO3A BALAI)
+         ═══════════════════════════════════════════════════ */
+      @media print {
+        table.bsum { font-size: 0.55rem !important; }
+        table.bsum tbody td,
+        table.bsum tbody th { font-size: 0.55rem !important; }
+        table.bsum thead tr.groups th { font-size: 0.46rem !important; }
+        table.bsum thead tr.subs th   { font-size: 0.44rem !important; }
+        table.bsum tbody td.balai-cell { font-size: 0.55rem !important; }
+        table.bsum tbody td.bil-cell   { font-size: 0.5rem !important; }
+        table.bsum tbody tr.zon-row td,
+        table.bsum tbody tr.grand-row td { font-size: 0.58rem !important; }
+        .section.fullscreen-active table.bsum { font-size: 0.55rem !important; }
       }
 
       @media print {
@@ -3548,18 +3527,19 @@ body.printing-single table.grid[data-ibu-row] input.ibu-pejabat-total {
           break-inside: avoid !important;
         }
         body.printing-full table {
-          font-size: 0.6rem !important;
+          font-size: 0.55rem !important;
         }
         body.printing-full table th,
         body.printing-full table td {
-          padding: 0.18rem 0.24rem !important;
+          padding: 0.15rem 0.2rem !important;
+          font-size: 0.55rem !important;
         }
 
         body.printing-single table.ketua,
         body.printing-full   table.ketua {
           width: 100% !important;
           max-width: 100% !important;
-          font-size: 0.5rem !important;
+          font-size: 0.52rem !important;
           border-collapse: collapse !important;
         }
 
@@ -3572,7 +3552,7 @@ body.printing-single table.grid[data-ibu-row] input.ibu-pejabat-total {
           word-break: break-word !important;
           overflow: hidden !important;
           line-height: 1.15 !important;
-          font-size: 0.5rem !important;
+          font-size: 0.52rem !important;
           vertical-align: middle !important;
         }
 
@@ -3582,6 +3562,13 @@ body.printing-single table.grid[data-ibu-row] input.ibu-pejabat-total {
           letter-spacing: 0 !important;
           padding: 0.2rem 0.12rem !important;
           line-height: 1.12 !important;
+        }
+
+        /* ✅ GRED — lebar dinaikkan supaya FP/HQ nampak penuh */
+        body.printing-single table.ketua thead th:nth-child(2),
+        body.printing-full   table.ketua thead th:nth-child(2) {
+          width: 4.5% !important;
+          min-width: 38px !important;
         }
 
         body.printing-single table.ketua thead th:nth-child(6),
@@ -3597,13 +3584,7 @@ body.printing-single table.grid[data-ibu-row] input.ibu-pejabat-total {
 
         body.printing-single table.ketua thead th:nth-child(1),
         body.printing-full   table.ketua thead th:nth-child(1) { width: 2.5% !important; }
-        body.printing-single table.ketua thead th:nth-child(2),
-body.printing-full   table.ketua thead th:nth-child(2) {
-  width: 4.5% !important;
-  min-width: 38px !important;
-}
-
-body.printing-single table.ketua thead th:nth-child(3),
+        body.printing-single table.ketua thead th:nth-child(3),
         body.printing-full   table.ketua thead th:nth-child(3) { width: 4% !important; }
         body.printing-single table.ketua thead th:nth-child(7),
         body.printing-full   table.ketua thead th:nth-child(7) { width: 8% !important; }
@@ -3628,7 +3609,7 @@ body.printing-single table.ketua thead th:nth-child(3),
 
         body.printing-single table.ketua tbody td.balai-name,
         body.printing-full   table.ketua tbody td.balai-name {
-          font-size: 0.5rem !important;
+          font-size: 0.52rem !important;
           padding-left: 0.25rem !important;
           white-space: normal !important;
           word-break: break-word !important;
@@ -3641,7 +3622,7 @@ body.printing-single table.ketua thead th:nth-child(3),
         }
         body.printing-single table.ketua .txt,
         body.printing-full   table.ketua .txt {
-          font-size: 0.5rem !important;
+          font-size: 0.52rem !important;
           white-space: normal !important;
           word-break: break-word !important;
           line-height: 1.12 !important;
@@ -3936,9 +3917,6 @@ body.printing-single table.ketua thead th:nth-child(3),
         color: var(--amber);
       }
 
-      /* ═══════════════════════════════════════════════════
-         DASHBOARD KESELURUHAN — Inline Expandable + Pills
-         ═══════════════════════════════════════════════════ */
       .tab.special.dashboard { border-color: rgba(214, 52, 71, 0.6); color: #ff8b98; }
       .tab.special.dashboard:hover { background: rgba(214, 52, 71, 0.14); }
       .tab.special.dashboard.active { background: linear-gradient(180deg, #e63946, #c8102e); color: #fff; border-color: transparent; }
@@ -4059,9 +4037,6 @@ body.printing-single table.ketua thead th:nth-child(3),
         letter-spacing: 0.03em; margin-top: 0.1rem;
       }
 
-      /* ═══════════════════════════════════════════════════
-         KAD UTAMA (GABUNGAN) — Highlight
-         ═══════════════════════════════════════════════════ */
       .dash-card.dash-card-main {
         border-color: var(--card-color, var(--amber));
         box-shadow:
@@ -4102,7 +4077,6 @@ body.printing-single table.ketua thead th:nth-child(3),
         .dash-card .dc-badge-main { font-size: 0.45rem; padding: 0.08rem 0.32rem; }
       }
 
-      /* Pil status Baik/Rosak bawah setiap kad kategori */
       .dash-card .dc-pills {
         display: flex;
         gap: 0.35rem;
@@ -4173,7 +4147,6 @@ body.printing-single table.ketua thead th:nth-child(3),
         .dash-sec-body { padding: 0.7rem 0.75rem 0.9rem; }
       }
 
-      /* ══ Inline Expand Panel ══ */
       .dash-expand-panel {
         margin-top: 0.75rem;
         border: 1.5px solid var(--expand-color, var(--amber));
@@ -5878,7 +5851,9 @@ body.printing-single table.ketua thead th:nth-child(3),
         try { stopAutoResetCountdown(); } catch (e) {}
         try { unsubscribeFromPanelLockChanges(); } catch (e) {}
         try { unsubscribeFromSystemControl(); } catch (e) {}
-        try { unsubscribeFromBalaiUpdates(); } catch (e) {}   // ⬅️ TAMBAH BARIS INI
+        try { unsubscribeFromBalaiUpdates(); } catch (e) {}
+        try { if (window.__pollLockTimer) clearInterval(window.__pollLockTimer); } catch (e) {}
+        
         try {
           if (typeof store !== 'undefined' && store) {
                         localStorage.setItem('bomba-ui-prefs', JSON.stringify({
@@ -5926,10 +5901,9 @@ body.printing-single table.ketua thead th:nth-child(3),
         { name: 'BUKIT GAMBIR', zon: 4 },
         { name: 'TANGKAK', zon: 4 },
         { name: 'PAGOH', zon: 4 },
-        /* ✅ HQ — PGO JOHOR & KEJURUTERAAN/BENGKEL SWASTA */
         { name: 'PGO JOHOR', zon: 0 },
         { name: 'KEJURUTERAAN/BENGKEL SWASTA', zon: 0 },
-        { name: 'HQ.KENDERAAN BHG', zon: 0 },   // ⬅️ BARIS BAHARU
+        { name: 'HQ.KENDERAAN BHG', zon: 0 },
       ];
 
       const BALAI_MERS_LIST = [
@@ -6045,7 +6019,6 @@ body.printing-single table.ketua thead th:nth-child(3),
         { name: 'BUKIT GAMBIR', zon: 4 },
         { name: 'TANGKAK', zon: 4 },
         { name: 'PAGOH', zon: 4 },
-        /* ✅ HQ — di bawah PAGOH, sebelum JUMLAH */
         { name: 'PGO JOHOR', zon: 0 },
         { name: 'KEJURUTERAAN/BENGKEL SWASTA', zon: 0 },
       ];
@@ -6106,17 +6079,11 @@ body.printing-single table.ketua thead th:nth-child(3),
         'BUKIT GAMBIR': { gred: 'C', turnOut: 1 },
         TANGKAK: { gred: 'C', turnOut: 1 },
         PAGOH: { gred: 'C', turnOut: 1 },
-        // HQ
         'PGO JOHOR': { gred: 'HQ', turnOut: 0 },
         'KEJURUTERAAN/BENGKEL SWASTA': { gred: 'HQ', turnOut: 0 },
-        'HQ.KENDERAAN BHG': { gred: 'HQ', turnOut: 0 },   // ⬅️ BARIS BAHARU
+        'HQ.KENDERAAN BHG': { gred: 'HQ', turnOut: 0 },
       };
 
-      /* ═══════════════════════════════════════════════════
-   KONFIGURASI BALAI KHAS — panel yang dipaparkan sahaja
-   Balai yang ADA dalam senarai ini: hanya panel
-   dalam array tersebut yang akan dipaparkan & divalidasi.
-   ═══════════════════════════════════════════════════ */
 const BALAI_KHAS_PANELS = {
   'HQ.KENDERAAN BHG': ['utiliti'],
   'KEJURUTERAAN/BENGKEL SWASTA': ['jentera', 'marin', 'utiliti'],
@@ -6139,18 +6106,18 @@ function getBalaiKhasPanels(balaiName) {
       ];
 
       /* ✅ Paparan ringkas — hanya nombor / PBB untuk kolum GRED di tab PO3A */
-const PERSONEL_KAT_RINGKASAN_DISPLAY = {
-  'TPgB I — KB8 (40)':           '40',
-  'TPgB II — KB7 (38)':          '38',
-  'PKPgB — KB6 (32)':            '32',
-  'PPgB — KB5 (29)':             '29',
-  'PBT I — KB4 (28)':            '28',
-  'PBT II — KB3 (26)':           '26',
-  'PBK I — KB2 (24)':            '24',
-  'PBK II — KB2 (22 + KUP 22)':  '22',
-  'PB — KB1 (19)':               '19',
-  'PBB (PBBK II + PBB)':         'PBB',
-};
+      const PERSONEL_KAT_RINGKASAN_DISPLAY = {
+        'TPgB I — KB8 (40)':           '40',
+        'TPgB II — KB7 (38)':          '38',
+        'PKPgB — KB6 (32)':            '32',
+        'PPgB — KB5 (29)':             '29',
+        'PBT I — KB4 (28)':            '28',
+        'PBT II — KB3 (26)':           '26',
+        'PBK I — KB2 (24)':            '24',
+        'PBK II — KB2 (22 + KUP 22)':  '22',
+        'PB — KB1 (19)':               '19',
+        'PBB (PBBK II + PBB)':         'PBB',
+      };
 
       const PERSONEL_MAP_RINGKASAN = {
         '01. TPgB I — KB8': 'TPgB I — KB8 (40)',
@@ -6243,15 +6210,9 @@ const PERSONEL_KAT_RINGKASAN_DISPLAY = {
         'All Terrain Vehichle (ATV)': 'All Terrain Vehicle',
       };
 
-      /* ═══════════════════════════════════════════════════
-   IBU PEJABAT — JENTERA/UTILITI
-   ═══════════════════════════════════════════════════ */
    const IBU_PEJABAT_ROWS = [
-  // Baris 1 — 6 kategori
   ['HILUX', 'KEMBARA', 'ALZA', 'URVAN', 'HILUX COM', 'V6 TROOPER'],
-  // Baris 2 — 6 kategori
   ['LORI 3 TAN (LAT)', 'LORI 5 TAN (OPS & KJT)', 'BAS PANJANG (PAMERAN)', 'BAS COASTER', 'AATV', 'FORTUNER'],
-  // Baris 3 — 6 kategori
   ['X-TRAIL', 'SPANCO', 'KEMBALIK', 'D-MAX', 'HIACE', 'MAXUS'],
 ];
 
@@ -6403,7 +6364,6 @@ function getIbuPejabatValues() {
 
       const RESET_PASSWORD = 'pgo1234';
 
-// ✅ PANEL LOCK SYSTEM — PER BALAI (Supabase + Realtime)
 const PANEL_LOCK_KEYS = ['personel', 'jentera', 'marin', 'utiliti', 'komunikasi'];
 const PANEL_LABELS = {
   personel: 'Kekuatan Personel',
@@ -6413,12 +6373,10 @@ const PANEL_LABELS = {
   komunikasi: 'Peralatan Komunikasi',
 };
 
-// Cache: panelLockStates["BALAI::panel_key"] = true|false
 const panelLockStates = {};
 const panelLockMeta = {};
 const recentLocalChanges = {};
 
-// ── Helper: composite key per balai
 function makeLockKey(balai, panelKey) {
   return String(balai || '') + '::' + String(panelKey || '');
 }
@@ -6449,7 +6407,7 @@ async function loadPanelLockStates() {
 
     (data || []).forEach(function (row) {
       const compositeKey = row && row.panel_key ? String(row.panel_key) : '';
-      if (compositeKey.indexOf('::') === -1) return; // skip legacy
+      if (compositeKey.indexOf('::') === -1) return;
 
       const parsed = parseLockKey(compositeKey);
       if (!PANEL_LOCK_KEYS.includes(parsed.panelKey)) return;
@@ -6631,9 +6589,7 @@ async function handleLockToggle(key) {
     refreshAllPanelLocks();
   }
 }
-// ✅ END PANEL LOCK SYSTEM
 
-// ✅ REALTIME SUBSCRIPTION — Segerakkan lock antara semua pengguna
 let panelLockChannel = null;
 
 function subscribeToPanelLockChanges() {
@@ -6649,7 +6605,7 @@ function subscribeToPanelLockChanges() {
         if (!row || !row.panel_key) return;
 
         const compositeKey = String(row.panel_key);
-        if (compositeKey.indexOf('::') === -1) return; // skip legacy
+        if (compositeKey.indexOf('::') === -1) return;
 
         const parsed = parseLockKey(compositeKey);
         if (!PANEL_LOCK_KEYS.includes(parsed.panelKey)) return;
@@ -6667,11 +6623,10 @@ function subscribeToPanelLockChanges() {
 
         refreshAllPanelLocks();
 
-// Toast hanya jika melibatkan balai aktif
 const activeBalai = getActiveBalaiName();
 if (parsed.balai === activeBalai) {
   const label = PANEL_LABELS[parsed.panelKey] || parsed.panelKey;
-  const who = 'Pentadbir Aplikasi';   // ⬅️ Paksa label tetap
+  const who = 'Pentadbir Aplikasi';
   const msg = row.locked
     ? '🔒 ' + label + ' DIKUNCI oleh ' + who
     : '🔓 ' + label + ' DIBUKA oleh ' + who;
@@ -6700,7 +6655,6 @@ function unsubscribeFromPanelLockChanges() {
   }
 }
 
-      // ✅ MANUAL HARD-RELOAD SYSTEM
       let systemControlChannel = null;
 
       function subscribeToSystemControl() {
@@ -6797,16 +6751,6 @@ function unsubscribeFromPanelLockChanges() {
           showToast('Gagal trigger reload: ' + err.message, 'error');
         }
       }
-      // ✅ END MANUAL HARD-RELOAD SYSTEM
-
-      // ✅ REALTIME BROADCAST — Segerakkan data balai antara semua pengguna
-      // Strategi "Pilihan Tengah":
-      //   • Butang "Hantar PGO" KEKAL (validasi + draf setempat)
-      //   • Selepas simpan berjaya → hantar 1 mesej Broadcast kecil (nama balai sahaja)
-      //   • Klien lain terima → tarik semula DATA BALAI ITU SAHAJA
-      //   • Auto-reload 1 jam kekal sebagai sandaran (fallback)
-      // Ini turunkan mesej Realtime dari ~11,500 → ~48 per simpan,
-      // dan egress rendah (6 query kecil berbanding keseluruhan DB).
 
       let balaiUpdateChannel = null;
       const BALAI_UPDATE_EVENT = 'balai_updated';
@@ -6825,14 +6769,12 @@ function unsubscribeFromPanelLockChanges() {
               const balaiName = payload.balai;
               if (!balaiName) return;
 
-              // Abaikan mesej sendiri (baru simpan)
               const recent = recentLocalChanges['balai_' + balaiName];
               if (recent && Date.now() - recent < RECENT_LOCAL_BALAI_TTL_MS) {
                 console.log('[BalaiUpdate] Skip own broadcast:', balaiName);
                 return;
               }
 
-              // Jangan timpa draf setempat yang belum dihantar
               if (dirtyBalai && dirtyBalai.has(balaiName)) {
                 console.log('[BalaiUpdate] Skip — ada draf setempat untuk', balaiName);
                 return;
@@ -6874,7 +6816,6 @@ function unsubscribeFromPanelLockChanges() {
         }
       }
 
-      // Bina balai state dari rows Supabase (untuk 1 balai sahaja)
       function buildBalaiStateFromRows(balaiName, rows) {
         const identRow = (rows.ident && rows.ident[0]) || null;
         const identData = {
@@ -6938,7 +6879,6 @@ function unsubscribeFromPanelLockChanges() {
         };
       }
 
-      // Tarik semula data 1 balai SAHAJA (6 query kecil)
       async function refetchBalaiData(balaiName) {
         try {
           const tables = ['ident', 'personel', 'jentera', 'marin', 'utiliti', 'komunikasi'];
@@ -6965,7 +6905,6 @@ function unsubscribeFromPanelLockChanges() {
 
           const newBalaiState = buildBalaiStateFromRows(balaiName, rows);
 
-          // Double-check: jangan timpa draf setempat
           if (dirtyBalai && dirtyBalai.has(balaiName)) {
             console.log('[RefetchBalai] Skip — ada draf setempat untuk', balaiName);
             return;
@@ -6983,11 +6922,9 @@ function unsubscribeFromPanelLockChanges() {
             renderAll();
             refreshAllPanelLocks();
           } else if (isBalaiView) {
-            // Balai lain — cukup update tabbar (indikator)
             renderTabbar();
             renderStats();
           } else {
-            // Paparan agregat (dashboard / summary / ketua / balai_sum / mers / bkb / semak_lokasi)
             renderAll();
           }
 
@@ -6998,7 +6935,6 @@ function unsubscribeFromPanelLockChanges() {
           console.warn('[RefetchBalai] Gagal tarik data balai:', e.message);
         }
       }
-      // ✅ END REALTIME BROADCAST BALAI
 
       async function deleteBalaiRows(table, balaiName) {
         const { error } = await sb.from(table).delete().eq('balai', balaiName);
@@ -7180,7 +7116,6 @@ timeEl.textContent = h + ':' + String(m).padStart(2, '0') + ':' + String(s).padS
         autoReloadPaused = !autoReloadPaused;
         updateAutoReloadUI();
       }
-            // ✅ AUTO-RESET COUNTDOWN
             let autoResetCountdownTimer = null;
 
 function updateAutoResetCountdown() {
@@ -7233,7 +7168,6 @@ function updateAutoResetCountdown() {
         '\n\nSistem akan: reset semua balai → auto-unlock panel → reload';
     }
     } catch (e) {
-    // Silent fail
   }
 }
 
@@ -7257,7 +7191,6 @@ function stopAutoResetCountdown() {
 
         autoRefreshInProgress = true;
         try {
-          // Fallback sync lock (kalau Realtime terputus)
           await loadPanelLockStates();
           refreshAllPanelLocks();
 
@@ -7276,7 +7209,6 @@ function stopAutoResetCountdown() {
 
           store.balai = newBalai;
 
-// ═══ Kekalkan draf setempat — jangan timpa ═══
 const localDrafts = loadAllDrafts();
 Object.keys(localDrafts).forEach(function (balaiName) {
   if (store.balai[balaiName] && localDrafts[balaiName]) {
@@ -7298,10 +7230,6 @@ renderTabbar();
 renderTopBar();
 renderAll();
 updateDirtyUI();
-
-
-
-
 
           setAutosaveIndicator('saved', 'Dikemaskini ' + new Date().toLocaleTimeString('ms-MY'));
           setTimeout(() => {
@@ -7397,17 +7325,14 @@ updateDirtyUI();
         try {
           const names = BALAI_LIST.map(function (b) { return b.name; });
 
-          // ✅ Reset semua balai sahaja (TIADA arkib)
           for (let i = 0; i < names.length; i++) {
             setAutoResetNoticeProgress('Mereset ' + names[i] + '… (' + (i + 1) + '/' + names.length + ')');
             await deleteBalaiFromAPI(names[i]);
           }
 
-          // ✅ Auto-unlock semua panel (untuk shif baharu)
           setAutoResetNoticeProgress('Membuka kunci semua panel…');
           await unlockAllPanels();
 
-          // ✅ Padam semua draf setempat (shif baharu)
           clearAllDrafts();
 
           localStorage.setItem(runKey, 'done');
@@ -7533,7 +7458,6 @@ updateDirtyUI();
         if (error) throw new Error(error.message);
         return { ok: true };
       }
-            // ✅ Auto-unlock semua panel (untuk shif baharu)
             async function unlockAllPanels() {
   try {
     const { error } = await sb
@@ -7547,7 +7471,6 @@ updateDirtyUI();
       .neq('panel_key', '');
     if (error) throw error;
 
-    // Reset cache setempat supaya UI terus reflect
     Object.keys(panelLockStates).forEach(function (k) {
       panelLockStates[k] = false;
       panelLockMeta[k] = null;
@@ -7910,7 +7833,6 @@ updateDirtyUI();
         const grandTotalCells = totalRows * 3;
         let grandTotalBaik = 0;
 
-        // ✅ PGO JOHOR — auto-tarik dari tab balai PGO JOHOR → KOMUNIKASI
         const PGO_BALAI_NAME = 'PGO JOHOR';
         const pgoSt  = getMersStatus(PGO_BALAI_NAME);
         const pgoRaw = {
@@ -8196,11 +8118,6 @@ return balai;
 let state = null;
 const dirtyBalai = new Set();
 
-/* ═══════════════════════════════════════════════════
-   DRAF TEMPATAN (localStorage) — TIDAK SENTUH SUPABASE
-   Data ditaip/import disimpan di sini sahaja.
-   Hanya "Hantar PGO" akan tulis ke Supabase.
-   ═══════════════════════════════════════════════════ */
 const DRAFT_KEY = 'bomba-draft-per-balai';
 
 function loadAllDrafts() {
@@ -8328,7 +8245,7 @@ store.activeBalai = name;
   renderTopBar();
   renderAll();
   updateDirtyUI();
-  refreshAllPanelLocks();          // ⬅️ TAMBAH BARIS INI
+  refreshAllPanelLocks();
   window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
@@ -8349,7 +8266,7 @@ function switchView(v) {
   renderTopBar();
   renderAll();
   updateDirtyUI();
-  refreshAllPanelLocks();          // ⬅️ TAMBAH BARIS INI
+  refreshAllPanelLocks();
   window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
@@ -8361,7 +8278,6 @@ function switchView(v) {
         const desktop = document.createElement('div');
         desktop.className = 'tabbar-desktop';
 
-        // ✅ TAB DASHBOARD — di hadapan PO3A
         const tDash = document.createElement('button');
         tDash.className = 'tab special dashboard' + (store.view === 'dashboard' ? ' active' : '');
         tDash.innerHTML = svgIcon('chart') + '<span>DASHBOARD</span>';
@@ -8418,7 +8334,6 @@ function switchView(v) {
 
         const activeZon = store.view === 'balai' ? getBalaiZon(store.activeBalai) : null;
 
-        // ✅ HQ TAB — sebelum ZON 1
         const hqBtn = document.createElement('button');
         hqBtn.type = 'button';
         hqBtn.className = 'tab zone-tab hq-tab';
@@ -8470,7 +8385,6 @@ function switchView(v) {
         const ogS = document.createElement('optgroup');
         ogS.label = 'PAPARAN KHAS';
 
-        // ✅ Mobile option: Dashboard
         const oDash = document.createElement('option');
         oDash.value = '__dashboard__';
         oDash.textContent = 'DASHBOARD KESELURUHAN';
@@ -9035,7 +8949,6 @@ function switchView(v) {
       function validateBalaiFull(balaiState) {
   const khasPanels = store ? getBalaiKhasPanels(store.activeBalai) : null;
   if (khasPanels) {
-    // ✅ Balai khas — validasi hanya panel yang aktif sahaja
     const invalid = [];
     const panelMeta = [
       { key: 'jentera', label: 'Jentera Utama' },
@@ -10466,11 +10379,7 @@ function hasInvalid(v) { return v.personel.length > 0 || v.equip.length > 0; }
     <div class="stat" style="--stat-color:var(--rosak)"><div class="n">${jR}</div><div class="t">JENTERA ROSAK (FRT/LFRT/CFRT)</div></div>`;
       }
 
-      /* ═══════════════════════════════════════════════════
-         DASHBOARD KESELURUHAN — Statistik Kad
-         ═══════════════════════════════════════════════════ */
-
-         function computeDashboardData() {
+      function computeDashboardData() {
   const data = {
     personel: { pangkat: {}, peranan: {}, pasukan: {}, status: {}, unit: {}, total: 0 },
     jentera:  { kategori: {}, kategoriStatus: {}, status: { B: 0, R: 0 }, total: 0 },
@@ -10509,10 +10418,6 @@ function hasInvalid(v) { return v.personel.length > 0 || v.equip.length > 0; }
 
         const c = mapEquipStatus(r.status);
 
-        // ✅ HANYA kira BAIK (B) dan ROSAK (R) untuk statistik.
-        // Status lain (TIADA DI BALAI, LUPUS, DALAM PROSES LUPUS)
-        // TIDAK dikira dalam nombor kad, tetapi masih muncul dalam
-        // senarai butiran apabila kad diklik.
         if (c !== 'B' && c !== 'R') return;
 
         data[key].kategori[r.kategori] = (data[key].kategori[r.kategori] || 0) + addQty;
@@ -10599,7 +10504,6 @@ function hasInvalid(v) { return v.personel.length > 0 || v.equip.length > 0; }
         return items;
       }
 
-      // State untuk panel inline
       let dashActivePanel = { section: null, key: null, value: null };
       let dashShowAll = false;
       let dashSearchTerm = '';
@@ -10621,7 +10525,6 @@ function hasInvalid(v) { return v.personel.length > 0 || v.equip.length > 0; }
 
         const keys = order || Object.keys(countMap);
 
-        // ⭐ KAD UTAMA (GABUNGAN) — jika ditakrifkan
         if (mainCard) {
           let mainCount = 0;
           (mainCard.categories || []).forEach(function (k) {
@@ -10663,7 +10566,6 @@ function hasInvalid(v) { return v.personel.length > 0 || v.equip.length > 0; }
           hMain.textContent = 'Lihat senarai gabungan →';
           mainEl.appendChild(hMain);
 
-          // ⭐ PIL BAIK / ROSAK untuk kad utama
           if (statusMap && mainCard.categories) {
             let mainBaik = 0;
             let mainRosak = 0;
@@ -10783,7 +10685,6 @@ function hasInvalid(v) { return v.personel.length > 0 || v.equip.length > 0; }
           h.textContent = 'Lihat senarai →';
           card.appendChild(h);
 
-          // PIL status (hanya kalau statusMap diberi & ada data)
           if (statusMap && statusMap[k]) {
             const pills = document.createElement('div');
             pills.className = 'dc-pills';
@@ -10871,7 +10772,6 @@ function hasInvalid(v) { return v.personel.length > 0 || v.equip.length > 0; }
 
         sub.appendChild(grid);
 
-        // Rebuild panel kalau aktif
         if (dashActivePanel.section === section &&
             (dashActivePanel.key === key || dashActivePanel.key === 'kategori_status') &&
             dashActivePanel.value) {
@@ -10894,7 +10794,6 @@ function hasInvalid(v) { return v.personel.length > 0 || v.equip.length > 0; }
         return sub;
       }
 
-      // Handler klik pil — toggle & render
       function handleCategoryStatusClick(section, kategori, status, color) {
         const value = kategori + '|' + status;
 
@@ -11323,7 +11222,6 @@ function hasInvalid(v) { return v.personel.length > 0 || v.equip.length > 0; }
         renderSummaryEquipSection('utiliti', 'RINGKASAN KENDERAAN UTILITI', 'var(--slate)', UTILITI_KAT_SUMMARY, false, UTILITI_MAP_SUMMARY);
         renderSummaryEquipSection('komunikasi', 'RINGKASAN PERALATAN KOMUNIKASI', 'var(--green)', KOMUNIKASI_DEF.map((k) => k.name), true);
 
-        // ⬇️ TAMBAHAN — table Ibu Pejabat
         renderIbuPejabatKenderaanTable();
       }
 
@@ -11398,10 +11296,10 @@ function hasInvalid(v) { return v.personel.length > 0 || v.equip.length > 0; }
         PERSONEL_KAT_RINGKASAN.forEach((r) => {
           const tr = document.createElement('tr');
           const rowTh = document.createElement('th');
-rowTh.className = 'rowname gred-short';
-rowTh.textContent = PERSONEL_KAT_RINGKASAN_DISPLAY[r] || r;
-rowTh.title = r;   // Hover tunjuk nama penuh (TPgB I — KB8 (40), dll)
-tr.appendChild(rowTh);
+          rowTh.className = 'rowname gred-short';
+          rowTh.textContent = PERSONEL_KAT_RINGKASAN_DISPLAY[r] || r;
+          rowTh.title = r;
+          tr.appendChild(rowTh);
           const rowSum = { A: 0, C: 0, CS: 0, TK: 0 };
           UNITS.forEach((u) => {
             STATUS_P.forEach((s) => {
@@ -11717,7 +11615,6 @@ tr.appendChild(rowTh);
 
           const tr = document.createElement('tr');
 
-          // ✅ Row merah jika A = 0, KECUALI Fire Post (gred FP)
           if (d.A === 0 && meta.gred !== 'FP') {
             tr.classList.add('row-zero-a');
           }
@@ -12170,7 +12067,6 @@ tr.appendChild(rowTh);
           tbody.appendChild(tr);
         });
 
-        // ✅⬇️⬇️⬇️ PASTE KOD BARU DI SINI ⬇️⬇️⬇️
         (function addHqRow() {
           const hqBalai = BALAI_PO3A_LIST.filter(function (b) { return b.zon === 0; });
           if (hqBalai.length === 0) return;
@@ -12203,7 +12099,6 @@ tr.appendChild(rowTh);
           });
           tbody.appendChild(tr);
         })();
-        // ✅⬆️⬆️⬆️ HABIS KOD BARU ⬆️⬆️⬆️
 
         const grandZon = getGrandValues();
         const gzTr = document.createElement('tr');
@@ -12918,7 +12813,6 @@ tr.appendChild(rowTh);
     rowCats.forEach(function (cat) {
       const th = document.createElement('th');
       th.colSpan = 3;
-      // ✅ Pecahkan perkataan panjang ke baris baharu supaya header tak melebar
       th.textContent = cat;
       th.style.wordBreak = 'break-word';
       th.style.whiteSpace = 'normal';
@@ -12948,7 +12842,6 @@ tr.appendChild(rowTh);
     ['B', 'R', 'J'].forEach(function (sc) {
       const th = document.createElement('th');
       th.textContent = sc;
-      // ✅ B → s-B, R → s-R, J → tiada (global .jumlah-col handle warna amber)
       th.className = (sc === 'B' ? 's-B ' : sc === 'R' ? 's-R ' : '') + 'jumlah-col';
       hSub.appendChild(th);
     });
@@ -12974,7 +12867,6 @@ tr.appendChild(rowTh);
         inp.className = 'ibu-pejabat-input';
         inp.value = initialVal;
 
-        // ✅ Filter: hanya benarkan digit 0-9
         inp.addEventListener('input', function () {
           const cleaned = inp.value.replace(/[^0-9]/g, '');
           if (cleaned !== inp.value) {
@@ -12988,10 +12880,8 @@ tr.appendChild(rowTh);
           onChange();
         });
 
-        // ✅ Select all bila focus (senang nak replace)
         inp.addEventListener('focus', function () { inp.select(); });
 
-        // ✅ Blur: kalau kosong, set 0
         inp.addEventListener('blur', function () {
           if (inp.value === '') {
             inp.value = '0';
@@ -13051,7 +12941,6 @@ tr.appendChild(rowTh);
     tbl.appendChild(tbody);
     body.appendChild(tbl);
 
-    // ✅ Tambah spacer SELEPAS setiap table (kecuali yang terakhir)
     if (rowIdx < IBU_PEJABAT_ROWS.length - 1) {
       const spacer = document.createElement('div');
       spacer.style.height = '14px';
@@ -13085,10 +12974,10 @@ tr.appendChild(rowTh);
       showToast('Berjaya sync dari HQ.KENDERAAN BHG', 'success');
     });
   }
-    // ✅ Paksa kira jumlah di hujung setiap table masa render pertama
-    recomputeIbuPejabatTotals(wrap);
-}
 
+  // ✅ Paksa kira jumlah di hujung setiap table masa render pertama
+  recomputeIbuPejabatTotals(wrap);
+}
 
 function recomputeIbuPejabatTotals(wrap) {
   wrap.querySelectorAll('table.grid[data-ibu-row]').forEach(function (tbl) {
@@ -13113,7 +13002,6 @@ function recomputeIbuPejabatTotals(wrap) {
     });
   });
 }
-
 
       function cleanupSearchableDropdowns() {
         document.querySelectorAll('.searchable-dd-portal').forEach(function (el) {
@@ -13147,7 +13035,6 @@ function recomputeIbuPejabatTotals(wrap) {
           renderSemakLokasiView();
           document.getElementById('statsRow').innerHTML = '';
         } else {
-  // ✅ Balai khas — papar panel terpilih sahaja
   const khasPanels = getBalaiKhasPanels(store.activeBalai);
   if (khasPanels) {
     if (khasPanels.includes('jentera')) {
@@ -13388,7 +13275,6 @@ function recomputeIbuPejabatTotals(wrap) {
 
   const exportState = JSON.parse(JSON.stringify(state));
 
-   // ⬇️⬇️⬇️ KES KHAS BALAI KHAS (HQ.KENDERAAN BHG, KEJURUTERAAN/BENGKEL SWASTA) ⬇️⬇️⬇️
    const khasPanels = getBalaiKhasPanels(store.activeBalai);
   if (khasPanels) {
     if (!khasPanels.includes('personel')) exportState.personel = [];
@@ -13399,7 +13285,6 @@ function recomputeIbuPejabatTotals(wrap) {
       if (!khasPanels.includes('komunikasi')) exportState.equip.komunikasi = [];
     }
   }
-  // ⬆️⬆️⬆️ TAMAT KES KHAS ⬆️⬆️⬆️
 
   if (exportState.ident && typeof exportState.ident === 'object') {
     delete exportState.ident.shif;
@@ -13632,11 +13517,12 @@ function recomputeIbuPejabatTotals(wrap) {
         initTheme();
         initSound();
         await loadPanelLockStates();
-        subscribeToPanelLockChanges();
-        subscribeToSystemControl();
-        subscribeToBalaiUpdates();          // ⬅️ TAMBAH BARIS INI
+        // ✅ OPTIMASI: Realtime dimatikan — guna polling sahaja untuk jimat log ingestion
+        // subscribeToPanelLockChanges();
+        // subscribeToSystemControl();
+        // subscribeToBalaiUpdates();
         initAutoResetNotice();
-        
+
         initFeedbackModal();
         updatePrintFooterDate();
         fillPrintFooter(loadPrintInfo());
@@ -13653,7 +13539,6 @@ function recomputeIbuPejabatTotals(wrap) {
           if (!balai[uiPrefs.activeBalai]) uiPrefs.activeBalai = BALAI_LIST[0].name;
 store = { view: uiPrefs.view, activeBalai: uiPrefs.activeBalai, balai: balai };
 
-// ═══ Muat draf setempat — timpa data server untuk balai yang ada draf ═══
 const localDrafts = loadAllDrafts();
 let draftCount = 0;
 Object.keys(localDrafts).forEach(function (balaiName) {
@@ -13680,8 +13565,20 @@ lastDataSignature = computeDataSignature(apiData);
           startAutoRefresh();
           startScheduledArchiveResetTimer();
           startAutoResetCountdown();
+
+          // ✅ OPTIMASI: Polling panel_lock & system_control setiap 5 minit sahaja
+          // (ganti realtime subscription yang dimatikan di atas)
+          if (window.__pollLockTimer) clearInterval(window.__pollLockTimer);
+          window.__pollLockTimer = setInterval(async function () {
+            if (document.hidden) return;
+            try {
+              await loadPanelLockStates();
+              refreshAllPanelLocks();
+            } catch (e) { /* silent */ }
+          }, 5 * 60 * 1000); // 5 minit
+
           showToast('Data berjaya dimuatkan dari Supabase', 'success');
-        
+
         } catch (err) {
           console.error('Init error:', err);
           showToast('Gagal memuat data: ' + err.message + '. Menggunakan data kosong.', 'error');
@@ -13846,13 +13743,12 @@ btn.classList.add('saved');
 label.textContent = 'Disimpan!';
 const t = new Date().toLocaleTimeString('ms-MY');
 markClean(t);
-          clearDraftForBalai(store.activeBalai);   // ⬅️ Padam draf balai ini
+          clearDraftForBalai(store.activeBalai);
           try {
             const fresh = await loadAllFromAPI();
             lastDataSignature = computeDataSignature(fresh);
           } catch (e) {}
 
-          // ✅ Beritahu klien lain — hanya nama balai, bukan data penuh
           broadcastBalaiUpdate(store.activeBalai);
 
           showToast('Data ' + store.activeBalai + ' berjaya dihantar ke Supabase', 'success');
@@ -13915,8 +13811,8 @@ markClean(t);
           store.balai[namaBalai] = state;
           await saveBalaiToAPI(namaBalai, state);
           dirtyBalai.delete(namaBalai);
-          clearDraftForBalai(namaBalai);   // ⬅️ Padam draf balai ini
-          broadcastBalaiUpdate(namaBalai); // ⬅️ TAMBAH — beritahu klien lain
+          clearDraftForBalai(namaBalai);
+          broadcastBalaiUpdate(namaBalai);
           updateDirtyUI();
 
           try {
@@ -14025,7 +13921,6 @@ markClean(t);
 
   setLoading(true, 'Mengimport semua balai ke draf setempat…');
 
-  // ═══ Simpan hanya ke store + localStorage — TIDAK ke Supabase ═══
   const importNames = Object.keys(p.balai);
   importNames.forEach(function (name) {
     const def = defaultState(name);
@@ -14091,7 +13986,6 @@ const newState = {
 };
 newState.ident.balai = store.activeBalai;
 
-// ═══ Simpan hanya ke store + localStorage — TIDAK ke Supabase ═══
 store.balai[store.activeBalai] = newState;
 state = newState;
 dirtyBalai.add(store.activeBalai);
@@ -14179,7 +14073,7 @@ store.activeBalai = BALAI_LIST[0].name;
 store.balai[store.activeBalai] = defaultState(store.activeBalai);
 state = store.balai[store.activeBalai];
 try { localStorage.removeItem(IDENT_LS_KEY); } catch (e) {}
-clearAllDrafts();   // ⬅️ Padam semua draf
+clearAllDrafts();
 dirtyBalai.clear();
 
 
