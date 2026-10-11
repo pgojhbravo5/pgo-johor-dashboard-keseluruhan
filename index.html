@@ -5750,37 +5750,49 @@ markerInfo.kelasSet = new Set(senarai.map(j => j.kelas));
             let petaCardSaudaraSelepasAsal = null;
 
             function togglePetaJenteraFullscreen() {
-                if (!petaJenteraCardEl) return;
-                const masukFullscreen = !petaJenteraCardEl.classList.contains('fullscreen-mode');
+    if (!petaJenteraCardEl) return;
+    const masukFullscreen = !petaJenteraCardEl.classList.contains('fullscreen-mode');
 
-                if (masukFullscreen) {
-                    petaCardIndukAsal = petaJenteraCardEl.parentElement;
-                    petaCardSaudaraSelepasAsal = petaJenteraCardEl.nextElementSibling;
-                    document.body.appendChild(petaJenteraCardEl);
-                    petaJenteraCardEl.classList.add('fullscreen-mode');
-                    document.body.style.overflow = 'hidden';
-                } else {
-                    petaJenteraCardEl.classList.remove('fullscreen-mode');
-                    document.body.style.overflow = '';
-                    if (petaCardIndukAsal) {
-                        if (petaCardSaudaraSelepasAsal) {
-                            petaCardIndukAsal.insertBefore(petaJenteraCardEl, petaCardSaudaraSelepasAsal);
-                        } else {
-                            petaCardIndukAsal.appendChild(petaJenteraCardEl);
-                        }
-                    }
-                }
+    if (masukFullscreen) {
+        petaCardIndukAsal = petaJenteraCardEl.parentElement;
+        petaCardSaudaraSelepasAsal = petaJenteraCardEl.nextElementSibling;
+        document.body.appendChild(petaJenteraCardEl);
+        petaJenteraCardEl.classList.add('fullscreen-mode');
+        document.body.style.overflow = 'hidden';
 
-                if (petaFullscreenBtn) {
-                    petaFullscreenBtn.innerHTML = masukFullscreen ? '<i class="fas fa-compress"></i>' : '<i class="fas fa-expand"></i>';
-                    petaFullscreenBtn.setAttribute('aria-label', masukFullscreen ? 'Keluar Skrin Penuh' : 'Skrin Penuh');
-                    petaFullscreenBtn.setAttribute('title', masukFullscreen ? 'Keluar Skrin Penuh' : 'Skrin Penuh');
-                }
-                setTimeout(() => {
-                    if (petaJenteraMapInstance) petaJenteraMapInstance.invalidateSize();
-                }, 220);
+        // ✅ Aktifkan zoom guna scroll wheel HANYA dalam fullscreen
+        if (petaJenteraMapInstance) {
+            petaJenteraMapInstance.scrollWheelZoom.enable();
+        }
+    } else {
+        petaJenteraCardEl.classList.remove('fullscreen-mode');
+        document.body.style.overflow = '';
+
+        // ✅ Matikan semula scroll wheel zoom bila keluar fullscreen
+        if (petaJenteraMapInstance) {
+            petaJenteraMapInstance.scrollWheelZoom.disable();
+        }
+
+        if (petaCardIndukAsal) {
+            if (petaCardSaudaraSelepasAsal) {
+                petaCardIndukAsal.insertBefore(petaJenteraCardEl, petaCardSaudaraSelepasAsal);
+            } else {
+                petaCardIndukAsal.appendChild(petaJenteraCardEl);
             }
-            if (petaFullscreenBtn) {
+        }
+    }
+
+    if (petaFullscreenBtn) {
+        petaFullscreenBtn.innerHTML = masukFullscreen ? '<i class="fas fa-compress"></i>' : '<i class="fas fa-expand"></i>';
+        petaFullscreenBtn.setAttribute('aria-label', masukFullscreen ? 'Keluar Skrin Penuh' : 'Skrin Penuh');
+        petaFullscreenBtn.setAttribute('title', masukFullscreen ? 'Keluar Skrin Penuh' : 'Skrin Penuh');
+    }
+    setTimeout(() => {
+        if (petaJenteraMapInstance) petaJenteraMapInstance.invalidateSize();
+    }, 220);
+}
+
+if (petaFullscreenBtn) {
                 petaFullscreenBtn.addEventListener('click', togglePetaJenteraFullscreen);
             }
             document.addEventListener('keydown', function(e) {
