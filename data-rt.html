@@ -2178,10 +2178,11 @@
               if (Array.isArray(parsed) && parsed.length > 0) return new Set(parsed);
             }
           } catch(e) {}
-          return new Set(TABLE_COLS.map(c => c.key));
+          return new Set(DEFAULT_VISIBLE_COLS); // Guna default baru
         },
         setVisible(set) { localStorage.setItem(this.STORAGE_KEY, JSON.stringify([...set])); }
       };
+
 
       if (typeof ChartDataLabels !== 'undefined') Chart.register(ChartDataLabels);
 
@@ -2851,7 +2852,39 @@
             STATUS_NART_KP: findCol(['STATUS NART RT MENGIKUT KPI KP JBPM', 'STATUS NART RT MENGIKUT KPI KP'], 76),
           };
 
+          // JANA TABLE_COLS SECARA AUTOMATIK DARIPADA HEADERS
+                    // PEMETAAN DARI KUNCI COL (BESAR) KE KUNCI DATA (kecilCamelCase)
+                    const COL_KEY_TO_DATA = {
+            BIL: 'bil', TAHUN: 'tahun', MONSUN: 'monsun', BULAN: 'bulan', HARI: 'hari',
+            TARIKH: 'tarikhStr', BALAI: 'balai', CALL_CARD: 'callCard', SHIF: 'shif',
+            KES_TIDAK_RT: 'kesTidakRt', MELIBATKAN_MANGSA: 'melibatkanMangsa',
+            KATEGORI: 'kategori', KATEGORI_KEBAKARAN: 'kategoriKebakaran',
+            SUB_KATEGORI_1: 'subKategori1', SUB_KATEGORI_2: 'subKategori2',
+            JENIS: 'jenis', ALAMAT: 'alamat', HOTSPOT: 'hotspot', JARAK: 'jarak',
+            MASA_A: 'masaTerima', MASA_LOOPING: 'masaLooping', MASA_BERLEPAS: 'masaBerlepas',
+            MASA_F: 'masaTiba', MASA_OPERASI_MULAI: 'masaOperasiDimulakan',
+            GAMBUT: 'gambut', MASA_OPERASI_TAMAT: 'masaTamat',
+            MANGSA_SELAMAT: 'mangsaSelamat', MANGSA_MATI: 'mangsaMati',
+            JAM_OPERASI: 'jamOperasi', AGENSI_LUAR: 'agensiLuar',
+            ZON: 'zon', DAERAH: 'daerah', STATUS_KPI_ACK: 'statusKpiAck',
+            STATUS_KPI_ENR: 'statusKpiEnr', KAT_BALAI: 'katBalai',
+            MASA_OPERASI: 'masaOperasi', NART_YS: 'nartYs', NART_TKP: 'nartTkp',
+            NART_KP: 'nartKp', SELA_10_MINIT: 'sela10', SELA_MASA_YS: 'selaYs',
+            SELA_MASA_TKP: 'selaTkp', SELA_MASA_KP: 'selaKp',
+            STATUS_KPI_RT10: 'statusKpiRt10', STATUS_NART_YS: 'statusNartYs',
+            STATUS_NART_TKP: 'statusNartTkp', STATUS_NART_KP: 'statusNartKp',
+          };
+
+          // JANA TABLE_COLS SECARA AUTOMATIK DARIPADA HEADERS
+          TABLE_COLS = HEADERS.map((header, index) => {
+            const colKey = Object.keys(COL).find(k => COL[k] === index);
+            const safeHeader = clean(header) || `Column ${index + 1}`;
+            const dataKey = colKey ? COL_KEY_TO_DATA[colKey] : null;
+            return { key: dataKey || `raw_${index}`, label: safeHeader, index: index };
+          });
+
           const dataRows = rows.slice(1).filter((r) => r.length > 6 && clean(r[COL.BALAI]));
+          
 
           RAW_DATA = dataRows.map((r) => {
             const tarikh = parseDate(r[COL.TARIKH]);
@@ -2931,38 +2964,31 @@
         }
       }
 
-      const TABLE_COLS = [
-        { key: 'bil', label: 'BIL' },
-        { key: 'tahun', label: 'Tahun' },
-        { key: 'monsun', label: 'Fasa Monsun' },
-        { key: 'bulan', label: 'Bulan' },
-        { key: 'hari', label: 'Day' },
-        { key: 'tarikhStr', label: 'Tarikh' },
-        { key: 'daerah', label: 'Daerah' },
-        { key: 'zon', label: 'Zon' },
-        { key: 'balai', label: 'Balai' },
-        { key: 'callCard', label: 'Call Card' },
-        { key: 'kategori', label: 'Kategori' },
-        { key: 'subKategori1', label: 'Sub Kat 1' },
-        { key: 'subKategori2', label: 'Sub Kat 2' },
-        { key: 'jenis', label: 'Jenis' },
-        { key: 'jarak', label: 'Jarak (km)' },
-        { key: 'masaTerima', label: 'T/P' },
-        { key: 'masaLooping', label: 'L/B' },
-        { key: 'masaBerlepas', label: 'J/K' },
-        { key: 'masaTiba', label: 'S/L' },
-        { key: 'masaTamat', label: 'O/T' },
-        { key: 'rt', label: 'RT (min)' },
-        { key: 'statusOperasi', label: 'Status Ops' },
+      let TABLE_COLS = [];
+      
+      // Senarai kolum yang dipaparkan secara default (untuk elak table terlalu lebar)
+      const DEFAULT_VISIBLE_COLS = [
+        'bil', 'tahun', 'monsun', 'bulan', 'hari', 'tarikhStr', 'daerah', 'zon', 'balai',
+        'callCard', 'kategori', 'subKategori1', 'subKategori2', 'jenis', 'jarak',
+        'masaTerima', 'masaLooping', 'masaBerlepas', 'masaTiba', 'masaTamat', 'rt', 'statusOperasi'
       ];
+
 
       const COL_FILTERS = {};
       let cfCurrentCol = null;
       let cfTempSelected = new Set();
 
       function getColDisplayValue(d, colKey) {
+        // Tambah logik ini di bahagian paling atas fungsi:
+        if (colKey.startsWith('raw_')) {
+          const index = parseInt(colKey.replace('raw_', ''), 10);
+          return clean(d.raw[index]) || '-';
+        }
+        
         if (colKey === 'bil') return d.bil || '-';
         if (colKey === 'tahun') return d.tahun || '-';
+
+
         if (colKey === 'monsun') return d.monsun;
         if (colKey === 'bulan') return d.bulan || '-';
         if (colKey === 'hari') return d.hari || '-';
@@ -3231,9 +3257,11 @@
 
       function resetFilter() {
         MultiSelect.clearAll();
-        MultiSelect.setSelected('tableCols', TABLE_COLS.map(c => c.label));
-        TableColPrefs.setVisible(new Set(TABLE_COLS.map(c => c.key)));
+        MultiSelect.setSelected('tableCols', TABLE_COLS.filter(c => DEFAULT_VISIBLE_COLS.includes(c.key)).map(c => c.label));
+        TableColPrefs.setVisible(new Set(DEFAULT_VISIBLE_COLS));
         Object.keys(COL_FILTERS).forEach((k) => delete COL_FILTERS[k]);
+
+
         buildTableHeaders();
         const dates = RAW_DATA.map((d) => d.tarikh).filter(Boolean).filter((d) => d >= MIN_DATE).sort((a, b) => a - b);
         if (dates.length) DateRangePicker.setRange(dates[0], dates[dates.length - 1]);
@@ -4827,10 +4855,22 @@
         });
         if (sortCol !== null) {
           rows.sort((a, b) => {
-            let va = a[sortCol] ?? '';
-            let vb = b[sortCol] ?? '';
+            let va, vb;
+            
+            // Tambah logik ini:
+            if (sortCol.startsWith('raw_')) {
+              const index = parseInt(sortCol.replace('raw_', ''), 10);
+              va = clean(a.raw[index]);
+              vb = clean(b.raw[index]);
+            } else {
+              va = a[sortCol] ?? '';
+              vb = b[sortCol] ?? '';
+            }
+
             if (sortCol === 'rt') { va = a.rt ?? -1; vb = b.rt ?? -1; }
             else if (sortCol === 'jarak') { va = a.jarak ?? -1; vb = b.jarak ?? -1; }
+
+
             else if (sortCol === 'hari') {
               const numA = parseInt(String(a.hari).replace(/\D/g, ''), 10);
               const numB = parseInt(String(b.hari).replace(/\D/g, ''), 10);
