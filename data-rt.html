@@ -1252,23 +1252,51 @@
       }
 
       /* Kekalkan nowrap untuk kolum masa/tarikh/RT */
-      #dataTable th[data-col="tarikhStr"],
-      #dataTable td[data-col="tarikhStr"],
-      #dataTable th[data-col="masaTerima"],
+            /* Data masa/tarikh/RT: kekal 1 baris sahaja */
+            #dataTable td[data-col="tarikhStr"],
       #dataTable td[data-col="masaTerima"],
-      #dataTable th[data-col="masaLooping"],
       #dataTable td[data-col="masaLooping"],
-      #dataTable th[data-col="masaBerlepas"],
       #dataTable td[data-col="masaBerlepas"],
-      #dataTable th[data-col="masaTiba"],
       #dataTable td[data-col="masaTiba"],
-      #dataTable th[data-col="masaTamat"],
       #dataTable td[data-col="masaTamat"],
-      #dataTable th[data-col="rt"],
       #dataTable td[data-col="rt"] {
         white-space: nowrap !important;
         max-width: none;
       }
+
+      /* Header masa/tarikh/RT: benarkan wrap sehingga 3 baris */
+      #dataTable th[data-col="tarikhStr"],
+      #dataTable th[data-col="masaTerima"],
+      #dataTable th[data-col="masaLooping"],
+      #dataTable th[data-col="masaBerlepas"],
+      #dataTable th[data-col="masaTiba"],
+      #dataTable th[data-col="masaTamat"],
+      #dataTable th[data-col="rt"] {
+        white-space: normal !important;
+        word-break: normal !important;
+        overflow-wrap: break-word !important;
+        max-width: 130px;
+        min-width: 85px;
+      }
+
+      #dataTable th[data-col="tarikhStr"] .th-label,
+      #dataTable th[data-col="masaTerima"] .th-label,
+      #dataTable th[data-col="masaLooping"] .th-label,
+      #dataTable th[data-col="masaBerlepas"] .th-label,
+      #dataTable th[data-col="masaTiba"] .th-label,
+      #dataTable th[data-col="masaTamat"] .th-label,
+      #dataTable th[data-col="rt"] .th-label {
+        display: -webkit-box;
+        -webkit-line-clamp: 3;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+        white-space: normal;
+        word-break: normal;
+        overflow-wrap: break-word;
+        hyphens: none;
+        line-height: 1.2;
+      }
+
 
       /* Untuk #jadualBalai — 1 baris juga */
       #jadualBalai thead th {
@@ -1280,7 +1308,7 @@
       }
 
       /* Mobile: header tetap 1 baris */
-            @media (max-width: 768px) {
+                 @media (max-width: 768px) {
         #dataTable thead th {
           padding: 5px 18px 5px 5px !important;
           font-size: 9px !important;
@@ -1301,8 +1329,27 @@
           font-size: 10px !important;
           max-width: 220px;
         }
-      }
-      
+        /* Header masa/tarikh di mobile: 3 baris */
+        #dataTable th[data-col="tarikhStr"],
+        #dataTable th[data-col="masaTerima"],
+        #dataTable th[data-col="masaLooping"],
+        #dataTable th[data-col="masaBerlepas"],
+        #dataTable th[data-col="masaTiba"],
+        #dataTable th[data-col="masaTamat"],
+        #dataTable th[data-col="rt"] {
+          max-width: 95px;
+          min-width: 70px;
+        }
+        #dataTable th[data-col="tarikhStr"] .th-label,
+        #dataTable th[data-col="masaTerima"] .th-label,
+        #dataTable th[data-col="masaLooping"] .th-label,
+        #dataTable th[data-col="masaBerlepas"] .th-label,
+        #dataTable th[data-col="masaTiba"] .th-label,
+        #dataTable th[data-col="masaTamat"] .th-label,
+        #dataTable th[data-col="rt"] .th-label {
+          -webkit-line-clamp: 3;
+        }
+      }      
       
       </style>
   </head>
