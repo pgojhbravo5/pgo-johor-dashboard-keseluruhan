@@ -3925,11 +3925,15 @@
                 <main class="dashboard">
                     <!-- STATS BAR -->
                     <section class="stats-bar">
-                        <a href="dbanggota.html" class="stat-item" rel="noopener noreferrer">
-                            <i class="fas fa-user-shield icon-badge"></i>
-                            <div class="num" id="statBertugas">--</div>
-                            <div class="label" data-ms="Anggota Bertugas" data-en="Personnel on Duty">Anggota Bertugas</div>
-                        </a>
+                        <a href="#" 
+   onclick="event.preventDefault(); pgoOpenDashboardSistem(event);"
+   class="stat-item" 
+   rel="noopener noreferrer"
+   title="Buka Tab Dashboard Sistem Kekuatan">
+    <i class="fas fa-user-shield icon-badge"></i>
+    <div class="num" id="statBertugas">--</div>
+    <div class="label" data-ms="Anggota Bertugas" data-en="Personnel on Duty">Anggota Bertugas</div>
+                       </a>
                         <a href="https://www.met.gov.my/" target="_blank" class="stat-item" rel="noopener noreferrer">
                             <i class="fas fa-cloud-sun icon-badge" id="statCuacaIcon"></i>
                             <div class="num" id="statCuaca">--°C</div>
@@ -6181,7 +6185,6 @@ if (petaFullscreenBtn) {
             });
 
             // ===== SERVICE WORKER =====
-            
             if ('serviceWorker' in navigator) {
                 navigator.serviceWorker.register('sw.js').catch(() => {});
             }
@@ -6190,7 +6193,29 @@ if (petaFullscreenBtn) {
             window.openPasukanModal  = openPasukanModal;
             window.closePasukanModal = closePasukanModal;
 
+            // ✅ FIX: Buka Tab Dashboard dalam fail ke-2 (Sistem Kekuatan)
+            //    Guna localStorage 'bomba-ui-prefs' yang fail ke-2 sedia baca.
+            window.pgoOpenDashboardSistem = function (e) {
+                if (e) e.preventDefault();
+
+                // Tukar nama fail ini kepada nama sebenar fail ke-2 anda
+                const URL_SISTEM_KEKUATAN = 'kekuatan-anggota.html';
+
+                try {
+                    // Set view ke 'dashboard' supaya fail ke-2 terus buka tab Dashboard
+                    const sediaAda = JSON.parse(localStorage.getItem('bomba-ui-prefs') || '{}');
+                    localStorage.setItem('bomba-ui-prefs', JSON.stringify({
+                        view: 'dashboard',
+                        activeBalai: sediaAda.activeBalai || 'LARKIN'
+                    }));
+                } catch (err) {
+                    console.warn('[pgoOpenDashboardSistem] Gagal set localStorage:', err);
+                }
+
+                window.location.href = URL_SISTEM_KEKUATAN;
+            };
+
         });
     </script>
-</body>
+    </body>
 </html>
