@@ -5596,9 +5596,12 @@
                             popupAnchor: [0, -14]
                         });
                         marker.setIcon(newIcon);
-                        marker.setPopupContent(buatKandunganPopup(balai, senarai));
-                        markerInfo.kelasSemasa = kelasBalai;
-                    });
+marker.setPopupContent(buatKandunganPopup(balai, senarai));
+markerInfo.kelasSemasa = kelasBalai;
+
+// ✅ TAMBAH: simpan set semua kelas yang ada di balai ini
+markerInfo.kelasSet = new Set(senarai.map(j => j.kelas));
+});
 
                     const senaraiTakPadan = [];
                     Object.keys(jenteraIkutBalai).forEach(kunci => {
@@ -5642,26 +5645,39 @@
             }
 
             function terapFilterPeta() {
-                if (!petaJenteraMapInstance) return;
-                let dipaparkan = 0;
-                Object.values(petaJenteraMarkers).forEach(info => {
-                    const tunjuk = petaFilterAktif.has(info.kelasSemasa || 'na');
-                    const sudahAdaDalamPeta = petaJenteraMapInstance.hasLayer(info.marker);
-                    if (tunjuk && !sudahAdaDalamPeta) {
-                        info.marker.addTo(petaJenteraMapInstance);
-                    } else if (!tunjuk && sudahAdaDalamPeta) {
-                        petaJenteraMapInstance.removeLayer(info.marker);
-                    }
-                    if (tunjuk) dipaparkan++;
-                });
-                const countEl = document.getElementById('petaJenteraCount');
-                if (countEl) {
-                    const enAktif = window.bahasaAktif === 'en';
-                    countEl.textContent = enAktif
-                        ? `${dipaparkan} / ${SENARAI_BALAI_JOHOR.length} stations displayed`
-                        : `${dipaparkan} / ${SENARAI_BALAI_JOHOR.length} balai dipaparkan`;
-                }
-            }
+    if (!petaJenteraMapInstance) return;
+    let dipaparkan = 0;
+
+    Object.values(petaJenteraMarkers).forEach(info => {
+        const kelasSet = info.kelasSet || new Set();
+        const adaData = kelasSet.size > 0;
+
+        let tunjuk;
+        if (adaData) {
+            // ✅ Tunjuk jika ADA MANA-MANA jentera yang kelasnya ditick
+            tunjuk = Array.from(kelasSet).some(k => petaFilterAktif.has(k));
+        } else {
+            // Balai tanpa data — ikut checkbox 'na'
+            tunjuk = petaFilterAktif.has('na');
+        }
+
+        const sudahAdaDalamPeta = petaJenteraMapInstance.hasLayer(info.marker);
+        if (tunjuk && !sudahAdaDalamPeta) {
+            info.marker.addTo(petaJenteraMapInstance);
+        } else if (!tunjuk && sudahAdaDalamPeta) {
+            petaJenteraMapInstance.removeLayer(info.marker);
+        }
+        if (tunjuk) dipaparkan++;
+    });
+
+    const countEl = document.getElementById('petaJenteraCount');
+    if (countEl) {
+        const enAktif = window.bahasaAktif === 'en';
+        countEl.textContent = enAktif
+            ? `${dipaparkan} / ${SENARAI_BALAI_JOHOR.length} stations displayed`
+            : `${dipaparkan} / ${SENARAI_BALAI_JOHOR.length} balai dipaparkan`;
+    }
+}
 
             document.querySelectorAll('.peta-filter-check').forEach(cb => {
                 cb.addEventListener('change', function() {
@@ -5689,9 +5705,13 @@
             }
 
             function resetPetaJenteraTampilan() {
-                Object.values(petaJenteraMarkers).forEach(info => {
-                    info.kelasSemasa = 'na';
-                    const faIconReset = info.balai.jenis === 'bengkel' ? 'fa-screwdriver-wrench' : 'fa-truck-field';
+    Object.values(petaJenteraMarkers).forEach(info => {
+        info.kelasSemasa = 'na';
+        info.kelasSet = new Set();   // ✅ TAMBAH baris ini
+
+        const faIconReset = info.balai.jenis === 'bengkel' ? 'fa-screwdriver-wrench' : 'fa-truck-field';
+
+
                     const resetIcon = L.divIcon({
                         className: '',
                         html: `<div class="peta-marker-wrap"><div class="peta-marker-dot" style="background:${warnaStatusPeta.na}"><i class="fas ${faIconReset}"></i></div></div>`,
