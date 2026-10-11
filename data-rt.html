@@ -1212,9 +1212,9 @@
       }
 
       #dataTable thead th {
-        white-space: nowrap !important;
-        word-break: keep-all !important;
-        overflow-wrap: normal !important;
+        white-space: normal !important;
+        word-break: normal !important;
+        overflow-wrap: break-word !important;
         hyphens: none;
         vertical-align: middle;
         line-height: 1.25;
@@ -1223,12 +1223,21 @@
         top: 0;
         z-index: 5;
         background: var(--surface-2);
+        max-width: 160px;
+        min-width: 70px;
       }
 
       #dataTable thead th .th-label {
-        display: inline-block;
-        white-space: nowrap;
+        display: -webkit-box;
+        -webkit-line-clamp: 5;      /* maksimum 5 baris */
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+        white-space: normal;
         vertical-align: middle;
+        word-break: normal;
+        overflow-wrap: break-word;
+        hyphens: none;
+        line-height: 1.25;
       }
 
       /* Sel data: auto-fit, benarkan wrap untuk teks panjang sahaja */
@@ -1271,15 +1280,20 @@
       }
 
       /* Mobile: header tetap 1 baris */
-      @media (max-width: 768px) {
+            @media (max-width: 768px) {
         #dataTable thead th {
           padding: 5px 18px 5px 5px !important;
           font-size: 9px !important;
           line-height: 1.15;
-          white-space: nowrap !important;
-          word-break: keep-all !important;
-          overflow-wrap: normal !important;
+          white-space: normal !important;
+          word-break: normal !important;
+          overflow-wrap: break-word !important;
           hyphens: none;
+          max-width: 120px;
+          min-width: 55px;
+        }
+        #dataTable thead th .th-label {
+          -webkit-line-clamp: 5;
         }
         #dataTable tbody td,
         #dataTable tfoot td {
@@ -1288,6 +1302,7 @@
           max-width: 220px;
         }
       }
+      
       
       </style>
   </head>
@@ -3020,7 +3035,7 @@
         // 5. Fallback terakhir
         return '-';
       }
-      
+
       function buildTableHeaders() {
         const thead = document.getElementById('tableHead');
         const visible = TableColPrefs.getVisible();
