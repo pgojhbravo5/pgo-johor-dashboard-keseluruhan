@@ -6700,82 +6700,33 @@ updateDirtyUI();
 
       async function executeScheduledArchiveReset(slot, runKey) {
         scheduledRunInProgress = true;
-        console.log('[Scheduled] Mula auto arkib + reset: ' + slot.label);
+        console.log('[Scheduled] Mula auto reset: ' + slot.label);
 
         showAutoResetNotice();
-        setAutoResetNoticeProgress('Memuatkan data terkini dari pelayan…');
+        setAutoResetNoticeProgress('Memuatkan senarai balai…');
 
         try {
-          const apiData = await loadAllFromAPI();
-          const freshBalai = buildStoreFromApiData(apiData);
-
           const names = BALAI_LIST.map(function (b) { return b.name; });
-          const archived = [];
-          const skippedEmpty = [];
-          const archiveErrors = [];
 
+          // ✅ Reset semua balai sahaja (TIADA arkib)
           for (let i = 0; i < names.length; i++) {
-            const name = names[i];
-            setAutoResetNoticeProgress('Mengarkib ' + name + '… (' + (i + 1) + '/' + names.length + ')');
-
-            try {
-              const bs = freshBalai[name];
-              const data = buildArchiveDataForBalai(name, bs);
-
-              if (data.personelRows.length === 0 && data.jenteraRows.length === 0) {
-                skippedEmpty.push(name);
-                continue;
-              }
-
-              await archiveBalaiToAPI({
-                tarikh: bs.ident.tarikh,
-                shif: bs.ident.shif,
-                balai: name,
-                zon: getBalaiZon(name),
-                personelRows: data.personelRows,
-                jenteraRows: data.jenteraRows,
-              });
-              archived.push(name);
-            } catch (err) {
-              console.error('[Scheduled] Arkib gagal — ' + name, err);
-              archiveErrors.push(name + ': ' + err.message);
-            }
+            setAutoResetNoticeProgress('Mereset ' + names[i] + '… (' + (i + 1) + '/' + names.length + ')');
+            await deleteBalaiFromAPI(names[i]);
           }
 
-          if (archiveErrors.length > 0) {
-            throw new Error(
-              'Arkib gagal untuk ' + archiveErrors.length + ' balai. Reset dibatalkan untuk elak kehilangan data.\n\n' +
-              archiveErrors.slice(0, 3).join('\n') +
-              (archiveErrors.length > 3 ? '\n…' : '')
-            );
-          }
+          // ✅ Auto-unlock semua panel (untuk shif baharu)
+          setAutoResetNoticeProgress('Membuka kunci semua panel…');
+          await unlockAllPanels();
 
-          console.log('[Scheduled] Arkib selesai: ' + archived.length + ' balai, ' + skippedEmpty.length + ' kosong');
+          // ✅ Padam semua draf setempat (shif baharu)
+          clearAllDrafts();
 
-          for (let i = 0; i < names.length; i++) {
-  setAutoResetNoticeProgress('Mereset ' + names[i] + '… (' + (i + 1) + '/' + names.length + ')');
-  await deleteBalaiFromAPI(names[i]);
-}
-
-// ✅ Auto-unlock semua panel (untuk shif baharu)
-setAutoResetNoticeProgress('Membuka kunci semua panel…');
-await unlockAllPanels();
-
-// ✅ Padam semua draf setempat (shif baharu)
-clearAllDrafts();
-
-localStorage.setItem(runKey, 'done');
-
-
+          localStorage.setItem(runKey, 'done');
 
           setAutoResetNoticeProgress('✓ Selesai! Memuat semula sistem…');
 
           playToastSuccessSound();
-          showToast(
-            'Auto-arkib & reset selesai: ' + archived.length + ' balai diarkib, ' +
-            skippedEmpty.length + ' kosong diabaikan.',
-            'success'
-          );
+          showToast('Auto-reset selesai: ' + names.length + ' balai telah direset.', 'success');
 
           setTimeout(function () {
             try {
@@ -6796,10 +6747,10 @@ localStorage.setItem(runKey, 'done');
           setAutoResetNoticeProgress('❌ Gagal: ' + err.message);
 
           playErrorSound();
-          showToast('Auto-arkib & reset gagal: ' + err.message, 'error');
+          showToast('Auto-reset gagal: ' + err.message, 'error');
         }
       }
-
+      
       function startScheduledArchiveResetTimer() {
         stopScheduledArchiveResetTimer();
         scheduledTickTimer = setInterval(checkScheduledArchiveReset, 20 * 1000);
