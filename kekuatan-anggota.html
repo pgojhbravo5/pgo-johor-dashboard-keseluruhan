@@ -1239,6 +1239,225 @@
         .zone-drawer { display: none !important; }
       }
 
+            /* ✅ Sembunyikan spinner arrow pada input number (untuk table Ibu Pejabat) */
+            input[type="number"]::-webkit-outer-spin-button,
+      input[type="number"]::-webkit-inner-spin-button {
+        -webkit-appearance: none;
+        margin: 0;
+      }
+      input[type="number"] {
+        -moz-appearance: textfield;
+        appearance: textfield;
+      }
+
+      /* ✅ Style input dalam table Ibu Pejabat supaya sama seperti table PO3A lain */
+      .ibu-pejabat-input {
+        width: 52px !important;
+        text-align: center !important;
+        padding: 0.22rem 0.3rem !important;
+        font-size: 0.72rem !important;
+        font-family: 'Inter', system-ui, sans-serif !important;
+        font-variant-numeric: tabular-nums !important;
+        background: var(--bg-2) !important;
+        border: 1px solid var(--line) !important;
+        color: var(--text) !important;
+        border-radius: 4px !important;
+        transition: border-color 0.14s, box-shadow 0.14s !important;
+      }
+      .ibu-pejabat-input:focus {
+        outline: none !important;
+        border-color: var(--red) !important;
+        box-shadow: 0 0 0 3px rgba(214, 52, 71, 0.15) !important;
+      }
+
+      /* ✅ Style untuk input Jumlah (read-only, warna amber) */
+      .ibu-pejabat-total {
+        width: 52px !important;
+        text-align: center !important;
+        padding: 0.22rem 0.3rem !important;
+        font-size: 0.72rem !important;
+        font-family: 'Inter', system-ui, sans-serif !important;
+        font-weight: 700 !important;
+        color: var(--amber) !important;
+        background: var(--col-amber-bg-2) !important;
+        border: 1px solid var(--line) !important;
+        border-radius: 4px !important;
+      }
+
+            /* ═══════════════════════════════════════════════════
+         TABLE IBU PEJABAT — Fit screen, tiada scroll horizontal
+         ═══════════════════════════════════════════════════ */
+               /* ═══════════════════════════════════════════════════
+              /* ═══════════════════════════════════════════════════
+               /* ═══════════════════════════════════════════════════
+             /* ═══════════════════════════════════════════════════
+               /* ═══════════════════════════════════════════════════
+         TABLE IBU PEJABAT — Sama persis dengan table.grid
+         • Tidak guna table-layout: fixed → column auto-size
+         • Input dikunci tinggi = 1em supaya row sama tinggi
+         ═══════════════════════════════════════════════════ */
+      table.grid[data-ibu-row] {
+        /* ✅ TIDAK set table-layout — biar auto seperti table.grid */
+        width: 100% !important;
+        font-size: 0.75rem !important;
+      }
+
+      /* Sel — SAMA PERSIS dengan table.grid th/td */
+      table.grid[data-ibu-row] th,
+table.grid[data-ibu-row] td {
+  padding: 0.32rem 0.4rem !important;      /* ⬅️ rapatkan sikit */
+  font-size: 0.68rem !important;            /* ⬅️ samakan dgn print */
+  font-family: 'Inter', system-ui, sans-serif !important;
+  font-variant-numeric: tabular-nums !important;  /* ⬅️ angka sejajar */
+  text-align: center !important;
+  vertical-align: middle !important;
+  white-space: nowrap !important;
+  border-right: 1px solid var(--line-soft) !important;
+  border-bottom: 1px solid var(--line-soft) !important;
+  border-top: none !important;
+  border-left: none !important;
+  line-height: 1.15 !important;
+}
+
+      table.grid[data-ibu-row] tr > *:last-child {
+        border-right: none !important;
+      }
+
+      /* Header KATEGORI — SAMA dengan table.grid thead tr.groups th */
+      table.grid[data-ibu-row] thead tr.groups th {
+        background: var(--panel-3) !important;
+        color: var(--text) !important;
+        font-family: 'Oswald', sans-serif !important;
+        font-weight: 600 !important;
+        font-size: 0.6rem !important;
+        letter-spacing: 0.02em !important;
+        text-transform: uppercase !important;
+        padding: 0.4rem 0.3rem !important;
+        line-height: 1.15 !important;
+        white-space: normal !important;
+        word-wrap: break-word !important;
+        overflow-wrap: break-word !important;
+        word-break: break-word !important;
+        vertical-align: middle !important;
+      }
+      
+      table.grid[data-ibu-row] thead tr.groups th.jumlah-col {
+        color: var(--amber) !important;
+        background: var(--col-amber-bg) !important;
+      }
+
+      /* Header B / R / J — SAMA dengan table.grid thead tr.subs th */
+      table.grid[data-ibu-row] thead tr.subs th {
+        background: var(--panel-2) !important;
+        color: var(--text-dim) !important;
+        font-family: 'Oswald', sans-serif !important;
+        font-weight: 500 !important;
+        font-size: 0.63rem !important;
+        letter-spacing: 0.05em !important;
+        padding: 0.4rem 0.55rem !important;
+        text-transform: uppercase !important;
+      }
+      table.grid[data-ibu-row] thead tr.subs th.s-B {
+        color: var(--green) !important;
+      }
+      table.grid[data-ibu-row] thead tr.subs th.s-R {
+        color: var(--rosak) !important;
+      }
+      table.grid[data-ibu-row] thead tr.subs th.jumlah-col {
+        color: var(--amber) !important;
+      }
+
+      /* ✅ Input — kunci tinggi tepat 1.125rem (0.75rem × 1.5 line-height) */
+      table.grid[data-ibu-row] input.ibu-pejabat-input,
+table.grid[data-ibu-row] input.ibu-pejabat-total {
+  display: inline-block !important;
+  width: 100% !important;
+  max-width: 100% !important;
+  min-width: 0 !important;
+
+  /* ⬇️ Saiz selaras dgn print landscape */
+  height: 1rem !important;
+  min-height: 1rem !important;
+  max-height: 1rem !important;
+  line-height: 1rem !important;
+
+  padding: 0 !important;
+  margin: 0 !important;
+  box-sizing: border-box !important;
+  text-align: center !important;
+  vertical-align: middle !important;
+
+  font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif !important;
+  font-size: 0.68rem !important;        /* ⬅️ 0.75 → 0.68 */
+  font-weight: 400 !important;
+  font-style: normal !important;
+  letter-spacing: normal !important;
+  font-variant-numeric: tabular-nums !important;  /* ⬅️ angka sejajar */
+  text-transform: none !important;
+  -webkit-font-smoothing: antialiased !important;
+  -moz-osx-font-smoothing: grayscale !important;
+
+  background: transparent !important;
+  border: none !important;
+  border-radius: 0 !important;
+  color: inherit !important;
+  box-shadow: none !important;
+  outline: none !important;
+  -webkit-appearance: none !important;
+  -moz-appearance: textfield !important;
+  appearance: textfield !important;
+  overflow: visible !important;
+}
+
+/* Jumlah (read-only) — warna amber, tebal, sama dgn print */
+table.grid[data-ibu-row] input.ibu-pejabat-total {
+  color: var(--amber) !important;
+  font-weight: 700 !important;
+}
+
+      /* Focus state */
+      table.grid[data-ibu-row] input.ibu-pejabat-input:focus {
+        background: rgba(217, 154, 43, 0.14) !important;
+        outline: 1px solid var(--amber) !important;
+        outline-offset: -1px !important;
+      }
+
+      /* Sel JUMLAH — warna amber */
+      table.grid[data-ibu-row] td.jumlah-cell {
+        color: var(--amber) !important;
+        font-weight: 700 !important;
+        font-size: 0.75rem !important;
+        background: var(--col-amber-bg-2) !important;
+      }
+      table.grid[data-ibu-row] input.ibu-pejabat-total {
+        color: var(--amber) !important;
+        font-weight: 700 !important;
+      }
+
+      @media (max-width: 900px) {
+        table.grid[data-ibu-row] th,
+        table.grid[data-ibu-row] td {
+          font-size: 0.7rem !important;
+          padding: 0.35rem 0.45rem !important;
+        }
+        table.grid[data-ibu-row] thead tr.groups th {
+          font-size: 0.62rem !important;
+          padding: 0.35rem 0.4rem !important;
+        }
+        table.grid[data-ibu-row] thead tr.subs th {
+          font-size: 0.58rem !important;
+          padding: 0.35rem 0.4rem !important;
+        }
+        table.grid[data-ibu-row] input.ibu-pejabat-input,
+        table.grid[data-ibu-row] input.ibu-pejabat-total {
+          font-size: 0.7rem !important;
+          height: 1.05rem !important;
+          min-height: 1.05rem !important;
+          max-height: 1.05rem !important;
+          line-height: 1.05rem !important;
+        }
+      }
+
       .stats {
         display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
         gap: 0.7rem; margin-bottom: 1.35rem;
@@ -1295,6 +1514,7 @@
       .section.collapsed .chev { transform: rotate(-90deg); }
       .section.collapsed .section-body { display: none; }
       .section-body { padding: 1rem 1rem 1.15rem; overflow-x: auto; }
+      #sec-ibu-pejabat .section-body { overflow-x: hidden; }
       .sub-title {
         font-family: 'Oswald', sans-serif; font-size: 0.7rem;
         color: var(--text-dim); letter-spacing: 0.1em;
@@ -1444,13 +1664,20 @@
         font-variant-numeric: tabular-nums;
         border: 1px solid var(--line); border-radius: var(--radius-sm);
         overflow: hidden;
+        table-layout: fixed !important;
+        width: 100% !important;
       }
+      
       table.grid th,
       table.grid td {
         border-right: 1px solid var(--line-soft);
         border-bottom: 1px solid var(--line-soft);
-        padding: 0.4rem 0.55rem; text-align: center;
+        padding: 0.4rem 0.3rem; text-align: center;
+        line-height: 1.15 !important;
+        vertical-align: middle !important;
+        font-size: 0.72rem !important;
       }
+      
       table.grid tr > *:last-child { border-right: none; }
       table.grid thead th {
         background: var(--panel-2); color: var(--text-dim);
@@ -1459,21 +1686,67 @@
       }
       table.grid thead tr.groups th {
         color: var(--text); font-weight: 600;
-        background: var(--panel-3); font-size: 0.7rem; letter-spacing: 0.07em;
+        background: var(--panel-3); font-size: 0.6rem; letter-spacing: 0.02em;
+        white-space: normal !important;
+        word-wrap: break-word !important;
+        overflow-wrap: break-word !important;
+        word-break: break-word !important;
+        -webkit-hyphens: auto !important;
+        hyphens: auto !important;
+        line-height: 1.15 !important;
+        vertical-align: middle !important;
+        padding: 0.4rem 0.3rem !important;
+        text-transform: uppercase !important;
       }
+      
       table.grid thead tr.groups th.jumlah-col {
         color: var(--amber); background: var(--col-amber-bg);
       }
       table.grid thead tr.subs th {
-        font-size: 0.63rem; color: var(--text-faint); font-weight: 500;
+        font-size: 0.6rem; color: var(--text-faint); font-weight: 500;
+        white-space: nowrap !important;
+        letter-spacing: 0.02em !important;
+        padding: 0.25rem 0.15rem !important;
+        line-height: 1.15 !important;
+        vertical-align: middle !important;
       }
       table.grid thead tr.subs th.jumlah-col { color: var(--amber); }
+
       table.grid tbody th.rowname {
         text-align: left; background: var(--panel-2); color: var(--text);
         font-family: 'Oswald', sans-serif; font-weight: 500;
         font-size: 0.71rem; letter-spacing: 0.03em;
         position: sticky; left: 0; min-width: 175px;
       }
+      /* ✅ Kolum GRED ringkas — hanya nombor / PBB (tab PO3A) */
+table.grid tbody th.rowname.gred-short {
+  min-width: 62px;
+  width: 62px;
+  max-width: 62px;
+  text-align: center;
+  font-family: 'IBM Plex Sans', system-ui, sans-serif;
+  font-weight: 700;
+  font-size: 0.82rem;
+  letter-spacing: 0.04em;
+  color: var(--amber);
+  font-variant-numeric: tabular-nums;
+  cursor: help;
+  padding: 0.4rem 0.4rem;
+}
+
+/* Print — kekalkan bentuk ringkas & jimat ruang */
+@media print {
+  table.grid tbody th.rowname.gred-short {
+    min-width: 38px !important;
+    width: 38px !important;
+    max-width: 38px !important;
+    font-size: 0.62rem !important;
+    padding: 0.13rem 0.2rem !important;
+    color: #8a5810 !important;
+  }
+}
+
+      
       table.grid tbody tr:nth-child(even) td { background: var(--zebra); }
       table.grid tbody tr:hover td,
       table.grid tbody tr:hover th.rowname { background: var(--hover-row); }
@@ -1486,6 +1759,12 @@
         background: var(--col-amber-bg-2); font-weight: 600; color: var(--amber);
       }
       td.jumlah-cell { color: var(--amber); font-weight: 600; }
+
+      /* ✅ TAMBAH BAHARU — tinggi row seragam */
+      table.grid tbody tr,
+      table.grid tfoot tr {
+        height: 2em;
+      }
 
       table.grid,
       table.bsum,
@@ -1651,10 +1930,21 @@
       }
 
       table.ketua .gred-cell {
-        font-family: 'Oswald', sans-serif; font-weight: 700;
-        font-size: 0.85rem; letter-spacing: 0.06em;
-      }
-      table.ketua .gred-cell.gred-A { color: #d63447; }
+  font-family: 'Oswald', sans-serif; font-weight: 700;
+  font-size: 0.85rem; letter-spacing: 0.06em;
+  min-width: 52px;             /* ⬅️ BARU — kunci lebar GRED */
+  width: 52px;
+  padding: 0.45rem 0.5rem;
+  text-align: center;
+  white-space: nowrap;
+}
+/* Header GRED pun kena sama lebar */
+table.ketua thead th:nth-child(2) {
+  min-width: 52px;
+  width: 52px;
+}
+
+table.ketua .gred-cell.gred-A { color: #d63447; }
       table.ketua .gred-cell.gred-B { color: #d99a2b; }
       table.ketua .gred-cell.gred-C { color: #4b8ef7; }
       table.ketua .gred-cell.gred-D { color: #7c8aa0; }
@@ -3036,6 +3326,91 @@
         body.printing-po3a .po3a-split-wrapper > table.grid:last-child { margin-bottom: 0 !important; }
       }
 
+            /* ═══════════════════════════════════════════════════
+         PRINT OVERRIDE — Table Ibu Pejabat
+         Selaraskan dengan print style table.grid lain
+         ═══════════════════════════════════════════════════ */
+         @media print {
+        /* Table & cell */
+        body.printing-po3a table.grid[data-ibu-row],
+        body.printing-full table.grid[data-ibu-row],
+        body.printing-single table.grid[data-ibu-row] {
+          font-size: 0.5rem !important;
+        }
+
+        body.printing-po3a table.grid[data-ibu-row] th,
+        body.printing-po3a table.grid[data-ibu-row] td,
+        body.printing-full table.grid[data-ibu-row] th,
+        body.printing-full table.grid[data-ibu-row] td,
+        body.printing-single table.grid[data-ibu-row] th,
+        body.printing-single table.grid[data-ibu-row] td {
+          font-size: 0.5rem !important;
+          padding: 0.13rem 0.18rem !important;
+          line-height: 1.2 !important;
+        }
+
+        /* Header KATEGORI (baris atas) */
+        body.printing-po3a table.grid[data-ibu-row] thead tr.groups th,
+        body.printing-full table.grid[data-ibu-row] thead tr.groups th,
+        body.printing-single table.grid[data-ibu-row] thead tr.groups th {
+          font-size: 0.44rem !important;
+          padding: 0.13rem 0.1rem !important;
+          line-height: 1.05 !important;
+          letter-spacing: 0.01em !important;
+        }
+
+        /* Header B / R / J (baris bawah) */
+        body.printing-po3a table.grid[data-ibu-row] thead tr.subs th,
+        body.printing-full table.grid[data-ibu-row] thead tr.subs th,
+        body.printing-single table.grid[data-ibu-row] thead tr.subs th {
+          font-size: 0.42rem !important;
+          padding: 0.08rem 0.1rem !important;
+          line-height: 1.1 !important;
+        }
+
+        /* ✅ Input — selaraskan dengan cell */
+        body.printing-po3a table.grid[data-ibu-row] input.ibu-pejabat-input,
+body.printing-po3a table.grid[data-ibu-row] input.ibu-pejabat-total,
+body.printing-full table.grid[data-ibu-row] input.ibu-pejabat-input,
+body.printing-full table.grid[data-ibu-row] input.ibu-pejabat-total,
+body.printing-single table.grid[data-ibu-row] input.ibu-pejabat-input,
+body.printing-single table.grid[data-ibu-row] input.ibu-pejabat-total {
+  font-size: 0.55rem !important;        /* ⬅️ 0.5 → 0.55 */
+  height: 0.7rem !important;
+  min-height: 0.7rem !important;
+  max-height: 0.7rem !important;
+  line-height: 0.7rem !important;
+  padding: 0 !important;
+  -webkit-print-color-adjust: exact !important;
+  print-color-adjust: exact !important;
+}
+        /* Sel JUMLAH */
+        body.printing-po3a table.grid[data-ibu-row] td.jumlah-cell,
+        body.printing-full table.grid[data-ibu-row] td.jumlah-cell,
+        body.printing-single table.grid[data-ibu-row] td.jumlah-cell {
+          font-size: 0.5rem !important;
+          padding: 0.13rem 0.18rem !important;
+        }
+
+        /* Print — paksa warna text supaya konsisten (warna hilang bila print) */
+        body.printing-po3a table.grid[data-ibu-row] input.ibu-pejabat-input,
+        body.printing-full table.grid[data-ibu-row] input.ibu-pejabat-input,
+        body.printing-single table.grid[data-ibu-row] input.ibu-pejabat-input {
+          color: #16223a !important;
+        }
+        body.printing-po3a table.grid[data-ibu-row] input.ibu-pejabat-total,
+        body.printing-full table.grid[data-ibu-row] input.ibu-pejabat-total,
+        body.printing-single table.grid[data-ibu-row] input.ibu-pejabat-total {
+          color: #8a5810 !important;
+          font-weight: 700 !important;
+        }
+        body.printing-po3a table.grid[data-ibu-row] td.jumlah-cell,
+        body.printing-full table.grid[data-ibu-row] td.jumlah-cell,
+        body.printing-single table.grid[data-ibu-row] td.jumlah-cell {
+          color: #8a5810 !important;
+        }
+      }
+
       @media print {
         * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
         :root,
@@ -3223,8 +3598,12 @@
         body.printing-single table.ketua thead th:nth-child(1),
         body.printing-full   table.ketua thead th:nth-child(1) { width: 2.5% !important; }
         body.printing-single table.ketua thead th:nth-child(2),
-        body.printing-full   table.ketua thead th:nth-child(2) { width: 3.5% !important; }
-        body.printing-single table.ketua thead th:nth-child(3),
+body.printing-full   table.ketua thead th:nth-child(2) {
+  width: 4.5% !important;
+  min-width: 38px !important;
+}
+
+body.printing-single table.ketua thead th:nth-child(3),
         body.printing-full   table.ketua thead th:nth-child(3) { width: 4% !important; }
         body.printing-single table.ketua thead th:nth-child(7),
         body.printing-full   table.ketua thead th:nth-child(7) { width: 8% !important; }
@@ -5550,6 +5929,7 @@
         /* ✅ HQ — PGO JOHOR & KEJURUTERAAN/BENGKEL SWASTA */
         { name: 'PGO JOHOR', zon: 0 },
         { name: 'KEJURUTERAAN/BENGKEL SWASTA', zon: 0 },
+        { name: 'HQ.KENDERAAN BHG', zon: 0 },   // ⬅️ BARIS BAHARU
       ];
 
       const BALAI_MERS_LIST = [
@@ -5729,7 +6109,22 @@
         // HQ
         'PGO JOHOR': { gred: 'HQ', turnOut: 0 },
         'KEJURUTERAAN/BENGKEL SWASTA': { gred: 'HQ', turnOut: 0 },
+        'HQ.KENDERAAN BHG': { gred: 'HQ', turnOut: 0 },   // ⬅️ BARIS BAHARU
       };
+
+      /* ═══════════════════════════════════════════════════
+   KONFIGURASI BALAI KHAS — panel yang dipaparkan sahaja
+   Balai yang ADA dalam senarai ini: hanya panel
+   dalam array tersebut yang akan dipaparkan & divalidasi.
+   ═══════════════════════════════════════════════════ */
+const BALAI_KHAS_PANELS = {
+  'HQ.KENDERAAN BHG': ['utiliti'],
+  'KEJURUTERAAN/BENGKEL SWASTA': ['jentera', 'marin', 'utiliti'],
+};
+
+function getBalaiKhasPanels(balaiName) {
+  return BALAI_KHAS_PANELS[balaiName] || null;
+}
 
       const RANKS = [
         '01. TPgB I — KB8','02. TPgB II — KB7','03. PKPgB — KB6','04. PPgB — KB5',
@@ -5742,6 +6137,20 @@
         'PBT I — KB4 (28)','PBT II — KB3 (26)','PBK I — KB2 (24)',
         'PBK II — KB2 (22 + KUP 22)','PB — KB1 (19)','PBB (PBBK II + PBB)',
       ];
+
+      /* ✅ Paparan ringkas — hanya nombor / PBB untuk kolum GRED di tab PO3A */
+const PERSONEL_KAT_RINGKASAN_DISPLAY = {
+  'TPgB I — KB8 (40)':           '40',
+  'TPgB II — KB7 (38)':          '38',
+  'PKPgB — KB6 (32)':            '32',
+  'PPgB — KB5 (29)':             '29',
+  'PBT I — KB4 (28)':            '28',
+  'PBT II — KB3 (26)':           '26',
+  'PBK I — KB2 (24)':            '24',
+  'PBK II — KB2 (22 + KUP 22)':  '22',
+  'PB — KB1 (19)':               '19',
+  'PBB (PBBK II + PBB)':         'PBB',
+};
 
       const PERSONEL_MAP_RINGKASAN = {
         '01. TPgB I — KB8': 'TPgB I — KB8 (40)',
@@ -5833,6 +6242,83 @@
         'Amphibious All Terrain Vehichle (AATV)': 'Amphibious All Terrain Vehicle (AATV)',
         'All Terrain Vehichle (ATV)': 'All Terrain Vehicle',
       };
+
+      /* ═══════════════════════════════════════════════════
+   IBU PEJABAT — JENTERA/UTILITI
+   ═══════════════════════════════════════════════════ */
+   const IBU_PEJABAT_ROWS = [
+  // Baris 1 — 6 kategori
+  ['HILUX', 'KEMBARA', 'ALZA', 'URVAN', 'HILUX COM', 'V6 TROOPER'],
+  // Baris 2 — 6 kategori
+  ['LORI 3 TAN (LAT)', 'LORI 5 TAN (OPS & KJT)', 'BAS PANJANG (PAMERAN)', 'BAS COASTER', 'AATV', 'FORTUNER'],
+  // Baris 3 — 6 kategori
+  ['X-TRAIL', 'SPANCO', 'KEMBALIK', 'D-MAX', 'HIACE', 'MAXUS'],
+];
+
+const IBU_PEJABAT_MAP = {
+  'HILUX': ['HILUX 4X4', 'HILUX LOV', 'HILUX LOV 4X4'],
+  'KEMBARA': ['KEMBARA 4X4'],
+  'ALZA': ['PERODUA ALZA MPV'],
+  'URVAN': ['URVAN VAN'],
+  'HILUX COM': [],
+  'V6 TROOPER': ['ISUZU V6 4X4'],
+  'LORI 3 TAN (LAT)': ['ISUZU 3 TAN LORI'],
+  'LORI 5 TAN (OPS & KJT)': ['ISUZU 5 TAN LORI', 'HICOM HANDALAN 5 TAN LORI'],
+  'BAS PANJANG (PAMERAN)': ['HINO BAS'],
+  'BAS COASTER': ['NISSAN COASTER BAS'],
+  'AATV': ['Amphibious All Terrain Vehichle (AATV)'],
+  'FORTUNER': ['TOYOTA FORTUNER 4X4'],
+  'X-TRAIL': ['NISSAN XTRAIL 4X4'],
+  'SPANCO': [],
+  'KEMBALIK': [],
+  'D-MAX': ['DMAX ISUZU 4X4'],
+  'HIACE': ['TOYOTA HIACE VAN'],
+  'MAXUS': [],
+};
+
+const IBU_PEJABAT_STORAGE_KEY = 'bomba-ibu-pejabat-kenderaan';
+
+function loadIbuPejabatManual() {
+  try {
+    const raw = localStorage.getItem(IBU_PEJABAT_STORAGE_KEY);
+    return raw ? JSON.parse(raw) : {};
+  } catch (e) { return {}; }
+}
+function saveIbuPejabatManual(data) {
+  try { localStorage.setItem(IBU_PEJABAT_STORAGE_KEY, JSON.stringify(data)); } catch (e) {}
+}
+
+function computeIbuPejabatAutoValues() {
+  const result = {};
+  const balai = store.balai['HQ.KENDERAAN BHG'];
+  IBU_PEJABAT_ROWS.flat().forEach(function (cat) {
+    result[cat] = { B: 0, R: 0 };
+    if (!balai || !balai.equip || !balai.equip.utiliti) return;
+    const sourceCats = IBU_PEJABAT_MAP[cat] || [];
+    balai.equip.utiliti.forEach(function (r) {
+      if (!r || !r.kategori) return;
+      if (!sourceCats.includes(r.kategori)) return;
+      const st = mapEquipStatus(r.status);
+      if (st === 'B') result[cat].B++;
+      else if (st === 'R') result[cat].R++;
+    });
+  });
+  return result;
+}
+
+function getIbuPejabatValues() {
+  const auto = computeIbuPejabatAutoValues();
+  const manual = loadIbuPejabatManual();
+  const result = {};
+  IBU_PEJABAT_ROWS.flat().forEach(function (cat) {
+    if (manual[cat]) {
+      result[cat] = { B: parseInt(manual[cat].B, 10) || 0, R: parseInt(manual[cat].R, 10) || 0 };
+    } else {
+      result[cat] = auto[cat] || { B: 0, R: 0 };
+    }
+  });
+  return result;
+}
 
       const KOMUNIKASI_DEF = [
         { name: 'SISTEM LITE CAD', l1: 'B', l2: 'R' },
@@ -7596,19 +8082,26 @@ updateDirtyUI();
         return { maklumat: '', kategori: kat || '', jumlah: '', status: '', catatan: '' };
       }
       function defaultState(balaiName) {
-        return {
-          ident: { balai: balaiName || 'LARKIN', shif: '', tarikh: '', kategori: '' },
-          personel: Array.from({ length: 1 }, emptyPersonel),
-          equip: {
-            jentera: Array.from({ length: 1 }, () => emptyEquip('')),
-            marin: Array.from({ length: 1 }, () => emptyEquip('')),
-            utiliti: Array.from({ length: 1 }, () => emptyEquip('')),
-            komunikasi: KOMUNIKASI_DEF.map((k) => emptyKom(k.name)),
-          },
-        };
-      }
+  const khasPanels = getBalaiKhasPanels(balaiName);
+  const noPersonel = khasPanels && !khasPanels.includes('personel');
+  const noJentera  = khasPanels && !khasPanels.includes('jentera');
+  const noMarin    = khasPanels && !khasPanels.includes('marin');
+  const noUtiliti  = khasPanels && !khasPanels.includes('utiliti');
+  const noKom      = khasPanels && !khasPanels.includes('komunikasi');
 
-      function buildStoreFromApiData(apiData) {
+  return {
+    ident: { balai: balaiName || 'LARKIN', shif: '', tarikh: '', kategori: '' },
+    personel: noPersonel ? [] : Array.from({ length: 1 }, emptyPersonel),
+    equip: {
+      jentera: noJentera ? [] : Array.from({ length: 1 }, () => emptyEquip('')),
+      marin: noMarin ? [] : Array.from({ length: 1 }, () => emptyEquip('')),
+      utiliti: noUtiliti ? [] : Array.from({ length: 1 }, () => emptyEquip('')),
+      komunikasi: noKom ? [] : KOMUNIKASI_DEF.map((k) => emptyKom(k.name)),
+    },
+  };
+}
+
+function buildStoreFromApiData(apiData) {
         const balai = {};
         const identMap = {};
         (apiData.ident || []).forEach(function (r) {
@@ -7623,62 +8116,81 @@ updateDirtyUI();
         });
 
         BALAI_LIST.forEach(function (b) {
-          const name = b.name;
-          const personel = (apiData.personel || [])
-            .filter(function (r) { return r.balai === name; })
-            .map(function (r) {
-              return {
-                nama: r.nama || '', pangkat: r.pangkat || '', noBadan: r.noBadan || '',
-                noTelefon: r.noTelefon || '', peranan: r.peranan || '', pasukan: r.pasukan || '',
-                status: r.status || '', unit1: r.unit1 || '', unit2: r.unit2 || '',
-                unit3: r.unit3 || '', unit4: r.unit4 || '', catatan: r.catatan || '',
-              };
-            });
+  const name = b.name;
+  const khasPanels = getBalaiKhasPanels(name);
+  const noPersonel = khasPanels && !khasPanels.includes('personel');
+  const noJentera  = khasPanels && !khasPanels.includes('jentera');
+  const noMarin    = khasPanels && !khasPanels.includes('marin');
+  const noUtiliti  = khasPanels && !khasPanels.includes('utiliti');
+  const noKom      = khasPanels && !khasPanels.includes('komunikasi');
 
-          function mapEquipRows(rows) {
-            return (rows || [])
-              .filter(function (r) { return r.balai === name; })
-              .map(function (r) {
-                return {
-                  maklumat: r.maklumat || '', kategori: r.kategori || '',
-                  status: r.status || '', catatan: r.catatan || '',
-                };
-              });
-          }
+  const personel = (apiData.personel || [])
+    .filter(function (r) { return r.balai === name; })
+    .map(function (r) {
+      return {
+        nama: r.nama || '', pangkat: r.pangkat || '', noBadan: r.noBadan || '',
+        noTelefon: r.noTelefon || '', peranan: r.peranan || '', pasukan: r.pasukan || '',
+        status: r.status || '', unit1: r.unit1 || '', unit2: r.unit2 || '',
+        unit3: r.unit3 || '', unit4: r.unit4 || '', catatan: r.catatan || '',
+      };
+    });
 
-          const komunikasi = (apiData.komunikasi || [])
-            .filter(function (r) { return r.balai === name; })
-            .map(function (r) {
-              return {
-                maklumat: r.maklumat || '', kategori: r.kategori || '',
-                jumlah: r.jumlah || '', status: r.status || '', catatan: r.catatan || '',
-              };
-            });
+  function mapEquipRows(rows) {
+    return (rows || [])
+      .filter(function (r) { return r.balai === name; })
+      .map(function (r) {
+        return {
+          maklumat: r.maklumat || '', kategori: r.kategori || '',
+          status: r.status || '', catatan: r.catatan || '',
+        };
+      });
+  }
 
-          let identData = identMap[name];
-          if (!identData) identData = { balai: name, shif: '', tarikh: '', kategori: '' };
+  const komunikasi = (apiData.komunikasi || [])
+    .filter(function (r) { return r.balai === name; })
+    .map(function (r) {
+      return {
+        maklumat: r.maklumat || '', kategori: r.kategori || '',
+        jumlah: r.jumlah || '', status: r.status || '', catatan: r.catatan || '',
+      };
+    });
 
-          balai[name] = {
-            ident: identData,
-            personel: personel.length > 0 ? personel : Array.from({ length: 1 }, emptyPersonel),
-            equip: {
-              jentera: mapEquipRows(apiData.jentera).length > 0
-                ? mapEquipRows(apiData.jentera)
-                : Array.from({ length: 1 }, () => emptyEquip('')),
-              marin: mapEquipRows(apiData.marin).length > 0
-                ? mapEquipRows(apiData.marin)
-                : Array.from({ length: 1 }, () => emptyEquip('')),
-              utiliti: mapEquipRows(apiData.utiliti).length > 0
-                ? mapEquipRows(apiData.utiliti)
-                : Array.from({ length: 1 }, () => emptyEquip('')),
-              komunikasi: komunikasi.length > 0
-                ? komunikasi
-                : KOMUNIKASI_DEF.map((k) => emptyKom(k.name)),
-            },
-          };
-        });
-        return balai;
-      }
+  let identData = identMap[name];
+  if (!identData) identData = { balai: name, shif: '', tarikh: '', kategori: '' };
+
+  balai[name] = {
+    ident: identData,
+    personel: noPersonel
+      ? []
+      : (personel.length > 0 ? personel : Array.from({ length: 1 }, emptyPersonel)),
+    equip: {
+      jentera: noJentera
+        ? []
+        : (mapEquipRows(apiData.jentera).length > 0
+            ? mapEquipRows(apiData.jentera)
+            : Array.from({ length: 1 }, () => emptyEquip(''))),
+      marin: noMarin
+        ? []
+        : (mapEquipRows(apiData.marin).length > 0
+            ? mapEquipRows(apiData.marin)
+            : Array.from({ length: 1 }, () => emptyEquip(''))),
+      utiliti: noUtiliti
+        ? []
+        : (mapEquipRows(apiData.utiliti).length > 0
+            ? mapEquipRows(apiData.utiliti)
+            : Array.from({ length: 1 }, () => emptyEquip(''))),
+      komunikasi: noKom
+        ? []
+        : (komunikasi.length > 0
+            ? komunikasi
+            : KOMUNIKASI_DEF.map((k) => emptyKom(k.name))),
+    },
+  };
+});
+
+return balai;
+
+}
 
       let store = null;
 let state = null;
@@ -8521,9 +9033,41 @@ function switchView(v) {
         return invalid;
       }
       function validateBalaiFull(balaiState) {
-        return { personel: validatePersonelBalai(balaiState), equip: validateEquipBalai(balaiState) };
-      }
-      function hasInvalid(v) { return v.personel.length > 0 || v.equip.length > 0; }
+  const khasPanels = store ? getBalaiKhasPanels(store.activeBalai) : null;
+  if (khasPanels) {
+    // ✅ Balai khas — validasi hanya panel yang aktif sahaja
+    const invalid = [];
+    const panelMeta = [
+      { key: 'jentera', label: 'Jentera Utama' },
+      { key: 'marin',   label: 'Jentera Marin' },
+      { key: 'utiliti', label: 'Utiliti' },
+    ];
+    panelMeta.forEach(function (pm) {
+      if (!khasPanels.includes(pm.key)) return;
+      const arr = (balaiState.equip && balaiState.equip[pm.key]) || [];
+      arr.forEach(function (r, idx) {
+        const missing = MANDATORY_EQUIP_KEYS.filter(function (k) { return !r[k]; });
+        let invalidMaklumat = false;
+        if (r.kategori && r.maklumat && !isMaklumatInCatalog(pm.key, r.kategori, r.maklumat)) {
+          invalidMaklumat = true;
+        }
+        if (missing.length || invalidMaklumat) {
+          invalid.push({
+            panel: pm.label, row: idx + 1, missing,
+            empty: isRowEquipEmpty(r, false),
+            invalidMaklumat: invalidMaklumat,
+            maklumatValue: r.maklumat || '',
+            kategoriValue: r.kategori || '',
+          });
+        }
+      });
+    });
+    return { personel: [], equip: invalid };
+  }
+  return { personel: validatePersonelBalai(balaiState), equip: validateEquipBalai(balaiState) };
+}
+
+function hasInvalid(v) { return v.personel.length > 0 || v.equip.length > 0; }
       function formatInvalidMsg(balaiName, v) {
         const lines = [];
         if (v.personel.length) {
@@ -10778,6 +11322,9 @@ function switchView(v) {
         renderSummaryEquipSection('marin', 'RINGKASAN JENTERA MARIN', 'var(--blue)', MARIN_KAT_PO3A, false, MARIN_MAP_PO3A);
         renderSummaryEquipSection('utiliti', 'RINGKASAN KENDERAAN UTILITI', 'var(--slate)', UTILITI_KAT_SUMMARY, false, UTILITI_MAP_SUMMARY);
         renderSummaryEquipSection('komunikasi', 'RINGKASAN PERALATAN KOMUNIKASI', 'var(--green)', KOMUNIKASI_DEF.map((k) => k.name), true);
+
+        // ⬇️ TAMBAHAN — table Ibu Pejabat
+        renderIbuPejabatKenderaanTable();
       }
 
       function renderSummaryPersonelSection() {
@@ -10851,8 +11398,10 @@ function switchView(v) {
         PERSONEL_KAT_RINGKASAN.forEach((r) => {
           const tr = document.createElement('tr');
           const rowTh = document.createElement('th');
-          rowTh.className = 'rowname'; rowTh.textContent = r;
-          tr.appendChild(rowTh);
+rowTh.className = 'rowname gred-short';
+rowTh.textContent = PERSONEL_KAT_RINGKASAN_DISPLAY[r] || r;
+rowTh.title = r;   // Hover tunjuk nama penuh (TPgB I — KB8 (40), dll)
+tr.appendChild(rowTh);
           const rowSum = { A: 0, C: 0, CS: 0, TK: 0 };
           UNITS.forEach((u) => {
             STATUS_P.forEach((s) => {
@@ -11363,51 +11912,55 @@ function switchView(v) {
       }
 
       function renderBalaiSummaryView() {
-        renderBalaiSummaryTable({
-          key: 'personel',
-          title: 'KEKUATAN PERSONEL — IKUT BALAI',
-          color: 'var(--red)',
-          catList: PERSONEL_KAT_RINGKASAN,
-          mode: 'personel',
-          katMapPersonel: PERSONEL_MAP_RINGKASAN,
-        });
-        renderBalaiSummaryTable({
-          key: 'jentera',
-          title: 'KEKUATAN JENTERA UTAMA — IKUT BALAI',
-          color: 'var(--amber)',
-          catList: JENTERA_KAT_PO3A,
-          mode: 'equip',
-          equipKey: 'jentera',
-          katMapSummary: JENTERA_MAP_PO3A,
-        });
-        renderBalaiSummaryTable({
-          key: 'marin',
-          title: 'KEKUATAN JENTERA MARIN — IKUT BALAI',
-          color: 'var(--blue)',
-          catList: MARIN_KAT_PO3A,
-          mode: 'equip',
-          equipKey: 'marin',
-          katMapSummary: MARIN_MAP_PO3A,
-        });
-        renderBalaiSummaryTable({
-          key: 'utiliti',
-          title: 'KEKUATAN JENTERA UTILITI — IKUT BALAI',
-          color: 'var(--slate)',
-          catList: UTILITI_KAT_SUMMARY,
-          mode: 'equip',
-          equipKey: 'utiliti',
-          katMapSummary: UTILITI_MAP_SUMMARY,
-        });
-        renderBalaiSummaryTable({
-          key: 'komunikasi',
-          title: 'KEKUATAN PERALATAN KOMUNIKASI — IKUT BALAI',
-          color: 'var(--green)',
-          catList: KOMUNIKASI_DEF.map((k) => k.name),
-          mode: 'equip',
-          equipKey: 'komunikasi',
-          isKomunikasi: true,
-        });
-      }
+  renderBalaiSummaryTable({
+    key: 'personel',
+    title: 'KEKUATAN PERSONEL — IKUT BALAI',
+    color: 'var(--red)',
+    catList: PERSONEL_KAT_RINGKASAN,
+    mode: 'personel',
+    katMapPersonel: PERSONEL_MAP_RINGKASAN,
+  });
+  renderBalaiSummaryTable({
+    key: 'jentera',
+    title: 'KEKUATAN JENTERA UTAMA — IKUT BALAI',
+    color: 'var(--amber)',
+    catList: JENTERA_KAT_PO3A,
+    mode: 'equip',
+    equipKey: 'jentera',
+    katMapSummary: JENTERA_MAP_PO3A,
+  });
+  renderBalaiSummaryTable({
+    key: 'marin',
+    title: 'KEKUATAN JENTERA MARIN — IKUT BALAI',
+    color: 'var(--blue)',
+    catList: MARIN_KAT_PO3A,
+    mode: 'equip',
+    equipKey: 'marin',
+    katMapSummary: MARIN_MAP_PO3A,
+  });
+  renderBalaiSummaryTable({
+    key: 'utiliti',
+    title: 'KEKUATAN JENTERA UTILITI — IKUT BALAI',
+    color: 'var(--slate)',
+    catList: UTILITI_KAT_SUMMARY,
+    mode: 'equip',
+    equipKey: 'utiliti',
+    katMapSummary: UTILITI_MAP_SUMMARY,
+  });
+  renderBalaiSummaryTable({
+    key: 'komunikasi',
+    title: 'KEKUATAN PERALATAN KOMUNIKASI — IKUT BALAI',
+    color: 'var(--green)',
+    catList: KOMUNIKASI_DEF.map((k) => k.name),
+    mode: 'equip',
+    equipKey: 'komunikasi',
+    isKomunikasi: true,
+  });
+
+  // ⬇️ Baris baharu — panggil table Ibu Pejabat
+  renderIbuPejabatKenderaanTable();
+}
+
 
       function renderBalaiSummaryTable(opts) {
         const { key, title, color, catList, mode, equipKey, isKomunikasi, katMapSummary, katMapPersonel } = opts;
@@ -12328,6 +12881,238 @@ function switchView(v) {
         state.equip.komunikasi = ordered.concat(extras);
       }
 
+      function renderIbuPejabatKenderaanTable() {
+  const wrap = document.createElement('div');
+  wrap.className = 'section';
+  wrap.id = 'sec-ibu-pejabat';
+  wrap.style.setProperty('--sec-color', 'var(--purple)');
+  wrap.innerHTML = `
+    <div class="section-head">
+      <h2>JENTERA/UTILITI IBU PEJABAT</h2>
+      <div style="display:flex;align-items:center;gap:.6rem;">
+        <span class="hint">Auto-tarik dari balai "HQ.KENDERAAN BHG" · boleh edit manual</span>
+        <button class="btn small" id="ibuPejabatSyncBtn" type="button" title="Reset manual &amp; sync semula dari sumber">↻ Sync Auto</button>
+        <button class="btn-fullscreen" type="button" title="Buka skrin penuh">${svgIcon('maximize')}</button>
+        <button class="btn-fullscreen btn-print-panel" type="button" title="Cetak panel ini">${svgIcon('print')}</button>
+        <span class="chev">${svgIcon('chevronDown')}</span>
+      </div>
+    </div>
+    <div class="section-body"></div>`;
+
+  wrap.querySelector('.section-head').addEventListener('click', () => wrap.classList.toggle('collapsed'));
+  const fsBtn = wrap.querySelector('.btn-fullscreen:not(.btn-print-panel)');
+  if (fsBtn) fsBtn.addEventListener('click', function (e) { e.stopPropagation(); togglePanelFullscreen(wrap, fsBtn); });
+  const printBtn = wrap.querySelector('.btn-print-panel');
+  if (printBtn) printBtn.addEventListener('click', function (e) { e.stopPropagation(); printSinglePanel(wrap); });
+
+  document.getElementById('sections').appendChild(wrap);
+  const body = wrap.querySelector('.section-body');
+
+  const values = getIbuPejabatValues();
+
+  IBU_PEJABAT_ROWS.forEach(function (rowCats, rowIdx) {
+    const tbl = document.createElement('table');
+    tbl.className = 'grid';
+    tbl.dataset.ibuRow = String(rowIdx);
+
+    const thead = document.createElement('thead');
+    const hGroup = document.createElement('tr');
+    hGroup.className = 'groups';
+
+    rowCats.forEach(function (cat) {
+      const th = document.createElement('th');
+      th.colSpan = 3;
+      // ✅ Pecahkan perkataan panjang ke baris baharu supaya header tak melebar
+      th.textContent = cat;
+      th.style.wordBreak = 'break-word';
+      th.style.whiteSpace = 'normal';
+      th.style.lineHeight = '1.15';
+      hGroup.appendChild(th);
+    });
+
+    const thJum = document.createElement('th');
+    thJum.colSpan = 3;
+    thJum.textContent = 'JUMLAH';
+    thJum.className = 'jumlah-col';
+    hGroup.appendChild(thJum);
+    thead.appendChild(hGroup);
+
+    const hSub = document.createElement('tr');
+    hSub.className = 'subs';
+    rowCats.forEach(function () {
+      ['B', 'R', 'J'].forEach(function (sc) {
+        const th = document.createElement('th');
+        th.textContent = sc;
+        if (sc === 'B') th.className = 's-B';
+        else if (sc === 'R') th.className = 's-R';
+        hSub.appendChild(th);
+      });
+
+    });
+    ['B', 'R', 'J'].forEach(function (sc) {
+      const th = document.createElement('th');
+      th.textContent = sc;
+      // ✅ B → s-B, R → s-R, J → tiada (global .jumlah-col handle warna amber)
+      th.className = (sc === 'B' ? 's-B ' : sc === 'R' ? 's-R ' : '') + 'jumlah-col';
+      hSub.appendChild(th);
+    });
+
+    thead.appendChild(hSub);
+    tbl.appendChild(thead);
+
+    const tbody = document.createElement('tbody');
+    const tr = document.createElement('tr');
+
+    let totalB = 0, totalR = 0;
+
+    rowCats.forEach(function (cat) {
+      const v = values[cat] || { B: 0, R: 0 };
+      totalB += v.B;
+      totalR += v.R;
+
+      const mkNumInput = function (initialVal, onChange) {
+        const inp = document.createElement('input');
+        inp.type = 'text';
+        inp.inputMode = 'numeric';
+        inp.autocomplete = 'off';
+        inp.className = 'ibu-pejabat-input';
+        inp.value = initialVal;
+
+        // ✅ Filter: hanya benarkan digit 0-9
+        inp.addEventListener('input', function () {
+          const cleaned = inp.value.replace(/[^0-9]/g, '');
+          if (cleaned !== inp.value) {
+            const caret = inp.selectionStart;
+            inp.value = cleaned;
+            try {
+              const newPos = Math.max(0, caret - (inp.value.length - cleaned.length));
+              inp.setSelectionRange(newPos, newPos);
+            } catch (e) {}
+          }
+          onChange();
+        });
+
+        // ✅ Select all bila focus (senang nak replace)
+        inp.addEventListener('focus', function () { inp.select(); });
+
+        // ✅ Blur: kalau kosong, set 0
+        inp.addEventListener('blur', function () {
+          if (inp.value === '') {
+            inp.value = '0';
+            onChange();
+          }
+        });
+
+        return inp;
+      };
+
+      const tdB = document.createElement('td');
+      const inB = mkNumInput(v.B, function () {
+        const manual = loadIbuPejabatManual();
+        manual[cat] = Object.assign({}, manual[cat] || {});
+        manual[cat].B = parseInt(inB.value, 10) || 0;
+        saveIbuPejabatManual(manual);
+        inJ.value = (parseInt(inB.value, 10) || 0) + (parseInt(inR.value, 10) || 0);
+        recomputeIbuPejabatTotals(wrap);
+      });
+      tdB.appendChild(inB); tr.appendChild(tdB);
+
+      const tdR = document.createElement('td');
+      const inR = mkNumInput(v.R, function () {
+        const manual = loadIbuPejabatManual();
+        manual[cat] = Object.assign({}, manual[cat] || {});
+        manual[cat].R = parseInt(inR.value, 10) || 0;
+        saveIbuPejabatManual(manual);
+        inJ.value = (parseInt(inB.value, 10) || 0) + (parseInt(inR.value, 10) || 0);
+        recomputeIbuPejabatTotals(wrap);
+      });
+      tdR.appendChild(inR); tr.appendChild(tdR);
+
+            const tdJ = document.createElement('td');
+      tdJ.className = 'jumlah-cell';
+      const inJ = document.createElement('input');
+      inJ.type = 'text';
+      inJ.value = v.B + v.R;
+      inJ.readOnly = true;
+      inJ.tabIndex = -1;
+      inJ.className = 'ibu-pejabat-total';
+      tdJ.appendChild(inJ); tr.appendChild(tdJ);
+    
+    });
+
+    ['B', 'R', 'J'].forEach(function (sc) {
+      const td = document.createElement('td');
+      td.className = 'jumlah-cell';
+      td.style.fontWeight = '700';
+      td.dataset.ibuTotal = sc;
+      if (sc === 'J') td.textContent = totalB + totalR;
+      else if (sc === 'B') td.textContent = totalB;
+      else td.textContent = totalR;
+      tr.appendChild(td);
+    });
+
+    tbody.appendChild(tr);
+    tbl.appendChild(tbody);
+    body.appendChild(tbl);
+
+    // ✅ Tambah spacer SELEPAS setiap table (kecuali yang terakhir)
+    if (rowIdx < IBU_PEJABAT_ROWS.length - 1) {
+      const spacer = document.createElement('div');
+      spacer.style.height = '14px';
+      body.appendChild(spacer);
+    }
+  });
+
+
+  const note = document.createElement('div');
+  note.style.cssText = 'margin-top:0.75rem;font-size:0.7rem;color:var(--text-dim);line-height:1.6;';
+  note.innerHTML =
+    '<b>Nota:</b> Nilai <b>B</b> (Baik) & <b>R</b> (Rosak) diambil <b>secara automatik</b> dari panel ' +
+    '<b>KEKUATAN KENDERAAN UTILITI</b> balai <b>HQ.KENDERAAN BHG</b>. ' +
+    'Anda boleh <b>edit manual</b> nilai tersebut — nilai manual akan disimpan dan digunakan berbanding nilai auto.<br />' +
+    '<b>Sync Auto</b> — padam nilai manual & tarik semula dari data sumber.';
+  body.appendChild(note);
+
+  const syncBtn = wrap.querySelector('#ibuPejabatSyncBtn');
+  if (syncBtn) {
+    syncBtn.addEventListener('click', function (e) {
+      e.stopPropagation();
+      if (!confirm('Sync dari data balai "HQ.KENDERAAN BHG"?\n\nNilai manual anda akan dipadam & diganti dengan nilai auto.')) return;
+      try { localStorage.removeItem(IBU_PEJABAT_STORAGE_KEY); } catch (err) {}
+      const wasCollapsed = wrap.classList.contains('collapsed');
+      wrap.remove();
+      renderIbuPejabatKenderaanTable();
+      if (wasCollapsed) {
+        const newSec = document.getElementById('sec-ibu-pejabat');
+        if (newSec) newSec.classList.add('collapsed');
+      }
+      showToast('Berjaya sync dari HQ.KENDERAAN BHG', 'success');
+    });
+  }
+}
+
+function recomputeIbuPejabatTotals(wrap) {
+  wrap.querySelectorAll('table.grid[data-ibu-row]').forEach(function (tbl) {
+    const tr = tbl.querySelector('tbody tr');
+    if (!tr) return;
+    const inputs = tr.querySelectorAll('td:not(.jumlah-cell) input[type="number"]');
+    let totalB = 0, totalR = 0;
+    for (let i = 0; i < inputs.length; i += 2) {
+      totalB += parseInt(inputs[i].value, 10) || 0;
+      totalR += parseInt(inputs[i + 1].value, 10) || 0;
+    }
+    const totalCells = tr.querySelectorAll('td[data-ibu-total]');
+    totalCells.forEach(function (td) {
+      const t = td.dataset.ibuTotal;
+      if (t === 'B') td.textContent = totalB;
+      else if (t === 'R') td.textContent = totalR;
+      else if (t === 'J') td.textContent = totalB + totalR;
+    });
+  });
+}
+
+
+
       function cleanupSearchableDropdowns() {
         document.querySelectorAll('.searchable-dd-portal').forEach(function (el) {
           if (el.parentNode) el.parentNode.removeChild(el);
@@ -12360,15 +13145,31 @@ function switchView(v) {
           renderSemakLokasiView();
           document.getElementById('statsRow').innerHTML = '';
         } else {
-          ensureKomunikasiDefaults();
-          renderPersonelSection();
-          renderEquipSection('jentera', 'KEKUATAN JENTERA UTAMA', 'var(--amber)', JENTERA_KAT, false);
-          renderEquipSection('marin', 'KEKUATAN JENTERA MARIN', 'var(--blue)', MARIN_KAT, false);
-          renderEquipSection('utiliti', 'KEKUATAN KENDERAAN UTILITI', 'var(--slate)', UTILITI_KAT, false);
-          renderEquipSection('komunikasi', 'KEKUATAN PERALATAN KOMUNIKASI', 'var(--green)', KOMUNIKASI_DEF.map((k) => k.name), true);
-          globalRecalc();
-        }
-      }
+  // ✅ Balai khas — papar panel terpilih sahaja
+  const khasPanels = getBalaiKhasPanels(store.activeBalai);
+  if (khasPanels) {
+    if (khasPanels.includes('jentera')) {
+      renderEquipSection('jentera', 'KEKUATAN JENTERA UTAMA', 'var(--amber)', JENTERA_KAT, false);
+    }
+    if (khasPanels.includes('marin')) {
+      renderEquipSection('marin', 'KEKUATAN JENTERA MARIN', 'var(--blue)', MARIN_KAT, false);
+    }
+    if (khasPanels.includes('utiliti')) {
+      renderEquipSection('utiliti', 'KEKUATAN KENDERAAN UTILITI', 'var(--slate)', UTILITI_KAT, false);
+    }
+    globalRecalc();
+  } else {
+    ensureKomunikasiDefaults();
+    renderPersonelSection();
+    renderEquipSection('jentera', 'KEKUATAN JENTERA UTAMA', 'var(--amber)', JENTERA_KAT, false);
+    renderEquipSection('marin', 'KEKUATAN JENTERA MARIN', 'var(--blue)', MARIN_KAT, false);
+    renderEquipSection('utiliti', 'KEKUATAN KENDERAAN UTILITI', 'var(--slate)', UTILITI_KAT, false);
+    renderEquipSection('komunikasi', 'KEKUATAN PERALATAN KOMUNIKASI', 'var(--green)', KOMUNIKASI_DEF.map((k) => k.name), true);
+    globalRecalc();
+  }
+}
+
+}
 
       function updatePrintFooterDate() {
         const el = document.getElementById('pfLocDate');
@@ -12585,6 +13386,19 @@ function switchView(v) {
 
   const exportState = JSON.parse(JSON.stringify(state));
 
+   // ⬇️⬇️⬇️ KES KHAS BALAI KHAS (HQ.KENDERAAN BHG, KEJURUTERAAN/BENGKEL SWASTA) ⬇️⬇️⬇️
+   const khasPanels = getBalaiKhasPanels(store.activeBalai);
+  if (khasPanels) {
+    if (!khasPanels.includes('personel')) exportState.personel = [];
+    if (exportState.equip) {
+      if (!khasPanels.includes('jentera')) exportState.equip.jentera = [];
+      if (!khasPanels.includes('marin')) exportState.equip.marin = [];
+      if (!khasPanels.includes('utiliti')) exportState.equip.utiliti = [];
+      if (!khasPanels.includes('komunikasi')) exportState.equip.komunikasi = [];
+    }
+  }
+  // ⬆️⬆️⬆️ TAMAT KES KHAS ⬆️⬆️⬆️
+
   if (exportState.ident && typeof exportState.ident === 'object') {
     delete exportState.ident.shif;
     delete exportState.ident.tarikh;
@@ -12619,6 +13433,7 @@ function switchView(v) {
   URL.revokeObjectURL(url);
   showToast('Balai ' + store.activeBalai + ' berjaya dieksport', 'success');
 }
+
 
       function showExportModal(onYes, onNo) {
         const overlay = document.getElementById('exportModalOverlay');
