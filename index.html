@@ -5818,12 +5818,14 @@ if (petaFullscreenBtn) {
             }
 
             function getActiveUnitsForAnggota(a) {
+                // ✅ Kira SETIAP SLOT unit1..unit4 (termasuk duplikat)
+                // supaya kiraan padan dengan Tab Dashboard fail ke-2
                 const found = [];
                 [a.unit1, a.unit2, a.unit3, a.unit4].forEach(u => {
                     if (!u) return;
                     const norm = normalizeUnitName(u);
-                    if (ALL_UNITS_DASHBOARD.includes(norm) && !found.includes(norm)) {
-                        found.push(norm);
+                    if (ALL_UNITS_DASHBOARD.includes(norm)) {
+                        found.push(norm);   // ⬅️ tiada dedupe
                     }
                 });
                 if (found.length === 0) found.push('PEMADAM');
@@ -5867,11 +5869,12 @@ if (petaFullscreenBtn) {
                         statusLabel = enAktif ? 'NOT READY' : 'TIDAK SEDIA';
                     }
 
-                    html += `<div class="unit-card" data-unit="${u.key}" role="button" tabindex="0" onclick="openPasukanModal('${u.key}')">
+                                        html += `<div class="unit-card" data-unit="${u.key}" role="button" tabindex="0" onclick="openPasukanModal('${u.key}')">
                         <div class="unit-name"><i class="fas ${u.icon}"></i> ${u.label}</div>
                         <div class="unit-count">${bertugas}<span class="count-denom">/ ${total}</span></div>
                         <span class="unit-status ${statusClass}">${statusLabel}</span>
                     </div>`;
+                
                 });
 
                 container.innerHTML = html;
@@ -6166,10 +6169,26 @@ if (petaFullscreenBtn) {
             fetchAnggotaMiniStats();
             setInterval(fetchAnggotaMiniStats, 60000);
 
+            // ✅ FIX: Refresh serta-merta bila pengguna balik ke tab
+            document.addEventListener('visibilitychange', function () {
+                if (!document.hidden) {
+                    fetchAnggotaMiniStats();
+                    fetchKesHariIni();
+                    fetchJenteraBersedia();
+                    fetchDanPaparPetaJentera();
+                    fetchCarouselData();
+                }
+            });
+
             // ===== SERVICE WORKER =====
+            
             if ('serviceWorker' in navigator) {
                 navigator.serviceWorker.register('sw.js').catch(() => {});
             }
+
+            // ✅ FIX: Dedahkan fungsi modal ke window untuk onclick inline handler
+            window.openPasukanModal  = openPasukanModal;
+            window.closePasukanModal = closePasukanModal;
 
         });
     </script>
