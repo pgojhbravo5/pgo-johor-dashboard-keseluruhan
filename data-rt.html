@@ -198,7 +198,8 @@
       .tab-btn.active { background: var(--johor-navy); color: #fff; font-weight: 600; }
       .tab-panel { display: none; animation: fadeIn 0.25s ease; }
       .tab-panel.active { display: block; }
-      .card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); box-shadow: var(--shadow-sm); padding: 18px 20px; margin-bottom: 16px; overflow: hidden; }      .card-header { display: flex; align-items: center; justify-content: space-between; padding-bottom: 12px; margin-bottom: 14px; border-bottom: 1px solid var(--border); gap: 12px; flex-wrap: wrap; }
+      .card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); box-shadow: var(--shadow-sm); padding: 18px 20px; margin-bottom: 16px; overflow: hidden; }
+      .card-header { display: flex; align-items: center; justify-content: space-between; padding-bottom: 12px; margin-bottom: 14px; border-bottom: 1px solid var(--border); gap: 12px; flex-wrap: wrap; }
       .card-title { font-size: 13.5px; font-weight: 600; color: var(--text); display: flex; align-items: center; gap: 8px; }
       .card-title .ico { color: var(--johor-navy); }
       .card-badge { font-size: 10.5px; font-weight: 600; color: var(--text-muted); background: var(--surface-2); border: 1px solid var(--border); padding: 3px 10px; border-radius: var(--radius-sm); text-transform: uppercase; letter-spacing: 0.3px; }
@@ -1174,7 +1175,7 @@
       /* ============================================================
          PILIHAN B: STICKY HEADER + SCROLL CONTAINER DALAMAN
          ============================================================ */
-         .table-scroll, #jadualScroll {
+      .table-scroll, #jadualScroll {
         max-height: 75vh !important;
         overflow-y: auto !important;
         overflow-x: auto !important;
@@ -1183,7 +1184,6 @@
         max-width: 100%;
       }
 
-      /* Header jadual: sticky di dalam scroll container */
       thead th,
       #dataTable thead th,
       #jadualBalai thead th {
@@ -1193,7 +1193,6 @@
         background: var(--surface-2) !important;
       }
 
-      /* Footer jadual (Page Jadual): sticky di bawah */
       #jadualBalai tfoot td {
         position: sticky !important;
         bottom: 0 !important;
@@ -1202,9 +1201,8 @@
       }
 
       /* ============================================================
-         HEADER JADUAL: 1 BARIS SAHAJA + LARASKAN KOLUM
+         HEADER JADUAL: AUTO-FIT + WRAP 5 BARIS
          ============================================================ */
-      /* Auto-fit jadual — lebar kolum ikut kandungan, skrol ke kanan bila perlu */
       #dataTable {
         table-layout: auto;
         width: max-content;
@@ -1229,7 +1227,7 @@
 
       #dataTable thead th .th-label {
         display: -webkit-box;
-        -webkit-line-clamp: 5;      /* maksimum 5 baris */
+        -webkit-line-clamp: 5;
         -webkit-box-orient: vertical;
         overflow: hidden;
         white-space: normal;
@@ -1240,7 +1238,6 @@
         line-height: 1.25;
       }
 
-      /* Sel data: auto-fit, benarkan wrap untuk teks panjang sahaja */
       #dataTable tbody td,
       #dataTable tfoot td {
         padding: 8px 12px 8px 8px !important;
@@ -1251,9 +1248,8 @@
         vertical-align: middle;
       }
 
-      /* Kekalkan nowrap untuk kolum masa/tarikh/RT */
-            /* Data masa/tarikh/RT: kekal 1 baris sahaja */
-            #dataTable td[data-col="tarikhStr"],
+      /* Data masa/tarikh/RT: kekal 1 baris sahaja */
+      #dataTable td[data-col="tarikhStr"],
       #dataTable td[data-col="masaTerima"],
       #dataTable td[data-col="masaLooping"],
       #dataTable td[data-col="masaBerlepas"],
@@ -1297,18 +1293,15 @@
         line-height: 1.2;
       }
 
-
-      /* Untuk #jadualBalai — 1 baris juga */
       #jadualBalai thead th {
-        white-space: nowrap !important;
-        word-break: keep-all !important;
-        overflow-wrap: normal !important;
+        white-space: normal !important;
+        word-break: normal !important;
+        overflow-wrap: break-word !important;
         vertical-align: middle;
         line-height: 1.25;
       }
 
-      /* Mobile: header tetap 1 baris */
-                 @media (max-width: 768px) {
+      @media (max-width: 768px) {
         #dataTable thead th {
           padding: 5px 18px 5px 5px !important;
           font-size: 9px !important;
@@ -1329,7 +1322,6 @@
           font-size: 10px !important;
           max-width: 220px;
         }
-        /* Header masa/tarikh di mobile: 3 baris */
         #dataTable th[data-col="tarikhStr"],
         #dataTable th[data-col="masaTerima"],
         #dataTable th[data-col="masaLooping"],
@@ -1349,9 +1341,76 @@
         #dataTable th[data-col="rt"] .th-label {
           -webkit-line-clamp: 3;
         }
-      }      
-      
-      </style>
+      }
+
+      /* ============================================================
+         PAGE JADUAL — ENHANCEMENT
+         ============================================================ */
+      .jadual-summary {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+        gap: 10px;
+        margin-bottom: 14px;
+      }
+      .js-card {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-left: 3px solid var(--johor-navy);
+        border-radius: var(--radius);
+        padding: 12px 14px;
+        box-shadow: var(--shadow-sm);
+      }
+      .js-card.js-success { border-left-color: var(--success); }
+      .js-card.js-warning { border-left-color: var(--warning); }
+      .js-card.js-danger  { border-left-color: var(--johor-red); }
+      .js-card.js-gold    { border-left-color: var(--johor-gold); }
+      .js-card .js-label {
+        font-size: 10.5px; font-weight: 600; color: var(--text-muted);
+        text-transform: uppercase; letter-spacing: 0.5px;
+        display: flex; align-items: center; gap: 6px;
+      }
+      .js-card .js-label .ico { color: var(--johor-navy); width: 14px; height: 14px; }
+      .js-card .js-value {
+        font-family: 'IBM Plex Sans', 'Inter', sans-serif;
+        font-size: 22px; font-weight: 700; color: var(--text);
+        margin-top: 4px; line-height: 1.1;
+        font-variant-numeric: tabular-nums;
+      }
+      .js-card .js-sub { font-size: 10.5px; color: var(--text-subtle); margin-top: 3px; }
+
+      .jadual-view-toggle {
+        display: flex; gap: 4px; background: var(--surface);
+        border: 1px solid var(--border); border-radius: var(--radius);
+        padding: 4px; margin-bottom: 14px;
+        box-shadow: var(--shadow-sm); overflow-x: auto;
+      }
+      .jvt-btn {
+        flex: 1; min-width: 90px; padding: 8px 14px;
+        border: none; background: transparent; color: var(--text-muted);
+        font-size: 12.5px; font-weight: 600; border-radius: var(--radius-sm);
+        cursor: pointer; font-family: inherit; transition: 0.15s;
+        white-space: nowrap;
+      }
+      .jvt-btn:hover { background: var(--surface-2); color: var(--text); }
+      .jvt-btn.active { background: var(--johor-navy); color: #fff; }
+
+      .tier-badge {
+        display: inline-flex; align-items: center; justify-content: center;
+        min-width: 28px; height: 22px; padding: 0 8px;
+        border-radius: 4px; font-weight: 700; font-size: 11px;
+      }
+      .tier-badge.tier-A { background: rgba(15, 123, 79, 0.15);  color: #0F7B4F; }
+      .tier-badge.tier-B { background: rgba(59, 110, 165, 0.15); color: #3B6EA5; }
+      .tier-badge.tier-C { background: rgba(196, 164, 92, 0.20); color: #8A6D24; }
+      .tier-badge.tier-D { background: rgba(217, 119, 87, 0.18); color: #B34A2A; }
+
+      @media (max-width: 768px) {
+        .jadual-summary { grid-template-columns: repeat(2, 1fr); gap: 7px; }
+        .js-card { padding: 10px 11px; }
+        .js-card .js-value { font-size: 18px; }
+        .jvt-btn { padding: 8px 10px; font-size: 11.5px; min-width: 75px; }
+      }
+    </style>
   </head>
   <body>
     <header class="topbar">
@@ -1685,7 +1744,6 @@
             <div class="subkat-grid" id="subKategoriScroll"></div>
           </div>
 
-          <!-- Dropdown Tab (Mobile sahaja) -->
           <div class="tab-dropdown-mobile" id="tabDropdownMobile">
             <button class="tab-dropdown-trigger" id="tabDropdownTrigger" type="button">
               <span class="tdm-left">
@@ -2045,9 +2103,18 @@
         </div>
 
         <div class="page-content" id="page-jadual">
+          <div class="jadual-summary" id="jadualSummary"></div>
+
+          <div class="jadual-view-toggle" id="jadualViewToggle">
+            <button class="jvt-btn active" data-view="balai" type="button">Balai</button>
+            <button class="jvt-btn" data-view="zon" type="button">Zon</button>
+            <button class="jvt-btn" data-view="daerah" type="button">Daerah</button>
+            <button class="jvt-btn" data-view="katBalai" type="button">Kategori Balai</button>
+          </div>
+
           <div class="card">
             <div class="card-header">
-              <div class="card-title">Jadual Ringkasan Mengikut Balai</div>
+              <div class="card-title">Jadual Ringkasan Mengikut <span id="jadualViewLabel">Balai</span></div>
               <div class="card-controls">
                 <div class="ms" data-key="tableMetrics" style="min-width: 220px"></div>
                 <input type="number" id="jadualThreshold" class="jadual-threshold" placeholder="≤ Nilai" title="Tapis baris ≤ nilai" />
@@ -2068,6 +2135,23 @@
                 <tbody id="jadualBody"></tbody>
                 <tfoot id="jadualFoot"></tfoot>
               </table>
+            </div>
+          </div>
+
+          <div class="dashboard-row">
+            <div class="card" style="margin-bottom: 0;">
+              <div class="card-header">
+                <div class="card-title">Top 10 Balai — Purata RT Terendah</div>
+                <span class="card-badge" id="badgeTopRt">-</span>
+              </div>
+              <div class="chart-wrap-md"><canvas id="chartJadualTopRt"></canvas></div>
+            </div>
+            <div class="card" style="margin-bottom: 0;">
+              <div class="card-header">
+                <div class="card-title">Top 10 Balai — Bilangan Kes Terbanyak</div>
+                <span class="card-badge" id="badgeTopKes">-</span>
+              </div>
+              <div class="chart-wrap-md"><canvas id="chartJadualTopKes"></canvas></div>
             </div>
           </div>
         </div>
@@ -2213,6 +2297,7 @@
       };
 
       const TABLE_METRICS = {
+        tier:           { label: 'Tier Prestasi', type: 'tier', default: true },
         total:          { label: 'Total Kes', type: 'number', default: true },
         kebakaran:      { label: 'Kebakaran', type: 'number', default: true },
         penyelamatan:   { label: 'Penyelamatan', type: 'number', default: true },
@@ -2221,11 +2306,19 @@
         panggilanPalsu: { label: 'Panggilan Palsu', type: 'number', default: false },
         gambut:         { label: 'Kebakaran Tanah Gambut', type: 'number', default: true },
         avgRT:          { label: 'Purata RT (min)', type: 'number', default: true, decimals: 1 },
+        medianRT:       { label: 'Median RT (min)', type: 'number', default: false, decimals: 1 },
+        minRT:          { label: 'Min RT (min)', type: 'number', default: false, decimals: 1 },
+        maxRT:          { label: 'Max RT (min)', type: 'number', default: false, decimals: 1 },
+        p95RT:          { label: 'P95 RT (min)', type: 'number', default: false, decimals: 1 },
+        stdDevRT:       { label: 'Sisihan Piawai RT', type: 'number', default: false, decimals: 2 },
         avgJarak:       { label: 'Purata Jarak (km)', type: 'number', default: true, decimals: 1 },
         countDays:      { label: 'Bilangan Hari Aktif', type: 'number', default: true },
         countJenis:     { label: 'Bilangan Jenis Panggilan', type: 'number', default: false },
+        kesPerHari:     { label: 'Kes / Hari Aktif', type: 'number', default: false, decimals: 2 },
         kpiEnroute:     { label: 'KPI Enroute %', type: 'percent', default: false },
         kpiRT10:        { label: 'KPI RT ≤10min %', type: 'percent', default: true },
+        pctKebakaran:   { label: '% Kebakaran', type: 'percent', default: false },
+        pctPenyelamatan:{ label: '% Penyelamatan', type: 'percent', default: false },
         mangsaSelamat:  { label: 'Mangsa Selamat', type: 'number', default: false },
         mangsaMati:     { label: 'Mangsa Mati', type: 'number', default: false },
         jamOps:         { label: 'Jumlah Jam Ops', type: 'number', default: false, decimals: 1 },
@@ -2237,6 +2330,13 @@
         setSelected(keys) { localStorage.setItem(this.STORAGE_KEY, JSON.stringify(keys.filter((k) => TABLE_METRICS[k]))); },
       };
 
+      let TABLE_COLS = [];
+      const DEFAULT_VISIBLE_COLS = [
+        'bil', 'tahun', 'monsun', 'bulan', 'hari', 'tarikhStr', 'daerah', 'zon', 'balai',
+        'callCard', 'kategori', 'subKategori1', 'subKategori2', 'jenis', 'jarak',
+        'masaTerima', 'masaLooping', 'masaBerlepas', 'masaTiba', 'masaTamat', 'rt', 'statusOperasi'
+      ];
+
       const TableColPrefs = {
         STORAGE_KEY: 'rt-table-cols',
         getVisible() {
@@ -2247,11 +2347,10 @@
               if (Array.isArray(parsed) && parsed.length > 0) return new Set(parsed);
             }
           } catch(e) {}
-          return new Set(DEFAULT_VISIBLE_COLS); // Guna default baru
+          return new Set(DEFAULT_VISIBLE_COLS);
         },
         setVisible(set) { localStorage.setItem(this.STORAGE_KEY, JSON.stringify([...set])); }
       };
-
 
       if (typeof ChartDataLabels !== 'undefined') Chart.register(ChartDataLabels);
 
@@ -2264,6 +2363,7 @@
       let jadualSort = { col: 'balai', dir: 'asc' };
       let jadualCompact = false;
       let jadualThreshold = null;
+      let jadualView = 'balai';
 
       function parseCSV(text) {
         const rows = []; let row = [], field = '', inQuotes = false;
@@ -2308,35 +2408,28 @@
         if (!v) return null;
         const s = String(v).trim();
         if (!s) return null;
-        
         let d = null;
-        
-        // 1. Cuba padankan format DD/MM/YYYY, DD-MM-YYYY, atau DD.MM.YYYY terlebih dahulu
         const m = s.match(/^(\d{1,2})[\/\-\.](\d{1,2})[\/\-\.](\d{2,4})/);
         if (m) {
           let [, dd, mm, yy] = m;
           if (yy.length === 2) yy = '20' + yy;
           const year = +yy;
           if (year >= MIN_YEAR && year <= MAX_YEAR) {
-            // Nota: new Date(year, monthIndex, day) -> monthIndex bermula dari 0 (Januari = 0)
             const t = new Date(year, +mm - 1, +dd);
             if (!isNaN(t.getTime())) d = t;
           }
         }
-        
-        // 2. Jika format DD/MM/YYYY tiada, barulah cuba format ISO atau format lain
         if (!d) {
           const isoTest = new Date(s);
           if (!isNaN(isoTest.getTime())) d = isoTest;
         }
-        
         if (!d) return null;
         if (d < MIN_DATE) return null;
         const year = d.getFullYear();
         if (year < MIN_YEAR || year > MAX_YEAR) return null;
         return d;
       }
-            function parseTime(v) {
+      function parseTime(v) {
         if (!v) return null;
         const m = String(v).match(/(\d{1,2})[:\.](\d{1,2})(?:[:\.](\d{1,2}))?/);
         return m ? +m[1] * 60 + +m[2] + (+m[3] || 0) / 60 : null;
@@ -2921,9 +3014,7 @@
             STATUS_NART_KP: findCol(['STATUS NART RT MENGIKUT KPI KP JBPM', 'STATUS NART RT MENGIKUT KPI KP'], 76),
           };
 
-          // JANA TABLE_COLS SECARA AUTOMATIK DARIPADA HEADERS
-                    // PEMETAAN DARI KUNCI COL (BESAR) KE KUNCI DATA (kecilCamelCase)
-                    const COL_KEY_TO_DATA = {
+          const COL_KEY_TO_DATA = {
             BIL: 'bil', TAHUN: 'tahun', MONSUN: 'monsun', BULAN: 'bulan', HARI: 'hari',
             TARIKH: 'tarikhStr', BALAI: 'balai', CALL_CARD: 'callCard', SHIF: 'shif',
             KES_TIDAK_RT: 'kesTidakRt', MELIBATKAN_MANGSA: 'melibatkanMangsa',
@@ -2944,7 +3035,6 @@
             STATUS_NART_TKP: 'statusNartTkp', STATUS_NART_KP: 'statusNartKp',
           };
 
-          // JANA TABLE_COLS SECARA AUTOMATIK DARIPADA HEADERS
           TABLE_COLS = HEADERS.map((header, index) => {
             const colKey = Object.keys(COL).find(k => COL[k] === index);
             const safeHeader = clean(header) || `Column ${index + 1}`;
@@ -2953,7 +3043,6 @@
           });
 
           const dataRows = rows.slice(1).filter((r) => r.length > 6 && clean(r[COL.BALAI]));
-
 
           RAW_DATA = dataRows.map((r) => {
             const tarikh = parseDate(r[COL.TARIKH]);
@@ -3033,53 +3122,31 @@
         }
       }
 
-      let TABLE_COLS = [];
-      
-      // Senarai kolum yang dipaparkan secara default (untuk elak table terlalu lebar)
-      const DEFAULT_VISIBLE_COLS = [
-        'bil', 'tahun', 'monsun', 'bulan', 'hari', 'tarikhStr', 'daerah', 'zon', 'balai',
-        'callCard', 'kategori', 'subKategori1', 'subKategori2', 'jenis', 'jarak',
-        'masaTerima', 'masaLooping', 'masaBerlepas', 'masaTiba', 'masaTamat', 'rt', 'statusOperasi'
-      ];
-
-
       const COL_FILTERS = {};
       let cfCurrentCol = null;
       let cfTempSelected = new Set();
 
       function getColDisplayValue(d, colKey) {
-        // 1. Kolum mentah tanpa pemetaan (contoh: raw_25)
         if (colKey.startsWith('raw_')) {
           const index = parseInt(colKey.replace('raw_', ''), 10);
           return clean(d.raw[index]) || '-';
         }
-
-        // 2. Kes khas yang perlu format khas
         if (colKey === 'bil') return d.bil || '-';
         if (colKey === 'jarak') return d.jarak > 0 ? d.jarak.toFixed(1) : '-';
         if (colKey === 'rt') return d.rt != null ? d.rt.toFixed(1) : '-';
         if (colKey === 'tarikhStr') return d.tarikhStr || '-';
-
-        // 3. Kalau nilai wujud dalam objek data, guna terus
         if (Object.prototype.hasOwnProperty.call(d, colKey)) {
           const v = d[colKey];
           if (v == null) return '-';
-          if (typeof v === 'number') {
-            // Format nombor perpuluhan (nart, sela, dll.)
-            return Number.isInteger(v) ? String(v) : v.toFixed(2);
-          }
+          if (typeof v === 'number') return Number.isInteger(v) ? String(v) : v.toFixed(2);
           if (v === '') return '-';
           return v;
         }
-
-        // 4. Fallback: ambil dari raw data guna index dari TABLE_COLS
         const colDef = TABLE_COLS.find((c) => c.key === colKey);
         if (colDef && colDef.index != null) {
           const rawVal = clean(d.raw[colDef.index]);
           return rawVal || '-';
         }
-
-        // 5. Fallback terakhir
         return '-';
       }
 
@@ -3258,8 +3325,8 @@
           onChange: () => {
             const sel = MultiSelect.getSelected('tableCols');
             if (sel.length === 0) {
-               MultiSelect.setSelected('tableCols', ['BIL']);
-               TableColPrefs.setVisible(new Set(['bil']));
+               MultiSelect.setSelected('tableCols', [TABLE_COLS[0].label]);
+               TableColPrefs.setVisible(new Set([TABLE_COLS[0].key]));
             } else {
                const keys = sel.map(lbl => TABLE_COLS.find(c => c.label === lbl)?.key).filter(Boolean);
                TableColPrefs.setVisible(new Set(keys));
@@ -3299,6 +3366,21 @@
           exportBtn.dataset.ready = '1';
           exportBtn.addEventListener('click', exportJadualCSV);
         }
+
+        const viewToggle = document.getElementById('jadualViewToggle');
+        if (viewToggle && !viewToggle.dataset.ready) {
+          viewToggle.dataset.ready = '1';
+          viewToggle.querySelectorAll('.jvt-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+              jadualView = btn.dataset.view;
+              viewToggle.querySelectorAll('.jvt-btn').forEach(b => b.classList.toggle('active', b === btn));
+              const lbl = document.getElementById('jadualViewLabel');
+              if (lbl) lbl.textContent = btn.textContent;
+              jadualSort = { col: jadualView === 'zon' ? 'zon' : jadualView === 'daerah' ? 'daerah' : jadualView === 'katBalai' ? 'katBalai' : 'balai', dir: 'asc' };
+              renderJadual();
+            });
+          });
+        }
       }
 
       function initRowsPerPage() {
@@ -3313,7 +3395,6 @@
             rowsPerPage = v === 0 ? Infinity : v;
           }
         } else {
-          // Default baharu: 50 baris/halaman
           rowsPerPage = 50;
           sel.value = '50';
         }
@@ -3331,8 +3412,6 @@
         MultiSelect.setSelected('tableCols', TABLE_COLS.filter(c => DEFAULT_VISIBLE_COLS.includes(c.key)).map(c => c.label));
         TableColPrefs.setVisible(new Set(DEFAULT_VISIBLE_COLS));
         Object.keys(COL_FILTERS).forEach((k) => delete COL_FILTERS[k]);
-
-
         buildTableHeaders();
         const dates = RAW_DATA.map((d) => d.tarikh).filter(Boolean).filter((d) => d >= MIN_DATE).sort((a, b) => a - b);
         if (dates.length) DateRangePicker.setRange(dates[0], dates[dates.length - 1]);
@@ -3472,47 +3551,17 @@
           });
         }
 
-        function openPopup() {
-          buildOptions();
-          updateActiveState();
-          popup.hidden = false;
-          dropdown.classList.add('open');
-        }
+        function openPopup() { buildOptions(); updateActiveState(); popup.hidden = false; dropdown.classList.add('open'); }
+        function closePopup() { popup.hidden = true; dropdown.classList.remove('open'); }
+        function togglePopup() { if (popup.hidden) openPopup(); else closePopup(); }
 
-        function closePopup() {
-          popup.hidden = true;
-          dropdown.classList.remove('open');
-        }
-
-        function togglePopup() {
-          if (popup.hidden) openPopup(); else closePopup();
-        }
-
-        trigger.addEventListener('click', (e) => {
-          e.stopPropagation();
-          togglePopup();
-        });
-
+        trigger.addEventListener('click', (e) => { e.stopPropagation(); togglePopup(); });
         popup.addEventListener('click', (e) => e.stopPropagation());
-
-        document.addEventListener('click', (e) => {
-          if (!e.target.closest('#tabDropdownMobile')) closePopup();
-        });
-
-        document.addEventListener('keydown', (e) => {
-          if (e.key === 'Escape') closePopup();
-        });
-
-        tabs.forEach(tab => {
-          tab.addEventListener('click', () => {
-            setTimeout(updateActiveState, 10);
-          });
-        });
-
+        document.addEventListener('click', (e) => { if (!e.target.closest('#tabDropdownMobile')) closePopup(); });
+        document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closePopup(); });
+        tabs.forEach(tab => { tab.addEventListener('click', () => { setTimeout(updateActiveState, 10); }); });
         window.addEventListener('scroll', () => {
-          if (window.matchMedia('(max-width: 768px)').matches && !popup.hidden) {
-            closePopup();
-          }
+          if (window.matchMedia('(max-width: 768px)').matches && !popup.hidden) closePopup();
         }, { passive: true });
 
         updateActiveState();
@@ -4401,16 +4450,17 @@
         }, showNumbers);
       }
 
-      function getBalaiMetrics() {
+      function getBalaiMetrics(groupByField = 'balai') {
         const map = {};
         FILTERED.forEach((d) => {
-          const key = d.balai;
+          const key = d[groupByField] || '(TIADA)';
           if (!map[key]) map[key] = {
-            balai: d.balai, zon: d.zon || '(TIADA)',
+            balai: key, zon: d.zon || '(TIADA)', daerah: d.daerah || '(TIADA)',
+            katBalai: d.katBalai || '(TIADA)',
             total: 0, kebakaran: 0, penyelamatan: 0,
             khidmatKhasKemanusiaan: 0,
             tugasKhas: 0, panggilanPalsu: 0,
-            gambut: 0, rtSum: 0, rtCount: 0,
+            gambut: 0, rtSum: 0, rtCount: 0, rtValues: [],
             jarakSum: 0, jarakCount: 0,
             kpiEnrY: 0, kpiEnrN: 0, kpiRt10Y: 0, kpiRt10N: 0,
             mangsaSelamat: 0, mangsaMati: 0, jamOps: 0,
@@ -4425,7 +4475,7 @@
           if (isTugasKhas(d.kategori)) m.tugasKhas++;
           if (isPanggilanPalsu(d.kategori)) m.panggilanPalsu++;
           if (d.gambut === 'YA') m.gambut++;
-          if (d.rt != null) { m.rtSum += d.rt; m.rtCount++; }
+          if (d.rt != null) { m.rtSum += d.rt; m.rtCount++; m.rtValues.push(d.rt); }
           if (d.jarak > 0) { m.jarakSum += d.jarak; m.jarakCount++; }
           if (d.statusKpiEnr === 'TERCAPAI') m.kpiEnrY++; else if (d.statusKpiEnr === 'TIDAK TERCAPAI') m.kpiEnrN++;
           if (d.statusKpiRt10 === 'TERCAPAI') m.kpiRt10Y++; else if (d.statusKpiRt10 === 'TIDAK TERCAPAI') m.kpiRt10N++;
@@ -4438,22 +4488,125 @@
         });
         return Object.values(map).map((m) => {
           const denEnr = m.kpiEnrY + m.kpiEnrN, denRT = m.kpiRt10Y + m.kpiRt10N;
+          const rtSorted = [...m.rtValues].sort((a, b) => a - b);
+          const median = rtSorted.length
+            ? (rtSorted.length % 2 === 0
+                ? (rtSorted[rtSorted.length / 2 - 1] + rtSorted[rtSorted.length / 2]) / 2
+                : rtSorted[Math.floor(rtSorted.length / 2)])
+            : 0;
+          const p95 = rtSorted.length
+            ? rtSorted[Math.min(Math.floor(rtSorted.length * 0.95), rtSorted.length - 1)]
+            : 0;
+          const avgRT = m.rtCount ? m.rtSum / m.rtCount : 0;
+          const variance = m.rtCount > 1
+            ? m.rtValues.reduce((a, v) => a + Math.pow(v - avgRT, 2), 0) / m.rtCount
+            : 0;
+          const stdDev = Math.sqrt(variance);
+          const kpiRT10Pct = denRT ? (m.kpiRt10Y / denRT) * 100 : 0;
+          const kpiEnrPct = denEnr ? (m.kpiEnrY / denEnr) * 100 : 0;
+          let tier = '-';
+          if (denRT > 0) {
+            if (kpiRT10Pct >= 95) tier = 'A';
+            else if (kpiRT10Pct >= 85) tier = 'B';
+            else if (kpiRT10Pct >= 70) tier = 'C';
+            else tier = 'D';
+          }
           return {
-            balai: m.balai, zon: m.zon, total: m.total,
+            balai: m.balai, zon: m.zon, daerah: m.daerah, katBalai: m.katBalai,
+            total: m.total,
             kebakaran: m.kebakaran, penyelamatan: m.penyelamatan,
             khidmatKhasKemanusiaan: m.khidmatKhasKemanusiaan,
             tugasKhas: m.tugasKhas, panggilanPalsu: m.panggilanPalsu,
             gambut: m.gambut,
-            avgRT: m.rtCount ? m.rtSum / m.rtCount : 0,
+            avgRT: avgRT,
+            medianRT: median,
+            minRT: rtSorted.length ? rtSorted[0] : 0,
+            maxRT: rtSorted.length ? rtSorted[rtSorted.length - 1] : 0,
+            p95RT: p95,
+            stdDevRT: stdDev,
             avgJarak: m.jarakCount ? m.jarakSum / m.jarakCount : 0,
             countDays: m.daysSet.size,
             countJenis: m.jenisSet.size,
-            kpiEnroute: denEnr ? (m.kpiEnrY / denEnr) * 100 : 0,
-            kpiRT10: denRT ? (m.kpiRt10Y / denRT) * 100 : 0,
+            kesPerHari: m.daysSet.size ? m.total / m.daysSet.size : 0,
+            kpiEnroute: kpiEnrPct,
+            kpiRT10: kpiRT10Pct,
+            pctKebakaran: m.total ? (m.kebakaran / m.total) * 100 : 0,
+            pctPenyelamatan: m.total ? (m.penyelamatan / m.total) * 100 : 0,
             mangsaSelamat: m.mangsaSelamat, mangsaMati: m.mangsaMati,
             jamOps: m.jamOps, sparkline: m.bulanCount,
+            tier: tier,
           };
         });
+      }
+
+      function renderJadualSummary() {
+        const el = document.getElementById('jadualSummary');
+        if (!el) return;
+        const rows = getBalaiMetrics(jadualView);
+        const totalKes = rows.reduce((a, r) => a + r.total, 0);
+        const totalRT = rows.reduce((a, r) => a + r.avgRT * r.total, 0);
+        const totalRTden = rows.reduce((a, r) => a + (r.avgRT > 0 ? r.total : 0), 0);
+        const avgRtAll = totalRTden ? totalRT / totalRTden : 0;
+        const totalRt10 = rows.reduce((a, r) => a + r.kpiRT10 * r.total, 0);
+        const totalRt10Den = rows.reduce((a, r) => a + (r.kpiRT10 > 0 ? r.total : 0), 0);
+        const kpiRT10All = totalRt10Den ? totalRt10 / totalRt10Den : 0;
+        const totalEnr = rows.reduce((a, r) => a + r.kpiEnroute * r.total, 0);
+        const totalEnrDen = rows.reduce((a, r) => a + (r.kpiEnroute > 0 ? r.total : 0), 0);
+        const kpiEnrAll = totalEnrDen ? totalEnr / totalEnrDen : 0;
+        const tierA = rows.filter((r) => r.tier === 'A').length;
+        const tierD = rows.filter((r) => r.tier === 'D').length;
+        const viewLabel = { balai: 'Balai', zon: 'Zon', daerah: 'Daerah', katBalai: 'Kategori Balai' }[jadualView] || 'Balai';
+
+        el.innerHTML = `
+          <div class="js-card"><div class="js-label">Jumlah ${viewLabel}</div><div class="js-value">${rows.length}</div><div class="js-sub">unit berbeza</div></div>
+          <div class="js-card js-gold"><div class="js-label">Jumlah Kes</div><div class="js-value">${totalKes.toLocaleString()}</div><div class="js-sub">${FILTERED.length} rekod ditapis</div></div>
+          <div class="js-card js-warning"><div class="js-label">Purata RT Keseluruhan</div><div class="js-value">${avgRtAll.toFixed(2)} min</div><div class="js-sub">sasaran ≤10 minit</div></div>
+          <div class="js-card ${kpiRT10All >= 85 ? 'js-success' : 'js-danger'}"><div class="js-label">KPI RT ≤10min</div><div class="js-value">${kpiRT10All.toFixed(1)}%</div><div class="js-sub">sasaran ≥85%</div></div>
+          <div class="js-card ${kpiEnrAll >= 80 ? 'js-success' : 'js-danger'}"><div class="js-label">KPI Enroute ≤60s</div><div class="js-value">${kpiEnrAll.toFixed(1)}%</div><div class="js-sub">sasaran ≥80%</div></div>
+          <div class="js-card"><div class="js-label">Tier A / D</div><div class="js-value">${tierA} / ${tierD}</div><div class="js-sub">${tierA} cemerlang · ${tierD} perlu perhatian</div></div>
+        `;
+      }
+
+      function renderJadualMiniCharts() {
+        const rows = getBalaiMetrics('balai');
+        const topRt = [...rows].filter((r) => r.avgRT > 0).sort((a, b) => a.avgRT - b.avgRT).slice(0, 10);
+        const badgeRt = document.getElementById('badgeTopRt');
+        if (badgeRt) badgeRt.textContent = `${topRt.length} balai`;
+        const cRt = document.getElementById('chartJadualTopRt');
+        if (cRt) {
+          if (CHARTS.chartJadualTopRt) { try { CHARTS.chartJadualTopRt.destroy(); } catch (e) {} }
+          if (topRt.length) {
+            CHARTS.chartJadualTopRt = new Chart(cRt.getContext('2d'), {
+              type: 'bar',
+              data: {
+                labels: topRt.map((r) => r.balai),
+                datasets: [{ label: 'Purata RT (min)', data: topRt.map((r) => +r.avgRT.toFixed(2)),
+                  backgroundColor: topRt.map((r) => r.avgRT <= 10 ? hexToRgba('#0F7B4F', 0.78) : r.avgRT <= 15 ? hexToRgba('#C4A45C', 0.78) : hexToRgba('#D97757', 0.78)),
+                  borderColor: topRt.map((r) => r.avgRT <= 10 ? '#0F7B4F' : r.avgRT <= 15 ? '#C4A45C' : '#D97757'),
+                  borderWidth: 1, borderRadius: 4 }],
+              },
+              options: makeOpts({ indexAxis: 'y', plugins: { legend: { display: false } } }),
+            });
+          }
+        }
+        const topKes = [...rows].sort((a, b) => b.total - a.total).slice(0, 10);
+        const badgeKes = document.getElementById('badgeTopKes');
+        if (badgeKes) badgeKes.textContent = `${topKes.length} balai`;
+        const cKes = document.getElementById('chartJadualTopKes');
+        if (cKes) {
+          if (CHARTS.chartJadualTopKes) { try { CHARTS.chartJadualTopKes.destroy(); } catch (e) {} }
+          if (topKes.length) {
+            CHARTS.chartJadualTopKes = new Chart(cKes.getContext('2d'), {
+              type: 'bar',
+              data: {
+                labels: topKes.map((r) => r.balai),
+                datasets: [{ label: 'Bilangan Kes', data: topKes.map((r) => r.total),
+                  backgroundColor: hexToRgba('#002B5C', 0.78), borderColor: '#002B5C', borderWidth: 1, borderRadius: 4 }],
+              },
+              options: makeOpts({ indexAxis: 'y', plugins: { legend: { display: false } } }),
+            });
+          }
+        }
       }
 
       function computeZonSubtotal(rows, metrics) {
@@ -4487,6 +4640,8 @@
           if (col === 'rank' || col === 'sparkline') return 0;
           if (col === 'zon') { va = a.zon || ''; vb = b.zon || ''; }
           else if (col === 'balai') { va = a.balai || ''; vb = b.balai || ''; }
+          else if (col === 'daerah') { va = a.daerah || ''; vb = b.daerah || ''; }
+          else if (col === 'katBalai') { va = a.katBalai || ''; vb = b.katBalai || ''; }
           else { va = a[col]; vb = b[col]; if (va == null) va = 0; if (vb == null) vb = 0; }
           if (typeof va === 'string' && typeof vb === 'string') return va.localeCompare(vb, 'ms') * mul;
           return (va - vb) * mul;
@@ -4495,22 +4650,26 @@
 
       function exportJadualCSV() {
         const selectedMetrics = TablePrefs.getSelected();
-        const headers = ['Rank', 'Zon', 'Balai', ...selectedMetrics.map((k) => TABLE_METRICS[k].label)];
-        const rows = getBalaiMetrics();
+        const groupLabel = { balai: 'Balai', zon: 'Zon', daerah: 'Daerah', katBalai: 'Kategori Balai' }[jadualView] || 'Balai';
+        const headers = ['Rank', 'Zon', groupLabel, ...selectedMetrics.map((k) => TABLE_METRICS[k].label)];
+        const rows = getBalaiMetrics(jadualView);
         const sorted = sortJadualRows(rows);
         const lines = [headers.map(csvEsc).join(',')];
         sorted.forEach((r, i) => {
           const cells = [i + 1, r.zon || '', r.balai || '', ...selectedMetrics.map((k) => {
             const v = r[k];
+            if (TABLE_METRICS[k].type === 'tier') return String(v || '-');
             if (TABLE_METRICS[k].type === 'percent') return v ? v.toFixed(1) : '0';
             const dec = TABLE_METRICS[k].decimals || 0;
             return dec ? v.toFixed(dec) : Math.round(v);
           })];
           lines.push(cells.map(csvEsc).join(','));
         });
-        const totals = ['JUMLAH', '', `${sorted.length} balai`];
+        const totals = ['JUMLAH', '', `${sorted.length} unit`];
         selectedMetrics.forEach((k) => {
-          if (TABLE_METRICS[k].type === 'percent') {
+          if (TABLE_METRICS[k].type === 'tier') {
+            totals.push('');
+          } else if (TABLE_METRICS[k].type === 'percent') {
             const w = rows.reduce((a, r) => a + (r.total || 0), 0);
             const sum = rows.reduce((a, r) => a + (r[k] || 0) * (r.total || 0), 0);
             totals.push(w ? (sum / w).toFixed(1) : '0');
@@ -4521,7 +4680,7 @@
         const url = URL.createObjectURL(blob);
         const a = document.createElement('a');
         a.href = url;
-        a.download = `jadual-balai-${new Date().toISOString().slice(0, 10)}.csv`;
+        a.download = `jadual-${jadualView}-${new Date().toISOString().slice(0, 10)}.csv`;
         document.body.appendChild(a);
         a.click();
         document.body.removeChild(a);
@@ -4564,15 +4723,19 @@
           table = document.getElementById('jadualBalai');
         if (!thead || !tbody || !tfoot || !table) return;
         const selectedMetrics = TablePrefs.getSelected();
-        const baseHeaders = ['Zon', 'Balai', ...selectedMetrics.map((k) => TABLE_METRICS[k].label)];
+        const groupLabel = { balai: 'Balai', zon: 'Zon', daerah: 'Daerah', katBalai: 'Kategori Balai' }[jadualView] || 'Balai';
+        let baseHeaders;
+        if (jadualView === 'balai') baseHeaders = ['Zon', 'Balai', ...selectedMetrics.map((k) => TABLE_METRICS[k].label)];
+        else baseHeaders = [groupLabel, ...selectedMetrics.map((k) => TABLE_METRICS[k].label)];
         const headers = ['#', ...baseHeaders, 'Trend 12 Bulan'];
         thead.innerHTML = headers.map((h, i) => {
           let sortKey = null;
           if (i === 0) sortKey = 'rank';
           else if (h === 'Zon') sortKey = 'zon';
           else if (h === 'Balai') sortKey = 'balai';
+          else if (h === groupLabel) sortKey = jadualView;
           else if (h === 'Trend 12 Bulan') sortKey = 'sparkline';
-          else sortKey = selectedMetrics[i - 3];
+          else sortKey = selectedMetrics[i - 3 + (jadualView === 'balai' ? 0 : 1)];
           const sortable = sortKey && sortKey !== 'rank' && sortKey !== 'sparkline';
           const isAsc = jadualSort.col === sortKey && jadualSort.dir === 'asc';
           const isDesc = jadualSort.col === sortKey && jadualSort.dir === 'desc';
@@ -4599,21 +4762,25 @@
           if (badge) badge.textContent = '0 metrik';
           return;
         }
-        let rows = getBalaiMetrics();
+        let rows = getBalaiMetrics(jadualView);
         if (jadualThreshold != null && !isNaN(jadualThreshold)) {
-          const metricKey = jadualSort.col && jadualSort.col !== 'zon' && jadualSort.col !== 'balai' && jadualSort.col !== 'rank' && jadualSort.col !== 'sparkline' ? jadualSort.col : selectedMetrics[0];
+          const metricKey = jadualSort.col && !['zon','balai','daerah','katBalai','rank','sparkline'].includes(jadualSort.col) ? jadualSort.col : selectedMetrics.find(k => TABLE_METRICS[k].type !== 'tier') || selectedMetrics[0];
           if (metricKey) rows = rows.filter((r) => (r[metricKey] || 0) <= jadualThreshold);
         }
         if (rows.length === 0) {
           tbody.innerHTML = `<tr><td colspan="${headers.length}" style="text-align:center;padding:30px;color:var(--text-muted);">Tiada data selepas tapisan threshold.</td></tr>`;
           tfoot.innerHTML = '';
-          if (badge) badge.textContent = '0 balai';
+          if (badge) badge.textContent = '0 unit';
           return;
         }
         const sorted = sortJadualRows(rows);
-        const zonSubtotals = computeZonSubtotal(rows, selectedMetrics);
+        const zonSubtotals = jadualView === 'balai' ? computeZonSubtotal(rows, selectedMetrics) : {};
         const groups = {};
-        sorted.forEach((r) => { if (!groups[r.zon]) groups[r.zon] = []; groups[r.zon].push(r); });
+        if (jadualView === 'balai') {
+          sorted.forEach((r) => { if (!groups[r.zon]) groups[r.zon] = []; groups[r.zon].push(r); });
+        } else {
+          groups['__all__'] = sorted;
+        }
         const rankMap = {};
         sorted.forEach((r, i) => { rankMap[r.balai] = i + 1; });
         const rtSorted = [...rows].sort((a, b) => (b.kpiRT10 || 0) - (a.kpiRT10 || 0));
@@ -4631,7 +4798,11 @@
             const rankContent = badgeType ? `<span class="${rankClass}" title="Top 3 KPI RT">${rank}</span>` : rank;
             const cells = selectedMetrics.map((k) => {
               const m = TABLE_METRICS[k], v = r[k];
-              if (k === 'avgRT') {
+              if (m.type === 'tier') {
+                const tierVal = String(v || '-');
+                return `<td class="num" data-col="${k}"><span class="tier-badge tier-${tierVal}">${tierVal}</span></td>`;
+              }
+              if (k === 'avgRT' || k === 'medianRT' || k === 'minRT' || k === 'maxRT' || k === 'p95RT') {
                 const cls = v <= 10 ? 'good' : v <= 15 ? 'mid' : 'bad';
                 return `<td class="num" data-col="${k}"><span class="rt-value ${cls}">${v.toFixed(1)}</span></td>`;
               }
@@ -4643,19 +4814,22 @@
               const dec = m.decimals || 0;
               return `<td class="num" data-col="${k}">${dec ? v.toFixed(dec) : Math.round(v).toLocaleString()}</td>`;
             }).join('');
+            const labelCell = jadualView === 'balai'
+              ? `<td class="zon-cell">${r.zon}</td><td class="balai-cell">${r.balai}</td>`
+              : `<td class="balai-cell">${r.balai}</td>`;
             html += `<tr class="row-data" data-balai="${String(r.balai).replace(/"/g, '&quot;')}" title="Klik untuk drill ke Page Data">
               <td class="rank-cell">${rankContent}</td>
-              <td class="zon-cell">${r.zon}</td>
-              <td class="balai-cell">${r.balai}</td>
+              ${labelCell}
               ${cells}
               <td class="num" data-col="sparkline"><span class="spark-wrap"><canvas width="90" height="24" data-spark="${String(r.balai).replace(/"/g, '&quot;')}"></canvas></span></td>
             </tr>`;
           });
-          const sub = zonSubtotals[zon];
+          const sub = jadualView === 'balai' ? zonSubtotals[zon] : null;
           if (sub) {
             const subCells = selectedMetrics.map((k) => {
               const m = TABLE_METRICS[k], v = sub[k] || 0;
-              if (k === 'avgRT') {
+              if (m.type === 'tier') return `<td class="num" data-col="${k}">—</td>`;
+              if (k === 'avgRT' || k === 'medianRT' || k === 'minRT' || k === 'maxRT' || k === 'p95RT') {
                 const cls = v <= 10 ? 'good' : v <= 15 ? 'mid' : 'bad';
                 return `<td class="num" data-col="${k}"><span class="rt-value ${cls}">${v.toFixed(1)}</span></td>`;
               }
@@ -4691,6 +4865,7 @@
         const totals = {};
         selectedMetrics.forEach((k) => {
           const m = TABLE_METRICS[k];
+          if (m.type === 'tier') { totals[k] = null; return; }
           if (m.type === 'percent') {
             const totalWeight = rows.reduce((a, r) => a + (r.total || 0), 0);
             totals[k] = totalWeight ? rows.reduce((a, r) => a + (r[k] || 0) * (r.total || 0), 0) / totalWeight : 0;
@@ -4698,7 +4873,8 @@
         });
         const footCells = selectedMetrics.map((k) => {
           const m = TABLE_METRICS[k], v = totals[k] || 0;
-          if (k === 'avgRT') {
+          if (m.type === 'tier') return `<td class="num" data-col="${k}">—</td>`;
+          if (k === 'avgRT' || k === 'medianRT' || k === 'minRT' || k === 'maxRT' || k === 'p95RT') {
             const cls = v <= 10 ? 'good' : v <= 15 ? 'mid' : 'bad';
             return `<td class="num" data-col="${k}"><span class="rt-value ${cls}">${v.toFixed(1)}</span></td>`;
           }
@@ -4709,14 +4885,21 @@
           const dec = m.decimals || 0;
           return `<td class="num" data-col="${k}">${dec ? v.toFixed(dec) : Math.round(v).toLocaleString()}</td>`;
         }).join('');
+        const colspanLeft = jadualView === 'balai' ? 2 : 1;
+        const footLabel = jadualView === 'balai'
+          ? `JUMLAH (${rows.length} balai • ${Object.keys(groups).length} zon)`
+          : `JUMLAH (${rows.length} ${groupLabel})`;
         tfoot.innerHTML = `<tr>
           <td></td>
-          <td colspan="2" style="text-align:right;">JUMLAH (${rows.length} balai • ${Object.keys(groups).length} zon)</td>
+          <td colspan="${colspanLeft}" style="text-align:right;">${footLabel}</td>
           ${footCells}
           <td class="num" data-col="sparkline"></td>
         </tr>`;
         table.classList.toggle('compact-mode', jadualCompact);
-        if (badge) badge.textContent = `${rows.length} balai • ${selectedMetrics.length} metrik`;
+        if (badge) badge.textContent = `${rows.length} unit • ${selectedMetrics.length} metrik`;
+
+        renderJadualSummary();
+        renderJadualMiniCharts();
       }
 
       function renderSingleChart(chartId) {
@@ -4927,8 +5110,6 @@
         if (sortCol !== null) {
           rows.sort((a, b) => {
             let va, vb;
-            
-            // Tambah logik ini:
             if (sortCol.startsWith('raw_')) {
               const index = parseInt(sortCol.replace('raw_', ''), 10);
               va = clean(a.raw[index]);
@@ -4937,16 +5118,13 @@
               va = a[sortCol] ?? '';
               vb = b[sortCol] ?? '';
             }
-
             if (sortCol === 'rt') { va = a.rt ?? -1; vb = b.rt ?? -1; }
             else if (sortCol === 'jarak') { va = a.jarak ?? -1; vb = b.jarak ?? -1; }
-
-
             else if (sortCol === 'hari') {
               const numA = parseInt(String(a.hari).replace(/\D/g, ''), 10);
               const numB = parseInt(String(b.hari).replace(/\D/g, ''), 10);
               if (!isNaN(numA) && !isNaN(numB)) { va = numA; vb = numB; }
-            } else {
+            } else if (typeof va === 'string' && typeof vb === 'string') {
               const na = parseFloat(va), nb = parseFloat(vb);
               if (!isNaN(na) && !isNaN(nb)) { va = na; vb = nb; }
             }
