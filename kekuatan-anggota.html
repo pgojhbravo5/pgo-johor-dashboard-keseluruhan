@@ -6143,8 +6143,8 @@ const sb = window.supabase.createClient(SUPABASE_CONFIG.url, SUPABASE_CONFIG.ano
         { name: 'BATU PAHAT', zon: 3 },
         { name: 'RENGIT', zon: 3 },
         { name: 'RENGGAM', zon: 3 },
-        { name: 'AYER HITAM', zon: 3 },
         { name: 'YONG PENG', zon: 3 },
+        { name: 'AYER HITAM', zon: 3 },
         { name: 'FIRE POST PARIT SULONG', zon: 3 },
         { name: 'MUAR', zon: 4 },
         { name: 'BANDAR BARU SEGAMAT', zon: 4 },
@@ -9154,8 +9154,11 @@ function switchView(v) {
         return invalid;
       }
       function validateBalaiFull(balaiState) {
-  const khasPanels = store ? getBalaiKhasPanels(store.activeBalai) : null;
-  if (khasPanels) {
+  const balaiName = (balaiState && balaiState.ident && balaiState.ident.balai)
+    ? balaiState.ident.balai
+    : (store ? store.activeBalai : '');
+  const khasPanels = getBalaiKhasPanels(balaiName);
+    if (khasPanels) {
     const invalid = [];
     const panelMeta = [
       { key: 'jentera', label: 'Jentera Utama' },
