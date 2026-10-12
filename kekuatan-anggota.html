@@ -7375,16 +7375,77 @@ updateDirtyUI();
 
       async function executeScheduledArchiveReset(slot, runKey) {
         scheduledRunInProgress = true;
-        console.log('[Scheduled] Mula auto reset: ' + slot.label);
+        console.log('[Scheduled] Mula auto arkib + reset: ' + slot.label);
 
         showAutoResetNotice();
         setAutoResetNoticeProgress('Memuatkan senarai balai…');
 
         try {
           const names = BALAI_LIST.map(function (b) { return b.name; });
+          let archived = 0, skipped = 0, failed = 0, empty = 0;
+          const failedList = [];
 
+          /* ══════════════════════════════════════════════
+             FASA 1: ARKIB SEMUA BALAI
+             ══════════════════════════════════════════════ */
+          console.log('[Scheduled] Fasa 1: Arkib ' + names.length + ' balai...');
           for (let i = 0; i < names.length; i++) {
-            setAutoResetNoticeProgress('Mereset ' + names[i] + '… (' + (i + 1) + '/' + names.length + ')');
+            const balaiName = names[i];
+            setAutoResetNoticeProgress(
+              '📦 Mengarkib ' + balaiName + '… (' + (i + 1) + '/' + names.length + ')'
+            );
+
+            try {
+              const balaiState = store.balai[balaiName];
+              const v = balaiState
+                ? validateBalaiFull(balaiState)
+                : { personel: [], equip: [] };
+
+              if (hasInvalid(v)) {
+                skipped++;
+                failedList.push(balaiName + ' (mandatori)');
+                console.warn('[Scheduled] Skip arkib ' + balaiName + ' — mandatori tak lengkap');
+                continue;
+              }
+
+              const data = buildArchiveDataForBalai(balaiName);
+              if (data.personelRows.length === 0 && data.jenteraRows.length === 0) {
+                empty++;
+                console.log('[Scheduled] Skip arkib ' + balaiName + ' — kosong');
+                continue;
+              }
+
+              await archiveBalaiToAPI({
+                tarikh: balaiState.ident.tarikh,
+                shif: balaiState.ident.shif,
+                balai: balaiName,
+                zon: getBalaiZon(balaiName),
+                personelRows: data.personelRows,
+                jenteraRows: data.jenteraRows,
+              });
+              archived++;
+              console.log('[Scheduled] ✓ Arkib ' + balaiName + ': ' +
+                data.personelRows.length + ' baris anggota, ' +
+                data.jenteraRows.length + ' baris jentera');
+            } catch (err) {
+              console.error('[Scheduled] Gagal arkib ' + balaiName + ':', err);
+              failed++;
+              failedList.push(balaiName);
+            }
+          }
+
+          console.log('[Scheduled] Arkib selesai: ' + archived + ' OK, ' +
+            skipped + ' skip, ' + failed + ' gagal, ' + empty + ' kosong');
+
+          /* ══════════════════════════════════════════════
+             FASA 2: RESET SEMUA BALAI
+             ══════════════════════════════════════════════ */
+          console.log('[Scheduled] Fasa 2: Reset ' + names.length + ' balai...');
+          setAutoResetNoticeProgress('Mula reset…');
+          for (let i = 0; i < names.length; i++) {
+            setAutoResetNoticeProgress(
+              '🔄 Reset ' + names[i] + '… (' + (i + 1) + '/' + names.length + ')'
+            );
             await deleteBalaiFromAPI(names[i]);
           }
 
@@ -7395,10 +7456,22 @@ updateDirtyUI();
 
           localStorage.setItem(runKey, 'done');
 
+          /* Ringkasan */
+          const summaryMsg = '📦 Arkib: ' + archived + ' OK' +
+            (empty > 0 ? ', ' + empty + ' kosong' : '') +
+            (skipped > 0 ? ', ' + skipped + ' skip' : '') +
+            (failed > 0 ? ', ' + failed + ' gagal' : '') +
+            ' → 🔄 ' + names.length + ' balai direset';
+
           setAutoResetNoticeProgress('✓ Selesai! Memuat semula sistem…');
 
-          playToastSuccessSound();
-          showToast('Auto-reset selesai: ' + names.length + ' balai telah direset.', 'success');
+          if (failed > 0) {
+            playToastErrorSound();
+            showToast(summaryMsg + ' | Gagal: ' + failedList.join(', '), 'error');
+          } else {
+            playToastSuccessSound();
+            showToast(summaryMsg, 'success');
+          }
 
           setTimeout(function () {
             try {
@@ -7419,10 +7492,10 @@ updateDirtyUI();
           setAutoResetNoticeProgress('❌ Gagal: ' + err.message);
 
           playErrorSound();
-          showToast('Auto-reset gagal: ' + err.message, 'error');
+          showToast('Auto arkib+reset gagal: ' + err.message, 'error');
         }
       }
-
+      
       function startScheduledArchiveResetTimer() {
         stopScheduledArchiveResetTimer();
         scheduledTickTimer = setInterval(checkScheduledArchiveReset, 20 * 1000);
