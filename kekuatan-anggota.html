@@ -1716,6 +1716,82 @@
       }
       td.jumlah-cell { color: var(--amber); font-weight: 600; }
 
+      /* ═══════════════════════════════════════════════════
+         FIX MOBILE — Table grid kekal boleh scroll mendatar
+         (Jentera Utama / Marin / Utiliti / Komunikasi)
+         ═══════════════════════════════════════════════════ */
+         @media (max-width: 900px) {
+
+/* Benarkan table jadi lebih lebar dari skrin → aktifkan scroll */
+table.grid {
+  table-layout: auto !important;
+  width: auto !important;
+  min-width: max-content !important;
+}
+
+/* Pastikan header tak wrap huruf demi huruf (F/R/T) */
+table.grid thead tr.groups th,
+table.grid thead tr.subs th {
+  white-space: nowrap !important;
+  word-break: keep-all !important;
+  padding: 0.35rem 0.5rem !important;
+}
+
+/* Baris nama row (GRED) kekal boleh sticky */
+table.grid tbody th.rowname,
+table.grid tbody th.rowname.gred-short {
+  white-space: nowrap !important;
+  min-width: 90px;
+}
+
+/* Pastikan wrapper section-body betul-betul allow scroll */
+#sec-jentera .section-body,
+#sec-marin .section-body,
+#sec-utiliti .section-body,
+#sec-komunikasi .section-body {
+  overflow-x: auto !important;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* ✅ FIX IBU PEJABAT (PO3A) — boleh scroll mendatar */
+        /* ✅ FIX IBU PEJABAT — kolum tetap kemas + boleh scroll */
+        #sec-ibu-pejabat .section-body {
+          overflow-x: auto !important;
+          overflow-y: visible !important;
+          -webkit-overflow-scrolling: touch;
+        }
+
+        table.grid[data-ibu-row] {
+          table-layout: fixed !important;
+          width: 100% !important;
+          min-width: 720px !important;   /* ← Paksa table lebar 720px supaya boleh scroll */
+        }
+
+        /* Kolum kekal padat & kemas (36px setiap satu) */
+        table.grid[data-ibu-row] th,
+        table.grid[data-ibu-row] td {
+          padding: 0.32rem 0.2rem !important;
+          font-size: 0.66rem !important;
+          white-space: nowrap !important;
+        }
+
+        /* Header kategori (HILUX, KEMBARA, dll) boleh wrap 2 baris kalau perlu */
+        table.grid[data-ibu-row] thead tr.groups th {
+          white-space: normal !important;
+          word-break: break-word !important;
+          line-height: 1.1 !important;
+          padding: 0.35rem 0.2rem !important;
+        }
+
+        /* Input field padat */
+        table.grid[data-ibu-row] input.ibu-pejabat-input,
+        table.grid[data-ibu-row] input.ibu-pejabat-total {
+          height: 1rem !important;
+          font-size: 0.66rem !important;
+          padding: 0 !important;
+        }
+      }
+
       table.grid tbody tr,
       table.grid tfoot tr {
         height: 2em;
@@ -7495,7 +7571,7 @@ updateDirtyUI();
           showToast('Auto arkib+reset gagal: ' + err.message, 'error');
         }
       }
-      
+
       function startScheduledArchiveResetTimer() {
         stopScheduledArchiveResetTimer();
         scheduledTickTimer = setInterval(checkScheduledArchiveReset, 20 * 1000);
