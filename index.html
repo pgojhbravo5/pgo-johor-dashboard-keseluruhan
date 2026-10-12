@@ -6122,18 +6122,70 @@ if (petaFullscreenBtn) {
             });
 
             // ===== FETCH ANGGOTA DARI SUPABASE =====
+                        // ===== SUPABASE CONFIG (DUAL: PRIMARY / SECONDARY) =====
+            // Selaras dengan kekuatan-anggota.html — auto-switch pada 2026-10-12 20:01 MY
+            const SUPABASE_CONFIG_PRIMARY = {
+                url:     'https://nstmylzvqckhrpxmbufx.supabase.co',
+                anonKey: 'sb_publishable_6i7rUdjTRmOYMcookS6CFQ_lwXyRJJL',
+            };
+
+            const SUPABASE_CONFIG_SECONDARY = {
+                url:     'https://lcotpxtdkmrtojavopvk.supabase.co',
+                anonKey: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imxjb3RweHRka21ydG9qYXZvcHZrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTE3NzY2NzUsImV4cCI6MjEwNzM1MjY3NX0.Km7gu_riMtFRsdqda_2UbkLIPIjhYRy2iYSYSDZmKBE',
+            };
+
+            // ⏰ Masa tukar rasmi — kekal guna SECONDARY selepas ini
+            const SUPABASE_SWITCH_AT = '2026-10-12T20:01:00';
+
+            function getMalaysiaNowISO() {
+                try {
+                    const parts = new Intl.DateTimeFormat('en-GB', {
+                        timeZone: 'Asia/Kuala_Lumpur',
+                        year: 'numeric', month: '2-digit', day: '2-digit',
+                        hour: '2-digit', minute: '2-digit', second: '2-digit',
+                        hour12: false,
+                    }).formatToParts(new Date());
+                    const get = (t) => { const p = parts.find(x => x.type === t); return p ? p.value : '00'; };
+                    let hh = get('hour'); if (hh === '24') hh = '00';
+                    return get('year') + '-' + get('month') + '-' + get('day') + 'T' +
+                           hh + ':' + get('minute') + ':' + get('second');
+                } catch (e) {
+                    const d = new Date();
+                    const my = new Date(d.getTime() + 8 * 3600000);
+                    const pad = (n) => String(n).padStart(2, '0');
+                    return my.getUTCFullYear() + '-' + pad(my.getUTCMonth() + 1) + '-' + pad(my.getUTCDate()) +
+                           'T' + pad(my.getUTCHours()) + ':' + pad(my.getUTCMinutes()) + ':' + pad(my.getUTCSeconds());
+                }
+            }
+
+            function isPastSwitchTime() {
+                return getMalaysiaNowISO() >= SUPABASE_SWITCH_AT;
+            }
+
+            // 🔀 Pilih config: SEBELUM 20:01 → PRIMARY, SELEPAS → SECONDARY (kekal)
+            const SUPABASE_CONFIG = isPastSwitchTime()
+                ? SUPABASE_CONFIG_SECONDARY
+                : SUPABASE_CONFIG_PRIMARY;
+
+            console.log(
+                '[Supabase index.html] Config aktif:',
+                isPastSwitchTime() ? '🔵 SECONDARY (kekal)' : '🟢 PRIMARY',
+                '→', SUPABASE_CONFIG.url
+            );
+
+            // ===== FETCH ANGGOTA DARI SUPABASE =====
             async function fetchAnggotaMiniStats() {
                 try {
-                    const SUPABASE_URL = 'https://nstmylzvqckhrpxmbufx.supabase.co';
-                    const SUPABASE_ANON_KEY = 'sb_publishable_6i7rUdjTRmOYMcookS6CFQ_lwXyRJJL';
-
-                    const resp = await fetch(`${SUPABASE_URL}/rest/v1/personel?select=status,nama,pangkat,no_badan,no_telefon,peranan,unit1,unit2,unit3,unit4,balai`, {
-                        headers: {
-                            apikey: SUPABASE_ANON_KEY,
-                            Authorization: 'Bearer ' + SUPABASE_ANON_KEY,
-                            'Content-Type': 'application/json'
+                    const resp = await fetch(
+                        `${SUPABASE_CONFIG.url}/rest/v1/personel?select=status,nama,pangkat,no_badan,no_telefon,peranan,unit1,unit2,unit3,unit4,balai`,
+                        {
+                            headers: {
+                                apikey: SUPABASE_CONFIG.anonKey,
+                                Authorization: 'Bearer ' + SUPABASE_CONFIG.anonKey,
+                                'Content-Type': 'application/json'
+                            }
                         }
-                    });
+                    );
                     if (!resp.ok) throw new Error('Gagal fetch data personel: HTTP ' + resp.status);
 
                     const anggota = await resp.json();
@@ -6141,11 +6193,13 @@ if (petaFullscreenBtn) {
 
                     anggotaCacheForUnits = anggota;
 
+                    // ✅ FIX: normalisasi status (trim + uppercase) supaya padan
+                    const norm = (s) => String(s || '').trim().toUpperCase();
                     const total      = anggota.length;
-                    const bertugas   = anggota.filter(a => a.status === 'BERTUGAS').length;
-                    const cuti       = anggota.filter(a => a.status === 'CUTI').length;
-                    const sakit      = anggota.filter(a => a.status === 'CUTI SAKIT').length;
-                    const tugasKhas  = anggota.filter(a => a.status === 'TUGAS KHAS').length;
+                    const bertugas   = anggota.filter(a => norm(a.status) === 'BERTUGAS').length;
+                    const cuti       = anggota.filter(a => norm(a.status) === 'CUTI').length;
+                    const sakit      = anggota.filter(a => norm(a.status) === 'CUTI SAKIT').length;
+                    const tugasKhas  = anggota.filter(a => norm(a.status) === 'TUGAS KHAS').length;
 
                     const setTxt = (id, val) => {
                         const el = document.getElementById(id);
@@ -6172,7 +6226,7 @@ if (petaFullscreenBtn) {
             }
             fetchAnggotaMiniStats();
             setInterval(fetchAnggotaMiniStats, 60000);
-
+            
             // ✅ FIX: Refresh serta-merta bila pengguna balik ke tab
             document.addEventListener('visibilitychange', function () {
                 if (!document.hidden) {
