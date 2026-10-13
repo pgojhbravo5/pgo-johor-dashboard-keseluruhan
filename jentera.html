@@ -1895,8 +1895,10 @@
       let subTabSelectedZon = { cfrt: [], emrs: [], water: [], lain: [], marin: [], rim: [], utiliti: [], keseluruhan: [] };
       let chartTypeConfig = { cfrt: 'pie', emrs: 'pie', water: 'pie', lain: 'pie', marin: 'pie', rim: 'pie', utiliti: 'pie', keseluruhan: 'pie' };
       let SF = [];
+      let SF = [];
       let intervalTimer = null;
       let remainingSeconds = REFRESH_INTERVAL_SEC;
+      let isInitialLoad = true;   // <-- TAMBAH BARIS INI
       let CC = {
         cfrt: { s: null, z: null, m: null },
         emrs: { s: null, z: null, m: null },
@@ -1907,6 +1909,7 @@
         utiliti: { s: null, z: null, m: null },
         keseluruhan: { s: null, z: null, m: null, j: null },
       };
+      
       let slideshowActive = false,
         slideshowAuto = false,
         slideshowInterval = null,
@@ -3984,7 +3987,10 @@
       // LOAD ALL DATA & REFRESH
       // ============================================================
       function loadAllData() {
-        document.getElementById('loadingOverlay').classList.remove('hidden');
+        // Hanya papar loading overlay pada muatan PERTAMA sahaja
+        if (isInitialLoad) {
+          document.getElementById('loadingOverlay').classList.remove('hidden');
+        }
         const refreshBtn = document.getElementById('refreshBtn');
         if (refreshBtn) refreshBtn.classList.add('animate-pulse');
         updateTimestamp();
@@ -3999,8 +4005,19 @@
         ]).then(() => {
           combineAllData();
           renderMainDashboard();
-          // === FIX BUG #1: Paksa tab FRT aktif ===
-          switchTab('cfrt');
+
+          // === Hanya paksa tab FRT pada muatan PERTAMA kali ===
+          if (isInitialLoad) {
+            switchTab('cfrt');
+            isInitialLoad = false;
+          } else {
+            // Reload seterusnya: KEKAL pada tab semasa (T)
+            if (T === 'dashboard') {
+              renderMainDashboard();
+            } else {
+              Rt(T);
+            }
+          }
 
           document.getElementById('loadingOverlay').classList.add('hidden');
           if (refreshBtn) refreshBtn.classList.remove('animate-pulse');
@@ -4008,7 +4025,7 @@
           resetCountdown();
         });
       }
-
+      
       // ============================================================
       // DATA KESELURUHAN — GABUNGAN SEMUA TAB
       // ============================================================
