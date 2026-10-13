@@ -3,9 +3,12 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate, max-age=0" />
+    <meta http-equiv="Pragma" content="no-cache" />
+    <meta http-equiv="Expires" content="0" />
     <title>Sistem Kekuatan Anggota JBPM Negeri Johor</title>
     <script>
-      (function () {
+    (function () {
         try {
           var t = localStorage.getItem('bomba-johor-theme') || 'dark';
           if (t !== 'light' && t !== 'dark') t = 'dark';
@@ -4648,7 +4651,7 @@ table.grid tbody th.rowname.gred-short {
           <b>©2026 PGO JOHOR</b><span class="sep">|</span>HAK CIPTA TERPELIHARA
         </div>
         <div class="sf-layer-bottom">
-          <div class="sf-item">Versi Sistem: <b>v2.3.1</b></div>
+          <div class="sf-item">Versi Sistem: <b>v2.3.2</b></div>
           <div class="sf-item">Pembina Aplikasi & Sistem: <b>PB Mohamad Aidil bin Zainal Abidin</b></div>
           <div class="sf-item">Penyedia Tutorial (Cara Penggunaan): <b>PB Jevinson Justin</b></div>
         </div>
@@ -4951,7 +4954,7 @@ console.log(
     if (isPastSwitchTime()) {
       clearInterval(timer);
       console.log('[Supabase] ⏰ 20:01 tiba → reload ke SECONDARY');
-      location.href = location.pathname + '?v=' + Date.now();
+      forceHardReload();
     }
   }, WAIT_MS);
 })();
@@ -4959,7 +4962,83 @@ console.log(
 // ✅ Baris ini KEKAL SAMA — tidak perlu ubah
 const sb = window.supabase.createClient(SUPABASE_CONFIG.url, SUPABASE_CONFIG.anonKey);
 
+/* ═══════════════════════════════════════════════════
+   VERSI APLIKASI — ubah sini setiap kali deploy baru
+   ═══════════════════════════════════════════════════ */
+const APP_VERSION = 'v2.3.2';  // ← Tukar setiap kali update
+const APP_VERSION_LS_KEY = 'bomba-app-version';
+
+/* Force hard reload — buang cache & fetch HTML fresh */
+async function forceHardReload() {
+  try {
+    // 1. Buang semua Cache Storage
+    if ('caches' in window) {
+      const names = await caches.keys();
+      await Promise.all(names.map(function (n) { return caches.delete(n); }));
+    }
+
+    // 2. Fetch HTML fresh dengan cache bypass
+    const url = new URL(location.href);
+    url.searchParams.set('_v', Date.now());
+
+    const res = await fetch(url.toString(), {
+      cache: 'reload',
+      headers: {
+        'Pragma': 'no-cache',
+        'Cache-Control': 'no-cache',
+      },
+    });
+
+    if (!res.ok) throw new Error('HTTP ' + res.status);
+
+    const html = await res.text();
+
+    // 3. Tulis semula dokumen dgn HTML baru (fresh)
+    document.open();
+    document.write(html);
+    document.close();
+  } catch (e) {
+    console.warn('[HardReload] Fallback location.replace:', e.message);
+    const url = new URL(location.href);
+    url.searchParams.set('_v', Date.now());
+    location.replace(url.toString());
+  }
+}
+
+/* Semak versi dari Supabase — kalau beza, force reload */
+async function checkAppVersion() {
+  try {
+    const { data, error } = await sb
+      .from('app_version')
+      .select('version')
+      .eq('id', 1)
+      .single();
+
+    if (error) {
+      console.warn('[Version] Gagal baca app_version:', error.message);
+      return false;
+    }
+    if (!data || !data.version) return false;
+
+    const serverVersion = String(data.version);
+    const lastSeen = localStorage.getItem(APP_VERSION_LS_KEY);
+
+    console.log('[Version] Client:', APP_VERSION, '| Server:', serverVersion);
+
+    if (lastSeen !== serverVersion) {
+      console.log('[Version] ⚠ Versi baru dikesan — force reload');
+      localStorage.setItem(APP_VERSION_LS_KEY, serverVersion);
+      setTimeout(forceHardReload, 1200);
+      return true;
+    }
+  } catch (e) {
+    console.warn('[Version] Ralat semakan:', e.message);
+  }
+  return false;
+}
+
       const ICONS = {
+        
         chart: '<line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/>',
         clipboard: '<path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><rect x="8" y="2" width="8" height="4" rx="1" ry="1"/>',
         x: '<line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>',
@@ -6839,8 +6918,9 @@ function unsubscribeFromPanelLockChanges() {
         playCheckboxTickSound(true);
 
         setTimeout(function () {
-          location.href = location.pathname + '?v=' + Date.now();
+          forceHardReload();
         }, 2200);
+      
       }
 
       async function triggerHardReloadAll() {
@@ -6877,10 +6957,11 @@ function unsubscribeFromPanelLockChanges() {
 
           showToast('✅ Signal reload dihantar ke semua pengguna', 'success');
 
-          setTimeout(function () {
-            location.href = location.pathname + '?v=' + Date.now();
-          }, 1500);
-        } catch (err) {
+setTimeout(function () {
+  forceHardReload();
+}, 1500);
+
+} catch (err) {
           playErrorSound();
           showToast('Gagal trigger reload: ' + err.message, 'error');
         }
@@ -7556,7 +7637,7 @@ updateDirtyUI();
                 activeBalai: BALAI_LIST[0].name,
               }));
             } catch (e) {}
-            location.href = location.pathname + '?v=' + Date.now();
+            forceHardReload();
           }, 1500);
 
         } catch (err) {
@@ -13734,9 +13815,15 @@ function recomputeIbuPejabatTotals(wrap) {
         initAutoResetNotice();
 
         initFeedbackModal();
+
+        // ✅ Semak versi app — kalau ada versi baru di Supabase, force reload fresh
+        const hasNewVersion = await checkAppVersion();
+        if (hasNewVersion) return;
+
         updatePrintFooterDate();
         fillPrintFooter(loadPrintInfo());
         setLoading(true, 'Memuatkan data dari Supabase…');
+        
         try {
           const apiData = await loadAllFromAPI();
           const balai = buildStoreFromApiData(apiData);
