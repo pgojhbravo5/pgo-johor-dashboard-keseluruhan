@@ -14,58 +14,31 @@
        CACHE BUSTER — Auto-clean & force fresh HTML
        Mesti jadi script PERTAMA dalam <head>
        ═══════════════════════════════════════════════════ -->
-  <script>
-  (function() {
-    // 1) Unregister semua service worker (kalau ada dari versi lalu)
-    if ('serviceWorker' in navigator) {
-      navigator.serviceWorker.getRegistrations().then(function(regs) {
-        regs.forEach(function(r) {
-          r.unregister().then(function() {
-            console.log('[CacheBuster] SW unregistered');
-          });
-        });
-      }).catch(function(e){});
-    }
-
-    // 2) Buang Cache Storage lama
-    if ('caches' in window) {
-      caches.keys().then(function(names) {
-        return Promise.all(names.map(function(n) {
-          return caches.delete(n);
-        }));
-      }).then(function() {
-        console.log('[CacheBuster] Caches cleared');
-      }).catch(function(e){});
-    }
-
-    // 3) Auto-reload kalau URL tak ada timestamp DAN kita baru buka
-    //    (buat SEKALI sahaja per session, elak loop)
-    try {
-      var url = new URL(location.href);
-      var hasCacheBust = url.searchParams.has('_v');
-      var alreadyChecked = sessionStorage.getItem('bomba-cache-busted');
-
-      if (!hasCacheBust && !alreadyChecked) {
-        sessionStorage.setItem('bomba-cache-busted', '1');
-        // Fetch HTML fresh dengan cache bypass
-        fetch(url.toString(), { cache: 'reload' })
-          .then(function(r) { return r.text(); })
-          .then(function(html) {
-            // Kalau HTML baru ada, tulis semula
-            if (html && html.indexOf('<html') !== -1) {
-              document.open();
-              document.write(html);
-              document.close();
+       <script>
+        (function () {
+          try {
+            var url = new URL(location.href);
+            // Sekali sahaja per sesi: redirect ke URL berparameter supaya browser ambil HTML baru dari server
+            if (!url.searchParams.has('_v') && !sessionStorage.getItem('bomba-cache-busted')) {
+              sessionStorage.setItem('bomba-cache-busted', '1');
+              url.searchParams.set('_v', Date.now());
+              location.replace(url.toString());
+              return;
             }
-          })
-          .catch(function(){});
-      } else if (hasCacheBust) {
-        // Dah ada _v — clear flag supaya next time boleh check lagi
-        sessionStorage.removeItem('bomba-cache-busted');
-      }
-    } catch (e) {}
-  })();
-  </script>
+            if ('serviceWorker' in navigator) {
+              navigator.serviceWorker.getRegistrations()
+                .then(function (rs) { rs.forEach(function (r) { r.unregister(); }); })
+                .catch(function () {});
+            }
+            if ('caches' in window) {
+              caches.keys()
+                .then(function (ns) { ns.forEach(function (n) { caches.delete(n); }); })
+                .catch(function () {});
+            }
+          } catch (e) {}
+        })();
+        </script>
+
 
   <script>
   (function () {
@@ -4848,7 +4821,7 @@ table.grid tbody th.rowname.gred-short {
           <b>©2026 PGO JOHOR</b><span class="sep">|</span>HAK CIPTA TERPELIHARA
         </div>
         <div class="sf-layer-bottom">
-          <div class="sf-item">Versi Sistem: <b>v2.4.1</b></div>
+          <div class="sf-item">Versi Sistem: <b>v2.4.2</b></div>
           <div class="sf-item">Pembina Aplikasi & Sistem: <b>PB Mohamad Aidil bin Zainal Abidin</b></div>
           <div class="sf-item">Penyedia Tutorial (Cara Penggunaan): <b>PB Jevinson Justin</b></div>
         </div>
@@ -5155,7 +5128,7 @@ console.log(
 
 const sb = window.supabase.createClient(SUPABASE_CONFIG.url, SUPABASE_CONFIG.anonKey);
 
-const APP_VERSION = 'v2.4.1';
+const APP_VERSION = 'v2.4.2';
 const APP_VERSION_LS_KEY = 'bomba-app-version';
 
 async function forceHardReload() {
@@ -5164,57 +5137,31 @@ async function forceHardReload() {
       const names = await caches.keys();
       await Promise.all(names.map(function (n) { return caches.delete(n); }));
     }
-
-    const url = new URL(location.href);
-    url.searchParams.set('_v', Date.now());
-
-    const res = await fetch(url.toString(), {
-      cache: 'reload',
-      headers: {
-        'Pragma': 'no-cache',
-        'Cache-Control': 'no-cache',
-      },
-    });
-
-    if (!res.ok) throw new Error('HTTP ' + res.status);
-
-    const html = await res.text();
-
-    document.open();
-    document.write(html);
-    document.close();
-  } catch (e) {
-    console.warn('[HardReload] Fallback location.replace:', e.message);
-    const url = new URL(location.href);
-    url.searchParams.set('_v', Date.now());
-    location.replace(url.toString());
-  }
+    if ('serviceWorker' in navigator) {
+      const rs = await navigator.serviceWorker.getRegistrations();
+      rs.forEach(function (r) { r.unregister(); });
+    }
+  } catch (e) {}
+  const url = new URL(location.href);
+  url.searchParams.set('_v', Date.now());
+  location.replace(url.toString());   // JANGAN guna document.write
 }
 
 async function checkAppVersion() {
   try {
-    const { data, error } = await sb
-      .from('app_version')
-      .select('version')
-      .eq('id', 1)
-      .single();
-
-    if (error) {
-      console.warn('[Version] Gagal baca app_version:', error.message);
-      return false;
-    }
-    if (!data || !data.version) return false;
-
+    const { data, error } = await sb.from('app_version').select('version').eq('id', 1).single();
+    if (error || !data || !data.version) return false;
     const serverVersion = String(data.version);
-    const lastSeen = localStorage.getItem(APP_VERSION_LS_KEY);
-
     console.log('[Version] Client:', APP_VERSION, '| Server:', serverVersion);
 
-    if (lastSeen !== serverVersion) {
-      console.log('[Version] ⚠ Versi baru dikesan — force reload');
-      localStorage.setItem(APP_VERSION_LS_KEY, serverVersion);
-      setTimeout(forceHardReload, 1200);
-      return true;
+    // Bandingkan dengan versi KOD YANG SEDANG JALAN, bukan localStorage
+    if (serverVersion !== APP_VERSION) {
+      const key = 'bomba-reload-for-' + serverVersion;
+      if (!sessionStorage.getItem(key)) {      // elak loop
+        sessionStorage.setItem(key, '1');
+        setTimeout(forceHardReload, 300);
+        return true;
+      }
     }
   } catch (e) {
     console.warn('[Version] Ralat semakan:', e.message);
@@ -6849,32 +6796,13 @@ function applyBalaiLockToSections(locked) {
 }
 
 function applyBalaiLockToButtons(locked) {
-  const blockIds = [
-    'saveSheetBtn', 'importBtn', 'exportCurrentBtn',
-    'resetBalaiBtn', 'archiveBtn',
-  ];
-  blockIds.forEach(function (id) {
+  ['saveSheetBtn', 'importBtn', 'exportCurrentBtn', 'resetBalaiBtn', 'archiveBtn'].forEach(function (id) {
     const btn = document.getElementById(id);
     if (!btn) return;
-    if (locked) {
-      if (btn.dataset.balaiLockWasDisabled === undefined) {
-        btn.dataset.balaiLockWasDisabled = btn.disabled ? '1' : '0';
-      }
-      btn.disabled = true;
-      if (!btn.dataset.balaiLockOrigTitle) {
-        btn.dataset.balaiLockOrigTitle = btn.title || '';
-      }
-      btn.title = '🔒 Balai dikunci — sila buka kunci dahulu';
-    } else {
-      if (btn.dataset.balaiLockWasDisabled !== undefined) {
-        btn.disabled = btn.dataset.balaiLockWasDisabled === '1';
-        delete btn.dataset.balaiLockWasDisabled;
-      }
-      if (btn.dataset.balaiLockOrigTitle !== undefined) {
-        btn.title = btn.dataset.balaiLockOrigTitle;
-        delete btn.dataset.balaiLockOrigTitle;
-      }
-    }
+    if (btn.classList.contains('saving') || btn.classList.contains('resetting')) return;
+    if (btn.dataset.origTitle === undefined) btn.dataset.origTitle = btn.title || '';
+    btn.disabled = !!locked;
+    btn.title = locked ? '🔒 Balai dikunci — sila buka kunci dahulu' : btn.dataset.origTitle;
   });
 }
 
@@ -14613,9 +14541,8 @@ markClean(t);
 
 
           setTimeout(function () {
-            btn.classList.remove('saved');
-            label.textContent = 'Simpan Sekarang';
-            btn.disabled = false;
+            label.textContent = 'Hantar PGO';
+            btn.disabled = isBalaiLocked(store.activeBalai);
           }, 2500);
 
           setTimeout(function () {
@@ -14635,9 +14562,11 @@ markClean(t);
           setAutosaveIndicator('error', 'Gagal simpan');
           showToast('Gagal simpan: ' + err.message, 'error');
           setTimeout(function () {
-            label.textContent = 'Simpan Sekarang';
-            btn.disabled = false;
+            btn.classList.remove('saved');
+            label.textContent = 'Hantar PGO';
+            btn.disabled = isBalaiLocked(store.activeBalai);
           }, 2500);
+        
         }
       });
 
