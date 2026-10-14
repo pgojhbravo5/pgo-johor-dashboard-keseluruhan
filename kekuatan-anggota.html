@@ -4890,14 +4890,15 @@ table.grid tbody th.rowname.gred-short {
               <div><span style="color:var(--text-dim);">Format Fail:</span> <b>JSON (.json)</b></div>
             </div>
 
-<div class="ae-note">
-  <span class="ae-warn">ℹ Nota:</span> Fail export <b>tidak menjejaskan</b> data di Supabase.
-  Ia hanya salinan setempat untuk rujukan/backup anda.<br />
-  <span class="ae-warn">⚠ Penting:</span> Kolum <b>STATUS</b> <u>tidak disertakan</u> dalam fail export —
-  jika fail ini di-<b>import semula</b> ke sistem, semua <b>STATUS</b> akan menjadi <b>kosong</b> dan perlu diisi manual.
-</div>
-          <label class="archive-confirm" id="exportConfirmLabel">
-            <input type="checkbox" id="exportConfirmCheck" />
+            <div class="ae-note">
+              <span class="ae-warn">ℹ Nota:</span> Fail export <b>tidak menjejaskan</b> data di Supabase.
+              Ia hanya salinan setempat untuk rujukan/backup anda.<br />
+              <span class="ae-warn">⚠ Penting:</span> Kolum <b>STATUS</b> <u>tidak disertakan</u> dalam fail export —
+              jika fail ini di-<b>import semula</b> ke sistem, semua <b>STATUS</b> akan menjadi <b>kosong</b> dan perlu diisi manual.
+            </div>
+            </div><!-- ✅ FIX: tutup .archive-explain -->
+            <label class="archive-confirm" id="exportConfirmLabel">
+                          <input type="checkbox" id="exportConfirmCheck" />
             <span class="ac-text">
               Saya telah membaca dan <b>faham</b> fungsi Export Data seperti diterangkan di atas.
             </span>
@@ -14369,6 +14370,8 @@ initFeedbackModal();
           return;
         }
         overlay.dataset.fbInit = '1';
+        // ✅ Pastikan overlay sentiasa anak terus <body> (elak tersarang dalam modal lain)
+if (overlay.parentNode !== document.body) document.body.appendChild(overlay);
 
         function openModal() {
           if (inputBalai) {
