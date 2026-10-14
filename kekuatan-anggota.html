@@ -1864,6 +1864,57 @@
         padding: 0.4rem 0.4rem;
       }
 
+      /* ✅ FIX: kunci lebar kolum GRED supaya tak bertindan atas kolum A / C */
+      #personelGrid thead tr.groups th:first-child,
+      #personelGrid tbody th.rowname,
+      #personelGrid tfoot th:first-child {
+        width: 150px !important;
+        min-width: 150px !important;
+        max-width: 150px !important;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+
+      #sumPersonelGrid thead tr.groups th:first-child,
+      #sumPersonelGrid tbody th.rowname,
+      #sumPersonelGrid tfoot th:first-child {
+        width: 62px !important;
+        min-width: 62px !important;
+        max-width: 62px !important;
+      }
+
+      /* Sel GRED sticky: kekal solid & di atas sel lain bila tatal mendatar */
+      #personelGrid tbody th.rowname,
+      #personelGrid tfoot th:first-child,
+      #sumPersonelGrid tbody th.rowname,
+      #sumPersonelGrid tfoot th:first-child {
+        position: sticky;
+        left: 0;
+        z-index: 3;
+        background-clip: padding-box;
+      }
+      #personelGrid tbody tr:hover th.rowname,
+      #sumPersonelGrid tbody tr:hover th.rowname {
+        background: var(--panel-3);
+      }
+
+      @media print {
+        body.printing-po3a #personelGrid thead tr.groups th:first-child,
+        body.printing-po3a #personelGrid tbody th.rowname,
+        body.printing-po3a #personelGrid tfoot th:first-child,
+        body.printing-single #personelGrid thead tr.groups th:first-child,
+        body.printing-single #personelGrid tbody th.rowname,
+        body.printing-single #personelGrid tfoot th:first-child,
+        body.printing-full #personelGrid thead tr.groups th:first-child,
+        body.printing-full #personelGrid tbody th.rowname,
+        body.printing-full #personelGrid tfoot th:first-child {
+          width: 95px !important;
+          min-width: 95px !important;
+          max-width: 95px !important;
+        }
+      }
+
       table.grid tbody tr:nth-child(even) td { background: var(--zebra); }
       table.grid tbody tr:hover td,
       table.grid tbody tr:hover th.rowname { background: var(--hover-row); }
