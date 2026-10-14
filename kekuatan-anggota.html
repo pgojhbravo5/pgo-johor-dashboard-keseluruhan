@@ -763,23 +763,33 @@
       }
 
       .btn-feedback {
-        display: inline-flex; align-items: center; gap: 0.45rem;
-        background: var(--panel-2);
-        border: 1px solid rgba(31, 168, 160, 0.55);
-        color: var(--teal);
-        padding: 0.55rem 0.8rem;
-        border-radius: var(--radius-sm);
-        cursor: pointer;
-        font-family: 'Oswald', sans-serif;
-        font-size: 0.68rem;
-        letter-spacing: 0.09em;
-        text-transform: uppercase;
-        font-weight: 600;
-        transition: background 0.15s, color 0.15s, border-color 0.15s, transform 0.12s;
-        flex-shrink: 0;
-        white-space: nowrap;
-      }
-      .btn-feedback:hover {
+  display: inline-flex; align-items: center; gap: 0.45rem;
+  background: var(--panel-2);
+  border: 1px solid rgba(31, 168, 160, 0.55);
+  color: var(--teal);
+  padding: 0.55rem 0.8rem;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  font-family: 'Oswald', sans-serif;
+  font-size: 0.68rem;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+  font-weight: 600;
+  transition: background 0.15s, color 0.15s, border-color 0.15s, transform 0.12s;
+  flex-shrink: 0;
+  white-space: nowrap;
+
+  /* ✅ FIX: Pastikan butang sentiasa boleh diklik */
+  position: relative;
+  z-index: 1;
+  pointer-events: auto;
+  user-select: none;
+}
+.btn-feedback * {
+  pointer-events: none;
+}
+
+.btn-feedback:hover {
         background: linear-gradient(180deg, #1fa8a0, #15847c);
         color: #fff;
         border-color: transparent;
@@ -5093,7 +5103,7 @@ console.log(
 
 const sb = window.supabase.createClient(SUPABASE_CONFIG.url, SUPABASE_CONFIG.anonKey);
 
-const APP_VERSION = 'v2.4.0';
+const APP_VERSION = 'v2.4.1';
 const APP_VERSION_LS_KEY = 'bomba-app-version';
 
 async function forceHardReload() {
@@ -14207,23 +14217,19 @@ function recomputeIbuPejabatTotals(wrap) {
       });
 
       async function initApp() {
-  initTheme();
-  initSound();
-  await loadPanelLockStates();
-  initAutoResetNotice();
-  initFeedbackModal();
+        initTheme();
+        initSound();
+        await loadPanelLockStates();
+        initAutoResetNotice();
+        initFeedbackModal();
 
-  // ✅ BARU: Check kalau HTML yang tengah run ni outdated
-  const htmlOutdated = await verifyHtmlVersionFresh();
-  if (htmlOutdated) return;   // reload dalam proses
+        const hasNewVersion = await checkAppVersion();
+        if (hasNewVersion) return;
 
-  const hasNewVersion = await checkAppVersion();
-  if (hasNewVersion) return;
-
-  updatePrintFooterDate();
-  fillPrintFooter(loadPrintInfo());
-  setLoading(true, 'Memuatkan data dari Supabase…');
-  
+        updatePrintFooterDate();
+        fillPrintFooter(loadPrintInfo());
+        setLoading(true, 'Memuatkan data dari Supabase…');
+        
         try {
           const apiData = await loadAllFromAPI();
           const balai = buildStoreFromApiData(apiData);
@@ -14259,6 +14265,12 @@ renderAll();
 updateDirtyUI();
 applyBalaiLockUI();
 lastDataSignature = computeDataSignature(apiData);
+
+// ✅ FIX: Re-init feedback modal sekarang store dah sedia
+// (guard dataset.fbInit elak listener berulang)
+const fbOverlay = document.getElementById('feedbackModalOverlay');
+if (fbOverlay) delete fbOverlay.dataset.fbInit;
+initFeedbackModal();
 
           startAutoRefresh();
           startScheduledArchiveResetTimer();
@@ -14337,7 +14349,7 @@ lastDataSignature = computeDataSignature(apiData);
         }
       }
 
-      function initFeedbackModal() {
+            function initFeedbackModal() {
         const overlay    = document.getElementById('feedbackModalOverlay');
         const form       = document.getElementById('feedbackForm');
         const btnOpen    = document.getElementById('feedbackBtn');
@@ -14346,26 +14358,45 @@ lastDataSignature = computeDataSignature(apiData);
         const btnSubmit  = document.getElementById('feedbackSubmit');
         const inputBalai = document.getElementById('fb_balai');
 
-        if (!overlay || !form || !btnOpen) return;
+        if (!overlay || !form || !btnOpen) {
+          console.warn('[Feedback] Element tak dijumpai — overlay:', !!overlay, 'form:', !!form, 'btn:', !!btnOpen);
+          return;
+        }
 
-        btnOpen.addEventListener('click', function () {
+        // ✅ FIX: Elak listener berulang bila re-init
+        if (overlay.dataset.fbInit === '1') {
+          console.log('[Feedback] Sudah initialized — skip');
+          return;
+        }
+        overlay.dataset.fbInit = '1';
+
+        function openModal() {
           if (inputBalai) {
             inputBalai.value = (store && store.activeBalai)
               ? store.activeBalai
               : (store && store.view ? '(' + store.view + ')' : '');
           }
           overlay.classList.add('active');
+          document.body.style.overflow = 'hidden';
           setTimeout(function () {
             const firstField = document.getElementById('fb_nama');
             if (firstField) firstField.focus();
           }, 80);
-        });
+          console.log('[Feedback] Modal opened');
+        }
 
         function closeModal() {
           overlay.classList.remove('active');
+          document.body.style.overflow = '';
           form.reset();
           if (inputBalai) inputBalai.value = '';
         }
+
+        btnOpen.addEventListener('click', function (e) {
+          e.preventDefault();
+          e.stopPropagation();
+          openModal();
+        });
 
         btnClose.addEventListener('click', closeModal);
         btnCancel.addEventListener('click', closeModal);
@@ -14378,6 +14409,24 @@ lastDataSignature = computeDataSignature(apiData);
           if ((e.key === 'Escape' || e.key === 'Esc') && overlay.classList.contains('active')) {
             closeModal();
           }
+        });
+
+        /* ✅ FIX: Event delegation — fallback kalau direct listener gagal */
+        document.addEventListener('click', function (e) {
+          const target = e.target.closest && e.target.closest('#feedbackBtn');
+          if (!target) return;
+          if (overlay.classList.contains('active')) return;
+
+          // Cegah double trigger kalau direct listener pun jalan
+          if (target.dataset.fbHandled === '1') {
+            delete target.dataset.fbHandled;
+            return;
+          }
+          target.dataset.fbHandled = '1';
+          setTimeout(function () { delete target.dataset.fbHandled; }, 150);
+
+          openModal();
+          console.log('[Feedback] Opened via delegation fallback');
         });
 
         form.addEventListener('submit', async function (e) {
@@ -14446,6 +14495,8 @@ lastDataSignature = computeDataSignature(apiData);
             btnSubmit.innerHTML = originalHTML;
           }
         });
+
+        console.log('[Feedback] ✅ Modal initialized');
       }
 
       document.getElementById('saveSheetBtn').addEventListener('click', async function () {
