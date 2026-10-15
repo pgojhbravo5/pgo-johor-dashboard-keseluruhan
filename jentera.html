@@ -628,7 +628,6 @@
         .copy-btn,
         .ms-dropdown,
         #dashboardFilters,
-        #slideshowNav,
         button:not(.keep-in-print),
         .tab-btn,
         [class*='sticky'] {
@@ -1821,28 +1820,10 @@
             </div>
           </div>
           <div class="flex items-center gap-2">
-            <button onclick="toggleSlideshow()" class="px-2.5 py-1 bg-purple-600 hover:bg-purple-700 text-white text-xs font-semibold rounded-lg shadow-md transition flex items-center gap-1">
-              <i class="fa-solid fa-play"></i> Slideshow
-            </button>
             <button onclick="toggleFullscreenDashboard()" id="zoomInBtn" class="px-2.5 py-1 bg-slate-700 hover:bg-slate-600 text-white text-xs font-semibold rounded-lg transition flex items-center gap-1">
               <i class="fa-solid fa-expand"></i> Skrin Penuh Fit
             </button>
           </div>
-        </div>
-        <div id="slideshowNav" class="hidden bg-slate-800 border border-slate-700 rounded-xl p-2 flex items-center justify-center gap-3 flex-wrap">
-          <button onclick="prevZone()" class="px-2.5 py-1 bg-slate-700 hover:bg-slate-600 text-white rounded text-xs font-bold">
-            <i class="fa-solid fa-chevron-left"></i>
-          </button>
-          <span id="slideshowCounter" class="text-xs font-bold text-slate-200">ZON 1 / 5</span>
-          <button onclick="nextZone()" class="px-3 py-1 bg-slate-700 hover:bg-slate-600 text-white rounded text-xs font-bold">
-            <i class="fa-solid fa-chevron-right"></i>
-          </button>
-          <button onclick="toggleAutoSlideshow()" id="slideshowAutoBtn" class="px-3 py-1 bg-purple-600 hover:bg-purple-700 text-white rounded text-xs font-bold flex items-center gap-1">
-            <i class="fa-solid fa-circle-play"></i><span id="autoPlayLabel">Auto Play</span>
-          </button>
-          <button onclick="stopSlideshow()" class="px-3 py-1 bg-red-600 hover:bg-red-700 text-white rounded text-xs font-bold flex items-center gap-1">
-            <i class="fa-solid fa-square-stop"></i> Stop
-          </button>
         </div>
         <div id="dashStats" class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-2"></div>
         <div id="zoneContainer" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-2.5 items-start"></div>
@@ -1909,12 +1890,7 @@
         keseluruhan: { s: null, z: null, m: null, j: null },
       };
       
-      let slideshowActive = false,
-        slideshowAuto = false,
-        slideshowInterval = null,
-        currentSlideZone = 0;
-      let legendHiddenStatus = { cfrt: [], emrs: [], water: [], lain: [], marin: [], rim: [], utiliti: [], keseluruhan: [] };
-      let legendHiddenStatusModel = { cfrt: [], emrs: [], water: [], lain: [], marin: [], rim: [], utiliti: [], keseluruhan: [] };
+      let legendHiddenStatus = { cfrt: [], emrs: [], water: [], lain: [], marin: [], rim: [], utiliti: [], keseluruhan: [] };      let legendHiddenStatusModel = { cfrt: [], emrs: [], water: [], lain: [], marin: [], rim: [], utiliti: [], keseluruhan: [] };
       let legendHiddenStatusZon = { cfrt: [], emrs: [], water: [], lain: [], marin: [], rim: [], utiliti: [], keseluruhan: [] };
 
       // ============================================================
@@ -3914,73 +3890,6 @@
         }
       }
 
-      function toggleSlideshow() {
-        slideshowActive = !slideshowActive;
-        const nav = document.getElementById('slideshowNav');
-        if (slideshowActive) {
-          nav.classList.remove('hidden');
-          showSlideZone(0);
-        } else {
-          nav.classList.add('hidden');
-          stopSlideshow();
-          renderMainDashboard();
-        }
-      }
-
-      function showSlideZone(idx) {
-        currentSlideZone = (idx + zoneOrder.length) % zoneOrder.length;
-        document.getElementById('slideshowCounter').textContent =
-          `${zoneOrder[currentSlideZone]} (${currentSlideZone + 1}/${zoneOrder.length})`;
-        const containers = document.querySelectorAll('#zoneContainer > div');
-        containers.forEach((c, i) => {
-          if (i === currentSlideZone) {
-            c.style.display = 'block';
-            c.className = 'col-span-full max-w-2xl mx-auto w-full';
-          } else {
-            c.style.display = 'none';
-          }
-        });
-      }
-
-      function prevZone() {
-        showSlideZone(currentSlideZone - 1);
-      }
-
-      function nextZone() {
-        showSlideZone(currentSlideZone + 1);
-      }
-
-      function toggleAutoSlideshow() {
-        slideshowAuto = !slideshowAuto;
-        const btn = document.getElementById('slideshowAutoBtn'),
-          label = document.getElementById('autoPlayLabel');
-        if (slideshowAuto) {
-          btn.classList.replace('bg-purple-600', 'bg-amber-600');
-          btn.classList.replace('hover:bg-purple-700', 'hover:bg-amber-700');
-          label.textContent = 'Pause';
-          slideshowInterval = setInterval(() => nextZone(), 5000);
-        } else {
-          btn.classList.replace('bg-amber-600', 'bg-purple-600');
-          btn.classList.replace('hover:bg-amber-700', 'hover:bg-purple-700');
-          label.textContent = 'Auto Play';
-          if (slideshowInterval) clearInterval(slideshowInterval);
-        }
-      }
-
-      function stopSlideshow() {
-        slideshowActive = false;
-        slideshowAuto = false;
-        if (slideshowInterval) clearInterval(slideshowInterval);
-        document.getElementById('slideshowNav').classList.add('hidden');
-        const containers = document.querySelectorAll('#zoneContainer > div');
-        containers.forEach((c) => {
-          c.style.display = 'flex';
-          c.className =
-            'card-bg border-custom rounded-xl p-2 flex flex-col space-y-2 max-h-[500px] transition-colors duration-300';
-          c.style.borderWidth = '1px';
-          c.style.overflow = 'hidden';
-        });
-      }
 
       // ============================================================
       // LOAD ALL DATA & REFRESH
