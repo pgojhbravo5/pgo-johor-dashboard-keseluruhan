@@ -887,7 +887,13 @@
 
     <!-- TABS -->
     <nav class="nav-bg backdrop-blur border-b px-4 flex gap-1 overflow-x-auto tab-nav-header sticky top-[57px] z-30 transition-colors duration-300">
-      <button onclick="switchTab('cfrt')" class="tab-btn tab-cfrt active py-2.5 px-3 text-xs font-bold border-b-2 border-red-500 text-red-400 whitespace-nowrap transition flex items-center gap-1.5">
+      <button onclick="switchTab('dashboard')" class="tab-btn tab-dashboard active py-2.5 px-3 text-xs font-bold border-b-2 border-red-500 text-red-400 whitespace-nowrap transition flex items-center gap-1.5">
+        <i class="fa-solid fa-chart-column"></i> DASHBOARD UTAMA (FIT VIEW)
+      </button>
+      <button onclick="switchTab('keseluruhan')" class="tab-btn tab-keseluruhan py-2.5 px-3 text-xs font-bold border-b-2 border-transparent text-slate-400 hover:text-slate-200 whitespace-nowrap transition flex items-center gap-1.5">
+        <i class="fa-solid fa-layer-group"></i> DATA KESELURUHAN
+      </button>
+      <button onclick="switchTab('cfrt')" class="tab-btn tab-cfrt py-2.5 px-3 text-xs font-bold border-b-2 border-transparent text-slate-400 hover:text-slate-200 whitespace-nowrap transition flex items-center gap-1.5">
         <i class="fa-solid fa-fire-extinguisher"></i> RESCUE TENDER (FRT)
       </button>
       <button onclick="switchTab('emrs')" class="tab-btn tab-emrs py-2.5 px-3 text-xs font-bold border-b-2 border-transparent text-slate-400 hover:text-slate-200 whitespace-nowrap transition flex items-center gap-1.5">
@@ -908,18 +914,12 @@
       <button onclick="switchTab('utiliti')" class="tab-btn tab-utiliti py-2.5 px-3 text-xs font-bold border-b-2 border-transparent text-slate-400 hover:text-slate-200 whitespace-nowrap transition flex items-center gap-1.5">
         <i class="fa-solid fa-truck-pickup"></i> UTILITI
       </button>
-      <button onclick="switchTab('keseluruhan')" class="tab-btn tab-keseluruhan py-2.5 px-3 text-xs font-bold border-b-2 border-transparent text-slate-400 hover:text-slate-200 whitespace-nowrap transition flex items-center gap-1.5">
-        <i class="fa-solid fa-layer-group"></i> DATA KESELURUHAN
-      </button>
-      <button onclick="switchTab('dashboard')" class="tab-btn tab-dashboard py-2.5 px-3 text-xs font-bold border-b-2 border-transparent text-slate-400 hover:text-slate-200 whitespace-nowrap transition flex items-center gap-1.5">
-        <i class="fa-solid fa-chart-column"></i> DASHBOARD UTAMA (FIT VIEW)
-      </button>
     </nav>
 
     <!-- MAIN -->
     <main class="flex-1 p-2.5 sm:p-4 space-y-4 max-w-[1700px] w-full mx-auto">
       <!-- TAB CFRT -->
-      <section id="tab-cfrt" class="tab-content">
+      <section id="tab-cfrt" class="tab-content hidden">
         <div id="statsRow-cfrt" class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-2.5 mb-4"></div>
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-3 mb-4">
           <div class="card-bg border-custom rounded-xl p-3 transition-colors duration-300" style="border-width: 1px">
@@ -1788,7 +1788,7 @@
       </section>
 
       <!-- TAB DASHBOARD UTAMA -->
-      <section id="tab-dashboard" class="tab-content hidden space-y-3">
+      <section id="tab-dashboard" class="tab-content space-y-3">
         <div class="card-bg border-custom rounded-xl p-2.5 flex flex-wrap items-center justify-between gap-2 transition-colors duration-300" id="dashboardFilters" style="border-width: 1px">
           <div class="flex flex-wrap items-center gap-2">
             <span class="text-[11px] font-bold uppercase text-secondary-custom">Jenis:</span>
@@ -4005,9 +4005,9 @@
           combineAllData();
           renderMainDashboard();
 
-          // === Hanya paksa tab FRT pada muatan PERTAMA kali ===
+          // === Hanya paksa tab DASHBOARD UTAMA pada muatan PERTAMA kali ===
           if (isInitialLoad) {
-            switchTab('cfrt');
+            switchTab('dashboard');
             isInitialLoad = false;
           } else {
             // Reload seterusnya: KEKAL pada tab semasa (T)
