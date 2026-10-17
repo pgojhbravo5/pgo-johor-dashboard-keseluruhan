@@ -2632,8 +2632,9 @@
             popup.style.display = 'flex';
             search.value = '';
             renderOptions();
-            setTimeout(() => search.focus(), 30);
+            setTimeout(() => search.focus({ preventScroll: true }), 30);
           }
+          
           function closePopup(apply = true) {
             container.classList.remove('open');
             popup.hidden = true;
@@ -5191,13 +5192,36 @@
           observer.observe(document.body, { attributes: true, subtree: true, attributeFilter: ['class'] });
         }
 
+                // Track bila popup baru dibuka — untuk elak scroll palsu (focus/overflow) tutup popup
+                let _lastPopupOpenAt = 0;
+        const _trackPopups = new MutationObserver(() => {
+          if (document.querySelector('.ms.open, .drp-popup.open, .chart-type-picker.open')) {
+            _lastPopupOpenAt = Date.now();
+          }
+        });
+        document.querySelectorAll('.ms, .drp-popup, .chart-type-picker').forEach(el => {
+          _trackPopups.observe(el, { attributes: true, attributeFilter: ['class'] });
+        });
+
         window.addEventListener('scroll', () => {
           if (!isMobile()) return;
+          // ⛔ Jangan tutup popup yang baru sahaja dibuka (<600ms) — elak flash-close
+          if (Date.now() - _lastPopupOpenAt < 600) return;
           if (typeof MultiSelect !== 'undefined') MultiSelect.closeAllPopups && MultiSelect.closeAllPopups();
-          document.querySelectorAll('.drp-popup.open').forEach(p => p.classList.remove('open'));
-          document.querySelectorAll('.chart-type-picker.open').forEach(p => p.classList.remove('open'));
+          document.querySelectorAll('.drp-popup.open').forEach(p => {
+            p.classList.remove('open');
+            const inp = document.getElementById('drpInput');
+            if (inp) inp.classList.remove('open');
+          });
+          document.querySelectorAll('.chart-type-picker.open').forEach(el => {
+            el.classList.remove('open');
+            const tr = el.querySelector('.ctp-trigger');
+            if (tr) tr.classList.remove('open');
+            const pp = el.querySelector('.ctp-popup');
+            if (pp) pp.hidden = true;
+          });
         }, { passive: true });
-
+        
         let wasMobile = isMobile();
         window.addEventListener('resize', () => {
           const now = isMobile();
