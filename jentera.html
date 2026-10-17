@@ -628,6 +628,8 @@
         .copy-btn,
         .ms-dropdown,
         #dashboardFilters,
+        #statusLegendBar,
+        #zoneSelectionBar,
         button:not(.keep-in-print),
         .tab-btn,
         [class*='sticky'] {
@@ -814,7 +816,16 @@
         display: flex;
         flex-direction: column;
       }
+
+      /* Full-view layout for single-zone display (no internal scroll) */
+      .zone-body-full {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+        gap: 0.5rem;
+        align-items: start;
+      }
     </style>
+    
   </head>
   <body class="min-h-screen flex flex-col">
     <!-- LOADING OVERLAY -->
@@ -1825,9 +1836,68 @@
             </button>
           </div>
         </div>
+
+        <!-- ============================================================
+             PAGE SELECTION ZON (SEMUA / ZON 1-4 / BENGKEL KJT)
+        ============================================================ -->
+        <div class="card-bg border-custom rounded-xl px-2.5 py-2 flex flex-wrap items-center justify-between gap-2 transition-colors duration-300" id="zoneSelectionBar" style="border-width:1px">
+          <div class="flex items-center gap-2 flex-wrap">
+            <span class="text-[10px] font-bold uppercase text-secondary-custom flex items-center gap-1">
+              <i class="fa-solid fa-map-location-dot text-red-400"></i> Paparan Zon
+            </span>
+            <span class="text-[9px] text-muted-custom italic hidden sm:inline">Pilih zon untuk paparan penuh tanpa skrol dalaman</span>
+          </div>
+          <div class="flex flex-wrap items-center gap-1" id="zoneTabsContainer"></div>
+        </div>
+        <!-- ============================================================
+             TAMAT PAGE SELECTION ZON
+        ============================================================ -->
+
+        <!-- ============================================================
+             PANDUAN INDICATOR STATUS JENTERA (WARNA)
+        ============================================================ -->
+        
+        <div class="card-bg border-custom rounded-xl px-2.5 py-2 flex flex-wrap items-center justify-between gap-2 transition-colors duration-300" id="statusLegendBar" style="border-width:1px">
+          <div class="flex items-center gap-1.5">
+            <span class="text-[10px] font-bold uppercase text-secondary-custom flex items-center gap-1">
+              <i class="fa-solid fa-circle-info text-blue-400"></i> Panduan Warna Status
+            </span>
+          </div>
+          <div class="flex flex-wrap items-center gap-x-3 gap-y-1 text-[10px] font-semibold">
+            <div class="flex items-center gap-1.5" title="Jentera beroperasi & boleh digunakan">
+              <span class="w-2.5 h-2.5 rounded-full bg-emerald-500 siren-red shrink-0"></span>
+              <span style="color:var(--text-secondary);">BAIK & BEROPERASI</span>
+            </div>
+            <div class="flex items-center gap-1.5" title="Rosak kecil, masih boleh beroperasi">
+              <span class="w-2.5 h-2.5 rounded-full bg-yellow-500 siren-amber shrink-0"></span>
+              <span style="color:var(--text-secondary);">ROSAK MINOR</span>
+            </div>
+            <div class="flex items-center gap-1.5" title="Rosak, tidak boleh beroperasi">
+              <span class="w-2.5 h-2.5 rounded-full bg-red-500 siren-red shrink-0"></span>
+              <span style="color:var(--text-secondary);">ROSAK</span>
+            </div>
+            <div class="flex items-center gap-1.5" title="Dihantar pulang / dipulangkan">
+              <span class="w-2.5 h-2.5 rounded-full bg-blue-500 siren-blue shrink-0"></span>
+              <span style="color:var(--text-secondary);">DIPULANGKAN</span>
+            </div>
+            <div class="flex items-center gap-1.5" title="Status tidak dikategorikan">
+              <span class="w-2.5 h-2.5 rounded-full bg-slate-400 shrink-0"></span>
+              <span style="color:var(--text-secondary);">LAIN-LAIN</span>
+            </div>
+            <div class="flex items-center gap-1.5 pl-2 border-l border-custom">
+              <span class="inline-block w-1 h-3 rounded bg-red-500 shrink-0"></span>
+              <span class="text-muted-custom text-[9px] italic">Border kiri & titik pada kad = status</span>
+            </div>
+          </div>
+        </div>
+        <!-- ============================================================
+             TAMAT PANDUAN INDICATOR STATUS
+        ============================================================ -->
+
         <div id="dashStats" class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-2"></div>
         <div id="zoneContainer" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-2.5 items-start"></div>
       </section>
+    
     </main>
 
     <!-- FOOTER -->
@@ -1870,7 +1940,9 @@
       const REFRESH_INTERVAL_SEC = 300;
       let D = { cfrt: [], emrs: [], water: [], lain: [], marin: [], rim: [], utiliti: [], keseluruhan: [] };
       let T = 'cfrt';
+      let selectedZoneView = 'SEMUA'; // 'SEMUA' | 'ZON 1' | 'ZON 2' | 'ZON 3' | 'ZON 4' | 'BENGKEL KJT BOMBA'
       let F = ['cfrt', 'emrs', 'water'];
+      
       let subTabSelectedStatus = { cfrt: [], emrs: [], water: [], lain: [], marin: [], rim: [], utiliti: [], keseluruhan: [] };
       let subTabSelectedModel = { cfrt: [], emrs: [], water: [], lain: [], marin: [], rim: [], utiliti: [], keseluruhan: [] };
       let subTabSelectedZon = { cfrt: [], emrs: [], water: [], lain: [], marin: [], rim: [], utiliti: [], keseluruhan: [] };
@@ -3380,7 +3452,8 @@
       }
 
       // Render balai card group (helper)
-      function renderBalaiCardGroup(balaiName, items) {
+      function renderBalaiCardGroup(balaiName, items, innerGridClass) {
+        const gridClass = innerGridClass || 'grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-1 gap-1';
         let cardsHtml = '';
         if (items.length > 0) {
           cardsHtml = items
@@ -3476,8 +3549,8 @@
                 <span class="truncate uppercase tracking-tight flex items-center gap-1"><i class="fa-solid fa-building text-yellow-400 text-[9px]"></i> ${balaiName}</span>
                 <span class="text-slate-500 text-[9px] font-semibold">${items.length}</span>
               </div>
-              <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-1 gap-1">${cardsHtml}</div>
-            </div>`;
+              <div class="${gridClass}">${cardsHtml}</div>
+              </div>`;
       }
 
       function renderEmptyStatusCards(selectedStatuses) {
@@ -3536,9 +3609,38 @@
       }
 
       // ============================================================
+      // ZONE VIEW SELECTOR (PAGE SELECTION)
+      // ============================================================
+      function renderZoneTabs() {
+        const container = document.getElementById('zoneTabsContainer');
+        if (!container) return;
+        const zones = ['SEMUA', ...zoneOrder];
+        container.innerHTML = zones
+          .map((z) => {
+            const isActive = selectedZoneView === z;
+            const activeClass = isActive
+              ? 'bg-red-600 text-white border-red-500 shadow-md shadow-red-600/30'
+              : 'bg-slate-800 text-slate-300 border-slate-600 hover:bg-slate-700';
+            const label = z === 'BENGKEL KJT BOMBA' ? 'BENGKEL KJT' : z;
+            const icon =
+              z === 'SEMUA'
+                ? '<i class="fa-solid fa-layer-group mr-1"></i>'
+                : '<i class="fa-solid fa-location-dot mr-1"></i>';
+            return `<button onclick="switchZoneView('${z}')" class="px-2.5 py-1 text-[10px] font-bold rounded-lg border transition flex items-center whitespace-nowrap ${activeClass}">${icon}${label}</button>`;
+          })
+          .join('');
+      }
+
+      function switchZoneView(zone) {
+        selectedZoneView = zone;
+        renderMainDashboard();
+      }
+
+      // ============================================================
       // RENDER MAIN DASHBOARD — ZON DITENTUKAN DARI LOKASI SEMASA
       // ============================================================
       function renderMainDashboard() {
+        
         const all = getAllAssets();
         document.getElementById('countCfrt').textContent = D.cfrt.length;
         document.getElementById('countEmrs').textContent = D.emrs.length;
@@ -3622,29 +3724,60 @@
           zoneMap[zoneKey][balaiKey].push(item);
         });
 
+        // Render zone tabs semasa (SEMUA / ZON 1-4 / BENGKEL KJT)
+        renderZoneTabs();
+
         let html = '';
-        zoneOrder.forEach((zoneName) => {
+        const zonesToRender = selectedZoneView === 'SEMUA' ? zoneOrder : [selectedZoneView];
+        const isFullView = selectedZoneView !== 'SEMUA';
+
+        // Sesuaikan grid container ikut mod paparan
+        const zoneContainerEl = document.getElementById('zoneContainer');
+        if (zoneContainerEl) {
+          zoneContainerEl.className = isFullView
+            ? 'grid grid-cols-1 gap-2.5 items-start'
+            : 'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-2.5 items-start';
+        }
+
+        zonesToRender.forEach((zoneName) => {
           const dataZon = zoneMap[zoneName] || {};
           let totalItemsInZone = 0;
           Object.values(dataZon).forEach(
             (arr) => (totalItemsInZone += arr.length)
           );
-          // ZONE CARD with manual scroll: max-height + sticky header + scrollable body
-          html += `<div class="card-bg border-custom rounded-xl p-2 flex flex-col space-y-2 max-h-[700px] transition-colors duration-300" style="border-width:1px; overflow:hidden;">
-              <div class="flex items-center justify-between pb-1 border-b border-custom sticky top-0 z-10 bg-[var(--bg-card)]">
+
+          // Full view: tiada max-height, tiada overflow, tiada sticky header
+          const zoneCardClass = isFullView
+            ? 'card-bg border-custom rounded-xl p-2 flex flex-col space-y-2 transition-colors duration-300'
+            : 'card-bg border-custom rounded-xl p-2 flex flex-col space-y-2 max-h-[700px] transition-colors duration-300';
+          const zoneCardStyle = isFullView
+            ? 'border-width:1px;'
+            : 'border-width:1px; overflow:hidden;';
+          const zoneHeaderClass = isFullView
+            ? 'flex items-center justify-between pb-1 border-b border-custom'
+            : 'flex items-center justify-between pb-1 border-b border-custom sticky top-0 z-10 bg-[var(--bg-card)]';
+          const zoneBodyClass = isFullView
+            ? 'zone-body-full flex-1'
+            : 'space-y-1.5 flex-1 overflow-y-auto';
+          const innerGridClass = isFullView
+            ? 'grid grid-cols-1 gap-1'
+            : 'grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-1 gap-1';
+
+          html += `<div class="${zoneCardClass}" style="${zoneCardStyle}">
+              <div class="${zoneHeaderClass}">
                 <h3 class="text-xs font-extrabold flex items-center gap-1.5" style="color:var(--text-primary);">
                   <span class="w-2 h-2 rounded-full bg-red-500 siren-red shrink-0"></span>${zoneName}
                 </h3>
                 <span class="bg-red-600/20 text-red-400 border border-red-500/30 text-[10px] px-2 py-0.2 rounded-full font-bold">${totalItemsInZone}</span>
               </div>
-              <div class="space-y-1.5 flex-1 overflow-y-auto">`;
+              <div class="${zoneBodyClass}">`;
           if (zoneName === 'BENGKEL KJT BOMBA') {
             const sortedBalai = Object.keys(dataZon).sort();
             if (sortedBalai.length === 0)
-              html += renderBalaiCardGroup('BENGKEL KJT BOMBA', []);
+              html += renderBalaiCardGroup('BENGKEL KJT BOMBA', [], innerGridClass);
             else
               sortedBalai.forEach((balai) => {
-                html += renderBalaiCardGroup(balai, dataZon[balai]);
+                html += renderBalaiCardGroup(balai, dataZon[balai], innerGridClass);
               });
           } else {
             const listBalai = BALAI_ZON[zoneName] || [];
@@ -3657,7 +3790,8 @@
                 balaiFullName
                 .replace('BALAI BOMBA DAN PENYELAMAT', 'BBP')
                 .replace('FIRE POST', 'FP'),
-                items
+                items,
+                innerGridClass
               );
             });
             Object.keys(dataZon).forEach((extraBalaiKey) => {
@@ -3667,12 +3801,13 @@
               ) {
                 html += renderBalaiCardGroup(
                   extraBalaiKey,
-                  dataZon[extraBalaiKey]
+                  dataZon[extraBalaiKey],
+                  innerGridClass
                 );
               }
             });
             if (dataZon['TANPA BALAI'] && dataZon['TANPA BALAI'].length > 0) {
-              html += renderBalaiCardGroup('LAIN-LAIN', dataZon['TANPA BALAI']);
+              html += renderBalaiCardGroup('LAIN-LAIN', dataZon['TANPA BALAI'], innerGridClass);
             }
           }
           html += `</div></div>`;
