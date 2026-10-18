@@ -2985,6 +2985,42 @@ table.grid tbody th.rowname.gred-short {
         }
       }
 
+      /* ═══════════════════════════════════════════════════
+   TRANSPOSED DUPLICATE TABLE
+   ═══════════════════════════════════════════════════ */
+table.semak-lokasi.duplicate-transposed .col-sticky-2 {
+  width: 160px !important;
+  min-width: 160px !important;
+  max-width: 160px !important;
+  text-align: left;
+  padding-left: 0.55rem;
+  font-family: 'Oswald', sans-serif;
+  font-weight: 500;
+  font-size: 0.72rem;
+  letter-spacing: 0.03em;
+  color: var(--text);
+}
+table.semak-lokasi.duplicate-transposed thead th.col-sticky-2 {
+  text-align: left;
+  padding-left: 0.55rem;
+}
+table.semak-lokasi.duplicate-transposed tbody td.col-sticky-2 {
+  background: var(--panel-2) !important;
+}
+table.semak-lokasi.duplicate-transposed tbody tr:nth-child(even) td.col-sticky-2 {
+  background: var(--zebra-solid) !important;
+}
+table.semak-lokasi.duplicate-transposed tbody tr:hover td.col-sticky-2 {
+  background: var(--panel-3) !important;
+}
+@media (max-width: 768px) {
+  table.semak-lokasi.duplicate-transposed .col-sticky-2 {
+    width: 120px !important;
+    min-width: 120px !important;
+    max-width: 120px !important;
+  }
+}
+
       #sec-semak_lokasi {
         overflow: visible !important;
         border-radius: var(--radius);
@@ -12945,7 +12981,7 @@ function hasInvalid(v) { return v.personel.length > 0 || v.equip.length > 0; }
         }
       });
 
-            function downloadSemakCSV() {
+      function downloadSemakCSV() {
         if (!semakExportData) {
           showToast('Tiada data untuk dieksport', 'error');
           return;
@@ -12953,7 +12989,6 @@ function hasInvalid(v) { return v.personel.length > 0 || v.equip.length > 0; }
 
         const { items, balaiNames, viewBalaiIndices, mode, showBalaiCols } = semakExportData;
 
-        // Apply filter carian semasa (sama macam paparan)
         const s = (semakFilterState.search || '').toLowerCase().trim();
         const filteredItems = items.filter(function (it) {
           if (!s) return true;
@@ -12966,71 +13001,104 @@ function hasInvalid(v) { return v.personel.length > 0 || v.equip.length > 0; }
           return;
         }
 
-        // ── Header ──
-        const headers = ['BIL', 'SEKSYEN', 'KATEGORI', 'MAKLUMAT'];
-        if (showBalaiCols) {
-          viewBalaiIndices.forEach(function (idx) { headers.push(balaiNames[idx]); });
-        }
-        headers.push('JUMLAH');
+        let rows = [];
+        let modeLabel = 'dipilih';
 
-        const rows = [headers];
-        let currentSection = null;
+        /* ═══════════════════════════════════════════════════
+           MOD DUPLIKAT — CSV TRANSPOSED
+           ═══════════════════════════════════════════════════ */
+        if (mode === 'duplicate' && showBalaiCols) {
+          modeLabel = 'duplikat';
 
-        filteredItems.forEach(function (it) {
-          // Baris pemisah seksyen
-          if (it.section !== currentSection) {
-            currentSection = it.section;
-            const sep = ['', '=== ' + it.section + ' ===', '', ''];
-            if (showBalaiCols) {
-              viewBalaiIndices.forEach(function () { sep.push(''); });
-            }
-            sep.push('');
-            rows.push(sep);
+          const headers = ['BIL', 'BALAI'];
+          filteredItems.forEach(function (it) {
+            headers.push(it.kategori + ' — ' + it.maklumat);
+          });
+          headers.push('JUMLAH');
+          rows.push(headers);
+
+          viewBalaiIndices.forEach(function (origIdx, vi) {
+            const row = [vi + 1, balaiNames[origIdx]];
+            let cnt = 0;
+            filteredItems.forEach(function (it) {
+              if (it.flags[origIdx]) { row.push('✓'); cnt++; }
+              else row.push('');
+            });
+            row.push(cnt);
+            rows.push(row);
+          });
+
+          const totalsRow = ['', 'JUMLAH'];
+          filteredItems.forEach(function (it) {
+            let c = 0;
+            viewBalaiIndices.forEach(function (idx) { if (it.flags[idx]) c++; });
+            totalsRow.push(c);
+          });
+          let g = 0;
+          viewBalaiIndices.forEach(function (idx) {
+            filteredItems.forEach(function (it) { if (it.flags[idx]) g++; });
+          });
+          totalsRow.push(g);
+          rows.push(totalsRow);
+
+        /* ═══════════════════════════════════════════════════
+           MOD BIASA — CSV ASAL
+           ═══════════════════════════════════════════════════ */
+        } else {
+          modeLabel = mode === 'assigned' ? 'dipilih'
+                    : mode === 'unassigned' ? 'tidak_dipilih'
+                    : 'duplikat';
+
+          const headers = ['BIL', 'SEKSYEN', 'KATEGORI', 'MAKLUMAT'];
+          if (showBalaiCols) {
+            viewBalaiIndices.forEach(function (idx) { headers.push(balaiNames[idx]); });
           }
+          headers.push('JUMLAH');
+          rows.push(headers);
 
-          const row = [it.bil, it.section, it.kategori, it.maklumat];
+          let currentSection = null;
+          filteredItems.forEach(function (it) {
+            if (it.section !== currentSection) {
+              currentSection = it.section;
+              const sep = ['', '=== ' + it.section + ' ===', '', ''];
+              if (showBalaiCols) viewBalaiIndices.forEach(function () { sep.push(''); });
+              sep.push('');
+              rows.push(sep);
+            }
+            const row = [it.bil, it.section, it.kategori, it.maklumat];
+            if (showBalaiCols) {
+              viewBalaiIndices.forEach(function (origIdx) {
+                row.push(it.flags[origIdx] ? '✓' : '');
+              });
+            }
+            row.push(it.count || 0);
+            rows.push(row);
+          });
+
+          const totalsRow = ['', 'JUMLAH', '', ''];
           if (showBalaiCols) {
             viewBalaiIndices.forEach(function (origIdx) {
-              row.push(it.flags[origIdx] ? '✓' : '');
+              let n = 0;
+              filteredItems.forEach(function (it) { if (it.flags[origIdx]) n++; });
+              totalsRow.push(n);
             });
           }
-          row.push(it.count || 0);
-          rows.push(row);
-        });
-
-        // ── Baris Jumlah Keseluruhan ──
-        const totalsRow = ['', 'JUMLAH', '', ''];
-        if (showBalaiCols) {
-          viewBalaiIndices.forEach(function (origIdx) {
-            let n = 0;
-            filteredItems.forEach(function (it) { if (it.flags[origIdx]) n++; });
-            totalsRow.push(n);
-          });
+          totalsRow.push(filteredItems.reduce(function (acc, it) { return acc + (it.count || 0); }, 0));
+          rows.push(totalsRow);
         }
-        totalsRow.push(
-          filteredItems.reduce(function (acc, it) { return acc + (it.count || 0); }, 0)
-        );
-        rows.push(totalsRow);
 
-        // ── Escape untuk CSV ──
         const csvContent = rows.map(function (row) {
           return row.map(function (cell) {
             const str = String(cell == null ? '' : cell);
-            if (/[",\n\r]/.test(str)) {
-              return '"' + str.replace(/"/g, '""') + '"';
-            }
+            if (/[",\n\r]/.test(str)) return '"' + str.replace(/"/g, '""') + '"';
             return str;
           }).join(',');
         }).join('\r\n');
 
-        // ── Muat turun (BOM untuk Excel baca UTF-8 dengan betul) ──
         const blob = new Blob(['\ufeff' + csvContent], { type: 'text/csv;charset=utf-8;' });
         const url = URL.createObjectURL(blob);
         const a = document.createElement('a');
         const date = new Date().toISOString().slice(0, 10);
-        const modeLabel = mode === 'assigned' ? 'dipilih'
-                        : mode === 'unassigned' ? 'tidak_dipilih'
-                        : 'duplikat';
         a.href = url;
         a.download = 'semak_lokasi_' + modeLabel + '_' + date + '.csv';
         document.body.appendChild(a);
@@ -13039,9 +13107,9 @@ function hasInvalid(v) { return v.personel.length > 0 || v.equip.length > 0; }
         URL.revokeObjectURL(url);
 
         playToastSuccessSound();
-        showToast('CSV berjaya dimuat turun (' + filteredItems.length + ' baris)', 'success');
+        showToast('CSV berjaya dimuat turun (' + filteredItems.length + ' item)', 'success');
       }
-
+      
       function renderSemakLokasiView() {
         document.getElementById('sec-semak_lokasi')?.remove();
 
@@ -13197,282 +13265,442 @@ function hasInvalid(v) { return v.personel.length > 0 || v.equip.length > 0; }
         const viewBalaiZon   = viewBalaiIndices.map(function (i) { return balaiZon[i]; });
         const viewBalaiCount = viewBalaiIndices.length;
 
-        const thead = document.createElement('thead');
-        const hRow = document.createElement('tr');
-        hRow.className = 'groups';
-
-        const thBil = document.createElement('th');
-        thBil.textContent = 'BIL';
-        thBil.rowSpan = showBalaiCols ? 3 : 2;
-        thBil.className = 'col-sticky-1';
-        hRow.appendChild(thBil);
-
-        const thKat = document.createElement('th');
-        thKat.textContent = 'KATEGORI';
-        thKat.rowSpan = showBalaiCols ? 3 : 2;
-        thKat.className = 'col-sticky-2';
-        hRow.appendChild(thKat);
-
-        const thMak = document.createElement('th');
-        thMak.textContent = 'MAKLUMAT JENTERA / KENDERAAN';
-        thMak.style.textAlign = 'left';
-        thMak.rowSpan = showBalaiCols ? 3 : 2;
-        thMak.className = 'col-sticky-3';
-        hRow.appendChild(thMak);
-
-        if (showBalaiCols) {
-          let zStart = 0;
-          for (let i = 0; i < viewBalaiZon.length; i++) {
-            if (i === viewBalaiZon.length - 1 || viewBalaiZon[i + 1] !== viewBalaiZon[i]) {
-              const span = i - zStart + 1;
-              const th = document.createElement('th');
-              th.colSpan = span;
-              th.className = 'zon-header zon-' + viewBalaiZon[i];
-              th.textContent = (viewBalaiZon[i] === 0 ? 'HQ' : ('ZON ' + viewBalaiZon[i]));
-              if (viewBalaiZon[i] === 0) {
-                th.style.color = 'var(--purple)';
-              } else {
-                th.style.color = 'var(--zon' + viewBalaiZon[i] + ')';
-              }
-              hRow.appendChild(th);
-              zStart = i + 1;
-            }
-          }
-        } else {
-          const thInfo = document.createElement('th');
-          thInfo.colSpan = 2;
-          thInfo.textContent = 'STATUS';
-          hRow.appendChild(thInfo);
-        }
-
-        const thJumTop = document.createElement('th');
-        thJumTop.textContent = 'JUMLAH';
-        thJumTop.rowSpan = showBalaiCols ? 3 : 2;
-        thJumTop.className = 'jumlah-col';
-        hRow.appendChild(thJumTop);
-        thead.appendChild(hRow);
-
-        if (showBalaiCols) {
-          const hRow2 = document.createElement('tr');
-          hRow2.className = 'balai-header';
-          viewBalaiNames.forEach(function (bn) {
-            const th = document.createElement('th');
-            th.className = 'balai-col';
-            th.textContent = bn;
-            th.title = bn;
-            hRow2.appendChild(th);
-          });
-          thead.appendChild(hRow2);
-
-          const hRowFilter = document.createElement('tr');
-          hRowFilter.className = 'filter-row';
-          const thEmptyBil = document.createElement('th');
-          thEmptyBil.className = 'col-sticky-1 filter-empty';
-          hRowFilter.appendChild(thEmptyBil);
-          const thEmptyKat = document.createElement('th');
-          thEmptyKat.className = 'col-sticky-2 filter-empty';
-          hRowFilter.appendChild(thEmptyKat);
-          const thEmptyMak = document.createElement('th');
-          thEmptyMak.className = 'col-sticky-3 filter-empty';
-          hRowFilter.appendChild(thEmptyMak);
-          viewBalaiNames.forEach(function () {
-            const th = document.createElement('th');
-            th.className = 'filter-check';
-            th.innerHTML = '<span style="opacity:.35;font-size:.9rem;">•</span>';
-            hRowFilter.appendChild(th);
-          });
-          const thEmptyJum = document.createElement('th');
-          thEmptyJum.className = 'filter-empty';
-          hRowFilter.appendChild(thEmptyJum);
-          thead.appendChild(hRowFilter);
-        } else {
-          const hRow2 = document.createElement('tr');
-          hRow2.className = 'balai-header';
-          const thInfo = document.createElement('th');
-          thInfo.colSpan = 2;
-          thInfo.textContent = 'TIDAK DIPILIH DI MANA-MANA BALAI';
-          thInfo.style.fontStyle = 'italic';
-          thInfo.style.color = 'var(--text-dim)';
-          thInfo.style.letterSpacing = '0.05em';
-          hRow2.appendChild(thInfo);
-          thead.appendChild(hRow2);
-        }
-
-        tbl.appendChild(thead);
-
-        const tbody = document.createElement('tbody');
         const itemsToShow = isAssigned ? assignedItems : (isUnassigned ? unassignedItems : duplicateItems);
 
         // ✅ Simpan snapshot untuk CSV export
-semakExportData = {
-  items: itemsToShow,
-  balaiNames: balaiNames,
-  viewBalaiIndices: viewBalaiIndices,
-  mode: semakViewMode,
-  showBalaiCols: showBalaiCols,
-};
+        semakExportData = {
+          items: itemsToShow,
+          balaiNames: balaiNames,
+          viewBalaiIndices: viewBalaiIndices,
+          mode: semakViewMode,
+          showBalaiCols: showBalaiCols,
+        };
 
-        const balaiTotals = new Array(viewBalaiCount).fill(0);
-        let grandTotal = 0;
+        /* ═══════════════════════════════════════════════════
+           MOD DUPLIKAT → TABLE TRANSPOSED
+           BALAI = baris, KATEGORI + MAKLUMAT = lajur
+           ═══════════════════════════════════════════════════ */
+        if (isDuplicate) {
+          tbl.classList.add('duplicate-transposed');
 
-        const bySection = {};
-        SECTIONS.forEach(function (sec) { bySection[sec.label] = []; });
-        itemsToShow.forEach(function (it) {
-          if (!bySection[it.section]) bySection[it.section] = [];
-          bySection[it.section].push(it);
-        });
-
-        const totalColSpan = showBalaiCols ? (3 + viewBalaiCount + 1) : (3 + 2 + 1);
-
-        SECTIONS.forEach(function (sec) {
-          const itemsInSec = bySection[sec.label] || [];
-          if (itemsInSec.length === 0) return;
-
-          const secTr = document.createElement('tr');
-          secTr.className = 'section-row';
-          secTr.dataset.section = sec.label;
-          const secTd = document.createElement('td');
-          secTd.colSpan = totalColSpan;
-          secTd.textContent = sec.label + '  —  ' + itemsInSec.length + ' item';
-          secTr.appendChild(secTd);
-          tbody.appendChild(secTr);
-
-          itemsInSec.forEach(function (it) {
-            const tr = document.createElement('tr');
-            tr.dataset.kategori = it.kategori.toLowerCase();
-            tr.dataset.maklumat = it.maklumat.toLowerCase();
-            tr.dataset.section = sec.label;
-
-            if (isDuplicate) {
-              tr.classList.add('row-duplicate');
-              tr.title = '⚠ Jentera ini dipilih oleh ' + it.count + ' balai berlainan';
+          // Kumpul item ikut kategori untuk header
+          const columnGroups = [];
+          let currentGroup = null;
+          let currentKat = null;
+          itemsToShow.forEach(function (it) {
+            if (it.kategori !== currentKat) {
+              currentKat = it.kategori;
+              currentGroup = { kategori: it.kategori, section: it.section, items: [] };
+              columnGroups.push(currentGroup);
             }
+            currentGroup.items.push(it);
+          });
+
+          const thead = document.createElement('thead');
+          const hRow1 = document.createElement('tr');
+          hRow1.className = 'groups';
+
+          const thBil = document.createElement('th');
+          thBil.textContent = 'BIL';
+          thBil.rowSpan = 2;
+          thBil.className = 'col-sticky-1';
+          hRow1.appendChild(thBil);
+
+          const thBalai = document.createElement('th');
+          thBalai.textContent = 'BALAI';
+          thBalai.rowSpan = 2;
+          thBalai.className = 'col-sticky-2';
+          hRow1.appendChild(thBalai);
+
+          columnGroups.forEach(function (g) {
+            const th = document.createElement('th');
+            th.colSpan = g.items.length;
+            th.textContent = g.kategori;
+            th.title = g.section + ' — ' + g.kategori;
+            hRow1.appendChild(th);
+          });
+
+          const thJum = document.createElement('th');
+          thJum.textContent = 'JUMLAH';
+          thJum.rowSpan = 2;
+          thJum.className = 'jumlah-col';
+          hRow1.appendChild(thJum);
+          thead.appendChild(hRow1);
+
+          const hRow2 = document.createElement('tr');
+          hRow2.className = 'subs';
+          itemsToShow.forEach(function (it) {
+            const th = document.createElement('th');
+            th.textContent = it.maklumat;
+            th.title = it.maklumat;
+            th.style.fontSize = '0.58rem';
+            th.style.fontFamily = "'Inter', sans-serif";
+            th.style.maxWidth = '160px';
+            th.style.minWidth = '120px';
+            th.style.overflow = 'hidden';
+            th.style.textOverflow = 'ellipsis';
+            th.style.whiteSpace = 'nowrap';
+            th.style.textTransform = 'none';
+            hRow2.appendChild(th);
+          });
+          thead.appendChild(hRow2);
+          tbl.appendChild(thead);
+
+          const tbody = document.createElement('tbody');
+          const itemTotals = new Array(itemsToShow.length).fill(0);
+          let grandTotal = 0;
+
+          viewBalaiIndices.forEach(function (origIdx, vi) {
+            const balaiName = balaiNames[origIdx];
+            const tr = document.createElement('tr');
+
+            const searchParts = [];
+            itemsToShow.forEach(function (it) {
+              if (it.flags[origIdx]) searchParts.push(it.kategori, it.maklumat);
+            });
+            tr.dataset.search = searchParts.join(' ').toLowerCase();
 
             const td1 = document.createElement('td');
             td1.className = 'bil-cell col-sticky-1';
-            td1.textContent = it.bil;
+            td1.textContent = vi + 1;
             tr.appendChild(td1);
 
             const td2 = document.createElement('td');
-            td2.className = 'kat-cell col-sticky-2';
-            td2.textContent = it.kategori;
+            td2.className = 'col-sticky-2';
+            td2.textContent = balaiName;
             tr.appendChild(td2);
 
-            const td3 = document.createElement('td');
-            td3.className = 'maklumat-cell col-sticky-3';
-            td3.textContent = it.maklumat;
-            tr.appendChild(td3);
-
-            if (showBalaiCols) {
-              viewBalaiIndices.forEach(function (origIdx, vi) {
-                const has = it.flags[origIdx];
-                const td = document.createElement('td');
-                td.className = 'check-cell';
-                if (has) {
-                  const dot = document.createElement('span');
-                  dot.className = 'loc-dot';
-                  dot.title = 'Ada di ' + balaiNames[origIdx];
-                  td.appendChild(dot);
-                  balaiTotals[vi]++;
-                  grandTotal++;
-                }
-                tr.appendChild(td);
-              });
-            } else {
-              const tdInfo = document.createElement('td');
-              tdInfo.className = 'status-none-cell';
-              tdInfo.colSpan = 2;
-              tdInfo.textContent = 'Tiada balai memilih';
-              tr.appendChild(tdInfo);
-            }
+            let rowCount = 0;
+            itemsToShow.forEach(function (it, i) {
+              const td = document.createElement('td');
+              td.className = 'check-cell';
+              if (it.flags[origIdx]) {
+                const dot = document.createElement('span');
+                dot.className = 'loc-dot';
+                dot.title = balaiName + ' — ' + it.maklumat;
+                td.appendChild(dot);
+                rowCount++;
+                itemTotals[i]++;
+                grandTotal++;
+              }
+              tr.appendChild(td);
+            });
 
             const tdJ = document.createElement('td');
             tdJ.className = 'jumlah-cell';
-            tdJ.textContent = it.count || '0';
+            tdJ.textContent = rowCount;
             tr.appendChild(tdJ);
 
             tbody.appendChild(tr);
           });
-        });
 
-        if (itemsToShow.length === 0) {
-          const emptyTr = document.createElement('tr');
-          emptyTr.className = 'empty-row';
-          const emptyTd = document.createElement('td');
-          emptyTd.colSpan = totalColSpan;
-          if (isDuplicate) {
+          if (itemsToShow.length === 0) {
+            const emptyTr = document.createElement('tr');
+            emptyTr.className = 'empty-row';
+            const emptyTd = document.createElement('td');
+            emptyTd.colSpan = 3;
             emptyTd.textContent = '✓ Tiada duplikasi — semua jentera unik di setiap balai.';
-          } else if (isUnassigned) {
-            emptyTd.textContent = '✓ Semua jentera telah dipilih oleh sekurang-kurangnya 1 balai.';
+            emptyTr.appendChild(emptyTd);
+            tbody.appendChild(emptyTr);
           } else {
-            emptyTd.textContent = 'Tiada jentera dipilih oleh mana-mana balai.';
+            const totalTr = document.createElement('tr');
+            totalTr.className = 'total-row';
+            const tdTLbl = document.createElement('td');
+            tdTLbl.colSpan = 2;
+            tdTLbl.className = 'total-label';
+            tdTLbl.textContent = 'JUMLAH KESELURUHAN';
+            totalTr.appendChild(tdTLbl);
+
+            itemTotals.forEach(function (t) {
+              const td = document.createElement('td');
+              td.className = 'jumlah-cell';
+              td.textContent = t;
+              totalTr.appendChild(td);
+            });
+
+            const tdTG = document.createElement('td');
+            tdTG.className = 'jumlah-cell';
+            tdTG.textContent = grandTotal;
+            totalTr.appendChild(tdTG);
+            tbody.appendChild(totalTr);
           }
-          emptyTr.appendChild(emptyTd);
-          tbody.appendChild(emptyTr);
-        }
 
-        if (showBalaiCols && itemsToShow.length > 0) {
-          const totalTr = document.createElement('tr');
-          totalTr.className = 'total-row';
+          tbl.appendChild(tbody);
+          body.appendChild(tbl);
 
-          const totalLbl = document.createElement('td');
-          totalLbl.colSpan = 3;
-          totalLbl.className = 'total-label';
-          totalLbl.textContent = 'JUMLAH KESELURUHAN';
-          totalTr.appendChild(totalLbl);
+        /* ═══════════════════════════════════════════════════
+           MOD ASSIGNED / UNASSIGNED → kekal seperti asal
+           ═══════════════════════════════════════════════════ */
+        } else {
 
-          balaiTotals.forEach(function (t) {
-            const td = document.createElement('td');
-            td.className = 'jumlah-cell';
-            td.textContent = t || '';
-            totalTr.appendChild(td);
+          const thead = document.createElement('thead');
+          const hRow = document.createElement('tr');
+          hRow.className = 'groups';
+
+          const thBil = document.createElement('th');
+          thBil.textContent = 'BIL';
+          thBil.rowSpan = showBalaiCols ? 3 : 2;
+          thBil.className = 'col-sticky-1';
+          hRow.appendChild(thBil);
+
+          const thKat = document.createElement('th');
+          thKat.textContent = 'KATEGORI';
+          thKat.rowSpan = showBalaiCols ? 3 : 2;
+          thKat.className = 'col-sticky-2';
+          hRow.appendChild(thKat);
+
+          const thMak = document.createElement('th');
+          thMak.textContent = 'MAKLUMAT JENTERA / KENDERAAN';
+          thMak.style.textAlign = 'left';
+          thMak.rowSpan = showBalaiCols ? 3 : 2;
+          thMak.className = 'col-sticky-3';
+          hRow.appendChild(thMak);
+
+          if (showBalaiCols) {
+            let zStart = 0;
+            for (let i = 0; i < viewBalaiZon.length; i++) {
+              if (i === viewBalaiZon.length - 1 || viewBalaiZon[i + 1] !== viewBalaiZon[i]) {
+                const span = i - zStart + 1;
+                const th = document.createElement('th');
+                th.colSpan = span;
+                th.className = 'zon-header zon-' + viewBalaiZon[i];
+                th.textContent = (viewBalaiZon[i] === 0 ? 'HQ' : ('ZON ' + viewBalaiZon[i]));
+                if (viewBalaiZon[i] === 0) {
+                  th.style.color = 'var(--purple)';
+                } else {
+                  th.style.color = 'var(--zon' + viewBalaiZon[i] + ')';
+                }
+                hRow.appendChild(th);
+                zStart = i + 1;
+              }
+            }
+          } else {
+            const thInfo = document.createElement('th');
+            thInfo.colSpan = 2;
+            thInfo.textContent = 'STATUS';
+            hRow.appendChild(thInfo);
+          }
+
+          const thJumTop = document.createElement('th');
+          thJumTop.textContent = 'JUMLAH';
+          thJumTop.rowSpan = showBalaiCols ? 3 : 2;
+          thJumTop.className = 'jumlah-col';
+          hRow.appendChild(thJumTop);
+          thead.appendChild(hRow);
+
+          if (showBalaiCols) {
+            const hRow2 = document.createElement('tr');
+            hRow2.className = 'balai-header';
+            viewBalaiNames.forEach(function (bn) {
+              const th = document.createElement('th');
+              th.className = 'balai-col';
+              th.textContent = bn;
+              th.title = bn;
+              hRow2.appendChild(th);
+            });
+            thead.appendChild(hRow2);
+
+            const hRowFilter = document.createElement('tr');
+            hRowFilter.className = 'filter-row';
+            const thEmptyBil = document.createElement('th');
+            thEmptyBil.className = 'col-sticky-1 filter-empty';
+            hRowFilter.appendChild(thEmptyBil);
+            const thEmptyKat = document.createElement('th');
+            thEmptyKat.className = 'col-sticky-2 filter-empty';
+            hRowFilter.appendChild(thEmptyKat);
+            const thEmptyMak = document.createElement('th');
+            thEmptyMak.className = 'col-sticky-3 filter-empty';
+            hRowFilter.appendChild(thEmptyMak);
+            viewBalaiNames.forEach(function () {
+              const th = document.createElement('th');
+              th.className = 'filter-check';
+              th.innerHTML = '<span style="opacity:.35;font-size:.9rem;">•</span>';
+              hRowFilter.appendChild(th);
+            });
+            const thEmptyJum = document.createElement('th');
+            thEmptyJum.className = 'filter-empty';
+            hRowFilter.appendChild(thEmptyJum);
+            thead.appendChild(hRowFilter);
+          } else {
+            const hRow2 = document.createElement('tr');
+            hRow2.className = 'balai-header';
+            const thInfo = document.createElement('th');
+            thInfo.colSpan = 2;
+            thInfo.textContent = 'TIDAK DIPILIH DI MANA-MANA BALAI';
+            thInfo.style.fontStyle = 'italic';
+            thInfo.style.color = 'var(--text-dim)';
+            thInfo.style.letterSpacing = '0.05em';
+            hRow2.appendChild(thInfo);
+            thead.appendChild(hRow2);
+          }
+
+          tbl.appendChild(thead);
+
+          const tbody = document.createElement('tbody');
+          const balaiTotals = new Array(viewBalaiCount).fill(0);
+          let grandTotal = 0;
+
+          const bySection = {};
+          SECTIONS.forEach(function (sec) { bySection[sec.label] = []; });
+          itemsToShow.forEach(function (it) {
+            if (!bySection[it.section]) bySection[it.section] = [];
+            bySection[it.section].push(it);
           });
 
-          const grandTd = document.createElement('td');
-          grandTd.className = 'jumlah-cell';
-          grandTd.textContent = grandTotal;
-          totalTr.appendChild(grandTd);
+          const totalColSpan = showBalaiCols ? (3 + viewBalaiCount + 1) : (3 + 2 + 1);
 
-          tbody.appendChild(totalTr);
+          SECTIONS.forEach(function (sec) {
+            const itemsInSec = bySection[sec.label] || [];
+            if (itemsInSec.length === 0) return;
+
+            const secTr = document.createElement('tr');
+            secTr.className = 'section-row';
+            secTr.dataset.section = sec.label;
+            const secTd = document.createElement('td');
+            secTd.colSpan = totalColSpan;
+            secTd.textContent = sec.label + '  —  ' + itemsInSec.length + ' item';
+            secTr.appendChild(secTd);
+            tbody.appendChild(secTr);
+
+            itemsInSec.forEach(function (it) {
+              const tr = document.createElement('tr');
+              tr.dataset.kategori = it.kategori.toLowerCase();
+              tr.dataset.maklumat = it.maklumat.toLowerCase();
+              tr.dataset.section = sec.label;
+
+              const td1 = document.createElement('td');
+              td1.className = 'bil-cell col-sticky-1';
+              td1.textContent = it.bil;
+              tr.appendChild(td1);
+
+              const td2 = document.createElement('td');
+              td2.className = 'kat-cell col-sticky-2';
+              td2.textContent = it.kategori;
+              tr.appendChild(td2);
+
+              const td3 = document.createElement('td');
+              td3.className = 'maklumat-cell col-sticky-3';
+              td3.textContent = it.maklumat;
+              tr.appendChild(td3);
+
+              if (showBalaiCols) {
+                viewBalaiIndices.forEach(function (origIdx, vi) {
+                  const has = it.flags[origIdx];
+                  const td = document.createElement('td');
+                  td.className = 'check-cell';
+                  if (has) {
+                    const dot = document.createElement('span');
+                    dot.className = 'loc-dot';
+                    dot.title = 'Ada di ' + balaiNames[origIdx];
+                    td.appendChild(dot);
+                    balaiTotals[vi]++;
+                    grandTotal++;
+                  }
+                  tr.appendChild(td);
+                });
+              } else {
+                const tdInfo = document.createElement('td');
+                tdInfo.className = 'status-none-cell';
+                tdInfo.colSpan = 2;
+                tdInfo.textContent = 'Tiada balai memilih';
+                tr.appendChild(tdInfo);
+              }
+
+              const tdJ = document.createElement('td');
+              tdJ.className = 'jumlah-cell';
+              tdJ.textContent = it.count || '0';
+              tr.appendChild(tdJ);
+
+              tbody.appendChild(tr);
+            });
+          });
+
+          if (itemsToShow.length === 0) {
+            const emptyTr = document.createElement('tr');
+            emptyTr.className = 'empty-row';
+            const emptyTd = document.createElement('td');
+            emptyTd.colSpan = totalColSpan;
+            if (isUnassigned) {
+              emptyTd.textContent = '✓ Semua jentera telah dipilih oleh sekurang-kurangnya 1 balai.';
+            } else {
+              emptyTd.textContent = 'Tiada jentera dipilih oleh mana-mana balai.';
+            }
+            emptyTr.appendChild(emptyTd);
+            tbody.appendChild(emptyTr);
+          }
+
+          if (showBalaiCols && itemsToShow.length > 0) {
+            const totalTr = document.createElement('tr');
+            totalTr.className = 'total-row';
+
+            const totalLbl = document.createElement('td');
+            totalLbl.colSpan = 3;
+            totalLbl.className = 'total-label';
+            totalLbl.textContent = 'JUMLAH KESELURUHAN';
+            totalTr.appendChild(totalLbl);
+
+            balaiTotals.forEach(function (t) {
+              const td = document.createElement('td');
+              td.className = 'jumlah-cell';
+              td.textContent = t || '';
+              totalTr.appendChild(td);
+            });
+
+            const grandTd = document.createElement('td');
+            grandTd.className = 'jumlah-cell';
+            grandTd.textContent = grandTotal;
+            totalTr.appendChild(grandTd);
+
+            tbody.appendChild(totalTr);
+          }
+
+          tbl.appendChild(tbody);
+          body.appendChild(tbl);
         }
-
-        tbl.appendChild(tbody);
-        body.appendChild(tbl);
-
         setupSemakDragScroll(body);
 
-        if (showBalaiCols) {
+        if (isDuplicate) {
           const hint = document.createElement('div');
           hint.className = 'semak-scroll-hint';
-          hint.innerHTML = svgIcon('arrowLeft') + '<span>Kolum <b style="color:var(--amber)">BIL, KATEGORI &amp; MAKLUMAT</b> kekal beku — hanya kolum balai bergerak. <b style="color:var(--amber)">Klik + Tahan + Gerak mouse</b> untuk skrol, atau guna butang ◀ ▶. <b style="color:var(--green)">Teks boleh di-select &amp; copy.</b></span>';
+          hint.innerHTML = svgIcon('arrowLeft') +
+            '<span>Paparan <b style="color:var(--amber)">TRANSPOSED</b> — kolum <b style="color:var(--amber)">BIL &amp; BALAI</b> kekal beku, item duplikat bergerak di kanan. <b style="color:var(--amber)">Klik + Tahan + Gerak mouse</b> untuk skrol.</span>';
           body.appendChild(hint);
-        }
 
-        if (isDuplicate && duplicateItems.length > 0) {
           const legend = document.createElement('div');
           legend.className = 'semak-legend';
-          legend.innerHTML = `
-    <span class="lg-item"><span class="lg-swatch sw-duplicate"></span> <b style="color:var(--rosak);">Duplikat</b> — jentera dipilih oleh &gt; 1 balai (${duplicateItems.length} item)</span>
-    <span class="lg-item" style="color:var(--text-dim);">📌 Kolum balai hanya memaparkan <b style="color:var(--amber);">${viewBalaiCount} balai</b> yang terlibat dalam duplikasi.</span>`;
+          legend.innerHTML =
+            '<span class="lg-item"><span class="lg-swatch sw-duplicate"></span> <b style="color:var(--rosak);">Duplikat</b> — ' + duplicateItems.length + ' item dipilih oleh &gt; 1 balai</span>' +
+            '<span class="lg-item" style="color:var(--text-dim);">📌 Paparan <b style="color:var(--amber)">transposed</b> — BALAI sebagai baris, KATEGORI &amp; MAKLUMAT sebagai lajur. ' + viewBalaiCount + ' balai terlibat.</span>';
           body.appendChild(legend);
-        }
 
-        const info = document.createElement('div');
-        info.style.cssText = 'margin-top:0.75rem; font-size:0.7rem; color:var(--text-dim); line-height:1.6;';
-        if (isAssigned) {
-          info.innerHTML = '<b>Nota:</b> Senarai ini memaparkan <b>semua jentera yang telah dipilih</b> oleh sekurang-kurangnya <b>1 balai</b> dalam sistem. ' +
-            'Data diambil dari <b>KEKUATAN JENTERA UTAMA</b>, <b>JENTERA MARIN</b> & <b>KENDERAAN UTILITI</b>. ' +
-            'Untuk menyemak konflik duplikasi, sila rujuk tab <b style="color:var(--rosak)">⚠ DUPLIKAT</b>.<br />' +
-            '<b style="color:var(--amber)">Nota:</b> Jentera dengan status <b>TIADA DI BALAI</b> <u>tidak dikira</u> sebagai dipilih.';
-        } else if (isUnassigned) {
-          info.innerHTML = '<b>Nota:</b> Senarai ini memaparkan jentera / kenderaan yang <b>langsung tidak dipilih</b> oleh mana-mana balai dalam sistem. Jika ada item yang tersenarai di sini, ia bermakna item tersebut masih belum diisi dalam <b>KEKUATAN JENTERA UTAMA</b> / <b>JENTERA MARIN</b> / <b>KENDERAAN UTILITI</b> mana-mana balai (atau statusnya <b>TIADA DI BALAI</b>).';
-        } else {
-          info.innerHTML = '<b>Nota:</b> Senarai ini memaparkan jentera / kenderaan yang <b>dipilih oleh lebih dari 1 balai</b> (duplikat). ' +
-            'Baris berwarna <b style="color:var(--rosak)">MERAH</b> menandakan konflik yang perlu disemak. ' +
-            'Kolum balai di bawah hanya memaparkan <b style="color:var(--amber)">' + viewBalaiCount + ' balai</b> yang terlibat dalam duplikasi ini sahaja.<br />' +
+          const info = document.createElement('div');
+          info.style.cssText = 'margin-top:0.75rem; font-size:0.7rem; color:var(--text-dim); line-height:1.6;';
+          info.innerHTML = '<b>Nota:</b> Paparan <b>transposed</b> untuk duplikat — <b>BALAI</b> disusun sebagai <b>baris</b>, manakala <b>KATEGORI &amp; MAKLUMAT</b> jentera disusun sebagai <b>lajur</b>. ' +
+            'Titik (<span class="loc-dot" style="vertical-align:middle;"></span>) pada sel bermaksud balai tersebut memiliki jentera berkenaan. ' +
+            'Hanya <b style="color:var(--amber)">' + viewBalaiCount + ' balai</b> dan <b style="color:var(--amber)">' + duplicateItems.length + ' item</b> yang terlibat dalam duplikasi dipaparkan.<br />' +
             '<b style="color:var(--amber)">Nota:</b> Jentera dengan status <b>TIADA DI BALAI</b> <u>tidak dikira</u> dalam duplikasi.';
+          body.appendChild(info);
+
+        } else {
+          if (showBalaiCols) {
+            const hint = document.createElement('div');
+            hint.className = 'semak-scroll-hint';
+            hint.innerHTML = svgIcon('arrowLeft') + '<span>Kolum <b style="color:var(--amber)">BIL, KATEGORI &amp; MAKLUMAT</b> kekal beku — hanya kolum balai bergerak. <b style="color:var(--amber)">Klik + Tahan + Gerak mouse</b> untuk skrol, atau guna butang ◀ ▶. <b style="color:var(--green)">Teks boleh di-select &amp; copy.</b></span>';
+            body.appendChild(hint);
+          }
+
+          const info = document.createElement('div');
+          info.style.cssText = 'margin-top:0.75rem; font-size:0.7rem; color:var(--text-dim); line-height:1.6;';
+          if (isAssigned) {
+            info.innerHTML = '<b>Nota:</b> Senarai ini memaparkan <b>semua jentera yang telah dipilih</b> oleh sekurang-kurangnya <b>1 balai</b> dalam sistem. ' +
+              'Data diambil dari <b>KEKUATAN JENTERA UTAMA</b>, <b>JENTERA MARIN</b> & <b>KENDERAAN UTILITI</b>. ' +
+              'Untuk menyemak konflik duplikasi, sila rujuk tab <b style="color:var(--rosak)">⚠ DUPLIKAT</b>.<br />' +
+              '<b style="color:var(--amber)">Nota:</b> Jentera dengan status <b>TIADA DI BALAI</b> <u>tidak dikira</u> sebagai dipilih.';
+          } else {
+            info.innerHTML = '<b>Nota:</b> Senarai ini memaparkan jentera / kenderaan yang <b>langsung tidak dipilih</b> oleh mana-mana balai dalam sistem. Jika ada item yang tersenarai di sini, ia bermakna item tersebut masih belum diisi dalam <b>KEKUATAN JENTERA UTAMA</b> / <b>JENTERA MARIN</b> / <b>KENDERAAN UTILITI</b> mana-mana balai (atau statusnya <b>TIADA DI BALAI</b>).';
+          }
+          body.appendChild(info);
         }
-        body.appendChild(info);
 
         const searchInput = document.getElementById('semakSearchInput');
         const searchWrap  = document.getElementById('semakSearchWrap');
@@ -13510,8 +13738,12 @@ semakExportData = {
           body.scrollBy({ left: 450, behavior: 'smooth' });
         });
 
-        const infoBar = document.getElementById('semakInfo');
-        if (infoBar) infoBar.textContent = itemsToShow.length + ' baris';
+                const infoBar = document.getElementById('semakInfo');
+        if (infoBar) {
+          infoBar.textContent = isDuplicate
+            ? viewBalaiIndices.length + ' balai'
+            : itemsToShow.length + ' baris';
+        }
         applySemakSearch();
       }
       
@@ -13520,6 +13752,28 @@ semakExportData = {
         if (!tbody) return;
 
         const s = (semakFilterState.search || '').toLowerCase().trim();
+        const info = document.getElementById('semakInfo');
+        const table = document.getElementById('semakTable');
+        const isTransposed = table && table.classList.contains('duplicate-transposed');
+
+        /* ── MOD TRANSPOSED (DUPLIKAT) — tapis baris balai ── */
+        if (isTransposed) {
+          const rows = tbody.querySelectorAll('tr:not(.total-row):not(.empty-row)');
+          let visibleCount = 0;
+          rows.forEach(function (tr) {
+            const searchText = (tr.dataset.search || '').toLowerCase();
+            const show = !s || searchText.includes(s);
+            tr.classList.toggle('row-hidden', !show);
+            if (show) visibleCount++;
+          });
+          if (info) {
+            if (!s) info.textContent = rows.length + ' balai';
+            else info.innerHTML = 'Menunjuk <b>' + visibleCount + '</b> / ' + rows.length + ' balai';
+          }
+          return;
+        }
+
+        /* ── MOD BIASA — tapis baris item ── */
         const rows = tbody.querySelectorAll('tr:not(.section-row):not(.total-row):not(.empty-row)');
         let visibleCount = 0;
 
@@ -13541,7 +13795,6 @@ semakExportData = {
           secTr.classList.toggle('section-hidden', !hasVisible);
         });
 
-        const info = document.getElementById('semakInfo');
         if (info) {
           const total = rows.length;
           if (!s) info.textContent = total + ' baris';
