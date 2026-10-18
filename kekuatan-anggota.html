@@ -3668,7 +3668,95 @@ table.semak-lokasi.duplicate-transposed tbody tr:hover td.col-sticky-2 {
 
       @media print {
         * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
-        :root,
+          /* ═══════════════════════════════════════════════════
+     SEMAK-LOKASI: sembunyi UI toolbar bila print
+     ═══════════════════════════════════════════════════ */
+  .semak-toolbar,
+  .semak-scroll-hint,
+  .semak-scroll-btns,
+  .semak-toggle-bar {
+    display: none !important;
+  }
+
+  /* ═══════════════════════════════════════════════════
+     DUPLIKAT TRANSPOSED: compact supaya semua muat A4 landscape
+     ═══════════════════════════════════════════════════ */
+  table.semak-lokasi.duplicate-transposed {
+    font-size: 0.5rem !important;
+    table-layout: auto !important;
+    width: auto !important;
+    min-width: 100% !important;
+  }
+  table.semak-lokasi.duplicate-transposed thead tr.groups th {
+    font-size: 0.46rem !important;
+    padding: 0.12rem 0.15rem !important;
+    line-height: 1.1 !important;
+    letter-spacing: 0 !important;
+  }
+  table.semak-lokasi.duplicate-transposed thead tr.subs th {
+    font-size: 0.42rem !important;
+    min-width: 0 !important;
+    max-width: 55px !important;
+    width: 55px !important;
+    padding: 0.08rem 0.1rem !important;
+    white-space: normal !important;
+    word-break: break-word !important;
+    line-height: 1.1 !important;
+    text-overflow: clip !important;
+    overflow: visible !important;
+  }
+  table.semak-lokasi.duplicate-transposed .col-sticky-1 {
+    width: 10mm !important;
+    min-width: 10mm !important;
+    max-width: 10mm !important;
+    font-size: 0.46rem !important;
+  }
+  table.semak-lokasi.duplicate-transposed .col-sticky-2 {
+    width: 32mm !important;
+    min-width: 32mm !important;
+    max-width: 32mm !important;
+    font-size: 0.5rem !important;
+    padding-left: 0.2rem !important;
+  }
+  table.semak-lokasi.duplicate-transposed td.check-cell {
+    min-width: 55px !important;
+    width: 55px !important;
+    max-width: 55px !important;
+    padding: 0.08rem !important;
+  }
+  table.semak-lokasi.duplicate-transposed .loc-dot {
+    width: 6px !important;
+    height: 6px !important;
+    box-shadow: none !important;
+  }
+  table.semak-lokasi.duplicate-transposed tbody td.jumlah-cell,
+  table.semak-lokasi.duplicate-transposed th.jumlah-col {
+    font-size: 0.5rem !important;
+    width: 15mm !important;
+    min-width: 15mm !important;
+    max-width: 15mm !important;
+    padding: 0.1rem 0.12rem !important;
+  }
+    /* Force semua sel transposed jadi putih/light dalam print */
+    table.semak-lokasi.duplicate-transposed tbody td,
+  table.semak-lokasi.duplicate-transposed thead th {
+    background: #ffffff !important;
+    color: #16223a !important;
+  }
+  table.semak-lokasi.duplicate-transposed tbody tr:nth-child(even) td,
+  table.semak-lokasi.duplicate-transposed thead th {
+    background: #f3f5f8 !important;
+  }
+  table.semak-lokasi.duplicate-transposed .col-sticky-1,
+  table.semak-lokasi.duplicate-transposed .col-sticky-2 {
+    background: #ffffff !important;
+    color: #16223a !important;
+  }
+  table.semak-lokasi.duplicate-transposed tbody tr:nth-child(even) .col-sticky-1,
+  table.semak-lokasi.duplicate-transposed tbody tr:nth-child(even) .col-sticky-2 {
+    background: #f3f5f8 !important;
+  }
+  :root,
         :root[data-theme='dark'],
         :root[data-theme='light'] {
           --bg: #eef1f6 !important; --bg-2: #e4e9f1 !important;
@@ -3680,10 +3768,11 @@ table.semak-lokasi.duplicate-transposed tbody tr:hover td.col-sticky-2 {
           --slate: #63707f !important; --rosak: #c73838 !important; --purple: #6f4fc0 !important;
           --teal: #15847c !important; --zon1: #c0293d !important; --zon2: #b8791c !important;
           --zon3: #2c6fd8 !important; --zon4: #1f8a52 !important; --bg-glow: #ffffff !important;
-          --zebra: rgba(15, 23, 42, 0.04) !important; --hover-row: transparent !important;
+          --zebra: rgba(15, 23, 42, 0.04) !important; --zebra-solid: #f3f5f8 !important; --hover-row: transparent !important;
           --col-amber-bg: rgba(165, 104, 26, 0.1) !important; --col-amber-bg-2: rgba(165, 104, 26, 0.07) !important;
           --col-amber-row: rgba(165, 104, 26, 0.1) !important;
         }
+        
         body { background: #fff !important; color: var(--text) !important; background-image: none !important; }
         body.has-fullscreen-panel { overflow: visible !important; }
         .section.fullscreen-active { position: static !important; inset: auto !important; box-shadow: none !important; z-index: auto !important; }
@@ -6048,6 +6137,172 @@ async function verifyHtmlVersionFresh() {
         return wrapper;
       }
 
+            /* ═══════════════════════════════════════════════════
+         SPLIT TRANSPOSED TABLE — untuk mode DUPLIKAT
+         Setiap chunk = 10 item supaya muat A4 landscape
+         ═══════════════════════════════════════════════════ */
+         function splitSemakDuplicateTransposedForPrint(originalTable, chunkSize) {
+        if (!originalTable) return null;
+        if (!originalTable.classList.contains('duplicate-transposed')) return null;
+
+        const thead = originalTable.querySelector('thead');
+        if (!thead) return null;
+
+        const hRow1 = thead.querySelector('tr.groups');
+        const hRow2 = thead.querySelector('tr.subs');
+        if (!hRow1 || !hRow2) return null;
+
+        const groupThs = Array.from(hRow1.children);
+        const subThs = Array.from(hRow2.children);
+        if (groupThs.length < 3) return null;
+
+        const bilTh = groupThs[0];
+        const balaiTh = groupThs[1];
+        const jumlahTh = groupThs[groupThs.length - 1];
+        const itemGroups = groupThs.slice(2, -1);
+
+        const itemCols = [];
+        let colOffset = 0;
+        itemGroups.forEach(function (g) {
+          const span = g.colSpan || 1;
+          for (let i = 0; i < span; i++) {
+            itemCols.push({
+              kategoriTh: g,
+              subTh: subThs[colOffset + i],
+            });
+          }
+          colOffset += span;
+        });
+
+        const totalItems = itemCols.length;
+        if (totalItems <= chunkSize) return null;
+
+        const chunks = [];
+        for (let i = 0; i < totalItems; i += chunkSize) {
+          chunks.push({
+            start: i,
+            end: Math.min(i + chunkSize, totalItems),
+            items: itemCols.slice(i, Math.min(i + chunkSize, totalItems)),
+          });
+        }
+
+        const bodyRows = Array.from(
+          originalTable.querySelectorAll('tbody tr:not(.empty-row):not(.total-row)')
+        );
+
+        const wrapper = document.createElement('div');
+        wrapper.className = 'po3a-split-wrapper';
+
+        chunks.forEach(function (chunk, ci) {
+          const tbl = document.createElement('table');
+          tbl.className = originalTable.className;
+          tbl.classList.add('duplicate-transposed');
+
+          /* ── THEAD row 1 (groups) ── */
+          const nThead = document.createElement('thead');
+          const nH1 = document.createElement('tr');
+          nH1.className = 'groups';
+
+          nH1.appendChild(bilTh.cloneNode(true));
+          nH1.appendChild(balaiTh.cloneNode(true));
+
+          const groupedByKat = [];
+          let currentKat = null;
+          chunk.items.forEach(function (ic) {
+            if (ic.kategoriTh !== currentKat) {
+              currentKat = ic.kategoriTh;
+              groupedByKat.push({ el: ic.kategoriTh, count: 0 });
+            }
+            groupedByKat[groupedByKat.length - 1].count++;
+          });
+          groupedByKat.forEach(function (g) {
+            const th = g.el.cloneNode(true);
+            th.colSpan = g.count;
+            nH1.appendChild(th);
+          });
+
+          const nJumTh = jumlahTh.cloneNode(true);
+          nJumTh.textContent = 'JUMLAH';
+          nH1.appendChild(nJumTh);
+          nThead.appendChild(nH1);
+
+          /* ── THEAD row 2 (subs: nama item) ── */
+          const nH2 = document.createElement('tr');
+          nH2.className = 'subs';
+          chunk.items.forEach(function (ic) {
+            nH2.appendChild(ic.subTh.cloneNode(true));
+          });
+          nThead.appendChild(nH2);
+          tbl.appendChild(nThead);
+
+          /* ── TBODY ── */
+          const nTbody = document.createElement('tbody');
+          const chunkItemTotals = new Array(chunk.items.length).fill(0);
+          let grandChunkTotal = 0;
+
+          bodyRows.forEach(function (tr) {
+            const cells = Array.from(tr.children);
+            if (cells.length < 3) return;
+
+            const nTr = document.createElement('tr');
+            if (tr.className) nTr.className = tr.className;
+
+            nTr.appendChild(cells[0].cloneNode(true));
+            nTr.appendChild(cells[1].cloneNode(true));
+
+            let rowTotal = 0;
+            chunk.items.forEach(function (ic, idx) {
+              const cellIdx = 2 + chunk.start + idx;
+              if (cells[cellIdx]) {
+                const cloned = cells[cellIdx].cloneNode(true);
+                nTr.appendChild(cloned);
+                if (cloned.querySelector('.loc-dot')) {
+                  rowTotal++;
+                  chunkItemTotals[idx]++;
+                  grandChunkTotal++;
+                }
+              }
+            });
+
+            const tdJ = document.createElement('td');
+            tdJ.className = 'jumlah-cell';
+            tdJ.textContent = rowTotal;
+            nTr.appendChild(tdJ);
+
+            nTbody.appendChild(nTr);
+          });
+
+          /* ── TOTAL ROW per chunk ── */
+          const totalTr = document.createElement('tr');
+          totalTr.className = 'total-row';
+          const tdTLbl = document.createElement('td');
+          tdTLbl.colSpan = 2;
+          tdTLbl.className = 'total-label';
+          tdTLbl.textContent = chunks.length > 1
+            ? 'JUMLAH — BAHAGIAN ' + (ci + 1) + '/' + chunks.length
+            : 'JUMLAH KESELURUHAN';
+          totalTr.appendChild(tdTLbl);
+
+          chunkItemTotals.forEach(function (t) {
+            const td = document.createElement('td');
+            td.className = 'jumlah-cell';
+            td.textContent = t;
+            totalTr.appendChild(td);
+          });
+
+          const tdGrand = document.createElement('td');
+          tdGrand.className = 'jumlah-cell';
+          tdGrand.textContent = grandChunkTotal;
+          totalTr.appendChild(tdGrand);
+          nTbody.appendChild(totalTr);
+
+          tbl.appendChild(nTbody);
+          wrapper.appendChild(tbl);
+        });
+
+        return wrapper;
+      }
+
       function prepareTableSplitsForPrint() {
         const restored = [];
         const CHUNK_GRID = 12;
@@ -6059,10 +6314,11 @@ async function verifyHtmlVersionFresh() {
         });
 
         document.querySelectorAll('#sections table.semak-lokasi').forEach(function (tbl) {
-          const splits = splitSemakLokasiForPrint(tbl, CHUNK_SEMAK);
+          const splits = tbl.classList.contains('duplicate-transposed')
+            ? splitSemakDuplicateTransposedForPrint(tbl, 10)
+            : splitSemakLokasiForPrint(tbl, CHUNK_SEMAK);
           if (splits) swapTableForPrint(tbl, splits, restored);
         });
-
         return restored;
       }
 
@@ -6217,10 +6473,11 @@ async function verifyHtmlVersionFresh() {
             if (splits) swapTableForPrint(tbl, splits, restoredTables);
           });
           sectionEl.querySelectorAll('table.semak-lokasi').forEach(function (tbl) {
-            const splits = splitSemakLokasiForPrint(tbl, 12);
+            const splits = tbl.classList.contains('duplicate-transposed')
+              ? splitSemakDuplicateTransposedForPrint(tbl, 10)
+              : splitSemakLokasiForPrint(tbl, 12);
             if (splits) swapTableForPrint(tbl, splits, restoredTables);
           });
-
           document.body.classList.add('printing-single');
           sectionEl.classList.add('print-target');
           let cleaned = false;
@@ -13109,7 +13366,7 @@ function hasInvalid(v) { return v.personel.length > 0 || v.equip.length > 0; }
         playToastSuccessSound();
         showToast('CSV berjaya dimuat turun (' + filteredItems.length + ' item)', 'success');
       }
-      
+
       function renderSemakLokasiView() {
         document.getElementById('sec-semak_lokasi')?.remove();
 
