@@ -728,4 +728,3326 @@
         .jentera-card,
         [class*='bg-slate-800'],
         [class*='bg-slate-900'],
-        [cl
+        [class*='bg-slate-950'],
+        [class*='card-bg'] {
+          background: #fff !important;
+          border: 1px solid #ccc !important;
+          box-shadow: none !important;
+          visibility: visible !important;
+        }
+        .badge-status {
+          border: 1px solid #000 !important;
+        }
+        .badge-baik {
+          color: #16a34a !important;
+        }
+        .badge-minor {
+          color: #ca8a04 !important;
+        }
+        .badge-rosak {
+          color: #dc2626 !important;
+        }
+        .badge-pulang {
+          color: #2563eb !important;
+        }
+        .plate-number {
+          background: #fff !important;
+          color: #000 !important;
+          border: 1px solid #000 !important;
+        }
+        .siren-red,
+        .siren-blue,
+        .siren-amber,
+        .pulse-glow-b,
+        .pulse-glow-rm,
+        .pulse-glow-r,
+        .pulse-glow-d,
+        .animate-ping,
+        .animate-pulse,
+        .wheel-spin {
+          animation: none !important;
+          box-shadow: none !important;
+        }
+        * {
+          text-shadow: none !important;
+          box-shadow: none !important;
+          -webkit-print-color-adjust: exact !important;
+          print-color-adjust: exact !important;
+          color-adjust: exact !important;
+        }
+        body {
+          font-size: 10pt !important;
+          padding-top: 0 !important;
+        }
+        .grid {
+          display: grid !important;
+          visibility: visible !important;
+        }
+        .flex {
+          display: flex !important;
+          visibility: visible !important;
+        }
+        .hidden {
+          display: block !important;
+          visibility: visible !important;
+        }
+        .overflow-x-auto {
+          overflow-x: visible !important;
+        }
+      }
+
+      /* Sticky header for zone panels - ensures title stays at top */
+      .zone-card .zone-header {
+        position: sticky;
+        top: 0;
+        z-index: 10;
+        background-color: var(--bg-card);
+      }
+      .zone-card .zone-body {
+        overflow-y: auto;
+        flex: 1 1 auto;
+      }
+      /* Keep the card height constrained for scroll to work */
+      .zone-card {
+        max-height: 500px;
+        overflow: hidden;
+        display: flex;
+        flex-direction: column;
+      }
+    </style>
+  </head>
+  <body class="min-h-screen flex flex-col">
+    <!-- LOADING OVERLAY -->
+    <div id="loadingOverlay" class="fixed inset-0 bg-slate-950/95 z-[110] flex flex-col items-center justify-center gap-6 overflow-hidden select-none">
+      <div class="relative w-80 h-36 bg-slate-900/90 rounded-2xl border border-slate-800 p-4 flex flex-col items-center justify-center shadow-2xl overflow-hidden">
+        <div class="absolute bottom-4 left-0 w-full h-1 bg-slate-700/60"></div>
+        <div class="relative flex flex-col items-center">
+          <div class="absolute -top-3 flex gap-2 z-20">
+            <span class="w-3.5 h-3.5 rounded-full siren-red"></span>
+            <span class="w-3.5 h-3.5 rounded-full siren-blue"></span>
+          </div>
+          <div class="text-6xl text-red-600 drop-shadow-[0_4px_16px_rgba(239,68,68,0.6)]">
+            <i class="fa-solid fa-truck-field"></i>
+          </div>
+        </div>
+      </div>
+      <div class="flex flex-col items-center gap-1 text-center">
+        <div class="text-xs font-black tracking-widest text-red-500 uppercase animate-pulse">
+          Memuatkan Data Jentera Bomba...
+        </div>
+        <p class="text-[11px] text-slate-400 font-medium">
+          Sila tunggu sebentar, sistem sedang dikemaskini
+        </p>
+      </div>
+    </div>
+
+    <!-- HEADER -->
+    <header class="header-bg border-b px-4 py-2.5 flex flex-wrap items-center justify-between gap-3 sticky top-0 z-40 transition-colors duration-300">
+      <div class="flex items-center gap-3">
+        <div class="w-9 h-9 bg-red-600 rounded-lg flex items-center justify-center text-lg shadow-lg shadow-red-600/30">
+          <i class="fa-solid fa-fire-extinguisher text-white bell-animate"></i>
+        </div>
+        <div>
+          <h1 class="text-sm sm:text-base font-extrabold tracking-wide uppercase leading-tight" style="color: var(--text-primary)">
+            Dashboard Jentera Bomba Johor
+          </h1>
+          <p class="text-[11px] font-medium flex items-center gap-2 text-secondary-custom">
+            <span class="w-2 h-2 rounded-full bg-emerald-500 animate-ping"></span>Sistem Pemantauan Logistik & Fit View Balai
+          </p>
+        </div>
+      </div>
+      <div class="flex items-center gap-2 text-xs font-medium sub-header-controls">
+        <div class="hidden sm:flex flex-col items-end text-[11px] text-secondary-custom">
+          <span id="lastUpdate">Dikemaskini: -</span>
+          <span id="countdown" class="text-muted-custom">Auto Refresh: -</span>
+        </div>
+        <div class="flex items-center gap-1.5">
+          <button onclick="loadAllData()" id="refreshBtn" class="header-btn bg-red-600 hover:bg-red-700 text-white shadow-md shadow-red-600/20 transition" title="Kemaskini">
+            <i class="fa-solid fa-arrows-rotate refresh-icon"></i><span class="btn-label">Kemaskini</span>
+          </button>
+          <button onclick="toggleTheme()" id="themeToggleBtn" class="header-btn header-btn-icon bg-slate-700 hover:bg-slate-600 text-slate-200 border border-slate-600 transition" title="Tukar Mod Siang/Malam">
+            <i class="fa-solid fa-moon" id="themeIcon"></i>
+          </button>
+          <button onclick="printDashboard()" id="printBtn" class="header-btn header-btn-icon bg-slate-700 hover:bg-slate-600 text-slate-200 border border-slate-600 transition" title="Cetak Dashboard">
+            <i class="fa-solid fa-print"></i>
+          </button>
+          <a href="index.html" id="backBtn" class="header-btn" style="background:#FFD700;color:#000;border:1px solid #FFD700;" title="Kembali">
+            <i class="fas fa-arrow-left"></i><span class="btn-label">KEMBALI</span>
+          </a>
+        </div>
+      </div>
+    </header>
+
+    <!-- PRINT HEADER -->
+    <div class="print-header" style="display: none">
+      <div class="print-title">DASHBOARD JENTERA BOMBA NEGERI JOHOR</div>
+      <div class="print-subtitle" id="printDateTime"></div>
+    </div>
+
+    <!-- TABS -->
+    <nav class="nav-bg backdrop-blur border-b px-4 flex gap-1 overflow-x-auto tab-nav-header sticky top-[57px] z-30 transition-colors duration-300">
+      <button onclick="switchTab('dashboard')" class="tab-btn tab-dashboard active py-2.5 px-3 text-xs font-bold border-b-2 border-red-500 text-red-400 whitespace-nowrap transition flex items-center gap-1.5">
+        <i class="fa-solid fa-chart-column"></i> DASHBOARD UTAMA (FIT VIEW)
+      </button>
+      <button onclick="switchTab('keseluruhan')" class="tab-btn tab-keseluruhan py-2.5 px-3 text-xs font-bold border-b-2 border-transparent text-slate-400 hover:text-slate-200 whitespace-nowrap transition flex items-center gap-1.5">
+        <i class="fa-solid fa-layer-group"></i> DATA KESELURUHAN
+      </button>
+      <button onclick="switchTab('cfrt')" class="tab-btn tab-cfrt py-2.5 px-3 text-xs font-bold border-b-2 border-transparent text-slate-400 hover:text-slate-200 whitespace-nowrap transition flex items-center gap-1.5">
+        <i class="fa-solid fa-fire-extinguisher"></i> RESCUE TENDER (FRT)
+      </button>
+      <button onclick="switchTab('emrs')" class="tab-btn tab-emrs py-2.5 px-3 text-xs font-bold border-b-2 border-transparent text-slate-400 hover:text-slate-200 whitespace-nowrap transition flex items-center gap-1.5">
+        <i class="fa-solid fa-truck-medical"></i> EMRS
+      </button>
+      <button onclick="switchTab('water')" class="tab-btn tab-water py-2.5 px-3 text-xs font-bold border-b-2 border-transparent text-slate-400 hover:text-slate-200 whitespace-nowrap transition flex items-center gap-1.5">
+        <i class="fa-solid fa-truck-droplet"></i> WATER TANKER
+      </button>
+      <button onclick="switchTab('lain')" class="tab-btn tab-lain py-2.5 px-3 text-xs font-bold border-b-2 border-transparent text-slate-400 hover:text-slate-200 whitespace-nowrap transition flex items-center gap-1.5">
+        <i class="fa-solid fa-truck"></i> LAIN-LAIN JENTERA
+      </button>
+      <button onclick="switchTab('marin')" class="tab-btn tab-marin py-2.5 px-3 text-xs font-bold border-b-2 border-transparent text-slate-400 hover:text-slate-200 whitespace-nowrap transition flex items-center gap-1.5">
+        <i class="fa-solid fa-ship"></i> MARIN
+      </button>
+      <button onclick="switchTab('rim')" class="tab-btn tab-rim py-2.5 px-3 text-xs font-bold border-b-2 border-transparent text-slate-400 hover:text-slate-200 whitespace-nowrap transition flex items-center gap-1.5">
+        <i class="fa-solid fa-motorcycle"></i> RIM
+      </button>
+      <button onclick="switchTab('utiliti')" class="tab-btn tab-utiliti py-2.5 px-3 text-xs font-bold border-b-2 border-transparent text-slate-400 hover:text-slate-200 whitespace-nowrap transition flex items-center gap-1.5">
+        <i class="fa-solid fa-truck-pickup"></i> UTILITI
+      </button>
+    </nav>
+
+    <!-- MAIN -->
+    <main class="flex-1 p-2.5 sm:p-4 space-y-4 max-w-[1700px] w-full mx-auto">
+      <!-- TAB CFRT -->
+      <section id="tab-cfrt" class="tab-content hidden">
+        <div id="statsRow-cfrt" class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-2.5 mb-4"></div>
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-3 mb-4">
+          <div class="card-bg border-custom rounded-xl p-3 transition-colors duration-300" style="border-width: 1px">
+            <div class="flex items-center justify-between mb-2">
+              <h3 class="text-xs font-bold uppercase tracking-wider flex items-center gap-2 text-secondary-custom">
+                <i class="fa-solid fa-chart-pie text-red-500"></i> Status Jentera FRT
+              </h3>
+              <span class="text-[9px] bg-red-500/20 text-red-400 border border-red-500/30 px-1.5 py-0.5 rounded font-bold">Doughnut</span>
+            </div>
+            <div class="h-48 relative">
+              <canvas id="chartStatus-cfrt"></canvas>
+            </div>
+          </div>
+          <div class="card-bg border-custom rounded-xl p-3 transition-colors duration-300" style="border-width: 1px">
+            <div class="flex items-center justify-between mb-2">
+              <h3 class="text-xs font-bold uppercase tracking-wider flex items-center gap-2 text-secondary-custom">
+                <i class="fa-solid fa-truck text-red-500"></i> Model Jentera FRT
+              </h3>
+              <button onclick="toggleChartType('cfrt')" class="text-[9px] bg-slate-700 hover:bg-slate-600 text-slate-200 border border-slate-600 px-2 py-0.5 rounded font-bold transition flex items-center gap-1" id="chartTypeBtn-cfrt">
+                <i class="fa-solid fa-chart-bar"></i> Tukar Carta Bar
+              </button>
+            </div>
+            <div class="h-48 relative">
+              <canvas id="chartModel-cfrt"></canvas>
+            </div>
+          </div>
+          <div class="card-bg border-custom rounded-xl p-3 transition-colors duration-300" style="border-width: 1px">
+            <div class="flex items-center justify-between mb-2">
+              <h3 class="text-xs font-bold uppercase tracking-wider flex items-center gap-2 text-secondary-custom">
+                <i class="fa-solid fa-location-dot text-red-500"></i> Agihan Mengikut Zon (Combo)
+              </h3>
+              <span class="text-[9px] bg-red-500/20 text-red-400 border border-red-500/30 px-1.5 py-0.5 rounded font-bold">Bar + Liner</span>
+            </div>
+            <div class="h-48 relative">
+              <canvas id="chartZon-cfrt"></canvas>
+            </div>
+          </div>
+        </div>
+        <!-- TABLE CFRT -->
+        <div class="card-bg border-custom rounded-xl p-3 space-y-3 transition-colors duration-300" style="border-width: 1px">
+          <div class="flex flex-wrap items-center justify-between gap-2">
+            <h3 class="text-xs font-bold uppercase tracking-wider flex items-center gap-2" style="color: var(--text-primary)">
+              <i class="fa-solid fa-list-check text-red-500"></i> Senarai Jentera FRT
+            </h3>
+            <div class="flex items-center gap-2">
+              <button onclick="copyAllTableData('cfrt')" class="px-2.5 py-1 bg-emerald-700 hover:bg-emerald-600 text-xs font-semibold rounded-lg text-emerald-100 transition flex items-center gap-1">
+                <i class="fa-solid fa-copy"></i> Salin Semua
+              </button>
+              <button onclick="eksportKeExcel('cfrt')" class="px-2.5 py-1 bg-slate-700 hover:bg-slate-600 text-xs font-semibold rounded-lg text-slate-200 transition flex items-center gap-1">
+                <i class="fa-solid fa-file-export"></i> CSV
+              </button>
+            </div>
+          </div>
+          <div class="flex flex-wrap items-center gap-2">
+            <div class="relative flex-1 min-w-[180px]">
+              <i class="fa-solid fa-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-slate-500 text-xs"></i>
+              <input type="text" id="searchInput-cfrt" placeholder="Cari Callsign, Plat, Lokasi..." 
+                     class="w-full input-bg border rounded-lg pl-8 pr-8 py-1.5 outline-none focus:border-slate-500 text-xs transition-colors duration-300"
+                     onkeyup="doSearch('cfrt')" />
+              <button onclick="clearSearch('cfrt')" class="absolute right-2 top-1/2 -translate-y-1/2 text-slate-400 hover:text-white text-xs p-1 rounded transition" title="Padam carian">
+                <i class="fa-solid fa-xmark"></i>
+              </button>
+            </div>
+            <!-- Butang Cari telah dipadamkan -->
+            <div class="ms-dropdown" id="msDropdown-cfrt">
+              <button class="ms-select-btn" onclick="toggleMsDropdown('cfrt')">
+                <span id="msText-cfrt"><i class="fa-solid fa-filter mr-1"></i> Semua Status</span><span class="text-[10px] bg-red-600 text-white px-1.5 py-0.2 rounded font-bold" id="msCount-cfrt" style="display: none">0</span><span class="text-[9px]">▼</span>
+              </button>
+              <div class="ms-options" id="msOptions-cfrt"></div>
+            </div>
+            <div class="ms-dropdown" id="msDropdownModel-cfrt">
+              <button class="ms-select-btn" onclick="toggleMsModelDropdown('cfrt')">
+                <span id="msTextModel-cfrt"><i class="fa-solid fa-truck mr-1"></i> Semua Model</span><span class="text-[10px] bg-red-600 text-white px-1.5 py-0.2 rounded font-bold" id="msCountModel-cfrt" style="display: none">0</span><span class="text-[9px]">▼</span>
+              </button>
+              <div class="ms-options" id="msOptionsModel-cfrt"></div>
+            </div>
+            <div class="ms-dropdown" id="msDropdownZon-cfrt">
+              <button class="ms-select-btn" onclick="toggleMsZonDropdown('cfrt')">
+                <span id="msTextZon-cfrt"><i class="fa-solid fa-location-dot mr-1"></i> Semua Zon</span><span class="text-[10px] bg-red-600 text-white px-1.5 py-0.2 rounded font-bold" id="msCountZon-cfrt" style="display: none">0</span><span class="text-[9px]">▼</span>
+              </button>
+              <div class="ms-options" id="msOptionsZon-cfrt"></div>
+            </div>
+          </div>
+          <div class="overflow-x-auto rounded-lg border-custom" style="border-width: 1px">
+            <table class="w-full text-left border-collapse text-xs">
+              <thead class="table-header-bg text-secondary-custom font-semibold uppercase border-b border-custom text-[11px]">
+                <tr>
+                  <th class="p-2">Bil</th>
+                  <th class="p-2">Callsign</th>
+                  <th class="p-2">Plate</th>
+                  <th class="p-2">Model</th>
+                  <th class="p-2">Penempatan Asal</th>
+                  <th class="p-2">Lokasi Semasa</th>
+                  <th class="p-2">Zon</th>
+                  <th class="p-2">Status</th>
+                  <th class="p-2">Kerosakan</th>
+                  <th class="p-2 w-8">Salin</th>
+                </tr>
+              </thead>
+              <tbody id="tableBody-cfrt" class="divide-y divide-slate-700/40 text-[11px]" style="color: var(--text-secondary)"></tbody>
+            </table>
+          </div>
+          <div class="text-[11px] text-muted-custom" id="rowCount-cfrt">-</div>
+        </div>
+      </section>
+
+      <!-- TAB EMRS -->
+      <section id="tab-emrs" class="tab-content hidden">
+        <div id="statsRow-emrs" class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-2.5 mb-4"></div>
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-3 mb-4">
+          <div class="card-bg border-custom rounded-xl p-3 transition-colors duration-300" style="border-width: 1px">
+            <div class="flex items-center justify-between mb-2">
+              <h3 class="text-xs font-bold uppercase tracking-wider flex items-center gap-2 text-secondary-custom">
+                <i class="fa-solid fa-chart-pie text-blue-500"></i> Status EMRS
+              </h3>
+              <span class="text-[9px] bg-blue-500/20 text-blue-400 border border-blue-500/30 px-1.5 py-0.5 rounded font-bold">Doughnut</span>
+            </div>
+            <div class="h-48 relative">
+              <canvas id="chartStatus-emrs"></canvas>
+            </div>
+          </div>
+          <div class="card-bg border-custom rounded-xl p-3 transition-colors duration-300" style="border-width: 1px">
+            <div class="flex items-center justify-between mb-2">
+              <h3 class="text-xs font-bold uppercase tracking-wider flex items-center gap-2 text-secondary-custom">
+                <i class="fa-solid fa-truck-medical text-blue-500"></i> Model Jentera EMRS
+              </h3>
+              <button onclick="toggleChartType('emrs')" class="text-[9px] bg-slate-700 hover:bg-slate-600 text-slate-200 border border-slate-600 px-2 py-0.5 rounded font-bold transition flex items-center gap-1" id="chartTypeBtn-emrs">
+                <i class="fa-solid fa-chart-bar"></i> Tukar Carta Bar
+              </button>
+            </div>
+            <div class="h-48 relative">
+              <canvas id="chartModel-emrs"></canvas>
+            </div>
+          </div>
+          <div class="card-bg border-custom rounded-xl p-3 transition-colors duration-300" style="border-width: 1px">
+            <div class="flex items-center justify-between mb-2">
+              <h3 class="text-xs font-bold uppercase tracking-wider flex items-center gap-2 text-secondary-custom">
+                <i class="fa-solid fa-location-dot text-blue-500"></i> Agihan Mengikut Zon (Combo)
+              </h3>
+              <span class="text-[9px] bg-blue-500/20 text-blue-400 border border-blue-500/30 px-1.5 py-0.5 rounded font-bold">Bar + Liner</span>
+            </div>
+            <div class="h-48 relative">
+              <canvas id="chartZon-emrs"></canvas>
+            </div>
+          </div>
+        </div>
+        <!-- TABLE EMRS -->
+        <div class="card-bg border-custom rounded-xl p-3 space-y-3 transition-colors duration-300" style="border-width: 1px">
+          <div class="flex flex-wrap items-center justify-between gap-2">
+            <h3 class="text-xs font-bold uppercase tracking-wider flex items-center gap-2" style="color: var(--text-primary)">
+              <i class="fa-solid fa-list-check text-blue-500"></i> Senarai Jentera EMRS
+            </h3>
+            <div class="flex items-center gap-2">
+              <button onclick="copyAllTableData('emrs')" class="px-2.5 py-1 bg-emerald-700 hover:bg-emerald-600 text-xs font-semibold rounded-lg text-emerald-100 transition flex items-center gap-1">
+                <i class="fa-solid fa-copy"></i> Salin Semua
+              </button>
+              <button onclick="eksportKeExcel('emrs')" class="px-2.5 py-1 bg-slate-700 hover:bg-slate-600 text-xs font-semibold rounded-lg text-slate-200 transition flex items-center gap-1">
+                <i class="fa-solid fa-file-export"></i> CSV
+              </button>
+            </div>
+          </div>
+          <div class="flex flex-wrap items-center gap-2">
+            <div class="relative flex-1 min-w-[180px]">
+              <i class="fa-solid fa-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-slate-500 text-xs"></i>
+              <input type="text" id="searchInput-emrs" placeholder="Cari Callsign, Plat, Lokasi..." 
+                     class="w-full input-bg border rounded-lg pl-8 pr-8 py-1.5 outline-none focus:border-slate-500 text-xs transition-colors duration-300"
+                     onkeyup="doSearch('emrs')" />
+              <button onclick="clearSearch('emrs')" class="absolute right-2 top-1/2 -translate-y-1/2 text-slate-400 hover:text-white text-xs p-1 rounded transition" title="Padam carian">
+                <i class="fa-solid fa-xmark"></i>
+              </button>
+            </div>
+            <!-- Butang Cari telah dipadamkan -->
+            <div class="ms-dropdown" id="msDropdown-emrs">
+              <button class="ms-select-btn" onclick="toggleMsDropdown('emrs')">
+                <span id="msText-emrs"><i class="fa-solid fa-filter mr-1"></i> Semua Status</span><span class="text-[10px] bg-blue-600 text-white px-1.5 py-0.2 rounded font-bold" id="msCount-emrs" style="display: none">0</span><span class="text-[9px]">▼</span>
+              </button>
+              <div class="ms-options" id="msOptions-emrs"></div>
+            </div>
+            <div class="ms-dropdown" id="msDropdownModel-emrs">
+              <button class="ms-select-btn" onclick="toggleMsModelDropdown('emrs')">
+                <span id="msTextModel-emrs"><i class="fa-solid fa-truck-medical mr-1"></i> Semua Model</span><span class="text-[10px] bg-blue-600 text-white px-1.5 py-0.2 rounded font-bold" id="msCountModel-emrs" style="display: none">0</span><span class="text-[9px]">▼</span>
+              </button>
+              <div class="ms-options" id="msOptionsModel-emrs"></div>
+            </div>
+            <div class="ms-dropdown" id="msDropdownZon-emrs">
+              <button class="ms-select-btn" onclick="toggleMsZonDropdown('emrs')">
+                <span id="msTextZon-emrs"><i class="fa-solid fa-location-dot mr-1"></i> Semua Zon</span><span class="text-[10px] bg-blue-600 text-white px-1.5 py-0.2 rounded font-bold" id="msCountZon-emrs" style="display: none">0</span><span class="text-[9px]">▼</span>
+              </button>
+              <div class="ms-options" id="msOptionsZon-emrs"></div>
+            </div>
+          </div>
+          <div class="overflow-x-auto rounded-lg border-custom" style="border-width: 1px">
+            <table class="w-full text-left border-collapse text-xs">
+              <thead class="table-header-bg text-secondary-custom font-semibold uppercase border-b border-custom text-[11px]">
+                <tr>
+                  <th class="p-2">Bil</th>
+                  <th class="p-2">Callsign</th>
+                  <th class="p-2">Plate</th>
+                  <th class="p-2">Model</th>
+                  <th class="p-2">Penempatan Asal</th>
+                  <th class="p-2">Lokasi Semasa</th>
+                  <th class="p-2">Zon</th>
+                  <th class="p-2">Status</th>
+                  <th class="p-2">Kerosakan</th>
+                  <th class="p-2 w-8">Salin</th>
+                </tr>
+              </thead>
+              <tbody id="tableBody-emrs" class="divide-y divide-slate-700/40 text-[11px]" style="color: var(--text-secondary)"></tbody>
+            </table>
+          </div>
+          <div class="text-[11px] text-muted-custom" id="rowCount-emrs">-</div>
+        </div>
+      </section>
+
+      <!-- TAB WATER -->
+      <section id="tab-water" class="tab-content hidden">
+        <div id="statsRow-water" class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-2.5 mb-4"></div>
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-3 mb-4">
+          <div class="card-bg border-custom rounded-xl p-3 transition-colors duration-300" style="border-width: 1px">
+            <div class="flex items-center justify-between mb-2">
+              <h3 class="text-xs font-bold uppercase tracking-wider flex items-center gap-2 text-secondary-custom">
+                <i class="fa-solid fa-chart-pie text-cyan-500"></i> Status Water Tanker
+              </h3>
+              <span class="text-[9px] bg-cyan-500/20 text-cyan-400 border border-cyan-500/30 px-1.5 py-0.5 rounded font-bold">Doughnut</span>
+            </div>
+            <div class="h-48 relative">
+              <canvas id="chartStatus-water"></canvas>
+            </div>
+          </div>
+          <div class="card-bg border-custom rounded-xl p-3 transition-colors duration-300" style="border-width: 1px">
+            <div class="flex items-center justify-between mb-2">
+              <h3 class="text-xs font-bold uppercase tracking-wider flex items-center gap-2 text-secondary-custom">
+                <i class="fa-solid fa-truck-droplet text-cyan-500"></i> Model Water Tanker
+              </h3>
+              <button onclick="toggleChartType('water')" class="text-[9px] bg-slate-700 hover:bg-slate-600 text-slate-200 border border-slate-600 px-2 py-0.5 rounded font-bold transition flex items-center gap-1" id="chartTypeBtn-water">
+                <i class="fa-solid fa-chart-bar"></i> Tukar Carta Bar
+              </button>
+            </div>
+            <div class="h-48 relative">
+              <canvas id="chartModel-water"></canvas>
+            </div>
+          </div>
+          <div class="card-bg border-custom rounded-xl p-3 transition-colors duration-300" style="border-width: 1px">
+            <div class="flex items-center justify-between mb-2">
+              <h3 class="text-xs font-bold uppercase tracking-wider flex items-center gap-2 text-secondary-custom">
+                <i class="fa-solid fa-location-dot text-cyan-500"></i> Agihan Mengikut Zon (Combo)
+              </h3>
+              <span class="text-[9px] bg-cyan-500/20 text-cyan-400 border border-cyan-500/30 px-1.5 py-0.5 rounded font-bold">Bar + Liner</span>
+            </div>
+            <div class="h-48 relative">
+              <canvas id="chartZon-water"></canvas>
+            </div>
+          </div>
+        </div>
+        <!-- TABLE WATER -->
+        <div class="card-bg border-custom rounded-xl p-3 space-y-3 transition-colors duration-300" style="border-width: 1px">
+          <div class="flex flex-wrap items-center justify-between gap-2">
+            <h3 class="text-xs font-bold uppercase tracking-wider flex items-center gap-2" style="color: var(--text-primary)">
+              <i class="fa-solid fa-list-check text-cyan-500"></i> Senarai Water Tanker
+            </h3>
+            <div class="flex items-center gap-2">
+              <button onclick="copyAllTableData('water')" class="px-2.5 py-1 bg-emerald-700 hover:bg-emerald-600 text-xs font-semibold rounded-lg text-emerald-100 transition flex items-center gap-1">
+                <i class="fa-solid fa-copy"></i> Salin Semua
+              </button>
+              <button onclick="eksportKeExcel('water')" class="px-2.5 py-1 bg-slate-700 hover:bg-slate-600 text-xs font-semibold rounded-lg text-slate-200 transition flex items-center gap-1">
+                <i class="fa-solid fa-file-export"></i> CSV
+              </button>
+            </div>
+          </div>
+          <div class="flex flex-wrap items-center gap-2">
+            <div class="relative flex-1 min-w-[180px]">
+              <i class="fa-solid fa-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-slate-500 text-xs"></i>
+              <input type="text" id="searchInput-water" placeholder="Cari Callsign, Plat, Lokasi..." 
+                     class="w-full input-bg border rounded-lg pl-8 pr-8 py-1.5 outline-none focus:border-slate-500 text-xs transition-colors duration-300"
+                     onkeyup="doSearch('water')" />
+              <button onclick="clearSearch('water')" class="absolute right-2 top-1/2 -translate-y-1/2 text-slate-400 hover:text-white text-xs p-1 rounded transition" title="Padam carian">
+                <i class="fa-solid fa-xmark"></i>
+              </button>
+            </div>
+            <!-- Butang Cari telah dipadamkan -->
+            <div class="ms-dropdown" id="msDropdown-water">
+              <button class="ms-select-btn" onclick="toggleMsDropdown('water')">
+                <span id="msText-water"><i class="fa-solid fa-filter mr-1"></i> Semua Status</span><span class="text-[10px] bg-cyan-600 text-white px-1.5 py-0.2 rounded font-bold" id="msCount-water" style="display: none">0</span><span class="text-[9px]">▼</span>
+              </button>
+              <div class="ms-options" id="msOptions-water"></div>
+            </div>
+            <div class="ms-dropdown" id="msDropdownModel-water">
+              <button class="ms-select-btn" onclick="toggleMsModelDropdown('water')">
+                <span id="msTextModel-water"><i class="fa-solid fa-truck-droplet mr-1"></i> Semua Model</span><span class="text-[10px] bg-cyan-600 text-white px-1.5 py-0.2 rounded font-bold" id="msCountModel-water" style="display: none">0</span><span class="text-[9px]">▼</span>
+              </button>
+              <div class="ms-options" id="msOptionsModel-water"></div>
+            </div>
+            <div class="ms-dropdown" id="msDropdownZon-water">
+              <button class="ms-select-btn" onclick="toggleMsZonDropdown('water')">
+                <span id="msTextZon-water"><i class="fa-solid fa-location-dot mr-1"></i> Semua Zon</span><span class="text-[10px] bg-cyan-600 text-white px-1.5 py-0.2 rounded font-bold" id="msCountZon-water" style="display: none">0</span><span class="text-[9px]">▼</span>
+              </button>
+              <div class="ms-options" id="msOptionsZon-water"></div>
+            </div>
+          </div>
+          <div class="overflow-x-auto rounded-lg border-custom" style="border-width: 1px">
+            <table class="w-full text-left border-collapse text-xs">
+              <thead class="table-header-bg text-secondary-custom font-semibold uppercase border-b border-custom text-[11px]">
+                <tr>
+                  <th class="p-2">Bil</th>
+                  <th class="p-2">Callsign</th>
+                  <th class="p-2">Plate</th>
+                  <th class="p-2">Model</th>
+                  <th class="p-2">Penempatan Asal</th>
+                  <th class="p-2">Lokasi Semasa</th>
+                  <th class="p-2">Zon</th>
+                  <th class="p-2">Status</th>
+                  <th class="p-2">Kerosakan</th>
+                  <th class="p-2 w-8">Salin</th>
+                </tr>
+              </thead>
+              <tbody id="tableBody-water" class="divide-y divide-slate-700/40 text-[11px]" style="color: var(--text-secondary)"></tbody>
+            </table>
+          </div>
+          <div class="text-[11px] text-muted-custom" id="rowCount-water">-</div>
+        </div>
+      </section>
+
+      <!-- FIX BUG #2: Tambah hidden pada tab lain -->
+      <section id="tab-lain" class="tab-content hidden">
+        <div id="statsRow-lain" class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-2.5 mb-4"></div>
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-3 mb-4">
+          <div class="card-bg border-custom rounded-xl p-3 transition-colors duration-300" style="border-width: 1px">
+            <div class="flex items-center justify-between mb-2">
+              <h3 class="text-xs font-bold uppercase tracking-wider flex items-center gap-2 text-secondary-custom">
+                <i class="fa-solid fa-chart-pie text-purple-500"></i> Status Lain-Lain Jentera
+              </h3>
+              <span class="text-[9px] bg-purple-500/20 text-purple-400 border border-purple-500/30 px-1.5 py-0.5 rounded font-bold">Doughnut</span>
+            </div>
+            <div class="h-48 relative">
+              <canvas id="chartStatus-lain"></canvas>
+            </div>
+          </div>
+          <div class="card-bg border-custom rounded-xl p-3 transition-colors duration-300" style="border-width: 1px">
+            <div class="flex items-center justify-between mb-2">
+              <h3 class="text-xs font-bold uppercase tracking-wider flex items-center gap-2 text-secondary-custom">
+                <i class="fa-solid fa-truck text-purple-500"></i> Model Lain-Lain Jentera
+              </h3>
+              <button onclick="toggleChartType('lain')" class="text-[9px] bg-slate-700 hover:bg-slate-600 text-slate-200 border border-slate-600 px-2 py-0.5 rounded font-bold transition flex items-center gap-1" id="chartTypeBtn-lain">
+                <i class="fa-solid fa-chart-bar"></i> Tukar Carta Bar
+              </button>
+            </div>
+            <div class="h-48 relative">
+              <canvas id="chartModel-lain"></canvas>
+            </div>
+          </div>
+          <div class="card-bg border-custom rounded-xl p-3 transition-colors duration-300" style="border-width: 1px">
+            <div class="flex items-center justify-between mb-2">
+              <h3 class="text-xs font-bold uppercase tracking-wider flex items-center gap-2 text-secondary-custom">
+                <i class="fa-solid fa-location-dot text-purple-500"></i> Agihan Mengikut Zon (Combo)
+              </h3>
+              <span class="text-[9px] bg-purple-500/20 text-purple-400 border border-purple-500/30 px-1.5 py-0.5 rounded font-bold">Bar + Liner</span>
+            </div>
+            <div class="h-48 relative">
+              <canvas id="chartZon-lain"></canvas>
+            </div>
+          </div>
+        </div>
+        <!-- TABLE LAIN -->
+        <div class="card-bg border-custom rounded-xl p-3 space-y-3 transition-colors duration-300" style="border-width: 1px">
+          <div class="flex flex-wrap items-center justify-between gap-2">
+            <h3 class="text-xs font-bold uppercase tracking-wider flex items-center gap-2" style="color: var(--text-primary)">
+              <i class="fa-solid fa-list-check text-purple-500"></i> Senarai Lain-Lain Jentera
+            </h3>
+            <div class="flex items-center gap-2">
+              <button onclick="copyAllTableData('lain')" class="px-2.5 py-1 bg-emerald-700 hover:bg-emerald-600 text-xs font-semibold rounded-lg text-emerald-100 transition flex items-center gap-1">
+                <i class="fa-solid fa-copy"></i> Salin Semua
+              </button>
+              <button onclick="eksportKeExcel('lain')" class="px-2.5 py-1 bg-slate-700 hover:bg-slate-600 text-xs font-semibold rounded-lg text-slate-200 transition flex items-center gap-1">
+                <i class="fa-solid fa-file-export"></i> CSV
+              </button>
+            </div>
+          </div>
+          <div class="flex flex-wrap items-center gap-2">
+            <div class="relative flex-1 min-w-[180px]">
+              <i class="fa-solid fa-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-slate-500 text-xs"></i>
+              <input type="text" id="searchInput-lain" placeholder="Cari Callsign, Plat, Lokasi..." 
+                     class="w-full input-bg border rounded-lg pl-8 pr-8 py-1.5 outline-none focus:border-slate-500 text-xs transition-colors duration-300"
+                     onkeyup="doSearch('lain')" />
+              <button onclick="clearSearch('lain')" class="absolute right-2 top-1/2 -translate-y-1/2 text-slate-400 hover:text-white text-xs p-1 rounded transition" title="Padam carian">
+                <i class="fa-solid fa-xmark"></i>
+              </button>
+            </div>
+            <!-- Butang Cari telah dipadamkan -->
+            <div class="ms-dropdown" id="msDropdown-lain">
+              <button class="ms-select-btn" onclick="toggleMsDropdown('lain')">
+                <span id="msText-lain"><i class="fa-solid fa-filter mr-1"></i> Semua Status</span><span class="text-[10px] bg-purple-600 text-white px-1.5 py-0.2 rounded font-bold" id="msCount-lain" style="display: none">0</span><span class="text-[9px]">▼</span>
+              </button>
+              <div class="ms-options" id="msOptions-lain"></div>
+            </div>
+            <div class="ms-dropdown" id="msDropdownModel-lain">
+              <button class="ms-select-btn" onclick="toggleMsModelDropdown('lain')">
+                <span id="msTextModel-lain"><i class="fa-solid fa-truck mr-1"></i> Semua Model</span><span class="text-[10px] bg-purple-600 text-white px-1.5 py-0.2 rounded font-bold" id="msCountModel-lain" style="display: none">0</span><span class="text-[9px]">▼</span>
+              </button>
+              <div class="ms-options" id="msOptionsModel-lain"></div>
+            </div>
+            <div class="ms-dropdown" id="msDropdownZon-lain">
+              <button class="ms-select-btn" onclick="toggleMsZonDropdown('lain')">
+                <span id="msTextZon-lain"><i class="fa-solid fa-location-dot mr-1"></i> Semua Zon</span><span class="text-[10px] bg-purple-600 text-white px-1.5 py-0.2 rounded font-bold" id="msCountZon-lain" style="display: none">0</span><span class="text-[9px]">▼</span>
+              </button>
+              <div class="ms-options" id="msOptionsZon-lain"></div>
+            </div>
+          </div>
+          <div class="overflow-x-auto rounded-lg border-custom" style="border-width: 1px">
+            <table class="w-full text-left border-collapse text-xs">
+              <thead class="table-header-bg text-secondary-custom font-semibold uppercase border-b border-custom text-[11px]">
+                <tr>
+                  <th class="p-2">Bil</th>
+                  <th class="p-2">Callsign</th>
+                  <th class="p-2">Plate</th>
+                  <th class="p-2">Model</th>
+                  <th class="p-2">Penempatan Asal</th>
+                  <th class="p-2">Lokasi Semasa</th>
+                  <th class="p-2">Zon</th>
+                  <th class="p-2">Status</th>
+                  <th class="p-2">Kerosakan</th>
+                  <th class="p-2 w-8">Salin</th>
+                </tr>
+              </thead>
+              <tbody id="tableBody-lain" class="divide-y divide-slate-700/40 text-[11px]" style="color: var(--text-secondary)"></tbody>
+            </table>
+          </div>
+          <div class="text-[11px] text-muted-custom" id="rowCount-lain">-</div>
+        </div>
+      </section>
+      <section id="tab-marin" class="tab-content hidden">
+        <div id="statsRow-marin" class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-2.5 mb-4"></div>
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-3 mb-4">
+          <div class="card-bg border-custom rounded-xl p-3 transition-colors duration-300" style="border-width: 1px">
+            <div class="flex items-center justify-between mb-2">
+              <h3 class="text-xs font-bold uppercase tracking-wider flex items-center gap-2 text-secondary-custom">
+                <i class="fa-solid fa-chart-pie text-teal-500"></i> Status Marin
+              </h3>
+              <span class="text-[9px] bg-teal-500/20 text-teal-400 border border-teal-500/30 px-1.5 py-0.5 rounded font-bold">Doughnut</span>
+            </div>
+            <div class="h-48 relative">
+              <canvas id="chartStatus-marin"></canvas>
+            </div>
+          </div>
+          <div class="card-bg border-custom rounded-xl p-3 transition-colors duration-300" style="border-width: 1px">
+            <div class="flex items-center justify-between mb-2">
+              <h3 class="text-xs font-bold uppercase tracking-wider flex items-center gap-2 text-secondary-custom">
+                <i class="fa-solid fa-ship text-teal-500"></i> Model Marin
+              </h3>
+              <button onclick="toggleChartType('marin')" class="text-[9px] bg-slate-700 hover:bg-slate-600 text-slate-200 border border-slate-600 px-2 py-0.5 rounded font-bold transition flex items-center gap-1" id="chartTypeBtn-marin">
+                <i class="fa-solid fa-chart-bar"></i> Tukar Carta Bar
+              </button>
+            </div>
+            <div class="h-48 relative">
+              <canvas id="chartModel-marin"></canvas>
+            </div>
+          </div>
+          <div class="card-bg border-custom rounded-xl p-3 transition-colors duration-300" style="border-width: 1px">
+            <div class="flex items-center justify-between mb-2">
+              <h3 class="text-xs font-bold uppercase tracking-wider flex items-center gap-2 text-secondary-custom">
+                <i class="fa-solid fa-location-dot text-teal-500"></i> Agihan Mengikut Zon (Combo)
+              </h3>
+              <span class="text-[9px] bg-teal-500/20 text-teal-400 border border-teal-500/30 px-1.5 py-0.5 rounded font-bold">Bar + Liner</span>
+            </div>
+            <div class="h-48 relative">
+              <canvas id="chartZon-marin"></canvas>
+            </div>
+          </div>
+        </div>
+        <!-- TABLE MARIN -->
+        <div class="card-bg border-custom rounded-xl p-3 space-y-3 transition-colors duration-300" style="border-width: 1px">
+          <div class="flex flex-wrap items-center justify-between gap-2">
+            <h3 class="text-xs font-bold uppercase tracking-wider flex items-center gap-2" style="color: var(--text-primary)">
+              <i class="fa-solid fa-list-check text-teal-500"></i> Senarai Marin
+            </h3>
+            <div class="flex items-center gap-2">
+              <button onclick="copyAllTableData('marin')" class="px-2.5 py-1 bg-emerald-700 hover:bg-emerald-600 text-xs font-semibold rounded-lg text-emerald-100 transition flex items-center gap-1">
+                <i class="fa-solid fa-copy"></i> Salin Semua
+              </button>
+              <button onclick="eksportKeExcel('marin')" class="px-2.5 py-1 bg-slate-700 hover:bg-slate-600 text-xs font-semibold rounded-lg text-slate-200 transition flex items-center gap-1">
+                <i class="fa-solid fa-file-export"></i> CSV
+              </button>
+            </div>
+          </div>
+          <div class="flex flex-wrap items-center gap-2">
+            <div class="relative flex-1 min-w-[180px]">
+              <i class="fa-solid fa-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-slate-500 text-xs"></i>
+              <input type="text" id="searchInput-marin" placeholder="Cari Callsign, Plat, Lokasi..." 
+                     class="w-full input-bg border rounded-lg pl-8 pr-8 py-1.5 outline-none focus:border-slate-500 text-xs transition-colors duration-300"
+                     onkeyup="doSearch('marin')" />
+              <button onclick="clearSearch('marin')" class="absolute right-2 top-1/2 -translate-y-1/2 text-slate-400 hover:text-white text-xs p-1 rounded transition" title="Padam carian">
+                <i class="fa-solid fa-xmark"></i>
+              </button>
+            </div>
+            <!-- Butang Cari telah dipadamkan -->
+            <div class="ms-dropdown" id="msDropdown-marin">
+              <button class="ms-select-btn" onclick="toggleMsDropdown('marin')">
+                <span id="msText-marin"><i class="fa-solid fa-filter mr-1"></i> Semua Status</span><span class="text-[10px] bg-teal-600 text-white px-1.5 py-0.2 rounded font-bold" id="msCount-marin" style="display: none">0</span><span class="text-[9px]">▼</span>
+              </button>
+              <div class="ms-options" id="msOptions-marin"></div>
+            </div>
+            <div class="ms-dropdown" id="msDropdownModel-marin">
+              <button class="ms-select-btn" onclick="toggleMsModelDropdown('marin')">
+                <span id="msTextModel-marin"><i class="fa-solid fa-truck mr-1"></i> Semua Model</span><span class="text-[10px] bg-teal-600 text-white px-1.5 py-0.2 rounded font-bold" id="msCountModel-marin" style="display: none">0</span><span class="text-[9px]">▼</span>
+              </button>
+              <div class="ms-options" id="msOptionsModel-marin"></div>
+            </div>
+            <div class="ms-dropdown" id="msDropdownZon-marin">
+              <button class="ms-select-btn" onclick="toggleMsZonDropdown('marin')">
+                <span id="msTextZon-marin"><i class="fa-solid fa-location-dot mr-1"></i> Semua Zon</span><span class="text-[10px] bg-teal-600 text-white px-1.5 py-0.2 rounded font-bold" id="msCountZon-marin" style="display: none">0</span><span class="text-[9px]">▼</span>
+              </button>
+              <div class="ms-options" id="msOptionsZon-marin"></div>
+            </div>
+          </div>
+          <div class="overflow-x-auto rounded-lg border-custom" style="border-width: 1px">
+            <table class="w-full text-left border-collapse text-xs">
+              <thead class="table-header-bg text-secondary-custom font-semibold uppercase border-b border-custom text-[11px]">
+                <tr>
+                  <th class="p-2">Bil</th>
+                  <th class="p-2">Callsign</th>
+                  <th class="p-2">Plate</th>
+                  <th class="p-2">Model</th>
+                  <th class="p-2">Penempatan Asal</th>
+                  <th class="p-2">Lokasi Semasa</th>
+                  <th class="p-2">Zon</th>
+                  <th class="p-2">Status</th>
+                  <th class="p-2">Kerosakan</th>
+                  <th class="p-2 w-8">Salin</th>
+                </tr>
+              </thead>
+              <tbody id="tableBody-marin" class="divide-y divide-slate-700/40 text-[11px]" style="color: var(--text-secondary)"></tbody>
+            </table>
+          </div>
+          <div class="text-[11px] text-muted-custom" id="rowCount-marin">-</div>
+        </div>
+      </section>
+      <section id="tab-rim" class="tab-content hidden">
+        <div id="statsRow-rim" class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-2.5 mb-4"></div>
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-3 mb-4">
+          <div class="card-bg border-custom rounded-xl p-3 transition-colors duration-300" style="border-width: 1px">
+            <div class="flex items-center justify-between mb-2">
+              <h3 class="text-xs font-bold uppercase tracking-wider flex items-center gap-2 text-secondary-custom">
+                <i class="fa-solid fa-chart-pie text-amber-500"></i> Status RIM
+              </h3>
+              <span class="text-[9px] bg-amber-500/20 text-amber-400 border border-amber-500/30 px-1.5 py-0.5 rounded font-bold">Doughnut</span>
+            </div>
+            <div class="h-48 relative">
+              <canvas id="chartStatus-rim"></canvas>
+            </div>
+          </div>
+          <div class="card-bg border-custom rounded-xl p-3 transition-colors duration-300" style="border-width: 1px">
+            <div class="flex items-center justify-between mb-2">
+              <h3 class="text-xs font-bold uppercase tracking-wider flex items-center gap-2 text-secondary-custom">
+                <i class="fa-solid fa-motorcycle text-amber-500"></i> Model RIM
+              </h3>
+              <button onclick="toggleChartType('rim')" class="text-[9px] bg-slate-700 hover:bg-slate-600 text-slate-200 border border-slate-600 px-2 py-0.5 rounded font-bold transition flex items-center gap-1" id="chartTypeBtn-rim">
+                <i class="fa-solid fa-chart-bar"></i> Tukar Carta Bar
+              </button>
+            </div>
+            <div class="h-48 relative">
+              <canvas id="chartModel-rim"></canvas>
+            </div>
+          </div>
+          <div class="card-bg border-custom rounded-xl p-3 transition-colors duration-300" style="border-width: 1px">
+            <div class="flex items-center justify-between mb-2">
+              <h3 class="text-xs font-bold uppercase tracking-wider flex items-center gap-2 text-secondary-custom">
+                <i class="fa-solid fa-location-dot text-amber-500"></i> Agihan Mengikut Zon (Combo)
+              </h3>
+              <span class="text-[9px] bg-amber-500/20 text-amber-400 border border-amber-500/30 px-1.5 py-0.5 rounded font-bold">Bar + Liner</span>
+            </div>
+            <div class="h-48 relative">
+              <canvas id="chartZon-rim"></canvas>
+            </div>
+          </div>
+        </div>
+        <!-- TABLE RIM -->
+        <div class="card-bg border-custom rounded-xl p-3 space-y-3 transition-colors duration-300" style="border-width: 1px">
+          <div class="flex flex-wrap items-center justify-between gap-2">
+            <h3 class="text-xs font-bold uppercase tracking-wider flex items-center gap-2" style="color: var(--text-primary)">
+              <i class="fa-solid fa-list-check text-amber-500"></i> Senarai RIM
+            </h3>
+            <div class="flex items-center gap-2">
+              <button onclick="copyAllTableData('rim')" class="px-2.5 py-1 bg-emerald-700 hover:bg-emerald-600 text-xs font-semibold rounded-lg text-emerald-100 transition flex items-center gap-1">
+                <i class="fa-solid fa-copy"></i> Salin Semua
+              </button>
+              <button onclick="eksportKeExcel('rim')" class="px-2.5 py-1 bg-slate-700 hover:bg-slate-600 text-xs font-semibold rounded-lg text-slate-200 transition flex items-center gap-1">
+                <i class="fa-solid fa-file-export"></i> CSV
+              </button>
+            </div>
+          </div>
+          <div class="flex flex-wrap items-center gap-2">
+            <div class="relative flex-1 min-w-[180px]">
+              <i class="fa-solid fa-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-slate-500 text-xs"></i>
+              <input type="text" id="searchInput-rim" placeholder="Cari Callsign, Plat, Lokasi..." 
+                     class="w-full input-bg border rounded-lg pl-8 pr-8 py-1.5 outline-none focus:border-slate-500 text-xs transition-colors duration-300"
+                     onkeyup="doSearch('rim')" />
+              <button onclick="clearSearch('rim')" class="absolute right-2 top-1/2 -translate-y-1/2 text-slate-400 hover:text-white text-xs p-1 rounded transition" title="Padam carian">
+                <i class="fa-solid fa-xmark"></i>
+              </button>
+            </div>
+            <!-- Butang Cari telah dipadamkan -->
+            <div class="ms-dropdown" id="msDropdown-rim">
+              <button class="ms-select-btn" onclick="toggleMsDropdown('rim')">
+                <span id="msText-rim"><i class="fa-solid fa-filter mr-1"></i> Semua Status</span><span class="text-[10px] bg-amber-600 text-white px-1.5 py-0.2 rounded font-bold" id="msCount-rim" style="display: none">0</span><span class="text-[9px]">▼</span>
+              </button>
+              <div class="ms-options" id="msOptions-rim"></div>
+            </div>
+            <div class="ms-dropdown" id="msDropdownModel-rim">
+              <button class="ms-select-btn" onclick="toggleMsModelDropdown('rim')">
+                <span id="msTextModel-rim"><i class="fa-solid fa-truck mr-1"></i> Semua Model</span><span class="text-[10px] bg-amber-600 text-white px-1.5 py-0.2 rounded font-bold" id="msCountModel-rim" style="display: none">0</span><span class="text-[9px]">▼</span>
+              </button>
+              <div class="ms-options" id="msOptionsModel-rim"></div>
+            </div>
+            <div class="ms-dropdown" id="msDropdownZon-rim">
+              <button class="ms-select-btn" onclick="toggleMsZonDropdown('rim')">
+                <span id="msTextZon-rim"><i class="fa-solid fa-location-dot mr-1"></i> Semua Zon</span><span class="text-[10px] bg-amber-600 text-white px-1.5 py-0.2 rounded font-bold" id="msCountZon-rim" style="display: none">0</span><span class="text-[9px]">▼</span>
+              </button>
+              <div class="ms-options" id="msOptionsZon-rim"></div>
+            </div>
+          </div>
+          <div class="overflow-x-auto rounded-lg border-custom" style="border-width: 1px">
+            <table class="w-full text-left border-collapse text-xs">
+              <thead class="table-header-bg text-secondary-custom font-semibold uppercase border-b border-custom text-[11px]">
+                <tr>
+                  <th class="p-2">Bil</th>
+                  <th class="p-2">Callsign</th>
+                  <th class="p-2">Plate</th>
+                  <th class="p-2">Model</th>
+                  <th class="p-2">Penempatan Asal</th>
+                  <th class="p-2">Lokasi Semasa</th>
+                  <th class="p-2">Zon</th>
+                  <th class="p-2">Status</th>
+                  <th class="p-2">Kerosakan</th>
+                  <th class="p-2 w-8">Salin</th>
+                </tr>
+              </thead>
+              <tbody id="tableBody-rim" class="divide-y divide-slate-700/40 text-[11px]" style="color: var(--text-secondary)"></tbody>
+            </table>
+          </div>
+          <div class="text-[11px] text-muted-custom" id="rowCount-rim">-</div>
+        </div>
+      </section>
+      <section id="tab-utiliti" class="tab-content hidden">
+        <div id="statsRow-utiliti" class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-2.5 mb-4"></div>
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-3 mb-4">
+          <div class="card-bg border-custom rounded-xl p-3 transition-colors duration-300" style="border-width: 1px">
+            <div class="flex items-center justify-between mb-2">
+              <h3 class="text-xs font-bold uppercase tracking-wider flex items-center gap-2 text-secondary-custom">
+                <i class="fa-solid fa-chart-pie text-green-500"></i> Status Utiliti
+              </h3>
+              <span class="text-[9px] bg-green-500/20 text-green-400 border border-green-500/30 px-1.5 py-0.5 rounded font-bold">Doughnut</span>
+            </div>
+            <div class="h-48 relative">
+              <canvas id="chartStatus-utiliti"></canvas>
+            </div>
+          </div>
+          <div class="card-bg border-custom rounded-xl p-3 transition-colors duration-300" style="border-width: 1px">
+            <div class="flex items-center justify-between mb-2">
+              <h3 class="text-xs font-bold uppercase tracking-wider flex items-center gap-2 text-secondary-custom">
+                <i class="fa-solid fa-truck-pickup text-green-500"></i> Model Utiliti
+              </h3>
+              <button onclick="toggleChartType('utiliti')" class="text-[9px] bg-slate-700 hover:bg-slate-600 text-slate-200 border border-slate-600 px-2 py-0.5 rounded font-bold transition flex items-center gap-1" id="chartTypeBtn-utiliti">
+                <i class="fa-solid fa-chart-bar"></i> Tukar Carta Bar
+              </button>
+            </div>
+            <div class="h-48 relative">
+              <canvas id="chartModel-utiliti"></canvas>
+            </div>
+          </div>
+          <div class="card-bg border-custom rounded-xl p-3 transition-colors duration-300" style="border-width: 1px">
+            <div class="flex items-center justify-between mb-2">
+              <h3 class="text-xs font-bold uppercase tracking-wider flex items-center gap-2 text-secondary-custom">
+                <i class="fa-solid fa-location-dot text-green-500"></i> Agihan Mengikut Zon (Combo)
+              </h3>
+              <span class="text-[9px] bg-green-500/20 text-green-400 border border-green-500/30 px-1.5 py-0.5 rounded font-bold">Bar + Liner</span>
+            </div>
+            <div class="h-48 relative">
+              <canvas id="chartZon-utiliti"></canvas>
+            </div>
+          </div>
+        </div>
+        <!-- TABLE UTILITI -->
+        <div class="card-bg border-custom rounded-xl p-3 space-y-3 transition-colors duration-300" style="border-width: 1px">
+          <div class="flex flex-wrap items-center justify-between gap-2">
+            <h3 class="text-xs font-bold uppercase tracking-wider flex items-center gap-2" style="color: var(--text-primary)">
+              <i class="fa-solid fa-list-check text-green-500"></i> Senarai Utiliti
+            </h3>
+            <div class="flex items-center gap-2">
+              <button onclick="copyAllTableData('utiliti')" class="px-2.5 py-1 bg-emerald-700 hover:bg-emerald-600 text-xs font-semibold rounded-lg text-emerald-100 transition flex items-center gap-1">
+                <i class="fa-solid fa-copy"></i> Salin Semua
+              </button>
+              <button onclick="eksportKeExcel('utiliti')" class="px-2.5 py-1 bg-slate-700 hover:bg-slate-600 text-xs font-semibold rounded-lg text-slate-200 transition flex items-center gap-1">
+                <i class="fa-solid fa-file-export"></i> CSV
+              </button>
+            </div>
+          </div>
+          <div class="flex flex-wrap items-center gap-2">
+            <div class="relative flex-1 min-w-[180px]">
+              <i class="fa-solid fa-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-slate-500 text-xs"></i>
+              <input type="text" id="searchInput-utiliti" placeholder="Cari Callsign, Plat, Lokasi..." 
+                     class="w-full input-bg border rounded-lg pl-8 pr-8 py-1.5 outline-none focus:border-slate-500 text-xs transition-colors duration-300"
+                     onkeyup="doSearch('utiliti')" />
+              <button onclick="clearSearch('utiliti')" class="absolute right-2 top-1/2 -translate-y-1/2 text-slate-400 hover:text-white text-xs p-1 rounded transition" title="Padam carian">
+                <i class="fa-solid fa-xmark"></i>
+              </button>
+            </div>
+            <!-- Butang Cari telah dipadamkan -->
+            <div class="ms-dropdown" id="msDropdown-utiliti">
+              <button class="ms-select-btn" onclick="toggleMsDropdown('utiliti')">
+                <span id="msText-utiliti"><i class="fa-solid fa-filter mr-1"></i> Semua Status</span><span class="text-[10px] bg-green-600 text-white px-1.5 py-0.2 rounded font-bold" id="msCount-utiliti" style="display: none">0</span><span class="text-[9px]">▼</span>
+              </button>
+              <div class="ms-options" id="msOptions-utiliti"></div>
+            </div>
+            <div class="ms-dropdown" id="msDropdownModel-utiliti">
+              <button class="ms-select-btn" onclick="toggleMsModelDropdown('utiliti')">
+                <span id="msTextModel-utiliti"><i class="fa-solid fa-truck mr-1"></i> Semua Model</span><span class="text-[10px] bg-green-600 text-white px-1.5 py-0.2 rounded font-bold" id="msCountModel-utiliti" style="display: none">0</span><span class="text-[9px]">▼</span>
+              </button>
+              <div class="ms-options" id="msOptionsModel-utiliti"></div>
+            </div>
+            <div class="ms-dropdown" id="msDropdownZon-utiliti">
+              <button class="ms-select-btn" onclick="toggleMsZonDropdown('utiliti')">
+                <span id="msTextZon-utiliti"><i class="fa-solid fa-location-dot mr-1"></i> Semua Zon</span><span class="text-[10px] bg-green-600 text-white px-1.5 py-0.2 rounded font-bold" id="msCountZon-utiliti" style="display: none">0</span><span class="text-[9px]">▼</span>
+              </button>
+              <div class="ms-options" id="msOptionsZon-utiliti"></div>
+            </div>
+          </div>
+          <div class="overflow-x-auto rounded-lg border-custom" style="border-width: 1px">
+            <table class="w-full text-left border-collapse text-xs">
+              <thead class="table-header-bg text-secondary-custom font-semibold uppercase border-b border-custom text-[11px]">
+                <tr>
+                  <th class="p-2">Bil</th>
+                  <th class="p-2">Callsign</th>
+                  <th class="p-2">Plate</th>
+                  <th class="p-2">Model</th>
+                  <th class="p-2">Penempatan Asal</th>
+                  <th class="p-2">Lokasi Semasa</th>
+                  <th class="p-2">Zon</th>
+                  <th class="p-2">Status</th>
+                  <th class="p-2">Kerosakan</th>
+                  <th class="p-2 w-8">Salin</th>
+                </tr>
+              </thead>
+              <tbody id="tableBody-utiliti" class="divide-y divide-slate-700/40 text-[11px]" style="color: var(--text-secondary)"></tbody>
+            </table>
+          </div>
+          <div class="text-[11px] text-muted-custom" id="rowCount-utiliti">-</div>
+        </div>
+      </section>
+
+      <!-- TAB DATA KESELURUHAN (GABUNGAN SEMUA JENTERA) -->
+      <section id="tab-keseluruhan" class="tab-content hidden">
+        <div id="statsRow-keseluruhan" class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-2.5 mb-4"></div>
+        <div class="grid grid-cols-1 lg:grid-cols-4 gap-3 mb-4">
+          <div class="card-bg border-custom rounded-xl p-3 transition-colors duration-300" style="border-width: 1px">
+            <div class="flex items-center justify-between mb-2">
+              <h3 class="text-xs font-bold uppercase tracking-wider flex items-center gap-2 text-secondary-custom">
+                <i class="fa-solid fa-tags text-indigo-500"></i> Agihan Mengikut Jenis
+              </h3>
+              <span class="text-[9px] bg-indigo-500/20 text-indigo-400 border border-indigo-500/30 px-1.5 py-0.5 rounded font-bold">Doughnut</span>
+            </div>
+            <div class="h-48 relative">
+              <canvas id="chartJenis-keseluruhan"></canvas>
+            </div>
+          </div>
+          <div class="card-bg border-custom rounded-xl p-3 transition-colors duration-300" style="border-width: 1px">
+            <div class="flex items-center justify-between mb-2">
+              <h3 class="text-xs font-bold uppercase tracking-wider flex items-center gap-2 text-secondary-custom">
+                <i class="fa-solid fa-chart-pie text-indigo-500"></i> Status Keseluruhan Jentera
+              </h3>
+              <span class="text-[9px] bg-indigo-500/20 text-indigo-400 border border-indigo-500/30 px-1.5 py-0.5 rounded font-bold">Doughnut</span>
+            </div>
+            <div class="h-48 relative">
+              <canvas id="chartStatus-keseluruhan"></canvas>
+            </div>
+          </div>
+          <div class="card-bg border-custom rounded-xl p-3 transition-colors duration-300" style="border-width: 1px">
+            <div class="flex items-center justify-between mb-2">
+              <h3 class="text-xs font-bold uppercase tracking-wider flex items-center gap-2 text-secondary-custom">
+                <i class="fa-solid fa-shapes text-indigo-500"></i> Model Keseluruhan Jentera
+              </h3>
+              <button onclick="toggleChartType('keseluruhan')" class="text-[9px] bg-slate-700 hover:bg-slate-600 text-slate-200 border border-slate-600 px-2 py-0.5 rounded font-bold transition flex items-center gap-1" id="chartTypeBtn-keseluruhan">
+                <i class="fa-solid fa-chart-bar"></i> Tukar Carta Bar
+              </button>
+            </div>
+            <div class="h-48 relative">
+              <canvas id="chartModel-keseluruhan"></canvas>
+            </div>
+          </div>
+          <div class="card-bg border-custom rounded-xl p-3 transition-colors duration-300" style="border-width: 1px">
+            <div class="flex items-center justify-between mb-2">
+              <h3 class="text-xs font-bold uppercase tracking-wider flex items-center gap-2 text-secondary-custom">
+                <i class="fa-solid fa-location-dot text-indigo-500"></i> Agihan Mengikut Zon (Combo)
+              </h3>
+              <span class="text-[9px] bg-indigo-500/20 text-indigo-400 border border-indigo-500/30 px-1.5 py-0.5 rounded font-bold">Bar + Liner</span>
+            </div>
+            <div class="h-48 relative">
+              <canvas id="chartZon-keseluruhan"></canvas>
+            </div>
+          </div>
+        </div>
+        <!-- TABLE KESELURUHAN -->
+        <div class="card-bg border-custom rounded-xl p-3 space-y-3 transition-colors duration-300" style="border-width: 1px">
+          <div class="flex flex-wrap items-center justify-between gap-2">
+            <h3 class="text-xs font-bold uppercase tracking-wider flex items-center gap-2" style="color: var(--text-primary)">
+              <i class="fa-solid fa-list-check text-indigo-500"></i> Senarai Keseluruhan Jentera
+            </h3>
+            <div class="flex items-center gap-2">
+              <button onclick="copyAllTableData('keseluruhan')" class="px-2.5 py-1 bg-emerald-700 hover:bg-emerald-600 text-xs font-semibold rounded-lg text-emerald-100 transition flex items-center gap-1">
+                <i class="fa-solid fa-copy"></i> Salin Semua
+              </button>
+              <button onclick="eksportKeExcel('keseluruhan')" class="px-2.5 py-1 bg-slate-700 hover:bg-slate-600 text-xs font-semibold rounded-lg text-slate-200 transition flex items-center gap-1">
+                <i class="fa-solid fa-file-export"></i> CSV
+              </button>
+            </div>
+          </div>
+          <div class="flex flex-wrap items-center gap-2">
+            <div class="relative flex-1 min-w-[180px]">
+              <i class="fa-solid fa-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-slate-500 text-xs"></i>
+              <input type="text" id="searchInput-keseluruhan" placeholder="Cari Callsign, Plat, Lokasi, Jenis..." 
+                     class="w-full input-bg border rounded-lg pl-8 pr-8 py-1.5 outline-none focus:border-slate-500 text-xs transition-colors duration-300"
+                     onkeyup="doSearch('keseluruhan')" />
+              <button onclick="clearSearch('keseluruhan')" class="absolute right-2 top-1/2 -translate-y-1/2 text-slate-400 hover:text-white text-xs p-1 rounded transition" title="Padam carian">
+                <i class="fa-solid fa-xmark"></i>
+              </button>
+            </div>
+            <div class="ms-dropdown" id="msDropdown-keseluruhan">
+              <button class="ms-select-btn" onclick="toggleMsDropdown('keseluruhan')">
+                <span id="msText-keseluruhan"><i class="fa-solid fa-filter mr-1"></i> Semua Status</span><span class="text-[10px] bg-indigo-600 text-white px-1.5 py-0.2 rounded font-bold" id="msCount-keseluruhan" style="display: none">0</span><span class="text-[9px]">▼</span>
+              </button>
+              <div class="ms-options" id="msOptions-keseluruhan"></div>
+            </div>
+            <div class="ms-dropdown" id="msDropdownModel-keseluruhan">
+              <button class="ms-select-btn" onclick="toggleMsModelDropdown('keseluruhan')">
+                <span id="msTextModel-keseluruhan"><i class="fa-solid fa-truck mr-1"></i> Semua Model</span><span class="text-[10px] bg-indigo-600 text-white px-1.5 py-0.2 rounded font-bold" id="msCountModel-keseluruhan" style="display: none">0</span><span class="text-[9px]">▼</span>
+              </button>
+              <div class="ms-options" id="msOptionsModel-keseluruhan"></div>
+            </div>
+            <div class="ms-dropdown" id="msDropdownZon-keseluruhan">
+              <button class="ms-select-btn" onclick="toggleMsZonDropdown('keseluruhan')">
+                <span id="msTextZon-keseluruhan"><i class="fa-solid fa-location-dot mr-1"></i> Semua Zon</span><span class="text-[10px] bg-indigo-600 text-white px-1.5 py-0.2 rounded font-bold" id="msCountZon-keseluruhan" style="display: none">0</span><span class="text-[9px]">▼</span>
+              </button>
+              <div class="ms-options" id="msOptionsZon-keseluruhan"></div>
+            </div>
+          </div>
+          <div class="overflow-x-auto rounded-lg border-custom" style="border-width: 1px">
+            <table class="w-full text-left border-collapse text-xs">
+              <thead class="table-header-bg text-secondary-custom font-semibold uppercase border-b border-custom text-[11px]">
+                <tr>
+                  <th class="p-2">Bil</th>
+                  <th class="p-2">Callsign</th>
+                  <th class="p-2">Plate</th>
+                  <th class="p-2">Model</th>
+                  <th class="p-2">Jenis</th>
+                  <th class="p-2">Penempatan Asal</th>
+                  <th class="p-2">Lokasi Semasa</th>
+                  <th class="p-2">Zon</th>
+                  <th class="p-2">Status</th>
+                  <th class="p-2">Kerosakan</th>
+                  <th class="p-2 w-8">Salin</th>
+                </tr>
+              </thead>
+              <tbody id="tableBody-keseluruhan" class="divide-y divide-slate-700/40 text-[11px]" style="color: var(--text-secondary)"></tbody>
+            </table>
+          </div>
+          <div class="text-[11px] text-muted-custom" id="rowCount-keseluruhan">-</div>
+        </div>
+      </section>
+
+      <!-- TAB DASHBOARD UTAMA -->
+      <section id="tab-dashboard" class="tab-content space-y-3">
+        <div class="card-bg border-custom rounded-xl p-2.5 flex flex-wrap items-center justify-between gap-2 transition-colors duration-300" id="dashboardFilters" style="border-width: 1px">
+          <div class="flex flex-wrap items-center gap-2">
+            <span class="text-[11px] font-bold uppercase text-secondary-custom">Jenis:</span>
+            <div class="ms-dropdown" id="jenisFilterDropdown">
+              <button onclick="toggleJenisFilter()" class="ms-select-btn text-[11px]" style="padding: 0.25rem 0.5rem">
+                <span id="jenisFilterText"><i class="fa-solid fa-layer-group mr-1"></i> Semua Jenis</span>
+                <span class="text-[10px] bg-red-600 text-white px-1.5 py-0.2 rounded font-bold" id="jenisFilterCount">3</span>
+                <span class="text-[8px]">▼</span>
+              </button>
+              <div class="ms-options" id="jenisFilterOptions">
+                <label class="ms-option"><input type="checkbox" value="cfrt" checked onchange="applyJenisFilter()" /><span><i class="fa-solid fa-fire-extinguisher text-red-500 mr-1"></i>Rescue Tender (FRT)</span><span class="ml-auto text-[9px] bg-slate-700 px-1 rounded font-bold" id="countCfrt">0</span></label>
+                <label class="ms-option"><input type="checkbox" value="emrs" checked onchange="applyJenisFilter()" /><span><i class="fa-solid fa-truck-medical text-blue-500 mr-1"></i>EMRS</span><span class="ml-auto text-[9px] bg-slate-700 px-1 rounded font-bold" id="countEmrs">0</span></label>
+                <label class="ms-option"><input type="checkbox" value="water" checked onchange="applyJenisFilter()" /><span><i class="fa-solid fa-truck-droplet text-cyan-500 mr-1"></i>Water Tanker</span><span class="ml-auto text-[9px] bg-slate-700 px-1 rounded font-bold" id="countWater">0</span></label>
+              </div>
+            </div>
+            <span class="text-[11px] font-bold uppercase text-secondary-custom ml-1">Status:</span>
+            <div class="ms-dropdown" id="statusFilterDropdown">
+              <button onclick="toggleStatusFilter()" class="ms-select-btn text-[11px]" style="padding: 0.25rem 0.5rem">
+                <span id="statusFilterText">Semua</span>
+                <span class="text-[10px] bg-red-600 text-white px-1.5 py-0.2 rounded font-bold" id="statusFilterCount" style="display: none">0</span>
+                <span class="text-[8px]">▼</span>
+              </button>
+              <div class="ms-options" id="statusFilterOptions">
+                <label class="ms-option"><input type="checkbox" value="BAIK" onchange="applyStatusFilter()" /><span class="w-2 h-2 rounded-full bg-emerald-500"></span><span>BAIK</span></label>
+                <label class="ms-option"><input type="checkbox" value="ROSAK MINOR" onchange="applyStatusFilter()" /><span class="w-2 h-2 rounded-full bg-yellow-500"></span><span>ROSAK MINOR</span></label>
+                <label class="ms-option"><input type="checkbox" value="ROSAK" onchange="applyStatusFilter()" /><span class="w-2 h-2 rounded-full bg-red-500"></span><span>ROSAK</span></label>
+                <label class="ms-option"><input type="checkbox" value="DIPULANGKAN" onchange="applyStatusFilter()" /><span class="w-2 h-2 rounded-full bg-blue-500"></span><span>DIPULANGKAN</span></label>
+                <label class="ms-option"><input type="checkbox" value="LAIN" onchange="applyStatusFilter()" /><span class="w-2 h-2 rounded-full bg-slate-400"></span><span>LAIN-LAIN</span></label>
+              </div>
+            </div>
+          </div>
+          <div class="flex items-center gap-2">
+            <button onclick="toggleFullscreenDashboard()" id="zoomInBtn" class="px-2.5 py-1 bg-slate-700 hover:bg-slate-600 text-white text-xs font-semibold rounded-lg transition flex items-center gap-1">
+              <i class="fa-solid fa-expand"></i> Skrin Penuh Fit
+            </button>
+          </div>
+        </div>
+        <div id="dashStats" class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-2"></div>
+        <div id="zoneContainer" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-2.5 items-start"></div>
+      </section>
+    </main>
+
+    <!-- FOOTER -->
+    <footer class="mt-auto py-3 px-4 bg-slate-950/90 border-t border-slate-800/80 text-center text-slate-500 text-xs font-medium backdrop-blur select-none">
+      <div class="flex items-center justify-center gap-2 tracking-wide">
+        <span>&copy; 2026 PGO JOHOR | Hak Cipta Terpelihara.</span>
+      </div>
+    </footer>
+
+    <!-- MODAL -->
+    <div id="modalOverlay" class="modal-overlay" onclick="closeModal(event)">
+      <div class="bg-slate-900 border border-slate-600 rounded-2xl max-w-2xl w-full p-0 shadow-2xl relative text-left overflow-hidden" onclick="event.stopPropagation()" style="max-height: 90vh">
+        <button onclick="closeModal()" class="absolute top-3 right-3 text-slate-400 hover:text-white w-8 h-8 flex items-center justify-center rounded-full bg-slate-800 hover:bg-slate-700 z-20 transition">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+        <div id="modalVehicleShape" class="w-full overflow-y-auto" style="max-height: 85vh"></div>
+      </div>
+    </div>
+
+    <!-- TOAST -->
+    <div id="toastNotification" class="fixed bottom-4 right-4 z-[120] bg-slate-800 border border-slate-700 text-slate-100 text-xs font-medium px-3.5 py-2.5 rounded-lg shadow-xl translate-x-full transition-transform duration-300 flex items-center gap-2">
+      <span id="toastIcon"><i class="fa-solid fa-circle-info text-blue-400"></i></span>
+      <span id="toastMessage">Log mesej</span>
+    </div>
+
+    <script>
+      // ============================================================
+      // DATA SOURCES
+      // ============================================================
+      const U = {
+        cfrt: 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQt0JkN2yWW_0FeY5GKpmIvs1uI6si89JcqNmSTO3f--rM8FhQZe1Q97YQd8tiAsmaMQdTXO5TQWedy/pub?gid=0&single=true&output=csv',
+        emrs: 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQt0JkN2yWW_0FeY5GKpmIvs1uI6si89JcqNmSTO3f--rM8FhQZe1Q97YQd8tiAsmaMQdTXO5TQWedy/pub?gid=795399708&single=true&output=csv',
+        water: 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQt0JkN2yWW_0FeY5GKpmIvs1uI6si89JcqNmSTO3f--rM8FhQZe1Q97YQd8tiAsmaMQdTXO5TQWedy/pub?gid=290336578&single=true&output=csv',
+        lain: 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQt0JkN2yWW_0FeY5GKpmIvs1uI6si89JcqNmSTO3f--rM8FhQZe1Q97YQd8tiAsmaMQdTXO5TQWedy/pub?gid=1761176125&single=true&output=csv',
+        marin: 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQt0JkN2yWW_0FeY5GKpmIvs1uI6si89JcqNmSTO3f--rM8FhQZe1Q97YQd8tiAsmaMQdTXO5TQWedy/pub?gid=971189793&single=true&output=csv',
+        rim: 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQt0JkN2yWW_0FeY5GKpmIvs1uI6si89JcqNmSTO3f--rM8FhQZe1Q97YQd8tiAsmaMQdTXO5TQWedy/pub?gid=1698197048&single=true&output=csv',
+        utiliti: 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQt0JkN2yWW_0FeY5GKpmIvs1uI6si89JcqNmSTO3f--rM8FhQZe1Q97YQd8tiAsmaMQdTXO5TQWedy/pub?gid=1696956483&single=true&output=csv',
+      };
+
+      const REFRESH_INTERVAL_SEC = 300;
+      let D = { cfrt: [], emrs: [], water: [], lain: [], marin: [], rim: [], utiliti: [], keseluruhan: [] };
+      let T = 'cfrt';
+      let F = ['cfrt', 'emrs', 'water'];
+      let subTabSelectedStatus = { cfrt: [], emrs: [], water: [], lain: [], marin: [], rim: [], utiliti: [], keseluruhan: [] };
+      let subTabSelectedModel = { cfrt: [], emrs: [], water: [], lain: [], marin: [], rim: [], utiliti: [], keseluruhan: [] };
+      let subTabSelectedZon = { cfrt: [], emrs: [], water: [], lain: [], marin: [], rim: [], utiliti: [], keseluruhan: [] };
+      let chartTypeConfig = { cfrt: 'pie', emrs: 'pie', water: 'pie', lain: 'pie', marin: 'pie', rim: 'pie', utiliti: 'pie', keseluruhan: 'pie' };
+      let SF = [];
+      let intervalTimer = null;
+      let remainingSeconds = REFRESH_INTERVAL_SEC;
+      let isInitialLoad = true;   // <-- TAMBAH BARIS INI
+      let CC = {
+        cfrt: { s: null, z: null, m: null },
+        emrs: { s: null, z: null, m: null },
+        water: { s: null, z: null, m: null },
+        lain: { s: null, z: null, m: null },
+        marin: { s: null, z: null, m: null },
+        rim: { s: null, z: null, m: null },
+        utiliti: { s: null, z: null, m: null },
+        keseluruhan: { s: null, z: null, m: null, j: null },
+      };
+      
+      let legendHiddenStatus = { cfrt: [], emrs: [], water: [], lain: [], marin: [], rim: [], utiliti: [], keseluruhan: [] };      let legendHiddenStatusModel = { cfrt: [], emrs: [], water: [], lain: [], marin: [], rim: [], utiliti: [], keseluruhan: [] };
+      let legendHiddenStatusZon = { cfrt: [], emrs: [], water: [], lain: [], marin: [], rim: [], utiliti: [], keseluruhan: [] };
+
+      // ============================================================
+      // THEME
+      // ============================================================
+      function toggleTheme() {
+        document.body.classList.toggle('light-mode');
+        const isLight = document.body.classList.contains('light-mode');
+        const icon = document.getElementById('themeIcon');
+        if (isLight) {
+          icon.className = 'fa-solid fa-sun';
+          localStorage.setItem('theme', 'light');
+        } else {
+          icon.className = 'fa-solid fa-moon';
+          localStorage.setItem('theme', 'dark');
+        }
+        Object.keys(CC).forEach((tab) => {
+          if (
+            T === tab ||
+            document
+            .getElementById(`tab-${tab}`)
+            ?.classList.contains('hidden') === false
+          ) {
+            Rt(tab);
+          }
+        });
+      }
+
+      function loadTheme() {
+        const savedTheme = localStorage.getItem('theme');
+        if (savedTheme === 'light') {
+          document.body.classList.add('light-mode');
+          document.getElementById('themeIcon').className = 'fa-solid fa-sun';
+        } else if (savedTheme === 'dark') {
+          document.body.classList.remove('light-mode');
+          document.getElementById('themeIcon').className = 'fa-solid fa-moon';
+        } else {
+          if (
+            window.matchMedia &&
+            window.matchMedia('(prefers-color-scheme: light)').matches
+          ) {
+            document.body.classList.add('light-mode');
+            document.getElementById('themeIcon').className = 'fa-solid fa-sun';
+          }
+        }
+      }
+
+      // ============================================================
+      // PRINT
+      // ============================================================
+      function updatePrintDateTime() {
+        const now = new Date();
+        const dateStr = now.toLocaleDateString('ms-MY', {
+          day: '2-digit',
+          month: 'long',
+          year: 'numeric',
+        });
+        const timeStr = now.toLocaleTimeString('ms-MY', {
+          hour: '2-digit',
+          minute: '2-digit',
+          second: '2-digit',
+        });
+        return `Dicetak pada: ${dateStr}, ${timeStr}`;
+      }
+
+      function printDashboard() {
+        const printDateTime = updatePrintDateTime();
+        const activeTab = T;
+        const tabContent = document.getElementById(`tab-${activeTab}`);
+        if (!tabContent) {
+          showNotification('Tiada kandungan untuk dicetak', 'warning');
+          return;
+        }
+        const printWindow = window.open('', '_blank', 'width=1200,height=800');
+        const contentClone = tabContent.cloneNode(true);
+        printWindow.document.write(`
+        <!DOCTYPE html>
+        <html lang="ms">
+        <head>
+          <meta charset="UTF-8" />
+          <title>DASHBOARD JENTERA BOMBA NEGERI JOHOR</title>
+          <script src="https://cdn.tailwindcss.com"><\/script>
+          <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+          <script src="https://cdn.jsdelivr.net/npm/chart.js"><\/script>
+          <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2"><\/script>
+          <style>
+            * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
+            body { background: white !important; color: #000 !important; font-family: 'Inter', sans-serif; padding: 20px !important; margin: 0 !important; }
+            .print-header { text-align: center !important; margin-bottom: 20px !important; border-bottom: 2px solid #000 !important; padding-bottom: 10px !important; }
+            .print-header .print-title { font-size: 18pt !important; font-weight: bold !important; color: #000 !important; text-transform: uppercase !important; }
+            .print-header .print-subtitle { font-size: 10pt !important; color: #333 !important; margin-top: 5px !important; }
+            .print-footer { text-align: center !important; font-size: 8pt !important; color: #999 !important; border-top: 1px solid #ccc !important; padding-top: 5px !important; margin-top: 20px !important; }
+            table { border: 1px solid #000 !important; border-collapse: collapse !important; width: 100% !important; font-size: 8pt !important; }
+            th { background: #e5e7eb !important; color: #000 !important; border: 1px solid #000 !important; padding: 4px !important; }
+            td { border: 1px solid #ccc !important; color: #000 !important; padding: 4px !important; }
+            .plate-number { background: #fff !important; color: #000 !important; border: 1px solid #000 !important; }
+            .badge-baik { color: #16a34a !important; }
+            .badge-minor { color: #ca8a04 !important; }
+            .badge-rosak { color: #dc2626 !important; }
+            .badge-pulang { color: #2563eb !important; }
+            canvas { max-width: 100% !important; filter: brightness(0.7) contrast(1.4) !important; }
+            .ms-dropdown, .copy-btn, button { display: none !important; }
+            @page { margin: 1cm; size: A4 landscape; }
+          </style>
+        </head>
+        <body>
+          <div class="print-header">
+            <div class="print-title">DASHBOARD JENTERA BOMBA NEGERI JOHOR</div>
+            <div class="print-subtitle">${printDateTime}</div>
+          </div>
+          <div id="printContent"></div>
+          <div class="print-footer">&copy; 2026 PGO JOHOR | Hak Cipta Terpelihara</div>
+        </body>
+        </html>
+        `);
+        printWindow.document.close();
+        printWindow.onload = function() {
+          const printContent =
+            printWindow.document.getElementById('printContent');
+          printContent.appendChild(contentClone);
+          setTimeout(() => {
+            const canvases = printWindow.document.querySelectorAll('canvas');
+            canvases.forEach((canvas) => {
+              const canvasId = canvas.id;
+              if (canvasId && CC[activeTab]) {
+                const originalCanvas = document.getElementById(canvasId);
+                if (originalCanvas) {
+                  canvas.width = originalCanvas.width;
+                  canvas.height = originalCanvas.height;
+                  canvas.style.width = originalCanvas.style.width;
+                  canvas.style.height = originalCanvas.style.height;
+                  const ctx = canvas.getContext('2d');
+                  ctx.drawImage(originalCanvas, 0, 0);
+                }
+              }
+            });
+            setTimeout(() => {
+              printWindow.print();
+            }, 500);
+          }, 1000);
+        };
+      }
+
+      // ============================================================
+      // CONSTANTS & HELPERS
+      // ============================================================
+      const ZON_ORDER = [
+        'ZON 1',
+        'ZON 2',
+        'ZON 3',
+        'ZON 4',
+        'BENGKEL KJT BOMBA',
+      ];
+      const zoneOrder = [
+        'ZON 1',
+        'ZON 2',
+        'ZON 3',
+        'ZON 4',
+        'BENGKEL KJT BOMBA',
+      ];
+      const BALAI_ZON = {
+        'ZON 1': [
+          'BALAI BOMBA DAN PENYELAMAT LARKIN',
+          'BALAI BOMBA DAN PENYELAMAT PASIR GUDANG',
+          'BALAI BOMBA DAN PENYELAMAT JOHOR JAYA',
+          'BALAI BOMBA DAN PENYELAMAT SKUDAI',
+          'BALAI BOMBA DAN PENYELAMAT ISKANDAR PUTERI',
+          'BALAI BOMBA DAN PENYELAMAT TEBRAU',
+          'BALAI BOMBA DAN PENYELAMAT PEKAN NENAS',
+          'BALAI BOMBA DAN PENYELAMAT PONTIAN BARU',
+          'BALAI BOMBA DAN PENYELAMAT PONTIAN',
+          'BALAI BOMBA DAN PENYELAMAT BANDAR BARU KULAI',
+          'BALAI BOMBA DAN PENYELAMAT KULAI',
+          'BALAI BOMBA DAN PENYELAMAT KEMPAS',
+          'BALAI BOMBA DAN PENYELAMAT FIRE POST BENUT',
+        ],
+        'ZON 2': [
+          'BALAI BOMBA DAN PENYELAMAT KOTA TINGGI',
+          'BALAI BOMBA DAN PENYELAMAT SUNGAI RENGIT',
+          'BALAI BOMBA DAN PENYELAMAT BANDAR PENAWAR',
+          'BALAI BOMBA DAN PENYELAMAT MERSING',
+          'BALAI BOMBA DAN PENYELAMAT ENDAU',
+          'BALAI BOMBA DAN PENYELAMAT SEBANA COVE',
+          'BALAI BOMBA DAN PENYELAMAT PUNGGAI',
+          'BALAI BOMBA DAN PENYELAMAT BANDAR TENGGARA',
+        ],
+        'ZON 3': [
+          'BALAI BOMBA DAN PENYELAMAT PENGGARAM',
+          'BALAI BOMBA DAN PENYELAMAT KLUANG',
+          'BALAI BOMBA DAN PENYELAMAT BATU PAHAT',
+          'BALAI BOMBA DAN PENYELAMAT RENGIT',
+          'BALAI BOMBA DAN PENYELAMAT RENGGAM',
+          'BALAI BOMBA DAN PENYELAMAT YONG PENG',
+          'BALAI BOMBA DAN PENYELAMAT AYER HITAM',
+          'BALAI BOMBA DAN PENYELAMAT FIRE POST PARIT SULONG',
+        ],
+        'ZON 4': [
+          'BALAI BOMBA DAN PENYELAMAT MUAR',
+          'BALAI BOMBA DAN PENYELAMAT BANDAR BARU SEGAMAT',
+          'BALAI BOMBA DAN PENYELAMAT SEGAMAT',
+          'BALAI BOMBA DAN PENYELAMAT LABIS',
+          'BALAI BOMBA DAN PENYELAMAT BUKIT GAMBIR',
+          'BALAI BOMBA DAN PENYELAMAT TANGKAK',
+          'BALAI BOMBA DAN PENYELAMAT PAGOH',
+        ],
+      };
+
+      function getStationCoreName(str) {
+        if (!str) return '';
+        return str
+          .toUpperCase()
+          .replace(/BALAI\s+BOMBA\s+DAN\s+PENYELAMAT/g, '')
+          .replace(/BALAI\s+BOMBA/g, '')
+          .replace(/FIRE\s+POST/g, '')
+          .replace(/BBP/g, '')
+          .replace(/FP/g, '')
+          .replace(/BALAI/g, '')
+          .replace(/\s+/g, ' ')
+          .trim();
+      }
+
+      function findMatchingBalai(lokasi, listBalai) {
+        if (!lokasi) return null;
+        const coreLokasi = getStationCoreName(lokasi);
+        if (!coreLokasi) return null;
+        for (const b of listBalai) {
+          const coreB = getStationCoreName(b);
+          if (coreB && coreLokasi === coreB) return b;
+        }
+        const sortedList = [...listBalai].sort(
+          (a, b) => getStationCoreName(b).length - getStationCoreName(a).length
+        );
+        for (const b of sortedList) {
+          const coreB = getStationCoreName(b);
+          if (
+            coreB &&
+            (coreLokasi.includes(coreB) || coreB.includes(coreLokasi))
+          ) return b;
+        }
+        return null;
+      }
+
+      function findMatchingBalaiInAllZones(lokasi) {
+        if (!lokasi) return null;
+        const coreLokasi = getStationCoreName(lokasi);
+        if (!coreLokasi) return null;
+        const allBalai = [];
+        Object.values(BALAI_ZON).forEach((list) => allBalai.push(...list));
+        for (const b of allBalai) {
+          if (getStationCoreName(b) === coreLokasi) return b;
+        }
+        const sorted = [...allBalai].sort(
+          (a, b) => getStationCoreName(b).length - getStationCoreName(a).length
+        );
+        for (const b of sorted) {
+          const coreB = getStationCoreName(b);
+          if (
+            coreB &&
+            (coreLokasi.includes(coreB) || coreB.includes(coreLokasi))
+          ) return b;
+        }
+        return null;
+      }
+
+      function showNotification(msg, type = 'info') {
+        const toast = document.getElementById('toastNotification');
+        const icons = {
+          success: '<i class="fa-solid fa-circle-check text-emerald-400"></i>',
+          error: '<i class="fa-solid fa-circle-xmark text-red-400"></i>',
+          warning: '<i class="fa-solid fa-triangle-exclamation text-yellow-400"></i>',
+          info: '<i class="fa-solid fa-circle-info text-blue-400"></i>',
+        };
+        document.getElementById('toastIcon').innerHTML =
+          icons[type] || icons.info;
+        document.getElementById('toastMessage').textContent = msg;
+        toast.classList.remove('translate-x-full');
+        setTimeout(() => {
+          toast.classList.add('translate-x-full');
+        }, 3000);
+      }
+
+      function PP(text) {
+        const rows = [];
+        let row = [],
+          field = '',
+          inQuotes = false;
+        for (let i = 0; i < text.length; i++) {
+          const c = text[i];
+          if (inQuotes) {
+            if (c === '"') {
+              if (i + 1 < text.length && text[i + 1] === '"') {
+                field += '"';
+                i++;
+              } else inQuotes = false;
+            } else field += c;
+          } else {
+            if (c === '"') inQuotes = true;
+            else if (c === ',') {
+              row.push(field.trim());
+              field = '';
+            } else if (c === '\n' || c === '\r') {
+              if (c === '\r' && i + 1 < text.length && text[i + 1] === '\n')
+                i++;
+              row.push(field.trim());
+              if (row.length > 1 || row[0] !== '') rows.push(row);
+              row = [];
+              field = '';
+            } else field += c;
+          }
+        }
+        row.push(field.trim());
+        if (row.length > 1 || row[0] !== '') rows.push(row);
+        return rows;
+      }
+
+      function HH(h) {
+        return h.replace(/\s+/g, ' ').trim();
+      }
+
+      function OO(headers, rows) {
+        const ch = headers.map(HH);
+        return rows.map((r) => {
+          const o = {};
+          ch.forEach((h, i) => {
+            o[h] = r[i] !== undefined ? r[i] : '';
+          });
+          return o;
+        });
+      }
+
+      function G(item, field) {
+        if (!item) return '';
+        if (item[field] !== undefined) return item[field];
+        const clean = field.replace(/\s+/g, ' ').trim();
+        for (const k in item) {
+          if (k.replace(/\s+/g, ' ').trim() === clean) return item[k];
+        }
+        return '';
+      }
+
+      function getStatusCategory(statusStr) {
+        if (!statusStr) return 'U';
+        const t = statusStr.toUpperCase();
+        if (t.includes('BAIK') && t.includes('BEROPERASI')) return 'B';
+        if (t.includes('ROSAK MINOR')) return 'RM';
+        if (t.includes('ROSAK') && !t.includes('MINOR')) return 'R';
+        if (t.includes('DIPULANGKAN')) return 'D';
+        return 'U';
+      }
+
+      // ============================================================
+      // FETCH & LOAD
+      // ============================================================
+      async function fetchTabData(tab) {
+        const url = U[tab];
+        if (!url) return;
+        try {
+          const res = await fetch(url, { cache: 'no-store' });
+          if (!res.ok) throw new Error(`HTTP ${res.status}`);
+          const text = await res.text();
+          const parsed = PP(text);
+          if (parsed.length < 2) return;
+          D[tab] = OO(parsed[0], parsed.slice(1));
+          populateMultiSelectOptions(tab);
+          populateModelOptions(tab);
+          populateZonOptions(tab);
+          UU(tab);
+          Rt(tab);
+          updateSubTabMultiSelect(tab, true);
+        } catch (err) {
+          console.error(`Error fetching ${tab}:`, err);
+        }
+      }
+
+      // ============================================================
+      // MULTI-SELECT DROPDOWNS
+      // ============================================================
+      function populateMultiSelectOptions(tab) {
+        const list = D[tab] || [];
+        const statuses = new Set();
+        list.forEach((i) => {
+          const s = (G(i, 'STATUS JENTERA') || '').trim();
+          if (s) statuses.add(s);
+        });
+        const container = document.getElementById(`msOptions-${tab}`);
+        if (!container) return;
+        container.innerHTML = Array.from(statuses)
+          .sort()
+          .map(
+            (st) =>
+            `<label class="ms-option"><input type="checkbox" value="${st.replace(
+                /"/g, '&quot;'
+              )}" onchange="updateSubTabMultiSelect('${tab}')"><span>${st}</span></label>`
+          )
+          .join('');
+        updateSubTabMultiSelect(tab, true);
+      }
+
+      function populateModelOptions(tab) {
+        const list = D[tab] || [];
+        const models = new Set();
+        list.forEach((i) => {
+          const m = (G(i, 'MODEL JENTERA') || '').trim();
+          if (m) models.add(m);
+        });
+        const container = document.getElementById(`msOptionsModel-${tab}`);
+        if (!container) return;
+        container.innerHTML = Array.from(models)
+          .sort()
+          .map(
+            (md) =>
+            `<label class="ms-option"><input type="checkbox" value="${md.replace(
+                /"/g, '&quot;'
+              )}" onchange="updateSubTabModelMultiSelect('${tab}')"><span>${md}</span></label>`
+          )
+          .join('');
+      }
+
+      function populateZonOptions(tab) {
+        const list = D[tab] || [];
+        const zones = new Set();
+        list.forEach((i) => {
+          const z = (G(i, 'ZON') || '').trim();
+          if (z) zones.add(z);
+        });
+        const container = document.getElementById(`msOptionsZon-${tab}`);
+        if (!container) return;
+        container.innerHTML = Array.from(zones)
+          .sort()
+          .map(
+            (zn) =>
+            `<label class="ms-option"><input type="checkbox" value="${zn.replace(
+                /"/g, '&quot;'
+              )}" onchange="updateSubTabZonMultiSelect('${tab}')"><span>${zn}</span></label>`
+          )
+          .join('');
+      }
+
+      function updateSubTabMultiSelect(tab, skipRender = false) {
+        const opts = document.getElementById(`msOptions-${tab}`);
+        if (!opts) return;
+        const checkboxes = opts.querySelectorAll('input[type="checkbox"]');
+        const selected = [];
+        checkboxes.forEach((cb) => {
+          if (cb.checked) selected.push(cb.value);
+        });
+        subTabSelectedStatus[tab] = selected;
+        const textSpan = document.getElementById(`msText-${tab}`),
+          countSpan = document.getElementById(`msCount-${tab}`);
+        if (!textSpan || !countSpan) return;
+        const list = D[tab] || [];
+        let count = 0;
+        if (selected.length === 0) {
+          count = list.length;
+          textSpan.innerHTML =
+            '<i class="fa-solid fa-filter mr-1"></i> Semua Status';
+        } else {
+          count = list.filter((item) => {
+            const status = (G(item, 'STATUS JENTERA') || '').trim();
+            return selected.includes(status);
+          }).length;
+          textSpan.textContent =
+            selected.slice(0, 2).join(', ') +
+            (selected.length > 2 ? '...' : '');
+        }
+        countSpan.textContent = count;
+        countSpan.style.display = 'inline-block';
+        if (!skipRender) Rt(tab);
+      }
+
+      function toggleMsDropdown(tab) {
+        document.getElementById(`msOptions-${tab}`)?.classList.toggle('show');
+      }
+
+      function toggleMsModelDropdown(tab) {
+        document
+          .getElementById(`msOptionsModel-${tab}`)
+          ?.classList.toggle('show');
+      }
+
+      function toggleMsZonDropdown(tab) {
+        document
+          .getElementById(`msOptionsZon-${tab}`)
+          ?.classList.toggle('show');
+      }
+
+      function updateSubTabModelMultiSelect(tab) {
+        const opts = document.getElementById(`msOptionsModel-${tab}`);
+        const checkboxes = opts.querySelectorAll('input[type="checkbox"]');
+        const selected = [];
+        checkboxes.forEach((cb) => {
+          if (cb.checked) selected.push(cb.value);
+        });
+        subTabSelectedModel[tab] = selected;
+        const textSpan = document.getElementById(`msTextModel-${tab}`),
+          countSpan = document.getElementById(`msCountModel-${tab}`);
+        if (selected.length === 0) {
+          textSpan.innerHTML =
+            '<i class="fa-solid fa-truck mr-1"></i> Semua Model';
+          countSpan.style.display = 'none';
+        } else {
+          textSpan.textContent =
+            selected.slice(0, 2).join(', ') +
+            (selected.length > 2 ? '...' : '');
+          countSpan.textContent = selected.length;
+          countSpan.style.display = 'inline-block';
+        }
+        Rt(tab);
+      }
+
+      function updateSubTabZonMultiSelect(tab) {
+        const opts = document.getElementById(`msOptionsZon-${tab}`);
+        const checkboxes = opts.querySelectorAll('input[type="checkbox"]');
+        const selected = [];
+        checkboxes.forEach((cb) => {
+          if (cb.checked) selected.push(cb.value);
+        });
+        subTabSelectedZon[tab] = selected;
+        const textSpan = document.getElementById(`msTextZon-${tab}`),
+          countSpan = document.getElementById(`msCountZon-${tab}`);
+        if (selected.length === 0) {
+          textSpan.innerHTML =
+            '<i class="fa-solid fa-location-dot mr-1"></i> Semua Zon';
+          countSpan.style.display = 'none';
+        } else {
+          textSpan.textContent =
+            selected.slice(0, 2).join(', ') +
+            (selected.length > 2 ? '...' : '');
+          countSpan.textContent = selected.length;
+          countSpan.style.display = 'inline-block';
+        }
+        Rt(tab);
+      }
+
+      // ============================================================
+      // STATS ROW
+      // ============================================================
+      function UU(tab) {
+        const list = D[tab] || [];
+        let b = 0,
+          rm = 0,
+          r = 0,
+          d = 0,
+          u = 0;
+        list.forEach((item) => {
+          const cat = getStatusCategory(G(item, 'STATUS JENTERA'));
+          if (cat === 'B') b++;
+          else if (cat === 'RM') rm++;
+          else if (cat === 'R') r++;
+          else if (cat === 'D') d++;
+          else u++;
+        });
+        const total = list.length;
+        const denominator = b + rm + r;
+        const rate =
+          denominator > 0 ? (((b + rm) / denominator) * 100).toFixed(1) : '0';
+
+        const container = document.getElementById(`statsRow-${tab}`);
+        if (!container) return;
+        container.innerHTML = `
+                <div class="card-bg border-custom p-2.5 rounded-xl text-center transition-colors duration-300" style="border-width:1px; background-color:var(--bg-card);">
+                    <div class="text-lg font-extrabold" style="color:var(--text-primary);">${total}</div>
+                    <div class="text-[9px] uppercase font-semibold text-secondary-custom">Jumlah Jentera</div>
+                </div>
+                <div class="card-bg border border-emerald-500/30 p-2.5 rounded-xl text-center transition-colors duration-300">
+                    <div class="text-lg font-extrabold text-emerald-400 pulse-glow-b">${b}</div>
+                    <div class="text-[9px] text-emerald-500/80 uppercase font-semibold">Baik & Beroperasi</div>
+                </div>
+                <div class="card-bg border border-yellow-500/30 p-2.5 rounded-xl text-center transition-colors duration-300">
+                    <div class="text-lg font-extrabold text-yellow-400 pulse-glow-rm">${rm}</div>
+                    <div class="text-[9px] text-yellow-500/80 uppercase font-semibold">Rosak Minor</div>
+                </div>
+                <div class="card-bg border border-red-500/30 p-2.5 rounded-xl text-center transition-colors duration-300">
+                    <div class="text-lg font-extrabold text-red-400 pulse-glow-r">${r}</div>
+                    <div class="text-[9px] text-red-500/80 uppercase font-semibold">Rosak</div>
+                </div>
+                <div class="card-bg border border-blue-500/30 p-2.5 rounded-xl text-center transition-colors duration-300">
+                    <div class="text-lg font-extrabold text-blue-400 pulse-glow-d">${d}</div>
+                    <div class="text-[9px] text-blue-500/80 uppercase font-semibold">Dipulangkan</div>
+                </div>
+                <div class="card-bg border border-purple-500/30 p-2.5 rounded-xl text-center transition-colors duration-300">
+                    <div class="text-lg font-extrabold text-purple-400">${rate}%</div>
+                    <div class="text-[9px] text-purple-400/80 uppercase font-semibold">Ketersediaan</div>
+                </div>
+            `;
+      }
+
+      // ============================================================
+      // CHART TYPE TOGGLE
+      // ============================================================
+      function toggleChartType(tab) {
+        chartTypeConfig[tab] = chartTypeConfig[tab] === 'pie' ? 'bar' : 'pie';
+        const btn = document.getElementById(`chartTypeBtn-${tab}`);
+        if (btn) {
+          btn.innerHTML =
+            chartTypeConfig[tab] === 'pie' ?
+            '<i class="fa-solid fa-chart-bar"></i> Tukar Carta Bar' :
+            '<i class="fa-solid fa-chart-pie"></i> Tukar Carta Pie';
+        }
+        Rt(tab);
+      }
+
+      // ============================================================
+      // RENDER CHARTS (Rc)
+      // ============================================================
+      function Rc(tab, currentList) {
+        const list = currentList || D[tab] || [];
+        const totalCount = list.length;
+        const isLight = document.body.classList.contains('light-mode');
+        const legendTextColor = isLight ? '#1e293b' : '#f8fafc';
+        const axisTextColor = isLight ? '#475569' : '#f8fafc';
+        const gridColor = isLight ? '#e2e8f0' : '#334155';
+
+        // Status Doughnut
+        const sc = {};
+        list.forEach((i) => {
+          const s = (G(i, 'STATUS JENTERA') || 'LAIN-LAIN')
+            .trim()
+            .toUpperCase();
+          sc[s] = (sc[s] || 0) + 1;
+        });
+        if (CC[tab].s) CC[tab].s.destroy();
+        const cs = document.getElementById(`chartStatus-${tab}`);
+        if (cs) {
+          const labels = Object.keys(sc);
+          const dataValues = Object.values(sc);
+          const backgroundColors = labels.map((label) => {
+            const clean = label
+              .toUpperCase()
+              .replace(/^\d+\.\s*/, '')
+              .trim();
+            if (clean.includes('BAIK') && clean.includes('BEROPERASI'))
+              return '#22c55e';
+            else if (clean.includes('ROSAK MINOR')) return '#eab308';
+            else if (clean.includes('ROSAK') && !clean.includes('MINOR'))
+              return '#ef4444';
+            else if (clean.includes('DIPULANG') || clean.includes('PULANG'))
+              return '#3b82f6';
+            else if (clean.includes('DALAM PROSES LUPUS')) return '#f97316';
+            else if (clean.includes('LUPUS')) return '#8b5cf6';
+            else return '#64748b';
+          });
+          if (
+            !legendHiddenStatus[tab] ||
+            legendHiddenStatus[tab].length !== labels.length
+          ) {
+            legendHiddenStatus[tab] = new Array(labels.length).fill(false);
+          }
+
+          CC[tab].s = new Chart(cs.getContext('2d'), {
+            type: 'doughnut',
+            data: {
+              labels: labels,
+              datasets: [{
+                data: dataValues,
+                backgroundColor: backgroundColors,
+                borderWidth: 2,
+                borderColor: isLight ? '#e2e8f0' : '#1e293b',
+              }, ],
+            },
+            options: {
+              responsive: true,
+              maintainAspectRatio: false,
+              plugins: {
+                legend: {
+                  position: 'bottom',
+                  align: 'center',
+                  labels: {
+                    color: legendTextColor,
+                    font: { size: 8 },
+                    padding: 8,
+                    textAlign: 'center',
+                    generateLabels: function(chart) {
+                      const data = chart.data;
+                      if (data.labels.length && data.datasets.length) {
+                        return data.labels.map((label, i) => {
+                          const isHidden =
+                            legendHiddenStatus[tab] &&
+                            legendHiddenStatus[tab][i];
+                          return {
+                            text: isHidden ? '~~' + label + '~~' : label,
+                            fillStyle: data.datasets[0].backgroundColor[i],
+                            strokeStyle: data.datasets[0].borderColor,
+                            lineWidth: data.datasets[0].borderWidth,
+                            fontColor: isHidden ? '#94a3b8' : legendTextColor,
+                            hidden: false,
+                            index: i,
+                          };
+                        });
+                      }
+                      return [];
+                    },
+                  },
+                  onClick: function(e, legendItem, legend) {
+                    const index = legendItem.index;
+                    const chart = legend.chart;
+                    if (!legendHiddenStatus[tab]) legendHiddenStatus[tab] = [];
+                    legendHiddenStatus[tab][index] =
+                      !legendHiddenStatus[tab][index];
+                    const meta = chart.getDatasetMeta(0);
+                    if (meta.data[index]) {
+                      meta.data[index].hidden = legendHiddenStatus[tab][index];
+                    }
+                    chart.update();
+                  },
+                },
+                tooltip: {
+                  callbacks: {
+                    label: function(context) {
+                      const val = context.raw || 0;
+                      const pct =
+                        totalCount > 0 ?
+                        ((val / totalCount) * 100).toFixed(1) :
+                        0;
+                      return ` ${context.label.replace(
+                        /~~/g, ''
+                      )}: ${val} unit (${pct}%)`;
+                    },
+                  },
+                },
+                datalabels: {
+                  color: isLight ? '#1e293b' : '#ffffff',
+                  font: { weight: 'normal', size: 8 },
+                  formatter: (value, context) => {
+                    const total = context.dataset.data.reduce(
+                      (a, b) => a + b, 0
+                    );
+                    const pct =
+                      total > 0 ? ((value / total) * 100).toFixed(1) : 0;
+                    return `${pct}%`;
+                  },
+                  display: (context) => {
+                    const value = context.dataset.data[context.dataIndex];
+                    return (
+                      value > 0 && !legendHiddenStatus[tab][context.dataIndex]
+                    );
+                  },
+                  offset: 2,
+                  anchor: 'center',
+                  align: 'center',
+                },
+              },
+              animation: {
+                animateScale: true,
+                animateRotate: true,
+                duration: 800,
+              },
+            },
+            plugins: [ChartDataLabels],
+          });
+        }
+
+        // Model Chart
+        const mc = {};
+        list.forEach((i) => {
+          const m = (G(i, 'MODEL JENTERA') || 'LAIN-LAIN').trim().toUpperCase();
+          mc[m] = (mc[m] || 0) + 1;
+        });
+        if (CC[tab].m) CC[tab].m.destroy();
+        const cm = document.getElementById(`chartModel-${tab}`);
+        if (cm) {
+          const palette = [
+            '#f59e0b',
+            '#10b981',
+            '#6366f1',
+            '#ec4899',
+            '#8b5cf6',
+            '#14b8a6',
+            '#f97316',
+            '#06b6d4',
+            '#3b82f6',
+            '#ef4444',
+          ];
+          const isPie = chartTypeConfig[tab] === 'pie';
+          const modelLabels = Object.keys(mc);
+          const modelData = Object.values(mc);
+          if (
+            !legendHiddenStatusModel[tab] ||
+            legendHiddenStatusModel[tab].length !== modelLabels.length
+          ) {
+            legendHiddenStatusModel[tab] = new Array(modelLabels.length).fill(
+              false
+            );
+          }
+          CC[tab].m = new Chart(cm.getContext('2d'), {
+            type: isPie ? 'pie' : 'bar',
+            data: {
+              labels: modelLabels,
+              datasets: [{
+                label: 'Unit Jentera',
+                data: modelData,
+                backgroundColor: palette.slice(0, modelLabels.length),
+                borderWidth: isPie ? 2 : 1,
+                borderColor: isLight ? '#e2e8f0' : '#1e293b',
+                borderRadius: isPie ? 0 : 4,
+              }, ],
+            },
+            options: {
+              responsive: true,
+              maintainAspectRatio: false,
+              layout: {
+                padding: { top: isPie ? 2 : 20, bottom: 0, left: 0, right: 0 },
+              },
+              plugins: {
+                legend: {
+                  display: isPie,
+                  position: 'bottom',
+                  align: 'center',
+                  labels: {
+                    color: legendTextColor,
+                    font: { size: 8 },
+                    padding: 8,
+                    textAlign: 'center',
+                    generateLabels: function(chart) {
+                      const data = chart.data;
+                      if (data.labels.length && data.datasets.length) {
+                        return data.labels.map((label, i) => {
+                          const isHidden =
+                            (legendHiddenStatusModel[tab] &&
+                              legendHiddenStatusModel[tab][i]) ||
+                            false;
+                          return {
+                            text: isHidden ? '~~' + label + '~~' : label,
+                            fillStyle: data.datasets[0].backgroundColor[i],
+                            strokeStyle: data.datasets[0].borderColor,
+                            lineWidth: data.datasets[0].borderWidth,
+                            fontColor: isHidden ? '#94a3b8' : legendTextColor,
+                            hidden: false,
+                            index: i,
+                          };
+                        });
+                      }
+                      return [];
+                    },
+                  },
+                  onClick: function(e, legendItem, legend) {
+                    if (!isPie) return;
+                    const index = legendItem.index;
+                    const chart = legend.chart;
+                    if (!legendHiddenStatusModel[tab])
+                      legendHiddenStatusModel[tab] = [];
+                    legendHiddenStatusModel[tab][index] =
+                      !legendHiddenStatusModel[tab][index];
+                    const meta = chart.getDatasetMeta(0);
+                    if (meta.data[index]) {
+                      meta.data[index].hidden =
+                        legendHiddenStatusModel[tab][index];
+                    }
+                    chart.update();
+                  },
+                },
+                tooltip: {
+                  callbacks: {
+                    label: function(context) {
+                      const val = context.raw || 0;
+                      const pct =
+                        totalCount > 0 ?
+                        ((val / totalCount) * 100).toFixed(1) :
+                        0;
+                      return ` ${(context.label || 'Model').replace(
+                        /~~/g, ''
+                      )}: ${val} (${pct}%)`;
+                    },
+                  },
+                },
+                datalabels: {
+                  color: isLight ? '#1e293b' : '#ffffff',
+                  anchor: isPie ? 'center' : 'end',
+                  align: isPie ? 'center' : 'top',
+                  font: { weight: 'normal', size: 8 },
+                  formatter: (value, context) => {
+                    if (isPie) {
+                      const total = context.dataset.data.reduce(
+                        (a, b) => a + b, 0
+                      );
+                      const pct =
+                        total > 0 ? ((value / total) * 100).toFixed(1) : 0;
+                      return `${pct}%`;
+                    } else {
+                      return value;
+                    }
+                  },
+                  display: (context) => {
+                    if (isPie) {
+                      const value = context.dataset.data[context.dataIndex];
+                      return (
+                        value > 0 &&
+                        !legendHiddenStatusModel[tab][context.dataIndex]
+                      );
+                    } else {
+                      return context.dataset.data[context.dataIndex] > 0;
+                    }
+                  },
+                  offset: 2,
+                },
+              },
+              scales: isPie ?
+                {} : {
+                  y: {
+                    ticks: { color: axisTextColor, stepSize: 1 },
+                    grid: { color: gridColor },
+                    beginAtZero: true,
+                    grace: '18%',
+                  },
+                  x: {
+                    ticks: {
+                      color: axisTextColor,
+                      maxRotation: 25,
+                      minRotation: 0,
+                      font: { size: 7 },
+                    },
+                  },
+                },
+              animation: { duration: 800 },
+            },
+            plugins: [ChartDataLabels],
+          });
+        }
+
+        // ZONE COMBO CHART
+        const zoneData = {};
+        list.forEach((item) => {
+          const zon = (G(item, 'ZON') || 'LAIN').trim().toUpperCase();
+          if (!zoneData[zon]) zoneData[zon] = { total: 0, B: 0, RM: 0, R: 0 };
+          zoneData[zon].total++;
+          const cat = getStatusCategory(G(item, 'STATUS JENTERA'));
+          if (cat === 'B') zoneData[zon].B++;
+          else if (cat === 'RM') zoneData[zon].RM++;
+          else if (cat === 'R') zoneData[zon].R++;
+        });
+
+        const sortedZoneLabels = [];
+        const sortedTotal = [],
+          sortedB = [],
+          sortedRM = [],
+          sortedR = [];
+        ZON_ORDER.forEach((zone) => {
+          const upper = zone.toUpperCase();
+          if (zoneData[upper]) {
+            sortedZoneLabels.push(upper);
+            sortedTotal.push(zoneData[upper].total);
+            sortedB.push(zoneData[upper].B);
+            sortedRM.push(zoneData[upper].RM);
+            sortedR.push(zoneData[upper].R);
+            delete zoneData[upper];
+          }
+        });
+        Object.keys(zoneData).forEach((key) => {
+          sortedZoneLabels.push(key.toUpperCase());
+          sortedTotal.push(zoneData[key].total);
+          sortedB.push(zoneData[key].B);
+          sortedRM.push(zoneData[key].RM);
+          sortedR.push(zoneData[key].R);
+        });
+
+        if (CC[tab].z) CC[tab].z.destroy();
+        const cz = document.getElementById(`chartZon-${tab}`);
+        if (cz) {
+          CC[tab].z = new Chart(cz.getContext('2d'), {
+            type: 'bar',
+            data: {
+              labels: sortedZoneLabels,
+              datasets: [{
+                label: 'JUMLAH JENTERA',
+                data: sortedTotal,
+                type: 'bar',
+                backgroundColor: 'rgba(59, 130, 246, 0.6)',
+                borderColor: '#3b82f6',
+                borderWidth: 1,
+                borderRadius: 4,
+                order: 2,
+                yAxisID: 'y',
+                barPercentage: 0.6,
+                categoryPercentage: 0.7,
+              }, {
+                label: 'BAIK & BEROPERASI',
+                data: sortedB,
+                type: 'line',
+                borderColor: '#22c55e',
+                backgroundColor: 'rgba(34, 197, 94, 0.1)',
+                pointBackgroundColor: '#22c55e',
+                pointBorderColor: '#ffffff',
+                pointBorderWidth: 1.5,
+                pointRadius: 4,
+                pointHoverRadius: 6,
+                tension: 0.3,
+                fill: true,
+                borderWidth: 2.5,
+                order: 1,
+                yAxisID: 'y',
+              }, {
+                label: 'ROSAK MINOR',
+                data: sortedRM,
+                type: 'line',
+                borderColor: '#eab308',
+                backgroundColor: 'rgba(234, 179, 8, 0.1)',
+                pointBackgroundColor: '#eab308',
+                pointBorderColor: '#ffffff',
+                pointBorderWidth: 1.5,
+                pointRadius: 4,
+                pointHoverRadius: 6,
+                tension: 0.3,
+                fill: true,
+                borderWidth: 2.5,
+                order: 1,
+                yAxisID: 'y',
+              }, {
+                label: 'ROSAK',
+                data: sortedR,
+                type: 'line',
+                borderColor: '#ef4444',
+                backgroundColor: 'rgba(239, 68, 68, 0.1)',
+                pointBackgroundColor: '#ef4444',
+                pointBorderColor: '#ffffff',
+                pointBorderWidth: 1.5,
+                pointRadius: 4,
+                pointHoverRadius: 6,
+                tension: 0.3,
+                fill: true,
+                borderWidth: 2.5,
+                order: 1,
+                yAxisID: 'y',
+              }, ],
+            },
+            options: {
+              responsive: true,
+              maintainAspectRatio: false,
+              layout: { padding: { top: 28, bottom: 5, left: 5, right: 5 } },
+              interaction: { mode: 'index', intersect: false },
+              plugins: {
+                legend: {
+                  position: 'bottom',
+                  align: 'center',
+                  labels: {
+                    color: legendTextColor,
+                    font: { size: 8, weight: '600' },
+                    padding: 10,
+                    boxWidth: 14,
+                    boxHeight: 10,
+                    usePointStyle: false,
+                    generateLabels: function(chart) {
+                      const data = chart.data;
+                      if (data.datasets.length) {
+                        return data.datasets.map((ds, i) => ({
+                          text: (ds.label || '').toUpperCase(),
+                          fillStyle: ds.borderColor || ds.backgroundColor,
+                          strokeStyle: ds.borderColor || ds.backgroundColor,
+                          lineWidth: 2,
+                          hidden: false,
+                          index: i,
+                        }));
+                      }
+                      return [];
+                    },
+                  },
+                },
+                tooltip: {
+                  callbacks: {
+                    label: function(context) {
+                      const val = context.raw || 0;
+                      const totalZone = sortedTotal[context.dataIndex] || 0;
+                      const pct =
+                        totalZone > 0 ?
+                        ((val / totalZone) * 100).toFixed(1) :
+                        0;
+                      return ` ${context.dataset.label.toUpperCase()}: ${val} (${pct}%)`;
+                    },
+                  },
+                },
+                datalabels: {
+                  color: isLight ? '#1e293b' : '#f8fafc',
+                  anchor: 'end',
+                  align: 'top',
+                  font: { weight: 'bold', size: 8 },
+                  display: function(context) {
+                    return (
+                      context.datasetIndex === 0 &&
+                      context.dataset.data[context.dataIndex] > 0
+                    );
+                  },
+                  formatter: function(value) {
+                    return value;
+                  },
+                },
+              },
+              scales: {
+                x: {
+                  ticks: {
+                    color: axisTextColor,
+                    maxRotation: 25,
+                    minRotation: 0,
+                    font: { size: 8, weight: '500' },
+                    callback: function(value, index, ticks) {
+                      const label = this.getLabelForValue(value);
+                      return typeof label === 'string' ?
+                        label.toUpperCase() :
+                        label;
+                    },
+                  },
+                  grid: { display: false },
+                },
+                y: {
+                  beginAtZero: true,
+                  grace: '25%',
+                  ticks: {
+                    color: axisTextColor,
+                    stepSize: 1,
+                    font: { size: 8 },
+                  },
+                  grid: { color: gridColor, drawBorder: false },
+                },
+              },
+              animation: { duration: 600 },
+            },
+            plugins: [ChartDataLabels],
+          });
+        }
+
+        // Jenis Breakdown Doughnut (only for combined "keseluruhan" view)
+        if (tab === 'keseluruhan') {
+          const jc = {};
+          list.forEach((i) => {
+            const j = i._jenisLabel || 'LAIN-LAIN';
+            jc[j] = (jc[j] || 0) + 1;
+          });
+          if (CC[tab].j) CC[tab].j.destroy();
+          const cj = document.getElementById(`chartJenis-${tab}`);
+          if (cj) {
+            const jenisPalette = {
+              'FRT': '#ef4444',
+              'EMRS': '#3b82f6',
+              'WATER TANKER': '#06b6d4',
+              'LAIN-LAIN JENTERA': '#a855f7',
+              'MARIN': '#14b8a6',
+              'RIM': '#f59e0b',
+              'UTILITI': '#22c55e',
+            };
+            const jenisLabels = Object.keys(jc);
+            const jenisData = Object.values(jc);
+            const jenisColors = jenisLabels.map(
+              (l) => jenisPalette[l] || '#64748b'
+            );
+            CC[tab].j = new Chart(cj.getContext('2d'), {
+              type: 'doughnut',
+              data: {
+                labels: jenisLabels,
+                datasets: [{
+                  data: jenisData,
+                  backgroundColor: jenisColors,
+                  borderWidth: 2,
+                  borderColor: isLight ? '#e2e8f0' : '#1e293b',
+                }, ],
+              },
+              options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                  legend: {
+                    position: 'bottom',
+                    align: 'center',
+                    labels: {
+                      color: legendTextColor,
+                      font: { size: 8 },
+                      padding: 8,
+                      textAlign: 'center',
+                    },
+                  },
+                  tooltip: {
+                    callbacks: {
+                      label: function(context) {
+                        const val = context.raw || 0;
+                        const pct =
+                          totalCount > 0 ?
+                          ((val / totalCount) * 100).toFixed(1) :
+                          0;
+                        return ` ${context.label}: ${val} unit (${pct}%)`;
+                      },
+                    },
+                  },
+                  datalabels: {
+                    color: isLight ? '#1e293b' : '#ffffff',
+                    font: { weight: 'normal', size: 8 },
+                    formatter: (value, context) => {
+                      const total = context.dataset.data.reduce(
+                        (a, b) => a + b, 0
+                      );
+                      const pct =
+                        total > 0 ? ((value / total) * 100).toFixed(1) : 0;
+                      return `${pct}%`;
+                    },
+                    display: (context) =>
+                      context.dataset.data[context.dataIndex] > 0,
+                    offset: 2,
+                    anchor: 'center',
+                    align: 'center',
+                  },
+                },
+                animation: {
+                  animateScale: true,
+                  animateRotate: true,
+                  duration: 800,
+                },
+              },
+              plugins: [ChartDataLabels],
+            });
+          }
+        }
+      }
+
+      // ============================================================
+      // RENDER TABLE (Rt)
+      // ============================================================
+      function Rt(tab) {
+        const list = D[tab] || [];
+        const isCombined = tab === 'keseluruhan';
+        const searchVal = (
+          document.getElementById(`searchInput-${tab}`)?.value || ''
+        ).toLowerCase();
+        const selectedStatuses = subTabSelectedStatus[tab] || [];
+        const selectedModels = subTabSelectedModel[tab] || [];
+        const selectedZones = subTabSelectedZon[tab] || [];
+        const filtered = list.filter((item) => {
+          if (searchVal) {
+            const callsign = (G(item, 'CALLSIGN') || '').toLowerCase(),
+              plate = (G(item, 'PLATE') || '').toLowerCase(),
+              lokasi = (G(item, 'LOKASI SEMASA') || '').toLowerCase(),
+              model = (G(item, 'MODEL JENTERA') || '').toLowerCase(),
+              asal = (G(item, 'PENEMPATAN ASAL') || '').toLowerCase(),
+              zon = (G(item, 'ZON') || '').toLowerCase(),
+              status = (G(item, 'STATUS JENTERA') || '').toLowerCase(),
+              kerosakan = (G(item, 'STATUS KEROSAKKAN') || '').toLowerCase(),
+              jenis = (item._jenisLabel || '').toLowerCase();
+            if (
+              !callsign.includes(searchVal) &&
+              !plate.includes(searchVal) &&
+              !lokasi.includes(searchVal) &&
+              !model.includes(searchVal) &&
+              !asal.includes(searchVal) &&
+              !zon.includes(searchVal) &&
+              !status.includes(searchVal) &&
+              !kerosakan.includes(searchVal) &&
+              !jenis.includes(searchVal)
+            ) return false;
+          }
+          if (selectedZones.length > 0) {
+            const zoneVal = (G(item, 'ZON') || '').trim();
+            if (!selectedZones.includes(zoneVal)) return false;
+          }
+          if (selectedStatuses.length > 0) {
+            const statusVal = (G(item, 'STATUS JENTERA') || '').trim();
+            if (!selectedStatuses.includes(statusVal)) return false;
+          }
+          if (selectedModels.length > 0) {
+            const modelVal = (G(item, 'MODEL JENTERA') || '').trim();
+            if (!selectedModels.includes(modelVal)) return false;
+          }
+          return true;
+        });
+        Rc(tab, filtered);
+
+        const tbody = document.getElementById(`tableBody-${tab}`);
+        if (!tbody) return;
+        tbody.innerHTML =
+          filtered.length === 0 ?
+          `<tr><td colspan="${isCombined ? 11 : 10}" class="p-3 text-center text-slate-500">Tiada jentera dijumpai.</td></tr>` :
+          filtered
+          .map((item, idx) => {
+            const itemWithType = { ...item, _j: item._jenisTab || tab };
+            const callsign = (G(item, 'CALLSIGN') || '-').toUpperCase(),
+              plate = (G(item, 'PLATE') || '-').toUpperCase(),
+              statusRaw = G(item, 'STATUS JENTERA') || 'TIADA',
+              cat = getStatusCategory(statusRaw);
+            let badgeClass = 'badge-unknown';
+            if (cat === 'B') badgeClass = 'badge-baik';
+            else if (cat === 'RM') badgeClass = 'badge-minor';
+            else if (cat === 'R') badgeClass = 'badge-rosak';
+            else if (cat === 'D') badgeClass = 'badge-pulang';
+            const itemJson = encodeURIComponent(
+              JSON.stringify(itemWithType)
+            );
+            return `<tr class="hover:bg-slate-700/30 cursor-pointer transition relative" onclick="showVehicleModal('${itemJson}')">
+                  <td class="p-2">${idx + 1}</td>
+                  <td class="p-2 font-bold" style="color:var(--text-primary);">${callsign}</td>
+                  <td class="p-2"><span class="plate-number">${plate}</span></td>
+                  <td class="p-2">${G(item, 'MODEL JENTERA') || '-'}</td>
+                  ${isCombined ? `<td class="p-2"><span class="text-[9px] font-bold uppercase px-1.5 py-0.5 rounded bg-indigo-500/20 text-indigo-400 border border-indigo-500/30">${item._jenisLabel || '-'}</span></td>` : ''}
+                  <td class="p-2">${G(item, 'PENEMPATAN ASAL') || '-'}</td>
+                  <td class="p-2">${G(item, 'LOKASI SEMASA') || '-'}</td>
+                  <td class="p-2">${G(item, 'ZON') || '-'}</td>
+                  <td class="p-2"><span class="badge-status ${badgeClass}">${statusRaw}</span></td>
+                  <td class="p-2 max-w-[140px] truncate" style="color:var(--text-secondary);">${(
+                    G(item, 'STATUS KEROSAKKAN') || '-'
+                  )}</td>
+                  <td class="p-2 text-center" onclick="event.stopPropagation()"><button onclick="copySingleAssetInfo('${itemJson}', this)" class="copy-btn" title="Salin maklumat"><i class="fa-regular fa-copy"></i></button></td>
+                </tr>`;
+          })
+          .join('');
+        document.getElementById(
+          `rowCount-${tab}`
+        ).textContent = `Menunjukkan ${filtered.length} daripada ${list.length} jentera`;
+      }
+
+      // ============================================================
+      // SEARCH
+      // ============================================================
+      function doSearch(tab) {
+        Rt(tab);
+      }
+
+      function clearSearch(tab) {
+        const input = document.getElementById(`searchInput-${tab}`);
+        if (input) {
+          input.value = '';
+          Rt(tab);
+        }
+      }
+
+      // ============================================================
+      // COPY & EXPORT
+      // ============================================================
+      function copySingleAssetInfo(itemJson, btnElement) {
+        try {
+          const item = JSON.parse(decodeURIComponent(itemJson));
+          navigator.clipboard
+            .writeText(formatAssetInfo(item))
+            .then(() => {
+              showNotification('Maklumat jentera berjaya disalin!', 'success');
+              if (btnElement) {
+                btnElement.classList.add('copied');
+                const icon = btnElement.querySelector('i');
+                if (icon) icon.className = 'fa-solid fa-check';
+                setTimeout(() => {
+                  btnElement.classList.remove('copied');
+                  if (icon) icon.className = 'fa-regular fa-copy';
+                }, 1500);
+              }
+            })
+            .catch(() => {
+              showNotification('Gagal menyalin maklumat', 'error');
+            });
+        } catch (err) {
+          showNotification('Ralat menyalin data', 'error');
+        }
+      }
+
+      function copyAllTableData(tab) {
+        const list = D[tab] || [];
+        if (!list.length) {
+          showNotification('Tiada data untuk disalin', 'warning');
+          return;
+        }
+        let text = `=== SENARAI JENTERA ${tab === 'cfrt' ? 'FRT' : tab.toUpperCase()} ===\nJumlah: ${list.length} jentera\n${'='.repeat(40)}\n\n`;
+        list.forEach((item, idx) => {
+          const itemWithType = { ...item, _j: item._jenisTab || tab };
+          text += `[${idx + 1}] ${formatAssetInfo(itemWithType)}\n${'-'.repeat(
+            30
+          )}\n`;
+        });
+        navigator.clipboard
+          .writeText(text)
+          .then(() => {
+            showNotification(
+              `Berjaya menyalin ${list.length} maklumat jentera!`,
+              'success'
+            );
+          })
+          .catch(() => {
+            showNotification('Gagal menyalin data', 'error');
+          });
+      }
+
+      function formatAssetInfo(item) {
+        const callsign = (G(item, 'CALLSIGN') || '-').toUpperCase(),
+          plate = (G(item, 'PLATE') || '-').toUpperCase(),
+          model = G(item, 'MODEL JENTERA') || '-',
+          asal = G(item, 'PENEMPATAN ASAL') || '-',
+          lokasi = G(item, 'LOKASI SEMASA') || '-',
+          zon = G(item, 'ZON') || '-',
+          status = G(item, 'STATUS JENTERA') || '-',
+          kerosakan = G(item, 'STATUS KEROSAKKAN') || '-';
+        let typeLabel =
+          item._j === 'cfrt' ?
+          'RESCUE TENDER (FRT)' :
+          item._j === 'emrs' ?
+          'EMRS' :
+          item._j === 'water' ?
+          'WATER TANKER' :
+          'JENTERA';
+        return `[${typeLabel}] ${callsign} | ${plate} | ${model}\nPenempatan: ${asal}\nLokasi: ${lokasi}\nZon: ${zon}\nStatus: ${status}\nKerosakan: ${kerosakan}`;
+      }
+
+      function eksportKeExcel(tab) {
+        const list = D[tab] || [];
+        if (!list.length) {
+          showNotification('Tiada data untuk dieksport', 'warning');
+          return;
+        }
+        const isCombined = tab === 'keseluruhan';
+        let csv = isCombined ?
+          '\uFEFFBil,Jenis,Callsign,Plate,Model,Penempatan Asal,Lokasi Semasa,Zon,Status,Kerosakan\n' :
+          '\uFEFFBil,Callsign,Plate,Model,Penempatan Asal,Lokasi Semasa,Zon,Status,Kerosakan\n';
+        list.forEach((i, idx) => {
+          csv +=
+            `${idx + 1},${isCombined ? `"${i._jenisLabel || ''}",` : ''}"${G(i, 'CALLSIGN')}","${G(i, 'PLATE')}","${G(
+              i, 'MODEL JENTERA'
+            )}","${G(i, 'PENEMPATAN ASAL')}","${G(i, 'LOKASI SEMASA')}","${G(
+              i, 'ZON'
+            )}","${G(i, 'STATUS JENTERA')}","${G(i, 'STATUS KEROSAKKAN')}"\n`;
+        });
+        const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+        const link = document.createElement('a');
+        link.href = URL.createObjectURL(blob);
+        link.download =
+          `Jentera_${tab === 'cfrt' ? 'FRT' : tab.toUpperCase()}_${new Date().toISOString().split('T')[0]}.csv`;
+        link.click();
+        showNotification('Fail CSV berjaya dimuat turun', 'success');
+      }
+
+      // ============================================================
+      // DASHBOARD UTAMA (FIT VIEW) — ZON DITENTUKAN BERDASARKAN LOKASI SEMASA
+      // ============================================================
+      function getAllAssets() {
+        const all = [];
+        D.cfrt.forEach((i) =>
+          all.push({
+            ...i,
+            _j: 'cfrt',
+            _icon: '<i class="fa-solid fa-fire-extinguisher text-red-500"></i>',
+            _tc: 'type-cfrt',
+          })
+        );
+        D.emrs.forEach((i) =>
+          all.push({
+            ...i,
+            _j: 'emrs',
+            _icon: '<i class="fa-solid fa-truck-medical text-blue-500"></i>',
+            _tc: 'type-emrs',
+          })
+        );
+        D.water.forEach((i) =>
+          all.push({
+            ...i,
+            _j: 'water',
+            _icon: '<i class="fa-solid fa-truck-droplet text-cyan-500"></i>',
+            _tc: 'type-water',
+          })
+        );
+        return all;
+      }
+
+      function toggleJenisFilter() {
+        document.getElementById('jenisFilterOptions').classList.toggle('show');
+      }
+
+      function applyJenisFilter() {
+        const cbs = document.querySelectorAll(
+          '#jenisFilterOptions input[type="checkbox"]'
+        );
+        F = [];
+        cbs.forEach((cb) => {
+          if (cb.checked) F.push(cb.value);
+        });
+        document.getElementById('jenisFilterCount').textContent = F.length;
+        renderMainDashboard();
+      }
+
+      function toggleStatusFilter() {
+        document.getElementById('statusFilterOptions').classList.toggle('show');
+      }
+
+      function applyStatusFilter() {
+        const cbs = document.querySelectorAll(
+          '#statusFilterOptions input[type="checkbox"]'
+        );
+        SF = [];
+        cbs.forEach((cb) => {
+          if (cb.checked) SF.push(cb.value);
+        });
+        const ct = document.getElementById('statusFilterCount');
+        if (SF.length > 0) {
+          ct.textContent = SF.length;
+          ct.style.display = 'inline-block';
+        } else {
+          ct.style.display = 'none';
+        }
+        renderMainDashboard();
+      }
+
+      // Render balai card group (helper)
+      function renderBalaiCardGroup(balaiName, items) {
+        let cardsHtml = '';
+        if (items.length > 0) {
+          cardsHtml = items
+            .map((item) => {
+              const callsign = G(item, 'CALLSIGN') || '-',
+                plate = G(item, 'PLATE') || '-',
+                model = G(item, 'MODEL JENTERA') || '',
+                status = G(item, 'STATUS JENTERA') || 'TIADA',
+                cat = getStatusCategory(status);
+              let glowClass = 'status-glow-u',
+                statusDotBg = 'bg-slate-400';
+              if (cat === 'B') {
+                glowClass = 'status-glow-b';
+                statusDotBg = 'bg-emerald-500 siren-red';
+              } else if (cat === 'RM') {
+                glowClass = 'status-glow-rm';
+                statusDotBg = 'bg-yellow-500 siren-amber';
+              } else if (cat === 'R') {
+                glowClass = 'status-glow-r';
+                statusDotBg = 'bg-red-500 siren-red';
+              } else if (cat === 'D') {
+                glowClass = 'status-glow-d';
+                statusDotBg = 'bg-blue-500 siren-blue';
+              }
+              const modelUpper = model.toUpperCase();
+              let typeTag = 'FRT';
+              if (modelUpper.includes('HINO') && modelUpper.includes('XZC720R'))
+                typeTag = 'CFRT';
+              else if (
+                modelUpper.includes('NISSAN') &&
+                modelUpper.includes('CPB14FHRT')
+              ) typeTag = 'FRT';
+              else if (
+                modelUpper.includes('MERCEDES') &&
+                modelUpper.includes('ATEGO')
+              ) typeTag = 'LFRT';
+              else if (
+                modelUpper.includes('SCANIA') &&
+                modelUpper.includes('P310')
+              ) typeTag = 'FRT';
+              else if (modelUpper.includes('SITRAK')) typeTag = 'FRT';
+              else if (
+                modelUpper.includes('SCANIA') &&
+                modelUpper.includes('P94')
+              ) typeTag = 'FRT';
+              else if (
+                modelUpper.includes('FORD') &&
+                modelUpper.includes('F350')
+              ) typeTag = 'FRT';
+              else if (
+                modelUpper.includes('TOYOTA') &&
+                modelUpper.includes('HIACE')
+              ) typeTag = 'EMRS';
+              else if (
+                modelUpper.includes('SCANIA') &&
+                modelUpper.includes('WT') &&
+                modelUpper.includes('20000')
+              ) typeTag = 'TANKER';
+              else if (
+                modelUpper.includes('MERCEDES') &&
+                modelUpper.includes('WT') &&
+                modelUpper.includes('10000')
+              ) typeTag = 'TANKER';
+              const typeColor =
+                item._j === 'cfrt' ?
+                'bg-red-500/20 text-red-400 border-red-500/30' :
+                item._j === 'emrs' ?
+                'bg-blue-500/20 text-blue-400 border-blue-500/30' :
+                'bg-cyan-500/20 text-cyan-400 border-cyan-500/30';
+              const itemJson = encodeURIComponent(JSON.stringify(item));
+              return `<div class="jentera-card ${glowClass} ${item._tc} relative group" onclick="showVehicleModal('${itemJson}')" title="${callsign} - ${status} (${model})">
+                    <button onclick="event.stopPropagation(); copySingleAssetInfo('${itemJson}', this)" class="copy-btn" title="Salin maklumat"><i class="fa-regular fa-copy"></i></button>
+                    <div class="flex items-center justify-between gap-1 pr-3 min-w-0">
+                      <div class="flex items-center gap-1 min-w-0"><span class="w-1.5 h-1.5 rounded-full ${statusDotBg} shrink-0"></span><span class="text-[10px] font-extrabold tracking-tight leading-none truncate" style="color:var(--text-primary);" title="${callsign}">${callsign}</span></div>
+                      <span class="text-[8px] font-extrabold px-1 py-0.2 rounded border shrink-0 ${typeColor}">${typeTag}</span>
+                    </div>
+                    <div class="flex items-center justify-between gap-1 text-[9px] pt-0.5 min-w-0">
+                      <span class="plate-number shrink-0">${plate}</span>
+                      <span class="text-[8px] truncate font-medium text-right flex-1 text-secondary-custom" title="${model}">${model}</span>
+                    </div>
+                    <div class="flex items-center justify-between pt-0.5 border-t border-custom">
+                      <div class="flex items-center gap-1"><div class="w-3 h-3 rounded-full bg-slate-950 border border-slate-600 flex items-center justify-center wheel-spin"><div class="w-1 h-1 rounded-full bg-slate-500"></div></div><div class="w-3 h-3 rounded-full bg-slate-950 border border-slate-600 flex items-center justify-center wheel-spin"><div class="w-1 h-1 rounded-full bg-slate-500"></div></div></div>
+                    </div>
+                  </div>`;
+            })
+            .join('');
+        } else {
+          const selStatuses = SF || [];
+          cardsHtml = renderEmptyStatusCards(selStatuses);
+        }
+        return `<div class="bg-slate-900/60 border border-custom rounded-lg p-1.5 space-y-1">
+              <div class="flex items-center justify-between text-[10px] font-bold px-0.5" style="color:#fbbf24; text-shadow:-1px -1px 0 #000,1px -1px 0 #000,-1px 1px 0 #000,1px 1px 0 #000,0 0 8px #fbbf24,0 0 16px #fbbf24;">
+                <span class="truncate uppercase tracking-tight flex items-center gap-1"><i class="fa-solid fa-building text-yellow-400 text-[9px]"></i> ${balaiName}</span>
+                <span class="text-slate-500 text-[9px] font-semibold">${items.length}</span>
+              </div>
+              <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-1 gap-1">${cardsHtml}</div>
+            </div>`;
+      }
+
+      function renderEmptyStatusCards(selectedStatuses) {
+        const statusesToDisplay =
+          selectedStatuses.length > 0 ?
+          selectedStatuses :
+          ['BAIK', 'ROSAK MINOR', 'ROSAK', 'DIPULANGKAN'];
+        const statusConfigs = {
+          BAIK: {
+            label: 'BAIK',
+            border: 'border-emerald-500/30',
+            bg: 'bg-emerald-950/20',
+            text: 'text-emerald-400',
+            badge: 'bg-emerald-900/40 text-emerald-300 border-emerald-500/20',
+            dot: 'bg-emerald-500',
+          },
+          'ROSAK MINOR': {
+            label: 'MINOR',
+            border: 'border-yellow-500/30',
+            bg: 'bg-yellow-950/20',
+            text: 'text-yellow-400',
+            badge: 'bg-yellow-900/40 text-yellow-300 border-yellow-500/20',
+            dot: 'bg-yellow-500',
+          },
+          ROSAK: {
+            label: 'ROSAK',
+            border: 'border-red-500/30',
+            bg: 'bg-red-950/20',
+            text: 'text-red-400',
+            badge: 'bg-red-900/40 text-red-300 border-red-500/20',
+            dot: 'bg-red-500',
+          },
+          DIPULANGKAN: {
+            label: 'PULANG',
+            border: 'border-blue-500/30',
+            bg: 'bg-blue-950/20',
+            text: 'text-blue-400',
+            badge: 'bg-blue-900/40 text-blue-300 border-blue-500/20',
+            dot: 'bg-blue-500',
+          },
+          LAIN: {
+            label: 'LAIN',
+            border: 'border-slate-500/30',
+            bg: 'bg-slate-900/30',
+            text: 'text-slate-400',
+            badge: 'bg-slate-800 text-slate-300 border-slate-700',
+            dot: 'bg-slate-400',
+          },
+        };
+        return `<div class="col-span-full space-y-1 py-0.5"><div class="grid grid-cols-2 gap-1">${statusesToDisplay
+          .map((stKey) => {
+            const cfg = statusConfigs[stKey] || statusConfigs['LAIN'];
+            return `<div class="border border-dashed ${cfg.border} ${cfg.bg} rounded px-1.5 py-0.5 flex items-center justify-between"><div class="flex items-center gap-1 min-w-0"><span class="w-1.5 h-1.5 rounded-full ${cfg.dot} shrink-0"></span><span class="text-[9px] font-bold ${cfg.text} truncate">${cfg.label}</span></div><span class="text-[8px] font-bold border ${cfg.badge} px-1 rounded shrink-0">0</span></div>`;
+          })
+          .join('')}</div></div>`;
+      }
+
+      // ============================================================
+      // RENDER MAIN DASHBOARD — ZON DITENTUKAN DARI LOKASI SEMASA
+      // ============================================================
+      function renderMainDashboard() {
+        const all = getAllAssets();
+        document.getElementById('countCfrt').textContent = D.cfrt.length;
+        document.getElementById('countEmrs').textContent = D.emrs.length;
+        document.getElementById('countWater').textContent = D.water.length;
+        let filtered = all.filter((item) => F.includes(item._j));
+        if (SF.length > 0) {
+          filtered = filtered.filter((item) => {
+            const cat = getStatusCategory(G(item, 'STATUS JENTERA'));
+            const map = {
+              B: 'BAIK',
+              RM: 'ROSAK MINOR',
+              R: 'ROSAK',
+              D: 'DIPULANGKAN',
+              U: 'LAIN',
+            };
+            return SF.includes(map[cat] || 'LAIN');
+          });
+        }
+        let b = 0,
+          rm = 0,
+          r = 0,
+          d = 0;
+        filtered.forEach((i) => {
+          const c = getStatusCategory(G(i, 'STATUS JENTERA'));
+          if (c === 'B') b++;
+          else if (c === 'RM') rm++;
+          else if (c === 'R') r++;
+          else if (c === 'D') d++;
+        });
+        document.getElementById('dashStats').innerHTML = `
+            <div class="card-bg border-custom p-2 rounded-lg text-center transition-colors duration-300" style="border-width:1px;"><div class="text-base font-extrabold" style="color:var(--text-primary);">${filtered.length}</div><div class="text-[9px] text-secondary-custom">JUMLAH</div></div>
+            <div class="card-bg border border-emerald-500/30 p-2 rounded-lg text-center transition-colors duration-300"><div class="text-base font-extrabold text-emerald-400 pulse-glow-b">${b}</div><div class="text-[9px] text-emerald-500/80">BAIK</div></div>
+            <div class="card-bg border border-yellow-500/30 p-2 rounded-lg text-center transition-colors duration-300"><div class="text-base font-extrabold text-yellow-400 pulse-glow-rm">${rm}</div><div class="text-[9px] text-yellow-500/80">MINOR</div></div>
+            <div class="card-bg border border-red-500/30 p-2 rounded-lg text-center transition-colors duration-300"><div class="text-base font-extrabold text-red-400 pulse-glow-r">${r}</div><div class="text-[9px] text-red-500/80">ROSAK</div></div>
+            <div class="card-bg border border-blue-500/30 p-2 rounded-lg text-center transition-colors duration-300"><div class="text-base font-extrabold text-blue-400 pulse-glow-d">${d}</div><div class="text-[9px] text-blue-500/80">PULANG</div></div>
+          `;
+
+        // --- UBATAN UTAMA: TENTUKAN ZON BERDASARKAN LOKASI SEMASA ---
+        const zoneMap = {};
+        filtered.forEach((item) => {
+          const lokasi = (G(item, 'LOKASI SEMASA') || '').trim();
+          const lokasiUpper = lokasi.toUpperCase();
+
+          let zoneKey = null;
+
+          // Cari balai yang paling sesuai (dari semua zon) DAHULU — supaya zon
+          // dan kad balai sentiasa guna padanan yang SAMA (elak bug kad balai
+          // "melompat" ke zon lain bila nama balai bertindih, cth. ZON 2
+          // "SUNGAI RENGIT" vs ZON 3 "RENGIT").
+          let matchedBalai = findMatchingBalaiInAllZones(lokasi);
+
+          // 1. Kes khas: Bengkel / KJT
+          if (lokasiUpper.includes('BENGKEL') || lokasiUpper.includes('KJT')) {
+            zoneKey = 'BENGKEL KJT BOMBA';
+          } else if (matchedBalai) {
+            // 2. Tentukan zon berdasarkan zon MILIK balai yang telah dipadan
+            for (const [zone, balaiList] of Object.entries(BALAI_ZON)) {
+              if (
+                balaiList.some(
+                  (balai) => balai.toUpperCase() === matchedBalai.toUpperCase()
+                )
+              ) {
+                zoneKey = zone;
+                break;
+              }
+            }
+          }
+
+          // 3. Fallback: gunakan medan ZON daripada data jika masih tiada zon
+          if (!zoneKey) {
+            zoneKey = (G(item, 'ZON') || 'LAIN').trim().toUpperCase();
+          }
+
+          if (!zoneMap[zoneKey]) zoneMap[zoneKey] = {};
+
+          const balaiKey = matchedBalai ?
+            matchedBalai.toUpperCase() :
+            (lokasi.toUpperCase() || 'TANPA BALAI');
+
+          if (!zoneMap[zoneKey][balaiKey]) zoneMap[zoneKey][balaiKey] = [];
+          zoneMap[zoneKey][balaiKey].push(item);
+        });
+
+        let html = '';
+        zoneOrder.forEach((zoneName) => {
+          const dataZon = zoneMap[zoneName] || {};
+          let totalItemsInZone = 0;
+          Object.values(dataZon).forEach(
+            (arr) => (totalItemsInZone += arr.length)
+          );
+          // ZONE CARD with manual scroll: max-height + sticky header + scrollable body
+          html += `<div class="card-bg border-custom rounded-xl p-2 flex flex-col space-y-2 max-h-[700px] transition-colors duration-300" style="border-width:1px; overflow:hidden;">
+              <div class="flex items-center justify-between pb-1 border-b border-custom sticky top-0 z-10 bg-[var(--bg-card)]">
+                <h3 class="text-xs font-extrabold flex items-center gap-1.5" style="color:var(--text-primary);">
+                  <span class="w-2 h-2 rounded-full bg-red-500 siren-red shrink-0"></span>${zoneName}
+                </h3>
+                <span class="bg-red-600/20 text-red-400 border border-red-500/30 text-[10px] px-2 py-0.2 rounded-full font-bold">${totalItemsInZone}</span>
+              </div>
+              <div class="space-y-1.5 flex-1 overflow-y-auto">`;
+          if (zoneName === 'BENGKEL KJT BOMBA') {
+            const sortedBalai = Object.keys(dataZon).sort();
+            if (sortedBalai.length === 0)
+              html += renderBalaiCardGroup('BENGKEL KJT BOMBA', []);
+            else
+              sortedBalai.forEach((balai) => {
+                html += renderBalaiCardGroup(balai, dataZon[balai]);
+              });
+          } else {
+            const listBalai = BALAI_ZON[zoneName] || [];
+            const renderedBalaiKeys = new Set();
+            listBalai.forEach((balaiFullName) => {
+              const balaiUpper = balaiFullName.toUpperCase();
+              renderedBalaiKeys.add(balaiUpper);
+              let items = dataZon[balaiUpper] || [];
+              html += renderBalaiCardGroup(
+                balaiFullName
+                .replace('BALAI BOMBA DAN PENYELAMAT', 'BBP')
+                .replace('FIRE POST', 'FP'),
+                items
+              );
+            });
+            Object.keys(dataZon).forEach((extraBalaiKey) => {
+              if (
+                !renderedBalaiKeys.has(extraBalaiKey) &&
+                extraBalaiKey !== 'TANPA BALAI'
+              ) {
+                html += renderBalaiCardGroup(
+                  extraBalaiKey,
+                  dataZon[extraBalaiKey]
+                );
+              }
+            });
+            if (dataZon['TANPA BALAI'] && dataZon['TANPA BALAI'].length > 0) {
+              html += renderBalaiCardGroup('LAIN-LAIN', dataZon['TANPA BALAI']);
+            }
+          }
+          html += `</div></div>`;
+        });
+        document.getElementById('zoneContainer').innerHTML = html;
+      }
+
+      // ============================================================
+      // MODAL
+      // ============================================================
+      function generateFRTModalHTML(item) {
+        const callsign = G(item, 'CALLSIGN') || '-',
+          plate = G(item, 'PLATE') || '-',
+          model = G(item, 'MODEL JENTERA') || '-',
+          asal = G(item, 'PENEMPATAN ASAL') || '-',
+          lokasi = G(item, 'LOKASI SEMASA') || '-',
+          zon = G(item, 'ZON') || '-',
+          status = G(item, 'STATUS JENTERA') || '-',
+          kerosakan =
+          G(item, 'STATUS KEROSAKKAN') || 'Tiada maklumat kerosakan';
+        const cat = getStatusCategory(status);
+        let accentColor = 'red',
+          accentBg = 'from-red-600 via-red-800 to-slate-900',
+          borderGlow = 'border-red-500/60';
+        if (cat === 'RM') {
+          accentColor = 'amber';
+          accentBg = 'from-amber-600 via-red-800 to-slate-900';
+          borderGlow = 'border-amber-500/60';
+        } else if (cat === 'R') {
+          accentColor = 'red';
+          accentBg = 'from-red-900 via-slate-900 to-black';
+          borderGlow = 'border-red-500/60';
+        } else if (cat === 'D') {
+          accentColor = 'blue';
+          accentBg = 'from-blue-700 via-slate-800 to-slate-900';
+          borderGlow = 'border-blue-500/60';
+        }
+        let badgeClass = 'badge-unknown';
+        if (cat === 'B') badgeClass = 'badge-baik';
+        else if (cat === 'RM') badgeClass = 'badge-minor';
+        else if (cat === 'R') badgeClass = 'badge-rosak';
+        else if (cat === 'D') badgeClass = 'badge-pulang';
+        return `<div class="vehicle-shape-modal bg-gradient-to-b ${accentBg} border-2 ${borderGlow} rounded-2xl shadow-2xl overflow-hidden">
+            <div class="flex items-center justify-between bg-slate-950/90 px-4 py-3 border-b ${borderGlow}">
+              <div class="flex items-center gap-2"><span class="w-3 h-3 rounded-full bg-${accentColor}-500 siren-red"></span><span class="w-3 h-3 rounded-full bg-blue-500 siren-blue"></span><span class="text-sm font-black text-${accentColor}-300 tracking-wider uppercase">FIRE RESCUE TENDER (FRT)</span></div>
+              <span class="badge-status ${badgeClass} text-xs px-2 py-1">${status}</span>
+            </div>
+            <div class="vehicle-illustration mx-4 mt-4">
+              <div class="flex items-center gap-1 mb-2"><div class="vehicle-light-bar flex-1 bg-red-500 siren-red"></div><div class="vehicle-light-bar w-1/3 bg-blue-500 siren-blue"></div></div>
+              <div class="vehicle-body relative h-16 flex items-end justify-between px-2 pb-1">
+                <div class="vehicle-cabin absolute top-0 left-4 w-16 h-8 rounded-t-lg flex items-center justify-center gap-1 px-1"><div class="vehicle-window w-5 h-5"></div><div class="vehicle-window w-5 h-5"></div></div>
+                <div class="flex items-center gap-1 ml-20 mb-1"><span class="text-[8px] font-black text-slate-200 bg-slate-900/80 px-1.5 py-0.5 rounded">${callsign}</span></div>
+                <div class="flex items-center gap-1 mb-1"><span class="plate-number text-[10px]">${plate}</span></div>
+                <div class="flex gap-2 mb-0.5"><div class="w-4 h-4 rounded-full bg-slate-900 border-2 border-slate-500 flex items-center justify-center wheel-spin"><div class="w-1.5 h-1.5 rounded-full bg-slate-400"></div></div><div class="w-4 h-4 rounded-full bg-slate-900 border-2 border-slate-500 flex items-center justify-center wheel-spin"><div class="w-1.5 h-1.5 rounded-full bg-slate-400"></div></div></div>
+              </div>
+              <div class="flex items-center gap-2 mt-1 px-2"><div class="vehicle-hose w-6 h-6 flex items-center justify-center"><i class="fa-solid fa-water text-[10px] text-slate-300"></i></div><div class="vehicle-ladder h-1.5 flex-1"></div><span class="text-[9px] font-bold text-slate-400 uppercase">FRT</span></div>
+            </div>
+            <div class="p-4 space-y-3">
+              <div class="grid grid-cols-2 gap-3"><div class="bg-slate-950/80 rounded-xl p-3 border border-slate-700/50"><span class="text-[10px] text-slate-400 uppercase font-semibold block mb-1">Model Jentera</span><span class="text-sm font-bold text-white"><i class="fa-solid fa-truck text-${accentColor}-400 mr-1"></i>${model}</span></div><div class="bg-slate-950/80 rounded-xl p-3 border border-slate-700/50"><span class="text-[10px] text-slate-400 uppercase font-semibold block mb-1">Zon</span><span class="text-sm font-bold text-white"><i class="fa-solid fa-location-dot text-${accentColor}-400 mr-1"></i>${zon}</span></div></div>
+              <div class="grid grid-cols-2 gap-3"><div class="bg-slate-950/80 rounded-xl p-3 border border-slate-700/50"><span class="text-[10px] text-slate-400 uppercase font-semibold block mb-1">Penempatan Asal</span><span class="text-xs font-semibold text-slate-200">${asal}</span></div><div class="bg-slate-950/80 rounded-xl p-3 border border-amber-500/20 bg-amber-950/20"><span class="text-[10px] text-amber-400 uppercase font-semibold block mb-1">Lokasi Semasa</span><span class="text-xs font-bold text-amber-300">${lokasi}</span></div></div>
+              <div class="bg-slate-950/80 rounded-xl p-3 border border-slate-700/50"><span class="text-[10px] text-slate-400 uppercase font-semibold block mb-2">Status Kerosakan / Catatan</span><div class="bg-slate-900/80 rounded-lg p-3 border border-slate-700/30 max-h-40 overflow-y-auto"><p class="text-xs text-slate-200 leading-relaxed whitespace-pre-wrap break-words">${kerosakan}</p></div></div>
+              <div class="flex justify-end pt-1"><button onclick="copySingleAssetInfo('${encodeURIComponent(
+                JSON.stringify(item)
+              )}', this)" class="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold rounded-lg border border-slate-600 transition flex items-center gap-2 text-xs shadow-lg"><i class="fa-regular fa-copy"></i> Salin Maklumat Jentera</button></div>
+            </div>
+          </div>`;
+      }
+
+      function generateEMRSModalHTML(item) {
+        const callsign = G(item, 'CALLSIGN') || '-',
+          plate = G(item, 'PLATE') || '-',
+          model = G(item, 'MODEL JENTERA') || '-',
+          asal = G(item, 'PENEMPATAN ASAL') || '-',
+          lokasi = G(item, 'LOKASI SEMASA') || '-',
+          zon = G(item, 'ZON') || '-',
+          status = G(item, 'STATUS JENTERA') || '-',
+          kerosakan =
+          G(item, 'STATUS KEROSAKKAN') || 'Tiada maklumat kerosakan';
+        const cat = getStatusCategory(status);
+        let badgeClass = 'badge-unknown';
+        if (cat === 'B') badgeClass = 'badge-baik';
+        else if (cat === 'RM') badgeClass = 'badge-minor';
+        else if (cat === 'R') badgeClass = 'badge-rosak';
+        else if (cat === 'D') badgeClass = 'badge-pulang';
+        return `<div class="vehicle-shape-modal bg-gradient-to-b from-blue-700 via-slate-800 to-slate-950 border-2 border-blue-500/60 rounded-2xl shadow-2xl overflow-hidden">
+            <div class="flex items-center justify-between bg-slate-950/90 px-4 py-3 border-b border-blue-500/60">
+              <div class="flex items-center gap-2"><span class="w-3 h-3 rounded-full bg-red-500 siren-red"></span><span class="w-3 h-3 rounded-full bg-blue-500 siren-blue"></span><span class="text-sm font-black text-blue-300 tracking-wider uppercase">AMBULANS EMRS</span></div>
+              <span class="badge-status ${badgeClass} text-xs px-2 py-1">${status}</span>
+            </div>
+            <div class="vehicle-illustration mx-4 mt-4">
+              <div class="flex items-center gap-1 mb-2"><div class="vehicle-light-bar flex-1 bg-red-500 siren-red"></div><div class="vehicle-light-bar w-1/3 bg-blue-500 siren-blue"></div></div>
+              <div class="vehicle-body relative h-14 flex items-end justify-between px-2 pb-1" style="background:linear-gradient(180deg,#f8fafc 0%,#cbd5e1 50%,#94a3b8 100%)">
+                <div class="vehicle-cabin absolute top-0 left-3 w-14 h-7 rounded-t-lg flex items-center justify-center gap-1 px-1" style="background:linear-gradient(180deg,#e2e8f0 0%,#94a3b8 100%)"><div class="vehicle-window w-4 h-4"></div><div class="vehicle-window w-4 h-4"></div></div>
+                <div class="flex items-center gap-1 ml-16 mb-1"><span class="text-[8px] font-black text-blue-900 bg-white/80 px-1.5 py-0.5 rounded">${callsign}</span></div>
+                <span class="plate-number text-[10px] mb-1">${plate}</span>
+                <div class="flex gap-2 mb-0.5"><div class="w-4 h-4 rounded-full bg-slate-900 border-2 border-slate-500 flex items-center justify-center wheel-spin"><div class="w-1.5 h-1.5 rounded-full bg-slate-400"></div></div><div class="w-4 h-4 rounded-full bg-slate-900 border-2 border-slate-500 flex items-center justify-center wheel-spin"><div class="w-1.5 h-1.5 rounded-full bg-slate-400"></div></div></div>
+              </div>
+              <div class="flex justify-center mt-1"><span class="text-[9px] font-bold text-blue-400 uppercase flex items-center gap-1"><i class="fa-solid fa-star-of-life text-[10px]"></i> EMRS</span></div>
+            </div>
+            <div class="p-4 space-y-3">
+              <div class="grid grid-cols-2 gap-3"><div class="bg-slate-950/80 rounded-xl p-3 border border-slate-700/50"><span class="text-[10px] text-slate-400 uppercase font-semibold block mb-1">Model Jentera</span><span class="text-sm font-bold text-white"><i class="fa-solid fa-truck-medical text-blue-400 mr-1"></i>${model}</span></div><div class="bg-slate-950/80 rounded-xl p-3 border border-slate-700/50"><span class="text-[10px] text-slate-400 uppercase font-semibold block mb-1">Zon</span><span class="text-sm font-bold text-white"><i class="fa-solid fa-location-dot text-blue-400 mr-1"></i>${zon}</span></div></div>
+              <div class="grid grid-cols-2 gap-3"><div class="bg-slate-950/80 rounded-xl p-3 border border-slate-700/50"><span class="text-[10px] text-slate-400 uppercase font-semibold block mb-1">Penempatan Asal</span><span class="text-xs font-semibold text-slate-200">${asal}</span></div><div class="bg-slate-950/80 rounded-xl p-3 border border-amber-500/20 bg-amber-950/20"><span class="text-[10px] text-amber-400 uppercase font-semibold block mb-1">Lokasi Semasa</span><span class="text-xs font-bold text-amber-300">${lokasi}</span></div></div>
+              <div class="bg-slate-950/80 rounded-xl p-3 border border-slate-700/50"><span class="text-[10px] text-slate-400 uppercase font-semibold block mb-2">Status Kerosakan / Catatan</span><div class="bg-slate-900/80 rounded-lg p-3 border border-slate-700/30 max-h-40 overflow-y-auto"><p class="text-xs text-slate-200 leading-relaxed whitespace-pre-wrap break-words">${kerosakan}</p></div></div>
+              <div class="flex justify-end pt-1"><button onclick="copySingleAssetInfo('${encodeURIComponent(
+                JSON.stringify(item)
+              )}', this)" class="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold rounded-lg border border-slate-600 transition flex items-center gap-2 text-xs shadow-lg"><i class="fa-regular fa-copy"></i> Salin Maklumat Jentera</button></div>
+            </div>
+          </div>`;
+      }
+
+      function generateWaterModalHTML(item) {
+        const callsign = G(item, 'CALLSIGN') || '-',
+          plate = G(item, 'PLATE') || '-',
+          model = G(item, 'MODEL JENTERA') || '-',
+          asal = G(item, 'PENEMPATAN ASAL') || '-',
+          lokasi = G(item, 'LOKASI SEMASA') || '-',
+          zon = G(item, 'ZON') || '-',
+          status = G(item, 'STATUS JENTERA') || '-',
+          kerosakan =
+          G(item, 'STATUS KEROSAKKAN') || 'Tiada maklumat kerosakan';
+        const cat = getStatusCategory(status);
+        let badgeClass = 'badge-unknown';
+        if (cat === 'B') badgeClass = 'badge-baik';
+        else if (cat === 'RM') badgeClass = 'badge-minor';
+        else if (cat === 'R') badgeClass = 'badge-rosak';
+        else if (cat === 'D') badgeClass = 'badge-pulang';
+        return `<div class="vehicle-shape-modal bg-gradient-to-b from-cyan-700 via-slate-800 to-slate-950 border-2 border-cyan-500/60 rounded-2xl shadow-2xl overflow-hidden">
+            <div class="flex items-center justify-between bg-slate-950/90 px-4 py-3 border-b border-cyan-500/60">
+              <div class="flex items-center gap-2"><span class="w-3 h-3 rounded-full bg-amber-500 siren-amber"></span><span class="text-sm font-black text-cyan-300 tracking-wider uppercase">WATER TANKER</span></div>
+              <span class="badge-status ${badgeClass} text-xs px-2 py-1">${status}</span>
+            </div>
+            <div class="vehicle-illustration mx-4 mt-4">
+              <div class="flex items-center gap-1 mb-2"><div class="vehicle-light-bar w-1/3 bg-amber-500 siren-amber"></div></div>
+              <div class="vehicle-body relative h-16 flex items-end justify-between px-2 pb-1" style="background:linear-gradient(180deg,#a5f3fc 0%,#06b6d4 50%,#0891b2 100%)">
+                <div class="vehicle-cabin absolute top-0 left-3 w-14 h-7 rounded-t-lg flex items-center justify-center gap-1 px-1" style="background:linear-gradient(180deg,#cffafe 0%,#22d3ee 100%)"><div class="vehicle-window w-4 h-4"></div><div class="vehicle-window w-4 h-4"></div></div>
+                <div class="flex items-center gap-1 ml-16 mb-1"><span class="text-[8px] font-black text-cyan-900 bg-white/80 px-1.5 py-0.5 rounded">${callsign}</span></div>
+                <span class="plate-number text-[10px] mb-1">${plate}</span>
+                <div class="flex gap-2 mb-0.5"><div class="w-4 h-4 rounded-full bg-slate-900 border-2 border-slate-500 flex items-center justify-center wheel-spin"><div class="w-1.5 h-1.5 rounded-full bg-slate-400"></div></div><div class="w-4 h-4 rounded-full bg-slate-900 border-2 border-slate-500 flex items-center justify-center wheel-spin"><div class="w-1.5 h-1.5 rounded-full bg-slate-400"></div></div></div>
+              </div>
+              <div class="flex justify-center mt-1"><span class="text-[9px] font-bold text-cyan-400 uppercase flex items-center gap-1"><i class="fa-solid fa-droplet text-[10px]"></i> WATER TANKER</span></div>
+            </div>
+            <div class="p-4 space-y-3">
+              <div class="grid grid-cols-2 gap-3"><div class="bg-slate-950/80 rounded-xl p-3 border border-slate-700/50"><span class="text-[10px] text-slate-400 uppercase font-semibold block mb-1">Model Jentera</span><span class="text-sm font-bold text-white"><i class="fa-solid fa-truck-droplet text-cyan-400 mr-1"></i>${model}</span></div><div class="bg-slate-950/80 rounded-xl p-3 border border-slate-700/50"><span class="text-[10px] text-slate-400 uppercase font-semibold block mb-1">Zon</span><span class="text-sm font-bold text-white"><i class="fa-solid fa-location-dot text-cyan-400 mr-1"></i>${zon}</span></div></div>
+              <div class="grid grid-cols-2 gap-3"><div class="bg-slate-950/80 rounded-xl p-3 border border-slate-700/50"><span class="text-[10px] text-slate-400 uppercase font-semibold block mb-1">Penempatan Asal</span><span class="text-xs font-semibold text-slate-200">${asal}</span></div><div class="bg-slate-950/80 rounded-xl p-3 border border-amber-500/20 bg-amber-950/20"><span class="text-[10px] text-amber-400 uppercase font-semibold block mb-1">Lokasi Semasa</span><span class="text-xs font-bold text-amber-300">${lokasi}</span></div></div>
+              <div class="bg-slate-950/80 rounded-xl p-3 border border-slate-700/50"><span class="text-[10px] text-slate-400 uppercase font-semibold block mb-2">Status Kerosakan / Catatan</span><div class="bg-slate-900/80 rounded-lg p-3 border border-slate-700/30 max-h-40 overflow-y-auto"><p class="text-xs text-slate-200 leading-relaxed whitespace-pre-wrap break-words">${kerosakan}</p></div></div>
+              <div class="flex justify-end pt-1"><button onclick="copySingleAssetInfo('${encodeURIComponent(
+                JSON.stringify(item)
+              )}', this)" class="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold rounded-lg border border-slate-600 transition flex items-center gap-2 text-xs shadow-lg"><i class="fa-regular fa-copy"></i> Salin Maklumat Jentera</button></div>
+            </div>
+          </div>`;
+      }
+
+      function showVehicleModal(itemJson) {
+        try {
+          const item =
+            typeof itemJson === 'string' ?
+            JSON.parse(decodeURIComponent(itemJson)) :
+            itemJson;
+          const container = document.getElementById('modalVehicleShape');
+          if (!container) return;
+          if (!item._j) {
+            const callsign = (G(item, 'CALLSIGN') || '').toUpperCase();
+            const model = (G(item, 'MODEL JENTERA') || '').toUpperCase();
+            if (
+              callsign.includes('EMRS') ||
+              (model.includes('TOYOTA') && model.includes('HIACE'))
+            ) {
+              item._j = 'emrs';
+            } else if (
+              callsign.includes('WATER') ||
+              callsign.includes('TANKER') ||
+              model.includes('WATER') ||
+              model.includes('TANKER')
+            ) {
+              item._j = 'water';
+            } else {
+              item._j = 'cfrt';
+            }
+          }
+          if (item._j === 'emrs') {
+            container.innerHTML = generateEMRSModalHTML(item);
+          } else if (item._j === 'water') {
+            container.innerHTML = generateWaterModalHTML(item);
+          } else {
+            container.innerHTML = generateFRTModalHTML(item);
+          }
+          document.getElementById('modalOverlay').classList.add('show');
+          container.scrollTop = 0;
+        } catch (e) {
+          console.error('Error showing modal:', e);
+        }
+      }
+
+      // FIX BUG #4: Perbaiki fungsi closeModal
+      function closeModal(e) {
+        const overlay = document.getElementById('modalOverlay');
+        if (!e || e.target === overlay) {
+          overlay.classList.remove('show');
+        }
+      }
+
+      // ============================================================
+      // FULLSCREEN / SLIDESHOW
+      // ============================================================
+      function toggleFullscreenDashboard() {
+        document.body.classList.toggle('fullscreen-mode');
+        if (document.body.classList.contains('fullscreen-mode')) {
+          if (document.documentElement.requestFullscreen) {
+            document.documentElement.requestFullscreen().catch(() => {});
+          }
+        } else {
+          if (document.exitFullscreen) {
+            document.exitFullscreen().catch(() => {});
+          }
+        }
+      }
+
+
+      // ============================================================
+      // LOAD ALL DATA & REFRESH
+      // ============================================================
+      function loadAllData() {
+        // Hanya papar loading overlay pada muatan PERTAMA sahaja
+        if (isInitialLoad) {
+          document.getElementById('loadingOverlay').classList.remove('hidden');
+        }
+        const refreshBtn = document.getElementById('refreshBtn');
+        if (refreshBtn) refreshBtn.classList.add('animate-pulse');
+        updateTimestamp();
+        Promise.all([
+          fetchTabData('cfrt'),
+          fetchTabData('emrs'),
+          fetchTabData('water'),
+          fetchTabData('lain'),
+          fetchTabData('marin'),
+          fetchTabData('rim'),
+          fetchTabData('utiliti'),
+        ]).then(() => {
+          combineAllData();
+          renderMainDashboard();
+
+          // === Hanya paksa tab DASHBOARD UTAMA pada muatan PERTAMA kali ===
+          if (isInitialLoad) {
+            switchTab('dashboard');
+            isInitialLoad = false;
+          } else {
+            // Reload seterusnya: KEKAL pada tab semasa (T)
+            if (T === 'dashboard') {
+              renderMainDashboard();
+            } else {
+              Rt(T);
+            }
+          }
+
+          document.getElementById('loadingOverlay').classList.add('hidden');
+          if (refreshBtn) refreshBtn.classList.remove('animate-pulse');
+          showNotification('Data berjaya dikemaskini', 'success');
+          resetCountdown();
+        });
+      }
+
+      // ============================================================
+      // DATA KESELURUHAN — GABUNGAN SEMUA TAB
+      // ============================================================
+      const JENIS_SOURCE_TABS = [
+        { tab: 'cfrt', label: 'FRT' },
+        { tab: 'emrs', label: 'EMRS' },
+        { tab: 'water', label: 'WATER TANKER' },
+        { tab: 'lain', label: 'LAIN-LAIN JENTERA' },
+        { tab: 'marin', label: 'MARIN' },
+        { tab: 'rim', label: 'RIM' },
+        { tab: 'utiliti', label: 'UTILITI' },
+      ];
+
+      function combineAllData() {
+        const merged = [];
+        JENIS_SOURCE_TABS.forEach(({ tab, label }) => {
+          (D[tab] || []).forEach((item) => {
+            merged.push({ ...item, _jenisLabel: label, _jenisTab: tab });
+          });
+        });
+        D.keseluruhan = merged;
+        populateMultiSelectOptions('keseluruhan');
+        populateModelOptions('keseluruhan');
+        populateZonOptions('keseluruhan');
+        UU('keseluruhan');
+        Rt('keseluruhan');
+        updateSubTabMultiSelect('keseluruhan', true);
+      }
+
+      function updateTimestamp() {
+        document.getElementById('lastUpdate').textContent =
+          'Dikemaskini: ' +
+          new Date().toLocaleTimeString('ms-MY', {
+            hour: '2-digit',
+            minute: '2-digit',
+            second: '2-digit',
+          });
+      }
+
+      function resetCountdown() {
+        remainingSeconds = REFRESH_INTERVAL_SEC;
+        if (intervalTimer) clearInterval(intervalTimer);
+        intervalTimer = setInterval(() => {
+          remainingSeconds--;
+          const mins = Math.floor(remainingSeconds / 60),
+            secs = remainingSeconds % 60;
+          document.getElementById(
+            'countdown'
+          ).textContent = `Auto Refresh: ${mins}:${secs
+            .toString()
+            .padStart(2, '0')}`;
+          if (remainingSeconds <= 0) loadAllData();
+        }, 1000);
+      }
+
+      function switchTab(tab) {
+        T = tab;
+        document.querySelectorAll('.tab-btn').forEach((b) => {
+          b.classList.remove('border-red-500', 'text-red-400');
+          b.classList.add('border-transparent', 'text-slate-400');
+        });
+        const activeBtn = document.querySelector(`.tab-btn.tab-${tab}`);
+        if (activeBtn) {
+          activeBtn.classList.remove('border-transparent', 'text-slate-400');
+          activeBtn.classList.add('border-red-500', 'text-red-400');
+        }
+        document
+          .querySelectorAll('.tab-content')
+          .forEach((el) => el.classList.add('hidden'));
+        document.getElementById(`tab-${tab}`)?.classList.remove('hidden');
+        if (tab === 'dashboard') renderMainDashboard();
+        else setTimeout(() => Rt(tab), 50);
+      }
+
+      // ============================================================
+      // EVENT LISTENERS & INIT
+      // ============================================================
+      window.addEventListener('click', function(e) {
+        if (!e.target.closest('.ms-dropdown')) {
+          document
+            .querySelectorAll('.ms-options')
+            .forEach((el) => el.classList.remove('show'));
+        }
+      });
+
+      document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') {
+          closeModal();
+        }
+      });
+
+      window.onload = function() {
+        loadTheme();
+        loadAllData();
+      };
+
+      window
+        .matchMedia('(prefers-color-scheme: dark)')
+        .addEventListener('change', (e) => {
+          if (!localStorage.getItem('theme')) {
+            if (e.matches) {
+              document.body.classList.remove('light-mode');
+              document.getElementById('themeIcon').className =
+                'fa-solid fa-moon';
+            } else {
+              document.body.classList.add('light-mode');
+              document.getElementById('themeIcon').className =
+                'fa-solid fa-sun';
+            }
+            Object.keys(CC).forEach((tab) => {
+              if (CC[tab].s) Rt(tab);
+            });
+          }
+        });
+    </script>
+  </body>
+</html>
