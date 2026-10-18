@@ -438,7 +438,9 @@
       }
 
       body.fullscreen-mode .tab-nav-header,
-      body.fullscreen-mode .sub-header-controls {
+      body.fullscreen-mode .sub-header-controls,
+      body.fullscreen-mode #dashboardFilters,
+      body.fullscreen-mode #legendBar {
         display: none !important;
       }
       body.fullscreen-mode #zoneContainer {
@@ -628,6 +630,7 @@
         .copy-btn,
         .ms-dropdown,
         #dashboardFilters,
+        #legendBar,
         button:not(.keep-in-print),
         .tab-btn,
         [class*='sticky'] {
@@ -814,7 +817,16 @@
         display: flex;
         flex-direction: column;
       }
+
+      /* Full-view layout for single-zone display (no internal scroll) */
+      .zone-body-full {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+        gap: 0.5rem;
+        align-items: start;
+      }
     </style>
+    
   </head>
   <body class="min-h-screen flex flex-col">
     <!-- LOADING OVERLAY -->
@@ -1787,47 +1799,124 @@
       </section>
 
       <!-- TAB DASHBOARD UTAMA -->
-      <section id="tab-dashboard" class="tab-content space-y-3">
-        <div class="card-bg border-custom rounded-xl p-2.5 flex flex-wrap items-center justify-between gap-2 transition-colors duration-300" id="dashboardFilters" style="border-width: 1px">
-          <div class="flex flex-wrap items-center gap-2">
-            <span class="text-[11px] font-bold uppercase text-secondary-custom">Jenis:</span>
-            <div class="ms-dropdown" id="jenisFilterDropdown">
-              <button onclick="toggleJenisFilter()" class="ms-select-btn text-[11px]" style="padding: 0.25rem 0.5rem">
-                <span id="jenisFilterText"><i class="fa-solid fa-layer-group mr-1"></i> Semua Jenis</span>
-                <span class="text-[10px] bg-red-600 text-white px-1.5 py-0.2 rounded font-bold" id="jenisFilterCount">3</span>
-                <span class="text-[8px]">▼</span>
-              </button>
-              <div class="ms-options" id="jenisFilterOptions">
-                <label class="ms-option"><input type="checkbox" value="cfrt" checked onchange="applyJenisFilter()" /><span><i class="fa-solid fa-fire-extinguisher text-red-500 mr-1"></i>Rescue Tender (FRT)</span><span class="ml-auto text-[9px] bg-slate-700 px-1 rounded font-bold" id="countCfrt">0</span></label>
-                <label class="ms-option"><input type="checkbox" value="emrs" checked onchange="applyJenisFilter()" /><span><i class="fa-solid fa-truck-medical text-blue-500 mr-1"></i>EMRS</span><span class="ml-auto text-[9px] bg-slate-700 px-1 rounded font-bold" id="countEmrs">0</span></label>
-                <label class="ms-option"><input type="checkbox" value="water" checked onchange="applyJenisFilter()" /><span><i class="fa-solid fa-truck-droplet text-cyan-500 mr-1"></i>Water Tanker</span><span class="ml-auto text-[9px] bg-slate-700 px-1 rounded font-bold" id="countWater">0</span></label>
-              </div>
+      <div class="card-bg border-custom rounded-xl p-2.5 flex flex-wrap items-center justify-between gap-2 transition-colors duration-300" id="dashboardFilters" style="border-width: 1px">
+        <div class="flex flex-wrap items-center gap-2">
+          <span class="text-[11px] font-bold uppercase text-secondary-custom">Jenis:</span>
+          <div class="ms-dropdown" id="jenisFilterDropdown">
+            <button onclick="toggleJenisFilter()" class="ms-select-btn text-[11px]" style="padding: 0.25rem 0.5rem">
+              <span id="jenisFilterText"><i class="fa-solid fa-layer-group mr-1"></i> Semua Jenis</span>
+              <span class="text-[10px] bg-red-600 text-white px-1.5 py-0.2 rounded font-bold" id="jenisFilterCount">3</span>
+              <span class="text-[8px]">▼</span>
+            </button>
+            <div class="ms-options" id="jenisFilterOptions">
+              <label class="ms-option"><input type="checkbox" value="cfrt" checked onchange="applyJenisFilter()" /><span><i class="fa-solid fa-fire-extinguisher text-red-500 mr-1"></i>Rescue Tender (FRT)</span><span class="ml-auto text-[9px] bg-slate-700 px-1 rounded font-bold" id="countCfrt">0</span></label>
+              <label class="ms-option"><input type="checkbox" value="emrs" checked onchange="applyJenisFilter()" /><span><i class="fa-solid fa-truck-medical text-blue-500 mr-1"></i>EMRS</span><span class="ml-auto text-[9px] bg-slate-700 px-1 rounded font-bold" id="countEmrs">0</span></label>
+              <label class="ms-option"><input type="checkbox" value="water" checked onchange="applyJenisFilter()" /><span><i class="fa-solid fa-truck-droplet text-cyan-500 mr-1"></i>Water Tanker</span><span class="ml-auto text-[9px] bg-slate-700 px-1 rounded font-bold" id="countWater">0</span></label>
             </div>
-            <span class="text-[11px] font-bold uppercase text-secondary-custom ml-1">Status:</span>
-            <div class="ms-dropdown" id="statusFilterDropdown">
-              <button onclick="toggleStatusFilter()" class="ms-select-btn text-[11px]" style="padding: 0.25rem 0.5rem">
-                <span id="statusFilterText">Semua</span>
-                <span class="text-[10px] bg-red-600 text-white px-1.5 py-0.2 rounded font-bold" id="statusFilterCount" style="display: none">0</span>
-                <span class="text-[8px]">▼</span>
-              </button>
-              <div class="ms-options" id="statusFilterOptions">
-                <label class="ms-option"><input type="checkbox" value="BAIK" onchange="applyStatusFilter()" /><span class="w-2 h-2 rounded-full bg-emerald-500"></span><span>BAIK</span></label>
-                <label class="ms-option"><input type="checkbox" value="ROSAK MINOR" onchange="applyStatusFilter()" /><span class="w-2 h-2 rounded-full bg-yellow-500"></span><span>ROSAK MINOR</span></label>
-                <label class="ms-option"><input type="checkbox" value="ROSAK" onchange="applyStatusFilter()" /><span class="w-2 h-2 rounded-full bg-red-500"></span><span>ROSAK</span></label>
-                <label class="ms-option"><input type="checkbox" value="DIPULANGKAN" onchange="applyStatusFilter()" /><span class="w-2 h-2 rounded-full bg-blue-500"></span><span>DIPULANGKAN</span></label>
-                <label class="ms-option"><input type="checkbox" value="LAIN" onchange="applyStatusFilter()" /><span class="w-2 h-2 rounded-full bg-slate-400"></span><span>LAIN-LAIN</span></label>
+          </div>
+          <span class="text-[11px] font-bold uppercase text-secondary-custom ml-1">Status:</span>
+          <div class="ms-dropdown" id="statusFilterDropdown">
+            <button onclick="toggleStatusFilter()" class="ms-select-btn text-[11px]" style="padding: 0.25rem 0.5rem">
+              <span id="statusFilterText">Semua</span>
+              <span class="text-[10px] bg-red-600 text-white px-1.5 py-0.2 rounded font-bold" id="statusFilterCount" style="display: none">0</span>
+              <span class="text-[8px]">▼</span>
+            </button>
+            <div class="ms-options" id="statusFilterOptions">
+              <label class="ms-option"><input type="checkbox" value="BAIK" onchange="applyStatusFilter()" /><span class="w-2 h-2 rounded-full bg-emerald-500"></span><span>BAIK</span></label>
+              <label class="ms-option"><input type="checkbox" value="ROSAK MINOR" onchange="applyStatusFilter()" /><span class="w-2 h-2 rounded-full bg-yellow-500"></span><span>ROSAK MINOR</span></label>
+              <label class="ms-option"><input type="checkbox" value="ROSAK" onchange="applyStatusFilter()" /><span class="w-2 h-2 rounded-full bg-red-500"></span><span>ROSAK</span></label>
+              <label class="ms-option"><input type="checkbox" value="DIPULANGKAN" onchange="applyStatusFilter()" /><span class="w-2 h-2 rounded-full bg-blue-500"></span><span>DIPULANGKAN</span></label>
+              <label class="ms-option"><input type="checkbox" value="LAIN" onchange="applyStatusFilter()" /><span class="w-2 h-2 rounded-full bg-slate-400"></span><span>LAIN-LAIN</span></label>
+            </div>
+          </div>
+          <span class="text-[11px] font-bold uppercase text-secondary-custom ml-1 flex items-center gap-1">
+            <i class="fa-solid fa-map-location-dot text-red-400"></i> Zon:
+          </span>
+          <div class="flex flex-wrap items-center gap-1" id="zoneTabsContainer"></div>
+        </div>
+        <div class="flex items-center gap-2">
+          <button onclick="toggleFullscreenDashboard()" id="zoomInBtn" class="px-2.5 py-1 bg-slate-700 hover:bg-slate-600 text-white text-xs font-semibold rounded-lg transition flex items-center gap-1">
+            <i class="fa-solid fa-expand"></i> Skrin Penuh Fit
+          </button>
+        </div>
+      </div>
+
+        <!-- ============================================================
+             PANDUAN WARNA BERSEPADU (STATUS + JENIS JENTERA)
+        ============================================================ -->
+        <div class="card-bg border-custom rounded-xl px-2.5 py-2 flex flex-wrap items-center gap-3 transition-colors duration-300" id="legendBar" style="border-width:1px">
+          <!-- BAHAGIAN STATUS -->
+          <div class="flex flex-wrap items-center gap-2 flex-1 min-w-[260px]">
+            <span class="text-[10px] font-bold uppercase text-secondary-custom flex items-center gap-1 shrink-0">
+              <i class="fa-solid fa-circle-info text-blue-400"></i> Status:
+            </span>
+            <div class="flex flex-wrap items-center gap-x-3 gap-y-1 text-[10px] font-semibold">
+              <div class="flex items-center gap-1.5" title="Jentera beroperasi & boleh digunakan">
+                <span class="w-2.5 h-2.5 rounded-full bg-emerald-500 siren-red shrink-0"></span>
+                <span style="color:var(--text-secondary);">BAIK</span>
+              </div>
+              <div class="flex items-center gap-1.5" title="Rosak kecil, masih boleh beroperasi">
+                <span class="w-2.5 h-2.5 rounded-full bg-yellow-500 siren-amber shrink-0"></span>
+                <span style="color:var(--text-secondary);">ROSAK MINOR</span>
+              </div>
+              <div class="flex items-center gap-1.5" title="Rosak, tidak boleh beroperasi">
+                <span class="w-2.5 h-2.5 rounded-full bg-red-500 siren-red shrink-0"></span>
+                <span style="color:var(--text-secondary);">ROSAK</span>
+              </div>
+              <div class="flex items-center gap-1.5" title="Dihantar pulang / dipulangkan">
+                <span class="w-2.5 h-2.5 rounded-full bg-blue-500 siren-blue shrink-0"></span>
+                <span style="color:var(--text-secondary);">DIPULANGKAN</span>
+              </div>
+              <div class="flex items-center gap-1.5" title="Status tidak dikategorikan">
+                <span class="w-2.5 h-2.5 rounded-full bg-slate-400 shrink-0"></span>
+                <span style="color:var(--text-secondary);">LAIN</span>
+              </div>
+              <div class="flex items-center gap-1.5 pl-2 border-l border-custom">
+                <span class="inline-block w-1 h-3 rounded bg-red-500 shrink-0"></span>
+                <span class="text-muted-custom text-[9px] italic">Border kiri & titik = status</span>
               </div>
             </div>
           </div>
-          <div class="flex items-center gap-2">
-            <button onclick="toggleFullscreenDashboard()" id="zoomInBtn" class="px-2.5 py-1 bg-slate-700 hover:bg-slate-600 text-white text-xs font-semibold rounded-lg transition flex items-center gap-1">
-              <i class="fa-solid fa-expand"></i> Skrin Penuh Fit
-            </button>
+
+          <!-- PEMISAH -->
+          <div class="hidden md:block w-px h-6 bg-slate-600/60 shrink-0"></div>
+
+          <!-- BAHAGIAN JENIS -->
+          <div class="flex flex-wrap items-center gap-2 flex-1 min-w-[260px]">
+            <span class="text-[10px] font-bold uppercase text-secondary-custom flex items-center gap-1 shrink-0">
+              <i class="fa-solid fa-tags text-indigo-400"></i> Jenis:
+            </span>
+            <div class="flex flex-wrap items-center gap-x-3 gap-y-1 text-[10px] font-semibold">
+              <div class="flex items-center gap-1.5" title="Rescue Tender / Fire Rescue Tender">
+                <span class="inline-block w-1 h-3 rounded shrink-0" style="background:#ef4444;"></span>
+                <i class="fa-solid fa-fire-extinguisher text-red-500 text-[10px]"></i>
+                <span style="color:var(--text-secondary);">FRT</span>
+              </div>
+              <div class="flex items-center gap-1.5" title="Ambulans / Emergency Medical Rescue Service">
+                <span class="inline-block w-1 h-3 rounded shrink-0" style="background:#3b82f6;"></span>
+                <i class="fa-solid fa-truck-medical text-blue-500 text-[10px]"></i>
+                <span style="color:var(--text-secondary);">EMRS</span>
+              </div>
+              <div class="flex items-center gap-1.5" title="Water Tanker">
+                <span class="inline-block w-1 h-3 rounded shrink-0" style="background:#06b6d4;"></span>
+                <i class="fa-solid fa-truck-droplet text-cyan-500 text-[10px]"></i>
+                <span style="color:var(--text-secondary);">WATER TANKER</span>
+              </div>
+              <div class="flex items-center gap-1.5 pl-2 border-l border-custom">
+                <span class="inline-block w-3 h-1 rounded bg-slate-400 shrink-0" style="box-shadow:0 -2px 0 #ef4444;"></span>
+                <span class="text-muted-custom text-[9px] italic">Border atas & ikon = jenis</span>
+              </div>
+            </div>
           </div>
         </div>
+        <!-- ============================================================
+             TAMAT PANDUAN WARNA BERSEPADU
+        ============================================================ -->
+
         <div id="dashStats" class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-2"></div>
         <div id="zoneContainer" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-2.5 items-start"></div>
       </section>
+    
     </main>
 
     <!-- FOOTER -->
@@ -1870,7 +1959,9 @@
       const REFRESH_INTERVAL_SEC = 300;
       let D = { cfrt: [], emrs: [], water: [], lain: [], marin: [], rim: [], utiliti: [], keseluruhan: [] };
       let T = 'cfrt';
+      let selectedZoneView = 'SEMUA'; // 'SEMUA' | 'ZON 1' | 'ZON 2' | 'ZON 3' | 'ZON 4' | 'BENGKEL KJT BOMBA'
       let F = ['cfrt', 'emrs', 'water'];
+      
       let subTabSelectedStatus = { cfrt: [], emrs: [], water: [], lain: [], marin: [], rim: [], utiliti: [], keseluruhan: [] };
       let subTabSelectedModel = { cfrt: [], emrs: [], water: [], lain: [], marin: [], rim: [], utiliti: [], keseluruhan: [] };
       let subTabSelectedZon = { cfrt: [], emrs: [], water: [], lain: [], marin: [], rim: [], utiliti: [], keseluruhan: [] };
@@ -3380,7 +3471,8 @@
       }
 
       // Render balai card group (helper)
-      function renderBalaiCardGroup(balaiName, items) {
+      function renderBalaiCardGroup(balaiName, items, innerGridClass) {
+        const gridClass = innerGridClass || 'grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-1 gap-1';
         let cardsHtml = '';
         if (items.length > 0) {
           cardsHtml = items
@@ -3476,8 +3568,8 @@
                 <span class="truncate uppercase tracking-tight flex items-center gap-1"><i class="fa-solid fa-building text-yellow-400 text-[9px]"></i> ${balaiName}</span>
                 <span class="text-slate-500 text-[9px] font-semibold">${items.length}</span>
               </div>
-              <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-1 gap-1">${cardsHtml}</div>
-            </div>`;
+              <div class="${gridClass}">${cardsHtml}</div>
+              </div>`;
       }
 
       function renderEmptyStatusCards(selectedStatuses) {
@@ -3536,9 +3628,38 @@
       }
 
       // ============================================================
+      // ZONE VIEW SELECTOR (PAGE SELECTION)
+      // ============================================================
+      function renderZoneTabs() {
+        const container = document.getElementById('zoneTabsContainer');
+        if (!container) return;
+        const zones = ['SEMUA', ...zoneOrder];
+        container.innerHTML = zones
+          .map((z) => {
+            const isActive = selectedZoneView === z;
+            const activeClass = isActive
+              ? 'bg-red-600 text-white border-red-500 shadow-md shadow-red-600/30'
+              : 'bg-slate-800 text-slate-300 border-slate-600 hover:bg-slate-700';
+            const label = z === 'BENGKEL KJT BOMBA' ? 'BENGKEL KJT' : z;
+            const icon =
+              z === 'SEMUA'
+                ? '<i class="fa-solid fa-layer-group mr-1"></i>'
+                : '<i class="fa-solid fa-location-dot mr-1"></i>';
+            return `<button onclick="switchZoneView('${z}')" class="px-2.5 py-1 text-[10px] font-bold rounded-lg border transition flex items-center whitespace-nowrap ${activeClass}">${icon}${label}</button>`;
+          })
+          .join('');
+      }
+
+      function switchZoneView(zone) {
+        selectedZoneView = zone;
+        renderMainDashboard();
+      }
+
+      // ============================================================
       // RENDER MAIN DASHBOARD — ZON DITENTUKAN DARI LOKASI SEMASA
       // ============================================================
       function renderMainDashboard() {
+        
         const all = getAllAssets();
         document.getElementById('countCfrt').textContent = D.cfrt.length;
         document.getElementById('countEmrs').textContent = D.emrs.length;
@@ -3622,29 +3743,60 @@
           zoneMap[zoneKey][balaiKey].push(item);
         });
 
+        // Render zone tabs semasa (SEMUA / ZON 1-4 / BENGKEL KJT)
+        renderZoneTabs();
+
         let html = '';
-        zoneOrder.forEach((zoneName) => {
+        const zonesToRender = selectedZoneView === 'SEMUA' ? zoneOrder : [selectedZoneView];
+        const isFullView = selectedZoneView !== 'SEMUA';
+
+        // Sesuaikan grid container ikut mod paparan
+        const zoneContainerEl = document.getElementById('zoneContainer');
+        if (zoneContainerEl) {
+          zoneContainerEl.className = isFullView
+            ? 'grid grid-cols-1 gap-2.5 items-start'
+            : 'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-2.5 items-start';
+        }
+
+        zonesToRender.forEach((zoneName) => {
           const dataZon = zoneMap[zoneName] || {};
           let totalItemsInZone = 0;
           Object.values(dataZon).forEach(
             (arr) => (totalItemsInZone += arr.length)
           );
-          // ZONE CARD with manual scroll: max-height + sticky header + scrollable body
-          html += `<div class="card-bg border-custom rounded-xl p-2 flex flex-col space-y-2 max-h-[700px] transition-colors duration-300" style="border-width:1px; overflow:hidden;">
-              <div class="flex items-center justify-between pb-1 border-b border-custom sticky top-0 z-10 bg-[var(--bg-card)]">
+
+          // Full view: tiada max-height, tiada overflow, tiada sticky header
+          const zoneCardClass = isFullView
+            ? 'card-bg border-custom rounded-xl p-2 flex flex-col space-y-2 transition-colors duration-300'
+            : 'card-bg border-custom rounded-xl p-2 flex flex-col space-y-2 max-h-[700px] transition-colors duration-300';
+          const zoneCardStyle = isFullView
+            ? 'border-width:1px;'
+            : 'border-width:1px; overflow:hidden;';
+          const zoneHeaderClass = isFullView
+            ? 'flex items-center justify-between pb-1 border-b border-custom'
+            : 'flex items-center justify-between pb-1 border-b border-custom sticky top-0 z-10 bg-[var(--bg-card)]';
+          const zoneBodyClass = isFullView
+            ? 'zone-body-full flex-1'
+            : 'space-y-1.5 flex-1 overflow-y-auto';
+          const innerGridClass = isFullView
+            ? 'grid grid-cols-1 gap-1'
+            : 'grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-1 gap-1';
+
+          html += `<div class="${zoneCardClass}" style="${zoneCardStyle}">
+              <div class="${zoneHeaderClass}">
                 <h3 class="text-xs font-extrabold flex items-center gap-1.5" style="color:var(--text-primary);">
                   <span class="w-2 h-2 rounded-full bg-red-500 siren-red shrink-0"></span>${zoneName}
                 </h3>
                 <span class="bg-red-600/20 text-red-400 border border-red-500/30 text-[10px] px-2 py-0.2 rounded-full font-bold">${totalItemsInZone}</span>
               </div>
-              <div class="space-y-1.5 flex-1 overflow-y-auto">`;
+              <div class="${zoneBodyClass}">`;
           if (zoneName === 'BENGKEL KJT BOMBA') {
             const sortedBalai = Object.keys(dataZon).sort();
             if (sortedBalai.length === 0)
-              html += renderBalaiCardGroup('BENGKEL KJT BOMBA', []);
+              html += renderBalaiCardGroup('BENGKEL KJT BOMBA', [], innerGridClass);
             else
               sortedBalai.forEach((balai) => {
-                html += renderBalaiCardGroup(balai, dataZon[balai]);
+                html += renderBalaiCardGroup(balai, dataZon[balai], innerGridClass);
               });
           } else {
             const listBalai = BALAI_ZON[zoneName] || [];
@@ -3657,7 +3809,8 @@
                 balaiFullName
                 .replace('BALAI BOMBA DAN PENYELAMAT', 'BBP')
                 .replace('FIRE POST', 'FP'),
-                items
+                items,
+                innerGridClass
               );
             });
             Object.keys(dataZon).forEach((extraBalaiKey) => {
@@ -3667,12 +3820,13 @@
               ) {
                 html += renderBalaiCardGroup(
                   extraBalaiKey,
-                  dataZon[extraBalaiKey]
+                  dataZon[extraBalaiKey],
+                  innerGridClass
                 );
               }
             });
             if (dataZon['TANPA BALAI'] && dataZon['TANPA BALAI'].length > 0) {
-              html += renderBalaiCardGroup('LAIN-LAIN', dataZon['TANPA BALAI']);
+              html += renderBalaiCardGroup('LAIN-LAIN', dataZon['TANPA BALAI'], innerGridClass);
             }
           }
           html += `</div></div>`;
