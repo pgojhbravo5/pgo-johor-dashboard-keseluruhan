@@ -12879,6 +12879,7 @@ function hasInvalid(v) { return v.personel.length > 0 || v.equip.length > 0; }
 
       let semakViewMode = 'assigned';
       let semakFilterState = { search: '' };
+      let semakExportData = null;   // ✅ untuk simpan snapshot data CSV
 
       let semakDragState = null;
 
@@ -12943,6 +12944,103 @@ function hasInvalid(v) { return v.personel.length > 0 || v.equip.length > 0; }
           semakDragState = null;
         }
       });
+
+            function downloadSemakCSV() {
+        if (!semakExportData) {
+          showToast('Tiada data untuk dieksport', 'error');
+          return;
+        }
+
+        const { items, balaiNames, viewBalaiIndices, mode, showBalaiCols } = semakExportData;
+
+        // Apply filter carian semasa (sama macam paparan)
+        const s = (semakFilterState.search || '').toLowerCase().trim();
+        const filteredItems = items.filter(function (it) {
+          if (!s) return true;
+          return it.kategori.toLowerCase().includes(s) ||
+                 it.maklumat.toLowerCase().includes(s);
+        });
+
+        if (filteredItems.length === 0) {
+          showToast('Tiada baris dipaparkan untuk dieksport', 'error');
+          return;
+        }
+
+        // ── Header ──
+        const headers = ['BIL', 'SEKSYEN', 'KATEGORI', 'MAKLUMAT'];
+        if (showBalaiCols) {
+          viewBalaiIndices.forEach(function (idx) { headers.push(balaiNames[idx]); });
+        }
+        headers.push('JUMLAH');
+
+        const rows = [headers];
+        let currentSection = null;
+
+        filteredItems.forEach(function (it) {
+          // Baris pemisah seksyen
+          if (it.section !== currentSection) {
+            currentSection = it.section;
+            const sep = ['', '=== ' + it.section + ' ===', '', ''];
+            if (showBalaiCols) {
+              viewBalaiIndices.forEach(function () { sep.push(''); });
+            }
+            sep.push('');
+            rows.push(sep);
+          }
+
+          const row = [it.bil, it.section, it.kategori, it.maklumat];
+          if (showBalaiCols) {
+            viewBalaiIndices.forEach(function (origIdx) {
+              row.push(it.flags[origIdx] ? '✓' : '');
+            });
+          }
+          row.push(it.count || 0);
+          rows.push(row);
+        });
+
+        // ── Baris Jumlah Keseluruhan ──
+        const totalsRow = ['', 'JUMLAH', '', ''];
+        if (showBalaiCols) {
+          viewBalaiIndices.forEach(function (origIdx) {
+            let n = 0;
+            filteredItems.forEach(function (it) { if (it.flags[origIdx]) n++; });
+            totalsRow.push(n);
+          });
+        }
+        totalsRow.push(
+          filteredItems.reduce(function (acc, it) { return acc + (it.count || 0); }, 0)
+        );
+        rows.push(totalsRow);
+
+        // ── Escape untuk CSV ──
+        const csvContent = rows.map(function (row) {
+          return row.map(function (cell) {
+            const str = String(cell == null ? '' : cell);
+            if (/[",\n\r]/.test(str)) {
+              return '"' + str.replace(/"/g, '""') + '"';
+            }
+            return str;
+          }).join(',');
+        }).join('\r\n');
+
+        // ── Muat turun (BOM untuk Excel baca UTF-8 dengan betul) ──
+        const blob = new Blob(['\ufeff' + csvContent], { type: 'text/csv;charset=utf-8;' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        const date = new Date().toISOString().slice(0, 10);
+        const modeLabel = mode === 'assigned' ? 'dipilih'
+                        : mode === 'unassigned' ? 'tidak_dipilih'
+                        : 'duplikat';
+        a.href = url;
+        a.download = 'semak_lokasi_' + modeLabel + '_' + date + '.csv';
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+
+        playToastSuccessSound();
+        showToast('CSV berjaya dimuat turun (' + filteredItems.length + ' baris)', 'success');
+      }
 
       function renderSemakLokasiView() {
         document.getElementById('sec-semak_lokasi')?.remove();
@@ -13059,13 +13157,20 @@ function hasInvalid(v) { return v.personel.length > 0 || v.equip.length > 0; }
       <button type="button" class="semak-clear" id="semakClearInput" title="Kosongkan carian">✕</button>
     </div>
     <button type="button" class="btn small" id="semakClearAllBtn">Kosongkan Carian</button>
+    <button type="button" class="btn small primary" id="semakDownloadCsvBtn" title="Muat turun data sebagai fail CSV">
+      <svg class="ico" viewBox="0 0 24 24" aria-hidden="true">
+        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+        <polyline points="7 10 12 15 17 10"/>
+        <line x1="12" y1="15" x2="12" y2="3"/>
+      </svg>
+      <span>CSV</span>
+    </button>
     <span class="semak-info" id="semakInfo">—</span>
     <div class="semak-scroll-btns">
       <button type="button" class="semak-scroll-btn" id="semakScrollLeft" title="Tatal ke kiri">◀</button>
       <button type="button" class="semak-scroll-btn" id="semakScrollRight" title="Tatal ke kanan">▶</button>
     </div>`;
         body.appendChild(toolbar);
-
         const tbl = document.createElement('table');
         tbl.className = 'semak-lokasi';
         tbl.id = 'semakTable';
@@ -13088,7 +13193,7 @@ function hasInvalid(v) { return v.personel.length > 0 || v.equip.length > 0; }
           }
         }
 
-        const viewBalaiNames = viewBalaiIndices.map(function (i) { return balaiNames[i]; });
+               const viewBalaiNames = viewBalaiIndices.map(function (i) { return balaiNames[i]; });
         const viewBalaiZon   = viewBalaiIndices.map(function (i) { return balaiZon[i]; });
         const viewBalaiCount = viewBalaiIndices.length;
 
@@ -13197,6 +13302,15 @@ function hasInvalid(v) { return v.personel.length > 0 || v.equip.length > 0; }
 
         const tbody = document.createElement('tbody');
         const itemsToShow = isAssigned ? assignedItems : (isUnassigned ? unassignedItems : duplicateItems);
+
+        // ✅ Simpan snapshot untuk CSV export
+semakExportData = {
+  items: itemsToShow,
+  balaiNames: balaiNames,
+  viewBalaiIndices: viewBalaiIndices,
+  mode: semakViewMode,
+  showBalaiCols: showBalaiCols,
+};
 
         const balaiTotals = new Array(viewBalaiCount).fill(0);
         let grandTotal = 0;
@@ -13383,9 +13497,15 @@ function hasInvalid(v) { return v.personel.length > 0 || v.equip.length > 0; }
           applySemakSearch();
         });
 
+        // ✅ Listener butang CSV
+        document.getElementById('semakDownloadCsvBtn').addEventListener('click', function () {
+          downloadSemakCSV();
+        });
+
         document.getElementById('semakScrollLeft').addEventListener('click', function () {
           body.scrollBy({ left: -450, behavior: 'smooth' });
         });
+        
         document.getElementById('semakScrollRight').addEventListener('click', function () {
           body.scrollBy({ left: 450, behavior: 'smooth' });
         });
