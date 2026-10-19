@@ -2136,6 +2136,48 @@
         .peta-filter-reset:hover {
             background: rgba(217, 169, 105, 0.1);
         }
+
+        /* ===== TOGGLE LAYER KAWASAN JAGAAN ===== */
+        .peta-layer-toggle {
+            display: flex;
+            align-items: center;
+            gap: 0.35rem;
+            font-size: 0.7rem;
+            font-weight: 600;
+            color: var(--hazard-gold);
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid var(--hud-border);
+            border-radius: 1.1rem;
+            padding: 0.25rem 0.7rem 0.25rem 0.55rem;
+            cursor: pointer;
+            user-select: none;
+            transition: all 0.2s ease;
+            margin-left: 0.25rem;
+        }
+        .peta-layer-toggle:hover {
+            border-color: rgba(255, 255, 255, 0.25);
+            background: rgba(255, 255, 255, 0.06);
+        }
+        .peta-layer-toggle:has(input:checked) {
+            border-color: rgba(217, 169, 105, 0.45);
+            background: rgba(217, 169, 105, 0.08);
+        }
+        .peta-layer-toggle:not(:has(input:checked)) {
+            opacity: 0.55;
+        }
+        .peta-layer-toggle .peta-filter-check {
+            width: 0.85rem;
+            height: 0.85rem;
+            cursor: pointer;
+            accent-color: var(--hazard-gold);
+            flex-shrink: 0;
+        }
+        body.mode-siang .peta-layer-toggle {
+            background: rgba(255,255,255,0.7);
+            border-color: #e2e8f0;
+            color: #000;
+        }
+        
         body.mode-siang .peta-filter-bar {
             background: rgba(255,255,255,0.6);
             border-color: #e2e8f0;
@@ -4058,6 +4100,13 @@
                                     <span class="peta-legend-dot na"></span> <span data-ms="Tiada Data" data-en="No Data">Tiada Data</span>
                                 </label>
                                 <button type="button" class="peta-filter-reset" id="petaFilterReset">Nyahpilih Semua</button>
+
+                                <!-- ✅ TAMBAHAN: Toggle Layer Kawasan Jagaan Balai -->
+                                <label class="peta-layer-toggle" title="Tunjuk/Sembunyi sempadan kawasan jagaan balai">
+                                    <input type="checkbox" class="peta-filter-check" id="toggleKawasanJagaan" checked />
+                                    <i class="fas fa-draw-polygon"></i>
+                                    <span data-ms="Kawasan Jagaan" data-en="Coverage Area">Kawasan Jagaan</span>
+                                </label>
                             </div>
                             <div id="petaJenteraMap"></div>
                             <div class="peta-jentera-status" id="petaJenteraStatusText">Memuatkan data jentera...</div>
@@ -5791,6 +5840,196 @@ if (petaFullscreenBtn) {
             fetchDanPaparPetaJentera();
             setInterval(fetchDanPaparPetaJentera, 60000);
 
+            // ============================================================
+            // ===== LAYER KAWASAN JAGAAN BALAI (dari KML) =====
+            // ============================================================
+            const KML_KAWASAN_JAGAAN_URL = 'poligon-kawasan-jagaan.kml';
+            let kawasanJagaanLayer = null;
+            let kawasanJagaanLoaded = false;
+            let kawasanJagaanLoading = false;
+
+            // Peta warna dari styleUrl KML (hex ABGR → RGB)
+            const KML_STYLE_COLOR_MAP = {
+                'DB4436': '#3644db',
+                '009D57': '#579d00',
+                '7C3592': '#92357c',
+                'A61B4A': '#4a1ba6',
+                '3F5BA9': '#a95b3f',
+                '4186F0': '#f08641',
+                '62AF44': '#44af62',
+                '795046': '#465079',
+                'F8971B': '#1b97f8',
+                'FAD199': '#99d1fa',
+                'D698AD': '#ad98d6',
+                'C6A4CF': '#cfa4c6',
+                'A7B5D7': '#d7b5a7',
+                'F4B400': '#00b4f4',
+                'F4EB37': '#37ebf4',
+                '000000': '#000000',
+                'FFFFFF': '#ffffff'
+            };
+
+            function warnaDariStyleUrl(styleUrl) {
+                if (!styleUrl) return '#d9a969';
+                const m = String(styleUrl).match(/([A-Fa-f0-9]{6})/g);
+                if (!m) return '#d9a969';
+                for (const hex of m) {
+                    if (KML_STYLE_COLOR_MAP[hex.toUpperCase()]) {
+                        return KML_STYLE_COLOR_MAP[hex.toUpperCase()];
+                    }
+                }
+                return '#d9a969';
+            }
+
+            function namaBalaiDariKml(nama) {
+                let n = String(nama || '').toUpperCase()
+                    .replace(/^KAWASAN JAGAAN\s+/i, '')
+                    .replace(/\s+/g, ' ')
+                    .trim();
+                const alias = {
+                    'BBP P.GUDANG': 'BBP PASIR GUDANG'
+                };
+                return alias[n] || n;
+            }
+
+            async function loadKawasanJagaanLayer() {
+                if (kawasanJagaanLoaded || kawasanJagaanLoading || !petaJenteraMapInstance) return;
+                kawasanJagaanLoading = true;
+
+                try {
+                    const resp = await fetch(KML_KAWASAN_JAGAAN_URL, { cache: 'no-cache' });
+                    if (!resp.ok) throw new Error('KML HTTP ' + resp.status);
+                    const kmlText = await resp.text();
+
+                    const parser = new DOMParser();
+                    const xmlDoc = parser.parseFromString(kmlText, 'text/xml');
+                    if (xmlDoc.querySelector('parsererror')) throw new Error('KML parse error');
+
+                    kawasanJagaanLayer = L.layerGroup();
+                    let count = 0;
+
+                    const placemarks = xmlDoc.querySelectorAll('Placemark');
+
+                    placemarks.forEach(pm => {
+                        const nameEl = pm.querySelector('name');
+                        const name = nameEl ? nameEl.textContent.trim() : '';
+                        if (!name) return;
+
+                        const polygons = pm.querySelectorAll('Polygon');
+                        if (!polygons.length) return;
+
+                        const upperName = name.toUpperCase();
+                        const isKawasanJagaan = upperName.startsWith('KAWASAN JAGAAN');
+                        const isStationPolygon = /^BBP\s+/.test(upperName) &&
+                                                 !upperName.includes('KAWASAN');
+                        if (!isKawasanJagaan && !isStationPolygon) return;
+
+                        const styleEl = pm.querySelector('styleUrl');
+                        const styleUrl = styleEl ? styleEl.textContent : '';
+                        const warna = warnaDariStyleUrl(styleUrl);
+
+                        const namaBalai = namaBalaiDariKml(name);
+
+                        polygons.forEach(polyEl => {
+                            const coordsEl = polyEl.querySelector('coordinates');
+                            if (!coordsEl) return;
+
+                            const coordText = coordsEl.textContent.trim();
+                            if (!coordText) return;
+
+                            const latlngs = coordText
+                                .split(/\s+/)
+                                .filter(Boolean)
+                                .map(pair => {
+                                    const p = pair.split(',');
+                                    const lng = parseFloat(p[0]);
+                                    const lat = parseFloat(p[1]);
+                                    return (isFinite(lat) && isFinite(lng)) ? [lat, lng] : null;
+                                })
+                                .filter(Boolean);
+
+                            if (latlngs.length < 3) return;
+
+                            const polygon = L.polygon(latlngs, {
+                                color: warna,
+                                weight: 1.5,
+                                opacity: 0.85,
+                                fillColor: warna,
+                                fillOpacity: 0.12,
+                                interactive: true
+                            });
+
+                            polygon.bindPopup(`
+                                <div style="min-width:11rem;">
+                                    <div class="popup-balai-title" style="margin-bottom:0.25rem;">
+                                        <i class="fas fa-draw-polygon" style="margin-right:0.35rem;color:${warna}"></i>
+                                        ${namaBalai}
+                                    </div>
+                                    <div style="font-size:0.68rem;color:#94a3b8;line-height:1.4;">
+                                        <i class="fas fa-location-dot" style="color:${warna}"></i>
+                                        Kawasan Jagaan Balai
+                                    </div>
+                                </div>
+                            `, { maxWidth: 260 });
+
+                            polygon.on('mouseover', function() {
+                                this.setStyle({ weight: 3, fillOpacity: 0.22 });
+                                this.bringToFront();
+                            });
+                            polygon.on('mouseout', function() {
+                                this.setStyle({ weight: 1.5, fillOpacity: 0.12 });
+                            });
+
+                            kawasanJagaanLayer.addLayer(polygon);
+                            count++;
+                        });
+                    });
+
+                    kawasanJagaanLoaded = true;
+                    console.log(`[KawasanJagaan] ${count} poligon dimuatkan`);
+
+                    const toggle = document.getElementById('toggleKawasanJagaan');
+                    if (toggle && toggle.checked) {
+                        kawasanJagaanLayer.addTo(petaJenteraMapInstance);
+                    }
+
+                } catch (e) {
+                    console.warn('[KawasanJagaan] Gagal muat KML:', e.message);
+                    const statusEl = document.getElementById('petaJenteraStatusText');
+                    if (statusEl) {
+                        statusEl.textContent += ' · Kawasan Jagaan gagal dimuat';
+                    }
+                } finally {
+                    kawasanJagaanLoading = false;
+                }
+            }
+
+            function initKawasanJagaanToggle() {
+                const toggle = document.getElementById('toggleKawasanJagaan');
+                if (!toggle) return;
+
+                toggle.addEventListener('change', function() {
+                    if (!petaJenteraMapInstance) return;
+
+                    if (this.checked) {
+                        if (!kawasanJagaanLoaded) {
+                            loadKawasanJagaanLayer();
+                        } else if (kawasanJagaanLayer) {
+                            kawasanJagaanLayer.addTo(petaJenteraMapInstance);
+                        }
+                    } else if (kawasanJagaanLayer && petaJenteraMapInstance.hasLayer(kawasanJagaanLayer)) {
+                        petaJenteraMapInstance.removeLayer(kawasanJagaanLayer);
+                    }
+                });
+
+                if (toggle.checked) {
+                    loadKawasanJagaanLayer();
+                }
+            }
+
+            initKawasanJagaanToggle();
+
+        
             // ===== FETCH ANGGOTA MINI STATS + STATUS PASUKAN KHAS (SYNC DENGAN dbanggota.html) =====
             // Sumber: Supabase nstmylzvqckhrpxmbufx — table "personel"
             const ALL_UNITS_DASHBOARD = ['PEMADAM', 'EMRS', 'HAZMAT', 'PPDA', 'RIM', 'STORM/MUST'];
