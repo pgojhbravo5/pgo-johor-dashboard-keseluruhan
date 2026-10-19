@@ -1799,8 +1799,9 @@
       </section>
 
       <!-- TAB DASHBOARD UTAMA -->
-      <div class="card-bg border-custom rounded-xl p-2.5 flex flex-wrap items-center justify-between gap-2 transition-colors duration-300" id="dashboardFilters" style="border-width: 1px">
-        <div class="flex flex-wrap items-center gap-2">
+      <section id="tab-dashboard" class="tab-content space-y-4">
+        <div class="card-bg border-custom rounded-xl p-2.5 flex flex-wrap items-center justify-between gap-2 transition-colors duration-300" id="dashboardFilters" style="border-width: 1px">
+          <div class="flex flex-wrap items-center gap-2">
           <span class="text-[11px] font-bold uppercase text-secondary-custom">Jenis:</span>
           <div class="ms-dropdown" id="jenisFilterDropdown">
             <button onclick="toggleJenisFilter()" class="ms-select-btn text-[11px]" style="padding: 0.25rem 0.5rem">
@@ -1965,6 +1966,8 @@
       let subTabSelectedStatus = { cfrt: [], emrs: [], water: [], lain: [], marin: [], rim: [], utiliti: [], keseluruhan: [] };
       let subTabSelectedModel = { cfrt: [], emrs: [], water: [], lain: [], marin: [], rim: [], utiliti: [], keseluruhan: [] };
       let subTabSelectedZon = { cfrt: [], emrs: [], water: [], lain: [], marin: [], rim: [], utiliti: [], keseluruhan: [] };
+      let subTabSelectedJenis = { cfrt: [], emrs: [], water: [], lain: [], marin: [], rim: [], utiliti: [], keseluruhan: [] };
+      let FL = {}; // senarai terkini yang sudah ditapis bagi setiap tab (untuk CSV)
       let chartTypeConfig = { cfrt: 'pie', emrs: 'pie', water: 'pie', lain: 'pie', marin: 'pie', rim: 'pie', utiliti: 'pie', keseluruhan: 'pie' };
       let SF = [];
       let intervalTimer = null;
@@ -2348,6 +2351,7 @@
           populateMultiSelectOptions(tab);
           populateModelOptions(tab);
           populateZonOptions(tab);
+          populateJenisOptions(tab);
           UU(tab);
           Rt(tab);
           updateSubTabMultiSelect(tab, true);
@@ -2368,16 +2372,17 @@
         });
         const container = document.getElementById(`msOptions-${tab}`);
         if (!container) return;
+        const prevS = subTabSelectedStatus[tab] || [];
         container.innerHTML = Array.from(statuses)
           .sort()
           .map(
             (st) =>
             `<label class="ms-option"><input type="checkbox" value="${st.replace(
                 /"/g, '&quot;'
-              )}" onchange="updateSubTabMultiSelect('${tab}')"><span>${st}</span></label>`
+              )}" ${prevS.includes(st) ? 'checked' : ''} onchange="updateSubTabMultiSelect('${tab}')"><span>${st}</span></label>`
           )
           .join('');
-        updateSubTabMultiSelect(tab, true);
+          updateSubTabMultiSelect(tab, true);
       }
 
       function populateModelOptions(tab) {
@@ -2389,16 +2394,17 @@
         });
         const container = document.getElementById(`msOptionsModel-${tab}`);
         if (!container) return;
+        const prevM = subTabSelectedModel[tab] || [];
         container.innerHTML = Array.from(models)
           .sort()
           .map(
             (md) =>
             `<label class="ms-option"><input type="checkbox" value="${md.replace(
                 /"/g, '&quot;'
-              )}" onchange="updateSubTabModelMultiSelect('${tab}')"><span>${md}</span></label>`
+              )}" ${prevM.includes(md) ? 'checked' : ''} onchange="updateSubTabModelMultiSelect('${tab}')"><span>${md}</span></label>`
           )
           .join('');
-      }
+        }
 
       function populateZonOptions(tab) {
         const list = D[tab] || [];
@@ -2409,16 +2415,17 @@
         });
         const container = document.getElementById(`msOptionsZon-${tab}`);
         if (!container) return;
+        const prevZ = subTabSelectedZon[tab] || [];
         container.innerHTML = Array.from(zones)
           .sort()
           .map(
             (zn) =>
             `<label class="ms-option"><input type="checkbox" value="${zn.replace(
                 /"/g, '&quot;'
-              )}" onchange="updateSubTabZonMultiSelect('${tab}')"><span>${zn}</span></label>`
+              )}" ${prevZ.includes(zn) ? 'checked' : ''} onchange="updateSubTabZonMultiSelect('${tab}')"><span>${zn}</span></label>`
           )
           .join('');
-      }
+        }
 
       function updateSubTabMultiSelect(tab, skipRender = false) {
         const opts = document.getElementById(`msOptions-${tab}`);
@@ -2514,6 +2521,79 @@
           countSpan.style.display = 'inline-block';
         }
         Rt(tab);
+      }
+
+      // ============================================================
+      // FILTER JENIS JENTERA
+      // ============================================================
+      function getJenisValue(item, tab) {
+        const col = (G(item, 'JENIS JENTERA') || G(item, 'JENIS') || '').trim();
+        if (tab === 'keseluruhan') return item._jenisLabel || col || 'LAIN-LAIN';
+        const src = JENIS_SOURCE_TABS.find((j) => j.tab === tab);
+        return col || (src ? src.label : 'LAIN-LAIN');
+      }
+
+      function injectJenisFilters() {
+        Object.keys(subTabSelectedJenis).forEach((tab) => {
+          if (document.getElementById(`msDropdownJenis-${tab}`)) return;
+          const anchor = document.getElementById(`msDropdown-${tab}`);
+          if (!anchor) return;
+          const wrap = document.createElement('div');
+          wrap.className = 'ms-dropdown';
+          wrap.id = `msDropdownJenis-${tab}`;
+          wrap.innerHTML = `
+            <button class="ms-select-btn" onclick="toggleMsJenisDropdown('${tab}')">
+              <span id="msTextJenis-${tab}"><i class="fa-solid fa-tags mr-1"></i> Semua Jenis</span>
+              <span class="text-[10px] bg-red-600 text-white px-1.5 py-0.2 rounded font-bold" id="msCountJenis-${tab}" style="display: none">0</span>
+              <span class="text-[9px]">▼</span>
+            </button>
+            <div class="ms-options" id="msOptionsJenis-${tab}"></div>`;
+          anchor.parentNode.insertBefore(wrap, anchor);
+        });
+      }
+
+      function populateJenisOptions(tab) {
+        const container = document.getElementById(`msOptionsJenis-${tab}`);
+        if (!container) return;
+        const prev = subTabSelectedJenis[tab] || [];
+        const jenisSet = new Set();
+        (D[tab] || []).forEach((i) => jenisSet.add(getJenisValue(i, tab)));
+        container.innerHTML = Array.from(jenisSet)
+          .sort()
+          .map((j) => {
+            const safe = j.replace(/"/g, '&quot;');
+            const checked = prev.includes(j) ? 'checked' : '';
+            return `<label class="ms-option"><input type="checkbox" value="${safe}" ${checked} onchange="updateSubTabJenisMultiSelect('${tab}')"><span>${j}</span></label>`;
+          })
+          .join('');
+        updateSubTabJenisMultiSelect(tab, true);
+      }
+
+      function toggleMsJenisDropdown(tab) {
+        document.getElementById(`msOptionsJenis-${tab}`)?.classList.toggle('show');
+      }
+
+      function updateSubTabJenisMultiSelect(tab, skipRender = false) {
+        const opts = document.getElementById(`msOptionsJenis-${tab}`);
+        if (!opts) return;
+        const selected = [];
+        opts.querySelectorAll('input[type="checkbox"]').forEach((cb) => {
+          if (cb.checked) selected.push(cb.value);
+        });
+        subTabSelectedJenis[tab] = selected;
+        const textSpan = document.getElementById(`msTextJenis-${tab}`);
+        const countSpan = document.getElementById(`msCountJenis-${tab}`);
+        if (!textSpan || !countSpan) return;
+        if (selected.length === 0) {
+          textSpan.innerHTML = '<i class="fa-solid fa-tags mr-1"></i> Semua Jenis';
+          countSpan.style.display = 'none';
+        } else {
+          textSpan.textContent =
+            selected.slice(0, 2).join(', ') + (selected.length > 2 ? '...' : '');
+          countSpan.textContent = selected.length;
+          countSpan.style.display = 'inline-block';
+        }
+        if (!skipRender) Rt(tab);
       }
 
       // ============================================================
@@ -3203,6 +3283,7 @@
         const selectedStatuses = subTabSelectedStatus[tab] || [];
         const selectedModels = subTabSelectedModel[tab] || [];
         const selectedZones = subTabSelectedZon[tab] || [];
+        const selectedJenis = subTabSelectedJenis[tab] || [];
         const filtered = list.filter((item) => {
           if (searchVal) {
             const callsign = (G(item, 'CALLSIGN') || '').toLowerCase(),
@@ -3226,6 +3307,9 @@
               !jenis.includes(searchVal)
             ) return false;
           }
+          if (selectedJenis.length > 0) {
+            if (!selectedJenis.includes(getJenisValue(item, tab))) return false;
+          }
           if (selectedZones.length > 0) {
             const zoneVal = (G(item, 'ZON') || '').trim();
             if (!selectedZones.includes(zoneVal)) return false;
@@ -3240,9 +3324,11 @@
           }
           return true;
         });
+        FL[tab] = filtered;
         Rc(tab, filtered);
 
         const tbody = document.getElementById(`tableBody-${tab}`);
+        
         if (!tbody) return;
         tbody.innerHTML =
           filtered.length === 0 ?
@@ -3328,7 +3414,7 @@
       }
 
       function copyAllTableData(tab) {
-        const list = D[tab] || [];
+        const list = FL[tab] || D[tab] || [];
         if (!list.length) {
           showNotification('Tiada data untuk disalin', 'warning');
           return;
@@ -3374,11 +3460,13 @@
       }
 
       function eksportKeExcel(tab) {
-        const list = D[tab] || [];
+        const list = FL[tab] || D[tab] || [];
         if (!list.length) {
           showNotification('Tiada data untuk dieksport', 'warning');
           return;
         }
+        const isFiltered = list.length !== (D[tab] || []).length;
+        
         const isCombined = tab === 'keseluruhan';
         let csv = isCombined ?
           '\uFEFFBil,Jenis,Callsign,Plate,Model,Penempatan Asal,Lokasi Semasa,Zon,Status,Kerosakan\n' :
@@ -3395,9 +3483,15 @@
         const link = document.createElement('a');
         link.href = URL.createObjectURL(blob);
         link.download =
-          `Jentera_${tab === 'cfrt' ? 'FRT' : tab.toUpperCase()}_${new Date().toISOString().split('T')[0]}.csv`;
+          `Jentera_${tab === 'cfrt' ? 'FRT' : tab.toUpperCase()}${isFiltered ? '_ditapis' : ''}_${new Date().toISOString().split('T')[0]}.csv`;
         link.click();
-        showNotification('Fail CSV berjaya dimuat turun', 'success');
+        showNotification(
+          isFiltered
+            ? `CSV dimuat turun (${list.length} rekod ditapis)`
+            : 'Fail CSV berjaya dimuat turun',
+          'success'
+        );
+      
       }
 
       // ============================================================
@@ -4112,6 +4206,7 @@
         populateMultiSelectOptions('keseluruhan');
         populateModelOptions('keseluruhan');
         populateZonOptions('keseluruhan');
+        populateJenisOptions('keseluruhan');
         UU('keseluruhan');
         Rt('keseluruhan');
         updateSubTabMultiSelect('keseluruhan', true);
@@ -4181,6 +4276,7 @@
 
       window.onload = function() {
         loadTheme();
+        injectJenisFilters();
         loadAllData();
       };
 
