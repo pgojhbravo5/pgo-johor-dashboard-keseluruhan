@@ -3946,8 +3946,113 @@
                 overflow: visible;
             }
         }
+
+        /* ===== SEKSYEN BARU: KATEGORI KES + LOKASI & STATISTIK ===== */
+        .panel-sec-head {
+            display: flex; align-items: center; gap: 0.6rem; flex-wrap: wrap;
+            font-size: var(--section-title-size); font-weight: 800;
+            letter-spacing: 0.09375rem; color: #ffffff; text-transform: uppercase;
+            margin-bottom: 0.9rem; padding-bottom: 0.625rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .panel-sec-head .sec-count {
+            margin-left: auto; font-size: 0.6rem; font-weight: 400;
+            letter-spacing: normal; text-transform: none; color: var(--text-secondary);
+        }
+        body.mode-siang .panel-sec-head {
+            color: #0f172a; border-bottom: 0.1875rem solid;
+            border-image: linear-gradient(90deg, #b3223f, #d9a969, #0b2a4d) 1;
+            padding-bottom: 0.5rem;
+        }
+        body.mode-siang .panel-sec-head .sec-count { color: #64748b; }
+
+        /* --- Kategori Kes --- */
+        .section-kat-kes { margin-bottom: 1.5rem; }
+        .kat-strip { display: grid; grid-template-columns: repeat(2, 1fr); gap: 0.6rem; }
+        .kat-tile {
+            position: relative; display: block; text-decoration: none; color: inherit;
+            background: var(--hud-card-bg); border: 1px solid var(--hud-border);
+            border-radius: 0.9rem; padding: 0.75rem 0.75rem 0.65rem 0.95rem;
+            overflow: hidden; transition: all 0.2s ease;
+        }
+        .kat-tile::before {
+            content: ''; position: absolute; top: 0; left: 0; bottom: 0; width: 4px;
+            background: var(--tile-accent, var(--hazard-gold));
+        }
+        .kat-tile:hover {
+            transform: translateY(-2px); background: var(--glass-highlight);
+            border-color: var(--hud-border-red);
+        }
+        .kat-tile-head { display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.4rem; }
+        .kat-tile-icon {
+            width: 1.5rem; height: 1.5rem; border-radius: 0.4rem; flex-shrink: 0;
+            background: var(--tile-accent, var(--hazard-gold)); color: #fff;
+            display: flex; align-items: center; justify-content: center;
+        }
+        .kat-tile-icon svg { width: 0.8rem; height: 0.8rem; fill: none; stroke: currentColor; stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; }
+        .kat-tile-label {
+            font-size: 0.62rem; font-weight: 700; text-transform: uppercase;
+            letter-spacing: 0.03rem; color: var(--text-secondary); line-height: 1.25;
+            overflow: hidden; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical;
+        }
+        .kat-tile-value { font-size: 1.5rem; font-weight: 900; color: #ffffff; line-height: 1.1; }
+        .kat-tile-sub { font-size: 0.6rem; color: var(--text-secondary); margin-top: 0.2rem; display: flex; gap: 0.35rem; flex-wrap: wrap; align-items: center; }
+        .kat-tile-sub .kat-pct {
+            font-weight: 800; color: var(--tile-accent, var(--hazard-gold));
+            background: rgba(255, 255, 255, 0.06); padding: 0.05rem 0.4rem; border-radius: 0.3rem;
+        }
+        .kat-tile-bar { margin-top: 0.45rem; height: 4px; background: rgba(255, 255, 255, 0.08); border-radius: 2px; overflow: hidden; }
+        .kat-tile-bar-fill { height: 100%; border-radius: 2px; background: var(--tile-accent, var(--hazard-gold)); }
+        body.mode-siang .kat-tile { background: #ffffff; border-color: #e2e8f0; }
+        body.mode-siang .kat-tile:hover { background: #f8fafc; }
+        body.mode-siang .kat-tile-value { color: #0f172a; }
+        body.mode-siang .kat-tile-label,
+        body.mode-siang .kat-tile-sub { color: #475569; }
+        body.mode-siang .kat-tile-sub .kat-pct { background: #f1f5f9; }
+        body.mode-siang .kat-tile-bar { background: #e2e8f0; }
+
+        /* --- Lokasi & Statistik --- */
+        .section-lokstat { margin-top: 1.5rem; }
+        .lokstat-stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 0.5rem; margin-bottom: 0.5rem; }
+        .lokstat-stat {
+            background: var(--hud-card-bg); border: 1px solid var(--hud-border);
+            border-left: 3px solid var(--hazard-gold); border-radius: 0.75rem; padding: 0.55rem 0.65rem;
+        }
+        .lokstat-stat.kebakaran { border-left-color: #ef4444; }
+        .lokstat-stat.menyelamat { border-left-color: #f59e0b; }
+        .lokstat-stat.lain { border-left-color: #60a5fa; }
+        .lokstat-stat .ls-label { font-size: 0.58rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.03rem; color: var(--text-secondary); }
+        .lokstat-stat .ls-num { font-size: 1.2rem; font-weight: 900; color: #ffffff; line-height: 1.15; }
+        .lokstat-victims { display: flex; gap: 0.4rem; flex-wrap: wrap; margin-bottom: 0.6rem; }
+        .lokstat-victims span { font-size: 0.62rem; font-weight: 700; padding: 0.15rem 0.6rem; border-radius: 1rem; border: 1px solid; }
+        .lokstat-victims .lv-mati { background: rgba(239,68,68,.15); color: #ef4444; border-color: rgba(239,68,68,.35); }
+        .lokstat-victims .lv-cedera { background: rgba(245,158,11,.15); color: #f59e0b; border-color: rgba(245,158,11,.35); }
+        .lokstat-victims .lv-selamat { background: rgba(74,222,128,.15); color: #4ade80; border-color: rgba(74,222,128,.35); }
+        #lokstatMap {
+            width: 100%; height: 22rem; border-radius: 0.85rem; overflow: hidden;
+            border: 1px solid var(--hud-border); background: #0b1220;
+        }
+        .lokstat-status { font-size: 0.7rem; color: var(--text-secondary); text-align: center; margin-top: 0.5rem; }
+        .lokstat-marker { background: transparent !important; border: none !important; }
+        .lokstat-marker div {
+            width: 1.7rem; height: 1.7rem; border-radius: 50%; border: 2px solid #fff;
+            display: flex; align-items: center; justify-content: center;
+            color: #fff; font-size: 0.75rem; box-shadow: 0 0.15rem 0.5rem rgba(0, 0, 0, 0.6);
+        }
+        body.mode-siang .lokstat-stat { background: #ffffff; border-color: #e2e8f0; }
+        body.mode-siang .lokstat-stat .ls-num { color: #0f172a; }
+        body.mode-siang .lokstat-stat .ls-label,
+        body.mode-siang .lokstat-status { color: #475569; }
+        @media (min-width: 80rem) {
+            .dash-panel .lokstat-stats { grid-template-columns: repeat(2, 1fr); }
+            .dash-panel #lokstatMap { height: 26rem; }
+        }
+        @media (max-width: 640px) {
+            .lokstat-stats { grid-template-columns: repeat(2, 1fr); }
+        }
         
     </style>
+    
 </head>
 <body>
 
@@ -4089,8 +4194,43 @@
                             
                                                     </div>
                                                 </section>
+
+                                                <!-- ===== LOKASI & STATISTIK (dari dashops.html) ===== -->
+                                                <section class="section-lokstat">
+                                                    <div class="panel-sec-head">
+                                                        <i class="fas fa-map-location-dot" style="color:var(--hazard-gold)"></i>
+                                                        <span data-ms="LOKASI & STATISTIK" data-en="LOCATION & STATISTICS">LOKASI & STATISTIK</span>
+                                                        <span id="lokstatDay">(DAY -)</span>
+                                                        <span class="status-badge live">● LIVE</span>
+                                                    </div>
+                                                    <div class="lokstat-stats">
+                                                        <div class="lokstat-stat">
+                                                            <div class="ls-label" data-ms="Jumlah Panggilan" data-en="Total Calls">Jumlah Panggilan</div>
+                                                            <div class="ls-num" id="lsTotal">--</div>
+                                                        </div>
+                                                        <div class="lokstat-stat kebakaran">
+                                                            <div class="ls-label" data-ms="Kebakaran" data-en="Fire">Kebakaran</div>
+                                                            <div class="ls-num" id="lsKebakaran">--</div>
+                                                        </div>
+                                                        <div class="lokstat-stat menyelamat">
+                                                            <div class="ls-label" data-ms="Menyelamat" data-en="Rescue">Menyelamat</div>
+                                                            <div class="ls-num" id="lsMenyelamat">--</div>
+                                                        </div>
+                                                        <div class="lokstat-stat lain">
+                                                            <div class="ls-label" data-ms="Lain-lain" data-en="Others">Lain-lain</div>
+                                                            <div class="ls-num" id="lsLain">--</div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="lokstat-victims">
+                                                        <span class="lv-mati">💀 <span data-ms="Mati" data-en="Deceased">Mati</span>: <b id="lsMati">0</b></span>
+                                                        <span class="lv-cedera">🟠 <span data-ms="Cedera" data-en="Injured">Cedera</span>: <b id="lsCedera">0</b></span>
+                                                        <span class="lv-selamat">🟢 <span data-ms="Selamat" data-en="Saved">Selamat</span>: <b id="lsSelamat">0</b></span>
+                                                    </div>
+                                                    <div id="lokstatMap"></div>
+                                                    <div class="lokstat-status" id="lokstatStatus">Memuatkan data lokasi...</div>
+                                                </section>
                                             </main>
-                            
+
                                             <!-- ===== PANEL 2: PASUKAN KHAS + PETA JENTERA ===== -->
                                             <div class="dashboard dash-panel">
                             
@@ -4187,12 +4327,26 @@
                     </section>
                 </div>
 
-                <!-- ===== PANEL 3: KAD LIVE + ONLINE ===== -->
+                                <!-- ===== PANEL 3: KAD LIVE + ONLINE ===== -->
                 <div class="dashboard dash-panel">
+
+                    <!-- ===== KATEGORI KES (dari data-rt.html) ===== -->
+                    <section class="section-kat-kes">
+                        <div class="panel-sec-head">
+                            <i class="fas fa-layer-group" style="color:var(--hazard-gold)"></i>
+                            <span data-ms="KATEGORI KES" data-en="CASE CATEGORIES">KATEGORI KES</span>
+                            <span class="sec-count" id="katKesCount">— kategori</span>
+                        </div>
+                        <div class="kat-strip" id="katKesStrip">
+                            <div style="grid-column:1/-1;text-align:center;padding:1rem;color:var(--text-secondary);font-size:0.75rem;">
+                                <i class="fas fa-spinner fa-spin"></i> Memuatkan...
+                            </div>
+                        </div>
+                    </section>
 
                     <!-- KATEGORI -->
                     <div class="cat-accordion">
-                        
+
                         <!-- LIVE -->
                         <div class="cat-group">
                             <button type="button" class="cat-toggle" data-cat-target="catPanelLive" aria-expanded="false">
@@ -6538,6 +6692,289 @@ if (petaFullscreenBtn) {
                     fetchCarouselData();
                 }
             });
+
+                       // ============================================================
+            // ===== LOKASI & STATISTIK (map dari dashops.html) =====
+            // ============================================================
+            let lokstatMap = null;
+            let lokstatLayer = null;
+            const LOKSTAT_BOUNDS = { north: 2.73, south: 1.2, west: 102.49, east: 104.59 };
+            const LOKSTAT_WARNA = { kebakaran: '#ef4444', menyelamat: '#f59e0b', lain: '#3b82f6' };
+            const LOKSTAT_IKON = { kebakaran: 'fa-fire', menyelamat: 'fa-life-ring', lain: 'fa-circle-info' };
+
+            function lokstatKelas(d) {
+                const j = (d.jenis || '').toLowerCase();
+                if (/kebakaran|terbakar|letupan|\bapi\b/.test(j)) return 'kebakaran';
+                if (d.mati + d.cedera + d.selamat > 0) return 'menyelamat';
+                if (/kemalangan|menyelamat|terperangkap|terkunci|buka pintu|lemas|langgar|terbabas|terbalik|rempuh|ular|sawa|biawak|musang|binatang|haiwan|lebah|tebuan/.test(j)) return 'menyelamat';
+                return 'lain';
+            }
+
+            function initLokstatMap() {
+                if (lokstatMap || typeof L === 'undefined') return;
+                const el = document.getElementById('lokstatMap');
+                if (!el) return;
+                lokstatMap = L.map('lokstatMap', {
+                    zoomControl: true,
+                    scrollWheelZoom: false,
+                    minZoom: 8,
+                    maxBounds: [[1.15, 102.45], [2.85, 104.55]],
+                    maxBoundsViscosity: 1.0
+                }).setView([1.85, 103.55], 9);
+                L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                    attribution: '&copy; OpenStreetMap contributors',
+                    maxZoom: 18
+                }).addTo(lokstatMap);
+                lokstatLayer = L.layerGroup().addTo(lokstatMap);
+                setTimeout(() => lokstatMap.invalidateSize(), 400);
+            }
+
+            async function fetchLokstatSheet(url, label) {
+                try {
+                    const resp = await fetch(url, { cache: 'no-cache' });
+                    if (!resp.ok) throw new Error('HTTP ' + resp.status);
+                    const rows = pgoParseCSV(await resp.text());
+                    if (rows.length < 2) return [];
+                    const h = rows[0];
+                    const ix = {
+                        call: pgoColIdx(h, 'CALL CARD'),
+                        jenis: pgoColIdx(h, 'Jenis Panggilan Operasi'),
+                        alamat: pgoColIdx(h, 'Alamat Tempat Kejadian'),
+                        masa: pgoColIdx(h, 'TERIMA PANGGILAN'),
+                        tarikh: pgoColIdx(h, 'Tarikh \n Kejadian \n (q)'),
+                        balai: pgoColIdx(h, 'Balai'),
+                        lat: pgoColIdx(h, 'LAT'),
+                        lng: pgoColIdx(h, 'LONG'),
+                        latLong: pgoColIdx(h, 'LAT LONG'),
+                        mati: pgoColIdx(h, 'MATI'),
+                        cedera: pgoColIdx(h, 'CEDERA'),
+                        selamat: pgoColIdx(h, 'SELAMAT')
+                    };
+                    const get = (r, i) => (i >= 0 ? (r[i] || '').trim() : '');
+                    const out = [];
+                    for (let i = 1; i < rows.length; i++) {
+                        const r = rows[i];
+                        if (!r || !r.length) continue;
+                        const cc = get(r, ix.call);
+                        if (!cc.includes('JBPM') || cc.includes('XXXXXX') || cc.length <= 5) continue;
+
+                        let lat = parseFloat(get(r, ix.lat));
+                        let lng = parseFloat(get(r, ix.lng));
+                        if ((isNaN(lat) || isNaN(lng) || (lat === 0 && lng === 0)) && ix.latLong >= 0) {
+                            const p = get(r, ix.latLong).split(',');
+                            if (p.length >= 2) { lat = parseFloat(p[0]); lng = parseFloat(p[1]); }
+                        }
+                        out.push({
+                            jenis: get(r, ix.jenis),
+                            alamat: get(r, ix.alamat) || '-',
+                            masa: get(r, ix.masa),
+                            tarikh: get(r, ix.tarikh),
+                            balai: get(r, ix.balai) || '-',
+                            lat: isNaN(lat) ? 0 : lat,
+                            lng: isNaN(lng) ? 0 : lng,
+                            mati: parseInt(get(r, ix.mati)) || 0,
+                            cedera: parseInt(get(r, ix.cedera)) || 0,
+                            selamat: parseInt(get(r, ix.selamat)) || 0
+                        });
+                    }
+                    return out;
+                } catch (e) {
+                    console.warn('[Lokstat] ' + label + ':', e.message);
+                    return [];
+                }
+            }
+
+            async function fetchLokasiStatistik() {
+                const statusEl = document.getElementById('lokstatStatus');
+                try {
+                    initLokstatMap();
+                    const [a, b, c] = await Promise.all([
+                        fetchLokstatSheet(CAROUSEL_CSV_URLS.syifA, 'Syif A'),
+                        fetchLokstatSheet(CAROUSEL_CSV_URLS.syifB, 'Syif B'),
+                        fetchLokstatSheet(CAROUSEL_CSV_URLS.syifC, 'Syif C')
+                    ]);
+                    const all = [...a, ...b, ...c];
+                    const latest = findLatestOperatingDay(all);
+                    if (!latest) {
+                        if (statusEl) statusEl.textContent = 'Tiada data kes.';
+                        return;
+                    }
+                    const opDate = (d) => {
+                        const t = pgoParseTarikh(d.tarikh);
+                        if (!t) return null;
+                        const o = new Date(t);
+                        if (pgoParseJam(d.masa) < 6) o.setDate(o.getDate() - 1);
+                        return o;
+                    };
+                    const hari = all.filter(d => {
+                        const o = opDate(d);
+                        return o && o.getTime() === latest.getTime();
+                    });
+
+                    // Statistik
+                    let kb = 0, my = 0, ln = 0, mati = 0, cedera = 0, selamat = 0;
+                    hari.forEach(d => {
+                        const k = lokstatKelas(d);
+                        if (k === 'kebakaran') kb++; else if (k === 'menyelamat') my++; else ln++;
+                        mati += d.mati; cedera += d.cedera; selamat += d.selamat;
+                    });
+                    const setT = (id, v) => { const el = document.getElementById(id); if (el) el.textContent = v; };
+                    setT('lokstatDay', '(DAY ' + latest.getDate() + ')');
+                    setT('lsTotal', hari.length);
+                    setT('lsKebakaran', kb);
+                    setT('lsMenyelamat', my);
+                    setT('lsLain', ln);
+                    setT('lsMati', mati);
+                    setT('lsCedera', cedera);
+                    setT('lsSelamat', selamat);
+
+                    // Marker
+                    if (lokstatLayer) lokstatLayer.clearLayers();
+                    const pts = [];
+                    hari.forEach(d => {
+                        if (!(d.lat >= LOKSTAT_BOUNDS.south && d.lat <= LOKSTAT_BOUNDS.north &&
+                              d.lng >= LOKSTAT_BOUNDS.west && d.lng <= LOKSTAT_BOUNDS.east)) return;
+                        const k = lokstatKelas(d);
+                        const icon = L.divIcon({
+                            className: 'lokstat-marker',
+                            html: `<div style="background:${LOKSTAT_WARNA[k]}"><i class="fas ${LOKSTAT_IKON[k]}"></i></div>`,
+                            iconSize: [27, 27], iconAnchor: [13, 13], popupAnchor: [0, -12]
+                        });
+                        const m = L.marker([d.lat, d.lng], { icon });
+                        m.bindPopup(
+                            `<div class="popup-balai-title">${escapeHtml(d.jenis || 'Kejadian')}</div>` +
+                            `<div class="popup-jentera-row"><span class="jrow-name">🏣 ${escapeHtml(d.balai)}</span></div>` +
+                            `<div class="popup-jentera-row"><span class="jrow-plate">📍 ${escapeHtml(d.alamat.substring(0, 70))}</span></div>` +
+                            `<div class="popup-jentera-row"><span class="jrow-model">🕒 ${escapeHtml(d.masa)}</span></div>`
+                        );
+                        lokstatLayer.addLayer(m);
+                        pts.push([d.lat, d.lng]);
+                    });
+                    if (lokstatMap) {
+                        if (pts.length) lokstatMap.fitBounds(L.latLngBounds(pts), { padding: [20, 20], maxZoom: 11 });
+                        else lokstatMap.setView([1.85, 103.55], 9);
+                        setTimeout(() => lokstatMap.invalidateSize(), 200);
+                    }
+                    if (statusEl) {
+                        statusEl.textContent = pts.length + ' / ' + hari.length + ' kes berkoordinat · Dikemaskini ' +
+                            new Date().toLocaleTimeString('ms-MY', { hour: '2-digit', minute: '2-digit' });
+                    }
+                } catch (e) {
+                    console.warn('[Lokstat] ralat:', e.message);
+                    if (statusEl) statusEl.textContent = 'Gagal memuatkan data lokasi.';
+                }
+            }
+            fetchLokasiStatistik();
+            setInterval(fetchLokasiStatistik, 60000);
+
+            // ============================================================
+            // ===== KATEGORI KES (kad statistik dari data-rt.html) =====
+            // ============================================================
+            const RT_CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vSJW-jSCCmeTK8V4j5SqWl9KZ7xOFjAwUmPV0fyWFsvOn-sXpkctFzO0TtfF8urbWV4ibLBUtBZg4pS/pub?output=csv';
+            const KAT_MIN_YEAR = 2026;
+            const KAT_ZON_PALETTE = ['#002B5C', '#C8102E', '#0F7B4F', '#B8935A', '#7B5EA7', '#3B6EA5', '#D97757', '#8BA888', '#5B9AA9', '#C4A45C'];
+            const KAT_ICON_FALLBACK = '<polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/>';
+            const KAT_ICON_MAP = [
+                { m: c => /KEBAKARAN/.test(c) && !/SELAIN/.test(c), i: '<path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z"/>' },
+                { m: c => /MENYELAMAT|PENYELAMAT/.test(c), i: '<circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="4"/>' },
+                { m: c => /KHIDMAT\s*KHAS/.test(c), i: '<polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>' },
+                { m: c => /TUGAS\s*KHAS/.test(c), i: '<path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/>' },
+                { m: c => /BANTUAN|BANTU/.test(c), i: '<circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/>' },
+                { m: c => /SELAIN/.test(c), i: '<circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/>' }
+            ];
+
+            function katZonColor(zon) {
+                const z = String(zon || '(TIADA)').trim() || '(TIADA)';
+                let h = 0;
+                for (let i = 0; i < z.length; i++) h = (h * 31 + z.charCodeAt(i)) >>> 0;
+                return KAT_ZON_PALETTE[h % KAT_ZON_PALETTE.length];
+            }
+
+            // Cari kolum: padanan tepat dahulu, kemudian padanan separa (header mengandungi kata kunci)
+            function katColIdx(headers, key) {
+                const norm = s => (s || '').replace(/[\n\r]+/g, ' ').replace(/\s+/g, ' ').trim().toUpperCase();
+                const nk = norm(key);
+                for (let i = 0; i < headers.length; i++) if (norm(headers[i]) === nk) return i;
+                for (let i = 0; i < headers.length; i++) if (norm(headers[i]).includes(nk)) return i;
+                return -1;
+            }
+
+            function katTahunSah(v) {
+                const m = String(v || '').match(/^(\d{1,2})[\/\-\.](\d{1,2})[\/\-\.](\d{2,4})/);
+                if (!m) return false;
+                let y = +m[3];
+                if (m[3].length === 2) y += 2000;
+                return y >= KAT_MIN_YEAR;
+            }
+
+            async function fetchKategoriKes() {
+                const strip = document.getElementById('katKesStrip');
+                const countEl = document.getElementById('katKesCount');
+                if (!strip) return;
+                try {
+                    const resp = await fetch(RT_CSV_URL, { cache: 'no-cache' });
+                    if (!resp.ok) throw new Error('HTTP ' + resp.status);
+                    const rows = pgoParseCSV(await resp.text());
+                    if (rows.length < 2) throw new Error('Data kosong');
+                    const h = rows[0];
+                    const iBalai = katColIdx(h, 'BALAI');
+                    const iKat = katColIdx(h, 'KATEGORI PANGGILAN');
+                    const iZon = katColIdx(h, 'ZON');
+                    const iTarikh = katColIdx(h, 'TARIKH');
+                    if (iKat < 0) throw new Error('Kolum KATEGORI PANGGILAN tidak dijumpai');
+
+                    const groups = {};
+                    let total = 0;
+                    for (let i = 1; i < rows.length; i++) {
+                        const r = rows[i];
+                        if (!r || r.length <= 6) continue;
+                        if (iBalai >= 0 && !(r[iBalai] || '').trim()) continue;
+                        if (iTarikh >= 0 && !katTahunSah(r[iTarikh])) continue;
+                        const kat = (r[iKat] || '').replace(/\s+/g, ' ').trim() || '(TIADA)';
+                        const zon = (iZon >= 0 ? (r[iZon] || '').trim() : '') || '(TIADA)';
+                        if (!groups[kat]) groups[kat] = { count: 0, zon: {} };
+                        groups[kat].count++;
+                        groups[kat].zon[zon] = (groups[kat].zon[zon] || 0) + 1;
+                        total++;
+                    }
+
+                    const entries = Object.entries(groups).map(([kat, g]) => {
+                        const zs = Object.entries(g.zon).sort((x, y) => y[1] - x[1]);
+                        return { kat, count: g.count, domZon: zs[0] ? zs[0][0] : '(TIADA)', zonN: zs.length };
+                    }).sort((x, y) => y.count - x.count);
+
+                    const enAktif = window.bahasaAktif === 'en';
+                    if (countEl) countEl.textContent = entries.length + (enAktif ? ' categories' : ' kategori');
+                    if (!entries.length) {
+                        strip.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:1rem;color:var(--text-secondary);font-size:0.75rem;">Tiada data</div>';
+                        return;
+                    }
+                    const maxCount = entries[0].count || 1;
+                    strip.innerHTML = entries.map(e => {
+                        const pctVal = total ? ((e.count / total) * 100).toFixed(1) : '0.0';
+                        const barW = Math.round((e.count / maxCount) * 100);
+                        const accent = katZonColor(e.domZon);
+                        const up = e.kat.toUpperCase();
+                        const hit = KAT_ICON_MAP.find(s => s.m(up));
+                        const icon = hit ? hit.i : KAT_ICON_FALLBACK;
+                        const zonLbl = e.zonN > 1 ? `Zon ${escapeHtml(e.domZon)} +${e.zonN - 1}` : `Zon ${escapeHtml(e.domZon)}`;
+                        return `<a href="data-rt.html" class="kat-tile" style="--tile-accent:${accent};" title="${escapeHtml(e.kat)}">
+                            <div class="kat-tile-head">
+                                <div class="kat-tile-icon"><svg viewBox="0 0 24 24">${icon}</svg></div>
+                                <div class="kat-tile-label">${escapeHtml(e.kat)}</div>
+                            </div>
+                            <div class="kat-tile-value">${e.count.toLocaleString()}</div>
+                            <div class="kat-tile-sub"><span class="kat-pct">${pctVal}%</span><span>· ${zonLbl}</span></div>
+                            <div class="kat-tile-bar"><div class="kat-tile-bar-fill" style="width:${barW}%;"></div></div>
+                        </a>`;
+                    }).join('');
+                } catch (e) {
+                    console.warn('[KategoriKes]', e.message);
+                    strip.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:1rem;color:var(--text-secondary);font-size:0.75rem;"><i class="fas fa-circle-exclamation"></i> Gagal memuatkan Kategori Kes</div>';
+                }
+            }
+            fetchKategoriKes();
+            setInterval(fetchKategoriKes, 300000);
 
             // ===== SERVICE WORKER =====
             if ('serviceWorker' in navigator) {
