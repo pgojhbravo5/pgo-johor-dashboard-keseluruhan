@@ -1414,11 +1414,17 @@
       /* ============================================================
          SEMBUNYIKAN FAB DI MOBILE (Kembali + Panduan Keyboard)
          ============================================================ */
-      @media (max-width: 768px) {
+         @media (max-width: 768px) {
         .back-fab,
         .kb-fab {
           display: none !important;
         }
+      }
+
+      /* SEKSYEN KELUASAN KEBAKARAN TERBUKA */
+      .kpi-section.tone-luas .kpi-section-head { border-left-color: var(--johor-red); }
+      @media (min-width: 769px) {
+        .kpi-section.tone-luas .stat-grid { grid-template-columns: repeat(3, 1fr) !important; }
       }
     </style>
   </head>
@@ -1722,6 +1728,30 @@
                 <div class="stat-label"><svg class="ico" viewBox="0 0 24 24"><path d="M12 2C12 2 6 8 6 14a6 6 0 0 0 12 0c0-6-6-12-6-12z" /><circle cx="12" cy="14" r="2" /></svg>Kebakaran Tanah Gambut</div>
                 <div class="stat-value" id="kpiGambut">-</div>
                 <div class="stat-sub" id="kpiGambutSub">-</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="kpi-section tone-luas">
+            <div class="kpi-section-head">
+              <span class="ksh-title">Keluasan Kebakaran Terbuka</span>
+              <span class="ksh-count" id="kpiLuasTotal">— hektar</span>
+            </div>
+            <div class="stat-grid">
+              <div class="stat-card stat-warning">
+                <div class="stat-label"><svg class="ico" viewBox="0 0 24 24"><path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z" /></svg>Keluasan Kebakaran Terbuka</div>
+                <div class="stat-value" id="kpiLuasKebakaran">-</div>
+                <div class="stat-sub" id="kpiLuasKebakaranSub">hektar</div>
+              </div>
+              <div class="stat-card stat-success">
+                <div class="stat-label"><svg class="ico" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" /><polyline points="22 4 12 14.01 9 11.01" /></svg>Keluasan Dipadamkan</div>
+                <div class="stat-value" id="kpiLuasPadam">-</div>
+                <div class="stat-sub" id="kpiLuasPadamSub">hektar</div>
+              </div>
+              <div class="stat-card stat-danger">
+                <div class="stat-label"><svg class="ico" viewBox="0 0 24 24"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z" /><line x1="12" y1="9" x2="12" y2="13" /><line x1="12" y1="17" x2="12.01" y2="17" /></svg>Keluasan Belum Dipadamkan</div>
+                <div class="stat-value" id="kpiLuasBelum">-</div>
+                <div class="stat-sub" id="kpiLuasBelumSub">hektar</div>
               </div>
             </div>
           </div>
@@ -2362,8 +2392,13 @@
         setVisible(set) { localStorage.setItem(this.STORAGE_KEY, JSON.stringify([...set])); }
       };
 
-      if (typeof ChartDataLabels !== 'undefined') Chart.register(ChartDataLabels);
-
+      // Plugin datalabels pihak ketiga dimatikan; label nilai dilukis oleh datalabelsPlugin() sendiri.
+      // Jika didaftarkan, setiap nilai akan dipaparkan dua kali bila Nombor ON.
+      if (typeof ChartDataLabels !== 'undefined') {
+        Chart.register(ChartDataLabels);
+        Chart.defaults.plugins.datalabels = { display: false };
+      }
+      
       let HEADERS = [], COL = {}, RAW_DATA = [], FILTERED = [], CHARTS = {};
       let currentPage = 1;
       let rowsPerPage = 50;
@@ -2525,6 +2560,22 @@
         return fallback;
       }
 
+      // Cari kolum ketat: padanan TEPAT dahulu, kemudian padanan separa. Pulang -1 jika tiada.
+      function findColStrict(exactHeaders, fallbackWords) {
+        const exact = (exactHeaders || []).map((h) => normHeader(h));
+        for (let i = 0; i < HEADERS.length; i++) {
+          if (exact.includes(normHeader(HEADERS[i]))) return i;
+        }
+        if (fallbackWords && fallbackWords.length) {
+          const up = fallbackWords.map((w) => w.toUpperCase());
+          for (let i = 0; i < HEADERS.length; i++) {
+            const h = normHeader(HEADERS[i]);
+            if (up.every((w) => h.includes(w))) return i;
+          }
+        }
+        return -1;
+      }
+      
       function normalizeGambut(v) {
         const c = clean(v).toUpperCase();
         if (!c) return '';
@@ -3023,6 +3074,11 @@
             STATUS_NART_YS: findCol(['STATUS NART RT MENGIKUT KPI YS PENGARAH BOKP', 'STATUS NART RT MENGIKUT KPI YS'], 74),
             STATUS_NART_TKP: findCol(['STATUS NART RT MENGIKUT KPI TKP (O) JBPM', 'STATUS NART RT MENGIKUT KPI TKP'], 75),
             STATUS_NART_KP: findCol(['STATUS NART RT MENGIKUT KPI KP JBPM', 'STATUS NART RT MENGIKUT KPI KP'], 76),
+
+                        // === KELUASAN KEBAKARAN TERBUKA (hektar) ===
+                        LUAS_KEBAKARAN: findColStrict(['KELUASAN KEBAKARAN TERBUKA (HEKTAR)'], ['KELUASAN', 'KEBAKARAN', 'TERBUKA']),
+            LUAS_PADAM: findColStrict(['KELUASAN DIPADAMKAN (HEKTAR)']),
+            LUAS_BELUM_PADAM: findColStrict(['KELUASAN BELUM DIPADAMKAN (HEKTAR)'], ['KELUASAN', 'BELUM', 'DIPADAMKAN']),
           };
 
           const COL_KEY_TO_DATA = {
@@ -3107,8 +3163,14 @@
               masaBerlepas: clean(r[COL.MASA_BERLEPAS]) || '-',
               masaTiba: clean(r[COL.MASA_F]) || '-',
               masaTamat: clean(r[COL.MASA_OPERASI_TAMAT]) || '-',
+              luasKebakaran: COL.LUAS_KEBAKARAN >= 0 ? toNum(r[COL.LUAS_KEBAKARAN]) : 0,
+              luasPadam: COL.LUAS_PADAM >= 0 ? toNum(r[COL.LUAS_PADAM]) : 0,
+              luasBelumPadam: COL.LUAS_BELUM_PADAM >= 0
+                ? toNum(r[COL.LUAS_BELUM_PADAM])
+                : Math.max(0, (COL.LUAS_KEBAKARAN >= 0 ? toNum(r[COL.LUAS_KEBAKARAN]) : 0) - (COL.LUAS_PADAM >= 0 ? toNum(r[COL.LUAS_PADAM]) : 0)),
             };
           });
+
 
           populateFilters();
           buildTableHeaders();
@@ -3714,8 +3776,23 @@
         set('kpiGambut', gambut.toLocaleString());
         set('kpiGambutSub', `${pct(gambut, total)} daripada total`);
         set('kpiJamOps', totalJam.toFixed(0).toLocaleString());
-        set('kpiMangsaTotal', `${mangsaTotal.toLocaleString()} orang`);
+                set('kpiMangsaTotal', `${mangsaTotal.toLocaleString()} orang`);
         set('kpiOpsTotal', `${totalJam.toFixed(0)} jam terkumpul`);
+
+        // === Keluasan kebakaran terbuka (hektar) ===
+        const luasKebakaran = FILTERED.reduce((a, d) => a + (d.luasKebakaran || 0), 0);
+        const luasPadam = FILTERED.reduce((a, d) => a + (d.luasPadam || 0), 0);
+        const luasBelum = FILTERED.reduce((a, d) => a + (d.luasBelumPadam || 0), 0);
+        const fmtHa = (v) => v.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+        const kesLuas = FILTERED.filter((d) => (d.luasKebakaran || 0) > 0).length;
+        set('kpiLuasKebakaran', fmtHa(luasKebakaran));
+        set('kpiLuasKebakaranSub', `hektar • ${kesLuas} kes`);
+        set('kpiLuasPadam', fmtHa(luasPadam));
+        set('kpiLuasPadamSub', `hektar • ${pct(luasPadam, luasKebakaran)} daripada keluasan`);
+        set('kpiLuasBelum', fmtHa(luasBelum));
+        set('kpiLuasBelumSub', `hektar • ${pct(luasBelum, luasKebakaran)} daripada keluasan`);
+        set('kpiLuasTotal', `${fmtHa(luasKebakaran)} hektar`);
+
         renderKategoriStrip();
       }
 
@@ -3838,9 +3915,9 @@
             tooltip: { backgroundColor: '#002b5c', titleColor: '#fff', bodyColor: '#e2e8f0', borderColor: 'transparent', borderWidth: 0, padding: 12, cornerRadius: 4, titleFont: { size: 12, weight: '600', family: font }, bodyFont: { size: 12, family: font } },
           },
           scales: opts.indexAxis === 'y'
-            ? { x: { ticks: { color: tickColor, font: { size: 11, family: font } }, grid: { color: gridColor, drawBorder: false }, beginAtZero: true }, y: { ticks: { color: textColor, font: { size: 11, family: font, weight: '500' } }, grid: { display: false } } }
-            : { x: { ticks: { color: tickColor, font: { size: 11, family: font } }, grid: { color: gridColor, drawBorder: false } }, y: { ticks: { color: tickColor, font: { size: 11, family: font } }, grid: { color: gridColor, drawBorder: false }, beginAtZero: true } },
-          ...opts,
+            ? { x: { ticks: { color: tickColor, font: { size: 11, family: font } }, grid: { display: false }, border: { display: true, color: gridColor }, beginAtZero: true }, y: { ticks: { color: textColor, font: { size: 11, family: font, weight: '500' } }, grid: { display: false }, border: { display: true, color: gridColor } } }
+            : { x: { ticks: { color: tickColor, font: { size: 11, family: font } }, grid: { display: false }, border: { display: true, color: gridColor } }, y: { ticks: { color: tickColor, font: { size: 11, family: font } }, grid: { display: false }, border: { display: true, color: gridColor }, beginAtZero: true } },
+            ...opts,
         };
       }
       function countBy(arr, keyFn) {
@@ -3848,29 +3925,46 @@
         arr.forEach((d) => { const k = keyFn(d); if (k) map[k] = (map[k] || 0) + 1; });
         return Object.entries(map).sort((a, b) => b[1] - a[1]);
       }
+      function isDarkMode() { return document.documentElement.getAttribute('data-theme') === 'dark'; }
+      function labelColors() {
+        return isDarkMode()
+          ? { text: '#F8FAFC', halo: 'rgba(15, 23, 42, 0.92)', total: '#FCD34D' }
+          : { text: '#0F172A', halo: 'rgba(255, 255, 255, 0.95)', total: '#002B5C' };
+      }
+
       function datalabelsPlugin(show, formatterFn) {
         return {
           id: 'datalabelsCustom_' + Math.random().toString(36).slice(2, 8),
           afterDatasetsDraw(chart) {
             if (!show) return;
+            const lc = labelColors();
             const ctx = chart.ctx;
             ctx.save();
-            ctx.font = '400 11px Inter, sans-serif';
+            ctx.font = '600 12px Inter, sans-serif';
             ctx.textAlign = 'center';
             ctx.textBaseline = 'middle';
+            ctx.lineJoin = 'round';
             chart.data.datasets.forEach((ds, di) => {
               const meta = chart.getDatasetMeta(di);
               if (meta.hidden) return;
               meta.data.forEach((el, i) => {
-                const val = ds.data[i];
+                const raw = ds.data[i];
+                if (raw == null) return;
+                // titik scatter/bubble/matrix ialah objek: ambil nilai y / v
+                const val = typeof raw === 'object' ? (raw.v ?? raw.y) : raw;
                 if (val == null) return;
-                let text = typeof formatterFn === 'function' ? formatterFn(val, chart, i, di) : String(val);
+                // sembunyikan label "0" pada bar supaya carta tak serabut
+                if (chart.config.type === 'bar' && Number(val) === 0) return;
+                let text;
+                if (typeof formatterFn === 'function') text = formatterFn(val, chart, i, di);
+                else if (typeof val === 'number') text = Number.isInteger(val) ? val.toLocaleString() : val.toFixed(2);
+                else text = String(val);
                 if (text === '' || text == null) return;
                 const pos = el.tooltipPosition ? el.tooltipPosition() : { x: el.x, y: el.y };
-                ctx.strokeStyle = 'rgba(255,255,255,0.85)';
-                ctx.lineWidth = 3;
+                ctx.strokeStyle = lc.halo;
+                ctx.lineWidth = 4;
                 ctx.strokeText(text, pos.x, pos.y);
-                ctx.fillStyle = '#000000';
+                ctx.fillStyle = lc.text;
                 ctx.fillText(text, pos.x, pos.y);
               });
             });
@@ -3878,6 +3972,7 @@
           },
         };
       }
+      
       function totalLabelPlugin(show) {
         return {
           id: 'totalLabel_' + Math.random().toString(36).slice(2, 8),
@@ -3886,10 +3981,12 @@
             const type = chart.config.type;
             if (!['bar', 'line'].includes(type)) return;
             const ctx = chart.ctx;
+            const lc = labelColors();
             ctx.save();
-            ctx.font = 'bold 11px Inter, sans-serif';
+            ctx.font = 'bold 12px Inter, sans-serif';
             ctx.textAlign = 'center';
             ctx.textBaseline = 'bottom';
+            ctx.lineJoin = 'round';
             const datasets = chart.data.datasets;
             const meta0 = chart.getDatasetMeta(0);
             if (!meta0 || !meta0.data) return;
@@ -3914,10 +4011,10 @@
               if (isHorizontal) { labelX = maxX + 6; labelY = sumY / count; }
               else { labelX = sumX / count; labelY = minY - 4; }
               const text = total.toLocaleString();
-              ctx.strokeStyle = 'rgba(255,255,255,0.95)';
-              ctx.lineWidth = 3;
+              ctx.strokeStyle = lc.halo;
+              ctx.lineWidth = 4;
               ctx.strokeText(text, labelX, labelY);
-              ctx.fillStyle = '#002b5c';
+              ctx.fillStyle = lc.total;
               ctx.fillText(text, labelX, labelY);
             }
             ctx.restore();
@@ -5068,8 +5165,20 @@
         const isEligible = ['bar', 'line'].includes(chartJsType) && (isMultiSeries || isStackedType);
         if (showNumbers && isEligible) plugins.push(totalLabelPlugin(true));
         cfg.plugins = (cfg.plugins || []).concat(plugins);
-        CHARTS[chartId] = new Chart(canvas.getContext('2d'), cfg);
-        return CHARTS[chartId];
+
+// Buang garis grid pada semua paksi (kecuali web radar 'r')
+const scalesCfg = cfg.options && cfg.options.scales;
+if (scalesCfg) {
+  const axisLine = getCSSVar('--border-strong', '#cbd5e1');
+  Object.entries(scalesCfg).forEach(([axisKey, sc]) => {
+    if (!sc || axisKey === 'r') return;
+    sc.grid = { ...(sc.grid || {}), display: false, drawTicks: false };
+    sc.border = { display: true, color: axisLine, ...(sc.border || {}) };
+  });
+}
+
+CHARTS[chartId] = new Chart(canvas.getContext('2d'), cfg);
+return CHARTS[chartId];
       }
 
       function renderCharts() {
