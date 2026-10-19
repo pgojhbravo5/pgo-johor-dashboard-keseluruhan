@@ -21,6 +21,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css" />
+    
 
     <style>
         /* ===== RESET & VARIABEL ===== */
@@ -3884,6 +3885,68 @@
                 white-space: nowrap;
             }
         }
+
+                /* ===== LAYOUT 4 LAJUR (DESKTOP) ===== */
+                .content-col-left {
+            display: flex;
+        }
+        .dash-columns {
+            display: flex;
+            flex-direction: column;
+            gap: 1.25rem;
+            width: 100%;
+        }
+        .dash-panel {
+            min-width: 0;
+        }
+
+        @media (min-width: 80rem) {
+            .main-wrapper,
+            .breadcrumb-inner,
+            .search-bar-wrap {
+                max-width: none;
+            }
+            .content-row {
+                flex-wrap: nowrap;
+            }
+            .content-col-left {
+                flex: 3 1 0;
+            }
+            .content-col-right {
+                flex: 1 1 0;
+                max-width: 26rem;
+            }
+            .dash-columns {
+                flex-direction: row;
+                align-items: stretch;
+            }
+            .dash-panel {
+                flex: 1 1 0;
+                padding: 1.25rem 1rem;
+            }
+
+            /* Muatkan kandungan dalam lajur yang lebih sempit */
+            .dash-panel .stats-bar {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            .dash-panel .stat-item::before {
+                display: none;
+            }
+            .dash-panel .unit-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            .dash-panel .peta-overall-stats {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            .dash-panel #petaJenteraMap {
+                height: 26rem;
+            }
+            .dash-panel .cat-panel.open {
+                max-height: none;
+                overflow: visible;
+            }
+        }
+        
     </style>
 </head>
 <body>
@@ -3962,11 +4025,15 @@
     <div class="main-wrapper">
         <div class="content-row">
 
-            <!-- ===== LAJUR KIRI ===== -->
-            <div class="content-col-left">
-                <main class="dashboard">
-                    <!-- STATS BAR -->
-                    <section class="stats-bar">
+                        <!-- ===== LAJUR KIRI (3 PANEL) ===== -->
+                        <div class="content-col-left">
+                            <div class="dash-columns">
+              
+                              <!-- ===== PANEL 1: STATISTIK UTAMA + RINGKASAN KES ===== -->
+                              <main class="dashboard dash-panel">
+                                  <!-- STATS BAR -->
+                                  
+                                  <section class="stats-bar">
                         <a href="#" 
    onclick="event.preventDefault(); pgoOpenDashboardSistem(event);"
    class="stat-item" 
@@ -4014,17 +4081,22 @@
                             </div>
                             <div class="carousel-dots" id="carouselDots"></div>
 
-                            <!-- NOTICE DALAM PANEL -->
-                            <div class="carousel-notice">
-                                <i class="fas fa-info-circle"></i>
-                                <span data-ms="Sila buka" data-en="Please open">Sila buka</span> <strong id="noticeDashOpsLink">Live Statistik Kes 24 Jam (DASH-OPS)</strong> <span data-ms="untuk maklumat penuh." data-en="for full information.">untuk maklumat penuh.</span>
-                            </div>
-
-                        </div>
-                    </section>
-
-                    <!-- ===== STATUS KESEDIAAN PASUKAN KHAS ===== -->
-                    <section class="section-pasukan-khas">
+                                                        <!-- NOTICE DALAM PANEL -->
+                                                        <div class="carousel-notice">
+                                                            <i class="fas fa-info-circle"></i>
+                                                            <span data-ms="Sila buka" data-en="Please open">Sila buka</span> <strong id="noticeDashOpsLink">Live Statistik Kes 24 Jam (DASH-OPS)</strong> <span data-ms="untuk maklumat penuh." data-en="for full information.">untuk maklumat penuh.</span>
+                                                        </div>
+                            
+                                                    </div>
+                                                </section>
+                                            </main>
+                            
+                                            <!-- ===== PANEL 2: PASUKAN KHAS + PETA JENTERA ===== -->
+                                            <div class="dashboard dash-panel">
+                            
+                                                <!-- ===== STATUS KESEDIAAN PASUKAN KHAS ===== -->
+                                                
+                                                <section class="section-pasukan-khas">
                         <div class="pasukan-khas-card">
                             <div class="pasukan-card-header">
                                 <i class="fas fa-user-shield" style="color:var(--hazard-gold)"></i>
@@ -4113,9 +4185,14 @@
                             <div class="peta-unmatched-box" id="petaUnmatchedBox" style="display:none;"></div>
                         </div>
                     </section>
+                </div>
+
+                <!-- ===== PANEL 3: KAD LIVE + ONLINE ===== -->
+                <div class="dashboard dash-panel">
 
                     <!-- KATEGORI -->
                     <div class="cat-accordion">
+                        
                         <!-- LIVE -->
                         <div class="cat-group">
                             <button type="button" class="cat-toggle" data-cat-target="catPanelLive" aria-expanded="false">
@@ -4210,12 +4287,15 @@
                             </div>
                         </div>
 
-                        <!-- KATEGORI "DALAM PEMBANGUNAN" TELAH DIBUANG -->
+                                               <!-- KATEGORI "DALAM PEMBANGUNAN" TELAH DIBUANG -->
                     </div>
-                </main>
-            </div>
+                </div><!-- /panel 3 -->
 
-            <!-- ===== LAJUR KANAN ===== -->
+              </div><!-- /dash-columns -->
+            </div><!-- /content-col-left -->
+
+            <!-- ===== PANEL 4 / LAJUR KANAN ===== -->
+            
             <div class="content-col-right">
                 <aside class="links-panel" id="linksPanel">
                     <div class="panel-title"><i class="fas fa-satellite-dish"></i> <span data-ms="PAUTAN PENTING" data-en="IMPORTANT LINKS">PAUTAN PENTING</span></div>
