@@ -1022,6 +1022,7 @@
                   <th class="p-2">Callsign</th>
                   <th class="p-2">Plate</th>
                   <th class="p-2">Model</th>
+                  <th class="p-2">Jenis</th>
                   <th class="p-2">Penempatan Asal</th>
                   <th class="p-2">Lokasi Semasa</th>
                   <th class="p-2">Zon</th>
@@ -1130,6 +1131,7 @@
                   <th class="p-2">Callsign</th>
                   <th class="p-2">Plate</th>
                   <th class="p-2">Model</th>
+                  <th class="p-2">Jenis</th>
                   <th class="p-2">Penempatan Asal</th>
                   <th class="p-2">Lokasi Semasa</th>
                   <th class="p-2">Zon</th>
@@ -1238,6 +1240,7 @@
                   <th class="p-2">Callsign</th>
                   <th class="p-2">Plate</th>
                   <th class="p-2">Model</th>
+                  <th class="p-2">Jenis</th>
                   <th class="p-2">Penempatan Asal</th>
                   <th class="p-2">Lokasi Semasa</th>
                   <th class="p-2">Zon</th>
@@ -1346,6 +1349,7 @@
                   <th class="p-2">Callsign</th>
                   <th class="p-2">Plate</th>
                   <th class="p-2">Model</th>
+                  <th class="p-2">Jenis</th>
                   <th class="p-2">Penempatan Asal</th>
                   <th class="p-2">Lokasi Semasa</th>
                   <th class="p-2">Zon</th>
@@ -1452,6 +1456,7 @@
                   <th class="p-2">Callsign</th>
                   <th class="p-2">Plate</th>
                   <th class="p-2">Model</th>
+                  <th class="p-2">Jenis</th>
                   <th class="p-2">Penempatan Asal</th>
                   <th class="p-2">Lokasi Semasa</th>
                   <th class="p-2">Zon</th>
@@ -1558,6 +1563,7 @@
                   <th class="p-2">Callsign</th>
                   <th class="p-2">Plate</th>
                   <th class="p-2">Model</th>
+                  <th class="p-2">Jenis</th>
                   <th class="p-2">Penempatan Asal</th>
                   <th class="p-2">Lokasi Semasa</th>
                   <th class="p-2">Zon</th>
@@ -1664,6 +1670,7 @@
                   <th class="p-2">Callsign</th>
                   <th class="p-2">Plate</th>
                   <th class="p-2">Model</th>
+                  <th class="p-2">Jenis</th>
                   <th class="p-2">Penempatan Asal</th>
                   <th class="p-2">Lokasi Semasa</th>
                   <th class="p-2">Zon</th>
@@ -2527,10 +2534,19 @@
       // FILTER JENIS JENTERA
       // ============================================================
       function getJenisValue(item, tab) {
-        const col = (G(item, 'JENIS JENTERA') || G(item, 'JENIS') || '').trim();
-        if (tab === 'keseluruhan') return item._jenisLabel || col || 'LAIN-LAIN';
-        const src = JENIS_SOURCE_TABS.find((j) => j.tab === tab);
-        return col || (src ? src.label : 'LAIN-LAIN');
+        let col = '';
+        for (const k in item) {
+          const key = k.replace(/\s+/g, ' ').trim().toUpperCase();
+          if (key === 'JENIS JENTERA' || key === 'JENIS') {
+            col = (item[k] || '').trim();
+            if (col) break;
+          }
+        }
+        if (col) return col;
+        // Lajur Jenis kosong: guna nama tab sumber sebagai pilihan terakhir
+        const srcTab = tab === 'keseluruhan' ? item._jenisTab : tab;
+        const src = JENIS_SOURCE_TABS.find((j) => j.tab === srcTab);
+        return src ? src.label : 'LAIN-LAIN';
       }
 
       function injectJenisFilters() {
@@ -3184,7 +3200,7 @@
         if (tab === 'keseluruhan') {
           const jc = {};
           list.forEach((i) => {
-            const j = i._jenisLabel || 'LAIN-LAIN';
+            const j = getJenisValue(i, 'keseluruhan');
             jc[j] = (jc[j] || 0) + 1;
           });
           if (CC[tab].j) CC[tab].j.destroy();
@@ -3201,8 +3217,9 @@
             };
             const jenisLabels = Object.keys(jc);
             const jenisData = Object.values(jc);
+            const jenisFallback = ['#ef4444', '#3b82f6', '#06b6d4', '#a855f7', '#14b8a6', '#f59e0b', '#22c55e', '#ec4899', '#f97316', '#6366f1'];
             const jenisColors = jenisLabels.map(
-              (l) => jenisPalette[l] || '#64748b'
+              (l, idx) => jenisPalette[l] || jenisFallback[idx % jenisFallback.length]
             );
             CC[tab].j = new Chart(cj.getContext('2d'), {
               type: 'doughnut',
@@ -3294,8 +3311,8 @@
               zon = (G(item, 'ZON') || '').toLowerCase(),
               status = (G(item, 'STATUS JENTERA') || '').toLowerCase(),
               kerosakan = (G(item, 'STATUS KEROSAKKAN') || '').toLowerCase(),
-              jenis = (item._jenisLabel || '').toLowerCase();
-            if (
+              jenis = (getJenisValue(item, tab) || '').toLowerCase();
+              if (
               !callsign.includes(searchVal) &&
               !plate.includes(searchVal) &&
               !lokasi.includes(searchVal) &&
@@ -3332,7 +3349,7 @@
         if (!tbody) return;
         tbody.innerHTML =
           filtered.length === 0 ?
-          `<tr><td colspan="${isCombined ? 11 : 10}" class="p-3 text-center text-slate-500">Tiada jentera dijumpai.</td></tr>` :
+          `<tr><td colspan="11" class="p-3 text-center text-slate-500">Tiada jentera dijumpai.</td></tr>` :
           filtered
           .map((item, idx) => {
             const itemWithType = { ...item, _j: item._jenisTab || tab };
@@ -3353,8 +3370,7 @@
                   <td class="p-2 font-bold" style="color:var(--text-primary);">${callsign}</td>
                   <td class="p-2"><span class="plate-number">${plate}</span></td>
                   <td class="p-2">${G(item, 'MODEL JENTERA') || '-'}</td>
-                  ${isCombined ? `<td class="p-2"><span class="text-[9px] font-bold uppercase px-1.5 py-0.5 rounded bg-indigo-500/20 text-indigo-400 border border-indigo-500/30">${item._jenisLabel || '-'}</span></td>` : ''}
-                  <td class="p-2">${G(item, 'PENEMPATAN ASAL') || '-'}</td>
+                  <td class="p-2"><span class="text-[9px] font-bold uppercase px-1.5 py-0.5 rounded bg-indigo-500/20 text-indigo-400 border border-indigo-500/30">${getJenisValue(item, tab)}</span></td>                  <td class="p-2">${G(item, 'PENEMPATAN ASAL') || '-'}</td>
                   <td class="p-2">${G(item, 'LOKASI SEMASA') || '-'}</td>
                   <td class="p-2">${G(item, 'ZON') || '-'}</td>
                   <td class="p-2"><span class="badge-status ${badgeClass}">${statusRaw}</span></td>
@@ -3467,15 +3483,12 @@
         }
         const isFiltered = list.length !== (D[tab] || []).length;
         
-        const isCombined = tab === 'keseluruhan';
-        let csv = isCombined ?
-          '\uFEFFBil,Jenis,Callsign,Plate,Model,Penempatan Asal,Lokasi Semasa,Zon,Status,Kerosakan\n' :
-          '\uFEFFBil,Callsign,Plate,Model,Penempatan Asal,Lokasi Semasa,Zon,Status,Kerosakan\n';
+        let csv = '\uFEFFBil,Callsign,Plate,Model,Jenis,Penempatan Asal,Lokasi Semasa,Zon,Status,Kerosakan\n';
         list.forEach((i, idx) => {
           csv +=
-            `${idx + 1},${isCombined ? `"${i._jenisLabel || ''}",` : ''}"${G(i, 'CALLSIGN')}","${G(i, 'PLATE')}","${G(
+            `${idx + 1},"${G(i, 'CALLSIGN')}","${G(i, 'PLATE')}","${G(
               i, 'MODEL JENTERA'
-            )}","${G(i, 'PENEMPATAN ASAL')}","${G(i, 'LOKASI SEMASA')}","${G(
+            )}","${getJenisValue(i, tab)}","${G(i, 'PENEMPATAN ASAL')}","${G(i, 'LOKASI SEMASA')}","${G(
               i, 'ZON'
             )}","${G(i, 'STATUS JENTERA')}","${G(i, 'STATUS KEROSAKKAN')}"\n`;
         });
