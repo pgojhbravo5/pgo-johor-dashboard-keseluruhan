@@ -4016,11 +4016,18 @@
         .lokstat-stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 0.5rem; margin-bottom: 0.5rem; }
         .lokstat-stat {
             background: var(--hud-card-bg); border: 1px solid var(--hud-border);
-            border-left: 3px solid var(--hazard-gold); border-radius: 0.75rem; padding: 0.55rem 0.65rem;
+            border-left: 3px solid var(--hazard-gold) !important; 
+            border-radius: 0.75rem; padding: 0.55rem 0.65rem;
         }
-        .lokstat-stat.kebakaran { border-left-color: #ef4444; }
-        .lokstat-stat.menyelamat { border-left-color: #f59e0b; }
-        .lokstat-stat.lain { border-left-color: #60a5fa; }
+        .lokstat-stat.kebakaran { border-left-color: #ef4444 !important; }
+        .lokstat-stat.menyelamat { border-left-color: #f59e0b !important; }
+        .lokstat-stat.lain { border-left-color: #60a5fa !important; }
+                
+        /* ✅ KEMASKINI: Warna tulisan (nombor) mengikut kategori */
+        .lokstat-stat.kebakaran .ls-num { color: #ef4444 !important; }
+        .lokstat-stat.menyelamat .ls-num { color: #f59e0b !important; }
+        .lokstat-stat.lain .ls-num { color: #3b82f6 !important; }
+        
         .lokstat-stat .ls-label { font-size: 0.58rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.03rem; color: var(--text-secondary); }
         .lokstat-stat .ls-num { font-size: 1.2rem; font-weight: 900; color: #ffffff; line-height: 1.15; }
         .lokstat-victims { display: flex; gap: 0.4rem; flex-wrap: wrap; margin-bottom: 0.6rem; }
@@ -4186,50 +4193,50 @@
                             </div>
                             <div class="carousel-dots" id="carouselDots"></div>
 
-                                                        <!-- NOTICE DALAM PANEL -->
-                                                        <div class="carousel-notice">
-                                                            <i class="fas fa-info-circle"></i>
-                                                            <span data-ms="Sila buka" data-en="Please open">Sila buka</span> <strong id="noticeDashOpsLink">Live Statistik Kes 24 Jam (DASH-OPS)</strong> <span data-ms="untuk maklumat penuh." data-en="for full information.">untuk maklumat penuh.</span>
-                                                        </div>
-                            
-                                                    </div>
-                                                </section>
+                        </div>
+                    </section>
 
-                                                <!-- ===== LOKASI & STATISTIK (dari dashops.html) ===== -->
-                                                <section class="section-lokstat">
-                                                    <div class="panel-sec-head">
-                                                        <i class="fas fa-map-location-dot" style="color:var(--hazard-gold)"></i>
-                                                        <span data-ms="LOKASI & STATISTIK" data-en="LOCATION & STATISTICS">LOKASI & STATISTIK</span>
-                                                        <span id="lokstatDay">(DAY -)</span>
-                                                        <span class="status-badge live">● LIVE</span>
-                                                    </div>
-                                                    <div class="lokstat-stats">
-                                                        <div class="lokstat-stat">
-                                                            <div class="ls-label" data-ms="Jumlah Panggilan" data-en="Total Calls">Jumlah Panggilan</div>
-                                                            <div class="ls-num" id="lsTotal">--</div>
-                                                        </div>
-                                                        <div class="lokstat-stat kebakaran">
-                                                            <div class="ls-label" data-ms="Kebakaran" data-en="Fire">Kebakaran</div>
-                                                            <div class="ls-num" id="lsKebakaran">--</div>
-                                                        </div>
-                                                        <div class="lokstat-stat menyelamat">
-                                                            <div class="ls-label" data-ms="Menyelamat" data-en="Rescue">Menyelamat</div>
-                                                            <div class="ls-num" id="lsMenyelamat">--</div>
-                                                        </div>
-                                                        <div class="lokstat-stat lain">
-                                                            <div class="ls-label" data-ms="Lain-lain" data-en="Others">Lain-lain</div>
-                                                            <div class="ls-num" id="lsLain">--</div>
-                                                        </div>
-                                                    </div>
-                                                    <div class="lokstat-victims">
-                                                        <span class="lv-mati">💀 <span data-ms="Mati" data-en="Deceased">Mati</span>: <b id="lsMati">0</b></span>
-                                                        <span class="lv-cedera">🟠 <span data-ms="Cedera" data-en="Injured">Cedera</span>: <b id="lsCedera">0</b></span>
-                                                        <span class="lv-selamat">🟢 <span data-ms="Selamat" data-en="Saved">Selamat</span>: <b id="lsSelamat">0</b></span>
-                                                    </div>
-                                                    <div id="lokstatMap"></div>
-                                                    <div class="lokstat-status" id="lokstatStatus">Memuatkan data lokasi...</div>
-                                                </section>
-                                            </main>
+                    <!-- ===== LOKASI & STATISTIK (dari dashops.html) ===== -->
+                    <section class="section-lokstat">
+                        <div class="panel-sec-head">
+                            <i class="fas fa-map-location-dot" style="color:var(--hazard-gold)"></i>
+                            <span data-ms="LOKASI & STATISTIK" data-en="LOCATION & STATISTICS">LOKASI & STATISTIK</span>
+                            <span id="lokstatDay">(DAY -)</span>
+                            <span class="status-badge live">● LIVE</span>
+                        </div>
+                        <div class="lokstat-stats">
+                            <div class="lokstat-stat">
+                                <div class="ls-label" data-ms="Jumlah Panggilan" data-en="Total Calls">Jumlah Panggilan</div>
+                                <div class="ls-num" id="lsTotal">--</div>
+                            </div>
+                            <div class="lokstat-stat kebakaran">
+                                <div class="ls-label" data-ms="Kebakaran" data-en="Fire">Kebakaran</div>
+                                <div class="ls-num" id="lsKebakaran">--</div>
+                            </div>
+                            <div class="lokstat-stat menyelamat">
+                                <div class="ls-label" data-ms="Menyelamat" data-en="Rescue">Menyelamat</div>
+                                <div class="ls-num" id="lsMenyelamat">--</div>
+                            </div>
+                            <div class="lokstat-stat lain">
+                                <div class="ls-label" data-ms="Lain-lain" data-en="Others">Lain-lain</div>
+                                <div class="ls-num" id="lsLain">--</div>
+                            </div>
+                        </div>
+                        <div class="lokstat-victims">
+                            <span class="lv-mati">💀 <span data-ms="Mati" data-en="Deceased">Mati</span>: <b id="lsMati">0</b></span>
+                            <span class="lv-cedera">🟠 <span data-ms="Cedera" data-en="Injured">Cedera</span>: <b id="lsCedera">0</b></span>
+                            <span class="lv-selamat">🟢 <span data-ms="Selamat" data-en="Saved">Selamat</span>: <b id="lsSelamat">0</b></span>
+                        </div>
+                        <div id="lokstatMap"></div>
+                        <div class="lokstat-status" id="lokstatStatus">Memuatkan data lokasi...</div>
+
+                        <!-- NOTICE DALAM PANEL (dipindah ke bawah map) -->
+                        <div class="carousel-notice" style="margin: 0.75rem 0 0 0;">
+                            <i class="fas fa-info-circle"></i>
+                            <span data-ms="Sila buka" data-en="Please open">Sila buka</span> <strong id="noticeDashOpsLink">Live Statistik Kes 24 Jam (DASH-OPS)</strong> <span data-ms="untuk maklumat penuh." data-en="for full information.">untuk maklumat penuh.</span>
+                        </div>
+                    </section>
+                </main>
 
                                             <!-- ===== PANEL 2: PASUKAN KHAS + PETA JENTERA ===== -->
                                             <div class="dashboard dash-panel">
@@ -6953,11 +6960,29 @@ if (petaFullscreenBtn) {
                     strip.innerHTML = entries.map(e => {
                         const pctVal = total ? ((e.count / total) * 100).toFixed(1) : '0.0';
                         const barW = Math.round((e.count / maxCount) * 100);
-                        const accent = katZonColor(e.domZon);
+                        
+                        // ✅ Warna asal (default)
+                        let accent = katZonColor(e.domZon);
                         const up = e.kat.toUpperCase();
+                        
+                        // ✅ LOGIK WARNA BINGKAI, IKON & BARISAN PERATUSAN
+                        if (up.includes('KEBAKARAN') && !up.includes('SELAIN')) {
+                            accent = '#ef4444'; // Merah
+                        } else if (up.includes('KHIDMAT KHAS KEMANUSIAN')) {
+                            accent = '#f97316'; // Jingga
+                        } else if (up.includes('MENYELAMAT')) {
+                            accent = '#facc15'; // Kuning
+                        } else if (up.includes('TUGAS-TUGAS KHAS') || up.includes('TUGAS KHAS')) {
+                            accent = '#3b82f6'; // Biru
+                        } else if (up.includes('PANGGILAN PALSU')) {
+                            accent = '#000000'; // Hitam
+                        }
+
                         const hit = KAT_ICON_MAP.find(s => s.m(up));
                         const icon = hit ? hit.i : KAT_ICON_FALLBACK;
                         const zonLbl = e.zonN > 1 ? `Zon ${escapeHtml(e.domZon)} +${e.zonN - 1}` : `Zon ${escapeHtml(e.domZon)}`;
+                        
+                        // ✅ Style color / textColor pada label & value telah dibuang (kekal warna asal)
                         return `<a href="data-rt.html" class="kat-tile" style="--tile-accent:${accent};" title="${escapeHtml(e.kat)}">
                             <div class="kat-tile-head">
                                 <div class="kat-tile-icon"><svg viewBox="0 0 24 24">${icon}</svg></div>
@@ -6968,6 +6993,7 @@ if (petaFullscreenBtn) {
                             <div class="kat-tile-bar"><div class="kat-tile-bar-fill" style="width:${barW}%;"></div></div>
                         </a>`;
                     }).join('');
+                
                 } catch (e) {
                     console.warn('[KategoriKes]', e.message);
                     strip.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:1rem;color:var(--text-secondary);font-size:0.75rem;"><i class="fas fa-circle-exclamation"></i> Gagal memuatkan Kategori Kes</div>';
