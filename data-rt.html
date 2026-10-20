@@ -2112,6 +2112,10 @@
               <div class="card-title">Senarai Kejadian</div>
               <div class="card-controls">
                 <div class="ms" data-key="tableCols" style="min-width: 220px"></div>
+                <button class="btn-ghost" id="dataExport" type="button" title="Muat turun CSV (data ditapis sahaja)">
+                  <svg class="ico" viewBox="0 0 24 24" style="width:14px;height:14px"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                  CSV
+                </button>
               </div>
               <span class="card-badge">klik teks header untuk sort • klik ikon tapis untuk tapis kolum</span>
             </div>
@@ -3194,6 +3198,7 @@
           initPageNav();
           initTabDropdownMobile();
           initRowsPerPage();
+          initDataExportBtn();
           applyFilter();
           set('lastUpdate', formatDateTime(new Date()));
           document.getElementById('loading').style.display = 'none';
@@ -5456,6 +5461,70 @@ return CHARTS[chartId];
         document.getElementById('pageInfo').textContent = `Halaman ${currentPage} / ${totalPages} • ${rows.length} rekod • ${perPageLabel}/halaman`;
         document.getElementById('btnPrev').disabled = currentPage <= 1 || rowsPerPage === Infinity || rowsPerPage <= 0;
         document.getElementById('btnNext').disabled = currentPage >= totalPages || rowsPerPage === Infinity || rowsPerPage <= 0;
+      }
+
+            // ---- Download CSV untuk Page Data (data ditapis sahaja) ----
+            function getFilteredSortedRows() {
+        let rows = [...FILTERED];
+        Object.entries(COL_FILTERS).forEach(([colKey, allowedSet]) => {
+          if (allowedSet && allowedSet.size > 0) rows = rows.filter((d) => allowedSet.has(getColDisplayValue(d, colKey) || '(kosong)'));
+        });
+        if (sortCol !== null) {
+          rows.sort((a, b) => {
+            let va, vb;
+            if (sortCol.startsWith('raw_')) {
+              const index = parseInt(sortCol.replace('raw_', ''), 10);
+              va = clean(a.raw[index]);
+              vb = clean(b.raw[index]);
+            } else {
+              va = a[sortCol] ?? '';
+              vb = b[sortCol] ?? '';
+            }
+            if (sortCol === 'rt') { va = a.rt ?? -1; vb = b.rt ?? -1; }
+            else if (sortCol === 'jarak') { va = a.jarak ?? -1; vb = b.jarak ?? -1; }
+            else if (sortCol === 'hari') {
+              const numA = parseInt(String(a.hari).replace(/\D/g, ''), 10);
+              const numB = parseInt(String(b.hari).replace(/\D/g, ''), 10);
+              if (!isNaN(numA) && !isNaN(numB)) { va = numA; vb = numB; }
+            } else if (typeof va === 'string' && typeof vb === 'string') {
+              const na = parseFloat(va), nb = parseFloat(vb);
+              if (!isNaN(na) && !isNaN(nb)) { va = na; vb = nb; }
+            }
+            if (va < vb) return sortDir === 'asc' ? -1 : 1;
+            if (va > vb) return sortDir === 'asc' ? 1 : -1;
+            return 0;
+          });
+        }
+        return rows;
+      }
+
+      function exportDataCSV() {
+        const visible = TableColPrefs.getVisible();
+        const cols = TABLE_COLS.filter(c => visible.has(c.key));
+        if (!cols.length) return;
+        const rows = getFilteredSortedRows();
+        const headers = cols.map(c => c.label);
+        const lines = [headers.map(csvEsc).join(',')];
+        rows.forEach(d => {
+          const cells = cols.map(c => getColDisplayValue(d, c.key));
+          lines.push(cells.map(csvEsc).join(','));
+        });
+        const blob = new Blob(['\ufeff' + lines.join('\n')], { type: 'text/csv;charset=utf-8;' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `data-kejadian-${new Date().toISOString().slice(0, 10)}.csv`;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+      }
+
+      function initDataExportBtn() {
+        const btn = document.getElementById('dataExport');
+        if (!btn || btn.dataset.ready === '1') return;
+        btn.dataset.ready = '1';
+        btn.addEventListener('click', exportDataCSV);
       }
 
       function changePage(delta) {
