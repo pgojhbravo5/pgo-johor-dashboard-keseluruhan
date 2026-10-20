@@ -4337,8 +4337,150 @@ body.mode-siang .peta-legend-overlay .pts-line + .pts-line {
         .lokstat-stat.tugaskhas .ls-label i { color: #3b82f6; }
         .lokstat-victims i { margin-right: 0.15rem; }
 
+        /* ===== INDEX BERGERAK KATEGORI KES ===== */
+        .kat-ticker-wrap {
+            width: 100%;
+            max-width: 73.75rem;
+            margin: 0.5rem auto 0 auto;
+            padding: 0 0.75rem;
+            flex-shrink: 0;
+        }
+        @media (min-width: 64rem) { .kat-ticker-wrap { padding: 0; } }
+        @media (min-width: 80rem) { .kat-ticker-wrap { max-width: none; } }
+        @media (max-width: 42.5rem) { .kat-ticker-wrap { padding: 0 0.5rem; } }
+
+        .kat-ticker {
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+            background: var(--hud-bg);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid var(--hud-border);
+            border-radius: 2rem;
+            padding: 0.35rem 0.4rem;
+            overflow: hidden;
+        }
+        .kat-ticker-label {
+            flex-shrink: 0;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+            font-size: 0.62rem;
+            font-weight: 800;
+            letter-spacing: 0.06rem;
+            text-transform: uppercase;
+            text-decoration: none;
+            color: var(--hazard-gold);
+            background: rgba(217, 169, 105, 0.1);
+            border: 1px solid rgba(217, 169, 105, 0.3);
+            border-radius: 1.5rem;
+            padding: 0.45rem 0.8rem;
+            transition: all 0.2s ease;
+        }
+        .kat-ticker-label:hover { background: var(--hazard-gold); color: #000; }
+
+        .kat-ticker-viewport {
+            flex: 1;
+            min-width: 0;
+            overflow: hidden;
+            -webkit-mask-image: linear-gradient(90deg, transparent, #000 1.5rem, #000 calc(100% - 1.5rem), transparent);
+            mask-image: linear-gradient(90deg, transparent, #000 1.5rem, #000 calc(100% - 1.5rem), transparent);
+        }
+        .kat-ticker-track {
+            display: flex;
+            width: max-content;
+            animation: katTickerScroll var(--kat-dur, 60s) linear infinite;
+            will-change: transform;
+        }
+        .kat-ticker:hover .kat-ticker-track,
+        .kat-ticker:active .kat-ticker-track,
+        .kat-ticker:focus-within .kat-ticker-track {
+            animation-play-state: paused;
+        }
+        @keyframes katTickerScroll {
+            from { transform: translateX(0); }
+            to   { transform: translateX(-50%); }
+        }
+        .kat-ticker-loading {
+            font-size: 0.72rem;
+            color: var(--text-secondary);
+            padding: 0.4rem 0.75rem;
+            white-space: nowrap;
+        }
+
+        .kat-ticker-item {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            flex-shrink: 0;
+            margin-right: 0.6rem;
+            padding: 0.3rem 0.8rem 0.3rem 0.4rem;
+            border-radius: 1.5rem;
+            border: 1px solid var(--hud-border);
+            border-left: 3px solid var(--tile-accent, var(--hazard-gold));
+            background: var(--hud-card-bg);
+            color: var(--text-primary);
+            text-decoration: none;
+            white-space: nowrap;
+            font-size: 0.72rem;
+            transition: background 0.2s ease, border-color 0.2s ease, transform 0.2s ease;
+        }
+        .kat-ticker-item:hover {
+            background: var(--glass-highlight);
+            border-color: var(--hud-border-red);
+            transform: translateY(-1px);
+        }
+        .kat-ticker-icon {
+            width: 1.4rem;
+            height: 1.4rem;
+            border-radius: 50%;
+            flex-shrink: 0;
+            background: var(--tile-accent, var(--hazard-gold));
+            color: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .kat-ticker-icon svg {
+            width: 0.75rem; height: 0.75rem;
+            fill: none; stroke: currentColor; stroke-width: 2.2;
+            stroke-linecap: round; stroke-linejoin: round;
+        }
+        .kat-ticker-name {
+            font-size: 0.62rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.03rem;
+            color: var(--text-secondary);
+        }
+        .kat-ticker-count { font-size: 0.9rem; font-weight: 900; color: #ffffff; }
+        .kat-ticker-pct {
+            font-size: 0.62rem;
+            font-weight: 800;
+            color: var(--tile-accent, var(--hazard-gold));
+            background: rgba(255, 255, 255, 0.06);
+            padding: 0.05rem 0.4rem;
+            border-radius: 0.4rem;
+        }
+
+        /* Mod siang */
+        body.mode-siang .kat-ticker { background: rgba(245, 247, 250, 0.92); border-color: #e2e8f0; }
+        body.mode-siang .kat-ticker-label { color: #8a6a24; background: rgba(138, 106, 36, 0.08); border-color: rgba(138, 106, 36, 0.25); }
+        body.mode-siang .kat-ticker-label:hover { background: #b3223f; color: #fff; border-color: #b3223f; }
+        body.mode-siang .kat-ticker-item { background: #ffffff; border-color: #e2e8f0; border-left-color: var(--tile-accent, #8a6a24); }
+        body.mode-siang .kat-ticker-item:hover { background: #f8fafc; }
+        body.mode-siang .kat-ticker-name { color: #475569; }
+        body.mode-siang .kat-ticker-count { color: #0f172a; }
+        body.mode-siang .kat-ticker-pct { background: #f1f5f9; }
+
+        @media (prefers-reduced-motion: reduce) {
+            .kat-ticker-viewport { overflow-x: auto; scrollbar-width: none; }
+            .kat-ticker-track { animation: none; }
+        }
+
     </style>
-    
+
 </head>
 <body>
 
@@ -4403,7 +4545,23 @@ body.mode-siang .peta-legend-overlay .pts-line + .pts-line {
         </div>
     </nav>
 
+    <!-- ===== INDEX BERGERAK: KATEGORI KES ===== -->
+    <div class="kat-ticker-wrap">
+        <div class="kat-ticker" role="region" aria-label="Statistik kategori kes 2026">
+            <a href="data-rt.html" class="kat-ticker-label" title="Buka Dashboard RT">
+                <i class="fas fa-layer-group"></i>
+                <span data-ms="KATEGORI KES 2026" data-en="CASE CATEGORIES 2026">KATEGORI KES 2026</span>
+            </a>
+            <div class="kat-ticker-viewport">
+                <div class="kat-ticker-track" id="katTickerTrack">
+                    <span class="kat-ticker-loading"><i class="fas fa-spinner fa-spin"></i> Memuatkan...</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- ===== SEARCH BAR ===== -->
+    
     <div class="search-bar-wrap">
         <div class="search-bar-inner">
             <i class="fas fa-search"></i>
@@ -4610,21 +4768,6 @@ body.mode-siang .peta-legend-overlay .pts-line + .pts-line {
 
                                 <!-- ===== PANEL 3: KAD LIVE + ONLINE ===== -->
                 <div class="dashboard dash-panel">
-
-                    <!-- ===== KATEGORI KES (dari data-rt.html) ===== -->
-                    <section class="section-kat-kes">
-                        <div class="panel-sec-head">
-                            <i class="fas fa-layer-group" style="color:var(--hazard-gold)"></i>
-                            <span data-ms="STATISTIK MENGIKUT KATEGORI KES SEPANJANG TAHUN 2026" data-en="CASE CATEGORIES STATISTICS FOR 2026">STATISTIK MENGIKUT KATEGORI KES SEPANJANG TAHUN 2026</span>
-                            <span class="sec-count" id="katKesCount">— kategori</span>
-                        </div>
-                        
-                        <div class="kat-strip" id="katKesStrip">
-                            <div style="grid-column:1/-1;text-align:center;padding:1rem;color:var(--text-secondary);font-size:0.75rem;">
-                                <i class="fas fa-spinner fa-spin"></i> Memuatkan...
-                            </div>
-                        </div>
-                    </section>
 
                     <!-- KATEGORI -->
                     <div class="cat-accordion">
@@ -7342,10 +7485,9 @@ if (petaFullscreenBtn) {
                 return y >= KAT_MIN_YEAR;
             }
 
-            async function fetchKategoriKes() {
-                const strip = document.getElementById('katKesStrip');
-                const countEl = document.getElementById('katKesCount');
-                if (!strip) return;
+                        async function fetchKategoriKes() {
+                const track = document.getElementById('katTickerTrack');
+                if (!track) return;
                 try {
                     const resp = await fetch(RT_CSV_URL, { cache: 'no-cache' });
                     if (!resp.ok) throw new Error('HTTP ' + resp.status);
@@ -7375,59 +7517,59 @@ if (petaFullscreenBtn) {
 
                     const entries = Object.entries(groups).map(([kat, g]) => {
                         const zs = Object.entries(g.zon).sort((x, y) => y[1] - x[1]);
-                        return { kat, count: g.count, domZon: zs[0] ? zs[0][0] : '(TIADA)', zonN: zs.length };
+                        return { kat, count: g.count, domZon: zs[0] ? zs[0][0] : '(TIADA)' };
                     }).sort((x, y) => y.count - x.count);
 
-                    const enAktif = window.bahasaAktif === 'en';
-                    if (countEl) countEl.textContent = entries.length + (enAktif ? ' categories' : ' kategori');
                     if (!entries.length) {
-                        strip.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:1rem;color:var(--text-secondary);font-size:0.75rem;">Tiada data</div>';
+                        track.innerHTML = '<span class="kat-ticker-loading">Tiada data</span>';
+                        track.style.animation = 'none';
                         return;
                     }
-                    const maxCount = entries[0].count || 1;
-                    strip.innerHTML = entries.map(e => {
+
+                    const buatItem = (e, salinan) => {
                         const pctVal = total ? ((e.count / total) * 100).toFixed(1) : '0.0';
-                        const barW = Math.round((e.count / maxCount) * 100);
-                        
-                        // ✅ Warna asal (default)
                         let accent = katZonColor(e.domZon);
                         const up = e.kat.toUpperCase();
-                        
-                        // ✅ LOGIK WARNA BINGKAI, IKON & BARISAN PERATUSAN
-                        if (up.includes('KEBAKARAN') && !up.includes('SELAIN')) {
-                            accent = '#ef4444'; // Merah
-                        } else if (up.includes('KHIDMAT KHAS KEMANUSIAN')) {
-                            accent = '#f97316'; // Jingga
-                        } else if (up.includes('MENYELAMAT')) {
-                            accent = '#facc15'; // Kuning
-                        } else if (up.includes('TUGAS-TUGAS KHAS') || up.includes('TUGAS KHAS')) {
-                            accent = '#3b82f6'; // Biru
-                        } else if (up.includes('PANGGILAN PALSU')) {
-                            accent = '#000000'; // Hitam
-                        }
+
+                        if (up.includes('KEBAKARAN') && !up.includes('SELAIN')) accent = '#ef4444';
+                        else if (up.includes('KHIDMAT KHAS KEMANUSIAN')) accent = '#f97316';
+                        else if (up.includes('MENYELAMAT')) accent = '#facc15';
+                        else if (up.includes('TUGAS-TUGAS KHAS') || up.includes('TUGAS KHAS')) accent = '#3b82f6';
+                        else if (up.includes('PANGGILAN PALSU')) accent = '#000000';
 
                         const hit = KAT_ICON_MAP.find(s => s.m(up));
                         const icon = hit ? hit.i : KAT_ICON_FALLBACK;
-                        const zonLbl = e.zonN > 1 ? `Zon ${escapeHtml(e.domZon)} +${e.zonN - 1}` : `Zon ${escapeHtml(e.domZon)}`;
-                        
-                        // ✅ Style color / textColor pada label & value telah dibuang (kekal warna asal)
-                        return `<a href="data-rt.html" class="kat-tile" style="--tile-accent:${accent};" title="${escapeHtml(e.kat)}">
-                            <div class="kat-tile-head">
-                                <div class="kat-tile-icon"><svg viewBox="0 0 24 24">${icon}</svg></div>
-                                <div class="kat-tile-label">${escapeHtml(e.kat)}</div>
-                            </div>
-                            <div class="kat-tile-value">${e.count.toLocaleString()}</div>
-                            <div class="kat-tile-sub"><span class="kat-pct">${pctVal}%</span><span>· ${zonLbl}</span></div>
-                            <div class="kat-tile-bar"><div class="kat-tile-bar-fill" style="width:${barW}%;"></div></div>
+
+                        return `<a href="data-rt.html" class="kat-ticker-item" style="--tile-accent:${accent};" title="${escapeHtml(e.kat)}"${salinan ? ' aria-hidden="true" tabindex="-1"' : ''}>
+                            <span class="kat-ticker-icon"><svg viewBox="0 0 24 24">${icon}</svg></span>
+                            <span class="kat-ticker-name">${escapeHtml(e.kat)}</span>
+                            <span class="kat-ticker-count">${e.count.toLocaleString()}</span>
+                            <span class="kat-ticker-pct">${pctVal}%</span>
                         </a>`;
-                    }).join('');
-                
+                    };
+
+                    // Dua salinan supaya gelung sambung tanpa putus (translateX 0 → -50%)
+                    const set1 = entries.map(e => buatItem(e, false)).join('');
+                    const set2 = entries.map(e => buatItem(e, true)).join('');
+                    track.style.animation = 'none';
+                    track.innerHTML = set1 + set2;
+
+                    // Laju tetap ~50px/saat
+                    requestAnimationFrame(() => {
+                        const lebarSatuSet = track.scrollWidth / 2;
+                        const durasi = Math.max(20, lebarSatuSet / 50);
+                        track.style.setProperty('--kat-dur', durasi + 's');
+                        track.style.animation = '';
+                    });
+
                 } catch (e) {
                     console.warn('[KategoriKes]', e.message);
-                    strip.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:1rem;color:var(--text-secondary);font-size:0.75rem;"><i class="fas fa-circle-exclamation"></i> Gagal memuatkan Kategori Kes</div>';
+                    track.innerHTML = '<span class="kat-ticker-loading"><i class="fas fa-circle-exclamation"></i> Gagal memuatkan Kategori Kes</span>';
+                    track.style.animation = 'none';
                 }
             }
-            fetchKategoriKes();
+            
+                        fetchKategoriKes();
             setInterval(fetchKategoriKes, 300000);
 
             // ===== SERVICE WORKER =====
