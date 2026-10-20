@@ -4174,6 +4174,72 @@
     font-size: 0.7rem;
 }
 
+/* ===== BUTANG HIDE / SHOW LEGEND ===== */
+.peta-legend-toggle {
+    position: absolute;
+    top: 0.35rem;
+    right: 0.35rem;
+    width: 1.6rem;
+    height: 1.6rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(255, 255, 255, 0.06);
+    border: 1px solid var(--hud-border);
+    color: var(--hazard-gold);
+    border-radius: 0.5rem;
+    font-size: 0.7rem;
+    cursor: pointer;
+    z-index: 2;
+    transition: all 0.2s ease;
+}
+.peta-legend-toggle:hover {
+    background: rgba(217, 169, 105, 0.15);
+    border-color: rgba(217, 169, 105, 0.45);
+}
+
+/* Ruang untuk butang supaya tidak menutup tajuk */
+.peta-legend-overlay #petaLegendText {
+    padding-right: 1.4rem;
+}
+
+/* Keadaan tersembunyi: panel mengecut menjadi butang bulat */
+.peta-legend-overlay.collapsed {
+    width: auto;
+    max-height: none;
+    padding: 0;
+    overflow: visible;
+    background: transparent;
+    border: none;
+    box-shadow: none;
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+}
+.peta-legend-overlay.collapsed #petaLegendText {
+    display: none;
+}
+.peta-legend-overlay.collapsed .peta-legend-toggle {
+    position: static;
+    width: 2.2rem;
+    height: 2.2rem;
+    font-size: 0.85rem;
+    border-radius: 50%;
+    background: rgba(18, 18, 24, 0.88);
+    box-shadow: 0 0.35rem 1rem rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+}
+
+body.mode-siang .peta-legend-toggle {
+    background: #f1f5f9;
+    border-color: #cbd5e1;
+    color: #8a6a24;
+}
+body.mode-siang .peta-legend-overlay.collapsed .peta-legend-toggle {
+    background: rgba(255, 255, 255, 0.95);
+    box-shadow: 0 0.35rem 1rem rgba(15, 23, 42, 0.25);
+}
+
 /* Mod siang */
 body.mode-siang .peta-legend-overlay {
     background: rgba(255, 255, 255, 0.93);
@@ -4202,7 +4268,7 @@ body.mode-siang .peta-legend-overlay .pts-line + .pts-line {
         .lokstat-stat.terbuka .ls-num { color: #f39c12 !important; }
         .lokstat-stat.khidmat .ls-num { color: #2ecc71 !important; }
         .lokstat-stat.tugaskhas .ls-num { color: #3b82f6 !important; }
-        
+
                 /* ===== RINGKASAN TEKS STATISTIK DI ATAS TAB SUMBER ===== */
                 .peta-text-stats {
             margin-bottom: 0.6rem;
@@ -4471,8 +4537,11 @@ body.mode-siang .peta-legend-overlay .pts-line + .pts-line {
                             <div class="peta-map-wrap">
                                 <div id="petaJenteraMap"></div>
 
-                                <!-- LEGEND TEKS: hanya kelihatan dalam skrin penuh (sudut kanan atas) -->
+                                                                <!-- LEGEND TEKS: hanya kelihatan dalam skrin penuh (sudut kanan atas) -->
                                 <div class="peta-legend-overlay" id="petaLegendOverlay">
+                                    <button type="button" class="peta-legend-toggle" id="petaLegendToggle" aria-label="Sembunyi statistik" title="Sembunyi statistik" aria-expanded="true">
+                                        <i class="fas fa-eye-slash"></i>
+                                    </button>
                                     <div id="petaLegendText"></div>
                                 </div>
                             </div>
@@ -5019,6 +5088,7 @@ body.mode-siang .peta-legend-overlay .pts-line + .pts-line {
                         : (semuaTerpilih ? 'Nyahpilih Semua' : 'Pilih Semua');
                 }
                 try { renderPetaStatusText(); } catch (e) { }
+                try { terapStatusLegend(document.getElementById('petaLegendOverlay').classList.contains('collapsed')); } catch (e) { }
                 try { terapFilterPeta(); } catch (e) { }
                 try { if (anggotaCacheForUnits) renderSpecialUnits(anggotaCacheForUnits); } catch (e) { }
                 try { if (modalUnitAktif) renderPasukanModalList(); } catch (e) { }
@@ -6315,6 +6385,43 @@ if (petaFullscreenBtn) {
                 });
             }
             salinTeksStatistikKeLegend();
+
+            // ===== BUTANG HIDE / SHOW LEGEND =====
+            const petaLegendOverlay = document.getElementById('petaLegendOverlay');
+            const petaLegendToggle = document.getElementById('petaLegendToggle');
+            const PETA_LEGEND_KEY = 'pgoPetaLegendHidden';
+
+            function terapStatusLegend(tersembunyi) {
+                if (!petaLegendOverlay || !petaLegendToggle) return;
+                const en = window.bahasaAktif === 'en';
+                petaLegendOverlay.classList.toggle('collapsed', tersembunyi);
+                petaLegendToggle.innerHTML = tersembunyi
+                    ? '<i class="fas fa-chart-simple"></i>'
+                    : '<i class="fas fa-eye-slash"></i>';
+                const label = tersembunyi
+                    ? (en ? 'Show statistics' : 'Papar statistik')
+                    : (en ? 'Hide statistics' : 'Sembunyi statistik');
+                petaLegendToggle.setAttribute('aria-label', label);
+                petaLegendToggle.setAttribute('title', label);
+                petaLegendToggle.setAttribute('aria-expanded', tersembunyi ? 'false' : 'true');
+            }
+
+            if (petaLegendToggle) {
+                petaLegendToggle.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    const tersembunyi = !petaLegendOverlay.classList.contains('collapsed');
+                    terapStatusLegend(tersembunyi);
+                    try { localStorage.setItem(PETA_LEGEND_KEY, tersembunyi ? '1' : '0'); } catch (err) {}
+                });
+                // Halang klik/seret pada panel daripada menggerakkan peta
+                if (typeof L !== 'undefined' && L.DomEvent && petaLegendOverlay) {
+                    L.DomEvent.disableClickPropagation(petaLegendOverlay);
+                    L.DomEvent.disableScrollPropagation(petaLegendOverlay);
+                }
+                let tersimpan = false;
+                try { tersimpan = localStorage.getItem(PETA_LEGEND_KEY) === '1'; } catch (err) {}
+                terapStatusLegend(tersimpan);
+            }
 
             initPetaJenteraMap();
             fetchDanPaparPetaJentera();
