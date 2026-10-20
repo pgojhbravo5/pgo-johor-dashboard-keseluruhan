@@ -4130,8 +4130,8 @@
             }
         }
 
-                /* ===== LEGEND PETA (HANYA MOD SKRIN PENUH) ===== */
-                .peta-map-wrap { position: relative; }
+                                /* ===== LEGEND TEKS PETA (HANYA SKRIN PENUH, SUDUT KANAN ATAS) ===== */
+                                .peta-map-wrap { position: relative; }
 
 .peta-legend-overlay {
     display: none;
@@ -4139,49 +4139,39 @@
     top: 0.6rem;
     right: 0.6rem;
     z-index: 1100;
-    width: min(14rem, 60vw);
+    width: min(15rem, 62vw);
     max-height: calc(100% - 1.2rem);
     overflow-y: auto;
-    flex-direction: column;
-    gap: 0.6rem;
-    padding: 0.6rem;
+    padding: 0.55rem 0.7rem;
     border-radius: 0.85rem;
-    background: rgba(18, 18, 24, 0.9);
+    background: rgba(18, 18, 24, 0.88);
     border: 1px solid var(--hud-border);
     backdrop-filter: blur(10px);
     -webkit-backdrop-filter: blur(10px);
     box-shadow: 0 0.5rem 1.5rem rgba(0, 0, 0, 0.5);
     scrollbar-width: thin;
+    font-size: 0.68rem;
+    line-height: 1.5;
+    color: var(--text-primary);
+    pointer-events: auto;
 }
-.peta-jentera-card.fullscreen-mode .peta-legend-overlay { display: flex; }
+.peta-jentera-card.fullscreen-mode .peta-legend-overlay { display: block; }
 
-.peta-legend-overlay .legend-title {
+/* Setiap item teks pada baris sendiri supaya padat di sudut */
+.peta-legend-overlay .pts-line {
     display: flex;
-    align-items: center;
-    gap: 0.4rem;
-    flex-wrap: wrap;
-    font-size: 0.62rem;
-    font-weight: 800;
-    letter-spacing: 0.05rem;
-    text-transform: uppercase;
-    color: #ffffff;
-    margin-bottom: 0.4rem;
-    padding-bottom: 0.3rem;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.05rem;
 }
-.peta-legend-overlay .legend-title i { color: var(--hazard-gold); }
-
-.peta-legend-overlay .lokstat-stats {
-    grid-template-columns: repeat(2, 1fr);
-    gap: 0.35rem;
-    margin-bottom: 0.4rem;
+.peta-legend-overlay .pts-line + .pts-line {
+    margin-top: 0.5rem;
+    padding-top: 0.5rem;
+    border-top: 1px dashed rgba(255, 255, 255, 0.15);
 }
-.peta-legend-overlay .lokstat-stat { padding: 0.3rem 0.5rem; }
-.peta-legend-overlay .lokstat-stat .ls-num { font-size: 1rem; }
-.peta-legend-overlay .lokstat-victims { margin-bottom: 0; gap: 0.3rem; }
-.peta-legend-overlay .peta-overall-stats {
-    grid-template-columns: repeat(2, 1fr);
-    margin-bottom: 0;
+.peta-legend-overlay .pts-title {
+    margin-bottom: 0.15rem;
+    font-size: 0.7rem;
 }
 
 /* Mod siang */
@@ -4190,9 +4180,8 @@ body.mode-siang .peta-legend-overlay {
     border-color: #e2e8f0;
     box-shadow: 0 0.5rem 1.5rem rgba(15, 23, 42, 0.2);
 }
-body.mode-siang .peta-legend-overlay .legend-title {
-    color: #0f172a;
-    border-bottom-color: #e2e8f0;
+body.mode-siang .peta-legend-overlay .pts-line + .pts-line {
+    border-top-color: #e2e8f0;
 }
 
 /* Wrapper peta dalam skrin penuh: peta mengisi baki ruang */
@@ -4213,9 +4202,7 @@ body.mode-siang .peta-legend-overlay .legend-title {
         .lokstat-stat.terbuka .ls-num { color: #f39c12 !important; }
         .lokstat-stat.khidmat .ls-num { color: #2ecc71 !important; }
         .lokstat-stat.tugaskhas .ls-num { color: #3b82f6 !important; }
-        .peta-legend-overlay .lokstat-stat .ls-label { font-size: 0.52rem; line-height: 1.2; 
-        }
-
+        
                 /* ===== RINGKASAN TEKS STATISTIK DI ATAS TAB SUMBER ===== */
                 .peta-text-stats {
             margin-bottom: 0.6rem;
@@ -4484,77 +4471,12 @@ body.mode-siang .peta-legend-overlay .legend-title {
                             <div class="peta-map-wrap">
                                 <div id="petaJenteraMap"></div>
 
-                                <!-- LEGEND: hanya kelihatan dalam mod skrin penuh -->
+                                <!-- LEGEND TEKS: hanya kelihatan dalam skrin penuh (sudut kanan atas) -->
                                 <div class="peta-legend-overlay" id="petaLegendOverlay">
-                                    <div class="legend-block">
-                                        <div class="legend-title">
-                                            <i class="fas fa-chart-pie"></i>
-                                            <span data-ms="STATISTIK KES" data-en="CASE STATISTICS">STATISTIK KES</span>
-                                            <span id="lokstatDay">(DAY -)</span>
-                                        </div>
-                                        <div class="lokstat-stats">
-                                            <div class="lokstat-stat span2">
-                                                <div class="ls-label" data-ms="Jumlah Panggilan" data-en="Total Calls">Jumlah Panggilan</div>
-                                                <div class="ls-num" id="lsTotal">--</div>
-                                            </div>
-                                            <div class="lokstat-stat banjir">
-                                                <div class="ls-label"><i class="fas fa-water"></i> <span data-ms="Bencana Banjir" data-en="Flood Disaster">Bencana Banjir</span></div>
-                                                <div class="ls-num" id="lsBanjir">--</div>
-                                            </div>
-                                            <div class="lokstat-stat terbuka">
-                                                <div class="ls-label"><i class="fas fa-tree"></i> <span data-ms="Kebakaran Terbuka" data-en="Open Burning">Kebakaran Terbuka</span></div>
-                                                <div class="ls-num" id="lsTerbuka">--</div>
-                                            </div>
-                                            <div class="lokstat-stat kebakaran">
-                                                <div class="ls-label"><i class="fas fa-fire"></i> <span data-ms="Kebakaran" data-en="Fire">Kebakaran</span></div>
-                                                <div class="ls-num" id="lsKebakaran">--</div>
-                                            </div>
-                                            <div class="lokstat-stat menyelamat">
-                                                <div class="ls-label"><i class="fas fa-life-ring"></i> <span data-ms="Menyelamat" data-en="Rescue">Menyelamat</span></div>
-                                                <div class="ls-num" id="lsMenyelamat">--</div>
-                                            </div>
-                                            <div class="lokstat-stat khidmat">
-                                                <div class="ls-label"><i class="fas fa-hand-holding-heart"></i> <span data-ms="Khidmat Kemanusiaan" data-en="Humanitarian Service">Khidmat Kemanusiaan</span></div>
-                                                <div class="ls-num" id="lsKhidmat">--</div>
-                                            </div>
-                                            <div class="lokstat-stat tugaskhas">
-                                                <div class="ls-label"><i class="fas fa-bullseye"></i> <span data-ms="Tugas Khas" data-en="Special Duty">Tugas Khas</span></div>
-                                                <div class="ls-num" id="lsTugasKhas">--</div>
-                                            </div>
-                                        </div>
-                                        <div class="lokstat-victims">
-                                            <span class="lv-mati"><i class="fas fa-skull"></i> <span data-ms="Mati" data-en="Deceased">Mati</span>: <b id="lsMati">0</b></span>
-                                            <span class="lv-cedera"><i class="fas fa-user-injured"></i> <span data-ms="Cedera" data-en="Injured">Cedera</span>: <b id="lsCedera">0</b></span>
-                                            <span class="lv-selamat"><i class="fas fa-user-check"></i> <span data-ms="Selamat" data-en="Saved">Selamat</span>: <b id="lsSelamat">0</b></span>
-                                        </div>                                    </div>
-
-                                    <div class="legend-block">
-                                        <div class="legend-title">
-                                            <i class="fas fa-truck-field"></i>
-                                            <span data-ms="STATISTIK JENTERA" data-en="VEHICLE STATISTICS">STATISTIK JENTERA</span>
-                                        </div>
-                                        <div class="peta-overall-stats" id="petaOverallStats">
-                                            <div class="pos-item" data-kelas="jumlah">
-                                                <div class="pos-label"><i class="fas fa-truck-field"></i> <span data-ms="Jumlah Jentera" data-en="Total Vehicles">Jumlah Jentera</span></div>
-                                                <div class="pos-num" id="posJumlah">--</div>
-                                            </div>
-                                            <div class="pos-item" data-kelas="baik">
-                                                <div class="pos-label"><i class="fas fa-circle-check"></i> <span data-ms="Baik" data-en="Good">Baik</span></div>
-                                                <div class="pos-num" id="posBaik">--</div>
-                                            </div>
-                                            <div class="pos-item" data-kelas="minor">
-                                                <div class="pos-label"><i class="fas fa-triangle-exclamation"></i> <span data-ms="Rosak Minor" data-en="Minor Damage">Rosak Minor</span></div>
-                                                <div class="pos-num" id="posMinor">--</div>
-                                            </div>
-                                            <div class="pos-item" data-kelas="rosak">
-                                                <div class="pos-label"><i class="fas fa-circle-xmark"></i> <span data-ms="Rosak" data-en="Damaged">Rosak</span></div>
-                                                <div class="pos-num" id="posRosak">--</div>
-                                            </div>
-                                        </div>
-                                    </div>
+                                    <div id="petaLegendText"></div>
                                 </div>
                             </div>
-                            
+
                             <div class="peta-jentera-status" id="petaJenteraStatusText">Memuatkan data jentera...</div>
                             <div class="lokstat-status" id="lokstatStatus">Memuatkan data lokasi...</div>
 
@@ -6369,6 +6291,30 @@ if (petaFullscreenBtn) {
                     togglePetaJenteraFullscreen();
                 }
             });
+
+            // ===== LEGEND TEKS SKRIN PENUH (salin dari ringkasan teks luar peta) =====
+            const petaTeksSumber = document.querySelector('.peta-text-stats');
+            const petaLegendTeks = document.getElementById('petaLegendText');
+
+            function salinTeksStatistikKeLegend() {
+                if (!petaTeksSumber || !petaLegendTeks) return;
+                const klon = petaTeksSumber.cloneNode(true);
+                klon.classList.remove('peta-text-stats');   // elak disembunyikan oleh peraturan skrin penuh
+                klon.removeAttribute('id');
+                klon.querySelectorAll('[id]').forEach(el => el.removeAttribute('id')); // elak ID bertindih
+                petaLegendTeks.innerHTML = '';
+                petaLegendTeks.appendChild(klon);
+            }
+
+            if (petaTeksSumber) {
+                // Sentiasa seiring bila data kes/jentera/bahasa berubah
+                new MutationObserver(salinTeksStatistikKeLegend).observe(petaTeksSumber, {
+                    childList: true,
+                    subtree: true,
+                    characterData: true
+                });
+            }
+            salinTeksStatistikKeLegend();
 
             initPetaJenteraMap();
             fetchDanPaparPetaJentera();
