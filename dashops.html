@@ -5311,7 +5311,8 @@
         if (window.innerWidth < 768) return;
         const popup = document.getElementById('mapCasePopup');
         if (!popup || !e.target.closest('#popupDragHandle')) return;
-
+        if (e.target.closest('.popup-toggle-btn')) return; // Tambah baris ini
+        
         isDragging = true;
         dragTarget = popup;
         dragStartX = e.touches ? e.touches[0].clientX : e.clientX;
