@@ -8,25 +8,51 @@
     />
     <title>🚒 PGO JOHOR DASHBOARD - 24 JAM</title>
 
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=IBM+Plex+Sans:wght@500;600;700&display=swap"
+      rel="stylesheet"
+    />
+
     <style>
       :root {
-        --bg-primary: #0b0e1a;
-        --bg-panel: #131a2e;
-        --bg-card: #1c2742;
-        --bg-hover: #243050;
-        --border-color: #2a3a5e;
-        --text-primary: #ffffff;
-        --text-secondary: #aaa;
-        --text-muted: #7a8ba0;
-        --text-blue: #5b9bd5;
-        --text-gold: #ffaa00;
-        --red: #e74c3c;
-        --orange: #f39c12;
-        --green: #2ecc71;
-        --blue: #2980b9;
-        --shif-a: #e74c3c;
-        --shif-b: #3498db;
-        --shif-c: #2ecc71;
+        /* ===== TEMA MALAM (ikut File 1 - dark) ===== */
+        --bg-primary: #0f172a;
+        --bg-panel: #1a2438;
+        --bg-card: #22304a;
+        --bg-hover: #2d3f5c;
+        --border-color: #2d3f5c;
+        --border-strong: #3d5070;
+        --text-primary: #e8eef7;
+        --text-secondary: #94a3b8;
+        --text-muted: #7f8fa6;
+        --text-blue: #3b6ea8;
+        --text-gold: #b8935a;
+        --red: #c8102e;
+        --orange: #d97757;
+        --green: #0f7b4f;
+        --blue: #3b6ea8;
+        --shif-a: #c8102e;
+        --shif-b: #3b6ea8;
+        --shif-c: #0f7b4f;
+
+        --font-body: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+        --font-head: 'IBM Plex Sans', 'Inter', sans-serif;
+        --radius: 6px;
+        --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.4);
+        --shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
+        --shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.6);
+
+        /* Ticker */
+        --tick-weather: #1a2438;
+        --tick-weather-b: #2d3f5c;
+        --tick-ipu: #11291f;
+        --tick-ipu-b: #1d4a36;
+        --tick-ongoing: #3a1420;
+        --tick-ongoing-b: #6b1e30;
+        --ongoing-accent: #ff8a9a;
+
         --font-xl: clamp(1.2rem, 2vw, 2.4rem);
         --font-lg: clamp(0.9rem, 1.5vw, 1.6rem);
         --font-md: clamp(0.8rem, 1.2vw, 1.3rem);
@@ -49,7 +75,8 @@
       body {
         background: var(--bg-primary);
         color: var(--text-primary);
-        font-family: 'Segoe UI', Arial, sans-serif;
+        font-family: var(--font-body);
+        -webkit-font-smoothing: antialiased;
         padding: 10px;
         padding-top: max(10px, env(safe-area-inset-top));
         padding-bottom: max(10px, env(safe-area-inset-bottom));
@@ -484,19 +511,6 @@
       .ipu-sangat-tidak-sihat { color: #ff4757; }
       .ipu-berbahaya       { color: #c0392b; }
 
-      body.light-mode .ipu-ticker-container {
-        background: linear-gradient(90deg, #e8f5ec 0%, #f0faf3 50%, #e8f5ec 100%);
-        border-color: #b8dcc4;
-      }
-      body.light-mode .ipu-ticker-container::before {
-        background: linear-gradient(90deg, #e8f5ec 0%, transparent 100%);
-      }
-      body.light-mode .ipu-ticker-container::after {
-        background: linear-gradient(270deg, #e8f5ec 0%, transparent 100%);
-      }
-      body.light-mode .ipu-item { color: #2a4a35; }
-      body.light-mode .ipu-item:hover { background: rgba(0, 0, 0, 0.05); }
-      body.light-mode .ipu-location { color: #5a7a65; }
 
       /* ============ ONGOING (KES BELUM SELESAI) TICKER ============ */
       .ongoing-ticker-container {
@@ -2208,116 +2222,234 @@
         }
       }
 
-      /* LIGHT MODE */
+      /* ================================================================
+         TEMA IKUT FILE 1 — MALAM (default) + SIANG (body.light-mode)
+         ================================================================ */
+
+      /* ---------- TEMA SIANG (File 1 - light) ---------- */
       body.light-mode {
-        background: #f0f2f5;
-        color: #1a1a1a;
-      }
-      body.light-mode .panel {
-        background: #fff;
-        border-color: #d1d5db;
-      }
-      body.light-mode .panel-header {
-        background: #fff;
-        border-bottom-color: #e5e7eb;
-      }
-      body.light-mode .panel-header h2 {
-        color: #1e40af;
-      }
-      body.light-mode .case-item {
-        background: #f8fafc;
-        border: 1px solid #e2e8f0;
-      }
-      body.light-mode .stat-card {
-        background: #f8fafc;
-        border: 1px solid #e2e8f0;
-      }
-      body.light-mode .stat-card .stat-number {
-        color: #1e40af;
-      }
-      body.light-mode .map-popup-overlay {
-        background: rgba(255, 255, 255, 0.97);
-        border-color: #d1d5db;
-      }
-      body.light-mode .popup-case-item {
-        background: #f8fafc;
-        border-color: #e2e8f0;
-      }
-      body.light-mode .popup-case-item:hover {
-        background: #e8f0fe;
-      }
-      body.light-mode .category-checkbox {
-        background: #e2e8f0;
-        color: #4a5568;
-        border-color: #cbd5e0;
-      }
-      body.light-mode .select-all-btn {
-        background: #e2e8f0;
-        color: #4a5568;
-        border-color: #cbd5e0;
-      }
-      body.light-mode .modal-box {
-        background: #fff;
-        border-color: #1e40af;
-      }
-      body.light-mode .modal-header {
-        color: #d97706;
-      }
-      body.light-mode .modal-info {
-        color: #4a5568;
-      }
-      body.light-mode .modal-section {
-        background: #f8fafc;
-      }
-      body.light-mode .modal-section p {
-        color: #4a5568;
-      }
-      body.light-mode .weather-modal {
-        background: #fff;
-        border-color: #d97706;
-      }
-      body.light-mode .weather-modal-title {
-        color: #d97706;
-      }
-      body.light-mode .weather-ticker-container {
-        background: linear-gradient(
-          90deg,
-          #e8ecf1 0%,
-          #f0f2f5 50%,
-          #e8ecf1 100%
-        );
-        border-color: #d1d5db;
-      }
-      body.light-mode .weather-ticker-container::before {
-        background: linear-gradient(90deg, #e8ecf1 0%, transparent 100%);
-      }
-      body.light-mode .weather-ticker-container::after {
-        background: linear-gradient(270deg, #e8ecf1 0%, transparent 100%);
-      }
-      body.light-mode .weather-item {
-        color: #4a5568;
-      }
-      body.light-mode .weather-item:hover {
-        background: rgba(0, 0, 0, 0.05);
-        border-color: #d97706;
+        --bg-primary: #f5f7fa;
+        --bg-panel: #ffffff;
+        --bg-card: #f0f2f5;
+        --bg-hover: #e8eef5;
+        --border-color: #e2e8f0;
+        --border-strong: #cbd5e1;
+        --text-primary: #1a202c;
+        --text-secondary: #64748b;
+        --text-muted: #64748b;
+        --text-blue: #002b5c;
+        --text-gold: #8a6d3b;
+        --red: #c8102e;
+        --orange: #b45309;
+        --green: #0f7b4f;
+        --blue: #002b5c;
+        --shif-a: #c8102e;
+        --shif-b: #002b5c;
+        --shif-c: #0f7b4f;
+
+        --shadow-sm: 0 1px 2px rgba(0, 43, 92, 0.06);
+        --shadow: 0 2px 8px rgba(0, 43, 92, 0.08);
+        --shadow-lg: 0 8px 24px rgba(0, 43, 92, 0.12);
+
+        --tick-weather: #f0f2f5;
+        --tick-weather-b: #e2e8f0;
+        --tick-ipu: #e7f4ee;
+        --tick-ipu-b: #b8dcc4;
+        --tick-ongoing: #fde8eb;
+        --tick-ongoing-b: #f3b4be;
+        --ongoing-accent: #c8102e;
       }
 
-      /* ============ LIGHT MODE - IPU MODAL OVERRIDES ============ */
-      body.light-mode .weather-modal [style*="rgba(0,0,0,0.2)"] {
-        background: #f1f5f9 !important;
+      /* ---------- FONT (ikut File 1) ---------- */
+      h1, h2, h3, h4,
+      .stat-number,
+      .modal-header,
+      .weather-modal-title {
+        font-family: var(--font-head);
+        letter-spacing: -0.2px;
       }
-      body.light-mode .weather-modal [style*="rgba(0,0,0,0.25)"] {
-        background: #e2e8f0 !important;
+      button, input, select, textarea { font-family: inherit; }
+
+      /* ---------- Bentuk umum (radius & bayang File 1) ---------- */
+      .panel {
+        border-radius: var(--radius);
+        box-shadow: var(--shadow-sm);
       }
-      body.light-mode .weather-modal [style*="color:#aaa"] {
-        color: #4a5568 !important;
+      .stat-card,
+      .stat-card.stat-medium,
+      .stat-card.stat-small {
+        background: var(--bg-card);
+        border: 1px solid var(--border-color);
+        border-radius: var(--radius);
+        box-shadow: var(--shadow-sm);
       }
-      body.light-mode .weather-modal [style*="color:#8899b0"] {
-        color: #64748b !important;
+      .case-item {
+        border-radius: var(--radius);
+        box-shadow: var(--shadow-sm);
       }
-      body.light-mode .weather-modal [style*="color:#5a6a80"] {
-        color: #94a3b8 !important;
+      .modal-box,
+      .weather-modal {
+        background: var(--bg-panel);
+        border-radius: 12px;
+        box-shadow: var(--shadow-lg);
       }
+      .modal-box { border-color: var(--text-blue); }
+      .weather-modal { border-color: var(--text-gold); }
+      .modal-info { color: var(--text-secondary); }
+      .modal-section { background: var(--bg-card); }
+      .modal-section p { color: var(--text-primary); }
+      .modal-header { color: var(--text-gold); }
+      .weather-modal-title { color: var(--text-gold); }
+      .weather-modal-subtitle { color: var(--text-secondary); }
+      .weather-hour-item { background: var(--bg-card); }
+      .weather-hour-time { color: var(--text-secondary); }
+
+      .header-center h1 { color: var(--text-primary); }
+      header { border-bottom-color: var(--red); }
+
+      /* ---------- Warna keras yang dahulu tidak ikut variable ---------- */
+      .popup-case-item {
+        background: var(--bg-card) !important;
+        border-color: var(--border-color) !important;
+      }
+      .popup-case-item:hover { background: var(--bg-hover) !important; }
+      .popup-case-item.active-location {
+        background: var(--bg-hover) !important;
+        border-left-color: var(--text-gold) !important;
+        border-color: var(--text-gold) !important;
+      }
+      .map-popup-overlay {
+        background: var(--bg-panel) !important;
+        border-color: var(--border-strong) !important;
+        box-shadow: var(--shadow-lg);
+      }
+      .map-popup-header {
+        background: var(--bg-card) !important;
+        border-bottom-color: var(--border-strong) !important;
+      }
+      .map-popup-header .popup-count {
+        color: var(--text-secondary);
+        background: var(--bg-panel);
+      }
+      .popup-search-container {
+        background: var(--bg-card) !important;
+        border-bottom-color: var(--border-color) !important;
+      }
+      .popup-search-input { color: var(--text-primary) !important; }
+      .popup-search-input::placeholder { color: var(--text-muted) !important; }
+      .map-popup-scroll { background: transparent; }
+
+      .search-bar-container {
+        background: var(--bg-card) !important;
+        border-color: var(--border-color) !important;
+      }
+      .search-input { color: var(--text-primary) !important; }
+      body > .search-bar-container { background: var(--bg-panel) !important; }
+
+            /* Hanya ubah warna asas untuk checkbox yang TIDAK dipilih */
+            .category-checkbox:not(:has(input:checked)),
+      .select-all-btn {
+        background: var(--bg-card) !important;
+        border-color: var(--border-color) !important;
+        color: var(--text-primary) !important; /* Tukar ke text-primary supaya lebih gelap & jelas */
+      }
+      
+      /* Kesan hover untuk yang tidak dipilih */
+      .category-checkbox:not(:has(input:checked)):hover,
+      .select-all-btn:hover {
+        border-color: var(--text-blue) !important;
+        background: var(--bg-hover) !important;
+      }
+      
+      /* Pastikan teks putih semasa dipilih (latar berwarna) */
+      .category-checkbox:has(input:checked) { color: #fff !important; }
+      
+      /* Pengecualian untuk kebakaran terbuka (latar oren terang) guna teks hitam */
+      .category-checkbox[data-cat='kebakaran_terbuka']:has(input:checked) { color: #000 !important; }
+      
+      .category-filters::-webkit-scrollbar-track,
+      .scroll-container::-webkit-scrollbar-track,
+      .map-popup-scroll::-webkit-scrollbar-track { background: var(--bg-card); }
+      .category-filters::-webkit-scrollbar-thumb,
+      .scroll-container::-webkit-scrollbar-thumb,
+      .map-popup-scroll::-webkit-scrollbar-thumb { background: var(--text-blue); }
+
+      .day-badge-large { background: var(--green); color: #fff; }
+      .shif-badge.shif-c { color: #fff; }
+      .datetime-display {
+        background: var(--bg-card);
+        border-color: var(--border-color);
+      }
+      .date-text { color: var(--text-gold); }
+
+      .fullscreen-btn, .force-refresh-btn, .theme-toggle-btn, .btn-back,
+      .panel-refresh-btn, .panel-zoom-btn, .filter-toggle-btn {
+        border-radius: var(--radius);
+      }
+
+      .footer { border-top-color: var(--border-color); }
+      .watermark-line1, .watermark-line2 { color: var(--text-muted); }
+      .ticker-hint { color: var(--text-muted); }
+
+      /* ---------- TICKER: CUACA ---------- */
+      body .weather-ticker-container {
+        background: var(--tick-weather) !important;
+        border-color: var(--tick-weather-b) !important;
+      }
+      body .weather-ticker-container::before { background: linear-gradient(90deg, var(--tick-weather) 0%, transparent 100%) !important; }
+      body .weather-ticker-container::after  { background: linear-gradient(270deg, var(--tick-weather) 0%, transparent 100%) !important; }
+      body .weather-item { color: var(--text-primary); }
+      body .weather-item:hover { background: var(--bg-hover); border-color: var(--text-gold); }
+      .weather-location { color: var(--text-secondary); }
+      .weather-separator { color: var(--border-strong); }
+      .weather-loading { color: var(--text-muted); }
+
+      /* ---------- TICKER: IPU ---------- */
+      body .ipu-ticker-container {
+        background: var(--tick-ipu) !important;
+        border-color: var(--tick-ipu-b) !important;
+      }
+      body .ipu-ticker-container::before { background: linear-gradient(90deg, var(--tick-ipu) 0%, transparent 100%) !important; }
+      body .ipu-ticker-container::after  { background: linear-gradient(270deg, var(--tick-ipu) 0%, transparent 100%) !important; }
+      body .ipu-item { color: var(--text-primary); }
+      body .ipu-item:hover { background: var(--bg-hover); border-color: var(--text-gold); }
+      .ipu-location { color: var(--text-secondary) !important; }
+      .ipu-separator { color: var(--border-strong); }
+      .ipu-badge { background: var(--bg-panel); }
+      .ipu-loading { color: var(--text-muted); }
+
+      /* ---------- TICKER: KES BELUM SELESAI ---------- */
+      body .ongoing-ticker-container {
+        background: var(--tick-ongoing) !important;
+        border-color: var(--tick-ongoing-b) !important;
+      }
+      body .ongoing-ticker-container::before { background: linear-gradient(90deg, var(--tick-ongoing) 0%, transparent 100%) !important; }
+      body .ongoing-ticker-container::after  { background: linear-gradient(270deg, var(--tick-ongoing) 0%, transparent 100%) !important; }
+      body .ongoing-item {
+        color: var(--text-primary) !important;
+        background: var(--bg-panel) !important;
+        border-color: var(--tick-ongoing-b) !important;
+      }
+      body .ongoing-item:hover {
+        background: var(--bg-hover) !important;
+        border-color: var(--red) !important;
+        color: var(--text-primary) !important;
+      }
+      body .ongoing-item .ongoing-jenis { color: var(--ongoing-accent) !important; }
+      body .ongoing-item .ongoing-balai { color: var(--text-secondary) !important; }
+      body .ongoing-item .ongoing-separator { color: var(--red); }
+      .ongoing-empty { color: var(--green); }
+      .ongoing-loading { color: var(--text-muted); }
+
+      /* ---------- Penunjuk carian pada map ---------- */
+      .search-map-indicator { background: var(--text-gold); color: #fff; }
+
+      /* ---------- Modal IPU (inline style) mengikut tema ---------- */
+      .weather-modal [style*="rgba(0,0,0,0.2)"]  { background: var(--bg-card) !important; }
+      .weather-modal [style*="rgba(0,0,0,0.25)"] { background: var(--bg-card) !important; }
+      .weather-modal [style*="color:#aaa"]       { color: var(--text-secondary) !important; }
+      .weather-modal [style*="color:#8899b0"]    { color: var(--text-secondary) !important; }
+      .weather-modal [style*="color:#5a6a80"]    { color: var(--text-muted) !important; }
     </style>
     
     <link
