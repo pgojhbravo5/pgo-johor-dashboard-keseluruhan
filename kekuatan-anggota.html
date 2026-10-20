@@ -1657,6 +1657,16 @@
         box-shadow: 0 0 0 3px rgba(217, 154, 43, 0.28);
       }
 
+      /* ── Butang CSV panel PO3A BALAI ── */
+      .btn-fullscreen.btn-csv-panel:hover {
+        background: rgba(75, 142, 247, 0.15);
+        color: var(--blue);
+        border-color: rgba(75, 142, 247, 0.55);
+      }
+      .btn-fullscreen.btn-csv-panel:focus-visible {
+        box-shadow: 0 0 0 3px rgba(75, 142, 247, 0.28);
+      }
+
       .btn-panel-lock {
         display: inline-flex;
         align-items: center;
@@ -12831,6 +12841,91 @@ function hasInvalid(v) { return v.personel.length > 0 || v.equip.length > 0; }
   });
 }
 
+      /* ═══════════════════════════════════════════════════
+         CSV EXPORT — PO3A BALAI (setiap panel)
+         ═══════════════════════════════════════════════════ */
+         function downloadBalaiSummaryCSV(opts) {
+        const { title, catList, subCols, grandCols,
+                getRowValues, getZonValues, getGrandValues } = opts;
+        const rows = [];
+
+        // ── Header row ──
+        const headers = ['BIL', 'ZON / BALAI'];
+        catList.forEach(function (cat) {
+          subCols.forEach(function (sc) { headers.push(cat + ' — ' + sc); });
+          headers.push(cat + ' — J');
+        });
+        grandCols.forEach(function (sc) { headers.push('JUMLAH — ' + sc); });
+        rows.push(headers);
+
+        // ── Baris ZON 1–4 ──
+        [1, 2, 3, 4].forEach(function (zn) {
+          const { cats, grand } = getZonValues(zn);
+          const row = ['', 'ZON ' + zn];
+          cats.forEach(function (arr) { arr.forEach(function (v) { row.push(v); }); });
+          grand.forEach(function (v) { row.push(v); });
+          rows.push(row);
+        });
+
+        // ── Baris HQ ──
+        if (BALAI_PO3A_LIST.some(function (b) { return b.zon === 0; })) {
+          const { cats, grand } = getZonValues(0);
+          const row = ['', 'HQ'];
+          cats.forEach(function (arr) { arr.forEach(function (v) { row.push(v); }); });
+          grand.forEach(function (v) { row.push(v); });
+          rows.push(row);
+        }
+
+        // ── Jumlah Zon ──
+        const gz = getGrandValues();
+        const rowGz = ['', 'JUMLAH ZON'];
+        gz.cats.forEach(function (arr) { arr.forEach(function (v) { rowGz.push(v); }); });
+        gz.grand.forEach(function (v) { rowGz.push(v); });
+        rows.push(rowGz);
+
+        rows.push([]); // separator kosong
+
+        // ── Baris per balai ──
+        BALAI_PO3A_LIST.forEach(function (b, idx) {
+          const { cats, grand } = getRowValues(store.balai[b.name]);
+          const row = [idx + 1, b.name];
+          cats.forEach(function (arr) { arr.forEach(function (v) { row.push(v); }); });
+          grand.forEach(function (v) { row.push(v); });
+          rows.push(row);
+        });
+
+        // ── Jumlah Keseluruhan (per balai) ──
+        const gb = getGrandValues();
+        const rowGb = ['', 'JUMLAH KESELURUHAN'];
+        gb.cats.forEach(function (arr) { arr.forEach(function (v) { rowGb.push(v); }); });
+        gb.grand.forEach(function (v) { rowGb.push(v); });
+        rows.push(rowGb);
+
+        // ── Tukar ke CSV ──
+        const csvContent = rows.map(function (row) {
+          return row.map(function (cell) {
+            const str = String(cell == null ? '' : cell);
+            if (/[",\n\r]/.test(str)) return '"' + str.replace(/"/g, '""') + '"';
+            return str;
+          }).join(',');
+        }).join('\r\n');
+
+        const blob = new Blob(['\ufeff' + csvContent], { type: 'text/csv;charset=utf-8;' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        const date = new Date().toISOString().slice(0, 10);
+        const safeTitle = String(title).replace(/[^a-zA-Z0-9]+/g, '_').replace(/^_+|_+$/g, '');
+        a.href = url;
+        a.download = 'PO3A_BALAI_' + safeTitle + '_' + date + '.csv';
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+
+        playToastSuccessSound();
+        showToast('CSV "' + title + '" berjaya dimuat turun', 'success');
+      }
+
       function renderBalaiSummaryTable(opts) {
         const { key, title, color, catList, mode, equipKey, isKomunikasi, katMapSummary, katMapPersonel } = opts;
         const isPersonel = mode === 'personel';
@@ -12850,6 +12945,13 @@ function hasInvalid(v) { return v.personel.length > 0 || v.equip.length > 0; }
       <div style="display:flex;align-items:center;gap:.6rem;">
         <span class="hint">Setiap balai satu baris — dikelompok ikut zon</span>
         <button class="btn-fullscreen" type="button" title="Buka skrin penuh" aria-label="Buka skrin penuh" data-fullscreen-target="sec-bs-${key}">${svgIcon('maximize')}</button>
+        <button class="btn-fullscreen btn-csv-panel" type="button" title="Muat turun CSV panel ini" aria-label="Muat turun CSV">
+          <svg class="ico" viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+            <polyline points="7 10 12 15 17 10"/>
+            <line x1="12" y1="15" x2="12" y2="3"/>
+          </svg>
+        </button>
         <button class="btn-fullscreen btn-print-panel" type="button" title="Cetak panel ini" aria-label="Cetak panel ini">${svgIcon('print')}</button>
         <span class="chev">${svgIcon('chevronDown')}</span>
       </div>
@@ -12859,11 +12961,26 @@ function hasInvalid(v) { return v.personel.length > 0 || v.equip.length > 0; }
         const headEl = wrap.querySelector('.section-head');
         headEl.addEventListener('click', () => wrap.classList.toggle('collapsed'));
 
-        const btnFS = wrap.querySelector('.btn-fullscreen:not(.btn-print-panel)');
+                const btnFS = wrap.querySelector('.btn-fullscreen:not(.btn-print-panel):not(.btn-csv-panel)');
         if (btnFS) {
           btnFS.addEventListener('click', function (e) {
             e.stopPropagation();
             togglePanelFullscreen(wrap, btnFS);
+          });
+        }
+        const btnCsv = wrap.querySelector('.btn-csv-panel');
+        if (btnCsv) {
+          btnCsv.addEventListener('click', function (e) {
+            e.stopPropagation();
+            downloadBalaiSummaryCSV({
+              title: title,
+              catList: catList,
+              subCols: subCols,
+              grandCols: grandCols,
+              getRowValues: getRowValues,
+              getZonValues: getZonValues,
+              getGrandValues: getGrandValues
+            });
           });
         }
         const btnPrint = wrap.querySelector('.btn-print-panel');
