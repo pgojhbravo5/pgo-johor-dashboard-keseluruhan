@@ -2366,7 +2366,7 @@
       
       /* Pengecualian untuk kebakaran terbuka (latar oren terang) guna teks hitam */
       .category-checkbox[data-cat='kebakaran_terbuka']:has(input:checked) { color: #000 !important; }
-      
+
       .category-filters::-webkit-scrollbar-track,
       .scroll-container::-webkit-scrollbar-track,
       .map-popup-scroll::-webkit-scrollbar-track { background: var(--bg-card); }
@@ -2448,10 +2448,50 @@
       .weather-modal [style*="rgba(0,0,0,0.2)"]  { background: var(--bg-card) !important; }
       .weather-modal [style*="rgba(0,0,0,0.25)"] { background: var(--bg-card) !important; }
       .weather-modal [style*="color:#aaa"]       { color: var(--text-secondary) !important; }
-      .weather-modal [style*="color:#8899b0"]    { color: var(--text-secondary) !important; }
+            .weather-modal [style*="color:#8899b0"]    { color: var(--text-secondary) !important; }
       .weather-modal [style*="color:#5a6a80"]    { color: var(--text-muted) !important; }
+
+      /* ================================================================
+         BUTANG HIDE/SHOW PANEL SEMUA KES (PETA)
+         ================================================================ */
+      .popup-toggle-btn {
+        background: rgba(255, 255, 255, 0.1);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        color: var(--text-primary);
+        border-radius: 4px;
+        padding: 2px 6px;
+        font-size: 0.75rem;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.2s;
+        line-height: 1;
+      }
+      .popup-toggle-btn:hover {
+        background: rgba(255, 255, 255, 0.2);
+        border-color: var(--text-gold);
+      }
+      body.light-mode .popup-toggle-btn {
+        background: var(--bg-hover);
+        border-color: var(--border-color);
+      }
+      body.light-mode .popup-toggle-btn:hover {
+        background: var(--bg-card);
+        border-color: var(--text-gold);
+      }
+      /* Kelas untuk sembunyikan kandungan panel */
+      .map-popup-overlay.minimized .popup-search-container,
+      .map-popup-overlay.minimized .map-popup-scroll {
+        display: none !important;
+      }
+      .map-popup-overlay.minimized {
+        height: auto !important;
+        max-height: 40px !important; /* Kekalkan header sahaja */
+        transition: max-height 0.3s ease;
+      }
     </style>
-    
+
     <link
       rel="stylesheet"
       href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
@@ -5053,6 +5093,23 @@
         animate();
       }
 
+            // ================================================================
+      // FUNGSI TOGGLE HIDE/SHOW PANEL SEMUA KES (LETAK DI LUAR)
+      // ================================================================
+      function toggleMapPopupVisibility(e) {
+        if (e) e.stopPropagation(); // Halang fungsi drag/klik luar
+        const popup = document.getElementById('mapCasePopup');
+        const btn = document.getElementById('popupToggleBtn');
+        if (!popup || !btn) return;
+        
+        popup.classList.toggle('minimized');
+        const isMinimized = popup.classList.contains('minimized');
+        
+        // Tukar ikon dan tooltip
+        btn.innerHTML = isMinimized ? '🙈' : '👁️'; 
+        btn.title = isMinimized ? 'Tunjuk Senarai' : 'Sembunyi Senarai';
+      }
+
       // ================================================================
       // MAP POPUP
       // ================================================================
@@ -5063,10 +5120,17 @@
         const mapContainer = document.getElementById('map-container');
         if (!mapContainer) return;
 
-        const popup = document.createElement('div');
+                const popup = document.createElement('div');
         popup.id = 'mapCasePopup';
         popup.className = 'map-popup-overlay';
-        popup.innerHTML = `<div class="map-popup-header" id="popupDragHandle"><h4>📋 SEMUA KES</h4><span class="popup-count" id="popupCount">0 rekod</span></div>
+        // Tambah butang toggle di sebelah kanan header
+        popup.innerHTML = `<div class="map-popup-header" id="popupDragHandle">
+            <h4>📋 SEMUA KES</h4>
+            <div style="display:flex; align-items:center; gap:8px;">
+              <span class="popup-count" id="popupCount">0 rekod</span>
+              <button class="popup-toggle-btn" id="popupToggleBtn" onclick="toggleMapPopupVisibility(event)" title="Sembunyi Senarai">👁️</button>
+            </div>
+          </div>
           <div class="popup-search-container" id="popupSearchBox">
             <span class="popup-search-icon">🔍</span>
             <input type="text" id="popupSearchInput" class="popup-search-input" placeholder="Cari kes dalam map..." oninput="onPopupSearchInput(this.value)" onkeydown="if(event.key==='Escape'){clearPopupSearch();this.blur();event.stopPropagation();}" />
@@ -5075,7 +5139,7 @@
           </div>
           <div class="map-popup-scroll" id="popupScroll"><div class="map-popup-motion" id="popupMotion"><div id="popupCases"></div></div></div>`;
         mapContainer.appendChild(popup);
-
+        
         document
           .getElementById('popupDragHandle')
           ?.addEventListener('mousedown', startDrag);
