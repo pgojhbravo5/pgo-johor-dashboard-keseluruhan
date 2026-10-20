@@ -18,7 +18,7 @@
 
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=IBM+Plex+Sans:wght@500;600;700&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css" />
     
@@ -26,26 +26,33 @@
     <style>
         /* ===== RESET & VARIABEL ===== */
         :root {
-            --fire-red: #b3223f;
-            --fire-red-glow: rgba(179, 34, 63, 0.32);
-            --hazard-gold: #d9a969;
-            --hazard-gold-glow: rgba(217, 169, 105, 0.25);
-            --alert-orange: #c2703d;
+            /* === THEME SELARAS data-rt.html (MALAM / GELAP) === */
+            --fire-red: #c8102e;
+            --fire-red-glow: rgba(200, 16, 46, 0.28);
+            --hazard-gold: #b8935a;
+            --hazard-gold-glow: rgba(184, 147, 90, 0.22);
+            --alert-orange: #d08a3c;
             --status-green: #4ade80;
-            --hud-bg: rgba(18, 18, 24, 0.55);
-            --hud-card-bg: rgba(255, 255, 255, 0.035);
-            --hud-border: rgba(255, 255, 255, 0.09);
-            --hud-border-red: rgba(179, 34, 63, 0.28);
-            --glass-highlight: rgba(255, 255, 255, 0.06);
-            --navy: #0b2a4d;
-            --navy-deep: #071b33;
-            --gold-deep: #8a6a24;
-            --font-main: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            --hud-bg: #1a2438;
+            --hud-card-bg: #22304a;
+            --hud-border: #2d3f5c;
+            --hud-border-red: rgba(200, 16, 46, 0.4);
+            --glass-highlight: rgba(59, 110, 168, 0.16);
+            --navy: #3b6ea8;
+            --navy-deep: #001f42;
+            --gold-deep: #b8935a;
+            --border-strong: #3d5070;
+            --radius: 6px;
+            --radius-sm: 4px;
+            --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.4);
+            --shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
+            --font-main: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            --font-head: 'IBM Plex Sans', 'Inter', sans-serif;
             --font-size-base: 16px;
-            --text-primary: #e2e8f0;
+            --text-primary: #e8eef7;
             --text-secondary: #94a3b8;
-            --bg-body: #050508;
-            --section-title-size: 0.875rem;
+            --bg-body: #0f172a;
+            --section-title-size: 0.8125rem;
         }
 
         /* ===== SCROLL ANIMATION ===== */
@@ -4479,11 +4486,396 @@ body.mode-siang .peta-legend-overlay .pts-line + .pts-line {
             .kat-ticker-track { animation: none; }
         }
 
-        /* Carousel penuh lebar selepas Pasukan Khas dialih */
+                /* Carousel penuh lebar selepas Pasukan Khas dialih */
         .wide-bottom { grid-template-columns: 1fr !important; }
 
+        /* =====================================================================
+           THEME SELARAS data-rt.html  (siang + malam)
+           ===================================================================== */
+
+        /* ---- Pembolehubah MOD SIANG / CERAH ---- */
+        body.mode-siang {
+            --hud-bg: #ffffff;
+            --hud-card-bg: #f0f2f5;
+            --hud-border: #e2e8f0;
+            --hud-border-red: rgba(200, 16, 46, 0.3);
+            --glass-highlight: #e8eef5;
+            --navy: #002b5c;
+            --alert-orange: #b45309;
+            --border-strong: #cbd5e1;
+            --shadow-sm: 0 1px 2px rgba(0, 43, 92, 0.06);
+            --shadow: 0 2px 8px rgba(0, 43, 92, 0.08);
+            --text-primary: #1a202c;
+            --text-secondary: #64748b;
+            --bg-body: #f5f7fa;
+        }
+
+        /* ---- Latar: buang gambar & overlay ---- */
+        body, body.mode-siang {
+            background: var(--bg-body) !important;
+            background-image: none !important;
+            color: var(--text-primary);
+        }
+        body::before, body.mode-siang::before { display: none !important; }
+
+        /* ---- Font tajuk & nombor (IBM Plex Sans) ---- */
+        .logo-text h1, .section-title, .panel-sec-head, .carousel-panel-header,
+        .pasukan-card-header, .peta-card-header, .links-panel .panel-title,
+        .sistem-panel .panel-toggle, .cat-toggle,
+        .stat-item .num, .stats-strip-wrap .stat-item .num, .kat-tile-value,
+        .kat-ticker-count, .unit-card .unit-count, .pos-item .pos-num,
+        .lokstat-stat .ls-num, .header-top-controls .digital-time .time,
+        .pasukan-modal-title-text h3, .popup-balai-title {
+            font-family: var(--font-head);
+        }
+        .logo-text h1, .stat-item .num, .kat-tile-value, .unit-card .unit-count,
+        .pos-item .pos-num, .lokstat-stat .ls-num, .kat-ticker-count { font-weight: 700; }
+
+        /* ---- Header (gaya topbar File 1) ---- */
+        .header, body.mode-siang .header {
+            background: var(--hud-bg) !important;
+            border-bottom: 1px solid var(--hud-border) !important;
+            box-shadow: var(--shadow-sm);
+            backdrop-filter: none !important;
+            -webkit-backdrop-filter: none !important;
+        }
+        .breadcrumb-bar, body.mode-siang .breadcrumb-bar {
+            background: var(--bg-body) !important;
+            border-bottom-color: var(--hud-border) !important;
+        }
+        .logo-text h1, body.mode-siang .logo-text h1 {
+            color: var(--navy) !important;
+            font-size: 1.25rem;
+            letter-spacing: -0.2px;
+        }
+        .logo-text h1 span { text-shadow: none !important; }
+        .logo-text .sub, body.mode-siang .logo-text .sub {
+            color: var(--text-secondary) !important;
+            font-weight: 600;
+            letter-spacing: 0.15rem;
+        }
+        .logo-img-wrapper {
+            background: transparent !important;
+            border: 1px solid var(--hud-border) !important;
+            border-radius: var(--radius) !important;
+        }
+
+        /* ---- Butang kawalan header (icon-btn File 1) ---- */
+        .header-top-controls button,
+        .header-top-controls .refresh-btn,
+        body.mode-siang .header-top-controls .mode-toggle-btn,
+        body.mode-siang .refresh-btn {
+            width: 2.25rem !important;
+            height: 2.25rem !important;
+            border-radius: var(--radius-sm) !important;
+            background: var(--hud-bg) !important;
+            border: 1px solid var(--hud-border) !important;
+            color: var(--text-secondary) !important;
+            box-shadow: none !important;
+            font-size: 1rem;
+        }
+        .header-top-controls button:hover,
+        .header-top-controls .refresh-btn:hover,
+        body.mode-siang .header-top-controls .mode-toggle-btn:hover,
+        body.mode-siang .refresh-btn:hover {
+            background: var(--hud-card-bg) !important;
+            color: var(--navy) !important;
+            border-color: var(--border-strong) !important;
+            transform: none !important;
+            box-shadow: none !important;
+        }
+        .lang-toggle-btn .lang-indicator-badge { background: var(--navy) !important; border-color: var(--hud-bg) !important; border-radius: 3px; }
+        .header-top-controls .digital-time .time { color: var(--navy) !important; text-shadow: none !important; }
+        .header-top-controls .analog-clock, body.mode-siang .header-top-controls .analog-clock {
+            background: var(--hud-bg) !important;
+            border: 1px solid var(--hud-border) !important;
+            box-shadow: none !important;
+        }
+        .header-top-controls .analog-clock .hand.hour,
+        .header-top-controls .analog-clock .center-dot,
+        .header-top-controls .analog-clock .marker.main { background: var(--navy); }
+        .header-top-controls .analog-clock .hand.minute { background: var(--text-secondary); }
+        .header-top-controls .analog-clock .hand.second { background: var(--fire-red); }
+
+        /* ---- Panel & kad utama: rata, sempadan nipis, bucu 6px, tiada blur ---- */
+        .dashboard, .links-panel, .sistem-panel, .carousel-container,
+        .pasukan-khas-card, .peta-jentera-card:not(.fullscreen-mode),
+        .cat-group, .stats-bar, .search-bar-inner, .kat-ticker,
+        body.mode-siang .dashboard, body.mode-siang .links-panel,
+        body.mode-siang .sistem-panel, body.mode-siang .carousel-container,
+        body.mode-siang .pasukan-khas-card, body.mode-siang .cat-group,
+        body.mode-siang .stats-bar, body.mode-siang .search-bar-inner,
+        body.mode-siang .kat-ticker {
+            background: var(--hud-bg) !important;
+            border: 1px solid var(--hud-border) !important;
+            border-radius: var(--radius) !important;
+            box-shadow: var(--shadow-sm) !important;
+            backdrop-filter: none !important;
+            -webkit-backdrop-filter: none !important;
+        }
+        .peta-jentera-card:not(.fullscreen-mode),
+        body.mode-siang .peta-jentera-card:not(.fullscreen-mode) {
+            background: var(--hud-bg) !important;
+        }
+        .peta-jentera-card.fullscreen-mode { background: var(--bg-body) !important; }
+        .stats-bar { overflow: hidden; }
+
+        /* ---- Kad dalaman (gaya stat-card / compact-item File 1) ---- */
+        .app-card, .kat-tile, .unit-card, .pos-item, .lokstat-stat,
+        .pasukan-member-item, .carousel-slide,
+        .links-panel .accordion-item, .links-panel .emergency-item,
+        body.mode-siang .app-card, body.mode-siang .kat-tile,
+        body.mode-siang .unit-card, body.mode-siang .pos-item,
+        body.mode-siang .lokstat-stat, body.mode-siang .pasukan-member-item,
+        body.mode-siang .carousel-slide,
+        body.mode-siang .links-panel .accordion-item,
+        body.mode-siang .links-panel .emergency-item,
+        body.mode-siang .sistem-panel .app-card {
+            background: var(--hud-card-bg) !important;
+            border-color: var(--hud-border) !important;
+            border-radius: var(--radius) !important;
+            box-shadow: var(--shadow-sm) !important;
+            backdrop-filter: none !important;
+            -webkit-backdrop-filter: none !important;
+        }
+        .app-card, .app-card.card-wide,
+        body.mode-siang .app-card, body.mode-siang .sistem-panel .app-card,
+        .sistem-panel .sistem-content .app-card {
+            border-left: 3px solid var(--navy) !important;
+        }
+        .app-card:hover, .kat-tile:hover, .unit-card:hover, .pos-item:hover,
+        body.mode-siang .app-card:hover, body.mode-siang .unit-card:hover {
+            background: var(--glass-highlight) !important;
+            box-shadow: var(--shadow) !important;
+        }
+        .app-card .icon, body.mode-siang .app-card .icon {
+            background: var(--hud-bg) !important;
+            border: 1px solid var(--hud-border) !important;
+            color: var(--navy) !important;
+            border-radius: var(--radius-sm) !important;
+        }
+        .app-card h3, body.mode-siang .app-card h3,
+        body.mode-siang .sistem-panel .app-card h3 { color: var(--text-primary) !important; }
+        .app-card p, body.mode-siang .app-card p,
+        body.mode-siang .sistem-panel .app-card p { color: var(--text-secondary) !important; }
+        .app-card h3 .highlight { color: var(--hazard-gold) !important; }
+
+        /* ---- Tajuk seksyen (section-title File 1: navy, 700, uppercase) ---- */
+        .section-title, .panel-sec-head, .carousel-panel-header,
+        .pasukan-card-header, .peta-card-header, .links-panel .panel-title,
+        body.mode-siang .section-title, body.mode-siang .panel-sec-head,
+        body.mode-siang .carousel-panel-header, body.mode-siang .pasukan-card-header,
+        body.mode-siang .peta-card-header, body.mode-siang .links-panel .panel-title {
+            color: var(--navy) !important;
+            font-weight: 700;
+            letter-spacing: 0.6px;
+            border-image: none !important;
+            border-bottom: 1px solid var(--hud-border) !important;
+            padding-bottom: 0.625rem;
+        }
+        .sistem-panel .panel-toggle .panel-title,
+        body.mode-siang .sistem-panel .panel-title,
+        .sistem-panel .panel-toggle { color: var(--navy) !important; border: none !important; }
+        .section-title i, .panel-sec-head > i, .carousel-panel-header > i,
+        .pasukan-card-header > i, .peta-card-header i,
+        .links-panel .panel-title i, .sistem-panel .panel-toggle .panel-title i,
+        body.mode-siang .links-panel .panel-title i,
+        body.mode-siang .sistem-panel .panel-title i { color: var(--navy) !important; }
+
+        /* ---- Jalur statistik ---- */
+        .stat-item .num, .stats-strip-wrap .stat-item .num,
+        body.mode-siang .stat-item .num {
+            color: var(--text-primary) !important;
+            text-shadow: none !important;
+        }
+        .stat-item .label, body.mode-siang .stat-item .label {
+            color: var(--text-secondary) !important;
+            font-weight: 600;
+            letter-spacing: 0.06rem;
+        }
+        .stat-item .icon-badge, body.mode-siang .stat-item .icon-badge { color: var(--navy) !important; }
+        .stat-item:not(:first-child)::before { background: var(--hud-border); }
+
+        /* ---- Kategori accordion & pautan ---- */
+        .cat-toggle, body.mode-siang .cat-toggle { color: var(--text-primary) !important; }
+        .cat-toggle-label, body.mode-siang .cat-toggle-label { color: var(--navy) !important; }
+        .cat-arrow.open, body.mode-siang .cat-arrow.open { color: var(--navy) !important; }
+        .links-panel .accordion-header .accordion-title,
+        body.mode-siang .links-panel .accordion-header .accordion-title { color: var(--navy) !important; }
+        .links-panel .accordion-header, body.mode-siang .links-panel .accordion-header {
+            background: var(--hud-card-bg) !important; color: var(--text-primary) !important;
+        }
+        .links-panel .accordion-content, body.mode-siang .links-panel .accordion-content {
+            background: var(--hud-bg) !important;
+        }
+        .links-panel .sidebar-link, body.mode-siang .links-panel .sidebar-link { color: var(--text-primary) !important; }
+        .links-panel .popular-item, body.mode-siang .links-panel .popular-item {
+            background: var(--hud-card-bg) !important;
+            border-color: var(--hud-border) !important;
+            color: var(--text-primary) !important;
+            border-radius: var(--radius-sm) !important;
+        }
+        .links-panel .popular-item:hover { background: var(--navy) !important; color: #fff !important; border-color: var(--navy) !important; }
+        .links-panel .emergency-item .e-info .e-name { color: var(--text-primary) !important; }
+        .links-panel .emergency-item .e-info .e-number { color: var(--fire-red) !important; }
+        .links-panel .emergency-group-title, body.mode-siang .links-panel .emergency-group-title { color: var(--navy) !important; }
+
+        /* ---- Input carian ---- */
+        .search-bar-inner input, body.mode-siang .search-bar-inner input,
+        .link-filter-input, body.mode-siang .link-filter-input,
+        .pasukan-modal-search-wrap input, body.mode-siang .pasukan-modal-search-wrap input {
+            background: var(--hud-bg) !important;
+            border: 1px solid var(--border-strong) !important;
+            color: var(--text-primary) !important;
+            border-radius: var(--radius-sm);
+        }
+        .search-bar-inner input { border: none !important; background: transparent !important; }
+        .search-bar-inner button { background: var(--navy) !important; border-radius: var(--radius-sm) !important; }
+        .search-bar-inner button:hover { background: var(--fire-red) !important; color: #fff !important; transform: none !important; }
+
+        /* ---- Tab sumber peta & chip tapisan (aktif = navy seperti File 1) ---- */
+        .peta-sumber-switch, body.mode-siang .peta-sumber-switch,
+        .peta-filter-bar, body.mode-siang .peta-filter-bar {
+            background: var(--hud-card-bg) !important;
+            border: 1px solid var(--hud-border) !important;
+            border-radius: var(--radius) !important;
+        }
+        .peta-sumber-pill, .filter-chip { border-radius: var(--radius-sm) !important; }
+        .peta-sumber-pill.active, body.mode-siang .peta-sumber-pill.active,
+        .filter-chip.active, body.mode-siang .filter-chip.active {
+            background: var(--navy) !important;
+            color: #fff !important;
+            border-color: var(--navy) !important;
+            box-shadow: none !important;
+        }
+        .peta-sumber-pill.active i { color: #fff !important; }
+        .peta-filter-chip, .peta-layer-toggle,
+        body.mode-siang .peta-filter-chip, body.mode-siang .peta-layer-toggle {
+            background: var(--hud-bg) !important;
+            border-color: var(--hud-border) !important;
+            color: var(--text-primary) !important;
+            border-radius: var(--radius-sm) !important;
+        }
+        .peta-filter-label, body.mode-siang .peta-filter-label { color: var(--navy) !important; }
+        .peta-fullscreen-btn, body.mode-siang .peta-fullscreen-btn {
+            background: var(--hud-bg) !important;
+            border-color: var(--hud-border) !important;
+            color: var(--text-secondary) !important;
+            border-radius: var(--radius-sm) !important;
+        }
+        .peta-fullscreen-btn:hover { color: var(--navy) !important; background: var(--hud-card-bg) !important; }
+        #petaJenteraMap { border-radius: var(--radius); border-color: var(--hud-border); }
+
+        /* ---- Popup peta & legend ---- */
+        .leaflet-popup-content-wrapper, .leaflet-popup-tip {
+            background: var(--hud-bg) !important;
+            color: var(--text-primary) !important;
+            border-radius: var(--radius) !important;
+        }
+        .popup-balai-title { color: var(--text-primary) !important; border-bottom-color: var(--hud-border) !important; }
+        .peta-legend-overlay, body.mode-siang .peta-legend-overlay {
+            background: var(--hud-bg) !important;
+            border: 1px solid var(--hud-border) !important;
+            border-radius: var(--radius) !important;
+            backdrop-filter: none !important;
+        }
+        .peta-legend-overlay.collapsed { background: transparent !important; border: none !important; }
+        .peta-legend-toggle { border-radius: var(--radius-sm) !important; background: var(--hud-bg) !important; color: var(--navy) !important; }
+        .peta-legend-overlay.collapsed .peta-legend-toggle { border-radius: var(--radius-sm) !important; }
+        .pts-title, .pts-title i, body.mode-siang .pts-title, body.mode-siang .pts-title i { color: var(--navy) !important; }
+
+        /* ---- Teks kad dalaman ---- */
+        .kat-tile-value, body.mode-siang .kat-tile-value,
+        .unit-card .unit-name, body.mode-siang .unit-card .unit-name,
+        .unit-card .unit-count, body.mode-siang .unit-card .unit-count,
+        .pos-item .pos-label, body.mode-siang .pos-item .pos-label,
+        .member-name, body.mode-siang .member-name,
+        .kat-ticker-count, body.mode-siang .kat-ticker-count { color: var(--text-primary) !important; }
+        .kat-tile-label, .kat-tile-sub, .kat-ticker-name,
+        body.mode-siang .kat-tile-label, body.mode-siang .kat-tile-sub,
+        body.mode-siang .kat-ticker-name { color: var(--text-secondary) !important; }
+        .kat-ticker-item, body.mode-siang .kat-ticker-item {
+            background: var(--hud-card-bg) !important;
+            border-color: var(--hud-border) !important;
+            border-radius: var(--radius) !important;
+        }
+        .kat-ticker-label, body.mode-siang .kat-ticker-label {
+            color: var(--navy) !important;
+            background: var(--hud-card-bg) !important;
+            border-color: var(--hud-border) !important;
+            border-radius: var(--radius) !important;
+        }
+        .kat-ticker-label:hover { background: var(--navy) !important; color: #fff !important; }
+
+        /* ---- Carousel ---- */
+        .carousel-slide .case-type, body.mode-siang .carousel-slide .case-type { color: var(--text-primary) !important; }
+        .carousel-slide .case-address, .carousel-slide .case-detail,
+        body.mode-siang .carousel-slide .case-address,
+        body.mode-siang .carousel-slide .case-detail { color: var(--text-secondary) !important; }
+        .carousel-slide .case-detail { background: var(--hud-bg) !important; border-radius: var(--radius-sm); }
+        .carousel-btn, body.mode-siang .carousel-btn {
+            background: var(--hud-bg) !important;
+            border: 1px solid var(--hud-border) !important;
+            color: var(--text-secondary) !important;
+            backdrop-filter: none !important;
+        }
+        .carousel-btn:hover { background: var(--navy) !important; color: #fff !important; border-color: var(--navy) !important; }
+        .carousel-notice, body.mode-siang .carousel-notice {
+            background: var(--hud-card-bg) !important;
+            border: 1px solid var(--hud-border) !important;
+            color: var(--text-secondary) !important;
+            border-radius: var(--radius) !important;
+        }
+
+        /* ---- Modal pasukan khas ---- */
+        .pasukan-modal, body.mode-siang .pasukan-modal {
+            background: var(--hud-bg) !important;
+            border: 1px solid var(--hud-border) !important;
+            border-radius: var(--radius) !important;
+            backdrop-filter: none !important;
+        }
+        .pasukan-modal-header, body.mode-siang .pasukan-modal-header {
+            background: var(--hud-card-bg) !important;
+            border-bottom-color: var(--hud-border) !important;
+        }
+        .pasukan-modal-title-text h3, body.mode-siang .pasukan-modal-title-text h3 { color: var(--navy) !important; }
+        .pasukan-modal-icon, body.mode-siang .pasukan-modal-icon {
+            background: var(--hud-bg) !important;
+            border-color: var(--hud-border) !important;
+            color: var(--navy) !important;
+            border-radius: var(--radius-sm) !important;
+        }
+        .pasukan-modal-close, body.mode-siang .pasukan-modal-close { border-radius: var(--radius-sm) !important; }
+
+        /* ---- Footer (3px navy + jalur merah tengah, seperti File 1) ---- */
+        .footer, body.mode-siang .footer {
+            position: relative;
+            background: var(--hud-bg) !important;
+            border-top: 3px solid var(--navy) !important;
+            backdrop-filter: none !important;
+            -webkit-backdrop-filter: none !important;
+        }
+        .footer::before {
+            content: '';
+            position: absolute;
+            top: -3px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80px;
+            height: 3px;
+            background: var(--fire-red);
+        }
+        .footer-link, body.mode-siang .footer-link { color: var(--navy) !important; }
+        .footer-link:hover { color: var(--fire-red) !important; }
+        .footer .social-links a, body.mode-siang .footer .social-links a {
+            background: var(--hud-card-bg) !important;
+            border: 1px solid var(--hud-border) !important;
+            color: var(--text-secondary) !important;
+            border-radius: var(--radius-sm) !important;
+        }
+        .footer .social-links a:hover { color: var(--navy) !important; border-color: var(--navy) !important; box-shadow: none !important; }
     </style>
-    
+        
 </head>
 <body>
 
