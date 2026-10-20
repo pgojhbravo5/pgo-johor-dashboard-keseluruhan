@@ -4479,8 +4479,11 @@ body.mode-siang .peta-legend-overlay .pts-line + .pts-line {
             .kat-ticker-track { animation: none; }
         }
 
-    </style>
+        /* Carousel penuh lebar selepas Pasukan Khas dialih */
+        .wide-bottom { grid-template-columns: 1fr !important; }
 
+    </style>
+    
 </head>
 <body>
 
@@ -4742,39 +4745,41 @@ body.mode-siang .peta-legend-overlay .pts-line + .pts-line {
                                 </div>
                             </section>
                           </div>
-
-                        <!-- LAJUR KANAN: Pasukan Khas + Statistik Jentera -->
-                        <div class="wide-bottom-col">
-
-                            <section class="section-pasukan-khas">
-                                <div class="pasukan-khas-card">
-                                    <div class="pasukan-card-header">
-                                        <i class="fas fa-user-shield" style="color:var(--hazard-gold)"></i>
-                                        <span data-ms="STATUS KESEDIAAN PASUKAN KHAS" data-en="SPECIAL TEAM READINESS STATUS">STATUS KESEDIAAN PASUKAN KHAS</span>
-                                        <span class="status-badge live">● LIVE</span>
-                                        <span class="pasukan-card-hint" data-ms="👆 Klik kad untuk lihat senarai anggota" data-en="👆 Tap card to view personnel list">👆 Klik kad untuk lihat senarai anggota</span>
-                                    </div>
-                                    <div class="unit-grid" id="specialUnitsContainer">
-                                        <div style="grid-column: 1/-1; text-align: center; padding: 1rem; color: var(--text-secondary); font-size: 0.75rem;">
-                                            <i class="fas fa-spinner fa-spin"></i> <span data-ms="Memuatkan..." data-en="Loading...">Memuatkan...</span>
-                                        </div>
-                                    </div>
-                                </div>
-                            </section>
-                    </div>
-
                     </div><!-- /wide-bottom -->
                 </main><!-- /panel gabungan -->
 
                                 <!-- ===== PANEL 3: KAD LIVE + ONLINE ===== -->
-                <div class="dashboard dash-panel">
+<div class="dashboard dash-panel">
 
-                    <!-- KATEGORI -->
-                    <div class="cat-accordion">
+    <!-- STATUS KESEDIAAN PASUKAN KHAS (dialih ke sini) -->
+    <section class="section-pasukan-khas">
+        <div class="pasukan-khas-card">
+            <div class="pasukan-card-header">
+                <i class="fas fa-user-shield" style="color:var(--hazard-gold)"></i>
+                <span data-ms="STATUS KESEDIAAN PASUKAN KHAS" data-en="SPECIAL TEAM READINESS STATUS">STATUS KESEDIAAN PASUKAN KHAS</span>
+                <span class="status-badge live">● LIVE</span>
+                <span class="pasukan-card-hint" data-ms="👆 Klik kad untuk lihat senarai anggota" data-en="👆 Tap card to view personnel list">👆 Klik kad untuk lihat senarai anggota</span>
+            </div>
+            <div class="unit-grid" id="specialUnitsContainer">
+                <div style="grid-column: 1/-1; text-align: center; padding: 1rem; color: var(--text-secondary); font-size: 0.75rem;">
+                    <i class="fas fa-spinner fa-spin"></i> <span data-ms="Memuatkan..." data-en="Loading...">Memuatkan...</span>
+                </div>
+            </div>
+        </div>
+    </section>
 
-                        <!-- LIVE -->
-                        <div class="cat-group">
-                            <button type="button" class="cat-toggle" data-cat-target="catPanelLive" aria-expanded="false">
+    <!-- TAJUK KAD APLIKASI -->
+    <div class="panel-sec-head">
+        <i class="fas fa-grip" style="color:var(--hazard-gold)"></i>
+        <span data-ms="KAD APLIKASI" data-en="APPLICATION CARDS">KAD APLIKASI</span>
+    </div>
+
+    <!-- KATEGORI -->
+    <div class="cat-accordion">
+
+        <!-- LIVE -->
+        <div class="cat-group">
+            <button type="button" class="cat-toggle" data-cat-target="catPanelLive" aria-expanded="false">
                                 <span class="cat-toggle-label">
                                     <i class="fas fa-bolt"></i> LIVE
                                     <span class="status-badge live">● LIVE</span>
@@ -4873,193 +4878,195 @@ body.mode-siang .peta-legend-overlay .pts-line + .pts-line {
               </div><!-- /dash-columns -->
             </div><!-- /content-col-left -->
 
-            <!-- ===== PANEL 4 / LAJUR KANAN ===== -->
+                        <!-- ===== PANEL 4 / LAJUR KANAN ===== -->
             
-            <div class="content-col-right">
-                <aside class="links-panel" id="linksPanel">
-                    <div class="panel-title"><i class="fas fa-satellite-dish"></i> <span data-ms="PAUTAN PENTING" data-en="IMPORTANT LINKS">PAUTAN PENTING</span></div>
+                        <div class="content-col-right">
 
-                    <div class="popular-links">
-                        <div class="popular-title"><i class="fas fa-star" style="color: var(--hazard-gold)"></i> <span data-ms="Pautan Popular" data-en="Popular Links">Pautan Popular</span></div>
-                        <div class="popular-grid">
-                            <a href="https://infobencanajkmv2.jkm.gov.my/landing/index.php?b=0&a=0" target="_blank" class="popular-item" rel="noopener noreferrer"><i class="fas fa-hand-holding-heart"></i> Info Bencana JKM</a>
-                            <a href="https://myclimate.met.gov.my/fdrsWmsObsMsiaMetPortal" target="_blank" class="popular-item" rel="noopener noreferrer"><i class="fas fa-fire"></i> FDRS</a>
-                            <a href="https://bencana.jkr.gov.my/" target="_blank" class="popular-item" rel="noopener noreferrer"><i class="fas fa-road"></i> Bencana JKR</a>
-                            <a href="https://www.nadma.gov.my/" target="_blank" class="popular-item" rel="noopener noreferrer"><i class="fas fa-triangle-exclamation"></i> NADMA</a>
-                            <a href="https://www.johor.gov.my/" target="_blank" class="popular-item" rel="noopener noreferrer"><i class="fas fa-landmark"></i> Kerajaan Johor</a>
-                        </div>
-                    </div>
-
-                    <div class="update-timestamp"><i class="fas fa-sync-alt"></i> <span data-ms="Pautan dikemaskini:" data-en="Links updated:">Pautan dikemaskini:</span> <span id="linkUpdateDate">22 OGOS 2026</span></div>
-
-                    <div class="link-filter-wrap">
-                        <i class="fas fa-search link-filter-icon"></i>
-                        <input type="text" id="linkFilterInput" class="link-filter-input" placeholder="Cari pautan / nombor kecemasan..." autocomplete="off" data-ms-placeholder="Cari pautan / nombor kecemasan..." data-en-placeholder="Search links / emergency numbers...">
-                    </div>
-
-                    <div class="links-scroll" id="linksScroll">
-                        <!-- 1: Talian Kecemasan -->
-                        <div class="accordion-item">
-                            <button class="accordion-header" data-target="linkAcc1" aria-expanded="false">
-                                <span class="accordion-title" data-ms="&lt;i class=&quot;fas fa-phone-volume&quot;&gt;&lt;/i&gt; Talian Kecemasan 24/7" data-en="&lt;i class=&quot;fas fa-phone-volume&quot;&gt;&lt;/i&gt; 24/7 Emergency Hotline"><i class="fas fa-phone-volume"></i> Talian Kecemasan 24/7</span>
-                                <span class="arrow"><i class="fas fa-chevron-down"></i></span>
-                            </button>
-                            <div class="accordion-content" id="linkAcc1">
-                                <div class="emergency-group-title"><i class="fas fa-flag"></i> TALIAN KECEMASAN NASIONAL</div>
-                                <div class="emergency-item"><div class="e-info"><span class="e-name">MERS 999</span><span class="e-number">999</span></div><div class="e-actions"><a href="tel:999" class="call-btn"><i class="fas fa-phone"></i></a></div></div>
-                                <div class="emergency-group-title"><i class="fas fa-fire-extinguisher"></i> BOMBA (JBPM)</div>
-                                <div class="emergency-item"><div class="e-info"><span class="e-name">HQ Negeri Johor</span><span class="e-number">07-340 9999</span></div><div class="e-actions"><a href="tel:073409999" class="call-btn"><i class="fas fa-phone"></i></a></div></div>
-                                <div class="emergency-item"><div class="e-info"><span class="e-name">Hotline Kebangsaan</span><span class="e-number">1-800-888-994</span></div><div class="e-actions"><a href="tel:1800888994" class="call-btn"><i class="fas fa-phone"></i></a></div></div>
-                                <div class="emergency-group-title"><i class="fas fa-shield-cat"></i> POLIS (PDRM)</div>
-                                <div class="emergency-item"><div class="e-info"><span class="e-name">IPK Johor (Hotline Operasi)</span><span class="e-number">07-225 4422</span></div><div class="e-actions"><a href="tel:072254422" class="call-btn"><i class="fas fa-phone"></i></a></div></div>
-                                <div class="emergency-item"><div class="e-info"><span class="e-name">IPK Johor (Talian Am)</span><span class="e-number">07-221 2999</span></div><div class="e-actions"><a href="tel:072212999" class="call-btn"><i class="fas fa-phone"></i></a></div></div>
-                                <div class="emergency-group-title"><i class="fas fa-ship"></i> MARITIM (APMM)</div>
-                                <div class="emergency-item"><div class="e-info"><span class="e-name">MRSC Johor (24 jam)</span><span class="e-number">07-219 9401</span></div><div class="e-actions"><a href="tel:072199401" class="call-btn"><i class="fas fa-phone"></i></a></div></div>
-                                <div class="emergency-item"><div class="e-info"><span class="e-name">Hotline 24 jam (Johor)</span><span class="e-number">07-219 9404</span></div><div class="e-actions"><a href="tel:072199404" class="call-btn"><i class="fas fa-phone"></i></a></div></div>
-                                <div class="emergency-item"><div class="e-info"><span class="e-name">ZM Tanjung Sedili (24 jam)</span><span class="e-number">07-891 6595</span></div><div class="e-actions"><a href="tel:078916595" class="call-btn"><i class="fas fa-phone"></i></a></div></div>
-                                <div class="emergency-group-title"><i class="fas fa-shield-halved"></i> PERTAHANAN AWAM (APM)</div>
-                                <div class="emergency-item"><div class="e-info"><span class="e-name">APM Negeri Johor</span><span class="e-number">07-221 1991</span></div><div class="e-actions"><a href="tel:072211991" class="call-btn"><i class="fas fa-phone"></i></a></div></div>
-                                <div class="emergency-group-title"><i class="fas fa-hospital"></i> HOSPITAL SULTANAH AMINAH (HSA)</div>
-                                <div class="emergency-item"><div class="e-info"><span class="e-name">Talian Utama</span><span class="e-number">07-225 7000</span></div><div class="e-actions"><a href="tel:072257000" class="call-btn"><i class="fas fa-phone"></i></a></div></div>
-                                <div class="emergency-item"><div class="e-info"><span class="e-name">MECC (Samb. 3248)</span><span class="e-number">07-225 7000 samb. 3248</span></div><div class="e-actions"><a href="tel:072257000,3248" class="call-btn"><i class="fas fa-phone"></i></a></div></div>
-                                <div class="emergency-item"><div class="e-info"><span class="e-name">Perhubungan Awam (Samb. 2722 / 3456)</span><span class="e-number">07-225 7000 samb. 2722/3456</span></div><div class="e-actions"><a href="tel:072257000,2722" class="call-btn"><i class="fas fa-phone"></i></a></div></div>
-                                <div class="emergency-item"><div class="e-info"><span class="e-name">Alternatif</span><span class="e-number">07-223 1666</span></div><div class="e-actions"><a href="tel:072231666" class="call-btn"><i class="fas fa-phone"></i></a></div></div>
-                                <div class="emergency-group-title"><i class="fas fa-hospital"></i> HOSPITAL SULTAN ISMAIL (HSI)</div>
-                                <div class="emergency-item"><div class="e-info"><span class="e-name">Talian Utama</span><span class="e-number">07-356 5000</span></div><div class="e-actions"><a href="tel:073565000" class="call-btn"><i class="fas fa-phone"></i></a></div></div>
-                                <div class="emergency-group-title"><i class="fas fa-hospital"></i> HEBHK KLUANG</div>
-                                <div class="emergency-item"><div class="e-info"><span class="e-name">Talian Utama</span><span class="e-number">07-234 5333</span></div><div class="e-actions"><a href="tel:072345333" class="call-btn"><i class="fas fa-phone"></i></a></div></div>
-                                <div class="info-box"><i class="fas fa-info-circle"></i> <strong>999</strong> talian kecemasan bersepadu (PDRM, JBPM, KKM, APM, APMM).<br />Untuk sambungan dalaman, hubungi talian am.</div>
+                            <!-- ===== PANEL SISTEM (kini di atas) ===== -->
+                            <div class="sistem-panel" id="sistemPanel">
+                                <button class="panel-toggle" id="sistemPanelToggle" aria-expanded="false">
+                                    <span class="panel-title">
+                                        <i class="fas fa-server"></i> <span data-ms="PAUTAN SISTEM PGO JOHOR" data-en="PGO JOHOR SYSTEM LINKS">PAUTAN SISTEM PGO JOHOR</span>
+                                    </span>
+                                    <i class="fas fa-chevron-down panel-arrow"></i>
+                                </button>
+            
+                                <div class="panel-body" id="sistemPanelBody">
+                                    <div class="sistem-content">
+                                        <a href="kekuatan-anggota.html" class="app-card" rel="noopener noreferrer">
+                                            <div class="icon"><i class="fas fa-users-gear"></i></div>
+                                            <div>
+                                                <h3 data-ms="Sistem Kekuatan <span class=&quot;highlight&quot;>Anggota</span> JBPM Johor" data-en="JBPM Johor <span class=&quot;highlight&quot;>Personnel Strength</span> System">Sistem Kekuatan <span class="highlight">Anggota</span> JBPM Johor</h3>
+                                                <p data-ms="Pengurusan kekuatan anggota, jentera, logistik & arkib balai seluruh Negeri Johor." data-en="Management of personnel strength, vehicles, logistics & station archives across Johor.">Pengurusan kekuatan anggota, jentera, logistik & arkib balai seluruh Negeri Johor.</p>
+                                            </div>
+                                            <div class="card-footer">
+                                                <span class="badge sistem">● SISTEM</span>
+                                                <span class="arrow"><i class="fas fa-arrow-right"></i></span>
+                                            </div>
+                                        </a>
+                                        <a href="https://po1teknologia2.vercel.app/" target="_blank" class="app-card" rel="noopener noreferrer">
+                                            <div class="icon"><i class="fas fa-boxes-stacked"></i></div>
+                                            <div>
+                                                <h3 data-ms="Sistem Inventori <span class=&quot;highlight&quot;>(DID)</span>" data-en="Inventory System <span class=&quot;highlight&quot;>(DID)</span>">Sistem Inventori <span class="highlight">(DID)</span></h3>
+                                                <p data-ms="Pengurusan storan, peralatan & aset logistik." data-en="Management of storage, equipment & logistics assets.">Pengurusan storan, peralatan & aset logistik.</p>
+                                            </div>
+                                            <div class="card-footer">
+                                                <span class="badge sistem">● SISTEM</span>
+                                                <span class="arrow"><i class="fas fa-arrow-right"></i></span>
+                                            </div>
+                                        </a>
+                                        <a href="https://daftar-masuk-pelawat.vercel.app/" target="_blank" class="app-card" rel="noopener noreferrer">
+                                            <div class="icon"><i class="fas fa-id-card-clip"></i></div>
+                                            <div>
+                                                <h3 data-ms="Sistem Daftar Masuk Pelawat <span class=&quot;highlight&quot;>(ENTRY)</span>" data-en="Visitor Check-In System <span class=&quot;highlight&quot;>(ENTRY)</span>">Sistem Daftar Masuk Pelawat <span class="highlight">(ENTRY)</span></h3>
+                                                <p data-ms="Sistem daftar masuk dengan pendaftaran ID digital." data-en="Check-in system with digital ID registration.">Sistem daftar masuk dengan pendaftaran ID digital.</p>
+                                            </div>
+                                            <div class="card-footer">
+                                                <span class="badge sistem">● SISTEM</span>
+                                                <span class="arrow"><i class="fas fa-arrow-right"></i></span>
+                                            </div>
+                                        </a>
+                                    </div>
+                                </div>
                             </div>
-                        </div>
-
-                        <!-- 2: Cuaca & Laut -->
-                        <div class="accordion-item">
-                            <button class="accordion-header" data-target="linkAcc2" aria-expanded="false">
-                                <span class="accordion-title" data-ms="&lt;i class=&quot;fas fa-cloud-sun&quot;&gt;&lt;/i&gt; Cuaca & Laut" data-en="&lt;i class=&quot;fas fa-cloud-sun&quot;&gt;&lt;/i&gt; Weather & Sea"><i class="fas fa-cloud-sun"></i> Cuaca & Laut</span>
-                                <span class="arrow"><i class="fas fa-chevron-down"></i></span>
-                            </button>
-                            <div class="accordion-content" id="linkAcc2">
-                                <a href="https://www.met.gov.my/" target="_blank" class="sidebar-link"><span class="link-icon weather"><i class="fas fa-cloud-sun-rain"></i></span><span class="link-text"><span class="link-name">MetMalaysia - Cuaca</span><span class="link-desc">Ramalan & amaran cuaca rasmi</span></span><i class="fas fa-external-link-alt"></i></a>
-                                <a href="https://www.jupem.gov.my/ms/staps" target="_blank" class="sidebar-link"><span class="link-icon tide"><i class="fas fa-water"></i></span><span class="link-text"><span class="link-name">Pasang Surut Laut</span><span class="link-desc">Jadual air pasang surut Malaysia</span></span><i class="fas fa-external-link-alt"></i></a>
-                                <a href="https://www.met.gov.my/awam/prakiraan/radar" target="_blank" class="sidebar-link"><span class="link-icon radar"><i class="fas fa-satellite-dish"></i></span><span class="link-text"><span class="link-name">Radar Hujan (MetMalaysia)</span><span class="link-desc">Imej radar hujan rasmi masa nyata</span></span><i class="fas fa-external-link-alt"></i></a>
-                                <a href="https://www.windy.com/" target="_blank" class="sidebar-link" rel="noopener noreferrer">
-                                    <span class="link-icon" style="background:rgba(56,189,248,0.15);color:#38bdf8"><i class="fas fa-wind"></i></span>
-                                    <span class="link-text"><span class="link-name">Windy</span><span class="link-desc">Peta angin, hujan & ribut global masa nyata</span></span>
-                                    <i class="fas fa-external-link-alt"></i>
-                                </a>
-                                <a href="https://apims.doe.gov.my/" target="_blank" class="sidebar-link"><span class="link-icon fire"><i class="fas fa-fire-flame-curved"></i></span><span class="link-text"><span class="link-name">Indeks Cuaca Api (API)</span><span class="link-desc">IPU & status jerebu semasa</span></span><i class="fas fa-external-link-alt"></i></a>
-                                <a href="https://myclimate.met.gov.my/fdrsWmsObsMsiaMetPortal" target="_blank" class="sidebar-link"><span class="link-icon fire"><i class="fas fa-fire"></i></span><span class="link-text"><span class="link-name">Fire Danger Rating System (FDRS)</span><span class="link-desc">Sistem penarafan bahaya kebakaran</span></span><i class="fas fa-external-link-alt"></i></a>
-                                <a href="https://mywater.gov.my/Portal/Modules/Internal/GIS.aspx?mi=22&ug=38&t=Station%20Hydrology%20JPS" target="_blank" class="sidebar-link"><span class="link-icon tide"><i class="fas fa-droplet"></i></span><span class="link-text"><span class="link-name">JPS - Data Hidrologi</span><span class="link-desc">Data kualiti air & hidrologi</span></span><i class="fas fa-external-link-alt"></i></a>
-                                <a href="https://eqms.doe.gov.my/" target="_blank" class="sidebar-link" rel="noopener noreferrer">
-                                    <span class="link-icon" style="background:rgba(16,185,129,0.15);color:#10b981"><i class="fas fa-leaf"></i></span>
-                                    <span class="link-text"><span class="link-name">MyEQMS - Kualiti Alam Sekitar</span><span class="link-desc">Indeks Kualiti Udara, Sungai & Marin (DOE)</span></span>
-                                    <i class="fas fa-external-link-alt"></i>
-                                </a>
-                            </div>
-                        </div>
-
-                        <!-- 3: Bencana & Amaran -->
-                        <div class="accordion-item">
-                            <button class="accordion-header" data-target="linkAcc3" aria-expanded="false">
-                                <span class="accordion-title" data-ms="&lt;i class=&quot;fas fa-triangle-exclamation&quot;&gt;&lt;/i&gt; Bencana & Amaran" data-en="&lt;i class=&quot;fas fa-triangle-exclamation&quot;&gt;&lt;/i&gt; Disaster & Warnings"><i class="fas fa-triangle-exclamation"></i> Bencana & Amaran</span>
-                                <span class="arrow"><i class="fas fa-chevron-down"></i></span>
-                            </button>
-                            <div class="accordion-content" id="linkAcc3">
-                                <a href="https://www.nadma.gov.my/" target="_blank" class="sidebar-link"><span class="link-icon disaster"><i class="fas fa-house-chimney-crack"></i></span><span class="link-text"><span class="link-name">NADMA - Agensi Pengurusan Bencana</span><span class="link-desc">Info & respons bencana negara</span></span><i class="fas fa-external-link-alt"></i></a>
-                                <a href="https://publicinfobanjir.water.gov.my/" target="_blank" class="sidebar-link"><span class="link-icon flood"><i class="fas fa-house-flood-water"></i></span><span class="link-text"><span class="link-name">Public Infobanjir</span><span class="link-desc">Peta & status banjir semasa (kebangsaan)</span></span><i class="fas fa-external-link-alt"></i></a>
-                                <a href="https://infobanjirjpsjohor.water.gov.my/" target="_blank" class="sidebar-link" rel="noopener noreferrer">
-                                    <span class="link-icon flood"><i class="fas fa-water"></i></span>
-                                    <span class="link-text"><span class="link-name">InfoBanjir JPS Johor</span><span class="link-desc">Status hujan & aras air khusus Negeri Johor (SPHTN)</span></span>
-                                    <i class="fas fa-external-link-alt"></i>
-                                </a>
-                                <a href="https://mygempa.met.gov.my/docroot/view/index.php" target="_blank" class="sidebar-link"><span class="link-icon quake"><i class="fas fa-earth-asia"></i></span><span class="link-text"><span class="link-name">Info Gempa Bumi</span><span class="link-desc">Aktiviti seismik Malaysia & antarabangsa</span></span><i class="fas fa-external-link-alt"></i></a>
-                                <a href="https://infobencanajkmv2.jkm.gov.my/landing/index.php?b=0&a=0" target="_blank" class="sidebar-link" rel="noopener noreferrer">
-                                    <span class="link-icon" style="background:rgba(239,68,68,0.15);color:#ef4444"><i class="fas fa-hand-holding-heart"></i></span>
-                                    <span class="link-text"><span class="link-name">InfoBencana JKM</span><span class="link-desc">Maklumat bencana & bantuan mangsa (Jabatan Kebajikan Masyarakat)</span></span>
-                                    <i class="fas fa-external-link-alt"></i>
-                                </a>
-                            </div>
-                        </div>
-
-                        <!-- 4: Jalan Raya & Logistik -->
-                        <div class="accordion-item">
-                            <button class="accordion-header" data-target="linkAcc4" aria-expanded="false">
-                                <span class="accordion-title" data-ms="&lt;i class=&quot;fas fa-road&quot;&gt;&lt;/i&gt; Jalan Raya & Logistik" data-en="&lt;i class=&quot;fas fa-road&quot;&gt;&lt;/i&gt; Roads & Logistics"><i class="fas fa-road"></i> Jalan Raya & Logistik</span>
-                                <span class="arrow"><i class="fas fa-chevron-down"></i></span>
-                            </button>
-                            <div class="accordion-content" id="linkAcc4">
-                                <a href="https://www.llm.gov.my/" target="_blank" class="sidebar-link"><span class="link-icon road"><i class="fas fa-road"></i></span><span class="link-text"><span class="link-name">LLM - Lebuhraya Malaysia</span><span class="link-desc">Status & laporan trafik lebuh raya</span></span><i class="fas fa-external-link-alt"></i></a>
-                                <a href="https://www.jpj.gov.my/" target="_blank" class="sidebar-link"><span class="link-icon road"><i class="fas fa-car-side"></i></span><span class="link-text"><span class="link-name">JPJ - Jabatan Pengangkutan Jalan</span><span class="link-desc">Maklumat jalan tutup & notis</span></span><i class="fas fa-external-link-alt"></i></a>
-                                <a href="https://bencana.jkr.gov.my/" target="_blank" class="sidebar-link"><span class="link-icon road"><i class="fas fa-helmet-safety"></i></span><span class="link-text"><span class="link-name">JKR - Jabatan Kerja Raya</span><span class="link-desc">Infrastruktur & jalan persekutuan</span></span><i class="fas fa-external-link-alt"></i></a>
-                            </div>
-                        </div>
-
-                        <!-- 5: Direktori Agensi -->
-                        <div class="accordion-item">
-                            <button class="accordion-header" data-target="linkAcc5" aria-expanded="false">
-                                <span class="accordion-title" data-ms="&lt;i class=&quot;fas fa-building-columns&quot;&gt;&lt;/i&gt; Direktori Agensi" data-en="&lt;i class=&quot;fas fa-building-columns&quot;&gt;&lt;/i&gt; Agency Directory"><i class="fas fa-building-columns"></i> Direktori Agensi</span>
-                                <span class="arrow"><i class="fas fa-chevron-down"></i></span>
-                            </button>
-                            <div class="accordion-content" id="linkAcc5">
-                                <a href="https://www.bomba.gov.my/en/" target="_blank" class="sidebar-link"><span class="link-icon emergency"><i class="fas fa-fire-extinguisher"></i></span><span class="link-text"><span class="link-name">JBPM Malaysia</span><span class="link-desc">Jabatan Bomba & Penyelamat</span></span><i class="fas fa-external-link-alt"></i></a>
-                                <a href="https://www.mmea.gov.my/" target="_blank" class="sidebar-link"><span class="link-icon maritime"><i class="fas fa-ship"></i></span><span class="link-text"><span class="link-name">APMM Maritim Malaysia</span><span class="link-desc">Agensi Penguatkuasaan Maritim</span></span><i class="fas fa-external-link-alt"></i></a>
-                                <a href="https://www.civildefence.gov.my/" target="_blank" class="sidebar-link"><span class="link-icon civil"><i class="fas fa-shield-halved"></i></span><span class="link-text"><span class="link-name">APM Pertahanan Awam</span><span class="link-desc">Pengurusan Bencana</span></span><i class="fas fa-external-link-alt"></i></a>
-                                <a href="https://www.rmp.gov.my/" target="_blank" class="sidebar-link"><span class="link-icon emergency"><i class="fas fa-shield-cat"></i></span><span class="link-text"><span class="link-name">PDRM Polis Diraja</span><span class="link-desc">Keselamatan Awam</span></span><i class="fas fa-external-link-alt"></i></a>
-                                <a href="https://www.moh.gov.my/" target="_blank" class="sidebar-link"><span class="link-icon hospital"><i class="fas fa-hospital-user"></i></span><span class="link-text"><span class="link-name">KKM Kesihatan</span><span class="link-desc">Perkhidmatan Perubatan</span></span><i class="fas fa-external-link-alt"></i></a>
-                            </div>
-                        </div>
-                    </div><!-- /links-scroll -->
-                </aside>
-
-                <!-- ===== PANEL SISTEM ===== -->
-                <div class="sistem-panel" id="sistemPanel">
-                    <button class="panel-toggle" id="sistemPanelToggle" aria-expanded="false">
-                        <span class="panel-title">
-                            <i class="fas fa-server"></i> <span data-ms="PAUTAN SISTEM PGO JOHOR" data-en="PGO JOHOR SYSTEM LINKS">PAUTAN SISTEM PGO JOHOR</span>
-                        </span>
-                        <i class="fas fa-chevron-down panel-arrow"></i>
-                    </button>
-
-                    <div class="panel-body" id="sistemPanelBody">
-                        <div class="sistem-content">
-                            <a href="kekuatan-anggota.html" class="app-card" rel="noopener noreferrer">
-                                <div class="icon"><i class="fas fa-users-gear"></i></div>
-                                <div>
-                                    <h3 data-ms="Sistem Kekuatan <span class=&quot;highlight&quot;>Anggota</span> JBPM Johor" data-en="JBPM Johor <span class=&quot;highlight&quot;>Personnel Strength</span> System">Sistem Kekuatan <span class="highlight">Anggota</span> JBPM Johor</h3>
-                                    <p data-ms="Pengurusan kekuatan anggota, jentera, logistik & arkib balai seluruh Negeri Johor." data-en="Management of personnel strength, vehicles, logistics & station archives across Johor.">Pengurusan kekuatan anggota, jentera, logistik & arkib balai seluruh Negeri Johor.</p>
+            
+                            <!-- ===== PAUTAN PENTING (kini di bawah) ===== -->
+                            <aside class="links-panel" id="linksPanel">
+                                <div class="panel-title"><i class="fas fa-satellite-dish"></i> <span data-ms="PAUTAN PENTING" data-en="IMPORTANT LINKS">PAUTAN PENTING</span></div>
+            
+                                <div class="popular-links">
+                                    <div class="popular-title"><i class="fas fa-star" style="color: var(--hazard-gold)"></i> <span data-ms="Pautan Popular" data-en="Popular Links">Pautan Popular</span></div>
+                                    <div class="popular-grid">
+                                        <a href="https://infobencanajkmv2.jkm.gov.my/landing/index.php?b=0&a=0" target="_blank" class="popular-item" rel="noopener noreferrer"><i class="fas fa-hand-holding-heart"></i> Info Bencana JKM</a>
+                                        <a href="https://myclimate.met.gov.my/fdrsWmsObsMsiaMetPortal" target="_blank" class="popular-item" rel="noopener noreferrer"><i class="fas fa-fire"></i> FDRS</a>
+                                        <a href="https://bencana.jkr.gov.my/" target="_blank" class="popular-item" rel="noopener noreferrer"><i class="fas fa-road"></i> Bencana JKR</a>
+                                        <a href="https://www.nadma.gov.my/" target="_blank" class="popular-item" rel="noopener noreferrer"><i class="fas fa-triangle-exclamation"></i> NADMA</a>
+                                        <a href="https://www.johor.gov.my/" target="_blank" class="popular-item" rel="noopener noreferrer"><i class="fas fa-landmark"></i> Kerajaan Johor</a>
+                                    </div>
                                 </div>
-                                <div class="card-footer">
-                                    <span class="badge sistem">● SISTEM</span>
-                                    <span class="arrow"><i class="fas fa-arrow-right"></i></span>
+            
+                                <div class="update-timestamp"><i class="fas fa-sync-alt"></i> <span data-ms="Pautan dikemaskini:" data-en="Links updated:">Pautan dikemaskini:</span> <span id="linkUpdateDate">22 OGOS 2026</span></div>
+            
+                                <div class="link-filter-wrap">
+                                    <i class="fas fa-search link-filter-icon"></i>
+                                    <input type="text" id="linkFilterInput" class="link-filter-input" placeholder="Cari pautan / nombor kecemasan..." autocomplete="off" data-ms-placeholder="Cari pautan / nombor kecemasan..." data-en-placeholder="Search links / emergency numbers...">
                                 </div>
-                            </a>
-                            <a href="https://po1teknologia2.vercel.app/" target="_blank" class="app-card" rel="noopener noreferrer">
-                                <div class="icon"><i class="fas fa-boxes-stacked"></i></div>
-                                <div>
-                                    <h3 data-ms="Sistem Inventori <span class=&quot;highlight&quot;>(DID)</span>" data-en="Inventory System <span class=&quot;highlight&quot;>(DID)</span>">Sistem Inventori <span class="highlight">(DID)</span></h3>
-                                    <p data-ms="Pengurusan storan, peralatan & aset logistik." data-en="Management of storage, equipment & logistics assets.">Pengurusan storan, peralatan & aset logistik.</p>
-                                </div>
-                                <div class="card-footer">
-                                    <span class="badge sistem">● SISTEM</span>
-                                    <span class="arrow"><i class="fas fa-arrow-right"></i></span>
-                                </div>
-                            </a>
-                            <a href="https://daftar-masuk-pelawat.vercel.app/" target="_blank" class="app-card" rel="noopener noreferrer">
-                                <div class="icon"><i class="fas fa-id-card-clip"></i></div>
-                                <div>
-                                    <h3 data-ms="Sistem Daftar Masuk Pelawat <span class=&quot;highlight&quot;>(ENTRY)</span>" data-en="Visitor Check-In System <span class=&quot;highlight&quot;>(ENTRY)</span>">Sistem Daftar Masuk Pelawat <span class="highlight">(ENTRY)</span></h3>
-                                    <p data-ms="Sistem daftar masuk dengan pendaftaran ID digital." data-en="Check-in system with digital ID registration.">Sistem daftar masuk dengan pendaftaran ID digital.</p>
-                                </div>
-                                <div class="card-footer">
-                                    <span class="badge sistem">● SISTEM</span>
-                                    <span class="arrow"><i class="fas fa-arrow-right"></i></span>
-                                </div>
-                            </a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
+            
+                                <div class="links-scroll" id="linksScroll">
+                                    <!-- 1: Talian Kecemasan -->
+                                    <div class="accordion-item">
+                                        <button class="accordion-header" data-target="linkAcc1" aria-expanded="false">
+                                            <span class="accordion-title" data-ms="&lt;i class=&quot;fas fa-phone-volume&quot;&gt;&lt;/i&gt; Talian Kecemasan 24/7" data-en="&lt;i class=&quot;fas fa-phone-volume&quot;&gt;&lt;/i&gt; 24/7 Emergency Hotline"><i class="fas fa-phone-volume"></i> Talian Kecemasan 24/7</span>
+                                            <span class="arrow"><i class="fas fa-chevron-down"></i></span>
+                                        </button>
+                                        <div class="accordion-content" id="linkAcc1">
+                                            <div class="emergency-group-title"><i class="fas fa-flag"></i> TALIAN KECEMASAN NASIONAL</div>
+                                            <div class="emergency-item"><div class="e-info"><span class="e-name">MERS 999</span><span class="e-number">999</span></div><div class="e-actions"><a href="tel:999" class="call-btn"><i class="fas fa-phone"></i></a></div></div>
+                                            <div class="emergency-group-title"><i class="fas fa-fire-extinguisher"></i> BOMBA (JBPM)</div>
+                                            <div class="emergency-item"><div class="e-info"><span class="e-name">HQ Negeri Johor</span><span class="e-number">07-340 9999</span></div><div class="e-actions"><a href="tel:073409999" class="call-btn"><i class="fas fa-phone"></i></a></div></div>
+                                            <div class="emergency-item"><div class="e-info"><span class="e-name">Hotline Kebangsaan</span><span class="e-number">1-800-888-994</span></div><div class="e-actions"><a href="tel:1800888994" class="call-btn"><i class="fas fa-phone"></i></a></div></div>
+                                            <div class="emergency-group-title"><i class="fas fa-shield-cat"></i> POLIS (PDRM)</div>
+                                            <div class="emergency-item"><div class="e-info"><span class="e-name">IPK Johor (Hotline Operasi)</span><span class="e-number">07-225 4422</span></div><div class="e-actions"><a href="tel:072254422" class="call-btn"><i class="fas fa-phone"></i></a></div></div>
+                                            <div class="emergency-item"><div class="e-info"><span class="e-name">IPK Johor (Talian Am)</span><span class="e-number">07-221 2999</span></div><div class="e-actions"><a href="tel:072212999" class="call-btn"><i class="fas fa-phone"></i></a></div></div>
+                                            <div class="emergency-group-title"><i class="fas fa-ship"></i> MARITIM (APMM)</div>
+                                            <div class="emergency-item"><div class="e-info"><span class="e-name">MRSC Johor (24 jam)</span><span class="e-number">07-219 9401</span></div><div class="e-actions"><a href="tel:072199401" class="call-btn"><i class="fas fa-phone"></i></a></div></div>
+                                            <div class="emergency-item"><div class="e-info"><span class="e-name">Hotline 24 jam (Johor)</span><span class="e-number">07-219 9404</span></div><div class="e-actions"><a href="tel:072199404" class="call-btn"><i class="fas fa-phone"></i></a></div></div>
+                                            <div class="emergency-item"><div class="e-info"><span class="e-name">ZM Tanjung Sedili (24 jam)</span><span class="e-number">07-891 6595</span></div><div class="e-actions"><a href="tel:078916595" class="call-btn"><i class="fas fa-phone"></i></a></div></div>
+                                            <div class="emergency-group-title"><i class="fas fa-shield-halved"></i> PERTAHANAN AWAM (APM)</div>
+                                            <div class="emergency-item"><div class="e-info"><span class="e-name">APM Negeri Johor</span><span class="e-number">07-221 1991</span></div><div class="e-actions"><a href="tel:072211991" class="call-btn"><i class="fas fa-phone"></i></a></div></div>
+                                            <div class="emergency-group-title"><i class="fas fa-hospital"></i> HOSPITAL SULTANAH AMINAH (HSA)</div>
+                                            <div class="emergency-item"><div class="e-info"><span class="e-name">Talian Utama</span><span class="e-number">07-225 7000</span></div><div class="e-actions"><a href="tel:072257000" class="call-btn"><i class="fas fa-phone"></i></a></div></div>
+                                            <div class="emergency-item"><div class="e-info"><span class="e-name">MECC (Samb. 3248)</span><span class="e-number">07-225 7000 samb. 3248</span></div><div class="e-actions"><a href="tel:072257000,3248" class="call-btn"><i class="fas fa-phone"></i></a></div></div>
+                                            <div class="emergency-item"><div class="e-info"><span class="e-name">Perhubungan Awam (Samb. 2722 / 3456)</span><span class="e-number">07-225 7000 samb. 2722/3456</span></div><div class="e-actions"><a href="tel:072257000,2722" class="call-btn"><i class="fas fa-phone"></i></a></div></div>
+                                            <div class="emergency-item"><div class="e-info"><span class="e-name">Alternatif</span><span class="e-number">07-223 1666</span></div><div class="e-actions"><a href="tel:072231666" class="call-btn"><i class="fas fa-phone"></i></a></div></div>
+                                            <div class="emergency-group-title"><i class="fas fa-hospital"></i> HOSPITAL SULTAN ISMAIL (HSI)</div>
+                                            <div class="emergency-item"><div class="e-info"><span class="e-name">Talian Utama</span><span class="e-number">07-356 5000</span></div><div class="e-actions"><a href="tel:073565000" class="call-btn"><i class="fas fa-phone"></i></a></div></div>
+                                            <div class="emergency-group-title"><i class="fas fa-hospital"></i> HEBHK KLUANG</div>
+                                            <div class="emergency-item"><div class="e-info"><span class="e-name">Talian Utama</span><span class="e-number">07-234 5333</span></div><div class="e-actions"><a href="tel:072345333" class="call-btn"><i class="fas fa-phone"></i></a></div></div>
+                                            <div class="info-box"><i class="fas fa-info-circle"></i> <strong>999</strong> talian kecemasan bersepadu (PDRM, JBPM, KKM, APM, APMM).<br />Untuk sambungan dalaman, hubungi talian am.</div>
+                                        </div>
+                                    </div>
+            
+                                    <!-- 2: Cuaca & Laut -->
+                                    <div class="accordion-item">
+                                        <button class="accordion-header" data-target="linkAcc2" aria-expanded="false">
+                                            <span class="accordion-title" data-ms="&lt;i class=&quot;fas fa-cloud-sun&quot;&gt;&lt;/i&gt; Cuaca & Laut" data-en="&lt;i class=&quot;fas fa-cloud-sun&quot;&gt;&lt;/i&gt; Weather & Sea"><i class="fas fa-cloud-sun"></i> Cuaca & Laut</span>
+                                            <span class="arrow"><i class="fas fa-chevron-down"></i></span>
+                                        </button>
+                                        <div class="accordion-content" id="linkAcc2">
+                                            <a href="https://www.met.gov.my/" target="_blank" class="sidebar-link"><span class="link-icon weather"><i class="fas fa-cloud-sun-rain"></i></span><span class="link-text"><span class="link-name">MetMalaysia - Cuaca</span><span class="link-desc">Ramalan & amaran cuaca rasmi</span></span><i class="fas fa-external-link-alt"></i></a>
+                                            <a href="https://www.jupem.gov.my/ms/staps" target="_blank" class="sidebar-link"><span class="link-icon tide"><i class="fas fa-water"></i></span><span class="link-text"><span class="link-name">Pasang Surut Laut</span><span class="link-desc">Jadual air pasang surut Malaysia</span></span><i class="fas fa-external-link-alt"></i></a>
+                                            <a href="https://www.met.gov.my/awam/prakiraan/radar" target="_blank" class="sidebar-link"><span class="link-icon radar"><i class="fas fa-satellite-dish"></i></span><span class="link-text"><span class="link-name">Radar Hujan (MetMalaysia)</span><span class="link-desc">Imej radar hujan rasmi masa nyata</span></span><i class="fas fa-external-link-alt"></i></a>
+                                            <a href="https://www.windy.com/" target="_blank" class="sidebar-link" rel="noopener noreferrer">
+                                                <span class="link-icon" style="background:rgba(56,189,248,0.15);color:#38bdf8"><i class="fas fa-wind"></i></span>
+                                                <span class="link-text"><span class="link-name">Windy</span><span class="link-desc">Peta angin, hujan & ribut global masa nyata</span></span>
+                                                <i class="fas fa-external-link-alt"></i>
+                                            </a>
+                                            <a href="https://apims.doe.gov.my/" target="_blank" class="sidebar-link"><span class="link-icon fire"><i class="fas fa-fire-flame-curved"></i></span><span class="link-text"><span class="link-name">Indeks Cuaca Api (API)</span><span class="link-desc">IPU & status jerebu semasa</span></span><i class="fas fa-external-link-alt"></i></a>
+                                            <a href="https://myclimate.met.gov.my/fdrsWmsObsMsiaMetPortal" target="_blank" class="sidebar-link"><span class="link-icon fire"><i class="fas fa-fire"></i></span><span class="link-text"><span class="link-name">Fire Danger Rating System (FDRS)</span><span class="link-desc">Sistem penarafan bahaya kebakaran</span></span><i class="fas fa-external-link-alt"></i></a>
+                                            <a href="https://mywater.gov.my/Portal/Modules/Internal/GIS.aspx?mi=22&ug=38&t=Station%20Hydrology%20JPS" target="_blank" class="sidebar-link"><span class="link-icon tide"><i class="fas fa-droplet"></i></span><span class="link-text"><span class="link-name">JPS - Data Hidrologi</span><span class="link-desc">Data kualiti air & hidrologi</span></span><i class="fas fa-external-link-alt"></i></a>
+                                            <a href="https://eqms.doe.gov.my/" target="_blank" class="sidebar-link" rel="noopener noreferrer">
+                                                <span class="link-icon" style="background:rgba(16,185,129,0.15);color:#10b981"><i class="fas fa-leaf"></i></span>
+                                                <span class="link-text"><span class="link-name">MyEQMS - Kualiti Alam Sekitar</span><span class="link-desc">Indeks Kualiti Udara, Sungai & Marin (DOE)</span></span>
+                                                <i class="fas fa-external-link-alt"></i>
+                                            </a>
+                                        </div>
+                                    </div>
+            
+                                    <!-- 3: Bencana & Amaran -->
+                                    <div class="accordion-item">
+                                        <button class="accordion-header" data-target="linkAcc3" aria-expanded="false">
+                                            <span class="accordion-title" data-ms="&lt;i class=&quot;fas fa-triangle-exclamation&quot;&gt;&lt;/i&gt; Bencana & Amaran" data-en="&lt;i class=&quot;fas fa-triangle-exclamation&quot;&gt;&lt;/i&gt; Disaster & Warnings"><i class="fas fa-triangle-exclamation"></i> Bencana & Amaran</span>
+                                            <span class="arrow"><i class="fas fa-chevron-down"></i></span>
+                                        </button>
+                                        <div class="accordion-content" id="linkAcc3">
+                                            <a href="https://www.nadma.gov.my/" target="_blank" class="sidebar-link"><span class="link-icon disaster"><i class="fas fa-house-chimney-crack"></i></span><span class="link-text"><span class="link-name">NADMA - Agensi Pengurusan Bencana</span><span class="link-desc">Info & respons bencana negara</span></span><i class="fas fa-external-link-alt"></i></a>
+                                            <a href="https://publicinfobanjir.water.gov.my/" target="_blank" class="sidebar-link"><span class="link-icon flood"><i class="fas fa-house-flood-water"></i></span><span class="link-text"><span class="link-name">Public Infobanjir</span><span class="link-desc">Peta & status banjir semasa (kebangsaan)</span></span><i class="fas fa-external-link-alt"></i></a>
+                                            <a href="https://infobanjirjpsjohor.water.gov.my/" target="_blank" class="sidebar-link" rel="noopener noreferrer">
+                                                <span class="link-icon flood"><i class="fas fa-water"></i></span>
+                                                <span class="link-text"><span class="link-name">InfoBanjir JPS Johor</span><span class="link-desc">Status hujan & aras air khusus Negeri Johor (SPHTN)</span></span>
+                                                <i class="fas fa-external-link-alt"></i>
+                                            </a>
+                                            <a href="https://mygempa.met.gov.my/docroot/view/index.php" target="_blank" class="sidebar-link"><span class="link-icon quake"><i class="fas fa-earth-asia"></i></span><span class="link-text"><span class="link-name">Info Gempa Bumi</span><span class="link-desc">Aktiviti seismik Malaysia & antarabangsa</span></span><i class="fas fa-external-link-alt"></i></a>
+                                            <a href="https://infobencanajkmv2.jkm.gov.my/landing/index.php?b=0&a=0" target="_blank" class="sidebar-link" rel="noopener noreferrer">
+                                                <span class="link-icon" style="background:rgba(239,68,68,0.15);color:#ef4444"><i class="fas fa-hand-holding-heart"></i></span>
+                                                <span class="link-text"><span class="link-name">InfoBencana JKM</span><span class="link-desc">Maklumat bencana & bantuan mangsa (Jabatan Kebajikan Masyarakat)</span></span>
+                                                <i class="fas fa-external-link-alt"></i>
+                                            </a>
+                                        </div>
+                                    </div>
+            
+                                    <!-- 4: Jalan Raya & Logistik -->
+                                    <div class="accordion-item">
+                                        <button class="accordion-header" data-target="linkAcc4" aria-expanded="false">
+                                            <span class="accordion-title" data-ms="&lt;i class=&quot;fas fa-road&quot;&gt;&lt;/i&gt; Jalan Raya & Logistik" data-en="&lt;i class=&quot;fas fa-road&quot;&gt;&lt;/i&gt; Roads & Logistics"><i class="fas fa-road"></i> Jalan Raya & Logistik</span>
+                                            <span class="arrow"><i class="fas fa-chevron-down"></i></span>
+                                        </button>
+                                        <div class="accordion-content" id="linkAcc4">
+                                            <a href="https://www.llm.gov.my/" target="_blank" class="sidebar-link"><span class="link-icon road"><i class="fas fa-road"></i></span><span class="link-text"><span class="link-name">LLM - Lebuhraya Malaysia</span><span class="link-desc">Status & laporan trafik lebuh raya</span></span><i class="fas fa-external-link-alt"></i></a>
+                                            <a href="https://www.jpj.gov.my/" target="_blank" class="sidebar-link"><span class="link-icon road"><i class="fas fa-car-side"></i></span><span class="link-text"><span class="link-name">JPJ - Jabatan Pengangkutan Jalan</span><span class="link-desc">Maklumat jalan tutup & notis</span></span><i class="fas fa-external-link-alt"></i></a>
+                                            <a href="https://bencana.jkr.gov.my/" target="_blank" class="sidebar-link"><span class="link-icon road"><i class="fas fa-helmet-safety"></i></span><span class="link-text"><span class="link-name">JKR - Jabatan Kerja Raya</span><span class="link-desc">Infrastruktur & jalan persekutuan</span></span><i class="fas fa-external-link-alt"></i></a>
+                                        </div>
+                                    </div>
+            
+                                    <!-- 5: Direktori Agensi -->
+                                    <div class="accordion-item">
+                                        <button class="accordion-header" data-target="linkAcc5" aria-expanded="false">
+                                            <span class="accordion-title" data-ms="&lt;i class=&quot;fas fa-building-columns&quot;&gt;&lt;/i&gt; Direktori Agensi" data-en="&lt;i class=&quot;fas fa-building-columns&quot;&gt;&lt;/i&gt; Agency Directory"><i class="fas fa-building-columns"></i> Direktori Agensi</span>
+                                            <span class="arrow"><i class="fas fa-chevron-down"></i></span>
+                                        </button>
+                                        <div class="accordion-content" id="linkAcc5">
+                                            <a href="https://www.bomba.gov.my/en/" target="_blank" class="sidebar-link"><span class="link-icon emergency"><i class="fas fa-fire-extinguisher"></i></span><span class="link-text"><span class="link-name">JBPM Malaysia</span><span class="link-desc">Jabatan Bomba & Penyelamat</span></span><i class="fas fa-external-link-alt"></i></a>
+                                            <a href="https://www.mmea.gov.my/" target="_blank" class="sidebar-link"><span class="link-icon maritime"><i class="fas fa-ship"></i></span><span class="link-text"><span class="link-name">APMM Maritim Malaysia</span><span class="link-desc">Agensi Penguatkuasaan Maritim</span></span><i class="fas fa-external-link-alt"></i></a>
+                                            <a href="https://www.civildefence.gov.my/" target="_blank" class="sidebar-link"><span class="link-icon civil"><i class="fas fa-shield-halved"></i></span><span class="link-text"><span class="link-name">APM Pertahanan Awam</span><span class="link-desc">Pengurusan Bencana</span></span><i class="fas fa-external-link-alt"></i></a>
+                                            <a href="https://www.rmp.gov.my/" target="_blank" class="sidebar-link"><span class="link-icon emergency"><i class="fas fa-shield-cat"></i></span><span class="link-text"><span class="link-name">PDRM Polis Diraja</span><span class="link-desc">Keselamatan Awam</span></span><i class="fas fa-external-link-alt"></i></a>
+                                            <a href="https://www.moh.gov.my/" target="_blank" class="sidebar-link"><span class="link-icon hospital"><i class="fas fa-hospital-user"></i></span><span class="link-text"><span class="link-name">KKM Kesihatan</span><span class="link-desc">Perkhidmatan Perubatan</span></span><i class="fas fa-external-link-alt"></i></a>
+                                        </div>
+                                    </div>
+                                </div><!-- /links-scroll -->
+                            </aside>
+            
+                        </div><!-- /content-col-right -->
         </div><!-- /content-row -->
 
     </div><!-- /main-wrapper -->
