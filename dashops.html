@@ -6,7 +6,7 @@
       name="viewport"
       content="width=device-width, initial-scale=1.0, maximum-scale=3.0, user-scalable=yes, viewport-fit=cover"
     />
-    <title>🚒 PGO JOHOR DASHBOARD - 24 JAM</title>
+    <title>🚒 PGO JOHOR DASH-OPS - 24 JAM</title>
 
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -1621,13 +1621,6 @@
       .btn-gmaps:hover {
         background: #f0f4fe;
       }
-      .btn-waze {
-        background: #33ccff;
-      }
-      .btn-waze:hover {
-        background: #1abeff;
-      }
-
       /* WEATHER MODAL */
       .weather-modal-overlay {
         display: none;
@@ -2573,7 +2566,7 @@
           <span class="time-text">🕒 <span id="clock"></span></span>
         </div>
       </div>
-      <div class="header-center"><h1>🚒 PGO JOHOR DASHBOARD - 24 JAM</h1></div>
+      <div class="header-center"><h1>🚒 PGO JOHOR DASH-OPS - 24 JAM</h1></div>
       <div class="header-right">
         <button
           class="theme-toggle-btn"
@@ -2951,8 +2944,15 @@
         syifC:
           'https://docs.google.com/spreadsheets/d/e/2PACX-1vRgdRVgrUyuMX5IocMXA6g1yM5e0gU1qg3YpazTpmvFhgkl9KCPX02hn-0epm40SCxeHFQ125xCJN2T/pub?gid=1671240510&single=true&output=csv',
       };
+      // Token percuma: https://aqicn.org/data-platform/token/
+      const WAQI_TOKEN = '';
+      const JOHOR_APIMS_NAMES = [
+        'larkin', 'pasir gudang', 'kota tinggi', 'pengerang',
+        'batu pahat', 'kluang', 'tangkak', 'segamat',
+      ];
+
       const JOHOR_CITIES = [
-        { name: 'JOHOR BAHRU', lat: 1.4655, lng: 103.7578 },
+      { name: 'JOHOR BAHRU', lat: 1.4655, lng: 103.7578 },
         { name: 'BATU PAHAT', lat: 1.8548, lng: 102.9324 },
         { name: 'MUAR', lat: 2.0442, lng: 102.5689 },
         { name: 'KLUANG', lat: 2.0301, lng: 103.3189 },
@@ -4451,6 +4451,77 @@
       }
 
       async function fetchIPUData() {
+        if (!WAQI_TOKEN) return fetchIPUDataModel();
+        try {
+          const bounds =
+            JOHOR_BOUNDS.south + ',' + JOHOR_BOUNDS.west + ',' +
+            JOHOR_BOUNDS.north + ',' + JOHOR_BOUNDS.east;
+          const r = await fetch(
+            'https://api.waqi.info/map/bounds/?latlng=' + bounds + '&token=' + WAQI_TOKEN
+          );
+          const j = await r.json();
+          if (j.status !== 'ok') throw new Error(String(j.data || 'WAQI error'));
+
+          const stations = j.data.filter(function (s) {
+            const n = ((s.station && s.station.name) || '').toLowerCase();
+            return JOHOR_APIMS_NAMES.some(function (k) { return n.includes(k); });
+          });
+          if (!stations.length) throw new Error('Tiada stesen APIMS Johor');
+
+          const details = (
+            await Promise.all(
+              stations.map(async function (s) {
+                try {
+                  const rr = await fetch(
+                    'https://api.waqi.info/feed/@' + s.uid + '/?token=' + WAQI_TOKEN
+                  );
+                  const jj = await rr.json();
+                  if (jj.status !== 'ok') return null;
+                  const aqi = parseInt(jj.data.aqi);
+                  if (isNaN(aqi)) return null;
+                  return { s: s, d: jj.data, aqi: aqi };
+                } catch (e) {
+                  return null;
+                }
+              })
+            )
+          ).filter(Boolean);
+          if (!details.length) throw new Error('Tiada bacaan sah');
+
+          ipuData = JOHOR_CITIES.map(function (c) {
+            let best = null, bestDist = Infinity;
+            details.forEach(function (x) {
+              const dLat = (x.s.lat - c.lat) * 111;
+              const dLng = (x.s.lon - c.lng) * 111 * Math.cos((c.lat * Math.PI) / 180);
+              const dist = Math.sqrt(dLat * dLat + dLng * dLng);
+              if (dist < bestDist) { bestDist = dist; best = x; }
+            });
+            const iaqi = best.d.iaqi || {};
+            const v = function (k) { return iaqi[k] ? iaqi[k].v : null; };
+            return {
+              name: c.name,
+              aqi: best.aqi,
+              pm10: v('pm10'),
+              pm25: v('pm25'),
+              co: v('co'),
+              no2: v('no2'),
+              so2: v('so2'),
+              o3: v('o3'),
+              time: best.d.time && best.d.time.s ? best.d.time.s : '',
+              unit: 'indeks',
+              station:
+                ((best.s.station && best.s.station.name) || '').split(',')[0] +
+                ' (' + Math.round(bestDist) + ' km)',
+            };
+          });
+          updateIPUTicker();
+        } catch (e) {
+          console.error('IPU APIMS error, guna sandaran model:', e.message);
+          return fetchIPUDataModel();
+        }
+      }
+
+      async function fetchIPUDataModel() {
         try {
           const lats = JOHOR_CITIES.map((c) => c.lat).join(',');
           const lngs = JOHOR_CITIES.map((c) => c.lng).join(',');
@@ -4561,8 +4632,11 @@
 
         const level = getIPULevel(city.aqi);
         title.textContent = '🌬️ KUALITI UDARA - ' + city.name;
-        dateEl.textContent = '🕒 Kemaskini: ' +
-          (city.time ? city.time.replace('T', ' ') : '-');
+        dateEl.textContent =
+          '🕒 Kemaskini: ' + (city.time ? city.time.replace('T', ' ') : '-') +
+          (city.station
+            ? ' | 📡 Stesen APIMS: ' + city.station
+            : ' | ⚠️ Anggaran model (bukan stesen JAS)');
 
         content.innerHTML =
           '<div style="text-align:center;padding:20px 10px;background:rgba(0,0,0,0.2);' +
@@ -4575,13 +4649,13 @@
               'Indeks Pencemaran Udara (US AQI / IPU)</div>' +
           '</div>' +
           '<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;">' +
-            renderIPUPollutant('PM2.5', city.pm25, 'µg/m³') +
-            renderIPUPollutant('PM10',  city.pm10, 'µg/m³') +
-            renderIPUPollutant('O₃',    city.o3,   'µg/m³') +
-            renderIPUPollutant('NO₂',   city.no2,  'µg/m³') +
-            renderIPUPollutant('SO₂',   city.so2,  'µg/m³') +
-            renderIPUPollutant('CO',    city.co,   'µg/m³') +
-          '</div>' +
+                        renderIPUPollutant('PM2.5', city.pm25, city.unit || 'µg/m³') +
+            renderIPUPollutant('PM10',  city.pm10, city.unit || 'µg/m³') +
+            renderIPUPollutant('O₃',    city.o3,   city.unit || 'µg/m³') +
+            renderIPUPollutant('NO₂',   city.no2,  city.unit || 'µg/m³') +
+            renderIPUPollutant('SO₂',   city.so2,  city.unit || 'µg/m³') +
+            renderIPUPollutant('CO',    city.co,   city.unit || 'µg/m³') +
+            '</div>' +
           '<div style="margin-top:15px;padding:12px;background:rgba(0,0,0,0.2);' +
               'border-radius:8px;font-size:0.7rem;color:#aaa;line-height:1.7;">' +
             '<strong style="color:#ffaa00;">📖 PANDUAN IPU:</strong><br>' +
@@ -5461,16 +5535,7 @@
                 <circle fill="#FFFFFF" cx="24" cy="20" r="7"/>
               </svg>
             </a>
-            <a href="https://waze.com/ul?ll=${data.lat},${data.long}&navigate=yes" target="_blank" rel="noopener noreferrer" class="nav-btn btn-waze" title="Waze">
-              <svg width="14" height="14" viewBox="0 0 64 64">
-                <path fill="#101318" d="M32 6C17.6 6 6 17.6 6 32c0 6.3 2.3 12.1 6.1 16.6L9 58l9.8-3c4 2.5 8.4 3 13.2 3 14.4 0 26-11.6 26-26S46.4 6 32 6z"/>
-                <path fill="#FFFFFF" d="M32 9c-12.7 0-23 10.3-23 23 0 5.5 2 10.6 5.4 14.5L12 54l7.8-2.4c3.5 2.2 7.7 3.4 12.2 3.4 12.7 0 23-10.3 23-23S44.7 9 32 9z"/>
-                <circle cx="23" cy="28" r="4.5" fill="#101318"/>
-                <circle cx="41" cy="28" r="4.5" fill="#101318"/>
-                <path d="M23 37c4 5 14 5 18 0" fill="none" stroke="#101318" stroke-width="4" stroke-linecap="round"/>
-              </svg>
-            </a>
-          </div>`;
+           </div>`;
         } else if (data.alamat && data.alamat !== '-') {
           const query = encodeURIComponent(data.alamat + ', Johor');
           html += `<div class="nav-btn-group">
@@ -5480,16 +5545,7 @@
                 <circle fill="#FFFFFF" cx="24" cy="20" r="7"/>
               </svg>
             </a>
-            <a href="https://waze.com/ul?q=${query}&navigate=yes" target="_blank" rel="noopener noreferrer" class="nav-btn btn-waze" title="Waze (Carian)">
-              <svg width="14" height="14" viewBox="0 0 64 64">
-                <path fill="#101318" d="M32 6C17.6 6 6 17.6 6 32c0 6.3 2.3 12.1 6.1 16.6L9 58l9.8-3c4 2.5 8.4 3 13.2 3 14.4 0 26-11.6 26-26S46.4 6 32 6z"/>
-                <path fill="#FFFFFF" d="M32 9c-12.7 0-23 10.3-23 23 0 5.5 2 10.6 5.4 14.5L12 54l7.8-2.4c3.5 2.2 7.7 3.4 12.2 3.4 12.7 0 23-10.3 23-23S44.7 9 32 9z"/>
-                <circle cx="23" cy="28" r="4.5" fill="#101318"/>
-                <circle cx="41" cy="28" r="4.5" fill="#101318"/>
-                <path d="M23 37c4 5 14 5 18 0" fill="none" stroke="#101318" stroke-width="4" stroke-linecap="round"/>
-              </svg>
-            </a>
-          </div>`;
+           </div>`;
         }
 
         if (category === 'kebakaran_terbuka') {
