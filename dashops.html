@@ -2437,74 +2437,96 @@
         };
         return m[k] || 'cat-khidmat';
       }
+      
+// FUNGSI EMOJI DASHBOARD //
 
-      function getCaseEmoji(j) {
-        const l = (j || '').toLowerCase();
-        if (
-          l.includes('kebakaran bangunan') || l.includes('kebakaran rumah') ||
-          l.includes('asrama pekerja') || l.includes('api') ||
-          l.includes('terbakar') || l.includes('perkakas') ||
-          l.includes('kebakaran kereta') || l.includes('kebakaran suis box') ||
-          l.includes('kebakaran fius box') || l.includes('letupan')
-        ) return '🔥';
-        if (
-          l.includes('kebakaran terbuka') || l.includes('lalang') ||
-          l.includes('belukar') || l.includes('Kebun') || l.includes('semak')
-        ) return '🍂';
-        if (l.includes('kebakaran sampah') || l.includes('longgokan sampah')) return '🗑️';
-        if (l.includes('kebakaran elektrik') || l.includes('tiang') ||
-            l.includes('meter') || l.includes('kabel')) return '⚡️';
-        if (l.includes('kilang') || l.includes('petronas')) return '🏭';
-        if (l.includes('kebun') || l.includes('tanah gambut')) return '🔥';
-        if (l.includes('lori') || l.includes('treller')) return '🚛';
-        if (l.includes('van')) return '🚐';
-        if (l.includes('bas')) return '🚌';
-        if (l.includes('fius') || l.includes('suisbox')) return '⚡';
-        if (l.includes('lemas') || l.includes('pantai')) return '🏊🏼';
-        if (
-          l.includes('warung') || l.includes('gerai') || l.includes('kedai') ||
-          l.includes('restoran') || l.includes('kontena') || l.includes('stor') ||
-          l.includes('setor') || l.includes('kafe')
-        ) return '🏪';
-        if (
-          l.includes('kemalangan') || l.includes('KJR') || l.includes('langgar') ||
-          l.includes('terbabas') || l.includes('terbalik') || l.includes('rempuh')
-        ) return '🚗';
-        if (l.includes('bantuan emrs') || l.includes('bantuan kkm') ||
-            l.includes('menyelamat mangsa') || l.includes('ambulans')) return '🚑';
-        if (l.includes('bantuan polis') || l.includes('angkat mayat')) return '🛌';
-        if (l.includes('tanah runtuh') || l.includes('ribut') || l.includes('bencana')) return '🌊';
-        if (l.includes('banjir') || l.includes('air naik') || l.includes('air pasang')) return '🌊';
-        if (l.includes('tumpahan') || l.includes('minyak') ||
-            l.includes('bahan berbahaya') || l.includes('kebocoran') || l.includes('gas')) return '🛢️';
-        if (l.includes('pokok') || l.includes('tumbang')) return '🪵';
-        if (l.includes('monyet') || l.includes('kera')) return '🐒';
-        if (l.includes('ular') || l.includes('sawa') || l.includes('tedung')) return '🐍';
-        if (l.includes('lebah') || l.includes('serangga') || l.includes('tebuan')) return '🐝';
-        if (l.includes('musang')) return '🦊';
-        if (l.includes('biawak')) return '🦎';
-        if (l.includes('kucing')) return '🐱';
-        if (l.includes('anjing')) return '🐶';
-        if (l.includes('terperangkap') || l.includes('terkunci') || l.includes('buka pintu')) return '🚪';
-        if (l.includes('standby') || l.includes('stand by')) return '🎯';
-        if (l.includes('helikopter')) return '🚁';
-        if (l.includes('bola sepak') || l.includes('sukan')) return '⚽';
-        if (l.includes('rondaan')) return '🚒';
-        if (l.includes('latihan') || l.includes('eksesais') || l.includes('demonstrasi')) return '📋';
-        if (l.includes('kebakaran lori')) return '🚛';
-        if (l.includes('teknikal')) return '🔧';
-        if (l.includes('memotong cincin') || l.includes('cincin')) return '💍';
-        if (
-          l.includes('surau') || l.includes('masjid') || l.includes('tokong') ||
-          l.includes('gereja') || l.includes('kuil')
-        ) return '🕌';
-        if (
-          l.includes('sekolah') || l.includes('hospital') ||
-          l.includes('pejabat') || l.includes('premis')
-        ) return '🏣';
-        return '📍';
-      }
+function getCaseEmoji(j) {
+  const s = String(j || '').toLowerCase();
 
+  if (
+    s.includes('kebakaran bangunan') || s.includes('kebakaran rumah') ||
+    s.includes('asrama pekerja') || s.includes('api') ||
+    s.includes('terbakar') || s.includes('perkakas') ||
+    s.includes('kebakaran kereta') || s.includes('kebakaran suis box') ||
+    s.includes('kebakaran fius box') || s.includes('letupan')
+  ) return '🔥';
+
+  if (
+    s.includes('kebakaran terbuka') || s.includes('lalang') ||
+    s.includes('belukar') || s.includes('kebun') || s.includes('semak')
+  ) return '🍂';
+
+  if (s.includes('kebakaran sampah') || s.includes('longgokan sampah')) return '🗑️';
+
+  if (s.includes('Longgokan Tayar')) return '🛞';
+
+  if (
+    s.includes('kebakaran elektrik') || s.includes('tiang') ||
+    s.includes('meter') || s.includes('kabel')
+  ) return '⚡️';
+
+  if (s.includes('kilang') || s.includes('petronas')) return '🏭';
+  if (s.includes('tanah gambut')) return '🔥';
+  if (s.includes('lori') || s.includes('treller')) return '🚛';
+  if (s.includes('van')) return '🚐';
+  if (s.includes('bas')) return '🚌';
+  if (s.includes('fius') || s.includes('suisbox')) return '⚡';
+  if (s.includes('lemas') || s.includes('pantai')) return '🏊🏼';
+
+  if (
+    s.includes('warung') || s.includes('gerai') || s.includes('kedai') ||
+    s.includes('restoran') || s.includes('kontena') || s.includes('stor') ||
+    s.includes('setor') || s.includes('kafe')
+  ) return '🏪';
+
+  if (
+    s.includes('kemalangan') || s.includes('kjr') || s.includes('langgar') ||
+    s.includes('terbabas') || s.includes('terbalik') || s.includes('rempuh')
+  ) return '🚗';
+
+  if (
+    s.includes('bantuan emrs') || s.includes('bantuan kkm') ||
+    s.includes('menyelamat mangsa') || s.includes('ambulans')
+  ) return '🚑';
+
+  if (s.includes('bantuan polis') || s.includes('angkat mayat')) return '🛌';
+  if (s.includes('tanah runtuh') || s.includes('ribut') || s.includes('bencana')) return '🌊';
+  if (s.includes('banjir') || s.includes('air naik') || s.includes('air pasang')) return '🌊';
+
+  if (
+    s.includes('tumpahan') || s.includes('minyak') ||
+    s.includes('bahan berbahaya') || s.includes('kebocoran') || s.includes('gas')
+  ) return '🛢️';
+
+  if (s.includes('pokok') || s.includes('tumbang')) return '🪵';
+  if (s.includes('monyet') || s.includes('kera')) return '🐒';
+  if (s.includes('ular') || s.includes('sawa') || s.includes('tedung')) return '🐍';
+  if (s.includes('lebah') || s.includes('serangga') || s.includes('tebuan')) return '🐝';
+  if (s.includes('musang')) return '🦊';
+  if (s.includes('biawak')) return '🦎';
+  if (s.includes('kucing')) return '🐱';
+  if (s.includes('anjing')) return '🐶';
+  if (s.includes('terperangkap') || s.includes('terkunci') || s.includes('buka pintu')) return '🚪';
+  if (s.includes('standby') || s.includes('stand by')) return '🎯';
+  if (s.includes('helikopter')) return '🚁';
+  if (s.includes('bola sepak') || s.includes('sukan')) return '⚽';
+  if (s.includes('rondaan')) return '🚒';
+  if (s.includes('latihan') || s.includes('eksesais') || s.includes('demonstrasi')) return '📋';
+  if (s.includes('kebakaran lori')) return '🚛';
+  if (s.includes('teknikal')) return '🔧';
+  if (s.includes('memotong cincin') || s.includes('cincin')) return '💍';
+
+  if (
+    s.includes('surau') || s.includes('masjid') || s.includes('tokong')) return '🕌';
+
+  if (s.includes('gereja') || s.includes('kuil')) return '⛪️';
+
+  if (s.includes('HAZMAT')) return '👨‍🚒';
+
+  if (s.includes('sekolah') || s.includes('hospital') ||s.includes('pejabat') || s.includes('premis')) return '🏣';
+
+  return '📍';
+}
       function onSearchAllInput(value) {
         searchAllQuery = (value || '').trim().toLowerCase();
         renderAllCases();
