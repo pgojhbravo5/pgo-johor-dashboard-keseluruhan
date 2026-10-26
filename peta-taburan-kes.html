@@ -1,0 +1,679 @@
+<!DOCTYPE html>
+<html lang="ms">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="theme-color" content="#002b5c" />
+<title>Peta Kes JBPM Johor</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=IBM+Plex+Sans:wght@500;600;700&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css" />
+<style>
+:root{
+  --fire-red:#c8102e;--hazard-gold:#b8935a;
+  --hud-bg:#1a2438;--hud-card-bg:#22304a;--hud-border:#2d3f5c;
+  --glass-highlight:rgba(59,110,168,.16);--navy:#3b6ea8;--border-strong:#3d5070;
+  --radius:6px;--radius-sm:4px;
+  --shadow-sm:0 1px 2px rgba(0,0,0,.4);--shadow:0 2px 8px rgba(0,0,0,.5);
+  --font-main:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+  --font-head:'IBM Plex Sans','Inter',sans-serif;
+  --text-primary:#e8eef7;--text-secondary:#94a3b8;--bg-body:#0f172a;
+}
+body.mode-siang{
+  --hud-bg:#ffffff;--hud-card-bg:#f0f2f5;--hud-border:#e2e8f0;
+  --glass-highlight:#e8eef5;--navy:#002b5c;--border-strong:#cbd5e1;
+  --shadow-sm:0 1px 2px rgba(0,43,92,.06);--shadow:0 2px 8px rgba(0,43,92,.08);
+  --text-primary:#1a202c;--text-secondary:#64748b;--bg-body:#f5f7fa;
+}
+*{box-sizing:border-box}
+html,body{height:100%;margin:0}
+@supports (height:100dvh){ body{height:100dvh} }
+body{display:flex;flex-direction:column;font:14px/1.45 var(--font-main);color:var(--text-primary);background:var(--bg-body);-webkit-font-smoothing:antialiased}
+
+/* Header */
+.header{position:relative;flex:none;display:flex;align-items:center;justify-content:space-between;gap:1rem;padding:.7rem 1rem .6rem;background:var(--hud-bg);border-bottom:1px solid var(--hud-border);box-shadow:var(--shadow-sm)}
+.header::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--fire-red) 0 33.33%,var(--hazard-gold) 33.33% 66.66%,var(--navy) 66.66% 100%)}
+.brand{display:flex;align-items:center;gap:.75rem;min-width:0}
+.brand img{height:2.4rem;width:auto;padding:.25rem;border:1px solid var(--hud-border);border-radius:var(--radius)}
+.brand h1{margin:0;font:700 1.1rem/1.2 var(--font-head);color:var(--navy);letter-spacing:-.2px;text-transform:uppercase}
+.brand h1 span{color:var(--hazard-gold)}
+.brand .sub{font-size:.62rem;font-weight:600;letter-spacing:.15rem;text-transform:uppercase;color:var(--text-secondary)}
+.ctrl{display:flex;gap:.5rem}
+.icon-btn{width:2.25rem;height:2.25rem;display:flex;align-items:center;justify-content:center;border-radius:var(--radius-sm);background:var(--hud-bg);border:1px solid var(--hud-border);color:var(--text-secondary);cursor:pointer;font-size:1rem;text-decoration:none;transition:.2s}
+.icon-btn:hover{background:var(--hud-card-bg);color:var(--navy);border-color:var(--border-strong)}
+.icon-btn.active{background:var(--hud-card-bg);color:var(--navy);border-color:var(--navy)}
+#sideBtn{display:none}
+
+/* Layout */
+#app{flex:1;min-height:0;display:flex}
+#side{width:350px;flex:none;overflow-y:auto;padding:12px;display:flex;flex-direction:column;gap:10px;background:var(--bg-body);border-right:1px solid var(--hud-border);overscroll-behavior:contain}
+#map{flex:1;min-width:0;background:#0b1220}
+.title{margin:0;font:700 .8rem var(--font-head);letter-spacing:.6px;text-transform:uppercase;color:var(--navy);padding-bottom:.5rem;border-bottom:1px solid var(--hud-border)}
+.title i{margin-right:.4rem}
+.hint{margin:0;font-size:.7rem;color:var(--text-secondary)}
+#msg{display:none;font-size:.75rem;color:#92400e;background:#fffbeb;border:1px solid #fde68a;border-radius:var(--radius);padding:8px}
+#msg.show{display:block}
+body:not(.mode-siang) #msg{background:rgba(217,169,105,.1);border-color:rgba(217,169,105,.35);color:#d9a969}
+
+/* Stat */
+.stats{display:grid;grid-template-columns:1fr 1fr;gap:6px}
+.stat{background:var(--hud-card-bg);border:1px solid var(--hud-border);border-left:3px solid var(--navy);border-radius:var(--radius);padding:6px 9px;box-shadow:var(--shadow-sm)}
+.stat b{display:block;font:700 1.25rem var(--font-head);color:var(--text-primary);line-height:1.2}
+.stat span{font-size:.62rem;font-weight:600;text-transform:uppercase;letter-spacing:.05rem;color:var(--text-secondary)}
+.stat a{color:var(--navy);font-weight:700}
+
+/* Buttons */
+button{font:inherit}
+.btn{font-size:.72rem;font-weight:600;padding:.4rem .7rem;border:1px solid var(--hud-border);background:var(--hud-bg);color:var(--text-primary);border-radius:var(--radius-sm);cursor:pointer;transition:.2s}
+.btn:hover{background:var(--hud-card-bg);border-color:var(--border-strong)}
+.btn.primary{background:var(--navy);color:#fff;border-color:var(--navy)}
+.btn.primary:hover{background:var(--fire-red);border-color:var(--fire-red)}
+.btn.off{opacity:.5;text-decoration:line-through}
+.row{display:flex;gap:6px;flex-wrap:wrap}
+
+/* Filter group */
+.grp{background:var(--hud-bg);border:1px solid var(--hud-border);border-radius:var(--radius);padding:9px;box-shadow:var(--shadow-sm)}
+.grp h2{margin:0 0 7px;display:flex;justify-content:space-between;align-items:center;font:700 .72rem var(--font-head);letter-spacing:.6px;text-transform:uppercase;color:var(--navy)}
+.grp h2 i{margin-right:.35rem;color:var(--hazard-gold)}
+.grp h2 small{font:500 .65rem var(--font-main);text-transform:none;letter-spacing:0;color:var(--text-secondary)}
+.grp.new{border-left:3px solid var(--fire-red)}
+.grp input[type=search],.fb input{width:100%;padding:.45rem .6rem;margin-bottom:6px;border:1px solid var(--border-strong);border-radius:var(--radius-sm);background:var(--hud-bg);color:var(--text-primary);font-size:.78rem;outline:none}
+.grp input[type=search]:focus{border-color:var(--hazard-gold)}
+.grp .btns{display:flex;gap:6px;margin-bottom:6px}
+.grp .btns button{font-size:.68rem;padding:.25rem .55rem;border:1px solid var(--hud-border);background:var(--hud-card-bg);color:var(--text-primary);border-radius:var(--radius-sm);cursor:pointer}
+.grp .btns button:hover{border-color:var(--border-strong);color:var(--navy)}
+.list{max-height:200px;overflow-y:auto;scrollbar-width:thin}
+.list label{display:flex;align-items:center;gap:7px;padding:4px 3px;border-radius:var(--radius-sm);cursor:pointer;font-size:.76rem}
+.list label:hover{background:var(--glass-highlight)}
+.list input{accent-color:var(--navy);flex:none}
+.list label>span:not(.n):not(.dot){min-width:0;overflow-wrap:anywhere}
+.list .n{margin-left:auto;flex:none;font-size:.65rem;font-weight:700;color:var(--text-secondary);background:var(--hud-card-bg);border:1px solid var(--hud-border);border-radius:10px;padding:0 7px}
+.dot{width:10px;height:10px;border-radius:50%;flex:none}
+.fb{font-size:.72rem;color:var(--text-secondary)}
+
+/* Popup & Leaflet */
+.leaflet-container{font-family:var(--font-main)!important}
+.leaflet-popup-content-wrapper,.leaflet-popup-tip{background:var(--hud-bg)!important;color:var(--text-primary)!important;border-radius:var(--radius)!important;box-shadow:var(--shadow)!important}
+.pop{max-height:300px;overflow-y:auto;font-size:12px;min-width:230px}
+.pop h3{margin:0 0 5px;padding-bottom:5px;border-bottom:1px solid var(--hud-border);font:700 .85rem var(--font-head);color:var(--navy)}
+.pop table{border-collapse:collapse;width:100%}
+.pop td{padding:2px 4px;vertical-align:top;border-bottom:1px solid var(--hud-border)}
+.pop td:first-child{color:var(--text-secondary);white-space:nowrap}
+.bicon{background:var(--navy);color:#fff;border:2px solid #fff;border-radius:var(--radius);text-align:center;font-size:13px;line-height:22px;box-shadow:0 1px 4px #0006}
+.leaflet-control-layers{background:var(--hud-bg)!important;color:var(--text-primary)!important;border-radius:var(--radius)!important}
+
+/* Dialog */
+/* Panel statistik atas peta */
+.kes-box{background:var(--hud-bg);color:var(--text-primary);border:1px solid var(--hud-border);border-radius:var(--radius);box-shadow:var(--shadow);padding:8px 10px;min-width:150px;font-size:.78rem;line-height:1.65}
+.kes-h{display:flex;justify-content:space-between;align-items:center;gap:10px;font:700 .75rem var(--font-head);text-transform:uppercase;color:var(--navy)}
+.kes-h i.t{margin-right:.35rem}
+.kes-tg{width:1.9rem;height:1.9rem;display:flex;align-items:center;justify-content:center;border:1px solid var(--hud-border);border-radius:var(--radius-sm);background:var(--hud-card-bg);color:var(--text-secondary);cursor:pointer}
+.kes-tg:hover{color:var(--navy);border-color:var(--border-strong)}
+.kes-b{margin-top:6px}
+.kes-box.min .kes-b{display:none}
+.kes-tot{font-weight:600;margin-bottom:2px}
+.kes-r{display:flex;align-items:center;gap:6px}
+.kes-r i{width:1rem;text-align:center}
+.kes-r b{font-weight:700}
+@media (max-width:800px){
+  .kes-box{min-width:130px;font-size:.7rem;padding:6px 8px}
+}
+
+/* Dialog */
+dialog{max-width:640px;width:92%;padding:14px;border:1px solid var(--hud-border);border-radius:var(--radius);background:var(--hud-bg);color:var(--text-primary);box-shadow:var(--shadow)}
+dialog::backdrop{background:rgba(15,23,42,.55)}
+dialog table{width:100%;border-collapse:collapse;font-size:.75rem}
+dialog th,dialog td{border-bottom:1px solid var(--hud-border);padding:4px 6px;text-align:left}
+dialog th{color:var(--navy);font-family:var(--font-head)}
+.dh{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;font:700 .85rem var(--font-head);color:var(--navy);text-transform:uppercase}
+
+/* Footer */
+.footer{position:relative;flex:none;display:flex;justify-content:space-between;gap:.5rem;flex-wrap:wrap;padding:.5rem 1rem;background:var(--hud-bg);border-top:3px solid var(--navy);font-size:.68rem;color:var(--text-secondary)}
+.footer::before{content:'';position:absolute;top:-3px;left:50%;transform:translateX(-50%);width:80px;height:3px;background:var(--fire-red)}
+
+/* ===== Susun atur mudah alih ===== */
+@media (max-width:800px){
+  .header{padding:.5rem .7rem .45rem}
+  .brand{gap:.55rem}
+  .brand img{height:2rem;padding:.15rem}
+  .brand h1{font-size:.9rem}
+  .brand .sub{display:none}
+  .icon-btn{width:2.15rem;height:2.15rem;font-size:.95rem}
+  #sideBtn{display:flex}
+
+  #app{flex-direction:column}
+
+  #side{
+    width:100%;height:auto;
+    max-height:44vh;
+    max-height:44dvh;
+    flex:0 1 auto;
+    padding:10px;gap:8px;
+    border-right:0;border-bottom:1px solid var(--hud-border);
+    overscroll-behavior:contain;
+  }
+  body.hide-side #side{display:none}
+
+  #map{flex:1 1 auto;min-height:200px;height:auto}
+
+  .title{font-size:.72rem;padding-bottom:.4rem}
+  .hint{font-size:.66rem}
+  #msg{font-size:.7rem;padding:6px 8px}
+
+  .stats{grid-template-columns:1fr 1fr;gap:5px}
+  .stat{padding:5px 8px}
+  .stat b{font-size:1.05rem}
+  .stat span{font-size:.56rem;letter-spacing:.03rem}
+
+  .row{gap:5px}
+  .row .btn{flex:1 1 auto;text-align:center;padding:.5rem .6rem}
+
+  .grp{padding:8px}
+  .grp h2{font-size:.68rem;margin-bottom:6px}
+  .grp h2 small{font-size:.6rem}
+  .grp .btns{gap:5px;margin-bottom:5px}
+  .grp .btns button{padding:.35rem .6rem;font-size:.68rem}
+  .grp input[type=search],.fb input{font-size:16px;padding:.45rem .55rem;margin-bottom:5px}
+  .list{max-height:145px}
+  .list label{padding:6px 3px;font-size:.78rem}
+  .list input{width:18px;height:18px}
+  .list .n{font-size:.62rem}
+
+  .footer{font-size:.6rem;padding:.4rem .7rem;justify-content:center;text-align:center;gap:.2rem}
+  dialog{width:96%;padding:10px}
+}
+
+@media (max-width:420px){
+  .brand h1{font-size:.8rem}
+  .icon-btn{width:2rem;height:2rem;font-size:.9rem}
+  .stat b{font-size:1rem}
+}
+</style>
+</head>
+<body class="mode-siang">
+
+<header class="header">
+  <div class="brand">
+    <img src="https://i.ibb.co/fGtPXjpc/500px-Logo-of-the-Malaysian-Fire-and-Rescue-Department-svg.webp" alt="Logo JBPM" />
+    <div>
+      <h1>Peta Kes <span>JBPM Johor</span></h1>
+      <div class="sub">Titik Lat Long Taburan Kes</div>
+    </div>
+  </div>
+  <div class="ctrl">
+    <button class="icon-btn" id="sideBtn" aria-label="Tunjuk atau sembunyi panel tapisan" aria-pressed="false"><i class="fas fa-filter"></i></button>
+    <button class="icon-btn" id="modeBtn" aria-label="Tukar mod siang malam"><i class="fas fa-sun"></i></button>
+    <button class="icon-btn" id="refreshBtn" aria-label="Muat semula"><i class="fas fa-sync-alt"></i></button>
+  </div>
+</header>
+
+<div id="app">
+  <aside id="side">
+    <h2 class="title"><i class="fas fa-filter"></i>Tapisan Kes</h2>
+    <p class="hint">Tick daerah / zon / balai / kategori / jenis kes untuk memaparkan kes di peta.</p>
+    <div id="msg"></div>
+    <div class="stats">
+      <div class="stat"><b id="sAll">–</b><span>Kes dimuat</span></div>
+      <div class="stat"><b id="sSel">0</b><span>Kes terpilih</span></div>
+      <div class="stat"><b id="sMap">0</b><span>Dipaparkan di peta</span></div>
+      <div class="stat"><b id="sBad">0</b><span>Tiada koordinat sah <a href="#" id="badLink">(senarai)</a></span></div>
+    </div>
+    <div class="row">
+      <button class="btn primary" id="reset"><i class="fas fa-rotate-left"></i> Kosongkan tapisan</button>
+      <button class="btn" id="tgJag"><i class="fas fa-draw-polygon"></i> Kawasan jagaan</button>
+    </div>
+    <div id="groups" style="display:flex;flex-direction:column;gap:10px"></div>
+    <p class="hint">Logik tapisan: pilihan dalam satu kumpulan = ATAU; antara kumpulan = DAN. Sempadan zon dipaparkan bila zon ditick; ikon balai &amp; kawasan jagaan bila balai ditick.</p>
+    <p class="fb" id="fb" style="display:none">Gagal muat CSV dari Google Sheets. Pilih fail CSV:
+      <input type="file" id="file" accept=".csv" /></p>
+  </aside>
+  <div id="map"></div>
+</div>
+
+<footer class="footer">
+  <span><i class="fas fa-clock"></i> Kemaskini: <span id="upd">--</span></span>
+  <span>©2026 PGO JOHOR | PB Mohamad Aidil | Hak Cipta Terpelihara</span>
+</footer>
+
+<dialog id="dlg">
+  <div class="dh"><span>Kes tanpa koordinat sah</span><button class="btn" id="dlgX">Tutup</button></div>
+  <div id="dlgBody" style="max-height:60vh;overflow:auto"></div>
+</dialog>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
+<script>
+const CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vSJW-jSCCmeTK8V4j5SqWl9KZ7xOFjAwUmPV0fyWFsvOn-sXpkctFzO0TtfF8urbWV4ibLBUtBZg4pS/pub?gid=0&single=true&output=csv';
+
+/* ===== KML dimuat secara async dari fail poligon-kawasan-jagaan.kml ===== */
+let KML = null;
+const KML_URL = 'poligon-kawasan-jagaan.kml';
+/* ======================================================================= */
+
+const ZCOL = { 'ZON 1': '#2563eb', 'ZON 2': '#16a34a', 'ZON 3': '#d97706', 'ZON 4': '#dc2626' };
+const $ = (s) => document.querySelector(s);
+const norm = (s) => String(s == null ? '' : s).replace(/\s+/g, ' ').trim();
+const up = (s) => norm(s).toUpperCase();
+const esc = (s) => String(s == null ? '' : s).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+const HAS_KML = () => typeof KML !== 'undefined' && KML;
+
+/* Normalisasi nama balai & zon supaya KML <-> CSV sepadan */
+const ALIAS = { TIMAHSARI: 'PENGGARAM', MOHDKHALID: 'BATUPAHAT', TENGGARA: 'BANDARTENGGARA' };
+const bkey = (s) => {
+  const k = up(s)
+    .replace(/KAWASAN\s+JAGAAN/g, '')
+    .replace(/BALAI\s+BOMBA\s+(DAN\s+)?PENYELAMAT/g, '')
+    .replace(/\b(BBP|BBPM|JALAN|JLN)\b/g, '')
+    .replace(/[^A-Z0-9]/g, '');
+  return ALIAS[k] || k;
+};
+const zkey = (s) => { const m = String(s || '').match(/\d/); return m ? 'ZON ' + m[0] : up(s); };
+
+function checkMatch() { // bantuan debug (lihat Console)
+  if (!HAS_KML() || !rows.length) return;
+  const jk = new Set(KML.jag.map((j) => j.key));
+  const miss = [...OPT.b.keys()].filter((b) => !jk.has(bkey(b)));
+  if (miss.length) console.warn('[KML] Balai dalam CSV tiada poligon:', miss);
+}
+
+/* ===== Tema siang / malam (selari fail no. 2) ===== */
+(function () {
+  if (localStorage.getItem('pgoTheme') === 'malam') document.body.classList.remove('mode-siang');
+  const ic = () => ($('#modeBtn i').className = document.body.classList.contains('mode-siang') ? 'fas fa-sun' : 'fas fa-moon');
+  ic();
+  $('#modeBtn').onclick = () => {
+    document.body.classList.toggle('mode-siang');
+    localStorage.setItem('pgoTheme', document.body.classList.contains('mode-siang') ? 'siang' : 'malam');
+    ic();
+  };
+  $('#refreshBtn').onclick = () => location.reload();
+})();
+
+/* ===== Peta ===== */
+const osm = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 19, attribution: '© OpenStreetMap' });
+const sat = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', { maxZoom: 19, attribution: '© Esri' });
+const map = L.map('map', { preferCanvas: true, layers: [osm] }).setView([2.0, 103.3], 8);
+L.control.layers({ 'Peta jalan': osm, Satelit: sat }).addTo(map);
+const gZon = L.layerGroup().addTo(map), gJag = L.layerGroup().addTo(map),
+      gBal = L.layerGroup().addTo(map), gKes = L.layerGroup().addTo(map);
+
+/* ===== Penyesuaian peta untuk mudah alih ===== */
+(function () {
+  const mapEl = document.getElementById('map');
+  if (window.ResizeObserver) {
+    new ResizeObserver(() => map.invalidateSize()).observe(mapEl);
+  } else {
+    window.addEventListener('resize', () => setTimeout(() => map.invalidateSize(), 200));
+  }
+  const sideBtn = document.getElementById('sideBtn');
+  sideBtn.addEventListener('click', () => {
+    const hidden = document.body.classList.toggle('hide-side');
+    sideBtn.classList.toggle('active', hidden);
+    sideBtn.setAttribute('aria-pressed', hidden ? 'true' : 'false');
+    setTimeout(() => map.invalidateSize(), 180);
+  });
+})();
+
+/* ===== Kumpulan tapisan (5) ===== */
+const GROUPS = [
+  { k: 'd', t: 'Daerah', ph: 'Cari daerah...', ic: 'fa-map' },
+  { k: 'z', t: 'Zon', ph: '', ic: 'fa-layer-group' },
+  { k: 'b', t: 'Balai', ph: 'Cari balai...', ic: 'fa-house-fire' },
+  { k: 'k', t: 'Kategori Kes', ph: 'Cari kategori...', ic: 'fa-tags', isNew: true, byCount: true },
+  { k: 's1', t: 'Sub Kategori 1', ph: 'Cari sub kategori 1...', ic: 'fa-sitemap', isNew: true, byCount: true },
+  { k: 's2', t: 'Sub Kategori 2', ph: 'Cari sub kategori 2...', ic: 'fa-code-branch', isNew: true, byCount: true },
+  { k: 'j', t: 'Jenis Kes', ph: 'Cari jenis kes...', ic: 'fa-list-check', isNew: true, byCount: true }
+];
+const S = {}, OPT = {};
+GROUPS.forEach((g) => { S[g.k] = new Set(); OPT[g.k] = new Map(); });
+
+GROUPS.forEach((g) => {
+  const el = document.createElement('div');
+  el.className = 'grp' + (g.isNew ? ' new' : '');
+  el.id = 'g-' + g.k;
+  el.innerHTML =
+    '<h2><span><i class="fas ' + g.ic + '"></i>' + g.t + '</span><small></small></h2>' +
+    (g.ph ? '<input type="search" placeholder="' + g.ph + '">' : '') +
+    '<div class="btns"><button data-a="all">Pilih semua</button><button data-a="none">Kosongkan</button></div>' +
+    '<div class="list"></div>';
+  $('#groups').appendChild(el);
+});
+
+let rows = [], bad = [], C = {}, bm = {};
+
+function num(v) {
+  const n = parseFloat(String(v == null ? '' : v).replace(/,/g, ' ').trim().split(/\s+/)[0]);
+  return isNaN(n) ? null : n;
+}
+const okLat = (v) => v >= 1.1 && v <= 2.9, okLng = (v) => v >= 102.3 && v <= 104.6;
+function coords(r) {
+  let a = num(r[C.lat]), b = num(r[C.lng]);
+  if (a == null || b == null) return null;
+  if (!okLat(a) && okLat(b) && okLng(a)) { const t = a; a = b; b = t; }
+  return okLat(a) && okLng(b) ? [a, b] : null;
+}
+
+function parse(text) {
+  const res = Papa.parse(text, { header: true, skipEmptyLines: true, transformHeader: (h) => up(h) });
+  const keys = res.meta.fields || [];
+  const f = (re) => keys.find((k) => re.test(k));
+  C = {
+    bil: f(/^BIL$/), tarikh: f(/^TARIKH KEJADIAN/), balai: f(/^BALAI$/), zon: f(/^ZON$/),
+    daerah: f(/^DAERAH$/), lat: f(/^LAT$/), lng: f(/^LONG$/), alamat: f(/^ALAMAT TEMPAT KEJADIAN/),
+    kat: f(/^KATEGORI PANGGILAN OPERASI/), sub1: f(/^SUB KATEGORI 1/), sub2: f(/^SUB KATEGORI 2/),
+    jenis: f(/^JENIS PANGGILAN OPERASI/), jarak: f(/^JARAK BALAI/), terima: f(/^MASA TERIMA PANGGILAN/),
+    tiba: f(/^MASA JENTERA TIBA/), tp: f(/^TEMPOH SEBENAR JENTERA TIBA/), kpi: f(/^STATUS KPI RT 10 MINIT/),
+    card: f(/^CALL CARD/), mangsa: f(/^MELIBATKAN MANGSA/), jam: f(/^JUMLAH JAM OPERASI/), peny: f(/^NAMA PENYELIA/)
+  };
+  const miss = ['balai', 'zon', 'daerah', 'lat', 'lng'].filter((k) => !C[k]);
+  if (miss.length) { showMsg('Lajur tidak dijumpai dalam CSV: ' + miss.join(', ').toUpperCase()); return; }
+  const warn = ['kat', 'sub1', 'sub2', 'jenis'].filter((k) => !C[k]);
+  rows = []; bad = [];
+  res.data.forEach((r) => {
+    r._b = up(r[C.balai]); r._z = zkey(r[C.zon]); r._d = up(r[C.daerah]);
+    
+    r._k = (C.kat ? up(r[C.kat]) : '') || '(TIADA)';
+    r._s1 = (C.sub1 ? up(r[C.sub1]) : '') || '(TIADA)';
+    r._s2 = (C.sub2 ? up(r[C.sub2]) : '') || '(TIADA)';
+    r._j = (C.jenis ? up(r[C.jenis]) : '') || '(TIADA)';
+    if (!r._b) return;
+    r._c = coords(r);
+    rows.push(r);
+    if (!r._c) bad.push(r);
+  });
+  GROUPS.forEach((g) => (OPT[g.k] = new Map()));
+  const t = {};
+  rows.forEach((r) => {
+    GROUPS.forEach((g) => { const v = r['_' + g.k]; if (v) OPT[g.k].set(v, (OPT[g.k].get(v) || 0) + 1); });
+    t[r._b] = t[r._b] || { d: {}, z: {} };
+    t[r._b].d[r._d] = (t[r._b].d[r._d] || 0) + 1;
+    t[r._b].z[r._z] = (t[r._b].z[r._z] || 0) + 1;
+  });
+  const top = (o) => Object.keys(o).sort((a, b) => o[b] - o[a])[0];
+  bm = {};
+  Object.keys(t).forEach((k) => (bm[bkey(k)] = { d: top(t[k].d), z: top(t[k].z) }));
+  
+  $('#sAll').textContent = rows.length.toLocaleString();
+  $('#sBad').textContent = bad.length;
+  $('#upd').textContent = new Date().toLocaleString('ms-MY');
+  GROUPS.forEach((g) => buildList(g.k));
+  update();
+  if (warn.length) showMsg('Lajur tidak dijumpai: ' + warn.join(', ').toUpperCase() + ' — filter berkaitan tidak akan berfungsi.');
+  checkMatch();
+}
+
+function buildList(g) {
+  const box = $('#g-' + g + ' .list');
+  const cfg = GROUPS.find((x) => x.k === g);
+  box.innerHTML = '';
+  let vals = [...OPT[g].keys()];
+  vals = cfg.byCount ? vals.sort((a, b) => OPT[g].get(b) - OPT[g].get(a) || a.localeCompare(b)) : vals.sort();
+  vals.forEach((v) => {
+    const l = document.createElement('label');
+    l.dataset.v = v;
+    const dot = g === 'z' ? '<span class="dot" style="background:' + (ZCOL[v] || '#666') + '"></span>' : '';
+    l.innerHTML = '<input type="checkbox">' + dot + '<span>' + esc(v) + '</span><span class="n">' + OPT[g].get(v) + '</span>';
+    l.firstChild.checked = S[g].has(v);
+    l.firstChild.onchange = (e) => { e.target.checked ? S[g].add(v) : S[g].delete(v); update(); };
+    box.appendChild(l);
+  });
+  $('#g-' + g + ' h2 small').textContent = OPT[g].size + ' pilihan';
+}
+
+function popup(r) {
+  const row = (k, v) => (v ? '<tr><td>' + k + '</td><td>' + esc(v) + '</td></tr>' : '');
+  const g = (k) => (C[k] ? norm(r[C[k]]) : '');
+  return '<div class="pop"><h3>' + esc(g('kat') || 'Kes') + (g('bil') ? ' #' + esc(g('bil')) : '') + '</h3><table>' +
+    row('Tarikh', g('tarikh')) + row('Call card', g('card')) + row('Balai', r._b) + row('Daerah', r._d) + row('Zon', r._z) +
+    row('Kategori', g('kat')) + row('Sub kategori', [g('sub1'), g('sub2')].filter(Boolean).join(' › ')) +
+    row('Jenis', g('jenis')) + row('Alamat', g('alamat')) +
+    row('Lat, Long', r._c[0].toFixed(6) + ', ' + r._c[1].toFixed(6)) +
+    '</table></div>';
+  }
+
+const toLL = (g) => g.map((pg) => pg.map((rg) => rg.map((c) => [c[1], c[0]])));
+
+function update() {
+  [gZon, gJag, gBal, gKes].forEach((g) => g.clearLayers());
+  const act = GROUPS.some((g) => S[g.k].size);
+  const pass = (r) => GROUPS.every((g) => !S[g.k].size || S[g.k].has(r['_' + g.k]));
+  const locAct = S.d.size || S.z.size || S.b.size;
+  const all = L.featureGroup();
+  let sel = 0, vis = 0;
+  if (act) {
+    const hit = rows.filter(pass);
+    const hitBalai = new Set(hit.map((r) => bkey(r._b)));
+const selB = new Set([...S.b].map(bkey));
+
+sel = hit.length;
+    hit.forEach((r) => {
+      if (!r._c) return;
+      vis++;
+      const m = L.circleMarker(r._c, { radius: 5, color: '#fff', weight: 1, fillColor: ZCOL[r._z] || '#555', fillOpacity: 0.85 })
+        .bindPopup(() => popup(r), { maxWidth: 360 });
+      gKes.addLayer(m); all.addLayer(m);
+    });
+    if (HAS_KML()) {
+      KML.zon.forEach((z) => {
+        if (!S.z.has(z.zon)) return;
+        const p = L.polygon(toLL(z.g), { color: ZCOL[z.zon], weight: 3, dashArray: '8 5', fillOpacity: 0.04, interactive: false });
+        gZon.addLayer(p); all.addLayer(p);
+      });
+      KML.jag.forEach((j) => {
+  if (!selB.has(j.key)) return;
+
+        const p = L.polygon(toLL(j.g), { color: ZCOL[j.zon] || '#444', weight: 2, fillOpacity: 0.15 }).bindTooltip(j.name, { sticky: true });
+        gJag.addLayer(p); all.addLayer(p);
+      });
+      KML.balai.forEach((b) => {
+        const m = bm[b.key];
+        const inScope = locAct
+  ? (m ? (!S.d.size || S.d.has(m.d)) && (!S.z.size || S.z.has(m.z)) && (!S.b.size || selB.has(b.key)) : selB.has(b.key))
+  : hitBalai.has(b.key);
+  
+  if (!inScope) return;
+        const ic = L.divIcon({ className: '', html: '<div class="bicon">🚒</div>', iconSize: [26, 26], iconAnchor: [13, 13] });
+        const mk = L.marker([b.lat, b.lng], { icon: ic, zIndexOffset: 500 }).bindPopup(
+          '<div class="pop"><h3>' + esc(b.name) + '</h3><div style="white-space:pre-line">' + esc(b.desc) +
+          '</div><div>Lat, Long: ' + b.lat + ', ' + b.lng + '</div></div>');
+        gBal.addLayer(mk); all.addLayer(mk);
+      });
+    }
+    if (all.getLayers().length) {
+      const bd = all.getBounds();
+      if (bd.isValid()) map.fitBounds(bd, { padding: [30, 30], maxZoom: 13 });
+    }
+  }
+  $('#sSel').textContent = sel.toLocaleString();
+  $('#sMap').textContent = vis.toLocaleString();
+  updateStats(pass, act);
+  
+  if (rows.length) showMsg(act ? '' : 'Tiada tapisan dipilih. Tick sekurang-kurangnya satu daerah, zon, balai, kategori atau jenis kes untuk memaparkan kes.');
+}
+
+function showMsg(t) { const m = $('#msg'); m.textContent = t; m.classList.toggle('show', !!t); }
+
+/* ===== Panel statistik kes atas peta ===== */
+// Padanan pertama menang
+const KES_CAT = [
+  { k: 'kebak',   t: 'Kebakaran',  ic: 'fa-fire',               c: '#dc2626', re: /KEBAKARAN/ },
+  { k: 'selamat', t: 'Menyelamat', ic: 'fa-life-ring',          c: '#d97706', re: /MENYELAMAT|PENYELAMAT/ },
+  { k: 'khidmat', t: 'Khidmat',    ic: 'fa-hand-holding-heart', c: '#16a34a', re: /KHIDMAT/ },
+  { k: 'khas',    t: 'Tugas Khas', ic: 'fa-bullseye',           c: '#2563eb', re: /TUGAS\s*KHAS/ }
+];
+
+const kesCtl = L.control({ position: 'topright' });
+kesCtl.onAdd = function () {
+  const d = L.DomUtil.create('div', 'kes-box');
+  d.innerHTML =
+    '<div class="kes-h"><span><i class="fas fa-chart-column t"></i>Kes</span>' +
+    '<button class="kes-tg" id="kesTg" aria-label="Sembunyi atau papar statistik"><i class="fas fa-eye-slash"></i></button></div>' +
+    '<div class="kes-b" id="kesBody"></div>';
+  L.DomEvent.disableClickPropagation(d);
+  L.DomEvent.disableScrollPropagation(d);
+  d.querySelector('#kesTg').onclick = () => {
+    const min = d.classList.toggle('min');
+    d.querySelector('#kesTg i').className = min ? 'fas fa-eye' : 'fas fa-eye-slash';
+  };
+  return d;
+};
+kesCtl.addTo(map);
+
+function updateStats(pass, act) {
+  const list = rows.filter((r) => !act || pass(r));
+  const cnt = {};
+  KES_CAT.forEach((x) => (cnt[x.k] = 0));
+  list.forEach((r) => {
+    const c = KES_CAT.find((x) => x.re.test(r._k));
+    if (c) cnt[c.k]++;
+  });
+  const line = (x) => '<div class="kes-r"><i class="fas ' + x.ic + '" style="color:' + x.c + '"></i>' +
+    '<span>' + x.t + '</span><b style="color:' + x.c + '">' + cnt[x.k] + '</b></div>';
+  $('#kesBody').innerHTML = '<div class="kes-tot">Jumlah <b>' + list.length + '</b></div>' +
+    KES_CAT.map(line).join('');
+}
+updateStats(() => true, false);
+
+/* ===== Kawalan ===== */
+GROUPS.forEach(({ k: g }) => {
+  
+  const el = $('#g-' + g);
+  el.querySelectorAll('.btns button').forEach((b) => (b.onclick = () => {
+    const vis = [...el.querySelectorAll('.list label')].filter((l) => l.style.display !== 'none');
+    vis.forEach((l) => {
+      b.dataset.a === 'all' ? S[g].add(l.dataset.v) : S[g].delete(l.dataset.v);
+      l.firstChild.checked = b.dataset.a === 'all';
+    });
+    update();
+  }));
+  const s = el.querySelector('input[type=search]');
+  if (s) s.oninput = () => {
+    const q = s.value.toUpperCase();
+    el.querySelectorAll('.list label').forEach((l) => (l.style.display = l.dataset.v.includes(q) ? '' : 'none'));
+  };
+});
+
+$('#reset').onclick = () => {
+  GROUPS.forEach((g) => { S[g.k].clear(); const s = $('#g-' + g.k + ' input[type=search]'); if (s) s.value = ''; buildList(g.k); });
+  update();
+};
+
+$('#badLink').onclick = (e) => {
+  e.preventDefault();
+  $('#dlgBody').innerHTML = '<table><tr><th>BIL</th><th>Tarikh</th><th>Balai</th><th>Daerah</th><th>LAT</th><th>LONG</th></tr>' +
+    bad.map((r) => '<tr><td>' + esc(r[C.bil]) + '</td><td>' + esc(norm(r[C.tarikh])) + '</td><td>' + esc(r._b) + '</td><td>' +
+      esc(r._d) + '</td><td>' + esc(r[C.lat]) + '</td><td>' + esc(r[C.lng]) + '</td></tr>').join('') + '</table>';
+  $('#dlg').showModal();
+};
+$('#dlgX').onclick = () => $('#dlg').close();
+$('#tgJag').onclick = () => {
+  const on = map.hasLayer(gJag);
+  on ? map.removeLayer(gJag) : map.addLayer(gJag);
+  $('#tgJag').classList.toggle('off', on);
+};
+$('#file').onchange = (e) => { const f = e.target.files[0]; if (f) f.text().then(parse); };
+
+/* ===== Pemuat KML: fetch fail poligon-kawasan-jagaan.kml ===== */
+(async function loadKML() {
+  try {
+    const res = await fetch(KML_URL);
+    if (!res.ok) throw new Error('HTTP ' + res.status);
+    const xml = new DOMParser().parseFromString(await res.text(), 'application/xml');
+    if (xml.getElementsByTagName('parsererror').length) throw new Error('XML tidak sah');
+
+    const NS = 'http://www.opengis.net/kml/2.2';
+    const tags = (p, t) => {
+      const a = p.getElementsByTagNameNS(NS, t);
+      return a.length ? Array.from(a) : Array.from(p.getElementsByTagName(t));
+    };
+    const parseCoords = (s) => s.trim().split(/\s+/).map(v => {
+      const p = v.split(',');
+      return [parseFloat(p[0]), parseFloat(p[1])];
+    }).filter(p => !isNaN(p[0]) && !isNaN(p[1]));
+    const getPolys = (pm) => {
+  const out = [];
+  tags(pm, 'Polygon').forEach((poly) => {
+    tags(poly, 'outerBoundaryIs').forEach((ob) => {
+      tags(ob, 'LinearRing').forEach((lr) => {
+        tags(lr, 'coordinates').forEach((c) => {
+          const cc = parseCoords(c.textContent);
+          if (cc.length > 2) out.push([cc]);   // <-- dibungkus [ ]
+        });
+      });
+    });
+  });
+  return out;
+};
+
+// Baris maklumat balai yang tidak mahu dipaparkan dalam popup
+const HIDE_BALAI = /^\s*(NAMA\s+KETUA\s+BALAI|GRED\s+KETUA\s+BALAI|BIL\.?\s*.{0,3}TURN\s*OUT|PERJAWATAN)\s*:/i;
+
+const cleanDesc = (d) => String(d || '')
+  .replace(/<br\s*\/?>/gi, '\n')
+  .replace(/<[^>]*>/g, ' ')
+  .replace(/&nbsp;/g, ' ')
+  .replace(/[ \t]+/g, ' ')
+  .replace(/\n\s*\n+/g, '\n')
+  .split('\n')
+  .filter((line) => !HIDE_BALAI.test(line))
+  .join('\n')
+  .trim();
+
+    const K = { zon: [], jag: [], balai: [] };
+
+    tags(xml, 'Folder').forEach(folder => {
+      const fn = (tags(folder, 'name')[0]?.textContent || '').trim();
+      const zm = fn.match(/ZON\s*(\d)/i);
+      const zone = zm ? 'ZON ' + zm[1] : '';
+      const isBalaiFolder = /^BALAI/i.test(fn);
+      const isZoneFolder  = /^ZON\s*\d/i.test(fn);
+
+      tags(folder, 'Placemark').forEach(pm => {
+        const name = (tags(pm, 'name')[0]?.textContent || '').trim();
+        const desc = cleanDesc(tags(pm, 'description')[0]?.textContent);
+
+        // Point → ikon balai
+const pts = tags(pm, 'Point');
+if (pts.length) {
+  const c = parseCoords(tags(pts[0], 'coordinates')[0]?.textContent || '')[0];
+  if (c) K.balai.push({ key: bkey(name), name, lat: c[1], lng: c[0], desc, zon: zone });
+}
+
+// Polygon → sempadan zon atau kawasan jagaan
+const polys = getPolys(pm);
+if (!polys.length) return;
+
+if (isZoneFolder) {
+  K.zon.push({ zon: zkey(zone || name), g: polys });
+} else if (isBalaiFolder || /KAWASAN\s+JAGAAN/i.test(name)) {
+  K.jag.push({ key: bkey(name), name, zon: zone, g: polys });
+}
+
+});
+    });
+
+    KML = K;
+console.log('[KML] Dimuat:', K.zon.length, 'zon |', K.jag.length, 'kawasan jagaan |', K.balai.length, 'balai');
+checkMatch();
+if (rows.length) update();  // CSV mungkin dah siap dulu
+
+} catch (e) {
+    console.error('[KML] Gagal muat:', e);
+    $('#side').insertAdjacentHTML('afterbegin',
+      '<div style="font-size:.75rem;padding:8px;border-radius:6px;border:1px solid var(--fire-red);color:var(--fire-red);background:var(--hud-bg)">' +
+      '<b>Data KML tiada.</b> Gagal muat <code>' + KML_URL + '</code> — ' + e.message +
+      '. Pastikan fail ada dalam folder sama & buka halaman melalui pelayan web (cth. <code>python -m http.server</code>), bukan <code>file://</code>.</div>');
+  }
+})();
+
+showMsg('Memuat data CSV...');
+
+fetch(CSV_URL)
+  .then((r) => { if (!r.ok) throw new Error(r.status); return r.text(); })
+  .then(parse)
+  .catch(() => { showMsg('Gagal memuat CSV dari Google Sheets.'); $('#fb').style.display = 'block'; });
+</script>
+</body>
+</html>
