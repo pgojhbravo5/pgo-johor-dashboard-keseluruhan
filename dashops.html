@@ -123,11 +123,25 @@
         min-width: 0;
       }
       .header-center h1 {
-        font-size: var(--font-xl);
-        letter-spacing: 1px;
-        margin: 0;
-      }
-      .header-right {
+  font-size: var(--font-xl);
+  letter-spacing: 1px;
+  margin: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.35em;
+  flex-wrap: wrap;
+}
+
+.header-logo {
+  height: 1.4em;
+  width: auto;
+  object-fit: contain;
+  filter: drop-shadow(0 1px 4px rgba(0, 0, 0, 0.55));
+  flex-shrink: 0;
+}
+
+.header-right {
         display: flex;
         align-items: center;
         gap: 10px;
@@ -1642,7 +1656,18 @@
           <span class="time-text">🕒 <span id="clock"></span></span>
         </div>
       </div>
-      <div class="header-center"><h1>🚒 PGO JOHOR DASH-OPS - 24 JAM</h1></div>
+      <div class="header-center">
+        <h1>
+          <img
+            src="https://i.ibb.co/fGtPXjpc/500px-Logo-of-the-Malaysian-Fire-and-Rescue-Department-svg.webp"
+            alt="Logo JBPM"
+            class="header-logo"
+            loading="lazy"
+          />
+          <span>PGO JOHOR DASH-OPS - 24 JAM</span>
+        </h1>
+      </div>
+      
       <div class="header-right">
         <button class="theme-toggle-btn" onclick="toggleTheme()" id="themeToggleBtn">
           🌙 MODE MALAM
