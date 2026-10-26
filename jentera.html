@@ -876,11 +876,13 @@
         font-weight: 700;
         letter-spacing: -0.2px;
       }
+      /* ❌ Boleh dipadam atau dibiarkan (tidak lagi digunakan) 
       .header-bg .bg-red-600.w-9 {
         background: var(--navy) !important;
         box-shadow: none !important;
         border-radius: var(--radius) !important;
       }
+      */
       .header-btn { border-radius: var(--radius-sm) !important; box-shadow: none !important; }
       #refreshBtn, #backBtn {
         background: var(--navy) !important;
@@ -1039,22 +1041,27 @@
       </div>
     </div>
 
-    <!-- HEADER -->
-    <header class="header-bg border-b px-4 py-2.5 flex flex-wrap items-center justify-between gap-3 sticky top-0 z-40 transition-colors duration-300">
-      <div class="flex items-center gap-3">
-        <div class="w-9 h-9 bg-red-600 rounded-lg flex items-center justify-center text-lg shadow-lg shadow-red-600/30">
-          <i class="fa-solid fa-fire-extinguisher text-white bell-animate"></i>
+       <!-- HEADER -->
+       <header class="header-bg border-b px-4 py-2.5 flex flex-wrap items-center justify-between gap-3 sticky top-0 z-40 transition-colors duration-300">
+        <div class="flex items-center gap-3">
+          <div class="w-9 h-9 flex items-center justify-center flex-shrink-0">
+            <img
+              src="https://i.ibb.co/fGtPXjpc/500px-Logo-of-the-Malaysian-Fire-and-Rescue-Department-svg.webp"
+              alt="Logo JBPM"
+              class="w-full h-full object-contain drop-shadow-lg"
+              loading="lazy"
+            />
+          </div>
+          <div>
+            <h1 class="text-sm sm:text-base font-extrabold tracking-wide uppercase leading-tight" style="color: var(--text-primary)">
+              Dashboard Jentera Bomba Johor
+            </h1>
+            <p class="text-[11px] font-medium flex items-center gap-2 text-secondary-custom">
+              <span class="w-2 h-2 rounded-full bg-emerald-500 animate-ping"></span>Sistem Pemantauan Logistik & Fit View Balai
+            </p>
+          </div>
         </div>
-        <div>
-          <h1 class="text-sm sm:text-base font-extrabold tracking-wide uppercase leading-tight" style="color: var(--text-primary)">
-            Dashboard Jentera Bomba Johor
-          </h1>
-          <p class="text-[11px] font-medium flex items-center gap-2 text-secondary-custom">
-            <span class="w-2 h-2 rounded-full bg-emerald-500 animate-ping"></span>Sistem Pemantauan Logistik & Fit View Balai
-          </p>
-        </div>
-      </div>
-      <div class="flex items-center gap-2 text-xs font-medium sub-header-controls">
+        <div class="flex items-center gap-2 text-xs font-medium sub-header-controls">
         <div class="hidden sm:flex flex-col items-end text-[11px] text-secondary-custom">
           <span id="lastUpdate">Dikemaskini: -</span>
           <span id="countdown" class="text-muted-custom">Auto Refresh: -</span>
