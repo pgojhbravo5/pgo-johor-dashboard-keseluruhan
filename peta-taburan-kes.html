@@ -45,6 +45,7 @@ body{display:flex;flex-direction:column;font:14px/1.45 var(--font-main);color:va
 .icon-btn:hover{background:var(--hud-card-bg);color:var(--navy);border-color:var(--border-strong)}
 .icon-btn.active{background:var(--hud-card-bg);color:var(--navy);border-color:var(--navy)}
 #sideBtn{display:none}
+.menu-btn{width:auto;padding:0 .75rem;gap:.45rem;font:700 .72rem var(--font-head);letter-spacing:.06rem;text-transform:uppercase;white-space:nowrap}
 
 /* Layout */
 #app{flex:1;min-height:0;display:flex}
@@ -188,6 +189,7 @@ dialog th{color:var(--navy);font-family:var(--font-head)}
 @media (max-width:420px){
   .brand h1{font-size:.8rem}
   .icon-btn{width:2rem;height:2rem;font-size:.9rem}
+  .menu-btn{width:auto;padding:0 .55rem;font-size:.62rem;gap:.3rem}
   .stat b{font-size:1rem}
 }
 </style>
@@ -203,6 +205,7 @@ dialog th{color:var(--navy);font-family:var(--font-head)}
     </div>
   </div>
   <div class="ctrl">
+    <a class="icon-btn menu-btn" href="index.html" aria-label="Kembali ke menu utama" title="Kembali ke menu utama"><i class="fas fa-house"></i><span>MENU UTAMA</span></a>
     <button class="icon-btn" id="sideBtn" aria-label="Tunjuk atau sembunyi panel tapisan" aria-pressed="false"><i class="fas fa-filter"></i></button>
     <button class="icon-btn" id="modeBtn" aria-label="Tukar mod siang malam"><i class="fas fa-sun"></i></button>
     <button class="icon-btn" id="refreshBtn" aria-label="Muat semula"><i class="fas fa-sync-alt"></i></button>
