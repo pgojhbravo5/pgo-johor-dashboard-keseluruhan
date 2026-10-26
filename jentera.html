@@ -18,82 +18,83 @@
     <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2">
     </script>
     <link
-    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Orbitron:wght@600;800;900&display=swap"
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=IBM+Plex+Sans:wght@500;600;700&display=swap"
     rel="stylesheet"
     />
-
     <style>
+      /* ===== TEMA SELARAS PGO JOHOR (MALAM) ===== */
       :root {
         --bg-main: #0f172a;
-        --bg-card: #1e293b;
-        --bg-card-alt: #0d1527;
-        --bg-header: #0f172a;
-        --bg-input: #0f172a;
-        --bg-table-header: rgba(15, 23, 42, 0.8);
-        --bg-modal: #0f172a;
-        --border-color: #334155;
-        --border-light: rgba(51, 65, 85, 0.5);
-        --text-primary: #f8fafc;
+        --bg-card: #1a2438;
+        --bg-card-alt: #22304a;
+        --bg-header: #1a2438;
+        --bg-input: #1a2438;
+        --bg-table-header: #22304a;
+        --bg-modal: #1a2438;
+        --border-color: #2d3f5c;
+        --border-light: rgba(45, 63, 92, 0.5);
+        --text-primary: #e8eef7;
         --text-secondary: #94a3b8;
         --text-muted: #64748b;
-        --accent-red: #ef4444;
-        --accent-blue: #3b82f6;
+        --accent-red: #c8102e;
+        --accent-blue: #3b6ea8;
         --accent-cyan: #06b6d4;
-        --shadow-color: rgba(0, 0, 0, 0.6);
-        --overlay-bg: rgba(15, 23, 42, 0.82);
-        --card-hover-bg: #334155;
+        --shadow-color: rgba(0, 0, 0, 0.5);
+        --overlay-bg: transparent;
+        --card-hover-bg: #2a3b57;
+
+        --fire-red: #c8102e;
+        --hazard-gold: #b8935a;
+        --navy: #3b6ea8;
+        --glass-highlight: rgba(59, 110, 168, 0.16);
+        --border-strong: #3d5070;
+        --radius: 6px;
+        --radius-sm: 4px;
+        --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.4);
+        --shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
+        --font-head: 'IBM Plex Sans', 'Inter', sans-serif;
       }
 
+      /* ===== TEMA SELARAS PGO JOHOR (SIANG) ===== */
       body.light-mode {
-        --bg-main: #f1f5f9;
+        --bg-main: #f5f7fa;
         --bg-card: #ffffff;
-        --bg-card-alt: #f8fafc;
+        --bg-card-alt: #f0f2f5;
         --bg-header: #ffffff;
         --bg-input: #ffffff;
-        --bg-table-header: #f1f5f9;
+        --bg-table-header: #f0f2f5;
         --bg-modal: #ffffff;
         --border-color: #e2e8f0;
-        --border-light: rgba(203, 213, 225, 0.8);
-        --text-primary: #1e293b;
-        --text-secondary: #475569;
+        --border-light: rgba(226, 232, 240, 0.8);
+        --text-primary: #1a202c;
+        --text-secondary: #64748b;
         --text-muted: #94a3b8;
-        --shadow-color: rgba(0, 0, 0, 0.1);
-        --overlay-bg: rgba(241, 245, 249, 0.9);
-        --card-hover-bg: #f1f5f9;
+        --accent-blue: #002b5c;
+        --shadow-color: rgba(0, 43, 92, 0.08);
+        --overlay-bg: transparent;
+        --card-hover-bg: #e8eef5;
+
+        --navy: #002b5c;
+        --glass-highlight: #e8eef5;
+        --border-strong: #cbd5e1;
+        --shadow-sm: 0 1px 2px rgba(0, 43, 92, 0.06);
+        --shadow: 0 2px 8px rgba(0, 43, 92, 0.08);
       }
 
       body {
-        font-family: 'Inter', system-ui, -apple-system, sans-serif;
-        background-color: var(--bg-main);
+        font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+        background: var(--bg-main) !important;
+        background-image: none !important;
         color: var(--text-primary);
         overflow-x: hidden;
-        background-image: url('https://raw.githubusercontent.com/pgojhbravo5/DASHBOARD-DATA-JENTERA-JBPM-JOHOR/ce5530ee5e69d80d7b478a2af4919f7c243f3800/firetruck-BG.png');
-        background-size: cover;
-        background-position: center;
-        background-attachment: fixed;
-        background-repeat: no-repeat;
         position: relative;
+        -webkit-font-smoothing: antialiased;
         transition: background-color 0.3s ease, color 0.3s ease;
       }
 
-      body::before {
-        content: '';
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background: var(--overlay-bg);
-        z-index: -1;
-        pointer-events: none;
-        transition: background 0.3s ease;
-      }
-
-      body.light-mode {
-        background-image: none;
-      }
+      body::before,
       body.light-mode::before {
-        background: rgba(241, 245, 249, 0.7);
+        display: none !important;
       }
 
       @keyframes sirenRed {
@@ -819,14 +820,199 @@
       }
 
       /* Full-view layout for single-zone display (no internal scroll) */
-      .zone-body-full {
+            .zone-body-full {
         display: grid;
         grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
         gap: 0.5rem;
         align-items: start;
       }
+
+      /* =====================================================================
+         OVERRIDE TEMA SELARAS PGO JOHOR
+         (lampu ambient & plat nombor TIDAK diubah)
+         ===================================================================== */
+
+      /* ---- Bucu & kad rata ---- */
+      .rounded-xl, .rounded-2xl { border-radius: var(--radius) !important; }
+      .rounded-lg { border-radius: var(--radius-sm) !important; }
+      .card-bg {
+        border-radius: var(--radius) !important;
+        box-shadow: var(--shadow-sm);
+        backdrop-filter: none !important;
+      }
+      .card-bg h3 {
+        font-family: var(--font-head);
+        font-weight: 700;
+        letter-spacing: 0.6px;
+        color: var(--navy) !important;
+      }
+      .card-bg h3 i { color: var(--navy) !important; }
+      .text-lg.font-extrabold, .text-base.font-extrabold {
+        font-family: var(--font-head);
+        font-weight: 700;
+      }
+
+      /* ---- Header (jalur 3 warna + rata) ---- */
+      .header-bg {
+        background: var(--bg-card) !important;
+        border-bottom: 1px solid var(--border-color) !important;
+        box-shadow: var(--shadow-sm);
+      }
+      .header-bg::before {
+        content: '';
+        position: absolute;
+        top: 0; left: 0; right: 0;
+        height: 3px;
+        background: linear-gradient(90deg,
+          var(--fire-red) 0%, var(--fire-red) 33.33%,
+          var(--hazard-gold) 33.33%, var(--hazard-gold) 66.66%,
+          var(--navy) 66.66%, var(--navy) 100%);
+        pointer-events: none;
+        z-index: 2;
+      }
+      .header-bg h1 {
+        font-family: var(--font-head);
+        color: var(--navy) !important;
+        font-weight: 700;
+        letter-spacing: -0.2px;
+      }
+      .header-bg .bg-red-600.w-9 {
+        background: var(--navy) !important;
+        box-shadow: none !important;
+        border-radius: var(--radius) !important;
+      }
+      .header-btn { border-radius: var(--radius-sm) !important; box-shadow: none !important; }
+      #refreshBtn, #backBtn {
+        background: var(--navy) !important;
+        color: #ffffff !important;
+        border: 1px solid var(--navy) !important;
+      }
+      #refreshBtn:hover, #backBtn:hover { background: var(--fire-red) !important; border-color: var(--fire-red) !important; }
+
+      /* ---- Tab navigasi ---- */
+      .nav-bg {
+        background: var(--bg-card) !important;
+        backdrop-filter: none !important;
+        box-shadow: var(--shadow-sm);
+      }
+      .tab-btn { font-family: var(--font-head); letter-spacing: 0.3px; }
+      .tab-btn.border-red-500 { border-color: var(--navy) !important; color: var(--navy) !important; }
+      .tab-btn.text-slate-400 { color: var(--text-secondary) !important; }
+      .tab-btn.text-slate-400:hover { color: var(--navy) !important; }
+
+      /* ---- Butang slate -> gaya fail utama ---- */
+      .bg-slate-700, .bg-slate-800 {
+        background-color: var(--bg-card-alt) !important;
+        color: var(--text-primary) !important;
+        border-color: var(--border-color) !important;
+      }
+      .bg-slate-700:hover, .bg-slate-800:hover {
+        background-color: var(--card-hover-bg) !important;
+      }
+      .bg-emerald-700 { background-color: var(--navy) !important; color: #ffffff !important; }
+      .bg-emerald-700:hover { background-color: var(--fire-red) !important; }
+      #zoneTabsContainer button.bg-red-600 {
+        background: var(--navy) !important;
+        border-color: var(--navy) !important;
+        color: #ffffff !important;
+        box-shadow: none !important;
+      }
+      .ms-select-btn, .input-bg { border-radius: var(--radius-sm) !important; }
+      .ms-options { border-radius: var(--radius) !important; }
+      .copy-btn { background: var(--bg-card) !important; color: var(--text-secondary) !important; }
+
+      /* ---- Jadual ---- */
+      thead th { font-family: var(--font-head); color: var(--navy) !important; }
+      tbody tr:hover { background: var(--glass-highlight) !important; }
+
+      /* ---- Kad Dashboard Utama (kekal border status & jenis) ---- */
+      .jentera-card {
+        background-color: var(--bg-card) !important;
+        border-radius: var(--radius) !important;
+        box-shadow: var(--shadow-sm);
+      }
+      .bg-slate-900\/60 {
+        background: var(--bg-card-alt) !important;
+        border-radius: var(--radius) !important;
+      }
+      .bg-slate-900\/60 > div:first-child {
+        color: var(--navy) !important;
+        text-shadow: none !important;
+        font-family: var(--font-head);
+      }
+      .bg-slate-900\/60 > div:first-child i { color: var(--navy) !important; }
+      .bg-slate-900\/60 > div:first-child .text-slate-500 { color: var(--text-secondary) !important; }
+
+      /* ---- Modal butiran jentera ---- */
+      #modalOverlay { background: rgba(15, 23, 42, 0.6) !important; backdrop-filter: blur(2px) !important; }
+      #modalOverlay > div {
+        background: var(--bg-card) !important;
+        border: 1px solid var(--border-color) !important;
+        border-radius: var(--radius) !important;
+      }
+      .vehicle-shape-modal {
+        background: var(--bg-card) !important;
+        border: 1px solid var(--border-color) !important;
+        border-radius: var(--radius) !important;
+        box-shadow: var(--shadow) !important;
+      }
+      .vehicle-shape-modal [class*="bg-slate-950"],
+      .vehicle-shape-modal [class*="bg-slate-900"] {
+        background: var(--bg-card-alt) !important;
+        border-color: var(--border-color) !important;
+        border-radius: var(--radius) !important;
+      }
+      .vehicle-shape-modal .text-white,
+      .vehicle-shape-modal [class*="text-slate-200"] { color: var(--text-primary) !important; }
+      .vehicle-shape-modal [class*="text-slate-400"] { color: var(--text-secondary) !important; }
+      .vehicle-shape-modal > div:first-child span.font-black { color: var(--navy) !important; font-family: var(--font-head); }
+      .vehicle-illustration { background: var(--bg-card-alt) !important; border-radius: var(--radius) !important; }
+
+      /* ---- Loading & toast ---- */
+      #loadingOverlay { background: var(--bg-main) !important; }
+      #loadingOverlay > div:first-child {
+        background: var(--bg-card) !important;
+        border-color: var(--border-color) !important;
+        border-radius: var(--radius) !important;
+      }
+      #toastNotification { border-radius: var(--radius) !important; box-shadow: var(--shadow) !important; }
+
+      /* ---- Footer (3px navy + jalur merah tengah) ---- */
+      footer {
+        position: relative;
+        background: var(--bg-card) !important;
+        border-top: 3px solid var(--navy) !important;
+        color: var(--text-secondary) !important;
+        backdrop-filter: none !important;
+      }
+      footer::before {
+        content: '';
+        position: absolute;
+        top: -3px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 80px;
+        height: 3px;
+        background: var(--fire-red);
+      }
+
+      /* ---- Scrollbar ---- */
+      ::-webkit-scrollbar-thumb { background: var(--border-strong); }
+
+      /* ---- Kebolehbacaan mod siang ---- */
+      body.light-mode .text-emerald-400 { color: #16a34a !important; }
+      body.light-mode .text-yellow-400 { color: #d97706 !important; }
+      body.light-mode .text-red-400 { color: #dc2626 !important; }
+      body.light-mode .text-blue-400 { color: #2563eb !important; }
+      body.light-mode .text-purple-400 { color: #7c3aed !important; }
+      body.light-mode .text-cyan-400 { color: #0891b2 !important; }
+      body.light-mode .badge-baik { color: #166534; background: #dcfce7; border-color: #86efac; }
+      body.light-mode .badge-minor { color: #92400e; background: #fef3c7; border-color: #fcd34d; }
+      body.light-mode .badge-rosak { color: #991b1b; background: #fee2e2; border-color: #fca5a5; }
+      body.light-mode .badge-pulang { color: #1e40af; background: #dbeafe; border-color: #93c5fd; }
+      body.light-mode .badge-unknown { color: #475569; background: #f1f5f9; border-color: #cbd5e1; }
     </style>
-    
+
   </head>
   <body class="min-h-screen flex flex-col">
     <!-- LOADING OVERLAY -->
@@ -1997,16 +2183,16 @@
       // ============================================================
       // THEME
       // ============================================================
-      function toggleTheme() {
+            function toggleTheme() {
         document.body.classList.toggle('light-mode');
         const isLight = document.body.classList.contains('light-mode');
         const icon = document.getElementById('themeIcon');
         if (isLight) {
           icon.className = 'fa-solid fa-sun';
-          localStorage.setItem('theme', 'light');
+          localStorage.setItem('pgoTheme', 'siang');
         } else {
           icon.className = 'fa-solid fa-moon';
-          localStorage.setItem('theme', 'dark');
+          localStorage.setItem('pgoTheme', 'malam');
         }
         Object.keys(CC).forEach((tab) => {
           if (
@@ -2021,21 +2207,15 @@
       }
 
       function loadTheme() {
-        const savedTheme = localStorage.getItem('theme');
-        if (savedTheme === 'light') {
-          document.body.classList.add('light-mode');
-          document.getElementById('themeIcon').className = 'fa-solid fa-sun';
-        } else if (savedTheme === 'dark') {
+        // Selaras dengan halaman utama: default SIANG, kunci 'pgoTheme'
+        const savedTheme = localStorage.getItem('pgoTheme');
+        const icon = document.getElementById('themeIcon');
+        if (savedTheme === 'malam') {
           document.body.classList.remove('light-mode');
-          document.getElementById('themeIcon').className = 'fa-solid fa-moon';
+          icon.className = 'fa-solid fa-moon';
         } else {
-          if (
-            window.matchMedia &&
-            window.matchMedia('(prefers-color-scheme: light)').matches
-          ) {
-            document.body.classList.add('light-mode');
-            document.getElementById('themeIcon').className = 'fa-solid fa-sun';
-          }
+          document.body.classList.add('light-mode');
+          icon.className = 'fa-solid fa-sun';
         }
       }
 
@@ -4303,23 +4483,8 @@
       };
 
       window
-        .matchMedia('(prefers-color-scheme: dark)')
-        .addEventListener('change', (e) => {
-          if (!localStorage.getItem('theme')) {
-            if (e.matches) {
-              document.body.classList.remove('light-mode');
-              document.getElementById('themeIcon').className =
-                'fa-solid fa-moon';
-            } else {
-              document.body.classList.add('light-mode');
-              document.getElementById('themeIcon').className =
-                'fa-solid fa-sun';
-            }
-            Object.keys(CC).forEach((tab) => {
-              if (CC[tab].s) Rt(tab);
-            });
-          }
-        });
-    </script> 
+      // (pendengar tema sistem dibuang — tema kini ikut pilihan pengguna 'pgoTheme')
+      
+      </script> 
   </body>
 </html>
