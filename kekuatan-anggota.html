@@ -5195,13 +5195,15 @@ table.semak-lokasi.duplicate-transposed tbody tr:hover td.col-sticky-2 {
 
     <script>
     
-    /* ═══════════════════════════════════════════════════
-   KONFIGURASI SUPABASE — DUAL (Primary / Secondary)
-   Switch automatik: 2026-10-12 20:01:00 (waktu Malaysia)
-   Selepas itu kekal guna SECONDARY secara kekal.
+/* ═══════════════════════════════════════════════════
+   KONFIGURASI SUPABASE — TRIPLE (Primary / Secondary / Tertiary)
+   • Akaun 1 (PRIMARY)   → HOLD (tidak digunakan)
+   • Akaun 2 (SECONDARY) → aktif sehingga 2026-10-26 19:59:59
+   • Akaun 3 (TERTIARY)  → aktif SECARA KEKAL mulai
+                           2026-10-26 20:00:00 (waktu Malaysia)
    ═══════════════════════════════════════════════════ */
 
-const SUPABASE_CONFIG_PRIMARY = {
+   const SUPABASE_CONFIG_PRIMARY = {
   url:     'https://nstmylzvqckhrpxmbufx.supabase.co',
   anonKey: 'sb_publishable_6i7rUdjTRmOYMcookS6CFQ_lwXyRJJL',
 };
@@ -5211,7 +5213,13 @@ const SUPABASE_CONFIG_SECONDARY = {
   anonKey: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imxjb3RweHRka21ydG9qYXZvcHZrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTE3NzY2NzUsImV4cCI6MjEwNzM1MjY3NX0.Km7gu_riMtFRsdqda_2UbkLIPIjhYRy2iYSYSDZmKBE',
 };
 
-const SUPABASE_SWITCH_AT = '2026-10-12T20:01:00';
+const SUPABASE_CONFIG_TERTIARY = {
+  url:     'https://kdwhvqfglnrhaeqpdtzr.supabase.co',
+  anonKey: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imtkd2h2cWZnbG5yaGFlcXBkdHpyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTI5NjIzNzcsImV4cCI6MjEwODUzODM3N30.tOw0mvRvTiYJ-eLXH0lcvmKIvic8XqbcT0_NvvuA3-Y',
+};
+
+const SUPABASE_SWITCH_AT   = '2026-10-12T20:01:00'; // Primary → Secondary (lama, dikekalkan)
+const SUPABASE_SWITCH_AT_3 = '2026-10-26T20:00:00'; // Secondary → Tertiary (BARU)
 
 function getMalaysiaNowISO() {
   try {
@@ -5234,28 +5242,30 @@ function getMalaysiaNowISO() {
   }
 }
 
-function isPastSwitchTime() {
-  return getMalaysiaNowISO() >= SUPABASE_SWITCH_AT;
+function isPastSwitchTime()  { return getMalaysiaNowISO() >= SUPABASE_SWITCH_AT; }
+function isPastSwitchTime3() { return getMalaysiaNowISO() >= SUPABASE_SWITCH_AT_3; }
+
+function pickSupabaseConfig() {
+  if (isPastSwitchTime3()) return { cfg: SUPABASE_CONFIG_TERTIARY,  label: '🟣 TERTIARY (akaun 3, kekal)' };
+  if (isPastSwitchTime())  return { cfg: SUPABASE_CONFIG_SECONDARY, label: '🔵 SECONDARY (akaun 2, sementara)' };
+  return                          { cfg: SUPABASE_CONFIG_PRIMARY,   label: '🟢 PRIMARY (akaun 1)' };
 }
 
-const SUPABASE_CONFIG = isPastSwitchTime()
-  ? SUPABASE_CONFIG_SECONDARY
-  : SUPABASE_CONFIG_PRIMARY;
+const _picked = pickSupabaseConfig();
+const SUPABASE_CONFIG = _picked.cfg;
 
-console.log(
-  '[Supabase] Config aktif:',
-  isPastSwitchTime() ? '🔵 SECONDARY (kekal)' : '🟢 PRIMARY',
-  '→', SUPABASE_CONFIG.url
-);
+console.log('[Supabase] Config aktif:', _picked.label, '→', SUPABASE_CONFIG.url);
 
+/* Pengguna yang sedang buka sistem sebelum 20:00:00 akan
+   auto-reload ke akaun 3 sebaik waktu tiba */
 (function watchSupabaseSwitch() {
-  if (isPastSwitchTime()) return;
+  if (isPastSwitchTime3()) return;
 
-  const WAIT_MS = 30000;
+  const WAIT_MS = 5000;
   const timer = setInterval(function () {
-    if (isPastSwitchTime()) {
+    if (isPastSwitchTime3()) {
       clearInterval(timer);
-      console.log('[Supabase] ⏰ 20:01 tiba → reload ke SECONDARY');
+      console.log('[Supabase] ⏰ 20:00:00 tiba → reload ke TERTIARY (akaun 3)');
       forceHardReload();
     }
   }, WAIT_MS);
