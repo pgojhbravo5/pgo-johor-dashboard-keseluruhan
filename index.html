@@ -7495,10 +7495,8 @@ if (petaFullscreenBtn) {
                 }
             });
 
-            // ===== FETCH ANGGOTA DARI SUPABASE =====
-                        // ===== SUPABASE CONFIG (DUAL: PRIMARY / SECONDARY) =====
-            // Selaras dengan kekuatan-anggota.html — auto-switch pada 2026-10-12 20:01 MY
-            const SUPABASE_CONFIG_PRIMARY = {
+                        // ===== FETCH ANGGOTA DARI SEMUA SUPABASE (TRIPLE) =====
+                        const SUPABASE_CONFIG_PRIMARY = {
                 url:     'https://nstmylzvqckhrpxmbufx.supabase.co',
                 anonKey: 'sb_publishable_6i7rUdjTRmOYMcookS6CFQ_lwXyRJJL',
             };
@@ -7508,72 +7506,70 @@ if (petaFullscreenBtn) {
                 anonKey: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imxjb3RweHRka21ydG9qYXZvcHZrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTE3NzY2NzUsImV4cCI6MjEwNzM1MjY3NX0.Km7gu_riMtFRsdqda_2UbkLIPIjhYRy2iYSYSDZmKBE',
             };
 
-            // ⏰ Masa tukar rasmi — kekal guna SECONDARY selepas ini
-            const SUPABASE_SWITCH_AT = '2026-10-12T20:01:00';
+            const SUPABASE_CONFIG_TERTIARY = {
+                url:     'https://kdwhvqfglnrhaeqpdtzr.supabase.co',
+                anonKey: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imtkd2h2cWZnbG5yaGFlcXBkdHpyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTI5NjIzNzcsImV4cCI6MjEwODUzODM3N30.tOw0mvRvTiYJ-eLXH0lcvmKIvic8XqbcT0_NvvuA3-Y',
+            };
 
-            function getMalaysiaNowISO() {
-                try {
-                    const parts = new Intl.DateTimeFormat('en-GB', {
-                        timeZone: 'Asia/Kuala_Lumpur',
-                        year: 'numeric', month: '2-digit', day: '2-digit',
-                        hour: '2-digit', minute: '2-digit', second: '2-digit',
-                        hour12: false,
-                    }).formatToParts(new Date());
-                    const get = (t) => { const p = parts.find(x => x.type === t); return p ? p.value : '00'; };
-                    let hh = get('hour'); if (hh === '24') hh = '00';
-                    return get('year') + '-' + get('month') + '-' + get('day') + 'T' +
-                           hh + ':' + get('minute') + ':' + get('second');
-                } catch (e) {
-                    const d = new Date();
-                    const my = new Date(d.getTime() + 8 * 3600000);
-                    const pad = (n) => String(n).padStart(2, '0');
-                    return my.getUTCFullYear() + '-' + pad(my.getUTCMonth() + 1) + '-' + pad(my.getUTCDate()) +
-                           'T' + pad(my.getUTCHours()) + ':' + pad(my.getUTCMinutes()) + ':' + pad(my.getUTCSeconds());
-                }
-            }
+            // Senarai semua config untuk digabungkan
+            const ALL_SUPABASE_CONFIGS = [
+                SUPABASE_CONFIG_PRIMARY,
+                SUPABASE_CONFIG_SECONDARY,
+                SUPABASE_CONFIG_TERTIARY
+            ];
 
-            function isPastSwitchTime() {
-                return getMalaysiaNowISO() >= SUPABASE_SWITCH_AT;
-            }
-
-            // 🔀 Pilih config: SEBELUM 20:01 → PRIMARY, SELEPAS → SECONDARY (kekal)
-            const SUPABASE_CONFIG = isPastSwitchTime()
-                ? SUPABASE_CONFIG_SECONDARY
-                : SUPABASE_CONFIG_PRIMARY;
-
-            console.log(
-                '[Supabase index.html] Config aktif:',
-                isPastSwitchTime() ? '🔵 SECONDARY (kekal)' : '🟢 PRIMARY',
-                '→', SUPABASE_CONFIG.url
-            );
-
-            // ===== FETCH ANGGOTA DARI SUPABASE =====
+            // ===== FETCH ANGGOTA DARI SEMUA SUPABASE =====
             async function fetchAnggotaMiniStats() {
                 try {
-                    const resp = await fetch(
-                        `${SUPABASE_CONFIG.url}/rest/v1/personel?select=status,nama,pangkat,no_badan,no_telefon,peranan,unit1,unit2,unit3,unit4,balai`,
-                        {
-                            headers: {
-                                apikey: SUPABASE_CONFIG.anonKey,
-                                Authorization: 'Bearer ' + SUPABASE_CONFIG.anonKey,
-                                'Content-Type': 'application/json'
+                    // 1. Fetch dari ketiga-tiga Supabase secara serentak
+                    const fetchPromises = ALL_SUPABASE_CONFIGS.map(config => {
+                        return fetch(
+                            `${config.url}/rest/v1/personel?select=status,nama,pangkat,no_badan,no_telefon,peranan,unit1,unit2,unit3,unit4,balai`,
+                            {
+                                headers: {
+                                    apikey: config.anonKey,
+                                    Authorization: 'Bearer ' + config.anonKey,
+                                    'Content-Type': 'application/json'
+                                }
                             }
+                        ).then(res => {
+                            if (!res.ok) throw new Error('HTTP ' + res.status);
+                            return res.json();
+                        }).catch(err => {
+                            console.warn('Gagal fetch dari ' + config.url, err);
+                            return []; // Return array kosong jika satu akaun gagal supaya yang lain tetap jalan
+                        });
+                    });
+
+                    const results = await Promise.all(fetchPromises);
+                    
+                    // 2. Gabungkan semua data dari 3 sumber
+                    let gabunganAnggota = [];
+                    results.forEach(anggotaList => {
+                        if (Array.isArray(anggotaList)) {
+                            gabunganAnggota = gabunganAnggota.concat(anggotaList);
                         }
-                    );
-                    if (!resp.ok) throw new Error('Gagal fetch data personel: HTTP ' + resp.status);
+                    });
 
-                    const anggota = await resp.json();
-                    if (!Array.isArray(anggota)) return;
+                    // 3. Buang data pendua (deduplication) berdasarkan 'no_badan'
+                    // Jika no_badan tiada, guna kombinasi nama & balai
+                    const uniqueAnggotaMap = new Map();
+                    gabunganAnggota.forEach(a => {
+                        const key = a.no_badan ? String(a.no_badan).trim() : `${String(a.nama).trim()}_${String(a.balai).trim()}`;
+                        // Kita simpan data terkini (Tertiary akan override Secondary/Primary jika ada duplikasi)
+                        uniqueAnggotaMap.set(key, a); 
+                    });
 
-                    anggotaCacheForUnits = anggota;
+                    const anggotaUnik = Array.from(uniqueAnggotaMap.values());
+                    anggotaCacheForUnits = anggotaUnik;
 
-                    // ✅ FIX: normalisasi status (trim + uppercase) supaya padan
+                    // 4. Kira statistik berdasarkan data yang telah digabungkan & dibuang pendua
                     const norm = (s) => String(s || '').trim().toUpperCase();
-                    const total      = anggota.length;
-                    const bertugas   = anggota.filter(a => norm(a.status) === 'BERTUGAS').length;
-                    const cuti       = anggota.filter(a => norm(a.status) === 'CUTI').length;
-                    const sakit      = anggota.filter(a => norm(a.status) === 'CUTI SAKIT').length;
-                    const tugasKhas  = anggota.filter(a => norm(a.status) === 'TUGAS KHAS').length;
+                    const total      = anggotaUnik.length;
+                    const bertugas   = anggotaUnik.filter(a => norm(a.status) === 'BERTUGAS').length;
+                    const cuti       = anggotaUnik.filter(a => norm(a.status) === 'CUTI').length;
+                    const sakit      = anggotaUnik.filter(a => norm(a.status) === 'CUTI SAKIT').length;
+                    const tugasKhas  = anggotaUnik.filter(a => norm(a.status) === 'TUGAS KHAS').length;
 
                     const setTxt = (id, val) => {
                         const el = document.getElementById(id);
@@ -7588,7 +7584,8 @@ if (petaFullscreenBtn) {
                     const statBertugasEl = document.getElementById('statBertugas');
                     if (statBertugasEl) statBertugasEl.textContent = bertugas;
 
-                    renderSpecialUnits(anggota);
+                    // 5. Paparkan ke UI
+                    renderSpecialUnits(anggotaUnik);
 
                 } catch (e) {
                     console.warn('[index.html] fetchAnggotaMiniStats error:', e.message);
@@ -7600,7 +7597,7 @@ if (petaFullscreenBtn) {
             }
             fetchAnggotaMiniStats();
             setInterval(fetchAnggotaMiniStats, 60000);
-            
+                        
             // ✅ FIX: Refresh serta-merta bila pengguna balik ke tab
             document.addEventListener('visibilitychange', function () {
                 if (!document.hidden) {
