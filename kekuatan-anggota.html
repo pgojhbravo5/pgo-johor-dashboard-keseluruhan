@@ -4715,8 +4715,19 @@ table.semak-lokasi.duplicate-transposed tbody tr:hover td.col-sticky-2 {
     <div class="toast-container" id="toastContainer"></div>
 
     <div class="wrap">
+      
+      <!-- BANNER PERINGATAN ROTATION SUPABASE -->
+      <div id="rotationReminderBanner" style="display: none; background: linear-gradient(90deg, #f0c14a, #d99a2b); color: #1a1206; padding: 0.75rem 1.15rem; border-radius: var(--radius); margin-bottom: 1rem; box-shadow: var(--shadow-sm); border: 1px solid #a5681a; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 0.5rem; position: relative; z-index: 1000;">
+        <div style="display: flex; align-items: center; gap: 0.5rem; font-weight: 600; font-size: 0.85rem;">
+          <span style="font-size: 1.2rem;">⚠️</span>
+          <span><b>PERINGATAN ROTATION SUPABASE:</b> Sistem akan mula bertukar ke Akaun 2 & 3 pada <b>4 Nov 2026 (20:01 MYT)</b>. Sila pastikan Supabase <b>Akaun 1</b> dan <b>Akaun 2</b> yang <i>pause</i> telah <b>diaktifkan (unpause)</b> sebelum tarikh tersebut!</span>
+        </div>
+        <button type="button" onclick="document.getElementById('rotationReminderBanner').style.display='none'" style="background: rgba(0,0,0,0.1); border: none; color: #1a1206; padding: 0.25rem 0.6rem; border-radius: 4px; cursor: pointer; font-weight: 700;">✕ Tutup</button>
+      </div>
+
       <div class="main-title">
         <h1>SISTEM KEKUATAN ANGGOTA JBPM NEGERI JOHOR</h1>
+        
         <div class="sub">Jabatan Bomba dan Penyelamat Malaysia — Negeri Johor</div>
         <div class="live-clock" id="liveClock" aria-live="off">
           <div class="lc-day" id="lcDay">—</div>
@@ -4956,7 +4967,7 @@ table.semak-lokasi.duplicate-transposed tbody tr:hover td.col-sticky-2 {
           <b>©2026 PGO JOHOR</b><span class="sep">|</span>HAK CIPTA TERPELIHARA
         </div>
         <div class="sf-layer-bottom">
-          <div class="sf-item">Versi Sistem: <b>v2.4.4</b></div>
+          <div class="sf-item">Versi Sistem: <b>v2.4.5</b></div>
           <div class="sf-item">Pembina Aplikasi & Sistem: <b>PB Mohamad Aidil bin Zainal Abidin</b></div>
           <div class="sf-item">Penyedia Tutorial (Cara Penggunaan): <b>PB Jevinson Justin</b></div>
         </div>
@@ -5202,16 +5213,49 @@ table.semak-lokasi.duplicate-transposed tbody tr:hover td.col-sticky-2 {
    • Akaun 3 (TERTIARY)  → aktif secara kekal
    ═══════════════════════════════════════════════════ */
 
-   const SUPABASE_CONFIG = {
-  url:     'https://kdwhvqfglnrhaeqpdtzr.supabase.co',
-  anonKey: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imtkd2h2cWZnbG5yaGFlcXBkdHpyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTI5NjIzNzcsImV4cCI6MjEwODUzODM3N30.tOw0mvRvTiYJ-eLXH0lcvmKIvic8XqbcT0_NvvuA3-Y',
-};
+   /* ═══════════════════════════════════════════════════
+   KONFIGURASI SUPABASE — 24 JAM ROTATION (3 AKAUN)
+   • Mula berputar: 4 November 2026, 20:01:00 MYT
+   • Sebelum tarikh itu: Guna Akaun 3 (TERTIARY)
+   ═══════════════════════════════════════════════════ */
 
-console.log('[Supabase] Config aktif: 🟣 TERTIARY (akaun 3, kekal) →', SUPABASE_CONFIG.url);
+const SUPABASE_CONFIGS = [
+  {
+    url:     'https://nstmylzvqckhrpxmbufx.supabase.co',
+    anonKey: 'sb_publishable_6i7rUdjTRmOYMcookS6CFQ_lwXyRJJL',
+    name:    'PRIMARY (Akaun 1)'
+  },
+  {
+    url:     'https://lcotpxtdkmrtojavopvk.supabase.co',
+    anonKey: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imxjb3RweHRka21ydG9qYXZvcHZrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTE3NzY2NzUsImV4cCI6MjEwNzM1MjY3NX0.Km7gu_riMtFRsdqda_2UbkLIPIjhYRy2iYSYSDZmKBE',
+    name:    'SECONDARY (Akaun 2)'
+  },
+  {
+    url:     'https://kdwhvqfglnrhaeqpdtzr.supabase.co',
+    anonKey: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imtkd2h2cWZnbG5yaGFlcXBkdHpyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTI5NjIzNzcsImV4cCI6MjEwODUzODM3N30.tOw0mvRvTiYJ-eLXH0lcvmKIvic8XqbcT0_NvvuA3-Y',
+    name:    'TERTIARY (Akaun 3)'
+  }
+];
+
+function getActiveSupabaseConfig() {
+  const baselineTime = new Date('2026-11-04T20:01:00+08:00').getTime();
+  const currentTime = Date.now();
+  
+  // ⚠️ PEMBETULAN: Sebelum 4 Nov 2026, guna Akaun 3 (TERTIARY) - index [2]
+  if (currentTime < baselineTime) return SUPABASE_CONFIGS[2]; 
+  
+  const msPerDay = 24 * 60 * 60 * 1000;
+  const daysPassed = Math.floor((currentTime - baselineTime) / msPerDay);
+  const activeIndex = ((daysPassed % 3) + 3) % 3;
+  return SUPABASE_CONFIGS[activeIndex];
+}
+
+const SUPABASE_CONFIG = getActiveSupabaseConfig();
+console.log(`[Supabase] Status Rotation: Menggunakan 🟢 ${SUPABASE_CONFIG.name} →`, SUPABASE_CONFIG.url);
 
 const sb = window.supabase.createClient(SUPABASE_CONFIG.url, SUPABASE_CONFIG.anonKey);
 
-const APP_VERSION = 'v2.4.4';
+const APP_VERSION = 'v2.4.5';
 const APP_VERSION_LS_KEY = 'bomba-app-version';
 
 async function forceHardReload() {
@@ -11284,6 +11328,15 @@ function hasInvalid(v) { return v.personel.length > 0 || v.equip.length > 0; }
     <div class="stat" style="--stat-color:var(--rosak)"><div class="n">${jR}</div><div class="t">JENTERA ROSAK (FRT/LFRT/CFRT)</div></div>`;
       }
 
+      async function syncStatistikKeSupabase(A, C, CS, TK) {
+        try {
+          await sb.from('dashboard_stats').upsert({
+            id: 1, bertugas: A, cuti: C, cuti_sakit: CS, tugas_khas: TK, updated_at: new Date().toISOString()
+          });
+          console.log('[Sync] Statistik dihantar ke dashboard_stats:', A, C, CS, TK);
+        } catch (err) { console.warn('[Sync] Gagal hantar statistik:', err); }
+      }
+
       function renderAggregateStats() {
         const el = document.getElementById('statsRow');
         const g = computeAllPersonelGrid();
@@ -11291,7 +11344,11 @@ function hasInvalid(v) { return v.personel.length > 0 || v.equip.length > 0; }
         RANKS.forEach((r) => UNITS.forEach((u) => {
           A += g[r][u].A; C += g[r][u].C; CS += g[r][u].CS; TK += g[r][u].TK;
         }));
+        
+        syncStatistikKeSupabase(A, C, CS, TK); // Panggil sync di sini
+
         const JENTERA_UTAMA_KIRA = ['FRT', 'LFRT', 'CFRT'];
+        
         let jB = 0, jR = 0;
         Object.values(store.balai).forEach(function (b) {
           const arr = (b && b.equip && b.equip.jentera) || [];
@@ -14891,12 +14948,26 @@ function recomputeIbuPejabatTotals(wrap) {
         }, 3000);
       });
 
+      function checkRotationReminder() {
+        try {
+          const currentTime = Date.now();
+          const reminderStart = new Date('2026-11-02T00:00:00+08:00').getTime();
+          const rotationStart = new Date('2026-11-04T20:01:00+08:00').getTime();
+          if (currentTime >= reminderStart && currentTime < rotationStart) {
+            const banner = document.getElementById('rotationReminderBanner');
+            if (banner) banner.style.display = 'flex';
+          }
+        } catch (e) { console.warn('Gagal semak peringatan:', e); }
+      }
+
       async function initApp() {
         initTheme();
         initSound();
         await loadPanelLockStates();
         initAutoResetNotice();
         initFeedbackModal();
+        
+        checkRotationReminder(); // Panggil fungsi peringatan di sini
 
         const hasNewVersion = await checkAppVersion();
         if (hasNewVersion) return;
