@@ -475,10 +475,41 @@ tr.sep-row td { background: #1e293b; height: 3px; padding: 0; }
 
 <script>
 // ============================================================
-// KONFIGURASI — SAMA DENGAN SISTEM KEKUATAN ANGGOTA
+// KONFIGURASI SUPABASE — 24 JAM ROTATION (SAMA MACAM FILE 1)
 // ============================================================
-const SUPABASE_URL = 'https://nstmylzvqckhrpxmbufx.supabase.co';
-const SUPABASE_ANON_KEY = 'sb_publishable_6i7rUdjTRmOYMcookS6CFQ_lwXyRJJL';
+const SUPABASE_CONFIGS = [
+  { 
+    url: 'https://nstmylzvqckhrpxmbufx.supabase.co', 
+    anonKey: 'sb_publishable_6i7rUdjTRmOYMcookS6CFQ_lwXyRJJL' 
+  },
+  { 
+    url: 'https://lcotpxtdkmrtojavopvk.supabase.co', 
+    anonKey: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imxjb3RweHRka21ydG9qYXZvcHZrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTE3NzY2NzUsImV4cCI6MjEwNzM1MjY3NX0.Km7gu_riMtFRsdqda_2UbkLIPIjhYRy2iYSYSDZmKBE' 
+  },
+  { 
+    url: 'https://kdwhvqfglnrhaeqpdtzr.supabase.co', 
+    anonKey: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imtkd2h2cWZnbG5yaGFlcXBkdHpyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTI5NjIzNzcsImV4cCI6MjEwODUzODM3N30.tOw0mvRvTiYJ-eLXH0lcvmKIvic8XqbcT0_NvvuA3-Y' 
+  }
+];
+
+function getActiveSupabaseConfig() {
+  const baselineTime = new Date('2026-11-04T20:01:00+08:00').getTime();
+  const currentTime = Date.now();
+  
+  // Sebelum 4 Nov 2026, guna Akaun 3 (Tertiary) - index [2]
+  if (currentTime < baselineTime) return SUPABASE_CONFIGS[2]; 
+  
+  const msPerDay = 24 * 60 * 60 * 1000;
+  const daysPassed = Math.floor((currentTime - baselineTime) / msPerDay);
+  const activeIndex = ((daysPassed % 3) + 3) % 3;
+  return SUPABASE_CONFIGS[activeIndex];
+}
+
+const ACTIVE_CONFIG = getActiveSupabaseConfig();
+const SUPABASE_URL = ACTIVE_CONFIG.url;
+const SUPABASE_ANON_KEY = ACTIVE_CONFIG.anonKey;
+
+console.log(`[Dashboard Kekuatan] Config Rotation Aktif: 🟢 ${SUPABASE_URL}`);
 
 let dataCache = null;
 let supabaseClient = null;
