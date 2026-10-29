@@ -169,7 +169,7 @@
       .stat-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 20px; }
       @media (max-width: 1100px) { .stat-grid { grid-template-columns: repeat(2, 1fr); } }
       @media (max-width: 600px) { .stat-grid { grid-template-columns: 1fr; } }
-      .kpi-section.tone-ops .stat-grid { grid-template-columns: repeat(5, 1fr); }
+      .kpi-section.tone-ops .stat-grid { grid-template-columns: repeat(3, 1fr); }
       @media (max-width: 1300px) { .kpi-section.tone-ops .stat-grid { grid-template-columns: repeat(3, 1fr); } }
       @media (max-width: 1100px) { .kpi-section.tone-ops .stat-grid { grid-template-columns: repeat(2, 1fr); } }
       @media (max-width: 600px)  { .kpi-section.tone-ops .stat-grid { grid-template-columns: 1fr; } }
@@ -1434,9 +1434,10 @@
       /* SEKSYEN KELUASAN KEBAKARAN TERBUKA */
       .kpi-section.tone-luas .kpi-section-head { border-left-color: var(--johor-red); }
       @media (min-width: 769px) {
-        .kpi-section.tone-luas .stat-grid { grid-template-columns: repeat(3, 1fr) !important; }
-      }
-    </style>
+  .kpi-section.tone-luas .stat-grid { grid-template-columns: repeat(4, 1fr) !important; }
+}
+
+</style>
   </head>
   <body>
     <header class="topbar">
@@ -1664,9 +1665,22 @@
                 Buang tapisan
               </button>
             </div>
+            
+            <!-- KAD JUMLAH KES (HIGHLIGHT) DILETAKKAN DI SINI -->
+            <div class="stat-grid" style="grid-template-columns: 1fr; margin-bottom: 16px;">
+              <div class="stat-card stat-gold" style="border-left-width: 5px; background: linear-gradient(135deg, var(--johor-gold-light), var(--surface)); box-shadow: 0 4px 12px rgba(184, 147, 90, 0.15);">
+                <div class="stat-label" style="font-size: 13px; color: var(--johor-gold); font-weight: 700;">
+                  <svg class="ico" viewBox="0 0 24 24" style="width: 16px; height: 16px;"><line x1="8" y1="6" x2="21" y2="6" /><line x1="8" y1="12" x2="21" y2="12" /><line x1="8" y1="18" x2="21" y2="18" /></svg>
+                  Jumlah Keseluruhan
+                </div>
+                <div class="stat-value" id="kpiTotal" style="font-size: 38px; color: var(--johor-navy);">-</div>
+                <div class="stat-sub" id="kpiTotalSub" style="font-size: 12px;">-</div>
+              </div>
+            </div>
+          
             <div class="kat-strip" id="kpiKatStrip"></div>
           </div>
-
+          
           <div class="kpi-section tone-kpi">
             <div class="kpi-section-head">
               <span class="ksh-title">Prestasi KPI</span>
@@ -1736,43 +1750,37 @@
                 <div class="stat-value" id="kpiJarak">-</div>
                 <div class="stat-sub" id="kpiJarakSub">km</div>
               </div>
-              <div class="stat-card stat-neutral">
-                <div class="stat-label"><svg class="ico" viewBox="0 0 24 24"><line x1="8" y1="6" x2="21" y2="6" /><line x1="8" y1="12" x2="21" y2="12" /><line x1="8" y1="18" x2="21" y2="18" /></svg>Jumlah Kes</div>
-                <div class="stat-value" id="kpiTotal">-</div>
-                <div class="stat-sub" id="kpiTotalSub">-</div>
-              </div>
-              <div class="stat-card stat-gold">
-                <div class="stat-label"><svg class="ico" viewBox="0 0 24 24"><path d="M12 2C12 2 6 8 6 14a6 6 0 0 0 12 0c0-6-6-12-6-12z" /><circle cx="12" cy="14" r="2" /></svg>Kebakaran Tanah Gambut</div>
-                <div class="stat-value" id="kpiGambut">-</div>
-                <div class="stat-sub" id="kpiGambutSub">-</div>
-              </div>
             </div>
           </div>
 
           <div class="kpi-section tone-luas">
-            <div class="kpi-section-head">
-              <span class="ksh-title">Keluasan Kebakaran Terbuka</span>
-              <span class="ksh-count" id="kpiLuasTotal">— hektar</span>
-            </div>
-            <div class="stat-grid">
-              <div class="stat-card stat-warning">
-                <div class="stat-label"><svg class="ico" viewBox="0 0 24 24"><path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z" /></svg>Keluasan Kebakaran Terbuka</div>
-                <div class="stat-value" id="kpiLuasKebakaran">-</div>
-                <div class="stat-sub" id="kpiLuasKebakaranSub">hektar</div>
-              </div>
-              <div class="stat-card stat-success">
-                <div class="stat-label"><svg class="ico" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" /><polyline points="22 4 12 14.01 9 11.01" /></svg>Keluasan Dipadamkan</div>
-                <div class="stat-value" id="kpiLuasPadam">-</div>
-                <div class="stat-sub" id="kpiLuasPadamSub">hektar</div>
-              </div>
-              <div class="stat-card stat-danger">
-                <div class="stat-label"><svg class="ico" viewBox="0 0 24 24"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z" /><line x1="12" y1="9" x2="12" y2="13" /><line x1="12" y1="17" x2="12.01" y2="17" /></svg>Keluasan Belum Dipadamkan</div>
-                <div class="stat-value" id="kpiLuasBelum">-</div>
-                <div class="stat-sub" id="kpiLuasBelumSub">hektar</div>
-              </div>
-            </div>
-          </div>
-
+  <div class="kpi-section-head">
+    <span class="ksh-title">Keluasan Kebakaran Terbuka</span>
+    <span class="ksh-count" id="kpiLuasTotal">— hektar</span>
+  </div>
+  <div class="stat-grid">
+    <div class="stat-card stat-warning">
+      <div class="stat-label"><svg class="ico" viewBox="0 0 24 24"><path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z" /></svg>Keluasan Kebakaran Terbuka</div>
+      <div class="stat-value" id="kpiLuasKebakaran">-</div>
+      <div class="stat-sub" id="kpiLuasKebakaranSub">hektar</div>
+    </div>
+    <div class="stat-card stat-success">
+      <div class="stat-label"><svg class="ico" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" /><polyline points="22 4 12 14.01 9 11.01" /></svg>Keluasan Dipadamkan</div>
+      <div class="stat-value" id="kpiLuasPadam">-</div>
+      <div class="stat-sub" id="kpiLuasPadamSub">hektar</div>
+    </div>
+    <div class="stat-card stat-danger">
+      <div class="stat-label"><svg class="ico" viewBox="0 0 24 24"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z" /><line x1="12" y1="9" x2="12" y2="13" /><line x1="12" y1="17" x2="12.01" y2="17" /></svg>Keluasan Belum Dipadamkan</div>
+      <div class="stat-value" id="kpiLuasBelum">-</div>
+      <div class="stat-sub" id="kpiLuasBelumSub">hektar</div>
+    </div>
+    <div class="stat-card stat-gold">
+      <div class="stat-label"><svg class="ico" viewBox="0 0 24 24"><path d="M12 2C12 2 6 8 6 14a6 6 0 0 0 12 0c0-6-6-12-6-12z" /><circle cx="12" cy="14" r="2" /></svg>Kebakaran Tanah Gambut</div>
+      <div class="stat-value" id="kpiGambut">-</div>
+      <div class="stat-sub" id="kpiGambutSub">-</div>
+    </div>
+  </div>
+</div>
           <div class="section-title">
             <svg class="ico" viewBox="0 0 24 24"><path d="M21.21 15.89A10 10 0 1 1 8 2.83" /><path d="M22 12A10 10 0 0 0 12 2v10z" /></svg>
             Pecahan Mengikut Kategori
