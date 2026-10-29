@@ -515,7 +515,7 @@ let dataCache = null;
 let supabaseClient = null;
 let realtimeChannel = null;
 let realtimeDebounceTimer = null;
-const FALLBACK_POLL_MS = 60000;
+// FALLBACK_POLL_MS dibuang — hanya guna realtime Supabase
 
 // ============================================================
 // KONSTANTA (COPY TEPAT DARI FILE 2)
@@ -1044,15 +1044,15 @@ function initRealtime() {
       if (labelShort) labelShort.innerText = 'Live';
     } else if (status === 'CHANNEL_ERROR' || status === 'TIMED_OUT') {
       badge.className = 'text-[8px] md:text-xs text-amber-100 font-medium flex items-center gap-1 bg-amber-900/30 px-2 py-1 md:px-3 md:py-1.5 rounded-lg';
-      if (label) label.innerText = 'Live terputus — guna refresh berkala';
+      if (label) label.innerText = 'Live terputus — klik Refresh';   // ← DITUKAR
       if (labelShort) labelShort.innerText = 'Offline';
     } else if (status === 'CLOSED') {
       badge.className = 'text-[8px] md:text-xs text-slate-300 font-medium flex items-center gap-1 bg-black/20 px-2 py-1 md:px-3 md:py-1.5 rounded-lg';
-      if (label) label.innerText = 'Live dihentikan';
+      if (label) label.innerText = 'Live dihentikan — klik Refresh'; // ← DITUKAR
       if (labelShort) labelShort.innerText = 'Offline';
     }
   });
-  setInterval(fetchData, FALLBACK_POLL_MS);
+  // setInterval(fetchData, FALLBACK_POLL_MS); // ← DIBUANG — realtime sahaja
 }
 
 // ============================================================
