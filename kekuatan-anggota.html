@@ -411,83 +411,98 @@
         }
       }
 
-            /* ═══════════════════════════════════════════════════
-         NOTA PERMANEN — PERINGATAN WAKTU PENGISIAN
-         ═══════════════════════════════════════════════════ */
-         .fill-time-reminder {
-        display: flex;
-        align-items: center;
-        gap: 0.65rem;
-        padding: 0.7rem 1rem;
-        margin-bottom: 0.85rem;
-        background: linear-gradient(90deg,
-          rgba(75, 142, 247, 0.10),
-          rgba(31, 168, 160, 0.10));
-        border: 1px solid rgba(75, 142, 247, 0.35);
-        border-left: 4px solid var(--blue);
-        border-radius: var(--radius-sm);
-        font-family: 'Inter', system-ui, sans-serif;
-        font-size: 0.78rem;
-        color: var(--text);
-        line-height: 1.5;
-        box-shadow: var(--shadow-sm);
-      }
-      .fill-time-reminder .ico {
-        font-size: 1.2rem;
-        color: var(--blue);
-        flex-shrink: 0;
-        stroke-width: 2.2;
-      }
-      .fill-time-reminder b {
-        color: var(--blue);
-        font-weight: 700;
-      }
-      .fill-time-reminder u {
-        text-decoration-color: var(--amber);
-        text-underline-offset: 3px;
-        color: var(--amber);
-        font-weight: 600;
-      }
-      .fill-time-reminder .time-badge {
-        display: inline-block;
-        font-family: 'IBM Plex Sans', system-ui, sans-serif;
-        font-variant-numeric: tabular-nums;
-        font-weight: 700;
-        padding: 0.15rem 0.55rem;
-        margin: 0 0.15rem;
-        background: rgba(75, 142, 247, 0.18);
-        border: 1px solid rgba(75, 142, 247, 0.5);
-        border-radius: 4px;
-        color: var(--blue);
-        font-size: 0.82rem;
-        letter-spacing: 0.03em;
-        white-space: nowrap;
-      }
-      [data-theme='light'] .fill-time-reminder {
-        background: linear-gradient(90deg,
-          rgba(44, 111, 216, 0.08),
-          rgba(21, 132, 124, 0.08));
-        border-color: rgba(44, 111, 216, 0.35);
-      }
-      [data-theme='light'] .fill-time-reminder b { color: var(--blue); }
-      [data-theme='light'] .fill-time-reminder .time-badge {
-        background: rgba(44, 111, 216, 0.12);
-        border-color: rgba(44, 111, 216, 0.45);
-      }
-      @media (max-width: 640px) {
-        .fill-time-reminder {
-          font-size: 0.72rem;
-          padding: 0.6rem 0.75rem;
-          flex-wrap: wrap;
-        }
-        .fill-time-reminder .time-badge {
-          font-size: 0.75rem;
-          padding: 0.1rem 0.45rem;
-        }
-      }
-      @media print {
-        .fill-time-reminder { display: none !important; }
-      }
+/* ═══════════════════════════════════════════════════
+   NOTA PERMANEN — PERINGATAN WAKTU PENGISIAN (MERAH)
+   ═══════════════════════════════════════════════════ */
+   .fill-time-reminder {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.65rem;
+  padding: 0.7rem 1rem;
+  margin-bottom: 0.85rem;
+  background: linear-gradient(90deg,
+    rgba(214, 52, 71, 0.12),
+    rgba(214, 52, 71, 0.05));
+  border: 1px solid rgba(214, 52, 71, 0.45);
+  border-left: 4px solid var(--red);
+  border-radius: var(--radius-sm);
+  font-family: 'Inter', system-ui, sans-serif;
+  font-size: 0.78rem;
+  color: var(--text);
+  line-height: 1.5;
+  box-shadow: var(--shadow-sm);
+}
+.fill-time-reminder .ico {
+  font-size: 1.2rem;
+  color: var(--red);
+  flex-shrink: 0;
+  stroke-width: 2.2;
+  margin-top: 0.2rem;
+}
+.fill-time-reminder b {
+  color: var(--red);
+  font-weight: 700;
+}
+.fill-time-reminder u {
+  text-decoration-color: var(--red);
+  text-underline-offset: 3px;
+  color: var(--red);
+  font-weight: 700;
+}
+.fill-time-reminder .time-badge {
+  display: inline-block;
+  font-family: 'IBM Plex Sans', system-ui, sans-serif;
+  font-variant-numeric: tabular-nums;
+  font-weight: 700;
+  padding: 0.15rem 0.55rem;
+  margin: 0 0.15rem;
+  background: rgba(214, 52, 71, 0.18);
+  border: 1px solid rgba(214, 52, 71, 0.55);
+  border-radius: 4px;
+  color: var(--red);
+  font-size: 0.82rem;
+  letter-spacing: 0.03em;
+  white-space: nowrap;
+}
+[data-theme='light'] .fill-time-reminder {
+  background: linear-gradient(90deg,
+    rgba(192, 41, 61, 0.10),
+    rgba(192, 41, 61, 0.04));
+  border-color: rgba(192, 41, 61, 0.45);
+}
+[data-theme='light'] .fill-time-reminder b { color: var(--red); }
+[data-theme='light'] .fill-time-reminder .time-badge {
+  background: rgba(192, 41, 61, 0.12);
+  border-color: rgba(192, 41, 61, 0.45);
+}
+/* ── Amaran tambahan ── */
+.fill-time-reminder .warn-line {
+  display: block;
+  margin-top: 0.4rem;
+  padding-top: 0.4rem;
+  border-top: 1px dashed rgba(214, 52, 71, 0.4);
+  color: var(--rosak);
+  font-weight: 600;
+  font-size: 0.74rem;
+  line-height: 1.45;
+}
+[data-theme='light'] .fill-time-reminder .warn-line {
+  border-top-color: rgba(192, 41, 61, 0.35);
+}
+@media (max-width: 640px) {
+  .fill-time-reminder {
+    font-size: 0.72rem;
+    padding: 0.6rem 0.75rem;
+    flex-wrap: wrap;
+  }
+  .fill-time-reminder .time-badge {
+    font-size: 0.75rem;
+    padding: 0.1rem 0.45rem;
+  }
+}
+@media print {
+  .fill-time-reminder { display: none !important; }
+}
 
       .topbar {
         display: flex; flex-wrap: wrap; gap: 0.75rem 1rem; align-items: center;
@@ -4821,12 +4836,15 @@ table.semak-lokasi.duplicate-transposed tbody tr:hover td.col-sticky-2 {
         </svg>
         <span>
           <b>PERINGATAN PENGISIAN DATA:</b> Sila isi maklumat <b>KEKUATAN ANGGOTA</b> pada julat waktu
-          <span class="time-badge">0756 – 0830</span> (SHIFT PAGI) &amp;
-          <span class="time-badge">1956 – 2030</span> (SHIFT MALAM)
-          bagi memastikan kelancaran semakan data Kekuatan Anggota kepada Pusat Gerakan Operasi Kebangsaan(PGOK).
+          <span class="time-badge">0800 – 0830</span> (SHIFT PAGI) &amp;
+          <span class="time-badge">2000 – 2030</span> (SHIFT MALAM)
+          bagi memastikan kelancaran semakan data Kekuatan Anggota kepada Pusat Gerakan Operasi Kebangsaan (PGOK).
+          <span class="warn-line">
+            ⚠️ AMARAN: Maklumat yang dimasukkan <u>SEBELUM</u> waktu reset syif (07:55 &amp; 19:55) akan <u>DIKOSONGKAN</u> secara automatik dan perlu <u>DIISI SEMULA</u>.
+          </span>
         </span>
       </div>
-
+      
       <div class="topbar">
         <div class="crest">
           <span id="topbarPrefix">BALAI BOMBA DAN PENYELAMAT —</span>
