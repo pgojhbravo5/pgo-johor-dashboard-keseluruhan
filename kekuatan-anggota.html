@@ -411,6 +411,84 @@
         }
       }
 
+            /* ═══════════════════════════════════════════════════
+         NOTA PERMANEN — PERINGATAN WAKTU PENGISIAN
+         ═══════════════════════════════════════════════════ */
+         .fill-time-reminder {
+        display: flex;
+        align-items: center;
+        gap: 0.65rem;
+        padding: 0.7rem 1rem;
+        margin-bottom: 0.85rem;
+        background: linear-gradient(90deg,
+          rgba(75, 142, 247, 0.10),
+          rgba(31, 168, 160, 0.10));
+        border: 1px solid rgba(75, 142, 247, 0.35);
+        border-left: 4px solid var(--blue);
+        border-radius: var(--radius-sm);
+        font-family: 'Inter', system-ui, sans-serif;
+        font-size: 0.78rem;
+        color: var(--text);
+        line-height: 1.5;
+        box-shadow: var(--shadow-sm);
+      }
+      .fill-time-reminder .ico {
+        font-size: 1.2rem;
+        color: var(--blue);
+        flex-shrink: 0;
+        stroke-width: 2.2;
+      }
+      .fill-time-reminder b {
+        color: var(--blue);
+        font-weight: 700;
+      }
+      .fill-time-reminder u {
+        text-decoration-color: var(--amber);
+        text-underline-offset: 3px;
+        color: var(--amber);
+        font-weight: 600;
+      }
+      .fill-time-reminder .time-badge {
+        display: inline-block;
+        font-family: 'IBM Plex Sans', system-ui, sans-serif;
+        font-variant-numeric: tabular-nums;
+        font-weight: 700;
+        padding: 0.15rem 0.55rem;
+        margin: 0 0.15rem;
+        background: rgba(75, 142, 247, 0.18);
+        border: 1px solid rgba(75, 142, 247, 0.5);
+        border-radius: 4px;
+        color: var(--blue);
+        font-size: 0.82rem;
+        letter-spacing: 0.03em;
+        white-space: nowrap;
+      }
+      [data-theme='light'] .fill-time-reminder {
+        background: linear-gradient(90deg,
+          rgba(44, 111, 216, 0.08),
+          rgba(21, 132, 124, 0.08));
+        border-color: rgba(44, 111, 216, 0.35);
+      }
+      [data-theme='light'] .fill-time-reminder b { color: var(--blue); }
+      [data-theme='light'] .fill-time-reminder .time-badge {
+        background: rgba(44, 111, 216, 0.12);
+        border-color: rgba(44, 111, 216, 0.45);
+      }
+      @media (max-width: 640px) {
+        .fill-time-reminder {
+          font-size: 0.72rem;
+          padding: 0.6rem 0.75rem;
+          flex-wrap: wrap;
+        }
+        .fill-time-reminder .time-badge {
+          font-size: 0.75rem;
+          padding: 0.1rem 0.45rem;
+        }
+      }
+      @media print {
+        .fill-time-reminder { display: none !important; }
+      }
+
       .topbar {
         display: flex; flex-wrap: wrap; gap: 0.75rem 1rem; align-items: center;
         background: linear-gradient(180deg, var(--panel-2), var(--panel));
@@ -4736,6 +4814,19 @@ table.semak-lokasi.duplicate-transposed tbody tr:hover td.col-sticky-2 {
         </div>
       </div>
 
+      <div class="fill-time-reminder" id="fillTimeReminder" role="note" aria-label="Peringatan waktu pengisian data">
+        <svg class="ico" viewBox="0 0 24 24" aria-hidden="true">
+          <circle cx="12" cy="12" r="10"/>
+          <polyline points="12 6 12 12 16 14"/>
+        </svg>
+        <span>
+          <b>PERINGATAN PENGISIAN DATA:</b> Sila isi maklumat <b>KEKUATAN ANGGOTA</b> pada waktu
+          <span class="time-badge">0756 – 0830</span> (SHIFT PAGI) &amp;
+          <span class="time-badge">1956 – 2030</span> (SHIFT MALAM)
+          untuk <u>memudahkan urusan semakan data kekuatan anggota kepada PGOK (HQ Putrajaya)</u>.
+        </span>
+      </div>
+
       <div class="topbar">
         <div class="crest">
           <span id="topbarPrefix">BALAI BOMBA DAN PENYELAMAT —</span>
@@ -4967,7 +5058,7 @@ table.semak-lokasi.duplicate-transposed tbody tr:hover td.col-sticky-2 {
           <b>©2026 PGO JOHOR</b><span class="sep">|</span>HAK CIPTA TERPELIHARA
         </div>
         <div class="sf-layer-bottom">
-          <div class="sf-item">Versi Sistem: <b>v2.4.6</b></div>
+          <div class="sf-item">Versi Sistem: <b>v2.4.7</b></div>
           <div class="sf-item">Pembina Aplikasi & Sistem: <b>PB Mohamad Aidil bin Zainal Abidin</b></div>
           <div class="sf-item">Penyedia Tutorial (Cara Penggunaan): <b>PB Jevinson Justin</b></div>
         </div>
@@ -5255,7 +5346,7 @@ console.log(`[Supabase] Status Rotation: Menggunakan 🟢 ${SUPABASE_CONFIG.name
 
 const sb = window.supabase.createClient(SUPABASE_CONFIG.url, SUPABASE_CONFIG.anonKey);
 
-const APP_VERSION = 'v2.4.6';
+const APP_VERSION = 'v2.4.7';
 const APP_VERSION_LS_KEY = 'bomba-app-version';
 
 async function forceHardReload() {
