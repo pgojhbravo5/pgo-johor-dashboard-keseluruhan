@@ -326,6 +326,9 @@ const GROUPS = [
   { k: 'd', t: 'Daerah', ph: 'Cari daerah...', ic: 'fa-map' },
   { k: 'z', t: 'Zon', ph: '', ic: 'fa-layer-group' },
   { k: 'b', t: 'Balai', ph: 'Cari balai...', ic: 'fa-house-fire' },
+  { k: 'm', t: 'Bulan', ph: 'Cari bulan...', ic: 'fa-calendar-alt' },         // <-- TAMBAH INI
+  { k: 'hr', t: 'Hari', ph: 'Cari hari...', ic: 'fa-calendar-day' },          // <-- TAMBAH INI
+  { k: 'sy', t: 'Syif', ph: 'Cari syif...', ic: 'fa-clock' },                 // <-- TAMBAH INI
   { k: 'k', t: 'Kategori Kes', ph: 'Cari kategori...', ic: 'fa-tags', isNew: true, byCount: true },
   { k: 's1', t: 'Sub Kategori 1', ph: 'Cari sub kategori 1...', ic: 'fa-sitemap', isNew: true, byCount: true },
   { k: 's2', t: 'Sub Kategori 2', ph: 'Cari sub kategori 2...', ic: 'fa-code-branch', isNew: true, byCount: true },
@@ -370,17 +373,28 @@ function parse(text) {
     kat: f(/^KATEGORI PANGGILAN OPERASI/), sub1: f(/^SUB KATEGORI 1/), sub2: f(/^SUB KATEGORI 2/),
     jenis: f(/^JENIS PANGGILAN OPERASI/), jarak: f(/^JARAK BALAI/), terima: f(/^MASA TERIMA PANGGILAN/),
     tiba: f(/^MASA JENTERA TIBA/), tp: f(/^TEMPOH SEBENAR JENTERA TIBA/), kpi: f(/^STATUS KPI RT 10 MINIT/),
-    card: f(/^CALL CARD/), mangsa: f(/^MELIBATKAN MANGSA/), jam: f(/^JUMLAH JAM OPERASI/), peny: f(/^NAMA PENYELIA/)
+    card: f(/^CALL CARD/), mangsa: f(/^MELIBATKAN MANGSA/), jam: f(/^JUMLAH JAM OPERASI/), peny: f(/^NAMA PENYELIA/),
+    bulan: f(/^BULAN$/),                                                         // <-- TAMBAH INI
+    hari: f(/^DAY$/) || f(/^HARI$/),                                             // <-- TAMBAH INI
+    syif: f(/^SYIF$/)                                                            // <-- TAMBAH INI
   };
+  
   const miss = ['balai', 'zon', 'daerah', 'lat', 'lng'].filter((k) => !C[k]);
   if (miss.length) { showMsg('Lajur tidak dijumpai dalam CSV: ' + miss.join(', ').toUpperCase()); return; }
-  const warn = ['kat', 'sub1', 'sub2', 'jenis'].filter((k) => !C[k]);
+  const warn = ['kat', 'sub1', 'sub2', 'jenis', 'bulan', 'hari', 'syif'].filter((k) => !C[k]); // <-- TAMBAH 'bulan', 'hari', 'syif'
+  
   rows = []; bad = [];
   res.data.forEach((r) => {
     r._b = up(r[C.balai]); r._z = zkey(r[C.zon]); r._d = up(r[C.daerah]);
     
+    // TAMBAH 3 BARIS DI BAWAH INI:
+    r._m = (C.bulan ? up(r[C.bulan]) : '') || '(TIADA)';                         
+    r._hr = (C.hari ? up(r[C.hari]) : '') || '(TIADA)';                          
+    r._sy = (C.syif ? up(r[C.syif]) : '') || '(TIADA)';                          
+    
     r._k = (C.kat ? up(r[C.kat]) : '') || '(TIADA)';
     r._s1 = (C.sub1 ? up(r[C.sub1]) : '') || '(TIADA)';
+    
     r._s2 = (C.sub2 ? up(r[C.sub2]) : '') || '(TIADA)';
     r._j = (C.jenis ? up(r[C.jenis]) : '') || '(TIADA)';
     if (!r._b) return;
