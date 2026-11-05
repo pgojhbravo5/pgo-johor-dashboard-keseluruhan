@@ -5076,7 +5076,7 @@ table.semak-lokasi.duplicate-transposed tbody tr:hover td.col-sticky-2 {
           <b>©2026 PGO JOHOR</b><span class="sep">|</span>HAK CIPTA TERPELIHARA
         </div>
         <div class="sf-layer-bottom">
-          <div class="sf-item">Versi Sistem: <b>v2.4.8</b></div>
+          <div class="sf-item">Versi Sistem: <b>v2.4.9</b></div>
           <div class="sf-item">Pembina Aplikasi & Sistem: <b>PB Mohamad Aidil bin Zainal Abidin</b></div>
           <div class="sf-item">Penyedia Tutorial (Cara Penggunaan): <b>PB Jevinson Justin</b></div>
         </div>
@@ -5346,10 +5346,16 @@ const SUPABASE_CONFIGS = [
   }
 ];
 
+/* ═══ JAM PELAYAN (elak jam peranti salah) ═══ */
+let CLOCK_OFFSET_MS = 0;
+try { CLOCK_OFFSET_MS = parseInt(sessionStorage.getItem('bomba-clock-offset') || '0', 10) || 0; } catch (e) {}
+function nowSynced() { return Date.now() + CLOCK_OFFSET_MS; }
+
 function getActiveSupabaseConfig() {
   const baselineTime = new Date('2026-11-04T07:55:00+08:00').getTime();
-  const currentTime = Date.now();
-  
+
+  const currentTime = nowSynced();
+
   // ⚠️ Sebelum baseline, guna Akaun 3 (TERTIARY) - index [2]
   if (currentTime < baselineTime) return SUPABASE_CONFIGS[2]; 
   
@@ -5364,7 +5370,57 @@ console.log(`[Supabase] Status Rotation: Menggunakan 🟢 ${SUPABASE_CONFIG.name
 
 const sb = window.supabase.createClient(SUPABASE_CONFIG.url, SUPABASE_CONFIG.anonKey);
 
-const APP_VERSION = 'v2.4.8';
+
+/* ═══ WATCHDOG ROTATION ═══ */
+const BOOT_SUPABASE_URL = SUPABASE_CONFIG.url;
+let rotationReloading = false;
+
+function checkRotationDrift(reason) {
+  if (rotationReloading) return;
+  try { if (scheduledRunInProgress) return; } catch (e) {}
+
+  const live = getActiveSupabaseConfig();
+  if (live.url === BOOT_SUPABASE_URL) return;
+
+  // Jika masih dalam tetingkap reset 07:55-08:00, biar fungsi reset yang uruskan
+  try { if (isInRotationResetWindow()) return; } catch (e) {}
+
+  forceRotationReload(reason);
+}
+
+function forceRotationReload(reason) {
+  if (rotationReloading) return;
+  try {
+    const last = parseInt(sessionStorage.getItem('bomba-rot-reload') || '0', 10);
+    if (Date.now() - last < 30000) return;
+    sessionStorage.setItem('bomba-rot-reload', String(Date.now()));
+  } catch (e) {}
+
+  rotationReloading = true;
+  console.warn('[Rotation] Akaun bertukar (' + reason + ') →', getActiveSupabaseConfig().name);
+  try { showToastSilent('🔄 Sistem bertukar pelayan — memuat semula…', 'success'); } catch (e) {}
+  setTimeout(forceHardReload, 400);
+}
+
+(async function syncClock() {
+  try {
+    const r = await fetch(location.pathname + '?_t=' + Date.now(), { method: 'HEAD', cache: 'no-store' });
+    const d = r.headers.get('Date');
+    if (d) {
+      CLOCK_OFFSET_MS = new Date(d).getTime() - Date.now();
+      try { sessionStorage.setItem('bomba-clock-offset', String(CLOCK_OFFSET_MS)); } catch (e) {}
+      checkRotationDrift('clock-sync');
+    }
+  } catch (e) {}
+})();
+
+setInterval(function () { checkRotationDrift('timer'); }, 5000);
+document.addEventListener('visibilitychange', function () { if (!document.hidden) checkRotationDrift('visible'); });
+window.addEventListener('focus',    function () { checkRotationDrift('focus'); });
+window.addEventListener('pageshow', function () { checkRotationDrift('pageshow'); });
+window.addEventListener('online',   function () { checkRotationDrift('online'); });
+
+const APP_VERSION = 'v2.4.9';
 const APP_VERSION_LS_KEY = 'bomba-app-version';
 
 async function forceHardReload() {
@@ -8285,6 +8341,7 @@ updateDirtyUI();
           if (diff >= SCHEDULED_WINDOW_MIN) {
             localStorage.setItem(runKey, 'missed');
             console.log('[Scheduled] Slot ' + slot.label + ' terlepas — skip');
+            try { checkRotationDrift('slot-missed'); } catch (e) {}
             continue;
           }
 
@@ -8303,6 +8360,67 @@ updateDirtyUI();
       }
 
       async function executeScheduledArchiveReset(slot, runKey) {
+  scheduledRunInProgress = true;
+  console.log('[Scheduled] Mula auto reset: ' + slot.label);
+
+  showAutoResetNotice();
+  setAutoResetNoticeProgress('Menyediakan reset…');
+
+  try {
+    const oldCfg = SUPABASE_CONFIG;            // akaun lama (yang tab ini guna)
+    const newCfg = getActiveSupabaseConfig();  // akaun baharu (live)
+    const targets = [oldCfg];
+    if (newCfg.url !== oldCfg.url) targets.push(newCfg);
+
+    const failedList = [];
+    for (let i = 0; i < targets.length; i++) {
+      const cfg = targets[i];
+      setAutoResetNoticeProgress(
+        '🔄 Reset ' + (i === 0 ? 'akaun lama' : 'akaun baharu') + ' — ' + cfg.name + '… (' + (i + 1) + '/' + targets.length + ')'
+      );
+      try {
+        await resetAccountByConfig(cfg);
+      } catch (err) {
+        console.error('[Scheduled] Gagal reset ' + cfg.name + ':', err);
+        failedList.push(cfg.name);
+      }
+    }
+
+    clearAllDrafts();
+    localStorage.setItem(runKey, failedList.length ? 'failed' : 'done');
+
+    if (failedList.length) {
+      setAutoResetNoticeProgress('⚠ Sebahagian gagal: ' + failedList.join(', ') + ' — memuat semula…');
+      playToastErrorSound();
+      showToast('Reset separa gagal: ' + failedList.join(', '), 'error');
+    } else {
+      setAutoResetNoticeProgress('✓ Selesai! Memuat semula sistem…');
+      playToastSuccessSound();
+      showToast('🔄 Reset selesai — beralih ke ' + newCfg.name, 'success');
+    }
+
+    // Reload TETAP berlaku walaupun reset gagal, supaya pengguna tidak stuck
+    setTimeout(function () {
+      try {
+        localStorage.setItem('bomba-ui-prefs', JSON.stringify({
+          view: 'balai',
+          activeBalai: BALAI_LIST[0].name,
+        }));
+      } catch (e) {}
+      forceHardReload();
+    }, 1500);
+
+  } catch (err) {
+    console.error('[Scheduled] Gagal:', err);
+    localStorage.setItem(runKey, 'failed');
+    setAutoResetNoticeProgress('❌ Gagal: ' + err.message + ' — memuat semula…');
+    playErrorSound();
+    setTimeout(forceHardReload, 2500);
+  }
+}
+
+      async function executeScheduledArchiveReset_OLD(slot, runKey) {
+        
         scheduledRunInProgress = true;
         console.log('[Scheduled] Mula auto arkib + reset: ' + slot.label);
 
@@ -8517,6 +8635,39 @@ updateDirtyUI();
         if (error) throw new Error(error.message);
         return { ok: true };
       }
+      /* ═══ RESET SATU AKAUN SUPABASE ═══ */
+async function resetAccountByConfig(cfg) {
+  const c = (cfg.url === SUPABASE_CONFIG.url)
+    ? sb
+    : window.supabase.createClient(cfg.url, cfg.anonKey);
+
+  for (const b of BALAI_LIST) {
+    const { error } = await c.from('ident').delete().eq('balai', b.name);
+    if (error) throw new Error(cfg.name + ' / ' + b.name + ': ' + error.message);
+  }
+
+  const { error: e2 } = await c.from('panel_lock').update({
+    locked: false, locked_by: null, locked_at: null,
+    updated_at: new Date().toISOString(),
+  }).neq('panel_key', '');
+  if (e2) console.warn('[Rotation] unlock ' + cfg.name + ':', e2.message);
+}
+
+/* Adakah sekarang dalam tetingkap reset 07:55-08:00 yang belum selesai? */
+function isInRotationResetWindow() {
+  const now = getMalaysiaNow();
+  const nowMin = now.hour * 60 + now.minute;
+  for (const slot of SCHEDULED_SLOTS) {
+    const diff = nowMin - (slot.hour * 60 + slot.minute);
+    if (diff >= 0 && diff < SCHEDULED_WINDOW_MIN) {
+      if (!localStorage.getItem(slotRunKey(slot, now))) return true;
+    }
+  }
+  return false;
+}
+
+
+
             async function unlockAllPanels() {
   try {
     const { error } = await sb
