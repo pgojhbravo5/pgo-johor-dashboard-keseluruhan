@@ -5550,6 +5550,10 @@ body.mode-siang .peta-legend-overlay .pts-line + .pts-line {
                     <span data-ms="Tugas Khas" data-en="Special Duty">Tugas Khas</span>
                     <span class="chip-count" data-count="TUGAS KHAS">0</span>
                 </button>
+                <button class="filter-chip" data-filter="HRM">
+                    <span>HRM</span>
+                    <span class="chip-count" data-count="HRM">0</span>
+                </button>
             </div>
 
             <div class="pasukan-modal-search-wrap">
@@ -7370,14 +7374,15 @@ if (petaFullscreenBtn) {
                     getActiveUnitsForAnggota(a).includes(modalUnitAktif)
                 );
 
-                const counts = {
+                                const counts = {
                     'SEMUA': allMembers.length,
                     'BERTUGAS': allMembers.filter(m => m.status === 'BERTUGAS').length,
                     'CUTI': allMembers.filter(m => m.status === 'CUTI').length,
                     'CUTI SAKIT': allMembers.filter(m => m.status === 'CUTI SAKIT').length,
-                    'TUGAS KHAS': allMembers.filter(m => m.status === 'TUGAS KHAS').length
+                    'TUGAS KHAS': allMembers.filter(m => m.status === 'TUGAS KHAS').length,
+                    'HRM': allMembers.filter(m => m.status === 'HRM').length
                 };
-                document.querySelectorAll('#pasukanModalFilters .chip-count').forEach(el => {
+                                document.querySelectorAll('#pasukanModalFilters .chip-count').forEach(el => {
                     const key = el.getAttribute('data-count');
                     el.textContent = counts[key] || 0;
                 });
@@ -7604,7 +7609,7 @@ if (petaFullscreenBtn) {
                             total = bertugas + cuti + sakit + tugasKhas;
                         }
                     } catch (e) { console.warn('Gagal ambil dashboard_stats:', e); }
-                    
+
                     // 5. Paparkan ke UI (Angka utama tepat sama dengan File 1)
                     const setTxt = (id, val) => {
                         const el = document.getElementById(id);
