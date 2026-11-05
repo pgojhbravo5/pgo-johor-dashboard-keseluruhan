@@ -7584,29 +7584,11 @@ if (petaFullscreenBtn) {
 
                     const anggotaUnik = Array.isArray(anggotaList) ? anggotaList : [];
                     anggotaCacheForUnits = anggotaUnik;
-                    
-                                        // 4. Ambil statistik tepat dari jadual dashboard_stats (dikira oleh File 1)
-                                        let total = 0, bertugas = 0, cuti = 0, sakit = 0, tugasKhas = 0;
+
+                                                            // 4. Ambil statistik tepat dari jadual dashboard_stats (akaun aktif)
+                    let total = 0, bertugas = 0, cuti = 0, sakit = 0, tugasKhas = 0;
                     try {
-                        // ⚠️ PENTING: Guna logik Rotation yang sama macam File 1
-                        const SUPABASE_CONFIGS = [
-                            { url: 'https://nstmylzvqckhrpxmbufx.supabase.co', anonKey: 'sb_publishable_6i7rUdjTRmOYMcookS6CFQ_lwXyRJJL' },
-                            { url: 'https://lcotpxtdkmrtojavopvk.supabase.co', anonKey: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imxjb3RweHRka21ydG9qYXZvcHZrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTE3NzY2NzUsImV4cCI6MjEwNzM1MjY3NX0.Km7gu_riMtFRsdqda_2UbkLIPIjhYRy2iYSYSDZmKBE' },
-                            { url: 'https://kdwhvqfglnrhaeqpdtzr.supabase.co', anonKey: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imtkd2h2cWZnbG5yaGFlcXBkdHpyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTI5NjIzNzcsImV4cCI6MjEwODUzODM3N30.tOw0mvRvTiYJ-eLXH0lcvmKIvic8XqbcT0_NvvuA3-Y' }
-                        ];
-
-                        const baselineTime = new Date('2026-11-04T07:55:00+08:00').getTime();                        const currentTime = Date.now();
-                        let activeConfig;
-
-                        if (currentTime < baselineTime) {
-                            // ⚠️ PEMBETULAN: Sebelum 4 Nov 2026, guna Akaun 3 (TERTIARY) - index [2]
-                            activeConfig = SUPABASE_CONFIGS[2]; 
-                        } else {
-                            const msPerDay = 24 * 60 * 60 * 1000;
-                            const daysPassed = Math.floor((currentTime - baselineTime) / msPerDay);
-                            const activeIndex = ((daysPassed % 3) + 3) % 3;
-                            activeConfig = SUPABASE_CONFIGS[activeIndex];
-                        }
+                        const activeConfig = getActiveSupabaseConfig();
 
                         const resStat = await fetch(`${activeConfig.url}/rest/v1/dashboard_stats?id=eq.1`, {
                             headers: { apikey: activeConfig.anonKey, Authorization: 'Bearer ' + activeConfig.anonKey }
@@ -7622,7 +7604,7 @@ if (petaFullscreenBtn) {
                             total = bertugas + cuti + sakit + tugasKhas;
                         }
                     } catch (e) { console.warn('Gagal ambil dashboard_stats:', e); }
-
+                    
                     // 5. Paparkan ke UI (Angka utama tepat sama dengan File 1)
                     const setTxt = (id, val) => {
                         const el = document.getElementById(id);
