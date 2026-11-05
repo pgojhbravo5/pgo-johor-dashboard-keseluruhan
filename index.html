@@ -7511,58 +7511,80 @@ if (petaFullscreenBtn) {
                 anonKey: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imtkd2h2cWZnbG5yaGFlcXBkdHpyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTI5NjIzNzcsImV4cCI6MjEwODUzODM3N30.tOw0mvRvTiYJ-eLXH0lcvmKIvic8XqbcT0_NvvuA3-Y',
             };
 
-            // Senarai semua config untuk digabungkan
-            const ALL_SUPABASE_CONFIGS = [
+                        // Senarai semua config
+                        const ALL_SUPABASE_CONFIGS = [
                 SUPABASE_CONFIG_PRIMARY,
                 SUPABASE_CONFIG_SECONDARY,
                 SUPABASE_CONFIG_TERTIARY
             ];
 
+            /* ═══ JAM PELAYAN + AKAUN AKTIF (sama seperti File 1 & 2) ═══ */
+            let CLOCK_OFFSET_MS = 0;
+            try { CLOCK_OFFSET_MS = parseInt(sessionStorage.getItem('bomba-clock-offset') || '0', 10) || 0; } catch (e) {}
+            function nowSynced() { return Date.now() + CLOCK_OFFSET_MS; }
+
+            function getActiveSupabaseConfig() {
+                const baselineTime = new Date('2026-11-04T07:55:00+08:00').getTime();
+                const currentTime = nowSynced();
+                if (currentTime < baselineTime) return ALL_SUPABASE_CONFIGS[2];
+                const daysPassed = Math.floor((currentTime - baselineTime) / (24 * 60 * 60 * 1000));
+                return ALL_SUPABASE_CONFIGS[((daysPassed % 3) + 3) % 3];
+            }
+
+            const BOOT_SUPABASE_URL = getActiveSupabaseConfig().url;
+            console.log('[Index] Config Rotation Aktif: 🟢', BOOT_SUPABASE_URL);
+
+            /* ═══ WATCHDOG: reload bila akaun bertukar ═══ */
+            function checkRotationDrift() {
+                if (getActiveSupabaseConfig().url === BOOT_SUPABASE_URL) return;
+                try {
+                    const last = parseInt(sessionStorage.getItem('index-rot-reload') || '0', 10);
+                    if (Date.now() - last < 30000) return;   // elak loop reload
+                    sessionStorage.setItem('index-rot-reload', String(Date.now()));
+                } catch (e) {}
+                const u = new URL(location.href);
+                u.searchParams.set('_v', Date.now());
+                location.replace(u.toString());
+            }
+
+            (async function syncClock() {
+                try {
+                    const r = await fetch(location.pathname + '?_t=' + Date.now(), { method: 'HEAD', cache: 'no-store' });
+                    const d = r.headers.get('Date');
+                    if (d) {
+                        CLOCK_OFFSET_MS = new Date(d).getTime() - Date.now();
+                        try { sessionStorage.setItem('bomba-clock-offset', String(CLOCK_OFFSET_MS)); } catch (e) {}
+                        checkRotationDrift();
+                    }
+                } catch (e) {}
+            })();
+
+            setInterval(checkRotationDrift, 5000);
+            document.addEventListener('visibilitychange', function () { if (!document.hidden) checkRotationDrift(); });
+            window.addEventListener('focus', checkRotationDrift);
+            window.addEventListener('pageshow', checkRotationDrift);
+
             // ===== FETCH ANGGOTA DARI SEMUA SUPABASE =====
             async function fetchAnggotaMiniStats() {
                 try {
-                    // 1. Fetch dari ketiga-tiga Supabase secara serentak
-                    const fetchPromises = ALL_SUPABASE_CONFIGS.map(config => {
-                        return fetch(
-                            `${config.url}/rest/v1/personel?select=status,nama,pangkat,no_badan,no_telefon,peranan,unit1,unit2,unit3,unit4,balai`,
-                            {
-                                headers: {
-                                    apikey: config.anonKey,
-                                    Authorization: 'Bearer ' + config.anonKey,
-                                    'Content-Type': 'application/json'
-                                }
+                                        // 1. Fetch HANYA dari akaun Supabase yang aktif (sama seperti File 1 & 2)
+                    const config = getActiveSupabaseConfig();
+                    const res = await fetch(
+                        `${config.url}/rest/v1/personel?select=status,nama,pangkat,no_badan,no_telefon,peranan,unit1,unit2,unit3,unit4,balai`,
+                        {
+                            headers: {
+                                apikey: config.anonKey,
+                                Authorization: 'Bearer ' + config.anonKey,
+                                'Content-Type': 'application/json'
                             }
-                        ).then(res => {
-                            if (!res.ok) throw new Error('HTTP ' + res.status);
-                            return res.json();
-                        }).catch(err => {
-                            console.warn('Gagal fetch dari ' + config.url, err);
-                            return []; // Return array kosong jika satu akaun gagal supaya yang lain tetap jalan
-                        });
-                    });
-
-                    const results = await Promise.all(fetchPromises);
-                    
-                    // 2. Gabungkan semua data dari 3 sumber
-                    let gabunganAnggota = [];
-                    results.forEach(anggotaList => {
-                        if (Array.isArray(anggotaList)) {
-                            gabunganAnggota = gabunganAnggota.concat(anggotaList);
                         }
-                    });
+                    );
+                    if (!res.ok) throw new Error('HTTP ' + res.status);
+                    const anggotaList = await res.json();
 
-                    // 3. Buang data pendua (deduplication) berdasarkan 'no_badan'
-                    // Jika no_badan tiada, guna kombinasi nama & balai
-                    const uniqueAnggotaMap = new Map();
-                    gabunganAnggota.forEach(a => {
-                        const key = a.no_badan ? String(a.no_badan).trim() : `${String(a.nama).trim()}_${String(a.balai).trim()}`;
-                        // Kita simpan data terkini (Tertiary akan override Secondary/Primary jika ada duplikasi)
-                        uniqueAnggotaMap.set(key, a); 
-                    });
-
-                    const anggotaUnik = Array.from(uniqueAnggotaMap.values());
+                    const anggotaUnik = Array.isArray(anggotaList) ? anggotaList : [];
                     anggotaCacheForUnits = anggotaUnik;
-
+                    
                                         // 4. Ambil statistik tepat dari jadual dashboard_stats (dikira oleh File 1)
                                         let total = 0, bertugas = 0, cuti = 0, sakit = 0, tugasKhas = 0;
                     try {

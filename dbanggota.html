@@ -492,13 +492,18 @@ const SUPABASE_CONFIGS = [
   }
 ];
 
+/* ═══ JAM PELAYAN (sama seperti File 2) ═══ */
+let CLOCK_OFFSET_MS = 0;
+try { CLOCK_OFFSET_MS = parseInt(sessionStorage.getItem('bomba-clock-offset') || '0', 10) || 0; } catch (e) {}
+function nowSynced() { return Date.now() + CLOCK_OFFSET_MS; }
+
 function getActiveSupabaseConfig() {
   const baselineTime = new Date('2026-11-04T07:55:00+08:00').getTime();
-  const currentTime = Date.now();
-  
+  const currentTime = nowSynced();
+
   // Sebelum 4 Nov 2026, guna Akaun 3 (Tertiary) - index [2]
-  if (currentTime < baselineTime) return SUPABASE_CONFIGS[2]; 
-  
+  if (currentTime < baselineTime) return SUPABASE_CONFIGS[2];
+
   const msPerDay = 24 * 60 * 60 * 1000;
   const daysPassed = Math.floor((currentTime - baselineTime) / msPerDay);
   const activeIndex = ((daysPassed % 3) + 3) % 3;
@@ -508,8 +513,39 @@ function getActiveSupabaseConfig() {
 const ACTIVE_CONFIG = getActiveSupabaseConfig();
 const SUPABASE_URL = ACTIVE_CONFIG.url;
 const SUPABASE_ANON_KEY = ACTIVE_CONFIG.anonKey;
+const BOOT_SUPABASE_URL = SUPABASE_URL;
 
 console.log(`[Dashboard Kekuatan] Config Rotation Aktif: 🟢 ${SUPABASE_URL}`);
+
+/* ═══ WATCHDOG ROTATION: reload bila akaun bertukar ═══ */
+function checkRotationDrift() {
+  if (getActiveSupabaseConfig().url === BOOT_SUPABASE_URL) return;
+  try {
+    const last = parseInt(sessionStorage.getItem('dash-rot-reload') || '0', 10);
+    if (Date.now() - last < 30000) return;   // elak loop reload
+    sessionStorage.setItem('dash-rot-reload', String(Date.now()));
+  } catch (e) {}
+  const u = new URL(location.href);
+  u.searchParams.set('_v', Date.now());
+  location.replace(u.toString());
+}
+
+(async function syncClock() {
+  try {
+    const r = await fetch(location.pathname + '?_t=' + Date.now(), { method: 'HEAD', cache: 'no-store' });
+    const d = r.headers.get('Date');
+    if (d) {
+      CLOCK_OFFSET_MS = new Date(d).getTime() - Date.now();
+      try { sessionStorage.setItem('bomba-clock-offset', String(CLOCK_OFFSET_MS)); } catch (e) {}
+      checkRotationDrift();
+    }
+  } catch (e) {}
+})();
+
+setInterval(checkRotationDrift, 5000);
+document.addEventListener('visibilitychange', function () { if (!document.hidden) checkRotationDrift(); });
+window.addEventListener('focus', checkRotationDrift);
+window.addEventListener('pageshow', checkRotationDrift);
 
 let dataCache = null;
 let supabaseClient = null;
