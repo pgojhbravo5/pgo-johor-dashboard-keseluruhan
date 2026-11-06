@@ -96,6 +96,11 @@ button{font:inherit}
 
 /* Gelembung agregat (jumlah ikut daerah / kawasan jagaan) */
 .agg{display:flex;align-items:center;justify-content:center;border-radius:50%;color:#fff;font:700 13px var(--font-head);border:2px solid #fff;box-shadow:0 1px 6px rgba(0,0,0,.45);cursor:pointer;transition:transform .15s}
+.pulse{position:relative;width:46px;height:46px;pointer-events:none}
+.pulse::before,.pulse::after{content:'';position:absolute;inset:0;border-radius:50%;background:rgba(220,20,40,.35);border:2px solid rgba(220,20,40,.9);transform:scale(.15);opacity:0;animation:pulse 2s ease-out infinite}
+.pulse::after{animation-delay:1s}
+@keyframes pulse{0%{transform:scale(.15);opacity:.95}70%{opacity:.35}100%{transform:scale(1);opacity:0}}
+@media (prefers-reduced-motion:reduce){.pulse::before,.pulse::after{animation:none;opacity:.4;transform:scale(.6)}}
 .agg{animation:aggpop .35s ease-out}
 @keyframes aggpop{from{opacity:0;transform:scale(.4)}to{opacity:1;transform:scale(1)}}
 .agg:hover{transform:scale(1.1)}
@@ -239,6 +244,8 @@ const CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vSecxv6lwAvZsP3
 const Z_DAERAH_MAX = 8;
 const Z_JAGAAN_MAX = 9;
 const NO_JAG = '(LUAR KAWASAN JAGAAN)';
+const Z_PULSE_MIN = 10;     // zoom minimum untuk animasi bulat merah berdenyut pada setiap titik
+const PULSE_MAX = 400;      // had bilangan denyutan serentak (untuk prestasi)
 
 const $ = (s) => document.querySelector(s);
 const norm = (s) => String(s == null ? '' : s).replace(/\s+/g, ' ').trim();
@@ -269,6 +276,8 @@ map.createPane('kml'); map.getPane('kml').style.zIndex = 350;   // di bawah titi
 const gJag = L.layerGroup().addTo(map), gZon = L.layerGroup().addTo(map), gBal = L.layerGroup().addTo(map);
 const gPts = L.layerGroup().addTo(map);   // titik terperinci
 const gAgg = L.layerGroup().addTo(map);   // gelembung jumlah
+map.createPane('pulse'); map.getPane('pulse').style.zIndex = 450; map.getPane('pulse').style.pointerEvents = 'none';
+const gPulse = L.layerGroup().addTo(map); // bulat merah berdenyut (zoom dekat)
 
 (function () {
   const mapEl = document.getElementById('map');
@@ -450,7 +459,7 @@ function aggIcon(n, cls) {
 
 /* ===== Animasi: gelembung pecah menjadi titik-titik ===== */
 let lastAgg = null, animTok = 0;
-const BURST_MS = 1100;
+const BURST_MS = 450;
 const easeInOutCubic = (t) => (t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2);
 const easeOutQuint = (t) => 1 - Math.pow(1 - t, 5);
 function burst(items) {
@@ -460,7 +469,7 @@ function burst(items) {
     if (tok !== animTok) return;                       // dibatalkan oleh render baru
     if (t0 === null) t0 = now;                         // mula dari frame pertama (tiada lompatan)
     const p = Math.min(1, (now - t0) / BURST_MS);
-    const e = p < 0.25 ? easeInOutCubic(p / 0.25) * 0.12 : 0.12 + easeOutQuint((p - 0.25) / 0.75) * 0.88; // mula perlahan, kemudian meluncur lembut
+    const e = easeOutQuint(p);                         // terus laju di awal, mendarat lembut di hujung
     const rad = 3 + 3 * easeOutQuint(p);
     const op = 0.35 + 0.55 * easeOutQuint(Math.min(1, p * 1.6));
     items.forEach((it) => {
@@ -521,7 +530,31 @@ function render() {
     });
   }
   updateLegend(curHit, lvl);
+  renderPulse();
 }
+
+/* ===== Bulat merah berdenyut bila zoom dekat ===== */
+const pulseMap = new Map();   // baris -> marker (supaya animasi tidak ulang semula bila peta digerakkan)
+function renderPulse() {
+  const on = levelNow() === 'titik' && map.getZoom() >= Z_PULSE_MIN;
+  if (!on) { gPulse.clearLayers(); pulseMap.clear(); return; }
+  const bd = map.getBounds().pad(0.25);
+  const want = new Set();
+  for (const r of curHit) {
+    if (want.size >= PULSE_MAX) break;
+    if (r._c && bd.contains(r._c)) want.add(r);
+  }
+  pulseMap.forEach((m, r) => { if (!want.has(r)) { gPulse.removeLayer(m); pulseMap.delete(r); } });
+  want.forEach((r) => {
+    if (pulseMap.has(r)) return;
+    const m = L.marker(r._c, {
+      pane: 'pulse', interactive: false, keyboard: false,
+      icon: L.divIcon({ className: '', html: '<div class="pulse"></div>', iconSize: [46, 46], iconAnchor: [23, 23] })
+    });
+    gPulse.addLayer(m); pulseMap.set(r, m);
+  });
+}
+map.on('moveend', renderPulse);
 
 function showMsg(t) { const m = $('#msg'); m.textContent = t; m.classList.toggle('show', !!t); }
 
