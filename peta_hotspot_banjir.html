@@ -110,6 +110,36 @@ body:not(.mode-siang) .agg.d{background:rgba(59,110,168,.92)}
 .aggtip{font:700 11px var(--font-head);padding:2px 6px;border-radius:var(--radius-sm);background:var(--hud-bg);color:var(--text-primary);border:1px solid var(--hud-border);box-shadow:var(--shadow-sm)}
 .aggtip::before{display:none}
 
+/* Penasihat AI */
+.ai-box{width:320px;max-width:calc(100vw - 28px);background:var(--hud-bg);color:var(--text-primary);border:1px solid var(--hud-border);border-left:3px solid var(--ai-c,var(--navy));border-radius:var(--radius);box-shadow:var(--shadow);font-size:.74rem;line-height:1.5;overflow:hidden}
+.ai-h{display:flex;align-items:center;gap:8px;padding:7px 10px;cursor:pointer;background:var(--hud-card-bg);font:700 .72rem var(--font-head);text-transform:uppercase;letter-spacing:.5px;color:var(--navy);user-select:none}
+.ai-h .spark{color:var(--hazard-gold)}
+.ai-live{width:7px;height:7px;border-radius:50%;background:#16a34a;animation:aiblink 1.6s infinite}
+@keyframes aiblink{50%{opacity:.25}}
+.ai-pill{margin-left:auto;padding:1px 9px;border-radius:10px;color:#fff;font-size:.62rem;letter-spacing:.04rem;transition:background .3s}
+.ai-chev{transition:transform .2s;color:var(--text-secondary)}
+.ai-box.min .ai-chev{transform:rotate(-90deg)}
+.ai-b{padding:9px 10px;max-height:46vh;overflow-y:auto;transition:opacity .2s}
+.ai-box.min .ai-b{display:none}
+.ai-box.ai-load .ai-b{opacity:.4}
+.ai-sc{display:flex;justify-content:space-between;align-items:baseline;font-weight:600}
+.ai-sc b{font:700 1.3rem var(--font-head)}
+.ai-sc small{font-size:.65rem;color:var(--text-secondary);font-weight:500}
+.ai-gauge{height:7px;background:var(--hud-card-bg);border-radius:4px;overflow:hidden;margin:3px 0 8px}
+.ai-gauge i{display:block;height:100%;width:0;border-radius:4px;transition:width .9s cubic-bezier(.2,.8,.2,1)}
+.ai-sum{margin:0 0 8px}
+.ai-lbl{font:700 .62rem var(--font-head);text-transform:uppercase;color:var(--text-secondary);letter-spacing:.05rem}
+.ai-chips{display:flex;flex-wrap:wrap;gap:4px;margin:3px 0 8px}
+.ai-chip{cursor:pointer;border:1px solid var(--hud-border);background:var(--hud-card-bg);color:var(--text-primary);border-radius:10px;padding:1px 8px;font-size:.66rem}
+.ai-chip:hover{border-color:var(--navy);color:var(--navy)}
+.ai-act{list-style:none;margin:3px 0 0;padding:0;display:flex;flex-direction:column;gap:6px}
+.ai-act li{display:flex;gap:7px;opacity:0;transform:translateY(4px);animation:aiin .4s ease-out forwards}
+.ai-act li i{flex:none;width:14px;text-align:center;margin-top:3px;color:var(--hazard-gold)}
+@keyframes aiin{to{opacity:1;transform:none}}
+.ai-foot{margin-top:8px;padding-top:6px;border-top:1px solid var(--hud-border);font-size:.6rem;color:var(--text-secondary)}
+@media (prefers-reduced-motion:reduce){.ai-live,.ai-act li{animation:none;opacity:1;transform:none}.ai-gauge i{transition:none}}
+@media (max-width:800px){.ai-box{width:min(300px,calc(100vw - 28px));font-size:.7rem}.ai-b{max-height:36vh}}
+
 .leaflet-container{font-family:var(--font-main)!important}
 .leaflet-popup-content-wrapper,.leaflet-popup-tip{background:var(--hud-bg)!important;color:var(--text-primary)!important;border-radius:var(--radius)!important;box-shadow:var(--shadow)!important}
 .pop{max-height:300px;overflow-y:auto;font-size:12px;min-width:230px}
@@ -253,7 +283,6 @@ const up = (s) => norm(s).toUpperCase();
 const esc = (s) => String(s == null ? '' : s).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
 const DEF_COL = '#555555';
 const okHex = (s) => /^#([0-9a-f]{3}|[0-9a-f]{6}|[0-9a-f]{8})$/i.test(s);
-
 /* ===== Tema siang / malam ===== */
 (function () {
   if (localStorage.getItem('pgoTheme') === 'malam') document.body.classList.remove('mode-siang');
@@ -531,6 +560,7 @@ function render() {
   }
   updateLegend(curHit, lvl);
   renderPulse();
+  scheduleAdvice();
 }
 
 /* ===== Bulat merah berdenyut bila zoom dekat ===== */
@@ -591,6 +621,209 @@ function updateLegend(list, lvl) {
     items.map((x) => '<div class="kes-r"><span class="dot" style="background:' + x.w + '"></span><span class="l">' + esc(x.j) +
       '</span><b>' + x.n + '</b></div>').join('');
 }
+
+/* ===== Penasihat AI =====
+   Analisis automatik (berasaskan peraturan, berjalan dalam pelayar) ke atas titik hotspot DALAM PAPARAN PETA.
+   Ia dikira semula bila peta digerak / di-zoom, bila tapisan berubah, bila data Sheets dikemas kini,
+   dan mengambil kira musim monsun semasa (tarikh hari ini) — jadi nasihat berubah dari masa ke semasa.
+   Skor risiko 0-100 = klaster (maks 40) + bilangan titik (12) + berulang antara tahun (15)
+                     + kejadian terkini (15) + banjir kilat (10) + faktor musim (0-8). */
+const AI_CELL = 0.02;        // saiz grid klaster (~2.2 km)
+const AI_DEBOUNCE = 450;     // ms, tunggu peta berhenti bergerak
+const AI_T = { kritikal: 70, tinggi: 50, sederhana: 30 };
+const AI_LVL = {
+  kritikal:  { t: 'KRITIKAL',  c: '#c8102e' },
+  tinggi:    { t: 'TINGGI',    c: '#ea580c' },
+  sederhana: { t: 'SEDERHANA', c: '#ca8a04' },
+  rendah:    { t: 'RENDAH',    c: '#16a34a' }
+};
+const AI_VERDICT = {
+  kritikal:  'Kawasan ini dinilai <b>hotspot berbahaya</b> dan memerlukan perhatian segera.',
+  tinggi:    'Kawasan ini <b>berisiko tinggi</b> dan perlu dipantau rapi.',
+  sederhana: 'Tahap risiko <b>sederhana</b>; kekalkan pemantauan berkala.',
+  rendah:    'Tahap risiko <b>rendah</b> dalam paparan ini.'
+};
+let aiBox = null, aiTimer = null, aiHot = [];
+
+const yrOf = (r) => { const y = parseInt(r._t, 10); return y >= 1990 && y <= 2100 ? y : null; };
+const isKilat = (r) => r._j.includes('KILAT');
+const isMonsun = (r) => r._j.includes('MONSUN');
+
+function seasonInfo(d) {
+  const m = d.getMonth();   // 0 = Jan
+  if (m >= 10 || m <= 2) return { bonus: 8, t: 'Musim Monsun Timur Laut (Nov–Mac)', n: 'tempoh paling berisiko untuk banjir monsun berpanjangan, terutamanya di timur Semenanjung termasuk Johor' };
+  if (m === 3 || m === 4 || m === 9) return { bonus: 4, t: 'Musim peralihan monsun', n: 'hujan lebat waktu petang meningkatkan risiko banjir kilat' };
+  return { bonus: 0, t: 'Monsun Barat Daya (Jun–Sep)', n: 'biasanya lebih kering, namun banjir kilat di kawasan bandar masih boleh berlaku' };
+}
+
+function analyse() {
+  const bd = map.getBounds();
+  const sc = curHit.filter((r) => r._c && bd.contains(r._c));
+  const n = sc.length;
+  if (!n) return { n: 0 };
+
+  // klaster grid
+  const cells = new Map();
+  sc.forEach((r) => {
+    const k = Math.floor(r._c[0] / AI_CELL) + '|' + Math.floor(r._c[1] / AI_CELL);
+    let c = cells.get(k); if (!c) { c = []; cells.set(k, c); } c.push(r);
+  });
+  let best = [];
+  cells.forEach((c) => { if (c.length > best.length) best = c; });
+  const bestName = (topBy(best, (r) => r._kw)[0] || [])[0] || '';
+
+  // tahun
+  const ys = sc.map(yrOf).filter(Boolean);
+  const allYs = rows.map(yrOf).filter(Boolean);
+  const maxY = allYs.length ? Math.max(...allYs) : null;
+  const yset = new Set(ys);
+  const recent = maxY ? ys.filter((y) => y >= maxY - 1).length : 0;
+
+  // jenis
+  const nC = sc.filter((r) => isKilat(r) && isMonsun(r)).length;
+  const nK = sc.filter(isKilat).length - nC, nM = sc.filter(isMonsun).length - nC;
+  const dom = [['Banjir Kilat', nK], ['Banjir Monsun', nM], ['Banjir Kilat / Monsun', nC]].sort((a, b) => b[1] - a[1])[0];
+
+  // skor
+  const season = seasonInfo(new Date());
+  const A = Math.min(40, best.length * 6);
+  const B = Math.min(12, Math.sqrt(n) * 2);
+  const Cc = ys.length ? Math.min(15, yset.size * 5) : 0;
+  const D = ys.length ? (15 * recent) / ys.length : 0;
+  const E = (10 * (nK + nC)) / n;
+  const score = Math.min(100, Math.round(A + B + Cc + D + E + season.bonus));
+  const level = score >= AI_T.kritikal ? 'kritikal' : score >= AI_T.tinggi ? 'tinggi' : score >= AI_T.sederhana ? 'sederhana' : 'rendah';
+
+  // trend 3 tahun terkini vs 3 tahun sebelumnya
+  let trend = null;
+  if (maxY && ys.length >= 6) {
+    const r3 = ys.filter((y) => y >= maxY - 2).length, p3 = ys.filter((y) => y >= maxY - 5 && y <= maxY - 3).length;
+    if (p3 > 0) { const ch = (r3 - p3) / p3; trend = { dir: ch >= 0.25 ? 'naik' : ch <= -0.25 ? 'turun' : 'stabil', pct: Math.round(Math.abs(ch) * 100), from: maxY - 2 }; }
+  }
+
+  const group = (keyFn, k) => {
+    const m = new Map();
+    sc.forEach((r) => {
+      const key = keyFn(r);
+      if (!key || key === '(TIADA)' || key === NO_JAG) return;
+      let g = m.get(key); if (!g) { g = { name: key, n: 0, pts: [] }; m.set(key, g); }
+      g.n++; g.pts.push(r._c);
+    });
+    return [...m.values()].sort((a, b) => b.n - a.n).slice(0, k);
+  };
+
+  return {
+    n, score, level, season, trend, bestN: best.length, bestName,
+    nd: new Set(sc.map((r) => r._d)).size,
+    domT: dom[0], domP: Math.round((100 * dom[1]) / n), domKey: dom[0],
+    yrs: yset.size, yMin: ys.length ? Math.min(...ys) : null, yMax: ys.length ? Math.max(...ys) : null,
+    hot: group((r) => r._kw, 4), balai: group((r) => r._jg, 2)
+  };
+}
+function topBy(arr, keyFn) {
+  const m = new Map();
+  arr.forEach((r) => { const k = keyFn(r); if (k && k !== '(TIADA)') m.set(k, (m.get(k) || 0) + 1); });
+  return [...m.entries()].sort((a, b) => b[1] - a[1]);
+}
+
+function runAdvice() {
+  if (!aiBox) return;
+  aiBox.classList.remove('ai-load');
+  const body = aiBox.querySelector('#aiBody'), pill = aiBox.querySelector('#aiPill');
+  const idle = (msg) => {
+    body.innerHTML = '<p class="ai-sum">' + msg + '</p>';
+    pill.textContent = '—'; pill.style.background = 'var(--text-secondary)';
+    aiBox.style.setProperty('--ai-c', 'var(--navy)');
+  };
+  if (!rows.length) return idle('Menunggu data hotspot dimuatkan…');
+  const a = analyse();
+  if (!a.n) return idle('Tiada titik hotspot dalam paparan semasa. Zoom keluar atau gerakkan peta untuk analisis kawasan lain.');
+
+  const lv = AI_LVL[a.level];
+  aiBox.style.setProperty('--ai-c', lv.c);
+  pill.textContent = lv.t; pill.style.background = lv.c;
+  aiHot = a.hot;
+
+  let sum = 'Dalam paparan ini terdapat <b>' + a.n + '</b> titik hotspot merentasi <b>' + a.nd + '</b> daerah. ' +
+    'Jenis dominan: <b>' + a.domT + '</b> (' + a.domP + '%). ';
+  if (a.bestN >= 3) sum += 'Klaster paling padat: <b>' + a.bestN + '</b> titik dalam lingkungan ~2 km' + (a.bestName ? ' (' + esc(a.bestName) + ')' : '') + '. ';
+  sum += AI_VERDICT[a.level];
+
+  const bal = a.balai.map((b) => esc(b.name)).join(', ');
+  const acts = [];
+  if (a.level === 'kritikal') {
+    acts.push(['fa-truck-field', 'Pra-posisi bot, pam dan anggota' + (bal ? ' di <b>' + bal + '</b>' : ' di balai berhampiran') + '; sediakan siaga 24 jam.']);
+    acts.push(['fa-bell', 'Keluarkan amaran awal kepada penduduk dan ketua kampung di kawasan tumpuan; sediakan PPS dan laluan evakuasi.']);
+    acts.push(['fa-binoculars', 'Pantau paras sungai serta amaran hujan lebat MET Malaysia dan JPS secara berterusan.']);
+  } else if (a.level === 'tinggi') {
+    acts.push(['fa-truck-field', 'Semak kesiapan bot, pam dan anggota' + (bal ? ' di <b>' + bal + '</b>' : '') + '; bersedia untuk pra-posisi jika amaran hujan lebat dikeluarkan.']);
+    acts.push(['fa-binoculars', 'Pantau rapi paras sungai dan ramalan cuaca; hubungi ketua kampung di kawasan tumpuan.']);
+  } else if (a.level === 'sederhana') {
+    acts.push(['fa-binoculars', 'Kekalkan pemantauan berkala; semak kesiapan aset dan hubungan dengan ketua kampung.']);
+  } else {
+    acts.push(['fa-binoculars', 'Pemantauan rutin mencukupi buat masa ini; pastikan data hotspot sentiasa dikemas kini.']);
+  }
+  if (a.domKey === 'Banjir Kilat') acts.push(['fa-bolt', '<b>Banjir kilat</b> berlaku mendadak dalam beberapa jam: utamakan amaran awal, pembersihan longkang dan saliran, serta kawalan lalu lintas di kawasan rendah.']);
+  else if (a.domKey === 'Banjir Monsun') acts.push(['fa-cloud-showers-heavy', '<b>Banjir monsun</b> cenderung berpanjangan: rancang logistik jangka panjang (bekalan, bot, PPS dan giliran anggota).']);
+  else acts.push(['fa-cloud-bolt', 'Kawasan terdedah kepada <b>kedua-dua</b> banjir kilat dan monsun: sediakan pelan untuk kejadian mendadak dan berpanjangan.']);
+  if (a.yrs >= 3) acts.push(['fa-clock-rotate-left', 'Lokasi <b>berulang</b> dilanda banjir dalam ' + a.yrs + ' tahun berbeza (' + a.yMin + '–' + a.yMax + ') — cadangkan kajian pelan mitigasi bersama agensi berkaitan.']);
+  if (a.trend) {
+    const t = a.trend;
+    acts.push(['fa-chart-line', t.dir === 'naik' ? 'Kejadian <b>meningkat ' + t.pct + '%</b> sejak ' + t.from + ' berbanding 3 tahun sebelumnya — beri keutamaan kawasan ini.'
+      : t.dir === 'turun' ? 'Kejadian <b>menurun ' + t.pct + '%</b> sejak ' + t.from + ' berbanding 3 tahun sebelumnya; kekalkan kesiapsiagaan.'
+      : 'Kejadian <b>stabil</b> sejak ' + t.from + ' berbanding 3 tahun sebelumnya.']);
+  }
+  acts.push(['fa-cloud-rain', '<b>' + a.season.t + ':</b> ' + a.season.n + '.']);
+
+  const chips = a.hot.length
+    ? '<div class="ai-lbl">Kawasan tumpuan (klik untuk zoom)</div><div class="ai-chips">' +
+      a.hot.map((h, i) => '<button class="ai-chip" data-i="' + i + '">' + esc(h.name) + ' · ' + h.n + '</button>').join('') + '</div>'
+    : '';
+
+  body.innerHTML =
+    '<div class="ai-sc"><span>Skor risiko <small>' + a.season.t.split(' (')[0] + (a.season.bonus ? ' +' + a.season.bonus : '') + '</small></span>' +
+    '<b style="color:' + lv.c + '">' + a.score + '<small>/100</small></b></div>' +
+    '<div class="ai-gauge"><i style="background:' + lv.c + '"></i></div>' +
+    '<p class="ai-sum">' + sum + '</p>' + chips +
+    '<div class="ai-lbl">Cadangan tindakan</div><ul class="ai-act">' +
+    acts.map((x, i) => '<li style="animation-delay:' + (i * 90) + 'ms"><i class="fas ' + x[0] + '"></i><span>' + x[1] + '</span></li>').join('') + '</ul>' +
+    '<div class="ai-foot">Dianalisis ' + new Date().toLocaleTimeString('ms-MY', { hour: '2-digit', minute: '2-digit' }) +
+    '. Analisis automatik berdasarkan data hotspot dan musim semasa — rujuk amaran rasmi sebelum bertindak.</div>';
+
+  const gi = body.querySelector('.ai-gauge i');
+  requestAnimationFrame(() => requestAnimationFrame(() => { gi.style.width = a.score + '%'; }));
+  body.querySelectorAll('.ai-chip').forEach((b) => (b.onclick = () => {
+    const h = aiHot[+b.dataset.i];
+    if (h) map.fitBounds(L.latLngBounds(h.pts), { padding: [50, 50], maxZoom: 16 });
+  }));
+}
+
+function scheduleAdvice() {
+  if (!aiBox) return;
+  aiBox.classList.add('ai-load');
+  clearTimeout(aiTimer);
+  aiTimer = setTimeout(runAdvice, AI_DEBOUNCE);
+}
+
+const aiCtl = L.control({ position: 'bottomleft' });
+aiCtl.onAdd = function () {
+  const d = L.DomUtil.create('div', 'ai-box');
+  if (window.matchMedia('(max-width:800px)').matches) d.classList.add('min');   // ringkas dahulu di telefon
+  d.innerHTML =
+    '<div class="ai-h" id="aiH" role="button" tabindex="0" aria-label="Buka atau tutup penasihat AI">' +
+    '<i class="fas fa-wand-magic-sparkles spark"></i><span>Penasihat AI</span><span class="ai-live" title="Dikemas kini automatik"></span>' +
+    '<span class="ai-pill" id="aiPill">—</span><i class="fas fa-chevron-down ai-chev"></i></div>' +
+    '<div class="ai-b" id="aiBody"><p class="ai-sum">Menunggu data hotspot dimuatkan…</p></div>';
+  L.DomEvent.disableClickPropagation(d);
+  L.DomEvent.disableScrollPropagation(d);
+  const h = d.querySelector('#aiH'), tg = () => d.classList.toggle('min');
+  h.onclick = tg;
+  h.onkeydown = (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); tg(); } };
+  aiBox = d;
+  return d;
+};
+aiCtl.addTo(map);
+map.on('moveend', scheduleAdvice);
 
 /* ===== Kawalan ===== */
 GROUPS.forEach(({ k }) => {
