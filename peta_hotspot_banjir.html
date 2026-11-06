@@ -1,0 +1,453 @@
+<!DOCTYPE html>
+<html lang="ms">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="theme-color" content="#002b5c" />
+<title>Peta Titik Banjir Johor</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=IBM+Plex+Sans:wght@500;600;700&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css" />
+<style>
+:root{
+  --fire-red:#c8102e;--hazard-gold:#b8935a;
+  --hud-bg:#1a2438;--hud-card-bg:#22304a;--hud-border:#2d3f5c;
+  --glass-highlight:rgba(59,110,168,.16);--navy:#3b6ea8;--border-strong:#3d5070;
+  --radius:6px;--radius-sm:4px;
+  --shadow-sm:0 1px 2px rgba(0,0,0,.4);--shadow:0 2px 8px rgba(0,0,0,.5);
+  --font-main:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+  --font-head:'IBM Plex Sans','Inter',sans-serif;
+  --text-primary:#e8eef7;--text-secondary:#94a3b8;--bg-body:#0f172a;
+}
+body.mode-siang{
+  --hud-bg:#ffffff;--hud-card-bg:#f0f2f5;--hud-border:#e2e8f0;
+  --glass-highlight:#e8eef5;--navy:#002b5c;--border-strong:#cbd5e1;
+  --shadow-sm:0 1px 2px rgba(0,43,92,.06);--shadow:0 2px 8px rgba(0,43,92,.08);
+  --text-primary:#1a202c;--text-secondary:#64748b;--bg-body:#f5f7fa;
+}
+*{box-sizing:border-box}
+html,body{height:100%;margin:0}
+@supports (height:100dvh){ body{height:100dvh} }
+body{display:flex;flex-direction:column;font:14px/1.45 var(--font-main);color:var(--text-primary);background:var(--bg-body);-webkit-font-smoothing:antialiased}
+
+.header{position:relative;flex:none;display:flex;align-items:center;justify-content:space-between;gap:1rem;padding:.7rem 1rem .6rem;background:var(--hud-bg);border-bottom:1px solid var(--hud-border);box-shadow:var(--shadow-sm)}
+.header::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--fire-red) 0 33.33%,var(--hazard-gold) 33.33% 66.66%,var(--navy) 66.66% 100%)}
+.brand{display:flex;align-items:center;gap:.75rem;min-width:0}
+.brand img{height:2.4rem;width:auto;padding:.25rem;border:1px solid var(--hud-border);border-radius:var(--radius)}
+.brand h1{margin:0;font:700 1.1rem/1.2 var(--font-head);color:var(--navy);letter-spacing:-.2px;text-transform:uppercase}
+.brand h1 span{color:var(--hazard-gold)}
+.brand .sub{font-size:.62rem;font-weight:600;letter-spacing:.15rem;text-transform:uppercase;color:var(--text-secondary)}
+.ctrl{display:flex;gap:.5rem}
+.icon-btn{width:2.25rem;height:2.25rem;display:flex;align-items:center;justify-content:center;border-radius:var(--radius-sm);background:var(--hud-bg);border:1px solid var(--hud-border);color:var(--text-secondary);cursor:pointer;font-size:1rem;text-decoration:none;transition:.2s}
+.icon-btn:hover{background:var(--hud-card-bg);color:var(--navy);border-color:var(--border-strong)}
+.icon-btn.active{background:var(--hud-card-bg);color:var(--navy);border-color:var(--navy)}
+#sideBtn{display:none}
+.menu-btn{width:auto;padding:0 .75rem;gap:.45rem;font:700 .72rem var(--font-head);letter-spacing:.06rem;text-transform:uppercase;white-space:nowrap}
+
+#app{flex:1;min-height:0;display:flex}
+#side{width:350px;flex:none;overflow-y:auto;padding:12px;display:flex;flex-direction:column;gap:10px;background:var(--bg-body);border-right:1px solid var(--hud-border);overscroll-behavior:contain}
+#map{flex:1;min-width:0;background:#0b1220}
+.title{margin:0;font:700 .8rem var(--font-head);letter-spacing:.6px;text-transform:uppercase;color:var(--navy);padding-bottom:.5rem;border-bottom:1px solid var(--hud-border)}
+.title i{margin-right:.4rem}
+.hint{margin:0;font-size:.7rem;color:var(--text-secondary)}
+#msg{display:none;font-size:.75rem;color:#92400e;background:#fffbeb;border:1px solid #fde68a;border-radius:var(--radius);padding:8px}
+#msg.show{display:block}
+body:not(.mode-siang) #msg{background:rgba(217,169,105,.1);border-color:rgba(217,169,105,.35);color:#d9a969}
+
+.stats{display:grid;grid-template-columns:1fr 1fr;gap:6px}
+.stat{background:var(--hud-card-bg);border:1px solid var(--hud-border);border-left:3px solid var(--navy);border-radius:var(--radius);padding:6px 9px;box-shadow:var(--shadow-sm)}
+.stat b{display:block;font:700 1.25rem var(--font-head);color:var(--text-primary);line-height:1.2}
+.stat span{font-size:.62rem;font-weight:600;text-transform:uppercase;letter-spacing:.05rem;color:var(--text-secondary)}
+.stat a{color:var(--navy);font-weight:700}
+
+button{font:inherit}
+.btn{font-size:.72rem;font-weight:600;padding:.4rem .7rem;border:1px solid var(--hud-border);background:var(--hud-bg);color:var(--text-primary);border-radius:var(--radius-sm);cursor:pointer;transition:.2s}
+.btn:hover{background:var(--hud-card-bg);border-color:var(--border-strong)}
+.btn.primary{background:var(--navy);color:#fff;border-color:var(--navy)}
+.btn.primary:hover{background:var(--fire-red);border-color:var(--fire-red)}
+.row{display:flex;gap:6px;flex-wrap:wrap}
+
+.grp{background:var(--hud-bg);border:1px solid var(--hud-border);border-radius:var(--radius);padding:9px;box-shadow:var(--shadow-sm)}
+.grp h2{margin:0 0 7px;display:flex;justify-content:space-between;align-items:center;font:700 .72rem var(--font-head);letter-spacing:.6px;text-transform:uppercase;color:var(--navy)}
+.grp h2 i{margin-right:.35rem;color:var(--hazard-gold)}
+.grp h2 small{font:500 .65rem var(--font-main);text-transform:none;letter-spacing:0;color:var(--text-secondary)}
+.grp.new{border-left:3px solid var(--fire-red)}
+.grp input[type=search],.fb input{width:100%;padding:.45rem .6rem;margin-bottom:6px;border:1px solid var(--border-strong);border-radius:var(--radius-sm);background:var(--hud-bg);color:var(--text-primary);font-size:.78rem;outline:none}
+.grp input[type=search]:focus{border-color:var(--hazard-gold)}
+.grp .btns{display:flex;gap:6px;margin-bottom:6px}
+.grp .btns button{font-size:.68rem;padding:.25rem .55rem;border:1px solid var(--hud-border);background:var(--hud-card-bg);color:var(--text-primary);border-radius:var(--radius-sm);cursor:pointer}
+.grp .btns button:hover{border-color:var(--border-strong);color:var(--navy)}
+.list{max-height:200px;overflow-y:auto;scrollbar-width:thin}
+.list label{display:flex;align-items:center;gap:7px;padding:4px 3px;border-radius:var(--radius-sm);cursor:pointer;font-size:.76rem}
+.list label:hover{background:var(--glass-highlight)}
+.list input{accent-color:var(--navy);flex:none}
+.list label>span:not(.n):not(.dot){min-width:0;overflow-wrap:anywhere}
+.list .n{margin-left:auto;flex:none;font-size:.65rem;font-weight:700;color:var(--text-secondary);background:var(--hud-card-bg);border:1px solid var(--hud-border);border-radius:10px;padding:0 7px}
+.dot{width:10px;height:10px;border-radius:50%;flex:none;border:1px solid rgba(255,255,255,.6)}
+.fb{font-size:.72rem;color:var(--text-secondary)}
+
+.leaflet-container{font-family:var(--font-main)!important}
+.leaflet-popup-content-wrapper,.leaflet-popup-tip{background:var(--hud-bg)!important;color:var(--text-primary)!important;border-radius:var(--radius)!important;box-shadow:var(--shadow)!important}
+.pop{max-height:300px;overflow-y:auto;font-size:12px;min-width:230px}
+.pop h3{margin:0 0 5px;padding-bottom:5px;border-bottom:1px solid var(--hud-border);font:700 .85rem var(--font-head);color:var(--navy);display:flex;align-items:center;gap:6px}
+.pop h3 .dot{width:12px;height:12px}
+.pop table{border-collapse:collapse;width:100%}
+.pop td{padding:2px 4px;vertical-align:top;border-bottom:1px solid var(--hud-border)}
+.pop td:first-child{color:var(--text-secondary);white-space:nowrap}
+.leaflet-control-layers{background:var(--hud-bg)!important;color:var(--text-primary)!important;border-radius:var(--radius)!important}
+
+/* Panel legenda atas peta */
+.kes-box{background:var(--hud-bg);color:var(--text-primary);border:1px solid var(--hud-border);border-radius:var(--radius);box-shadow:var(--shadow);padding:8px 10px;min-width:170px;max-width:240px;font-size:.76rem;line-height:1.6}
+.kes-h{display:flex;justify-content:space-between;align-items:center;gap:10px;font:700 .75rem var(--font-head);text-transform:uppercase;color:var(--navy)}
+.kes-h i.t{margin-right:.35rem}
+.kes-tg{width:1.9rem;height:1.9rem;display:flex;align-items:center;justify-content:center;border:1px solid var(--hud-border);border-radius:var(--radius-sm);background:var(--hud-card-bg);color:var(--text-secondary);cursor:pointer}
+.kes-tg:hover{color:var(--navy);border-color:var(--border-strong)}
+.kes-b{margin-top:6px;max-height:220px;overflow-y:auto}
+.kes-box.min .kes-b{display:none}
+.kes-tot{font-weight:600;margin-bottom:2px}
+.kes-r{display:flex;align-items:center;gap:6px}
+.kes-r span.l{flex:1;min-width:0;overflow-wrap:anywhere}
+.kes-r b{font-weight:700}
+
+dialog{max-width:640px;width:92%;padding:14px;border:1px solid var(--hud-border);border-radius:var(--radius);background:var(--hud-bg);color:var(--text-primary);box-shadow:var(--shadow)}
+dialog::backdrop{background:rgba(15,23,42,.55)}
+dialog table{width:100%;border-collapse:collapse;font-size:.75rem}
+dialog th,dialog td{border-bottom:1px solid var(--hud-border);padding:4px 6px;text-align:left}
+dialog th{color:var(--navy);font-family:var(--font-head)}
+.dh{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;font:700 .85rem var(--font-head);color:var(--navy);text-transform:uppercase}
+
+.footer{position:relative;flex:none;display:flex;justify-content:space-between;gap:.5rem;flex-wrap:wrap;padding:.5rem 1rem;background:var(--hud-bg);border-top:3px solid var(--navy);font-size:.68rem;color:var(--text-secondary)}
+.footer::before{content:'';position:absolute;top:-3px;left:50%;transform:translateX(-50%);width:80px;height:3px;background:var(--fire-red)}
+
+@media (max-width:800px){
+  .header{padding:.5rem .7rem .45rem}
+  .brand{gap:.55rem}
+  .brand img{height:2rem;padding:.15rem}
+  .brand h1{font-size:.9rem}
+  .brand .sub{display:none}
+  .icon-btn{width:2.15rem;height:2.15rem;font-size:.95rem}
+  .menu-btn{width:2.15rem;padding:0;gap:0}
+  .menu-btn span{display:none}
+  #sideBtn{display:flex}
+  #app{flex-direction:column}
+  #side{width:100%;height:auto;max-height:44vh;max-height:44dvh;flex:0 1 auto;padding:10px;gap:8px;border-right:0;border-bottom:1px solid var(--hud-border)}
+  body.hide-side #side{display:none}
+  #map{flex:1 1 auto;min-height:200px;height:auto}
+  .stat{padding:5px 8px}
+  .stat b{font-size:1.05rem}
+  .stat span{font-size:.56rem}
+  .row .btn{flex:1 1 auto;text-align:center;padding:.5rem .6rem}
+  .list{max-height:145px}
+  .list label{padding:6px 3px;font-size:.78rem}
+  .list input{width:18px;height:18px}
+  .grp input[type=search],.fb input{font-size:16px}
+  .kes-box{min-width:130px;font-size:.7rem;padding:6px 8px}
+  .footer{font-size:.6rem;padding:.4rem .7rem;justify-content:center;text-align:center}
+  dialog{width:96%;padding:10px}
+}
+</style>
+</head>
+<body class="mode-siang">
+
+<header class="header">
+  <div class="brand">
+    <img src="https://i.ibb.co/fGtPXjpc/500px-Logo-of-the-Malaysian-Fire-and-Rescue-Department-svg.webp" alt="Logo JBPM" />
+    <div>
+      <h1>Peta Titik <span>Banjir Johor</span></h1>
+      <div class="sub">Titik Lat Long Taburan Lokasi</div>
+    </div>
+  </div>
+  <div class="ctrl">
+    <a class="icon-btn menu-btn" href="index.html" aria-label="Kembali ke menu utama" title="Kembali ke menu utama"><i class="fas fa-house"></i><span>MENU UTAMA</span></a>
+    <button class="icon-btn" id="sideBtn" aria-label="Tunjuk atau sembunyi panel tapisan" aria-pressed="false"><i class="fas fa-filter"></i></button>
+    <button class="icon-btn" id="modeBtn" aria-label="Tukar mod siang malam"><i class="fas fa-sun"></i></button>
+    <button class="icon-btn" id="refreshBtn" aria-label="Muat semula"><i class="fas fa-sync-alt"></i></button>
+  </div>
+</header>
+
+<div id="app">
+  <aside id="side">
+    <h2 class="title"><i class="fas fa-filter"></i>Tapisan Lokasi</h2>
+    <p class="hint">Tick tahun / daerah / mukim / kawasan / lembangan / sub / jenis untuk menapis titik di peta. Jika tiada tapisan, semua titik dipaparkan.</p>
+    <div id="msg"></div>
+    <div class="stats">
+      <div class="stat"><b id="sAll">–</b><span>Titik dimuat</span></div>
+      <div class="stat"><b id="sSel">0</b><span>Titik terpilih</span></div>
+      <div class="stat"><b id="sMap">0</b><span>Dipaparkan di peta</span></div>
+      <div class="stat"><b id="sBad">0</b><span>Tiada koordinat sah <a href="#" id="badLink">(senarai)</a></span></div>
+    </div>
+    <div class="row">
+      <button class="btn primary" id="reset"><i class="fas fa-rotate-left"></i> Kosongkan tapisan</button>
+    </div>
+    <div id="groups" style="display:flex;flex-direction:column;gap:10px"></div>
+    <p class="hint">Logik tapisan: pilihan dalam satu kumpulan = ATAU; antara kumpulan = DAN. Warna titik mengikut lajur WARNA dalam data.</p>
+    <p class="fb" id="fb" style="display:none">Gagal muat CSV dari Google Sheets. Pilih fail CSV:
+      <input type="file" id="file" accept=".csv" /></p>
+  </aside>
+  <div id="map"></div>
+</div>
+
+<footer class="footer">
+  <span><i class="fas fa-clock"></i> Kemaskini: <span id="upd">--</span></span>
+  <span>©2026 PGO JOHOR | PB Mohamad Aidil | Hak Cipta Terpelihara</span>
+</footer>
+
+<dialog id="dlg">
+  <div class="dh"><span>Titik tanpa koordinat sah</span><button class="btn" id="dlgX">Tutup</button></div>
+  <div id="dlgBody" style="max-height:60vh;overflow:auto"></div>
+</dialog>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
+<script>
+const CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vSecxv6lwAvZsP35UEn2fLYHBxaJCWbJiDo-psMfPzq8D4u-v3xifgCPR8u9rTqsJUpXvEM27B6vo4k/pub?output=csv';
+
+const $ = (s) => document.querySelector(s);
+const norm = (s) => String(s == null ? '' : s).replace(/\s+/g, ' ').trim();
+const up = (s) => norm(s).toUpperCase();
+const esc = (s) => String(s == null ? '' : s).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+const DEF_COL = '#555555';
+const okHex = (s) => /^#([0-9a-f]{3}|[0-9a-f]{6}|[0-9a-f]{8})$/i.test(s);
+
+/* ===== Tema siang / malam ===== */
+(function () {
+  if (localStorage.getItem('pgoTheme') === 'malam') document.body.classList.remove('mode-siang');
+  const ic = () => ($('#modeBtn i').className = document.body.classList.contains('mode-siang') ? 'fas fa-sun' : 'fas fa-moon');
+  ic();
+  $('#modeBtn').onclick = () => {
+    document.body.classList.toggle('mode-siang');
+    localStorage.setItem('pgoTheme', document.body.classList.contains('mode-siang') ? 'siang' : 'malam');
+    ic();
+  };
+  $('#refreshBtn').onclick = () => location.reload();
+})();
+
+/* ===== Peta ===== */
+const osm = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 19, attribution: '© OpenStreetMap' });
+const sat = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', { maxZoom: 19, attribution: '© Esri' });
+const map = L.map('map', { preferCanvas: true, layers: [osm] }).setView([2.0, 103.3], 8);
+L.control.layers({ 'Peta jalan': osm, Satelit: sat }).addTo(map);
+const gPts = L.layerGroup().addTo(map);
+
+(function () {
+  const mapEl = document.getElementById('map');
+  if (window.ResizeObserver) new ResizeObserver(() => map.invalidateSize()).observe(mapEl);
+  else window.addEventListener('resize', () => setTimeout(() => map.invalidateSize(), 200));
+  const sideBtn = $('#sideBtn');
+  sideBtn.addEventListener('click', () => {
+    const hidden = document.body.classList.toggle('hide-side');
+    sideBtn.classList.toggle('active', hidden);
+    sideBtn.setAttribute('aria-pressed', hidden ? 'true' : 'false');
+    setTimeout(() => map.invalidateSize(), 180);
+  });
+})();
+
+/* ===== Kumpulan tapisan (7) — h = nama header dalam sheet ===== */
+const GROUPS = [
+  { k: 't',  h: 'TAHUN',     t: 'Tahun',     ph: 'Cari tahun...',     ic: 'fa-calendar-alt', num: true },
+  { k: 'd',  h: 'DAERAH',    t: 'Daerah',    ph: 'Cari daerah...',    ic: 'fa-map' },
+  { k: 'mk', h: 'MUKIM',     t: 'Mukim',     ph: 'Cari mukim...',     ic: 'fa-location-dot' },
+  { k: 'kw', h: 'KAWASAN',   t: 'Kawasan',   ph: 'Cari kawasan...',   ic: 'fa-house-flood-water' },
+  { k: 'lb', h: 'LEMBANGAN', t: 'Lembangan', ph: 'Cari lembangan...', ic: 'fa-water' },
+  { k: 'sb', h: 'SUB',       t: 'Sub',       ph: 'Cari sub...',       ic: 'fa-sitemap' },
+  { k: 'j',  h: 'JENIS',     t: 'Jenis',     ph: 'Cari jenis...',     ic: 'fa-list-check', isNew: true, byCount: true, dot: true }
+];
+const S = {}, OPT = {}, JCOL = {};
+GROUPS.forEach((g) => { S[g.k] = new Set(); OPT[g.k] = new Map(); });
+
+GROUPS.forEach((g) => {
+  const el = document.createElement('div');
+  el.className = 'grp' + (g.isNew ? ' new' : '');
+  el.id = 'g-' + g.k;
+  el.innerHTML =
+    '<h2><span><i class="fas ' + g.ic + '"></i>' + g.t + '</span><small></small></h2>' +
+    '<input type="search" placeholder="' + g.ph + '">' +
+    '<div class="btns"><button data-a="all">Pilih semua</button><button data-a="none">Kosongkan</button></div>' +
+    '<div class="list"></div>';
+  $('#groups').appendChild(el);
+});
+
+let rows = [], bad = [], C = {};
+
+function num(v) {
+  const n = parseFloat(String(v == null ? '' : v).replace(/,/g, ' ').trim().split(/\s+/)[0]);
+  return isNaN(n) ? null : n;
+}
+const okLat = (v) => v >= 1.1 && v <= 2.9, okLng = (v) => v >= 102.3 && v <= 104.6;
+function coords(r) {
+  let a = num(r[C.lat]), b = num(r[C.lng]);
+  if (a == null || b == null) return null;
+  if (!okLat(a) && okLat(b) && okLng(a)) { const t = a; a = b; b = t; }
+  return okLat(a) && okLng(b) ? [a, b] : null;
+}
+
+function parse(text) {
+  const res = Papa.parse(text, { header: true, skipEmptyLines: true, transformHeader: (h) => up(h) });
+  const keys = res.meta.fields || [];
+  const f = (name) => keys.find((k) => k === name);
+  C = { bil: f('BIL'), lat: f('LATITUDE'), lng: f('LONGITUDE'), warna: f('WARNA') };
+  GROUPS.forEach((g) => (C[g.k] = f(g.h)));
+
+  const miss = ['lat', 'lng'].filter((k) => !C[k]);
+  if (miss.length) { showMsg('Lajur tidak dijumpai dalam CSV: ' + miss.map((k) => k === 'lat' ? 'LATITUDE' : 'LONGITUDE').join(', ')); return; }
+  const warn = GROUPS.filter((g) => !C[g.k]).map((g) => g.h);
+  if (!C.warna) warn.push('WARNA');
+
+  rows = []; bad = [];
+  res.data.forEach((r) => {
+    GROUPS.forEach((g) => { r['_' + g.k] = (C[g.k] ? up(r[C[g.k]]) : '') || '(TIADA)'; });
+    const w = C.warna ? norm(r[C.warna]) : '';
+    r._w = okHex(w) ? w : DEF_COL;
+    r._c = coords(r);
+    if (r._c === null && num(r[C.lat]) == null && num(r[C.lng]) == null && r._d === '(TIADA)' && r._kw === '(TIADA)') return; // baris kosong
+    rows.push(r);
+    if (!r._c) bad.push(r);
+  });
+
+  GROUPS.forEach((g) => (OPT[g.k] = new Map()));
+  const jc = {};
+  rows.forEach((r) => {
+    GROUPS.forEach((g) => OPT[g.k].set(r['_' + g.k], (OPT[g.k].get(r['_' + g.k]) || 0) + 1));
+    jc[r._j] = jc[r._j] || {};
+    jc[r._j][r._w] = (jc[r._j][r._w] || 0) + 1;
+  });
+  Object.keys(jc).forEach((j) => { JCOL[j] = Object.keys(jc[j]).sort((a, b) => jc[j][b] - jc[j][a])[0]; });
+
+  $('#sAll').textContent = rows.length.toLocaleString();
+  $('#sBad').textContent = bad.length;
+  $('#upd').textContent = new Date().toLocaleString('ms-MY');
+  GROUPS.forEach((g) => buildList(g.k));
+  update(true);
+  if (warn.length) showMsg('Lajur tidak dijumpai: ' + warn.join(', ') + ' — tapisan/warna berkaitan tidak akan berfungsi.');
+}
+
+function buildList(k) {
+  const box = $('#g-' + k + ' .list');
+  const cfg = GROUPS.find((x) => x.k === k);
+  box.innerHTML = '';
+  let vals = [...OPT[k].keys()];
+  if (cfg.byCount) vals.sort((a, b) => OPT[k].get(b) - OPT[k].get(a) || a.localeCompare(b));
+  else if (cfg.num) vals.sort((a, b) => b.localeCompare(a, undefined, { numeric: true }));
+  else vals.sort((a, b) => a.localeCompare(b, undefined, { numeric: true }));
+  vals.forEach((v) => {
+    const l = document.createElement('label');
+    l.dataset.v = v;
+    const dot = cfg.dot ? '<span class="dot" style="background:' + (JCOL[v] || DEF_COL) + '"></span>' : '';
+    l.innerHTML = '<input type="checkbox">' + dot + '<span>' + esc(v) + '</span><span class="n">' + OPT[k].get(v) + '</span>';
+    l.firstChild.checked = S[k].has(v);
+    l.firstChild.onchange = (e) => { e.target.checked ? S[k].add(v) : S[k].delete(v); update(); };
+    box.appendChild(l);
+  });
+  $('#g-' + k + ' h2 small').textContent = OPT[k].size + ' pilihan';
+}
+
+function popup(r) {
+  const row = (k, v) => (v ? '<tr><td>' + k + '</td><td>' + esc(v) + '</td></tr>' : '');
+  const g = (k) => (C[k] ? norm(r[C[k]]) : '');
+  return '<div class="pop"><h3><span class="dot" style="background:' + r._w + '"></span>' + esc(g('j') || 'Lokasi') + (g('bil') ? ' #' + esc(g('bil')) : '') + '</h3><table>' +
+    row('Tahun', g('t')) + row('Daerah', g('d')) + row('Mukim', g('mk')) + row('Kawasan', g('kw')) +
+    row('Lembangan', g('lb')) + row('Sub', g('sb')) + row('Jenis', g('j')) +
+    row('Lat, Long', r._c[0].toFixed(6) + ', ' + r._c[1].toFixed(6)) +
+    '</table></div>';
+}
+
+function update(first) {
+  gPts.clearLayers();
+  const act = GROUPS.some((g) => S[g.k].size);
+  const pass = (r) => GROUPS.every((g) => !S[g.k].size || S[g.k].has(r['_' + g.k]));
+  const hit = act ? rows.filter(pass) : rows;
+  const all = L.featureGroup();
+  let vis = 0;
+  hit.forEach((r) => {
+    if (!r._c) return;
+    vis++;
+    const m = L.circleMarker(r._c, { radius: 6, color: '#fff', weight: 1.2, fillColor: r._w, fillOpacity: 0.9 })
+      .bindPopup(() => popup(r), { maxWidth: 360 });
+    gPts.addLayer(m); all.addLayer(m);
+  });
+  if (all.getLayers().length) {
+    const bd = all.getBounds();
+    if (bd.isValid()) map.fitBounds(bd, { padding: [30, 30], maxZoom: 14 });
+  }
+  $('#sSel').textContent = (act ? hit.length : 0).toLocaleString();
+  $('#sMap').textContent = vis.toLocaleString();
+  updateLegend(hit);
+  if (rows.length) showMsg(act ? '' : 'Tiada tapisan dipilih — semua titik dipaparkan.');
+}
+
+function showMsg(t) { const m = $('#msg'); m.textContent = t; m.classList.toggle('show', !!t); }
+
+/* ===== Panel legenda & ringkasan atas peta ===== */
+const kesCtl = L.control({ position: 'topright' });
+kesCtl.onAdd = function () {
+  const d = L.DomUtil.create('div', 'kes-box');
+  d.innerHTML =
+    '<div class="kes-h"><span><i class="fas fa-chart-column t"></i>Ringkasan</span>' +
+    '<button class="kes-tg" id="kesTg" aria-label="Sembunyi atau papar ringkasan"><i class="fas fa-eye-slash"></i></button></div>' +
+    '<div class="kes-b" id="kesBody"></div>';
+  L.DomEvent.disableClickPropagation(d);
+  L.DomEvent.disableScrollPropagation(d);
+  d.querySelector('#kesTg').onclick = () => {
+    const min = d.classList.toggle('min');
+    d.querySelector('#kesTg i').className = min ? 'fas fa-eye' : 'fas fa-eye-slash';
+  };
+  return d;
+};
+kesCtl.addTo(map);
+
+function updateLegend(list) {
+  const cnt = {};
+  list.forEach((r) => {
+    const k = r._j + '|' + r._w;
+    cnt[k] = cnt[k] || { j: r._j, w: r._w, n: 0 };
+    cnt[k].n++;
+  });
+  const items = Object.values(cnt).sort((a, b) => b.n - a.n);
+  $('#kesBody').innerHTML = '<div class="kes-tot">Jumlah <b>' + list.length + '</b></div>' +
+    items.map((x) => '<div class="kes-r"><span class="dot" style="background:' + x.w + '"></span><span class="l">' + esc(x.j) +
+      '</span><b>' + x.n + '</b></div>').join('');
+}
+
+/* ===== Kawalan ===== */
+GROUPS.forEach(({ k }) => {
+  const el = $('#g-' + k);
+  el.querySelectorAll('.btns button').forEach((b) => (b.onclick = () => {
+    const vis = [...el.querySelectorAll('.list label')].filter((l) => l.style.display !== 'none');
+    vis.forEach((l) => {
+      b.dataset.a === 'all' ? S[k].add(l.dataset.v) : S[k].delete(l.dataset.v);
+      l.firstChild.checked = b.dataset.a === 'all';
+    });
+    update();
+  }));
+  const s = el.querySelector('input[type=search]');
+  s.oninput = () => {
+    const q = s.value.toUpperCase();
+    el.querySelectorAll('.list label').forEach((l) => (l.style.display = l.dataset.v.includes(q) ? '' : 'none'));
+  };
+});
+
+$('#reset').onclick = () => {
+  GROUPS.forEach((g) => { S[g.k].clear(); $('#g-' + g.k + ' input[type=search]').value = ''; buildList(g.k); });
+  update();
+};
+
+$('#badLink').onclick = (e) => {
+  e.preventDefault();
+  $('#dlgBody').innerHTML = '<table><tr><th>BIL</th><th>Tahun</th><th>Daerah</th><th>Kawasan</th><th>LAT</th><th>LONG</th></tr>' +
+    bad.map((r) => '<tr><td>' + esc(r[C.bil]) + '</td><td>' + esc(r._t) + '</td><td>' + esc(r._d) + '</td><td>' +
+      esc(r._kw) + '</td><td>' + esc(r[C.lat]) + '</td><td>' + esc(r[C.lng]) + '</td></tr>').join('') + '</table>';
+  $('#dlg').showModal();
+};
+$('#dlgX').onclick = () => $('#dlg').close();
+$('#file').onchange = (e) => { const f = e.target.files[0]; if (f) f.text().then(parse); };
+
+showMsg('Memuat data CSV...');
+fetch(CSV_URL)
+  .then((r) => { if (!r.ok) throw new Error(r.status); return r.text(); })
+  .then(parse)
+  .catch(() => { showMsg('Gagal memuat CSV dari Google Sheets.'); $('#fb').style.display = 'block'; });
+</script>
+</body>
+</html>

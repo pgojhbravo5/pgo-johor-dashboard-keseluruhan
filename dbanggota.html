@@ -492,18 +492,13 @@ const SUPABASE_CONFIGS = [
   }
 ];
 
-/* ═══ JAM PELAYAN (sama seperti File 2) ═══ */
-let CLOCK_OFFSET_MS = 0;
-try { CLOCK_OFFSET_MS = parseInt(sessionStorage.getItem('bomba-clock-offset') || '0', 10) || 0; } catch (e) {}
-function nowSynced() { return Date.now() + CLOCK_OFFSET_MS; }
-
 function getActiveSupabaseConfig() {
-  const baselineTime = new Date('2026-11-04T07:55:00+08:00').getTime();
-  const currentTime = nowSynced();
-
+  const baselineTime = new Date('2026-11-04T20:01:00+08:00').getTime();
+  const currentTime = Date.now();
+  
   // Sebelum 4 Nov 2026, guna Akaun 3 (Tertiary) - index [2]
-  if (currentTime < baselineTime) return SUPABASE_CONFIGS[2];
-
+  if (currentTime < baselineTime) return SUPABASE_CONFIGS[2]; 
+  
   const msPerDay = 24 * 60 * 60 * 1000;
   const daysPassed = Math.floor((currentTime - baselineTime) / msPerDay);
   const activeIndex = ((daysPassed % 3) + 3) % 3;
@@ -513,47 +508,13 @@ function getActiveSupabaseConfig() {
 const ACTIVE_CONFIG = getActiveSupabaseConfig();
 const SUPABASE_URL = ACTIVE_CONFIG.url;
 const SUPABASE_ANON_KEY = ACTIVE_CONFIG.anonKey;
-const BOOT_SUPABASE_URL = SUPABASE_URL;
 
 console.log(`[Dashboard Kekuatan] Config Rotation Aktif: 🟢 ${SUPABASE_URL}`);
-
-/* ═══ WATCHDOG ROTATION: reload bila akaun bertukar ═══ */
-function checkRotationDrift() {
-  if (getActiveSupabaseConfig().url === BOOT_SUPABASE_URL) return;
-  try {
-    const last = parseInt(sessionStorage.getItem('dash-rot-reload') || '0', 10);
-    if (Date.now() - last < 30000) return;   // elak loop reload
-    sessionStorage.setItem('dash-rot-reload', String(Date.now()));
-  } catch (e) {}
-  const u = new URL(location.href);
-  u.searchParams.set('_v', Date.now());
-  location.replace(u.toString());
-}
-
-(async function syncClock() {
-  try {
-    const r = await fetch(location.pathname + '?_t=' + Date.now(), { method: 'HEAD', cache: 'no-store' });
-    const d = r.headers.get('Date');
-    if (d) {
-      CLOCK_OFFSET_MS = new Date(d).getTime() - Date.now();
-      try { sessionStorage.setItem('bomba-clock-offset', String(CLOCK_OFFSET_MS)); } catch (e) {}
-      checkRotationDrift();
-    }
-  } catch (e) {}
-})();
-
-setInterval(checkRotationDrift, 5000);
-document.addEventListener('visibilitychange', function () { if (!document.hidden) checkRotationDrift(); });
-window.addEventListener('focus', checkRotationDrift);
-window.addEventListener('pageshow', checkRotationDrift);
 
 let dataCache = null;
 let supabaseClient = null;
 let realtimeChannel = null;
 let realtimeDebounceTimer = null;
-let rawCache = {};
-let savedFilters = {};
-const pendingTables = new Set();
 // FALLBACK_POLL_MS dibuang — hanya guna realtime Supabase
 
 // ============================================================
@@ -837,12 +798,9 @@ function initMultiselect(wrapId, options, selectedKey) {
   const menu = wrap.querySelector('.dropdown-menu');
   const label = wrap.querySelector('.toggle-label');
   if (!menu) return;
-  const prev = (savedFilters[selectedKey] || []).filter(v => options.includes(v));
-  selectedValues[selectedKey] = prev.slice();
+  selectedValues[selectedKey] = [];
   menu.innerHTML = '';
-
   const actionDiv = document.createElement('div');
-  
   actionDiv.className = 'action-buttons';
   actionDiv.innerHTML = `<button class="select-all">Pilih Semua</button><button class="clear-all">Kosongkan</button>`;
   menu.appendChild(actionDiv);
@@ -850,7 +808,7 @@ function initMultiselect(wrapId, options, selectedKey) {
     const item = document.createElement('div');
     item.className = 'checkbox-item';
     const val = opt;
-    item.innerHTML = `<input type="checkbox" id="${selectedKey}_${Math.random().toString(36).slice(2,8)}" value="${escapeHtml(val)}" ${prev.includes(val) ? 'checked' : ''}><label>${escapeHtml(val)}</label>`;
+    item.innerHTML = `<input type="checkbox" id="${selectedKey}_${Math.random().toString(36).slice(2,8)}" value="${escapeHtml(val)}"><label>${escapeHtml(val)}</label>`;
     const cb = item.querySelector('input');
     cb.addEventListener('change', function() {
       if (this.checked) { if (!selectedValues[selectedKey].includes(val)) selectedValues[selectedKey].push(val); }
@@ -1043,10 +1001,8 @@ async function fetchData() {
       })
     ));
     const apiData = { ident: results[0]||[], personel: results[1]||[], jentera: results[2]||[], marin: results[3]||[], utiliti: results[4]||[], komunikasi: results[5]||[] };
-rawCache = apiData;
-dataCache = transformApiToDashboard(apiData);
-
-console.log('[Dashboard]', { anggota: dataCache.rekodAnggota.length, jentera: dataCache.logistikBertugas.length, checklist: dataCache.checklistPerkakas.length });
+    dataCache = transformApiToDashboard(apiData);
+    console.log('[Dashboard]', { anggota: dataCache.rekodAnggota.length, jentera: dataCache.logistikBertugas.length, checklist: dataCache.checklistPerkakas.length });
     renderAll();
     dot.className = 'w-1.5 h-1.5 md:w-2.5 md:h-2.5 rounded-full bg-emerald-400 shadow-[0_0_8px_rgba(52,211,153,0.8)]';
     document.getElementById('lastUpdate').innerHTML = new Date().toLocaleTimeString('ms-MY', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
@@ -1064,35 +1020,9 @@ function showError(msg) {
 // ============================================================
 // REALTIME
 // ============================================================
-function scheduleRealtimeRefresh(payload) {
-  if (payload && payload.table) pendingTables.add(payload.table);
+function scheduleRealtimeRefresh() {
   if (realtimeDebounceTimer) clearTimeout(realtimeDebounceTimer);
-  realtimeDebounceTimer = setTimeout(fetchChangedTables, 800);
-}
-
-async function fetchChangedTables() {
-  const tables = [...pendingTables];
-  pendingTables.clear();
-  if (tables.length === 0) return;
-  if (!rawCache.personel) { fetchData(); return; } // data awal belum siap
-  try {
-    const headers = { 'apikey': SUPABASE_ANON_KEY, 'Authorization': 'Bearer ' + SUPABASE_ANON_KEY, 'Content-Type': 'application/json' };
-    const results = await Promise.all(tables.map(t =>
-      fetch(`${SUPABASE_URL}/rest/v1/${t}?select=*&order=balai.asc`, { headers }).then(async r => {
-        if (!r.ok) { const txt = await r.text().catch(() => ''); throw new Error(`${t}: HTTP ${r.status} ${txt.slice(0,120)}`); }
-        return r.json();
-      })
-    ));
-    tables.forEach((t, i) => { rawCache[t] = results[i] || []; });
-    dataCache = transformApiToDashboard(rawCache);
-    renderAll(true); // kekalkan penapis
-    document.getElementById('statusDot').className = 'w-1.5 h-1.5 md:w-2.5 md:h-2.5 rounded-full bg-emerald-400 shadow-[0_0_8px_rgba(52,211,153,0.8)]';
-    document.getElementById('lastUpdate').innerHTML = new Date().toLocaleTimeString('ms-MY', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
-    document.getElementById('footerTimestamp').innerHTML = 'Kemaskini: ' + new Date().toLocaleString('ms-MY');
-  } catch (err) {
-    console.error('[Dashboard] realtime fetch error:', err);
-    showError(`Gagal kemas kini: ${err.message}`);
-  }
+  realtimeDebounceTimer = setTimeout(() => fetchData(), 800);
 }
 function initRealtime() {
   const badge = document.getElementById('realtimeBadge');
@@ -1128,9 +1058,8 @@ function initRealtime() {
 // ============================================================
 // RENDER UTAMA
 // ============================================================
-function renderAll(keepFilters) {
+function renderAll() {
   if (!dataCache) return;
-  savedFilters = keepFilters ? JSON.parse(JSON.stringify(selectedValues)) : {};
   for (const key in selectedValues) delete selectedValues[key];
   const p = dataCache;
   const anggota = p.rekodAnggota || [];
@@ -1715,14 +1644,12 @@ function populateMultiselectFilters(balaiLive, anggota, jentera, checklist) {
   initMultiselect('filterChecklistStatusWrap', statusChecklistOpts, 'checklistStatus');
   initMultiselect('filterZonChecklistWrap', zonOpts, 'zonChecklist');
 
-  const keepNama = (savedFilters.anggotaNama || [])[0] || '';
-  const keepCari = (savedFilters.jenteraCari || [])[0] || '';
   const namaInput = document.getElementById('filterAnggotaNamaInput');
-  if (namaInput) namaInput.value = keepNama;
+  if (namaInput) namaInput.value = '';
   const cariInput = document.getElementById('filterJenteraCariInput');
-  if (cariInput) cariInput.value = keepCari;
-  selectedValues['anggotaNama'] = keepNama ? [keepNama] : [];
-  selectedValues['jenteraCari'] = keepCari ? [keepCari] : [];
+  if (cariInput) cariInput.value = '';
+  selectedValues['anggotaNama'] = [];
+  selectedValues['jenteraCari'] = [];
 }
 
 function computeBalaiLive(anggota, jentera, checklist) {
