@@ -4051,13 +4051,55 @@
             width: 100%; height: 22rem; border-radius: 0.85rem; overflow: hidden;
             border: 1px solid var(--hud-border); background: #0b1220;
         }
-        .lokstat-status { font-size: 0.7rem; color: var(--text-secondary); text-align: center; margin-top: 0.5rem; }
-        .lokstat-marker { background: transparent !important; border: none !important; }
-        .lokstat-marker div {
-            width: 1.4rem; height: 1.4rem; border-radius: 0.35rem; border: 2px solid #fff;
-            display: flex; align-items: center; justify-content: center;
-            color: #fff; font-size: 0.65rem; box-shadow: 0 0.15rem 0.5rem rgba(0, 0, 0, 0.6);
-        }
+        .lokstat-marker { background: transparent !important; border: none !important; overflow: visible !important; }
+
+.lokstat-pulse {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.lokstat-pulse .halo {
+    position: absolute;
+    left: 50%; top: 50%;
+    width: 2.6rem; height: 2.6rem;
+    margin: -1.3rem 0 0 -1.3rem;
+    border-radius: 50%;
+    background: var(--pulse-color);
+    opacity: 0.18;
+    border: 1px solid var(--pulse-color);
+    pointer-events: none;
+}
+.lokstat-pulse .ring {
+    position: absolute;
+    left: 50%; top: 50%;
+    width: 0.95rem; height: 0.95rem;
+    margin: -0.475rem 0 0 -0.475rem;
+    border-radius: 50%;
+    background: var(--pulse-color);
+    opacity: 0;
+    pointer-events: none;
+    animation: lokstatPulse 2s ease-out infinite;
+}
+.lokstat-pulse .ring.r2 { animation-delay: 1s; }
+@keyframes lokstatPulse {
+    0%   { transform: scale(1);   opacity: 0.55; }
+    100% { transform: scale(3.4); opacity: 0; }
+}
+.lokstat-pulse .lokstat-core {
+    position: relative;
+    z-index: 2;
+    width: 0.95rem; height: 0.95rem;
+    border-radius: 50%;
+    border: 2px solid #fff;
+    box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.25), 0 0.1rem 0.4rem rgba(0, 0, 0, 0.55);
+}
+.lokstat-pulse .lokstat-core i { display: none !important; }
+@media (prefers-reduced-motion: reduce) {
+    .lokstat-pulse .ring { animation: none; opacity: 0.25; }
+}
         body.mode-siang .lokstat-stat { background: #ffffff; border-color: #e2e8f0; }
         body.mode-siang .lokstat-stat .ls-num { color: #0f172a; }
         body.mode-siang .lokstat-stat .ls-label,
@@ -7880,28 +7922,33 @@ if (petaFullscreenBtn) {
                     setT('tsCedera', cedera);
                     setT('tsSelamat', selamat);
 
-                    // Marker
-                    if (lokstatLayer) lokstatLayer.clearLayers();
-                    const pts = [];
-                    hari.forEach(d => {
-                        if (!(d.lat >= LOKSTAT_BOUNDS.south && d.lat <= LOKSTAT_BOUNDS.north &&
-                              d.lng >= LOKSTAT_BOUNDS.west && d.lng <= LOKSTAT_BOUNDS.east)) return;
-                        const k = lokstatKelas(d);
-                        const icon = L.divIcon({
-                            className: 'lokstat-marker',
-                            html: `<div style="background:${LOKSTAT_WARNA[k]}"><i class="fas ${LOKSTAT_IKON[k]}"></i></div>`,
-                                                        iconSize: [22, 22], iconAnchor: [11, 11], popupAnchor: [0, -10]
-                        });
-                        const m = L.marker([d.lat, d.lng], { icon, zIndexOffset: 500 });
-                        m.bindPopup(
-                            `<div class="popup-balai-title">${escapeHtml(d.jenis || 'Kejadian')}</div>` +
-                            `<div class="popup-jentera-row"><span class="jrow-name"><i class="fas fa-house-fire"></i> ${escapeHtml(d.balai)}</span></div>` +
-                            `<div class="popup-jentera-row"><span class="jrow-plate"><i class="fas fa-location-dot"></i> ${escapeHtml(d.alamat.substring(0, 70))}</span></div>` +
-                            `<div class="popup-jentera-row"><span class="jrow-model"><i class="fas fa-clock"></i> ${escapeHtml(d.masa)}</span></div>`
-                            );
-                        lokstatLayer.addLayer(m);
-                        pts.push([d.lat, d.lng]);
-                    });
+// Marker
+if (lokstatLayer) lokstatLayer.clearLayers();
+const pts = [];
+hari.forEach(d => {
+    if (!(d.lat >= LOKSTAT_BOUNDS.south && d.lat <= LOKSTAT_BOUNDS.north &&
+          d.lng >= LOKSTAT_BOUNDS.west && d.lng <= LOKSTAT_BOUNDS.east)) return;
+    const k = lokstatKelas(d);
+    const icon = L.divIcon({
+        className: 'lokstat-marker',
+        html: `<div class="lokstat-pulse" style="--pulse-color:${LOKSTAT_WARNA[k]}">
+                  <span class="halo"></span>
+                  <span class="ring r1"></span>
+                  <span class="ring r2"></span>
+                  <div class="lokstat-core" style="background:${LOKSTAT_WARNA[k]}"></div>
+               </div>`,
+        iconSize: [22, 22], iconAnchor: [11, 11], popupAnchor: [0, -10]
+    });
+    const m = L.marker([d.lat, d.lng], { icon, zIndexOffset: 500 });
+    m.bindPopup(
+        `<div class="popup-balai-title">${escapeHtml(d.jenis || 'Kejadian')}</div>` +
+        `<div class="popup-jentera-row"><span class="jrow-name"><i class="fas fa-house-fire"></i> ${escapeHtml(d.balai)}</span></div>` +
+        `<div class="popup-jentera-row"><span class="jrow-plate"><i class="fas fa-location-dot"></i> ${escapeHtml(d.alamat.substring(0, 70))}</span></div>` +
+        `<div class="popup-jentera-row"><span class="jrow-model"><i class="fas fa-clock"></i> ${escapeHtml(d.masa)}</span></div>`
+    );
+    lokstatLayer.addLayer(m);
+    pts.push([d.lat, d.lng]);
+});
 
                                         if (statusEl) {
                         statusEl.textContent = pts.length + ' / ' + hari.length + ' kes berkoordinat · Dikemaskini ' +
