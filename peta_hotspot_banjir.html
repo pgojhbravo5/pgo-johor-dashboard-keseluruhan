@@ -87,6 +87,12 @@ button{font:inherit}
 .list .n{margin-left:auto;flex:none;font-size:.65rem;font-weight:700;color:var(--text-secondary);background:var(--hud-card-bg);border:1px solid var(--hud-border);border-radius:10px;padding:0 7px}
 .dot{width:10px;height:10px;border-radius:50%;flex:none;border:1px solid rgba(255,255,255,.6)}
 .fb{font-size:.72rem;color:var(--text-secondary)}
+.lyr{display:flex;flex-direction:column;gap:2px}
+.lyr label{display:flex;align-items:center;gap:7px;padding:4px 3px;border-radius:var(--radius-sm);cursor:pointer;font-size:.76rem}
+.lyr label:hover{background:var(--glass-highlight)}
+.lyr input{accent-color:var(--navy)}
+.lyr i{color:var(--hazard-gold);width:1rem;text-align:center}
+.bicon{background:var(--navy);color:#fff;border:2px solid #fff;border-radius:var(--radius);text-align:center;font-size:12px;line-height:20px;box-shadow:0 1px 4px #0006}
 
 .leaflet-container{font-family:var(--font-main)!important}
 .leaflet-popup-content-wrapper,.leaflet-popup-tip{background:var(--hud-bg)!important;color:var(--text-primary)!important;border-radius:var(--radius)!important;box-shadow:var(--shadow)!important}
@@ -181,6 +187,14 @@ dialog th{color:var(--navy);font-family:var(--font-head)}
     <div class="row">
       <button class="btn primary" id="reset"><i class="fas fa-rotate-left"></i> Kosongkan tapisan</button>
     </div>
+    <div class="grp">
+      <h2><span><i class="fas fa-layer-group"></i>Lapisan Peta</span><small id="kmlStat"></small></h2>
+      <div class="lyr">
+        <label><input type="checkbox" id="tgJag" checked><i class="fas fa-draw-polygon"></i><span>Kawasan jagaan balai</span></label>
+        <label><input type="checkbox" id="tgZon" checked><i class="fas fa-border-all"></i><span>Sempadan zon</span></label>
+        <label><input type="checkbox" id="tgBal" checked><i class="fas fa-truck-field"></i><span>Ikon balai bomba</span></label>
+      </div>
+    </div>
     <div id="groups" style="display:flex;flex-direction:column;gap:10px"></div>
     <p class="hint">Logik tapisan: pilihan dalam satu kumpulan = ATAU; antara kumpulan = DAN. Warna titik mengikut lajur WARNA dalam data.</p>
     <p class="fb" id="fb" style="display:none">Gagal muat CSV dari Google Sheets. Pilih fail CSV:
@@ -229,6 +243,8 @@ const osm = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { 
 const sat = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', { maxZoom: 19, attribution: '© Esri' });
 const map = L.map('map', { preferCanvas: true, layers: [osm] }).setView([2.0, 103.3], 8);
 L.control.layers({ 'Peta jalan': osm, Satelit: sat }).addTo(map);
+map.createPane('kml'); map.getPane('kml').style.zIndex = 350;   // di bawah titik banjir
+const gJag = L.layerGroup().addTo(map), gZon = L.layerGroup().addTo(map), gBal = L.layerGroup().addTo(map);
 const gPts = L.layerGroup().addTo(map);
 
 (function () {
@@ -442,6 +458,87 @@ $('#badLink').onclick = (e) => {
 };
 $('#dlgX').onclick = () => $('#dlg').close();
 $('#file').onchange = (e) => { const f = e.target.files[0]; if (f) f.text().then(parse); };
+
+/* ===== Lapisan KML: kawasan jagaan balai, sempadan zon, ikon balai ===== */
+const KML_URL = 'poligon-kawasan-jagaan.kml';
+const ZCOL = { 1: '#2563eb', 2: '#16a34a', 3: '#d97706', 4: '#dc2626' };
+const HIDE_BALAI = /^\s*(NAMA\s+(TIMB\.?\s+)?KETUA\s+BALAI|GRED\s+KETUA\s+BALAI|BIL\.?\s*.{0,3}TURN\s*OUT|PERJAWATAN)/i;
+const cleanDesc = (d) => String(d || '').replace(/<img[^>]*>/gi, '').replace(/<br\s*\/?>/gi, '\n').replace(/<[^>]*>/g, ' ')
+  .replace(/&nbsp;/g, ' ').replace(/[ \t]+/g, ' ').split('\n').map((x) => x.trim()).filter((x) => x && !HIDE_BALAI.test(x)).join('\n');
+
+function kmlPolys(pm) {
+  const out = [];
+  Array.from(pm.getElementsByTagName('Polygon')).forEach((poly) => {
+    const ob = poly.getElementsByTagName('outerBoundaryIs')[0];
+    const c = ob && ob.getElementsByTagName('coordinates')[0];
+    if (!c) return;
+    const pts = c.textContent.trim().split(/\s+/).map((v) => v.split(',')).map((p) => [parseFloat(p[1]), parseFloat(p[0])])
+      .filter((p) => !isNaN(p[0]) && !isNaN(p[1]));
+    if (pts.length > 2) out.push(pts);
+  });
+  return out;
+}
+
+(async function loadKML() {
+  const stat = $('#kmlStat');
+  try {
+    const res = await fetch(KML_URL);
+    if (!res.ok) throw new Error('HTTP ' + res.status);
+    const xml = new DOMParser().parseFromString(await res.text(), 'application/xml');
+    if (xml.getElementsByTagName('parsererror').length) throw new Error('XML tidak sah');
+    let nJ = 0, nZ = 0, nB = 0;
+
+    Array.from(xml.getElementsByTagName('Placemark')).forEach((pm) => {
+      const folder = pm.parentNode;
+      const fnEl = folder && Array.from(folder.children).find((c) => c.nodeName === 'name');
+      const fn = fnEl ? fnEl.textContent.trim() : '';
+      const nmEl = Array.from(pm.children).find((c) => c.nodeName === 'name');
+      const name = nmEl ? nmEl.textContent.trim() : '';
+      const dsEl = Array.from(pm.children).find((c) => c.nodeName === 'description');
+      const stEl = Array.from(pm.children).find((c) => c.nodeName === 'styleUrl');
+      const styleUrl = stEl ? stEl.textContent : '';
+
+      // Ikon balai bomba (gaya icon-1149)
+      const pt = pm.getElementsByTagName('Point')[0];
+      if (pt && /icon-1149/.test(styleUrl)) {
+        const c = pt.getElementsByTagName('coordinates')[0].textContent.trim().split(',');
+        const lat = parseFloat(c[1]), lng = parseFloat(c[0]);
+        if (!isNaN(lat) && !isNaN(lng)) {
+          const mk = L.marker([lat, lng], { icon: L.divIcon({ className: '', html: '<div class="bicon">🚒</div>', iconSize: [24, 24], iconAnchor: [12, 12] }), zIndexOffset: 200 })
+            .bindPopup('<div class="pop"><h3>' + esc(name) + '</h3><div style="white-space:pre-line">' + esc(cleanDesc(dsEl ? dsEl.textContent : '')) + '</div></div>', { maxWidth: 300 });
+          gBal.addLayer(mk); nB++;
+        }
+        return;
+      }
+
+      const polys = kmlPolys(pm);
+      if (!polys.length) return;
+      const hex = (styleUrl.match(/poly-([0-9A-Fa-f]{6})/) || [])[1];
+      const col = hex ? '#' + hex : '#444444';
+
+      if (/^ZON\s*\d/i.test(fn)) {                                  // sempadan zon
+        const z = (fn.match(/\d/) || [])[0];
+        polys.forEach((pts) => gZon.addLayer(L.polygon(pts, { pane: 'kml', color: ZCOL[z] || col, weight: 3, dashArray: '8 5', fillOpacity: 0.03, interactive: false })));
+        nZ++;
+      } else if (/^BALAI/i.test(fn)) {                               // kawasan jagaan balai
+        polys.forEach((pts) => gJag.addLayer(L.polygon(pts, { pane: 'kml', color: col, weight: 1.5, fillColor: col, fillOpacity: 0.14, interactive: false })));
+        nJ++;
+      }
+    });
+    stat.textContent = nJ + ' kawasan · ' + nZ + ' zon · ' + nB + ' balai';
+  } catch (e) {
+    console.error('[KML] Gagal muat:', e);
+    stat.textContent = 'gagal dimuat';
+    $('#side').insertAdjacentHTML('afterbegin',
+      '<div style="font-size:.75rem;padding:8px;border-radius:6px;border:1px solid var(--fire-red);color:var(--fire-red);background:var(--hud-bg)">' +
+      '<b>Lapisan KML tiada.</b> Gagal muat <code>' + KML_URL + '</code> — ' + esc(e.message) +
+      '. Pastikan fail ada dalam folder yang sama dan halaman dibuka melalui pelayan web (bukan <code>file://</code>).</div>');
+  }
+})();
+
+[['#tgJag', gJag], ['#tgZon', gZon], ['#tgBal', gBal]].forEach(([id, g]) => {
+  $(id).onchange = (e) => (e.target.checked ? map.addLayer(g) : map.removeLayer(g));
+});
 
 showMsg('Memuat data CSV...');
 fetch(CSV_URL)
