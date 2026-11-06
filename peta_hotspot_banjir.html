@@ -450,20 +450,28 @@ function aggIcon(n, cls) {
 
 /* ===== Animasi: gelembung pecah menjadi titik-titik ===== */
 let lastAgg = null, animTok = 0;
-const BURST_MS = 700;
-const easeOutBack = (t) => { const c1 = 1.2, c3 = c1 + 1; return 1 + c3 * Math.pow(t - 1, 3) + c1 * Math.pow(t - 1, 2); };
+const BURST_MS = 1100;
+const easeInOutCubic = (t) => (t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2);
+const easeOutQuint = (t) => 1 - Math.pow(1 - t, 5);
 function burst(items) {
-  const tok = animTok, t0 = performance.now();
-  (function step(now) {
+  const tok = animTok;
+  let t0 = null;
+  function step(now) {
     if (tok !== animTok) return;                       // dibatalkan oleh render baru
-    const p = Math.min(1, (now - t0) / BURST_MS), e = easeOutBack(p);
+    if (t0 === null) t0 = now;                         // mula dari frame pertama (tiada lompatan)
+    const p = Math.min(1, (now - t0) / BURST_MS);
+    const e = p < 0.25 ? easeInOutCubic(p / 0.25) * 0.12 : 0.12 + easeOutQuint((p - 0.25) / 0.75) * 0.88; // mula perlahan, kemudian meluncur lembut
+    const rad = 3 + 3 * easeOutQuint(p);
+    const op = 0.35 + 0.55 * easeOutQuint(Math.min(1, p * 1.6));
     items.forEach((it) => {
       it.m.setLatLng([it.a[0] + (it.b[0] - it.a[0]) * e, it.a[1] + (it.b[1] - it.a[1]) * e]);
-      it.m.setRadius(3 + 3 * Math.min(1, p * 1.5));
+      it.m.setRadius(rad);
+      it.m.options.fillOpacity = op;                    // tanpa setStyle supaya tidak redraw berganda
     });
     if (p < 1) requestAnimationFrame(step);
-    else { items.forEach((it) => { it.m.setLatLng(it.b); it.m.setRadius(6); }); lastAgg = null; }
-  })(t0);
+    else { items.forEach((it) => { it.m.setLatLng(it.b); it.m.setRadius(6); it.m.options.fillOpacity = 0.9; }); lastAgg = null; }
+  }
+  requestAnimationFrame(step);
 }
 
 function render() {
