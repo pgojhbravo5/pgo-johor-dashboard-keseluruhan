@@ -94,6 +94,17 @@ button{font:inherit}
 .lyr i{color:var(--hazard-gold);width:1rem;text-align:center}
 .bicon{background:var(--navy);color:#fff;border:2px solid #fff;border-radius:var(--radius);text-align:center;font-size:12px;line-height:20px;box-shadow:0 1px 4px #0006}
 
+/* Gelembung agregat (jumlah ikut daerah / kawasan jagaan) */
+.agg{display:flex;align-items:center;justify-content:center;border-radius:50%;color:#fff;font:700 13px var(--font-head);border:2px solid #fff;box-shadow:0 1px 6px rgba(0,0,0,.45);cursor:pointer;transition:transform .15s}
+.agg{animation:aggpop .35s ease-out}
+@keyframes aggpop{from{opacity:0;transform:scale(.4)}to{opacity:1;transform:scale(1)}}
+.agg:hover{transform:scale(1.1)}
+.agg.d{background:rgba(0,43,92,.88)}
+.agg.j{background:rgba(200,16,46,.88)}
+body:not(.mode-siang) .agg.d{background:rgba(59,110,168,.92)}
+.aggtip{font:700 11px var(--font-head);padding:2px 6px;border-radius:var(--radius-sm);background:var(--hud-bg);color:var(--text-primary);border:1px solid var(--hud-border);box-shadow:var(--shadow-sm)}
+.aggtip::before{display:none}
+
 .leaflet-container{font-family:var(--font-main)!important}
 .leaflet-popup-content-wrapper,.leaflet-popup-tip{background:var(--hud-bg)!important;color:var(--text-primary)!important;border-radius:var(--radius)!important;box-shadow:var(--shadow)!important}
 .pop{max-height:300px;overflow-y:auto;font-size:12px;min-width:230px}
@@ -113,6 +124,7 @@ button{font:inherit}
 .kes-b{margin-top:6px;max-height:220px;overflow-y:auto}
 .kes-box.min .kes-b{display:none}
 .kes-tot{font-weight:600;margin-bottom:2px}
+.kes-lvl{font-size:.65rem;color:var(--text-secondary);margin-bottom:3px}
 .kes-r{display:flex;align-items:center;gap:6px}
 .kes-r span.l{flex:1;min-width:0;overflow-wrap:anywhere}
 .kes-r b{font-weight:700}
@@ -177,6 +189,7 @@ dialog th{color:var(--navy);font-family:var(--font-head)}
   <aside id="side">
     <h2 class="title"><i class="fas fa-filter"></i>Tapisan Lokasi</h2>
     <p class="hint">Tick tahun / daerah / mukim / kawasan / lembangan / sub / jenis untuk menapis titik di peta. Jika tiada tapisan, semua titik dipaparkan.</p>
+    <p class="hint"><i class="fas fa-magnifying-glass-plus"></i> Zoom jauh = jumlah ikut daerah / kawasan jagaan balai. Zoom masuk sedikit sahaja, titik lokasi terus dipaparkan. Klik gelembung untuk zoom masuk.</p>
     <div id="msg"></div>
     <div class="stats">
       <div class="stat"><b id="sAll">–</b><span>Titik dimuat</span></div>
@@ -218,6 +231,15 @@ dialog th{color:var(--navy);font-family:var(--font-head)}
 <script>
 const CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vSecxv6lwAvZsP35UEn2fLYHBxaJCWbJiDo-psMfPzq8D4u-v3xifgCPR8u9rTqsJUpXvEM27B6vo4k/pub?output=csv';
 
+/* ===== Tahap zoom untuk pengagregatan =====
+   zoom <= Z_DAERAH_MAX            -> gelembung jumlah ikut DAERAH
+   Z_DAERAH_MAX < zoom <= Z_JAGAAN_MAX -> gelembung jumlah ikut KAWASAN JAGAAN BALAI
+   zoom > Z_JAGAAN_MAX             -> titik terperinci
+   Ubah dua nilai ini jika mahu peralihan lebih awal / lewat. */
+const Z_DAERAH_MAX = 8;
+const Z_JAGAAN_MAX = 9;
+const NO_JAG = '(LUAR KAWASAN JAGAAN)';
+
 const $ = (s) => document.querySelector(s);
 const norm = (s) => String(s == null ? '' : s).replace(/\s+/g, ' ').trim();
 const up = (s) => norm(s).toUpperCase();
@@ -245,7 +267,8 @@ const map = L.map('map', { preferCanvas: true, layers: [osm] }).setView([2.0, 10
 L.control.layers({ 'Peta jalan': osm, Satelit: sat }).addTo(map);
 map.createPane('kml'); map.getPane('kml').style.zIndex = 350;   // di bawah titik banjir
 const gJag = L.layerGroup().addTo(map), gZon = L.layerGroup().addTo(map), gBal = L.layerGroup().addTo(map);
-const gPts = L.layerGroup().addTo(map);
+const gPts = L.layerGroup().addTo(map);   // titik terperinci
+const gAgg = L.layerGroup().addTo(map);   // gelembung jumlah
 
 (function () {
   const mapEl = document.getElementById('map');
@@ -286,6 +309,8 @@ GROUPS.forEach((g) => {
 });
 
 let rows = [], bad = [], C = {};
+let curHit = [];          // senarai baris selepas tapisan (untuk dirender semula bila zoom)
+let jagPolys = [];        // poligon kawasan jagaan balai: {name, pts, bb}
 
 function num(v) {
   const n = parseFloat(String(v == null ? '' : v).replace(/,/g, ' ').trim().split(/\s+/)[0]);
@@ -297,6 +322,29 @@ function coords(r) {
   if (a == null || b == null) return null;
   if (!okLat(a) && okLat(b) && okLng(a)) { const t = a; a = b; b = t; }
   return okLat(a) && okLng(b) ? [a, b] : null;
+}
+
+/* ===== Titik dalam poligon (kawasan jagaan balai) ===== */
+function inPoly(lat, lng, pts) {
+  let ins = false;
+  for (let i = 0, j = pts.length - 1; i < pts.length; j = i++) {
+    const yi = pts[i][0], xi = pts[i][1], yj = pts[j][0], xj = pts[j][1];
+    if ((yi > lat) !== (yj > lat) && lng < ((xj - xi) * (lat - yi)) / (yj - yi) + xi) ins = !ins;
+  }
+  return ins;
+}
+function findJag(c) {
+  for (const p of jagPolys) {
+    const b = p.bb;
+    if (c[0] < b[0] || c[0] > b[2] || c[1] < b[1] || c[1] > b[3]) continue;
+    if (inPoly(c[0], c[1], p.pts)) return p.name;
+  }
+  return NO_JAG;
+}
+function assignJag() {
+  if (!rows.length || !jagPolys.length) return;
+  rows.forEach((r) => { r._jg = r._c ? findJag(r._c) : NO_JAG; });
+  render();
 }
 
 function parse(text) {
@@ -317,6 +365,7 @@ function parse(text) {
     const w = C.warna ? norm(r[C.warna]) : '';
     r._w = okHex(w) ? w : DEF_COL;
     r._c = coords(r);
+    r._jg = NO_JAG;
     if (r._c === null && num(r[C.lat]) == null && num(r[C.lng]) == null && r._d === '(TIADA)' && r._kw === '(TIADA)') return; // baris kosong
     rows.push(r);
     if (!r._c) bad.push(r);
@@ -335,6 +384,7 @@ function parse(text) {
   $('#sBad').textContent = bad.length;
   $('#upd').textContent = new Date().toLocaleString('ms-MY');
   GROUPS.forEach((g) => buildList(g.k));
+  assignJag();          // jika KML sudah siap, tetapkan kawasan jagaan setiap titik
   update(true);
   if (warn.length) showMsg('Lajur tidak dijumpai: ' + warn.join(', ') + ' — tapisan/warna berkaitan tidak akan berfungsi.');
 }
@@ -365,35 +415,109 @@ function popup(r) {
   return '<div class="pop"><h3><span class="dot" style="background:' + r._w + '"></span>' + esc(g('j') || 'Lokasi') + (g('bil') ? ' #' + esc(g('bil')) : '') + '</h3><table>' +
     row('Tahun', g('t')) + row('Daerah', g('d')) + row('Mukim', g('mk')) + row('Kawasan', g('kw')) +
     row('Lembangan', g('lb')) + row('Sub', g('sb')) + row('Jenis', g('j')) +
+    (r._jg && r._jg !== NO_JAG ? row('Kawasan jagaan', r._jg) : '') +
     row('Lat, Long', r._c[0].toFixed(6) + ', ' + r._c[1].toFixed(6)) +
     '</table></div>';
 }
 
+/* ===== Tapis -> simpan -> render ikut zoom ===== */
 function update(first) {
-  gPts.clearLayers();
   const act = GROUPS.some((g) => S[g.k].size);
   const pass = (r) => GROUPS.every((g) => !S[g.k].size || S[g.k].has(r['_' + g.k]));
-  const hit = act ? rows.filter(pass) : rows;
-  const all = L.featureGroup();
-  let vis = 0;
-  hit.forEach((r) => {
-    if (!r._c) return;
-    vis++;
-    const m = L.circleMarker(r._c, { radius: 6, color: '#fff', weight: 1.2, fillColor: r._w, fillOpacity: 0.9 })
-      .bindPopup(() => popup(r), { maxWidth: 360 });
-    gPts.addLayer(m); all.addLayer(m);
-  });
-  if (all.getLayers().length) {
-    const bd = all.getBounds();
+  curHit = act ? rows.filter(pass) : rows;
+
+  const pts = curHit.filter((r) => r._c).map((r) => r._c);
+  if (pts.length) {
+    const bd = L.latLngBounds(pts);
     if (bd.isValid()) map.fitBounds(bd, { padding: [30, 30], maxZoom: 14 });
   }
-  $('#sSel').textContent = (act ? hit.length : 0).toLocaleString();
-  $('#sMap').textContent = vis.toLocaleString();
-  updateLegend(hit);
+  render();
+  $('#sSel').textContent = (act ? curHit.length : 0).toLocaleString();
   if (rows.length) showMsg(act ? '' : 'Tiada tapisan dipilih — semua titik dipaparkan.');
 }
 
+function levelNow() {
+  const z = map.getZoom();
+  if (z <= Z_DAERAH_MAX) return 'daerah';
+  if (z <= Z_JAGAAN_MAX) return 'jagaan';
+  return 'titik';
+}
+
+function aggIcon(n, cls) {
+  const s = Math.round(Math.min(64, 30 + Math.sqrt(n) * 3.2));
+  return L.divIcon({ className: '', html: '<div class="agg ' + cls + '" style="width:' + s + 'px;height:' + s + 'px">' + n.toLocaleString() + '</div>', iconSize: [s, s], iconAnchor: [s / 2, s / 2] });
+}
+
+/* ===== Animasi: gelembung pecah menjadi titik-titik ===== */
+let lastAgg = null, animTok = 0;
+const BURST_MS = 700;
+const easeOutBack = (t) => { const c1 = 1.2, c3 = c1 + 1; return 1 + c3 * Math.pow(t - 1, 3) + c1 * Math.pow(t - 1, 2); };
+function burst(items) {
+  const tok = animTok, t0 = performance.now();
+  (function step(now) {
+    if (tok !== animTok) return;                       // dibatalkan oleh render baru
+    const p = Math.min(1, (now - t0) / BURST_MS), e = easeOutBack(p);
+    items.forEach((it) => {
+      it.m.setLatLng([it.a[0] + (it.b[0] - it.a[0]) * e, it.a[1] + (it.b[1] - it.a[1]) * e]);
+      it.m.setRadius(3 + 3 * Math.min(1, p * 1.5));
+    });
+    if (p < 1) requestAnimationFrame(step);
+    else { items.forEach((it) => { it.m.setLatLng(it.b); it.m.setRadius(6); }); lastAgg = null; }
+  })(t0);
+}
+
+function render() {
+  gPts.clearLayers(); gAgg.clearLayers();
+  const lvl = levelNow();
+  const valid = curHit.filter((r) => r._c);
+  $('#sMap').textContent = valid.length.toLocaleString();
+
+  animTok++;   // batalkan animasi lama (jika ada)
+  if (lvl === 'titik') {
+    const from = lastAgg;   // kedudukan gelembung sebelum pecah (jika baru zoom masuk dari paparan jumlah)
+    const anim = [];
+    valid.forEach((r) => {
+      const start = from && from.get(r);
+      const m = L.circleMarker(start || r._c, { radius: start ? 3 : 6, color: '#fff', weight: 1.2, fillColor: r._w, fillOpacity: 0.9 })
+        .bindPopup(() => popup(r), { maxWidth: 360 });
+      gPts.addLayer(m);
+      if (start) anim.push({ m, a: start, b: r._c });
+    });
+    if (anim.length) burst(anim);
+    else lastAgg = null;
+  } else {
+    const key = lvl === 'daerah' ? '_d' : '_jg';
+    const cls = lvl === 'daerah' ? 'd' : 'j';
+    const minZ = (lvl === 'daerah' ? Z_DAERAH_MAX : Z_JAGAAN_MAX) + 1;   // zoom minimum supaya gelembung pecah
+    const grp = new Map();
+    valid.forEach((r) => {
+      const k = r[key];
+      let g = grp.get(k);
+      if (!g) { g = { n: 0, lat: 0, lng: 0, pts: [], rows: [] }; grp.set(k, g); }
+      g.n++; g.lat += r._c[0]; g.lng += r._c[1]; g.pts.push(r._c); g.rows.push(r);
+    });
+    lastAgg = new Map();
+    grp.forEach((g, name) => {
+      const ctr = [g.lat / g.n, g.lng / g.n];
+      g.rows.forEach((r) => lastAgg.set(r, ctr));
+      const m = L.marker([g.lat / g.n, g.lng / g.n], { icon: aggIcon(g.n, cls), zIndexOffset: 400 });
+      m.bindTooltip(esc(name) + ' — ' + g.n.toLocaleString() + ' titik', {
+        direction: 'bottom', offset: [0, 4], className: 'aggtip', permanent: lvl === 'daerah'
+      });
+      m.on('click', () => {
+        const b = L.latLngBounds(g.pts);
+        const z = Math.min(17, Math.max(map.getBoundsZoom(b.pad(0.15)), minZ));
+        map.setView(b.getCenter(), z);
+      });
+      gAgg.addLayer(m);
+    });
+  }
+  updateLegend(curHit, lvl);
+}
+
 function showMsg(t) { const m = $('#msg'); m.textContent = t; m.classList.toggle('show', !!t); }
+
+map.on('zoomend', render);
 
 /* ===== Panel legenda & ringkasan atas peta ===== */
 const kesCtl = L.control({ position: 'topright' });
@@ -413,7 +537,7 @@ kesCtl.onAdd = function () {
 };
 kesCtl.addTo(map);
 
-function updateLegend(list) {
+function updateLegend(list, lvl) {
   const cnt = {};
   list.forEach((r) => {
     const k = r._j + '|' + r._w;
@@ -421,7 +545,8 @@ function updateLegend(list) {
     cnt[k].n++;
   });
   const items = Object.values(cnt).sort((a, b) => b.n - a.n);
-  $('#kesBody').innerHTML = '<div class="kes-tot">Jumlah <b>' + list.length + '</b></div>' +
+  const lbl = { daerah: 'Paparan: jumlah ikut daerah', jagaan: 'Paparan: jumlah ikut kawasan jagaan', titik: 'Paparan: titik terperinci' }[lvl || levelNow()];
+  $('#kesBody').innerHTML = '<div class="kes-tot">Jumlah <b>' + list.length + '</b></div><div class="kes-lvl">' + lbl + '</div>' +
     items.map((x) => '<div class="kes-r"><span class="dot" style="background:' + x.w + '"></span><span class="l">' + esc(x.j) +
       '</span><b>' + x.n + '</b></div>').join('');
 }
@@ -521,18 +646,26 @@ function kmlPolys(pm) {
         polys.forEach((pts) => gZon.addLayer(L.polygon(pts, { pane: 'kml', color: ZCOL[z] || col, weight: 3, dashArray: '8 5', fillOpacity: 0.03, interactive: false })));
         nZ++;
       } else if (/^BALAI/i.test(fn)) {                               // kawasan jagaan balai
-        polys.forEach((pts) => gJag.addLayer(L.polygon(pts, { pane: 'kml', color: col, weight: 1.5, fillColor: col, fillOpacity: 0.14, interactive: false })));
+        const jname = fn.toUpperCase();
+        polys.forEach((pts) => {
+          gJag.addLayer(L.polygon(pts, { pane: 'kml', color: col, weight: 1.5, fillColor: col, fillOpacity: 0.14, interactive: false }));
+          let a = 90, b = 180, c2 = -90, d = -180;                     // bbox: [minLat, minLng, maxLat, maxLng]
+          pts.forEach((p) => { if (p[0] < a) a = p[0]; if (p[1] < b) b = p[1]; if (p[0] > c2) c2 = p[0]; if (p[1] > d) d = p[1]; });
+          jagPolys.push({ name: jname, pts, bb: [a, b, c2, d] });
+        });
         nJ++;
       }
     });
     stat.textContent = nJ + ' kawasan · ' + nZ + ' zon · ' + nB + ' balai';
+    assignJag();          // jika CSV sudah siap, tetapkan kawasan jagaan setiap titik
   } catch (e) {
     console.error('[KML] Gagal muat:', e);
     stat.textContent = 'gagal dimuat';
     $('#side').insertAdjacentHTML('afterbegin',
       '<div style="font-size:.75rem;padding:8px;border-radius:6px;border:1px solid var(--fire-red);color:var(--fire-red);background:var(--hud-bg)">' +
       '<b>Lapisan KML tiada.</b> Gagal muat <code>' + KML_URL + '</code> — ' + esc(e.message) +
-      '. Pastikan fail ada dalam folder yang sama dan halaman dibuka melalui pelayan web (bukan <code>file://</code>).</div>');
+      '. Pastikan fail ada dalam folder yang sama dan halaman dibuka melalui pelayan web (bukan <code>file://</code>). ' +
+      'Tanpa KML, paparan zoom pertengahan akan mengumpulkan semua titik di bawah "' + NO_JAG + '".</div>');
   }
 })();
 
