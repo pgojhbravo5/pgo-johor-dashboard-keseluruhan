@@ -632,16 +632,16 @@ const AI_CELL = 0.02;        // saiz grid klaster (~2.2 km)
 const AI_DEBOUNCE = 450;     // ms, tunggu peta berhenti bergerak
 const AI_T = { kritikal: 70, tinggi: 50, sederhana: 30 };
 const AI_LVL = {
-  kritikal:  { t: 'KRITIKAL',  c: '#c8102e' },
+  kritikal:  { t: 'SANGAT TINGGI', c: '#c8102e' },
   tinggi:    { t: 'TINGGI',    c: '#ea580c' },
   sederhana: { t: 'SEDERHANA', c: '#ca8a04' },
   rendah:    { t: 'RENDAH',    c: '#16a34a' }
 };
 const AI_VERDICT = {
-  kritikal:  'Kawasan ini dinilai <b>hotspot berbahaya</b> dan memerlukan perhatian segera.',
-  tinggi:    'Kawasan ini <b>berisiko tinggi</b> dan perlu dipantau rapi.',
-  sederhana: 'Tahap risiko <b>sederhana</b>; kekalkan pemantauan berkala.',
-  rendah:    'Tahap risiko <b>rendah</b> dalam paparan ini.'
+  kritikal:  'Rekod menunjukkan hotspot di sini sangat tertumpu, jadi kawasan ini wajar diberi <b>keutamaan pemantauan</b>.',
+  tinggi:    'Kepekatan hotspot agak tinggi; wajar dipantau dengan lebih rapi.',
+  sederhana: 'Tahap risiko <b>sederhana</b> berdasarkan rekod; pemantauan berkala mencukupi.',
+  rendah:    'Rekod hotspot dalam paparan ini <b>rendah</b>.'
 };
 let aiBox = null, aiTimer = null, aiHot = [];
 
@@ -651,9 +651,9 @@ const isMonsun = (r) => r._j.includes('MONSUN');
 
 function seasonInfo(d) {
   const m = d.getMonth();   // 0 = Jan
-  if (m >= 10 || m <= 2) return { bonus: 8, t: 'Musim Monsun Timur Laut (Nov–Mac)', n: 'tempoh paling berisiko untuk banjir monsun berpanjangan, terutamanya di timur Semenanjung termasuk Johor' };
-  if (m === 3 || m === 4 || m === 9) return { bonus: 4, t: 'Musim peralihan monsun', n: 'hujan lebat waktu petang meningkatkan risiko banjir kilat' };
-  return { bonus: 0, t: 'Monsun Barat Daya (Jun–Sep)', n: 'biasanya lebih kering, namun banjir kilat di kawasan bandar masih boleh berlaku' };
+  if (m >= 10 || m <= 2) return { bonus: 8, t: 'Musim Monsun Timur Laut (Nov–Mac)', n: 'tempoh ini secara umumnya dikaitkan dengan hujan yang lebih kerap di pantai timur Semenanjung, dan diambil kira dalam skor' };
+  if (m === 3 || m === 4 || m === 9) return { bonus: 4, t: 'Musim peralihan monsun', n: 'hujan lebat waktu petang lebih kerap dalam tempoh ini, dan diambil kira sedikit dalam skor' };
+  return { bonus: 0, t: 'Monsun Barat Daya (Jun–Sep)', n: 'tempoh ini biasanya lebih kering, jadi tiada tambahan musim dalam skor' };
 }
 
 function analyse() {
@@ -752,26 +752,26 @@ function runAdvice() {
   const bal = a.balai.map((b) => esc(b.name)).join(', ');
   const acts = [];
   if (a.level === 'kritikal') {
-    acts.push(['fa-truck-field', 'Pra-posisi bot, pam dan anggota' + (bal ? ' di <b>' + bal + '</b>' : ' di balai berhampiran') + '; sediakan siaga 24 jam.']);
-    acts.push(['fa-bell', 'Keluarkan amaran awal kepada penduduk dan ketua kampung di kawasan tumpuan; sediakan PPS dan laluan evakuasi.']);
-    acts.push(['fa-binoculars', 'Pantau paras sungai serta amaran hujan lebat MET Malaysia dan JPS secara berterusan.']);
+    acts.push(['fa-truck-field', 'Pertimbangkan pra-posisi aset (bot, pam, anggota)' + (bal ? ' di <b>' + bal + '</b>' : ' di balai berhampiran') + ' apabila amaran hujan lebat dikeluarkan.']);
+    acts.push(['fa-bell', 'Pastikan hubungan dengan ketua kampung serta maklumat PPS dan laluan evakuasi sentiasa dikemas kini.']);
+    acts.push(['fa-binoculars', 'Pantau paras sungai dan amaran cuaca daripada MET Malaysia dan JPS.']);
   } else if (a.level === 'tinggi') {
-    acts.push(['fa-truck-field', 'Semak kesiapan bot, pam dan anggota' + (bal ? ' di <b>' + bal + '</b>' : '') + '; bersedia untuk pra-posisi jika amaran hujan lebat dikeluarkan.']);
-    acts.push(['fa-binoculars', 'Pantau rapi paras sungai dan ramalan cuaca; hubungi ketua kampung di kawasan tumpuan.']);
+    acts.push(['fa-truck-field', 'Semak kesiapan aset' + (bal ? ' di <b>' + bal + '</b>' : '') + ' dan bersedia jika amaran hujan lebat dikeluarkan.']);
+    acts.push(['fa-binoculars', 'Pantau ramalan cuaca dan paras sungai; kekalkan hubungan dengan ketua kampung.']);
   } else if (a.level === 'sederhana') {
     acts.push(['fa-binoculars', 'Kekalkan pemantauan berkala; semak kesiapan aset dan hubungan dengan ketua kampung.']);
   } else {
     acts.push(['fa-binoculars', 'Pemantauan rutin mencukupi buat masa ini; pastikan data hotspot sentiasa dikemas kini.']);
   }
-  if (a.domKey === 'Banjir Kilat') acts.push(['fa-bolt', '<b>Banjir kilat</b> berlaku mendadak dalam beberapa jam: utamakan amaran awal, pembersihan longkang dan saliran, serta kawalan lalu lintas di kawasan rendah.']);
-  else if (a.domKey === 'Banjir Monsun') acts.push(['fa-cloud-showers-heavy', '<b>Banjir monsun</b> cenderung berpanjangan: rancang logistik jangka panjang (bekalan, bot, PPS dan giliran anggota).']);
-  else acts.push(['fa-cloud-bolt', 'Kawasan terdedah kepada <b>kedua-dua</b> banjir kilat dan monsun: sediakan pelan untuk kejadian mendadak dan berpanjangan.']);
-  if (a.yrs >= 3) acts.push(['fa-clock-rotate-left', 'Lokasi <b>berulang</b> dilanda banjir dalam ' + a.yrs + ' tahun berbeza (' + a.yMin + '–' + a.yMax + ') — cadangkan kajian pelan mitigasi bersama agensi berkaitan.']);
+  if (a.domKey === 'Banjir Kilat') acts.push(['fa-bolt', 'Rekod di sini kebanyakannya <b>banjir kilat</b>, yang lazimnya berlaku dalam tempoh singkat selepas hujan lebat. Amaran awal, longkang dan saliran yang bersih serta kawalan lalu lintas di kawasan rendah boleh membantu.']);
+  else if (a.domKey === 'Banjir Monsun') acts.push(['fa-cloud-showers-heavy', 'Rekod di sini kebanyakannya <b>banjir monsun</b>, yang lazimnya berlarutan beberapa hari. Logistik jangka panjang (bekalan, bot, PPS dan giliran anggota) wajar dirancang lebih awal.']);
+  else acts.push(['fa-cloud-bolt', 'Rekod menunjukkan <b>kedua-dua</b> banjir kilat dan monsun pernah berlaku di sini; pelan kesiapsiagaan wajar merangkumi kedua-duanya.']);
+  if (a.yrs >= 3) acts.push(['fa-clock-rotate-left', 'Rekod menunjukkan kejadian di kawasan ini dalam <b>' + a.yrs + ' tahun berbeza</b> (' + a.yMin + '–' + a.yMax + '); kajian pelan mitigasi bersama agensi berkaitan boleh dipertimbangkan.']);
   if (a.trend) {
     const t = a.trend;
-    acts.push(['fa-chart-line', t.dir === 'naik' ? 'Kejadian <b>meningkat ' + t.pct + '%</b> sejak ' + t.from + ' berbanding 3 tahun sebelumnya — beri keutamaan kawasan ini.'
-      : t.dir === 'turun' ? 'Kejadian <b>menurun ' + t.pct + '%</b> sejak ' + t.from + ' berbanding 3 tahun sebelumnya; kekalkan kesiapsiagaan.'
-      : 'Kejadian <b>stabil</b> sejak ' + t.from + ' berbanding 3 tahun sebelumnya.']);
+    acts.push(['fa-chart-line', t.dir === 'naik' ? 'Rekod kejadian <b>meningkat ' + t.pct + '%</b> sejak ' + t.from + ' berbanding 3 tahun sebelumnya.'
+      : t.dir === 'turun' ? 'Rekod kejadian <b>menurun ' + t.pct + '%</b> sejak ' + t.from + ' berbanding 3 tahun sebelumnya; kesiapsiagaan tetap dikekalkan.'
+      : 'Rekod kejadian <b>stabil</b> sejak ' + t.from + ' berbanding 3 tahun sebelumnya.']);
   }
   acts.push(['fa-cloud-rain', '<b>' + a.season.t + ':</b> ' + a.season.n + '.']);
 
@@ -811,7 +811,7 @@ aiCtl.onAdd = function () {
   if (window.matchMedia('(max-width:800px)').matches) d.classList.add('min');   // ringkas dahulu di telefon
   d.innerHTML =
     '<div class="ai-h" id="aiH" role="button" tabindex="0" aria-label="Buka atau tutup penasihat AI">' +
-    '<i class="fas fa-wand-magic-sparkles spark"></i><span>ANALISIS RISIKO HOTSPOT</span><span class="ai-live" title="Dikemas kini automatik"></span>' +
+    '<i class="fas fa-wand-magic-sparkles spark"></i><span>Penasihat AI</span><span class="ai-live" title="Dikemas kini automatik"></span>' +
     '<span class="ai-pill" id="aiPill">—</span><i class="fas fa-chevron-down ai-chev"></i></div>' +
     '<div class="ai-b" id="aiBody"><p class="ai-sum">Menunggu data hotspot dimuatkan…</p></div>';
   L.DomEvent.disableClickPropagation(d);
