@@ -7889,6 +7889,20 @@ if (petaFullscreenBtn) {
                 }
             }
 
+            // ===== JARAK BALAI -> KES UNTUK POPUP TITIK LOKASI KES =====
+function jarakKesHtml(d) {
+    const balai = cariBalaiMeteor(d.balai);
+    if (!balai) return '';
+    const j = kiraJarakMeteor(d, balai);
+    const id = [d.balai, d.lat, d.lng, d.masa].join('|');
+    const rt = (typeof routeCache !== 'undefined') ? routeCache.get(id) : null;
+    let html = `<div class="popup-jentera-row"><span class="jrow-name"><i class="fas fa-route"></i> ${j.dariCsv ? 'Jarak (CSV)' : 'Jarak garis lurus'}</span><span class="jrow-model">${j.dariCsv ? '' : '~'}${j.km.toFixed(1)} km</span></div>`;
+    if (rt) {
+        html += `<div class="popup-jentera-row"><span class="jrow-name"><i class="fas fa-road"></i> Jarak jalan (OSRM)</span><span class="jrow-model">${rt.km.toFixed(1)} km</span></div>`;
+    }
+    return html;
+}
+
             async function fetchLokasiStatistik() {
                 const statusEl = document.getElementById('lokstatStatus');
                 try {
@@ -7974,12 +7988,14 @@ hari.forEach(d => {
         iconSize: [22, 22], iconAnchor: [11, 11], popupAnchor: [0, -10]
     });
     const m = L.marker([d.lat, d.lng], { icon, zIndexOffset: 500 });
-    m.bindPopup(
+    m.bindPopup(() =>
         `<div class="popup-balai-title">${escapeHtml(d.jenis || 'Kejadian')}</div>` +
         `<div class="popup-jentera-row"><span class="jrow-name"><i class="fas fa-house-fire"></i> ${escapeHtml(d.balai)}</span></div>` +
         `<div class="popup-jentera-row"><span class="jrow-plate"><i class="fas fa-location-dot"></i> ${escapeHtml(d.alamat.substring(0, 70))}</span></div>` +
-        `<div class="popup-jentera-row"><span class="jrow-model"><i class="fas fa-clock"></i> ${escapeHtml(d.masa)}</span></div>`
+        `<div class="popup-jentera-row"><span class="jrow-model"><i class="fas fa-clock"></i> ${escapeHtml(d.masa)}</span></div>` +
+        jarakKesHtml(d)
     );
+    
     lokstatLayer.addLayer(m);
                     pts.push([d.lat, d.lng]);
                 });
@@ -8289,9 +8305,8 @@ function lukisRouteArus(ctx, l, rt, now, labelCalon, peta) {
 
     // Teks jarak (jarak jalan OSRM) di tengah laluan - kekal
     if (meteorLabelOn) {
-        const mid = titikPadaJarak(pts, cum, total / 2);
-        labelCalon.push({ x: mid.x, y: mid.y + 8, teks: rt.km.toFixed(1) + ' km', warna: l.warna, alpha: 1 });
-    }
+        labelCalon.push({ x: hujung.x, y: hujung.y - 8, teks: rt.km.toFixed(1) + ' km', warna: l.warna, alpha: 1 });
+        }
 }
 
 // Padankan nama balai dalam CSV kes dengan senarai balai (guna fungsi sedia ada)
@@ -8399,7 +8414,7 @@ function lukisRouteArus(ctx, l, rt, now, labelCalon, peta) {
                             const b = petaJenteraMapInstance.latLngToContainerPoint(l.to);
                             if (Math.hypot(b.x - a.x, b.y - a.y) >= 6) {
                                 labelCalon.push({
-                                    x: (a.x + b.x) / 2, y: (a.y + b.y) / 2 + 8,
+                                    x: b.x, y: b.y - 8,
                                     teks: (l.jarakCsv ? '' : '~') + l.jarakKm.toFixed(1) + ' km',
                                     warna: l.warna, alpha: 0.7
                                 });
@@ -8437,9 +8452,9 @@ function lukisRouteArus(ctx, l, rt, now, labelCalon, peta) {
                         const fasaL = meteorKurangGerak ? 0 : ((now - l.t0) % (l.dur + l.pause));
                         const aktif = meteorKurangGerak || fasaL <= l.dur + 700;   // meteor sedang meluncur
                         labelCalon.push({
-                            x: 0.25 * p0.x + 0.5 * c.x + 0.25 * p2.x,
-                            y: 0.25 * p0.y + 0.5 * c.y + 0.25 * p2.y,
-                            teks: (l.jarakCsv ? '' : '~') + l.jarakKm.toFixed(1) + ' km',
+                            x: p2.x,
+                            y: p2.y - 8,
+                                    teks: (l.jarakCsv ? '' : '~') + l.jarakKm.toFixed(1) + ' km',
                             warna: l.warna,
                             alpha: aktif ? 1 : 0.55
                         });
