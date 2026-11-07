@@ -5175,7 +5175,19 @@ body.mode-siang .peta-legend-overlay .pts-line + .pts-line {
                             </div>
 
                             <div class="peta-unmatched-box" id="petaUnmatchedBox" style="display:none;"></div>
+
+                            <!-- NOTA: ANIMASI ROUTE (OSRM) -->
+<div class="carousel-notice route-nota" style="margin: 0.5rem 0 0 0;">
+    <i class="fas fa-route"></i>
+    <span
+        data-ms="<strong>Nota:</strong> Animasi route dan jarak (KM) pada zoom dekat adalah maklumat daripada respons OSRM (laluan jalan dianggarkan). Ia tidak semestinya laluan sebenar yang dilalui oleh balai yang hadir ke kes. Balai yang hadir mungkin menggunakan laluan lain yang munasabah."
+        data-en="<strong>Note:</strong> The route animation and distance (KM) at close zoom are derived from OSRM responses (estimated road path). They do not necessarily reflect the actual route taken by the responding station. The responding station may reasonably use a different route.">
+        <strong>Nota:</strong> Animasi route dan jarak (KM) pada zoom dekat adalah maklumat daripada respons OSRM (laluan jalan dianggarkan). Ia tidak semestinya laluan sebenar yang dilalui oleh balai yang hadir ke kes. Balai yang hadir mungkin menggunakan laluan lain yang munasabah.
+    </span>
+</div>
                         </div>
+
+                        
                     </section>
 
                     <!-- ===== SEMUA STATISTIK DI BAWAH PETA (2 lajur) ===== -->
@@ -8085,7 +8097,204 @@ hari.forEach(d => {
                 return `rgba(${(n >> 16) & 255},${(n >> 8) & 255},${n & 255},${a})`;
             }
 
-            // Padankan nama balai dalam CSV kes dengan senarai balai (guna fungsi sedia ada)
+            // ============================================================
+// ===== ROUTE JALAN (OSRM) PADA ZOOM ~1 KM =====
+// ============================================================
+const ROUTE_ZOOM_MIN = 13;          // 14 = skala bar ~1 km. Tukar kedua-duanya ke 14/15 jika mahu julat lebih luas
+const ROUTE_ZOOM_MAX = 25;
+const ROUTE_OSRM_URL = 'https://router.project-osrm.org/route/v1/driving';
+const ROUTE_TIMEOUT_MS = 8000;
+const ROUTE_SERENTAK = 2;           // elak kena had OSRM awam
+const ROUTE_COOLDOWN_MS = 60000;    // jika gagal, cuba semula selepas 60 saat
+const ROUTE_ARUS_LAJU = 60;         // px/saat - kelajuan dash arus
+const ROUTE_PULSA_LAJU = 160;       // px/saat - kelajuan titik cahaya
+
+const routeCache = new Map();       // id -> { pts:[[lat,lng]], km, bounds }
+const routeGagal = new Map();       // id -> masa gagal
+const routeSedangFetch = new Set();
+const routeQueue = [];
+let routeAktifBil = 0;
+
+function dalamZoomRoute(z) { return z >= ROUTE_ZOOM_MIN && z <= ROUTE_ZOOM_MAX; }
+
+async function fetchRouteOSRM(l) {
+    const url = `${ROUTE_OSRM_URL}/${l.from[1]},${l.from[0]};${l.to[1]},${l.to[0]}` +
+                `?geometries=geojson&overview=full&steps=false`;
+    const ctrl = new AbortController();
+    const tid = setTimeout(() => ctrl.abort(), ROUTE_TIMEOUT_MS);
+    try {
+        const resp = await fetch(url, { signal: ctrl.signal });
+        if (!resp.ok) throw new Error('OSRM HTTP ' + resp.status);
+        const data = await resp.json();
+        if (data.code !== 'Ok' || !data.routes || !data.routes[0]) throw new Error('Tiada route');
+        const rt = data.routes[0];
+        const pts = rt.geometry.coordinates.map(c => [c[1], c[0]]);   // [lng,lat] -> [lat,lng]
+        routeCache.set(l.id, { pts, km: rt.distance / 1000, bounds: L.latLngBounds(pts) });
+        routeGagal.delete(l.id);
+    } catch (e) {
+        routeGagal.set(l.id, Date.now());
+        console.warn('[Route]', e.message);
+    } finally {
+        clearTimeout(tid);
+    }
+}
+
+function prosesQueueRoute() {
+    while (routeAktifBil < ROUTE_SERENTAK && routeQueue.length) {
+        const l = routeQueue.shift();
+        routeAktifBil++;
+        fetchRouteOSRM(l).finally(() => {
+            routeAktifBil--;
+            routeSedangFetch.delete(l.id);
+            prosesQueueRoute();
+        });
+    }
+}
+
+// Hanya ambil route bagi kes yang kelihatan dalam paparan & hanya bila dalam zoom ~1 km
+function urusRouteKelihatan() {
+    if (!petaJenteraMapInstance || !dalamZoomRoute(petaJenteraMapInstance.getZoom())) return;
+    const lihat = petaJenteraMapInstance.getBounds().pad(0.2);
+    meteorLinks.forEach(l => {
+        if (routeCache.has(l.id) || routeSedangFetch.has(l.id)) return;
+        const g = routeGagal.get(l.id);
+        if (g && Date.now() - g < ROUTE_COOLDOWN_MS) return;
+        if (!lihat.intersects(L.latLngBounds([l.from, l.to]))) return;
+        routeSedangFetch.add(l.id);
+        routeQueue.push(l);
+    });
+    prosesQueueRoute();
+}
+
+// Kumpul panjang kumulatif (px) & cari titik pada jarak d di sepanjang laluan
+function kumulatifPanjang(pts) {
+    const cum = [0];
+    for (let i = 1; i < pts.length; i++) {
+        cum.push(cum[i - 1] + Math.hypot(pts[i].x - pts[i - 1].x, pts[i].y - pts[i - 1].y));
+    }
+    return cum;
+}
+function titikPadaJarak(pts, cum, d) {
+    const total = cum[cum.length - 1];
+    d = Math.max(0, Math.min(total, d));
+    let i = 1;
+    while (i < cum.length - 1 && cum[i] < d) i++;
+    const seg = cum[i] - cum[i - 1] || 1;
+    const f = (d - cum[i - 1]) / seg;
+    return { x: pts[i - 1].x + (pts[i].x - pts[i - 1].x) * f,
+             y: pts[i - 1].y + (pts[i].y - pts[i - 1].y) * f };
+}
+
+// ===== FLASH RUN: kilatan laju dari balai ke lokasi kes (point to point) =====
+const ROUTE_FLASH_LAJU = 225;      // px/saat - kelajuan kilatan (dikurangkan 75%)
+const ROUTE_FLASH_EKOR = 150;      // px - panjang ekor kilatan
+const ROUTE_FLASH_JEDA_MIN = 700;  // ms - jeda minimum sebelum ulang
+const ROUTE_FLASH_JEDA_MAX = 2200; // ms - jeda maksimum (rawak per kes)
+const ROUTE_FLASH_RIAK_MS = 650;   // ms - tempoh riak di lokasi kes
+
+function lukisRouteArus(ctx, l, rt, now, labelCalon, peta) {
+    if (!peta.getBounds().intersects(rt.bounds)) return;
+    const pts = rt.pts.map(p => peta.latLngToContainerPoint(p));
+    if (pts.length < 2) return;
+    const cum = kumulatifPanjang(pts);
+    const total = cum[cum.length - 1];
+    if (total < 6) return;
+
+    const mula = pts[0];
+    const hujung = pts[pts.length - 1];
+
+    // Titik balai & penanda lokasi kes (kecil, sentiasa ada)
+    ctx.save();
+    ctx.setLineDash([]);
+    ctx.beginPath(); ctx.arc(mula.x, mula.y, 3.2, 0, Math.PI * 2);
+    ctx.fillStyle = hexKeRgba(l.warna, 0.9); ctx.fill();
+    ctx.beginPath(); ctx.arc(hujung.x, hujung.y, 4.5, 0, Math.PI * 2);
+    ctx.strokeStyle = hexKeRgba(l.warna, 0.7); ctx.lineWidth = 1.5; ctx.stroke();
+    ctx.restore();
+
+    if (!meteorKurangGerak) {
+        const dur = Math.max(450, Math.min(1400, (total / ROUTE_FLASH_LAJU) * 1000));
+        const jeda = ROUTE_FLASH_JEDA_MIN + ((l.t0 % 1000) / 1000) * (ROUTE_FLASH_JEDA_MAX - ROUTE_FLASH_JEDA_MIN);
+        const kitar = dur + ROUTE_FLASH_RIAK_MS + jeda;
+        const fasa = (now - l.t0) % kitar;
+        const warna = l.warna;
+
+        // Lukis jejak dari balai (jarak 0) hingga jarak dHingga, dengan alpha & ketebalan
+        const lukisJejak = (dHingga, alphaPuncak, tebalPuncak) => {
+            if (dHingga < 1) return;
+            const SEG = Math.max(8, Math.min(120, Math.ceil(dHingga / 8)));
+            ctx.save();
+            ctx.setLineDash([]);
+            ctx.lineCap = 'round';
+            ctx.lineJoin = 'round';
+            let prev = titikPadaJarak(pts, cum, 0);
+            for (let i = 1; i <= SEG; i++) {
+                const cur = titikPadaJarak(pts, cum, dHingga * (i / SEG));
+                const f = i / SEG;                       // 0 = balai (malap), 1 = bola (terang)
+                ctx.beginPath();
+                ctx.moveTo(prev.x, prev.y);
+                ctx.lineTo(cur.x, cur.y);
+                ctx.strokeStyle = hexKeRgba(warna, alphaPuncak * (0.25 + 0.75 * f));
+                ctx.lineWidth = tebalPuncak * (0.35 + 0.65 * f);
+                ctx.shadowColor = warna;
+                ctx.shadowBlur = 8 * f;
+                ctx.stroke();
+                prev = cur;
+            }
+            ctx.restore();
+        };
+
+        if (fasa <= dur) {
+            // Bola bergerak dari balai -> lokasi kes, jejak ditinggalkan di belakang
+            const d = (fasa / dur) * total;
+
+            lukisJejak(d, 0.9, 4);
+
+            // Bola flash (kepala)
+            const kep = titikPadaJarak(pts, cum, d);
+            ctx.save();
+            ctx.shadowColor = warna;
+            ctx.shadowBlur = 18;
+            ctx.beginPath(); ctx.arc(kep.x, kep.y, 4.5, 0, Math.PI * 2);
+            ctx.fillStyle = '#ffffff'; ctx.fill();
+            ctx.restore();
+
+            // Percikan di balai ketika bermula
+            if (fasa < 220) {
+                const r = fasa / 220;
+                ctx.beginPath();
+                ctx.arc(mula.x, mula.y, 3 + r * 12, 0, Math.PI * 2);
+                ctx.strokeStyle = hexKeRgba(warna, 0.8 * (1 - r));
+                ctx.lineWidth = 1.5;
+                ctx.stroke();
+            }
+        } else if (fasa <= dur + ROUTE_FLASH_RIAK_MS) {
+            // Tiba: jejak penuh pudar perlahan + riak berganda di lokasi kes
+            const r = (fasa - dur) / ROUTE_FLASH_RIAK_MS;
+
+            lukisJejak(total, 0.9 * (1 - r), 4 * (1 - 0.5 * r));
+
+            for (let k = 0; k < 2; k++) {
+                const rk = Math.max(0, r - k * 0.25);
+                if (rk <= 0) continue;
+                ctx.beginPath();
+                ctx.arc(hujung.x, hujung.y, 4 + rk * 20, 0, Math.PI * 2);
+                ctx.strokeStyle = hexKeRgba(warna, 0.9 * (1 - rk));
+                ctx.lineWidth = 2.2 * (1 - rk) + 0.5;
+                ctx.stroke();
+            }
+        }
+    
+    }
+
+    // Teks jarak (jarak jalan OSRM) di tengah laluan - kekal
+    if (meteorLabelOn) {
+        const mid = titikPadaJarak(pts, cum, total / 2);
+        labelCalon.push({ x: mid.x, y: mid.y + 8, teks: rt.km.toFixed(1) + ' km', warna: l.warna, alpha: 1 });
+    }
+}
+
+// Padankan nama balai dalam CSV kes dengan senarai balai (guna fungsi sedia ada)
             function cariBalaiMeteor(namaCsv) {
                 const k = normalisasiNamaBalai(namaCsv);
                 if (!k) return null;
@@ -8100,6 +8309,7 @@ hari.forEach(d => {
                 meteorCanvas.className = 'peta-meteor-canvas';
                 petaJenteraMapInstance.getContainer().appendChild(meteorCanvas);
                 meteorCtx = meteorCanvas.getContext('2d');
+                petaJenteraMapInstance.on('zoomend moveend', urusRouteKelihatan);   // ✅ BARU
                 requestAnimationFrame(meteorLoop);
             }
 
@@ -8140,10 +8350,11 @@ hari.forEach(d => {
                     }
                 });
 
-                meteorLinks = baru.slice(0, METEOR_MAKS);
+                                meteorLinks = baru.slice(0, METEOR_MAKS);
                 initMeteorCanvas();
+                urusRouteKelihatan();   // ✅ BARU
             }
-
+            
             function titikBezier(p0, c, p2, t) {
                 const u = 1 - t;
                 return [
@@ -8172,7 +8383,30 @@ hari.forEach(d => {
                 ctx.lineCap = 'round';
                 const labelCalon = [];   // ✅ kumpul label, dilukis selepas semua arc/meteor
 
+                // ✅ BARU: mod route aktif bila zoom ~1 km (meteor disembunyikan)
+                const modeRoute = dalamZoomRoute(petaJenteraMapInstance.getZoom());
+
                 meteorLinks.forEach(l => {
+
+                    // ✅ BARU: ZOOM ~1 KM -> animasi arus pada route jalan, TANPA meteor
+                    if (modeRoute) {
+                        const rt = routeCache.get(l.id);
+                        if (rt) {
+                            lukisRouteArus(ctx, l, rt, now, labelCalon, petaJenteraMapInstance);
+                        } else if (meteorLabelOn && l.jarakKm > 0) {
+                            // Route belum siap: kekalkan teks jarak sementara
+                            const a = petaJenteraMapInstance.latLngToContainerPoint(l.from);
+                            const b = petaJenteraMapInstance.latLngToContainerPoint(l.to);
+                            if (Math.hypot(b.x - a.x, b.y - a.y) >= 6) {
+                                labelCalon.push({
+                                    x: (a.x + b.x) / 2, y: (a.y + b.y) / 2 + 8,
+                                    teks: (l.jarakCsv ? '' : '~') + l.jarakKm.toFixed(1) + ' km',
+                                    warna: l.warna, alpha: 0.7
+                                });
+                            }
+                        }
+                        return;   // langkau lukisan meteor
+                    }
                     
                     const p0 = petaJenteraMapInstance.latLngToContainerPoint(l.from);
                     const p2 = petaJenteraMapInstance.latLngToContainerPoint(l.to);
@@ -8256,9 +8490,11 @@ hari.forEach(d => {
                     }
                 });
 
-                // ✅ Lukis label jarak (KM) — langkau yang bertindih / terkeluar canvas
+                                // ✅ Lukis label jarak (KM) — langkau yang bertindih / terkeluar canvas
+                                ctx.setLineDash([]);   // ✅ BARU: pastikan garis label tidak putus-putus
                 if (meteorLabelOn && labelCalon.length &&
-                    petaJenteraMapInstance.getZoom() >= METEOR_LABEL_MIN_ZOOM) {
+                
+                petaJenteraMapInstance.getZoom() >= METEOR_LABEL_MIN_ZOOM) {
                     ctx.font = '600 10px Inter, sans-serif';
                     ctx.textAlign = 'center';
                     ctx.textBaseline = 'middle';
