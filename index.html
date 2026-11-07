@@ -4921,8 +4921,18 @@ body.mode-siang .peta-legend-overlay .pts-line + .pts-line {
             border-radius: var(--radius-sm) !important;
         }
         .footer .social-links a:hover { color: var(--navy) !important; border-color: var(--navy) !important; box-shadow: none !important; }
-    </style>
-        
+
+        /* ===== CANVAS METEOR (JARINGAN BALAI → KES) ===== */
+        .peta-meteor-canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;   /* klik tetap tembus ke marker & peta */
+            z-index: 450;           /* atas panel peta (400), bawah butang zoom (800) */
+        }
+    </style>        
 </head>
 <body>
 
@@ -5132,9 +5142,18 @@ body.mode-siang .peta-legend-overlay .pts-line + .pts-line {
                                     <i class="fas fa-location-crosshairs"></i>
                                     <span data-ms="Lokasi Kes" data-en="Case Locations">Lokasi Kes</span>
                                 </label>
+                                <label class="peta-layer-toggle" title="Tunjuk/Sembunyi animasi meteor balai ke lokasi kes">
+                                    <input type="checkbox" class="peta-layer-check" id="toggleMeteor" checked />
+                                    <i class="fas fa-meteor"></i>
+                                    <span data-ms="Meteor Kes" data-en="Case Meteors">Meteor Kes</span>
+                                </label>
+                                <label class="peta-layer-toggle" title="Tunjuk/Sembunyi label jarak (KM) pada setiap meteor">
+                                    <input type="checkbox" class="peta-layer-check" id="toggleMeteorJarak" checked />
+                                    <i class="fas fa-ruler-horizontal"></i>
+                                    <span data-ms="Jarak (KM)" data-en="Distance (KM)">Jarak (KM)</span>
+                                </label>
                             </div>
-
-                            <div class="peta-map-wrap">
+                                                        <div class="peta-map-wrap">
                                 <div id="petaJenteraMap"></div>
 
                                                                 <!-- LEGEND TEKS: hanya kelihatan dalam skrin penuh (sudut kanan atas) -->
@@ -7815,8 +7834,10 @@ if (petaFullscreenBtn) {
                         latLong: pgoColIdx(h, 'LAT LONG'),
                         mati: pgoColIdx(h, 'MATI'),
                         cedera: pgoColIdx(h, 'CEDERA'),
-                        selamat: pgoColIdx(h, 'SELAMAT')
+                        selamat: pgoColIdx(h, 'SELAMAT'),
+                        jarak: cariKolumJarak(h)   // ✅ lajur JARAK (jika ada dalam CSV)
                     };
+                    
                     const get = (r, i) => (i >= 0 ? (r[i] || '').trim() : '');
                     const out = [];
                     for (let i = 1; i < rows.length; i++) {
@@ -7839,8 +7860,9 @@ if (petaFullscreenBtn) {
                             balai: get(r, ix.balai) || '-',
                             lat: isNaN(lat) ? 0 : lat,
                             lng: isNaN(lng) ? 0 : lng,
+                            jarakCsv: ix.jarak ? parseJarakKm(get(r, ix.jarak.idx), ix.jarak.meter) : 0,  // ✅ KM dari CSV (0 = tiada)
                                                         mati: parseInt(get(r, ix.mati)) || 0,
-                            cedera: parseInt(get(r, ix.cedera)) || 0,
+                                                        cedera: parseInt(get(r, ix.cedera)) || 0,
                             selamat: parseInt(get(r, ix.selamat)) || 0,
                             mangsa_mati: parseInt(get(r, ix.mati)) || 0,
                             mangsa_cedera: parseInt(get(r, ix.cedera)) || 0,
@@ -7947,12 +7969,16 @@ hari.forEach(d => {
         `<div class="popup-jentera-row"><span class="jrow-model"><i class="fas fa-clock"></i> ${escapeHtml(d.masa)}</span></div>`
     );
     lokstatLayer.addLayer(m);
-    pts.push([d.lat, d.lng]);
-});
+                    pts.push([d.lat, d.lng]);
+                });
+
+                // ✅ Kemaskini jaringan meteor (balai → lokasi kes)
+                try { kemaskiniMeteor(hari); } catch (e) { console.warn('[Meteor]', e.message); }
 
                                         if (statusEl) {
                         statusEl.textContent = pts.length + ' / ' + hari.length + ' kes berkoordinat · Dikemaskini ' +
-                            new Date().toLocaleTimeString('ms-MY', { hour: '2-digit', minute: '2-digit' });
+                        
+                        new Date().toLocaleTimeString('ms-MY', { hour: '2-digit', minute: '2-digit' });
                     }
                 } catch (e) {
                     console.warn('[Lokstat] ralat:', e.message);
@@ -7972,6 +7998,304 @@ hari.forEach(d => {
             }
 
             // ============================================================
+            // ===== JARINGAN METEOR: BALAI → LOKASI KES =====
+            // ============================================================
+            const METEOR_WARNA = {
+                kebakaran_bangunan: '#ef4444',
+                kebakaran_perkakas: '#ef4444',
+                kebakaran_kenderaan: '#ef4444',
+                kebakaran_terbuka: '#f39c12',
+                menyelamat: '#facc15',
+                banjir: '#38bdf8',
+                bencana_alam: '#a855f7',
+                tumpahan_bahan: '#ec4899',
+                menangkap_binatang: '#2ecc71',
+                serangga: '#2ecc71',
+                tugas_khas: '#3b82f6',
+                lain_lain: '#94a3b8'
+            };
+            const METEOR_MAKS = 200;           // had bilangan meteor serentak
+            const METEOR_EKOR = 0.24;          // panjang ekor (0-1 daripada panjang arc)
+            const METEOR_SEGMEN = 16;          // kehalusan ekor
+            const METEOR_LAJU = 1.3;           // pengganda kelajuan (1 = asal, 1.3 = +30%)
+
+            let meteorCanvas = null;
+            let meteorCtx = null;
+            let meteorLinks = [];
+            let meteorOn = true;
+            let meteorLabelOn = true;            // toggle label jarak
+            const METEOR_LABEL_MIN_ZOOM = 9;     // label hanya dipaparkan pada zoom >= ini
+            const METEOR_LABEL_MIN_PX = 70;      // arc pendek (px) tidak diberi label
+            const METEOR_FAKTOR_JALAN = 1;       // 1 = garis lurus. Cuba 1.3 untuk anggaran jarak jalan
+
+            // ---- Pembantu jarak ----
+            // Cari lajur yang tajuknya mengandungi "JARAK" (tak guna pgoColIdx kerana ia
+            // boleh tersilap padan dengan tajuk kosong)
+            function cariKolumJarak(headers) {
+                for (let i = 0; i < headers.length; i++) {
+                    const hh = String(headers[i] || '').replace(/[\n\r]+/g, ' ').replace(/\s+/g, ' ').trim().toUpperCase();
+                    if (hh && hh.includes('JARAK')) {
+                        const meter = /\(\s*M\s*\)|\bMETER\b|\bMETRE\b/.test(hh);   // "(M)" → bahagi 1000
+                        return { idx: i, meter };
+                    }
+                }
+                return null;
+            }
+
+            function parseJarakKm(txt, adalahMeter) {
+                if (!txt) return 0;
+                const n = parseFloat(String(txt).replace(/,/g, '.').replace(/[^0-9.\-]/g, ''));
+                if (!isFinite(n) || n <= 0) return 0;
+                return adalahMeter ? n / 1000 : n;
+            }
+
+            function haversineKm(lat1, lng1, lat2, lng2) {
+                const R = 6371, rad = Math.PI / 180;
+                const dLat = (lat2 - lat1) * rad, dLng = (lng2 - lng1) * rad;
+                const a = Math.sin(dLat / 2) ** 2 +
+                          Math.cos(lat1 * rad) * Math.cos(lat2 * rad) * Math.sin(dLng / 2) ** 2;
+                return 2 * R * Math.asin(Math.sqrt(a));
+            }
+
+            // Utamakan nilai dari CSV; jika tiada, kira dari koordinat
+            function kiraJarakMeteor(kes, balai) {
+                if (kes.jarakCsv > 0) return { km: kes.jarakCsv, dariCsv: true };
+                return {
+                    km: haversineKm(balai.lat, balai.lng, kes.lat, kes.lng) * METEOR_FAKTOR_JALAN,
+                    dariCsv: false
+                };
+            }
+
+            function rrPath(ctx, x, y, w, h, r) {
+                ctx.beginPath();
+                ctx.moveTo(x + r, y);
+                ctx.arcTo(x + w, y, x + w, y + h, r);
+                ctx.arcTo(x + w, y + h, x, y + h, r);
+                ctx.arcTo(x, y + h, x, y, r);
+                ctx.arcTo(x, y, x + w, y, r);
+                ctx.closePath();
+            }
+            
+            const meteorKurangGerak = window.matchMedia &&
+                window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+            function hexKeRgba(hex, a) {
+                const h = String(hex).replace('#', '');
+                const n = parseInt(h.length === 3 ? h.replace(/(.)/g, '$1$1') : h, 16);
+                return `rgba(${(n >> 16) & 255},${(n >> 8) & 255},${n & 255},${a})`;
+            }
+
+            // Padankan nama balai dalam CSV kes dengan senarai balai (guna fungsi sedia ada)
+            function cariBalaiMeteor(namaCsv) {
+                const k = normalisasiNamaBalai(namaCsv);
+                if (!k) return null;
+                if (PETA_BALAI_LOOKUP[k]) return PETA_BALAI_LOOKUP[k];
+                const kunci = Object.keys(PETA_BALAI_LOOKUP).find(x => x.includes(k) || k.includes(x));
+                return kunci ? PETA_BALAI_LOOKUP[kunci] : null;
+            }
+
+            function initMeteorCanvas() {
+                if (meteorCanvas || !petaJenteraMapInstance) return;
+                meteorCanvas = document.createElement('canvas');
+                meteorCanvas.className = 'peta-meteor-canvas';
+                petaJenteraMapInstance.getContainer().appendChild(meteorCanvas);
+                meteorCtx = meteorCanvas.getContext('2d');
+                requestAnimationFrame(meteorLoop);
+            }
+
+            // Bina / kemaskini senarai pautan. Pautan sedia ada dikekalkan supaya animasi tak "reset" setiap 60 saat.
+            function kemaskiniMeteor(senaraiKes) {
+                const lama = new Map(meteorLinks.map(l => [l.id, l]));
+                const baru = [];
+
+                senaraiKes.forEach(d => {
+                    if (!(d.lat >= LOKSTAT_BOUNDS.south && d.lat <= LOKSTAT_BOUNDS.north &&
+                          d.lng >= LOKSTAT_BOUNDS.west && d.lng <= LOKSTAT_BOUNDS.east)) return;
+                    const balai = cariBalaiMeteor(d.balai);
+                    if (!balai || balai.jenis === 'bengkel') return;
+
+                    const id = [d.balai, d.lat, d.lng, d.masa].join('|');
+                    const kat = getCaseCategory(d);
+                    const warna = METEOR_WARNA[kat] || LOKSTAT_WARNA[classifyCase(d)] || '#94a3b8';
+
+                    const jarak = kiraJarakMeteor(d, balai);
+                    const sedia = lama.get(id);
+                    if (sedia) {
+                        sedia.warna = warna;
+                        sedia.jarakKm = jarak.km;
+                        sedia.jarakCsv = jarak.dariCsv;
+                        baru.push(sedia);
+                    } else {
+                        baru.push({
+                            id,
+                            from: [balai.lat, balai.lng],
+                            to: [d.lat, d.lng],
+                            warna,
+                            jarakKm: jarak.km,           // ✅
+                            jarakCsv: jarak.dariCsv,     // ✅ true = dari CSV, false = dikira
+                            t0: performance.now() - Math.random() * 4000,   // beza fasa supaya tak serentak
+                            dur: (1600 + Math.random() * 1400) / METEOR_LAJU,  // masa meluncur (ms), laju +20%
+                            pause: 800 + Math.random() * 2600               // jeda sebelum ulang (ms)
+                        });
+                    }
+                });
+
+                meteorLinks = baru.slice(0, METEOR_MAKS);
+                initMeteorCanvas();
+            }
+
+            function titikBezier(p0, c, p2, t) {
+                const u = 1 - t;
+                return [
+                    u * u * p0.x + 2 * u * t * c.x + t * t * p2.x,
+                    u * u * p0.y + 2 * u * t * c.y + t * t * p2.y
+                ];
+            }
+
+            function meteorLoop() {
+                requestAnimationFrame(meteorLoop);
+                if (!meteorCanvas || !petaJenteraMapInstance) return;
+
+                const kont = petaJenteraMapInstance.getContainer();
+                const w = kont.clientWidth, h = kont.clientHeight;
+                const dpr = window.devicePixelRatio || 1;
+                if (meteorCanvas.width !== Math.round(w * dpr) || meteorCanvas.height !== Math.round(h * dpr)) {
+                    meteorCanvas.width = Math.round(w * dpr);
+                    meteorCanvas.height = Math.round(h * dpr);
+                }
+                const ctx = meteorCtx;
+                ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+                ctx.clearRect(0, 0, w, h);
+                if (!meteorOn || !meteorLinks.length) return;
+
+                const now = performance.now();
+                ctx.lineCap = 'round';
+                const labelCalon = [];   // ✅ kumpul label, dilukis selepas semua arc/meteor
+
+                meteorLinks.forEach(l => {
+                    
+                    const p0 = petaJenteraMapInstance.latLngToContainerPoint(l.from);
+                    const p2 = petaJenteraMapInstance.latLngToContainerPoint(l.to);
+                    const dx = p2.x - p0.x, dy = p2.y - p0.y;
+                    if (Math.hypot(dx, dy) < 6) return;
+
+                    // Titik kawalan: melengkung ke atas skrin
+                    let nx = dy, ny = -dx;
+                    if (ny > 0) { nx = -nx; ny = -ny; }
+                    const c = { x: (p0.x + p2.x) / 2 + nx * 0.25, y: (p0.y + p2.y) / 2 + ny * 0.25 };
+
+                    // 1) Garis arc malap (jaringan)
+                    ctx.beginPath();
+                    ctx.moveTo(p0.x, p0.y);
+                    ctx.quadraticCurveTo(c.x, c.y, p2.x, p2.y);
+                    ctx.strokeStyle = hexKeRgba(l.warna, 0.22);
+                    ctx.lineWidth = 1;
+                    ctx.stroke();
+
+                                        // 2) Titik asal di balai
+                                        ctx.beginPath();
+                    ctx.arc(p0.x, p0.y, 2.2, 0, Math.PI * 2);
+                    ctx.fillStyle = hexKeRgba(l.warna, 0.55);
+                    ctx.fill();
+
+                    // 2b) Calon label jarak di titik tengah arc (kuadratik t = 0.5)
+                    if (meteorLabelOn && l.jarakKm > 0 && Math.hypot(dx, dy) >= METEOR_LABEL_MIN_PX) {
+                        const fasaL = meteorKurangGerak ? 0 : ((now - l.t0) % (l.dur + l.pause));
+                        const aktif = meteorKurangGerak || fasaL <= l.dur + 700;   // meteor sedang meluncur
+                        labelCalon.push({
+                            x: 0.25 * p0.x + 0.5 * c.x + 0.25 * p2.x,
+                            y: 0.25 * p0.y + 0.5 * c.y + 0.25 * p2.y,
+                            teks: (l.jarakCsv ? '' : '~') + l.jarakKm.toFixed(1) + ' km',
+                            warna: l.warna,
+                            alpha: aktif ? 1 : 0.55
+                        });
+                    }
+
+                    if (meteorKurangGerak) return;   // hormati tetapan "kurangkan gerakan"
+
+                    const kitar = l.dur + l.pause;
+                    const fasa = (now - l.t0) % kitar;
+
+                    if (fasa <= l.dur) {
+                        const t = fasa / l.dur;
+
+                        // 3) Ekor meteor (makin ke kepala makin tebal & terang)
+                        let [px, py] = titikBezier(p0, c, p2, Math.max(0, t - METEOR_EKOR));
+                        for (let i = 1; i <= METEOR_SEGMEN; i++) {
+                            const tt = t - METEOR_EKOR * (1 - i / METEOR_SEGMEN);
+                            if (tt < 0) continue;
+                            const [x, y] = titikBezier(p0, c, p2, tt);
+                            const f = i / METEOR_SEGMEN;
+                            ctx.beginPath();
+                            ctx.moveTo(px, py);
+                            ctx.lineTo(x, y);
+                            ctx.strokeStyle = hexKeRgba(l.warna, 0.9 * f * f);
+                            ctx.lineWidth = 0.6 + f * 2.4;
+                            ctx.stroke();
+                            px = x; py = y;
+                        }
+
+                        // 4) Kepala meteor + cahaya
+                        const [hx, hy] = titikBezier(p0, c, p2, t);
+                        ctx.save();
+                        ctx.shadowColor = l.warna;
+                        ctx.shadowBlur = 12;
+                        ctx.beginPath();
+                        ctx.arc(hx, hy, 2.6, 0, Math.PI * 2);
+                        ctx.fillStyle = '#ffffff';
+                        ctx.fill();
+                        ctx.restore();
+                    } else if (fasa <= l.dur + 700) {
+                        // 5) Riak di lokasi kes bila meteor tiba
+                        const r = (fasa - l.dur) / 700;
+                        ctx.beginPath();
+                        ctx.arc(p2.x, p2.y, 4 + r * 16, 0, Math.PI * 2);
+                                                ctx.strokeStyle = hexKeRgba(l.warna, 0.8 * (1 - r));
+                        ctx.lineWidth = 2 * (1 - r) + 0.5;
+                        ctx.stroke();
+                    }
+                });
+
+                // ✅ Lukis label jarak (KM) — langkau yang bertindih / terkeluar canvas
+                if (meteorLabelOn && labelCalon.length &&
+                    petaJenteraMapInstance.getZoom() >= METEOR_LABEL_MIN_ZOOM) {
+                    ctx.font = '600 10px Inter, sans-serif';
+                    ctx.textAlign = 'center';
+                    ctx.textBaseline = 'middle';
+                    const dipakai = [];
+                    labelCalon.sort((a, b) => b.alpha - a.alpha);   // yang aktif diutamakan
+
+                    labelCalon.forEach(lb => {
+                        const lw = ctx.measureText(lb.teks).width + 12, lh = 16;
+                        const x = lb.x - lw / 2, y = lb.y - lh / 2 - 8;   // naik sedikit dari garis
+                        if (x < 0 || y < 0 || x + lw > w || y + lh > h) return;
+                        if (dipakai.some(r => x < r.x + r.w + 2 && x + lw + 2 > r.x &&
+                                              y < r.y + r.h + 2 && y + lh + 2 > r.y)) return;
+                        dipakai.push({ x, y, w: lw, h: lh });
+
+                        ctx.globalAlpha = lb.alpha;
+                        rrPath(ctx, x, y, lw, lh, 8);
+                        ctx.fillStyle = 'rgba(15, 23, 42, 0.88)';
+                        ctx.fill();
+                        ctx.strokeStyle = lb.warna;
+                        ctx.lineWidth = 1;
+                        ctx.stroke();
+                        ctx.fillStyle = '#ffffff';
+                        ctx.fillText(lb.teks, lb.x, y + lh / 2 + 0.5);
+                        ctx.globalAlpha = 1;
+                    });
+                }
+            }
+            const toggleMeteor = document.getElementById('toggleMeteor');
+            if (toggleMeteor) {
+                toggleMeteor.addEventListener('change', function () { meteorOn = this.checked; });
+            }
+
+            const toggleMeteorJarak = document.getElementById('toggleMeteorJarak');
+            if (toggleMeteorJarak) {
+                toggleMeteorJarak.addEventListener('change', function () { meteorLabelOn = this.checked; });
+            }
+                        // ============================================================
             // ===== KATEGORI KES (kad statistik dari data-rt.html) =====
             // ============================================================
             const RT_CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vSJW-jSCCmeTK8V4j5SqWl9KZ7xOFjAwUmPV0fyWFsvOn-sXpkctFzO0TtfF8urbWV4ibLBUtBZg4pS/pub?output=csv';
