@@ -1590,6 +1590,16 @@
       body.light-mode .kml-toggle-btn:hover { background: #002b5c; color: #fff; }
 
       .kml-station-marker { background: transparent !important; border: none !important; }
+      /* ===== METEOR KES ===== */
+.dash-meteor-canvas {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 450;
+}
     </style>
 
     <link
@@ -1832,6 +1842,12 @@
             <div class="search-map-indicator" id="searchMapIndicator"></div>
             <button class="kml-toggle-btn" id="kmlToggleBtn" onclick="toggleKMLLayer()" title="Papar/Sembunyi sempadan kawasan jagaan">
               🗺️ SEMPADAN ✓
+            </button>
+            <button class="kml-toggle-btn" id="meteorToggleBtn" style="bottom:34px;" onclick="toggleMeteor()" title="Papar/Sembunyi meteor balai ke kes">
+              ☄️ METEOR ✓
+            </button>
+            <button class="kml-toggle-btn" id="jarakToggleBtn" style="bottom:60px;" onclick="toggleMeteorJarak()" title="Papar/Sembunyi label jarak (KM)">
+              📏 JARAK ✓
             </button>
           </div>
         </div>
@@ -3020,6 +3036,7 @@ function getCaseEmoji(j) {
             shif: detectColumnIndex(headers, 'SHIF'),
             keluasanTerbuka: detectColumnIndex(headers, 'KELUASAN KEBAKARAN TERBUKA (HEKTAR)'),
             keluasanDipadam: detectColumnIndex(headers, 'KELUASAN DIPADAMKAN (HEKTAR)'),
+            jarak: cariKolumJarak(headers),
           };
           const data = [];
           for (let i = 1; i < rows.length; i++) {
@@ -3080,6 +3097,7 @@ function getCaseEmoji(j) {
               source: label,
               keluasan_terbuka: idx.keluasanTerbuka >= 0 ? parseFloat(row[idx.keluasanTerbuka]) || 0 : 0,
               keluasan_dipadam: idx.keluasanDipadam >= 0 ? parseFloat(row[idx.keluasanDipadam]) || 0 : 0,
+              jarakCsv: idx.jarak ? parseJarakKm(row[idx.jarak.idx], idx.jarak.meter) : 0,
             });
           }
           return data;
@@ -3181,6 +3199,7 @@ function getCaseEmoji(j) {
         }
         kmlCoverageLayer = null;
         kmlLoading = false;
+        resetMeteorCanvas();
 
         const container = document.getElementById('map-container');
         if (!container) return;
@@ -3245,6 +3264,7 @@ function getCaseEmoji(j) {
   const parsedLayer = omnivore
     .kml('poligon-kawasan-jagaan.kml')
     .on('ready', function () {
+      balaiKmlList = [];
       const processedLayers = [];
       parsedLayer.eachLayer(function (layer) {
         const geomType = (layer.feature && layer.feature.geometry && layer.feature.geometry.type) || '';
@@ -3267,6 +3287,7 @@ function getCaseEmoji(j) {
           processedLayers.push(layer);
         } else if (geomType === 'Point') {
           const coords = layer.getLatLng();
+          if (name) balaiKmlList.push({ name: name, k: nBalai(name), lat: coords.lat, lng: coords.lng });
           const icon = createKMLStationIcon(name);
           const marker = L.marker(coords, { icon: icon, pane: 'kmlStations' });
           if (name) {
@@ -3283,7 +3304,9 @@ function getCaseEmoji(j) {
       if (markersLayer) setTimeout(() => markersLayer.bringToFront(), 100);
       kmlLoading = false;
       updateKMLToggleBtn();
+      try { kemaskiniMeteor(meteorKesTerakhir); } catch (e) { console.warn('[Meteor]', e.message); }
     })
+    
     .on('error', function (err) {
       console.error('❌ KML coverage error:', err);
       kmlLoading = false;
@@ -3429,10 +3452,13 @@ function getCaseEmoji(j) {
           mapInstance.setView(JOHOR_BOUNDS.center, isMobile ? 8 : JOHOR_BOUNDS.defaultZoom);
         }
 
+        kemaskiniMeteor(valid.slice(0, maxMarkers));
+
         setTimeout(() => { if (mapInstance) mapInstance.invalidateSize(); }, 200);
       }
 
       function updateMapForCurrentMode() {
+        
         if (expandedPanel === 'panelStats' && popupSearchQuery && popupSearchQuery.length > 0) {
           const data = allCaseData.filter(function (item) {
             return matchesPopupSearch(item, popupSearchQuery);
@@ -3955,6 +3981,461 @@ function getCaseEmoji(j) {
           if (!event.target.closest('input, textarea, [contenteditable]')) toggleKMLLayer();
         }
       });
+
+            // ============================================================
+      // ===== METEOR: BALAI -> LOKASI KES + JARAK (KM) + FLASH RUN =====
+      // ============================================================
+      const METEOR_WARNA = {
+        kebakaran_bangunan: '#ef4444', kebakaran_perkakas: '#ef4444', kebakaran_kenderaan: '#ef4444',
+        kebakaran_terbuka: '#f39c12', menyelamat: '#facc15', banjir: '#38bdf8',
+        bencana_alam: '#a855f7', tumpahan_bahan: '#ec4899', menangkap_binatang: '#2ecc71',
+        serangga: '#2ecc71', tugas_khas: '#3b82f6', lain_lain: '#94a3b8',
+      };
+      const METEOR_EKOR = 0.24;
+      const METEOR_SEGMEN = 16;
+      const METEOR_LAJU = 1.3;
+      const METEOR_LABEL_MIN_ZOOM = 8;
+      const METEOR_LABEL_MIN_PX = 70;
+      const meteorKurangGerak = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+      let meteorCanvas = null, meteorCtx = null, meteorLoopStarted = false;
+      let meteorLinks = [], meteorKesTerakhir = [], balaiKmlList = [];
+      let meteorOn = true, meteorLabelOn = true;
+
+      const meteorMaks = () => (window.innerWidth < 768 ? 40 : 150);
+      const labelOffsetY = () => (window.innerWidth < 768 ? 28 : 34); // label di atas marker emoji
+
+      // ---- Pembantu ----
+      function cariKolumJarak(headers) {
+        for (let i = 0; i < headers.length; i++) {
+          const hh = String(headers[i] || '').replace(/[\n\r]+/g, ' ').replace(/\s+/g, ' ').trim().toUpperCase();
+          if (hh && hh.includes('JARAK')) {
+            return { idx: i, meter: /\(\s*M\s*\)|\bMETER\b|\bMETRE\b/.test(hh) };
+          }
+        }
+        return null;
+      }
+      function parseJarakKm(txt, adalahMeter) {
+        if (!txt) return 0;
+        const n = parseFloat(String(txt).replace(/,/g, '.').replace(/[^0-9.\-]/g, ''));
+        if (!isFinite(n) || n <= 0) return 0;
+        return adalahMeter ? n / 1000 : n;
+      }
+      function haversineKm(lat1, lng1, lat2, lng2) {
+        const R = 6371, rad = Math.PI / 180;
+        const dLat = (lat2 - lat1) * rad, dLng = (lng2 - lng1) * rad;
+        const a = Math.sin(dLat / 2) ** 2 + Math.cos(lat1 * rad) * Math.cos(lat2 * rad) * Math.sin(dLng / 2) ** 2;
+        return 2 * R * Math.asin(Math.sqrt(a));
+      }
+      function hexKeRgba(hex, a) {
+        let h = String(hex).replace('#', '');
+        if (h.length === 3) h = h.replace(/(.)/g, '$1$1');
+        const n = parseInt(h.slice(0, 6), 16) || 0;
+        return 'rgba(' + ((n >> 16) & 255) + ',' + ((n >> 8) & 255) + ',' + (n & 255) + ',' + a + ')';
+      }
+      function rrPath(ctx, x, y, w, h, r) {
+        ctx.beginPath();
+        ctx.moveTo(x + r, y);
+        ctx.arcTo(x + w, y, x + w, y + h, r);
+        ctx.arcTo(x + w, y + h, x, y + h, r);
+        ctx.arcTo(x, y + h, x, y, r);
+        ctx.arcTo(x, y, x + w, y, r);
+        ctx.closePath();
+      }
+      function titikBezier(p0, c, p2, t) {
+        const u = 1 - t;
+        return [u * u * p0.x + 2 * u * t * c.x + t * t * p2.x, u * u * p0.y + 2 * u * t * c.y + t * t * p2.y];
+      }
+
+      // ---- Padankan nama balai (CSV) dengan titik balai dalam KML ----
+      const ALIAS_BALAI = { TIMAHSARI: 'PENGGARAM', MOHDKHALID: 'BATUPAHAT', TENGGARA: 'BANDARTENGGARA', PENAWAR: 'BANDARPENAWAR' };
+      function nBalai(s) {
+        const k = String(s || '').toUpperCase()
+          .replace(/\(.*?\)/g, '')
+          .replace(/\b(BALAI|BBP|BBPM|PBS|BOMBA|DAN|PENYELAMAT|FIRE|POST|KAWASAN|JAGAAN)\b/g, '')
+          .replace(/[^A-Z0-9]/g, '');
+        return ALIAS_BALAI[k] || k;
+      }
+      function cariBalaiMeteor(namaCsv) {
+        const k = nBalai(namaCsv);
+        if (!k || !balaiKmlList.length) return null;
+        let b = balaiKmlList.find((x) => x.k === k);
+        if (!b && k.length >= 4) b = balaiKmlList.find((x) => x.k && x.k.length >= 4 && (x.k.includes(k) || k.includes(x.k)));
+        return b || null;
+      }
+
+      // ---- Route jalan (OSRM) pada zoom dekat ----
+      const ROUTE_ZOOM_MIN = 13;
+      const ROUTE_ZOOM_MAX = 25;
+      const ROUTE_OSRM_URL = 'https://router.project-osrm.org/route/v1/driving';
+      const ROUTE_TIMEOUT_MS = 8000;
+      const ROUTE_SERENTAK = 2;
+      const ROUTE_COOLDOWN_MS = 60000;
+      const routeCache = new Map(), routeGagal = new Map(), routeSedangFetch = new Set();
+      const routeQueue = [];
+      let routeAktifBil = 0;
+      const dalamZoomRoute = (z) => z >= ROUTE_ZOOM_MIN && z <= ROUTE_ZOOM_MAX;
+
+      async function fetchRouteOSRM(l) {
+        const url = ROUTE_OSRM_URL + '/' + l.from[1] + ',' + l.from[0] + ';' + l.to[1] + ',' + l.to[0] +
+          '?geometries=geojson&overview=full&steps=false';
+        const ctrl = new AbortController();
+        const tid = setTimeout(() => ctrl.abort(), ROUTE_TIMEOUT_MS);
+        try {
+          const resp = await fetch(url, { signal: ctrl.signal });
+          if (!resp.ok) throw new Error('OSRM HTTP ' + resp.status);
+          const data = await resp.json();
+          if (data.code !== 'Ok' || !data.routes || !data.routes[0]) throw new Error('Tiada route');
+          const rt = data.routes[0];
+          const pts = rt.geometry.coordinates.map((c) => [c[1], c[0]]);
+          routeCache.set(l.id, { pts, km: rt.distance / 1000, bounds: L.latLngBounds(pts) });
+          routeGagal.delete(l.id);
+        } catch (e) {
+          routeGagal.set(l.id, Date.now());
+          console.warn('[Route]', e.message);
+        } finally {
+          clearTimeout(tid);
+        }
+      }
+      function prosesQueueRoute() {
+        while (routeAktifBil < ROUTE_SERENTAK && routeQueue.length) {
+          const l = routeQueue.shift();
+          routeAktifBil++;
+          fetchRouteOSRM(l).finally(() => {
+            routeAktifBil--;
+            routeSedangFetch.delete(l.id);
+            prosesQueueRoute();
+          });
+        }
+      }
+      function urusRouteKelihatan() {
+        routeQueue.splice(0).forEach((l) => routeSedangFetch.delete(l.id));
+        if (!mapInstance || !dalamZoomRoute(mapInstance.getZoom())) return;
+        const lihat = mapInstance.getBounds().pad(0.2);
+        meteorLinks.forEach((l) => {
+          if (routeCache.has(l.id) || routeSedangFetch.has(l.id)) return;
+          const g = routeGagal.get(l.id);
+          if (g && Date.now() - g < ROUTE_COOLDOWN_MS) return;
+          if (!lihat.intersects(L.latLngBounds([l.from, l.to]))) return;
+          routeSedangFetch.add(l.id);
+          routeQueue.push(l);
+        });
+        prosesQueueRoute();
+      }
+
+      function kumulatifPanjang(pts) {
+        const cum = [0];
+        for (let i = 1; i < pts.length; i++) cum.push(cum[i - 1] + Math.hypot(pts[i].x - pts[i - 1].x, pts[i].y - pts[i - 1].y));
+        return cum;
+      }
+      function titikPadaJarak(pts, cum, d) {
+        const total = cum[cum.length - 1];
+        d = Math.max(0, Math.min(total, d));
+        let i = 1;
+        while (i < cum.length - 1 && cum[i] < d) i++;
+        const seg = cum[i] - cum[i - 1] || 1;
+        const f = (d - cum[i - 1]) / seg;
+        return { x: pts[i - 1].x + (pts[i].x - pts[i - 1].x) * f, y: pts[i - 1].y + (pts[i].y - pts[i - 1].y) * f };
+      }
+
+      // ---- FLASH RUN: kilatan dari balai ke lokasi kes ----
+      const ROUTE_FLASH_LAJU = 225;
+      const ROUTE_FLASH_JEDA_MIN = 700;
+      const ROUTE_FLASH_JEDA_MAX = 2200;
+      const ROUTE_FLASH_RIAK_MS = 650;
+
+      function lukisRouteArus(ctx, l, rt, now, labelCalon) {
+        if (!mapInstance.getBounds().intersects(rt.bounds)) return;
+        const pts = rt.pts.map((p) => mapInstance.latLngToContainerPoint(p));
+        if (pts.length < 2) return;
+        const cum = kumulatifPanjang(pts);
+        const total = cum[cum.length - 1];
+        if (total < 6) return;
+        const mula = pts[0], hujung = pts[pts.length - 1];
+
+        ctx.save();
+        ctx.setLineDash([]);
+        ctx.beginPath(); ctx.arc(mula.x, mula.y, 3.2, 0, Math.PI * 2);
+        ctx.fillStyle = hexKeRgba(l.warna, 0.9); ctx.fill();
+        ctx.beginPath(); ctx.arc(hujung.x, hujung.y, 4.5, 0, Math.PI * 2);
+        ctx.strokeStyle = hexKeRgba(l.warna, 0.7); ctx.lineWidth = 1.5; ctx.stroke();
+        ctx.restore();
+
+        if (!meteorKurangGerak) {
+          const dur = Math.max(450, Math.min(1400, (total / ROUTE_FLASH_LAJU) * 1000));
+          const jeda = ROUTE_FLASH_JEDA_MIN + ((l.t0 % 1000) / 1000) * (ROUTE_FLASH_JEDA_MAX - ROUTE_FLASH_JEDA_MIN);
+          const kitar = dur + ROUTE_FLASH_RIAK_MS + jeda;
+          const fasa = (now - l.t0) % kitar;
+          const warna = l.warna;
+
+          const lukisJejak = (dHingga, alphaPuncak, tebalPuncak) => {
+            if (dHingga < 1) return;
+            const SEG = Math.max(8, Math.min(120, Math.ceil(dHingga / 8)));
+            ctx.save();
+            ctx.setLineDash([]);
+            ctx.lineCap = 'round'; ctx.lineJoin = 'round';
+            let prev = titikPadaJarak(pts, cum, 0);
+            for (let i = 1; i <= SEG; i++) {
+              const cur = titikPadaJarak(pts, cum, dHingga * (i / SEG));
+              const f = i / SEG;
+              ctx.beginPath();
+              ctx.moveTo(prev.x, prev.y); ctx.lineTo(cur.x, cur.y);
+              ctx.strokeStyle = hexKeRgba(warna, alphaPuncak * (0.25 + 0.75 * f));
+              ctx.lineWidth = tebalPuncak * (0.35 + 0.65 * f);
+              ctx.shadowColor = warna; ctx.shadowBlur = 8 * f;
+              ctx.stroke();
+              prev = cur;
+            }
+            ctx.restore();
+          };
+
+          if (fasa <= dur) {
+            const d = (fasa / dur) * total;
+            lukisJejak(d, 0.9, 4);
+            const kep = titikPadaJarak(pts, cum, d);
+            ctx.save();
+            ctx.shadowColor = warna; ctx.shadowBlur = 18;
+            ctx.beginPath(); ctx.arc(kep.x, kep.y, 4.5, 0, Math.PI * 2);
+            ctx.fillStyle = '#ffffff'; ctx.fill();
+            ctx.restore();
+            if (fasa < 220) {
+              const r = fasa / 220;
+              ctx.beginPath();
+              ctx.arc(mula.x, mula.y, 3 + r * 12, 0, Math.PI * 2);
+              ctx.strokeStyle = hexKeRgba(warna, 0.8 * (1 - r));
+              ctx.lineWidth = 1.5; ctx.stroke();
+            }
+          } else if (fasa <= dur + ROUTE_FLASH_RIAK_MS) {
+            const r = (fasa - dur) / ROUTE_FLASH_RIAK_MS;
+            lukisJejak(total, 0.9 * (1 - r), 4 * (1 - 0.5 * r));
+            for (let k = 0; k < 2; k++) {
+              const rk = Math.max(0, r - k * 0.25);
+              if (rk <= 0) continue;
+              ctx.beginPath();
+              ctx.arc(hujung.x, hujung.y, 4 + rk * 20, 0, Math.PI * 2);
+              ctx.strokeStyle = hexKeRgba(warna, 0.9 * (1 - rk));
+              ctx.lineWidth = 2.2 * (1 - rk) + 0.5;
+              ctx.stroke();
+            }
+          }
+        }
+
+        // Teks jarak jalan (OSRM) di atas titik lat long kes
+        if (meteorLabelOn) {
+          const tp = mapInstance.latLngToContainerPoint(l.to);
+          labelCalon.push({ x: tp.x, y: tp.y - labelOffsetY(), teks: rt.km.toFixed(1) + ' km', warna: l.warna, alpha: 1 });
+        }
+      }
+
+      // ---- Canvas ----
+      function resetMeteorCanvas() {
+        if (meteorCanvas && meteorCanvas.parentNode) meteorCanvas.parentNode.removeChild(meteorCanvas);
+        meteorCanvas = null;
+        meteorCtx = null;
+        meteorLinks = [];
+      }
+      function initMeteorCanvas() {
+        if (meteorCanvas || !mapInstance) return;
+        meteorCanvas = document.createElement('canvas');
+        meteorCanvas.className = 'dash-meteor-canvas';
+        mapInstance.getContainer().appendChild(meteorCanvas);
+        meteorCtx = meteorCanvas.getContext('2d');
+        mapInstance.on('zoomend moveend', urusRouteKelihatan);
+        if (!meteorLoopStarted) { meteorLoopStarted = true; requestAnimationFrame(meteorLoop); }
+      }
+
+      // ---- Bina senarai meteor daripada kes yang dipaparkan ----
+      function kemaskiniMeteor(senarai) {
+        meteorKesTerakhir = senarai || [];
+        if (!mapInstance) return;
+        initMeteorCanvas();
+        if (!meteorOn || !balaiKmlList.length) { meteorLinks = []; return; }
+
+        const lama = new Map(meteorLinks.map((l) => [l.id, l]));
+        const baru = [];
+        const takPadan = new Set();
+
+        meteorKesTerakhir.forEach((d) => {
+          if (baru.length >= meteorMaks()) return;
+          if (!(d.lat && d.long)) return;
+          const b = cariBalaiMeteor(d.balai);
+          if (!b) { if (d.balai && d.balai !== '-') takPadan.add(d.balai); return; }
+
+          const id = [d.callCard, d.lat, d.long].join('|');
+          const warna = METEOR_WARNA[getCaseCategory(d)] || '#94a3b8';
+          const csv = d.jarakCsv > 0;
+          const km = csv ? d.jarakCsv : haversineKm(b.lat, b.lng, d.lat, d.long);
+          const sedia = lama.get(id);
+          if (sedia) {
+            sedia.warna = warna; sedia.jarakKm = km; sedia.jarakCsv = csv;
+            baru.push(sedia);
+          } else {
+            baru.push({
+              id, from: [b.lat, b.lng], to: [d.lat, d.long], warna, jarakKm: km, jarakCsv: csv,
+              t0: performance.now() - Math.random() * 4000,
+              dur: (1600 + Math.random() * 1400) / METEOR_LAJU,
+              pause: 800 + Math.random() * 2600,
+            });
+          }
+        });
+
+        if (takPadan.size) console.warn('[Meteor] Balai dalam CSV tidak sepadan dengan titik KML:', [...takPadan]);
+        meteorLinks = baru;
+        urusRouteKelihatan();
+      }
+
+      function meteorLoop() {
+        requestAnimationFrame(meteorLoop);
+        if (!meteorCanvas || !mapInstance) return;
+        const kont = mapInstance.getContainer();
+        const w = kont.clientWidth, h = kont.clientHeight;
+        const dpr = window.devicePixelRatio || 1;
+        if (meteorCanvas.width !== Math.round(w * dpr) || meteorCanvas.height !== Math.round(h * dpr)) {
+          meteorCanvas.width = Math.round(w * dpr);
+          meteorCanvas.height = Math.round(h * dpr);
+        }
+        const ctx = meteorCtx;
+        ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+        ctx.clearRect(0, 0, w, h);
+        if (!meteorOn || !meteorLinks.length) return;
+
+        const now = performance.now();
+        ctx.lineCap = 'round';
+        const labelCalon = [];
+        const modeRoute = dalamZoomRoute(mapInstance.getZoom());
+
+        meteorLinks.forEach((l) => {
+          // ZOOM DEKAT -> flash run pada route jalan
+          if (modeRoute) {
+            const rt = routeCache.get(l.id);
+            if (rt) {
+              lukisRouteArus(ctx, l, rt, now, labelCalon);
+            } else if (meteorLabelOn && l.jarakKm > 0) {
+              const a = mapInstance.latLngToContainerPoint(l.from), b = mapInstance.latLngToContainerPoint(l.to);
+              if (Math.hypot(b.x - a.x, b.y - a.y) >= 6) {
+                labelCalon.push({ x: b.x, y: b.y - labelOffsetY(), teks: (l.jarakCsv ? '' : '~') + l.jarakKm.toFixed(1) + ' km', warna: l.warna, alpha: 0.7 });
+              }
+            }
+            return;
+          }
+
+          const p0 = mapInstance.latLngToContainerPoint(l.from);
+          const p2 = mapInstance.latLngToContainerPoint(l.to);
+          const dx = p2.x - p0.x, dy = p2.y - p0.y;
+          if (Math.hypot(dx, dy) < 6) return;
+
+          let nx = dy, ny = -dx;
+          if (ny > 0) { nx = -nx; ny = -ny; }
+          const c = { x: (p0.x + p2.x) / 2 + nx * 0.25, y: (p0.y + p2.y) / 2 + ny * 0.25 };
+
+          // 1) Garis arc malap
+          ctx.beginPath();
+          ctx.moveTo(p0.x, p0.y);
+          ctx.quadraticCurveTo(c.x, c.y, p2.x, p2.y);
+          ctx.strokeStyle = hexKeRgba(l.warna, 0.22);
+          ctx.lineWidth = 1;
+          ctx.stroke();
+
+          // 2) Titik asal di balai
+          ctx.beginPath();
+          ctx.arc(p0.x, p0.y, 2.2, 0, Math.PI * 2);
+          ctx.fillStyle = hexKeRgba(l.warna, 0.55);
+          ctx.fill();
+
+          // 2b) Label jarak di atas titik lat long kes
+          if (meteorLabelOn && l.jarakKm > 0 && Math.hypot(dx, dy) >= METEOR_LABEL_MIN_PX) {
+            const fasaL = meteorKurangGerak ? 0 : ((now - l.t0) % (l.dur + l.pause));
+            const aktif = meteorKurangGerak || fasaL <= l.dur + 700;
+            labelCalon.push({
+              x: p2.x, y: p2.y - labelOffsetY(),
+              teks: (l.jarakCsv ? '' : '~') + l.jarakKm.toFixed(1) + ' km',
+              warna: l.warna, alpha: aktif ? 1 : 0.55,
+            });
+          }
+
+          if (meteorKurangGerak) return;
+
+          const kitar = l.dur + l.pause;
+          const fasa = (now - l.t0) % kitar;
+
+          if (fasa <= l.dur) {
+            const t = fasa / l.dur;
+            // 3) Ekor meteor
+            let [px, py] = titikBezier(p0, c, p2, Math.max(0, t - METEOR_EKOR));
+            for (let i = 1; i <= METEOR_SEGMEN; i++) {
+              const tt = t - METEOR_EKOR * (1 - i / METEOR_SEGMEN);
+              if (tt < 0) continue;
+              const [x, y] = titikBezier(p0, c, p2, tt);
+              const f = i / METEOR_SEGMEN;
+              ctx.beginPath();
+              ctx.moveTo(px, py); ctx.lineTo(x, y);
+              ctx.strokeStyle = hexKeRgba(l.warna, 0.9 * f * f);
+              ctx.lineWidth = 0.6 + f * 2.4;
+              ctx.stroke();
+              px = x; py = y;
+            }
+            // 4) Kepala meteor
+            const [hx, hy] = titikBezier(p0, c, p2, t);
+            ctx.save();
+            ctx.shadowColor = l.warna; ctx.shadowBlur = 12;
+            ctx.beginPath(); ctx.arc(hx, hy, 2.6, 0, Math.PI * 2);
+            ctx.fillStyle = '#ffffff'; ctx.fill();
+            ctx.restore();
+          } else if (fasa <= l.dur + 700) {
+            // 5) Riak di lokasi kes
+            const r = (fasa - l.dur) / 700;
+            ctx.beginPath();
+            ctx.arc(p2.x, p2.y, 4 + r * 16, 0, Math.PI * 2);
+            ctx.strokeStyle = hexKeRgba(l.warna, 0.8 * (1 - r));
+            ctx.lineWidth = 2 * (1 - r) + 0.5;
+            ctx.stroke();
+          }
+        });
+
+        // Label jarak (KM): langkau yang bertindih / terkeluar canvas
+        ctx.setLineDash([]);
+        if (meteorLabelOn && labelCalon.length && mapInstance.getZoom() >= METEOR_LABEL_MIN_ZOOM) {
+          ctx.font = '600 10px Inter, sans-serif';
+          ctx.textAlign = 'center';
+          ctx.textBaseline = 'middle';
+          const dipakai = [];
+          labelCalon.sort((a, b) => b.alpha - a.alpha);
+          labelCalon.forEach((lb) => {
+            const lw = ctx.measureText(lb.teks).width + 12, lh = 16;
+            const x = lb.x - lw / 2, y = lb.y - lh / 2;
+            if (x < 0 || y < 0 || x + lw > w || y + lh > h) return;
+            if (dipakai.some((r) => x < r.x + r.w + 2 && x + lw + 2 > r.x && y < r.y + r.h + 2 && y + lh + 2 > r.y)) return;
+            dipakai.push({ x, y, w: lw, h: lh });
+            ctx.globalAlpha = lb.alpha;
+            rrPath(ctx, x, y, lw, lh, 8);
+            ctx.fillStyle = 'rgba(15, 23, 42, 0.88)';
+            ctx.fill();
+            ctx.strokeStyle = lb.warna; ctx.lineWidth = 1; ctx.stroke();
+            ctx.fillStyle = '#ffffff';
+            ctx.fillText(lb.teks, lb.x, y + lh / 2 + 0.5);
+            ctx.globalAlpha = 1;
+          });
+        }
+      }
+
+      // ---- Butang toggle ----
+      function toggleMeteor() {
+        meteorOn = !meteorOn;
+        const btn = document.getElementById('meteorToggleBtn');
+        if (btn) {
+          btn.innerHTML = meteorOn ? '☄️ METEOR ✓' : '☄️ METEOR ✗';
+          btn.classList.toggle('off', !meteorOn);
+        }
+        kemaskiniMeteor(meteorKesTerakhir);
+      }
+      function toggleMeteorJarak() {
+        meteorLabelOn = !meteorLabelOn;
+        const btn = document.getElementById('jarakToggleBtn');
+        if (btn) {
+          btn.innerHTML = meteorLabelOn ? '📏 JARAK ✓' : '📏 JARAK ✗';
+          btn.classList.toggle('off', !meteorLabelOn);
+        }
+      }
 
       (function init() {
         if (localStorage.getItem('pgoTheme') === 'light') {
