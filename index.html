@@ -5303,110 +5303,133 @@ body.mode-siang .peta-legend-overlay .pts-line + .pts-line {
                             </div>
                         </div>
 
-                        <!-- ONLINE -->
-                        <div class="cat-group">
-                            <button type="button" class="cat-toggle" data-cat-target="catPanelOnline" aria-expanded="false">
-                                <span class="cat-toggle-label">
-                                    <i class="fas fa-signal"></i> ONLINE
-                                </span>
-                                <i class="fas fa-chevron-down cat-arrow"></i>
-                            </button>
-                            <div class="cat-panel" id="catPanelOnline">
-                                <section class="section-status">
-                                    <div class="apps-grid">
-                                        <a href="jentera.html" class="app-card" rel="noopener noreferrer">
-                                            <div class="icon"><i class="fas fa-truck-field"></i></div>
-                                            <div>
-                                                <h3 data-ms="Data <span class=&quot;highlight&quot;>Jentera</span> JBPM Johor" data-en="<span class=&quot;highlight&quot;>Vehicle</span> Data JBPM Johor">Data <span class="highlight">Jentera</span> JBPM Johor</h3>
-                                                <p data-ms="Pemantauan status jentera & kenderaan operasi bomba." data-en="Monitoring of fire operation vehicle & appliance status.">Pemantauan status jentera & kenderaan operasi bomba.</p>
-                                            </div>
-                                            <div class="card-footer">
-                                                <span class="badge online">● ONLINE</span>
-                                                <span class="arrow"><i class="fas fa-arrow-right"></i></span>
-                                            </div>
-                                        </a>
-                                        <a href="/dashboard-radio" class="app-card">
-                                            <div class="icon"><i class="fas fa-tower-cell"></i></div>
-                                            <div>
-                                                <h3 data-ms="Data Aset <span class=&quot;highlight&quot;>GIRN</span>" data-en="<span class=&quot;highlight&quot;>GIRN</span> Asset Data">Data Aset <span class="highlight">GIRN</span></h3>
-                                                <p data-ms="Pemantauan aset komunikasi GIRN Negeri Johor." data-en="Monitoring of Johor State GIRN communication assets.">Pemantauan aset komunikasi GIRN Negeri Johor.</p>
-                                            </div>
-                                            <div class="card-footer">
-                                                <span class="badge online">● ONLINE</span>
-                                                <span class="arrow"><i class="fas fa-arrow-right"></i></span>
-                                            </div>
-                                        </a>
-                                        <a href="/peta-bomba" class="app-card">
-                                            <div class="icon"><i class="fas fa-map-location-dot"></i></div>
-                                            <div>
-                                                <h3 data-ms="Peta Kawasan <span class=&quot;highlight&quot;>Jagaan Balai</span>" data-en="<span class=&quot;highlight&quot;>Station Coverage</span> Area Map">Peta Kawasan <span class="highlight">Jagaan Balai</span></h3>
-                                                <p data-ms="Peta interaktif kawasan jagaan balai bomba." data-en="Interactive map of fire station coverage areas.">Peta interaktif kawasan jagaan balai bomba.</p>
-                                            </div>
-                                            <div class="card-footer">
-                                                <span class="badge online">● ONLINE</span>
-                                                <span class="arrow"><i class="fas fa-arrow-right"></i></span>
-                                            </div>
-                                        </a>
-<!-- ===== KAD BAHARU: DASHBOARD ANALISIS RT ===== -->
-<a href="data-rt.html" class="app-card" rel="noopener noreferrer">
-    <div class="icon"><i class="fas fa-clock-rotate-left"></i></div>
-    <div>
-        <h3 data-ms="Dashboard Analisis <span class=&quot;highlight&quot;>Response Time (RT)</span>"
-            data-en="Response Time <span class=&quot;highlight&quot;>(RT)</span> Analysis Dashboard">
-            Dashboard Analisis <span class="highlight">Response Time (RT)</span>
-        </h3>
-        <p data-ms="Analisis masa tindak balas (RT) kes mengikut balai, zon, kategori, sub kategori & KPI JBPM."
-           data-en="Analysis of case response time (RT) by station, zone, category, sub-category & JBPM KPI.">
-            Analisis masa tindak balas (RT) kes mengikut balai, zon, kategori, sub kategori & KPI JBPM.
-        </p>
-    </div>
-    <div class="card-footer">
-        <span class="badge online">● ONLINE</span>
-        <span class="arrow"><i class="fas fa-arrow-right"></i></span>
-    </div>
-</a>
+<!-- DATA & ANALISIS -->
+<div class="cat-group">
+    <button type="button" class="cat-toggle" data-cat-target="catPanelData" aria-expanded="false">
+        <span class="cat-toggle-label">
+            <i class="fas fa-database"></i> DATA & ANALISIS
+        </span>
+        <i class="fas fa-chevron-down cat-arrow"></i>
+    </button>
+    <div class="cat-panel" id="catPanelData">
+        <section class="section-status">
+            <div class="apps-grid">
+                <!-- Kad Data Jentera -->
+                <a href="jentera.html" class="app-card" rel="noopener noreferrer">
+                    <div class="icon"><i class="fas fa-truck-field"></i></div>
+                    <div>
+                        <h3 data-ms="Data <span class=&quot;highlight&quot;>Jentera</span> JBPM Johor" data-en="JBPM Johor <span class=&quot;highlight&quot;>Vehicle</span> Data">Data <span class="highlight">Jentera</span> JBPM Johor</h3>
+                        <p data-ms="Pemantauan status jentera & kenderaan operasi bomba." data-en="Monitoring of fire operation vehicle & appliance status.">Pemantauan status jentera & kenderaan operasi bomba.</p>
+                    </div>
+                    <div class="card-footer">
+                        <span class="badge online">● ONLINE</span>
+                        <span class="arrow"><i class="fas fa-arrow-right"></i></span>
+                    </div>
+                </a>
+                
+                <!-- Kad Data Aset GIRN -->
+                <a href="/dashboard-radio" class="app-card">
+                    <div class="icon"><i class="fas fa-tower-cell"></i></div>
+                    <div>
+                        <h3 data-ms="Data Aset <span class=&quot;highlight&quot;>GIRN</span> JBPM Johor" data-en="JBPM Johor <span class=&quot;highlight&quot;>GIRN</span> Asset Data">Data Aset <span class="highlight">GIRN</span> JBPM Johor</h3>
+                        <p data-ms="Pemantauan aset komunikasi GIRN Negeri Johor." data-en="Monitoring of Johor State GIRN communication assets.">Pemantauan aset komunikasi GIRN Negeri Johor.</p>
+                    </div>
+                    <div class="card-footer">
+                        <span class="badge online">● ONLINE</span>
+                        <span class="arrow"><i class="fas fa-arrow-right"></i></span>
+                    </div>
+                </a>
 
-<!-- ===== KAD BAHARU: PETA TABURAN KES ===== -->
-<a href="peta-taburan-kes.html" class="app-card" rel="noopener noreferrer">
-    <div class="icon"><i class="fas fa-location-crosshairs"></i></div>
-    <div>
-        <h3 data-ms="Peta <span class=&quot;highlight&quot;>Taburan Kes</span> JBPM Johor"
-            data-en="JBPM Johor <span class=&quot;highlight&quot;>Case Distribution</span> Map">
-            Peta <span class="highlight">Taburan Kes</span> JBPM Johor
-        </h3>
-        <p data-ms="Peta titik lokasi kes mengikut daerah, zon, balai, kategori, sub kategori & jenis kes."
-           data-en="Case location map by district, zone, station, category, sub-category & case type.">
-            Peta titik lokasi kes mengikut daerah, zon, balai, kategori, sub kategori & jenis kes.
-        </p>
+                <!-- Kad Data Analisis Response Time -->
+                <a href="data-rt.html" class="app-card" rel="noopener noreferrer">
+                    <div class="icon"><i class="fas fa-clock-rotate-left"></i></div>
+                    <div>
+                        <h3 data-ms="Data Analisis <span class=&quot;highlight&quot;>Response Time (RT)</span> JBPM Johor"
+                            data-en="JBPM Johor Response Time <span class=&quot;highlight&quot;>(RT)</span> Data Analysis">
+                            Data Analisis <span class="highlight">Response Time (RT) JBPM Johor</span>
+                        </h3>
+                        <p data-ms="Analisis masa tindak balas (RT) kes mengikut balai, zon, kategori, sub kategori & KPI JBPM."
+                           data-en="Analysis of case response time (RT) by station, zone, category, sub-category & JBPM KPI.">
+                            Analisis masa tindak balas (RT) kes mengikut balai, zon, kategori, sub kategori & KPI JBPM.
+                        </p>
+                    </div>
+                    <div class="card-footer">
+                        <span class="badge online">● ONLINE</span>
+                        <span class="arrow"><i class="fas fa-arrow-right"></i></span>
+                    </div>
+                </a>
+            </div>
+        </section>
     </div>
-    <div class="card-footer">
-        <span class="badge online">● ONLINE</span>
-        <span class="arrow"><i class="fas fa-arrow-right"></i></span>
-    </div>
-</a>
+</div>
 
-<!-- ===== KAD BAHARU: PETA TITIK BANJIR ===== -->
-<a href="peta_hotspot_banjir.html" class="app-card" rel="noopener noreferrer">
-    <div class="icon"><i class="fas fa-house-flood-water"></i></div>
-    <div>
-        <h3 data-ms="Peta <span class=&quot;highlight&quot;>Hotspot Banjir</span> Johor"
-            data-en="Johor <span class=&quot;highlight&quot;>Flood Hotspot</span> Map">
-            Peta <span class="highlight">Hotspot Banjir</span> Johor
-        </h3>
-        <p data-ms="Peta titik lokasi banjir mengikut tahun, daerah, mukim, kawasan, lembangan, sub & jenis."
-           data-en="Flood location map by year, district, mukim, area, basin, sub-basin & type.">
-            Peta titik lokasi banjir mengikut tahun, daerah, mukim, kawasan, lembangan, sub & jenis.
-        </p>
-    </div>
-    <div class="card-footer">
-        <span class="badge online">● ONLINE</span>
-        <span class="arrow"><i class="fas fa-arrow-right"></i></span>
-    </div>
-</a>                                    </div>
-                                </section>
-                                                        </div>
-                        </div>
+<!-- PETA & GEOSPATIAL -->
+<div class="cat-group">
+    <button type="button" class="cat-toggle" data-cat-target="catPanelPeta" aria-expanded="false">
+        <span class="cat-toggle-label">
+            <i class="fas fa-map-location-dot"></i> PETA & GEOSPATIAL
+        </span>
+        <i class="fas fa-chevron-down cat-arrow"></i>
+    </button>
+    <div class="cat-panel" id="catPanelPeta">
+        <section class="section-status">
+            <div class="apps-grid">
+                
+                <!-- Kad Peta Kawasan Jagaan -->
+                <a href="/peta-bomba" class="app-card">
+                    <div class="icon"><i class="fas fa-map-location-dot"></i></div>
+                    <div>
+                        <h3 data-ms="Peta Kawasan <span class=&quot;highlight&quot;>Jagaan Balai</span> JBPM Johor" data-en="JBPM Johor <span class=&quot;highlight&quot;>Station Coverage</span> Area Map">Peta Kawasan <span class="highlight">Jagaan Balai</span> JBPM Johor</h3>
+                        <p data-ms="Peta interaktif kawasan jagaan balai bomba." data-en="Interactive map of fire station coverage areas.">Peta interaktif kawasan jagaan balai bomba.</p>
+                    </div>
+                    <div class="card-footer">
+                        <span class="badge online">● ONLINE</span>
+                        <span class="arrow"><i class="fas fa-arrow-right"></i></span>
+                    </div>
+                </a>
 
+                <!-- Kad Peta Taburan Kes -->
+                <a href="peta-taburan-kes.html" class="app-card" rel="noopener noreferrer">
+                    <div class="icon"><i class="fas fa-location-crosshairs"></i></div>
+                    <div>
+                        <h3 data-ms="Peta <span class=&quot;highlight&quot;>Taburan Kes</span> JBPM Johor"
+                            data-en="JBPM Johor <span class=&quot;highlight&quot;>Case Distribution</span> Map">
+                            Peta <span class="highlight">Taburan Kes</span> JBPM Johor
+                        </h3>
+                        <p data-ms="Peta titik lokasi kes mengikut daerah, zon, balai, kategori, sub kategori & jenis kes."
+                           data-en="Case location map by district, zone, station, category, sub-category & case type.">
+                            Peta titik lokasi kes mengikut daerah, zon, balai, kategori, sub kategori & jenis kes.
+                        </p>
+                    </div>
+                    <div class="card-footer">
+                        <span class="badge online">● ONLINE</span>
+                        <span class="arrow"><i class="fas fa-arrow-right"></i></span>
+                    </div>
+                </a>
+
+                <!-- Kad Peta Hotspot Banjir -->
+                <a href="peta_hotspot_banjir.html" class="app-card" rel="noopener noreferrer">
+                    <div class="icon"><i class="fas fa-house-flood-water"></i></div>
+                    <div>
+                        <h3 data-ms="Peta <span class=&quot;highlight&quot;>Hotspot Banjir</span> JBPM Johor"
+                            data-en="JBPM Johor <span class=&quot;highlight&quot;>Flood Hotspot</span> Map">
+                            Peta <span class="highlight">Hotspot Banjir</span> JBPM Johor
+                        </h3>
+                        <p data-ms="Peta titik lokasi banjir mengikut tahun, daerah, mukim, kawasan, lembangan, sub & jenis."
+                           data-en="Flood location map by year, district, mukim, area, basin, sub-basin & type.">
+                            Peta titik lokasi banjir mengikut tahun, daerah, mukim, kawasan, lembangan, sub & jenis.
+                        </p>
+                    </div>
+                    <div class="card-footer">
+                        <span class="badge online">● ONLINE</span>
+                        <span class="arrow"><i class="fas fa-arrow-right"></i></span>
+                    </div>
+                </a>
+
+            </div>
+        </section>
+    </div>
+</div>
                                                <!-- KATEGORI "DALAM PEMBANGUNAN" TELAH DIBUANG -->
                     </div>
                 </div><!-- /panel 3 -->
