@@ -1341,6 +1341,7 @@ async function loadJentera() {
     const teks = up(model + ' ' + jenis + ' ' + call);
     const kat = RE_4X4.test(teks) ? 'x4' : RE_LORI.test(teks) ? 'lori' : null;
     if (!kat) return;
+    if (up(r['STATUS JENTERA']).includes('LUPUS')) return;   // abaikan jentera lupus / dalam proses lupus
     const k = nBalai(norm(r['LOKASI SEMASA']) || norm(r['PENEMPATAN ASAL']));
     if (!k) return;
     const st = statJentera(r['STATUS JENTERA']);
