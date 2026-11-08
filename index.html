@@ -27,7 +27,6 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css" />
     
-
     <style>
         /* ===== RESET & VARIABEL ===== */
         :root {
@@ -3290,7 +3289,7 @@
             min-width: 0;
         }
         .sistem-panel .sistem-content .app-card h3 {
-            font-size: 0.9375rem;
+            font-size: 0.8125rem;
             font-weight: 700;
             margin-bottom: 0.125rem;
             color: #ffffff;
@@ -3304,7 +3303,7 @@
         }
         .sistem-panel .sistem-content .app-card p {
             color: var(--text-secondary);
-            font-size: 0.75rem;
+            font-size: 0.65rem;
             line-height: 1.4;
             font-weight: 400;
             margin-bottom: 0;
@@ -3678,10 +3677,10 @@
                 height: 2rem;
             }
             .app-card h3 {
-                font-size: 0.85rem;
+                font-size: 0.8125rem;
             }
             .app-card p {
-                font-size: 0.7rem;
+                font-size: 0.6875rem;
             }
             .app-card .badge {
                 font-size: 0.55rem;
@@ -3732,10 +3731,10 @@
                 font-size: 0.7rem;
             }
             .sistem-panel .sistem-content .app-card h3 {
-                font-size: 0.85rem;
+                font-size: 0.8125rem;
             }
             .sistem-panel .sistem-content .app-card p {
-                font-size: 0.7rem;
+                font-size: 0.6875rem;
             }
             .footer {
                 font-size: 0.65rem;
@@ -4932,6 +4931,35 @@ body.mode-siang .peta-legend-overlay .pts-line + .pts-line {
             pointer-events: none;   /* klik tetap tembus ke marker & peta */
             z-index: 450;           /* atas panel peta (400), bawah butang zoom (800) */
         }
+
+        /* ===== SAIZ SERAGAM: TEKS DI BAWAH PETA ===== */
+.peta-jentera-status,
+.lokstat-status,
+.peta-jentera-card .carousel-notice {
+    font-size: 0.72rem !important;
+    line-height: 1.4;
+}
+.peta-jentera-status,
+.lokstat-status {
+    color: var(--text-secondary);
+    text-align: center;
+    margin-top: 0.5rem;
+}
+.peta-jentera-card .carousel-notice i {
+    font-size: 0.72rem !important;
+}
+.peta-jentera-card.fullscreen-mode .peta-jentera-status,
+.peta-jentera-card.fullscreen-mode .lokstat-status,
+.peta-jentera-card.fullscreen-mode .carousel-notice {
+    font-size: 0.62rem !important;
+}
+@media (max-width: 480px) {
+    .peta-jentera-status,
+    .lokstat-status,
+    .peta-jentera-card .carousel-notice {
+        font-size: 0.65rem !important;
+    }
+}
     </style>        
 </head>
 <body>
