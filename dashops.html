@@ -3400,6 +3400,70 @@ function getCaseEmoji(j) {
         }
       }
 
+      // ===== POPUP KES: masa panggilan, masa tamat, jarak CSV & OSRM =====
+      function binaPopupKes(d, isMobile) {
+  const emoji = getCaseEmoji(d.jenis);
+  const idx = allCaseData.indexOf(d);
+  const id = [d.callCard, d.lat, d.long].join('|');
+  const rt = routeCache.get(id);
+
+  const csvTxt = d.jarakCsv > 0 ? d.jarakCsv.toFixed(1) + ' km' : '-';
+  let osrmTxt = '-';
+  if (rt) osrmTxt = rt.km.toFixed(1) + ' km';
+  else if (routeGagal.has(id)) osrmTxt = 'Tidak tersedia';
+  else if (cariBalaiMeteor(d.balai)) osrmTxt = '⏳ Mengira...';
+
+  const tamatTxt = isCaseOngoing(d)
+    ? '<span style="color:#c8102e;font-weight:700;">🔴 Sedang beroperasi</span>'
+    : d.operasi_tamat;
+
+  // Maklumat kejadian (dipendekkan & dibersihkan supaya popup tak terlalu panjang)
+  const mk = (d.maklumat_kejadian || '').trim();
+  const had = isMobile ? 120 : 200;
+  const mkTxt = (mk && mk !== '-')
+    ? mk.replace(/[<>&]/g, '').replace(/\s*\n\s*/g, ' ')
+    : '';
+  const mkPendek = mkTxt.length > had ? mkTxt.substring(0, had) + '...' : mkTxt;
+
+  // Butang Google Maps (koordinat dulu, kalau tiada guna alamat)
+  const gmapsUrl = (d.lat && d.long)
+    ? 'https://www.google.com/maps?q=' + d.lat + ',' + d.long
+    : 'https://www.google.com/maps/search/?api=1&query=' + encodeURIComponent((d.alamat || '') + ', Johor');
+  const gmapsBtn =
+    '<a href="' + gmapsUrl + '" target="_blank" rel="noopener noreferrer" ' +
+    'onclick="event.stopPropagation()" title="Buka di Google Maps" ' +
+    'style="display:inline-flex;align-items:center;gap:5px;padding:4px 8px;border-radius:6px;' +
+    'background:#fff;border:1px solid #cbd5e1;box-shadow:0 1px 3px rgba(0,0,0,0.25);' +
+    'text-decoration:none;color:#1a202c;font-size:0.7rem;font-weight:700;">' +
+    '<svg width="14" height="14" viewBox="0 0 48 48"><path fill="#EA4335" d="M24 4C14.06 4 6 12.06 6 22c0 13.6 18 22 18 22s18-8.4 18-22C42 12.06 33.94 4 24 4z"/><circle fill="#FFFFFF" cx="24" cy="20" r="7"/></svg>' +
+    'Google Maps</a>';
+
+  const fs = isMobile ? '0.7rem' : '0.8rem';
+  const baris = (label, nilai) =>
+    '<div style="display:flex;justify-content:space-between;gap:8px;">' +
+    '<span style="color:#555;">' + label + '</span>' +
+    '<strong style="text-align:right;">' + nilai + '</strong></div>';
+
+  return (
+    '<div style="font-family:Arial;max-width:' + (isMobile ? 200 : 240) + 'px;font-size:' + fs + ';cursor:pointer;" ' +
+    'onclick="showCaseDetail(allCaseData[' + idx + '])">' +
+    '<div style="font-weight:bold;font-size:' + (isMobile ? '0.75rem' : '0.95rem') + ';margin-bottom:2px;">' + emoji + ' ' + d.jenis + '</div>' +
+    '<div style="color:#444;margin-bottom:4px;">🏣 ' + d.balai + '</div>' +
+    '<div style="color:#555;border-bottom:1px solid #ccc;padding-bottom:6px;margin-bottom:6px;">📍 ' + d.alamat.substring(0, isMobile ? 30 : 45) + '</div>' +
+    baris('🚒 Terima Panggilan', d.masa || '-') +
+    baris('🛑 Operasi Tamat', tamatTxt || '-') +
+    baris('📏 Jarak (CSV)', csvTxt) +
+    baris('🛣️ Jarak (OSRM)', osrmTxt) +
+    (mkPendek
+      ? '<div style="margin-top:6px;border-top:1px solid #ccc;padding-top:4px;color:#333;line-height:1.35;">' +
+        '<strong>📝 Maklumat Kejadian:</strong><br>' + mkPendek + '</div>'
+      : '<div style="margin-top:6px;border-top:1px solid #ccc;padding-top:4px;color:#888;">📝 Tiada maklumat kejadian.</div>') +
+    '<div style="display:flex;justify-content:space-between;align-items:center;gap:6px;margin-top:6px;border-top:1px solid #ccc;padding-top:6px;">' +
+    '<span style="color:#666;font-size:0.72rem;">🗺️ ' + d.lat.toFixed(5) + ', ' + d.long.toFixed(5) + '</span>' +
+    gmapsBtn + '</div></div>'
+  );
+}
+
       function updateMap(data) {
         const valid = data.filter((d) =>
           d.lat !== 0 && d.long !== 0 && !isNaN(d.lat) && !isNaN(d.long) &&
@@ -3433,11 +3497,13 @@ function getCaseEmoji(j) {
           });
 
           const marker = L.marker([d.lat, d.long], { icon: icon });
-          const popupContent = isMobile
-            ? `<div style="font-size:0.7rem;cursor:pointer;" onclick="showCaseDetail(allCaseData[${allCaseData.indexOf(d)}])"><strong>${emoji} ${d.jenis}</strong><br>📍 ${d.alamat.substring(0, 30)}<br>🏣 ${d.balai}<br>🗺️ ${d.lat.toFixed(5)}, ${d.long.toFixed(5)}</div>`
-            : `<div style="font-family:Arial;max-width:220px;font-size:0.85rem;cursor:pointer;" onclick="showCaseDetail(allCaseData[${allCaseData.indexOf(d)}])"><div style="font-weight:bold;font-size:0.95rem;margin-bottom:2px;">${emoji} ${d.jenis}</div><div style="color:#444;margin-bottom:4px;">🏣 ${d.balai}</div><div style="color:#555;border-bottom:1px solid #ccc;padding-bottom:6px;margin-bottom:6px;">📍 ${d.alamat.substring(0, 45)}</div><div style="color:#666;font-size:0.75rem;">🗺️ ${d.lat.toFixed(5)}, ${d.long.toFixed(5)}</div></div>`;
 
-          marker.bindPopup(popupContent, { maxWidth: isMobile ? 200 : 300, className: 'custom-popup' });
+          // Fungsi (bukan string) supaya kandungan dikira semula setiap kali popup dibuka/dikemas kini
+          marker.bindPopup(function () { return binaPopupKes(d, isMobile); }, {
+            maxWidth: isMobile ? 220 : 300,
+            className: 'custom-popup',
+          });
+          marker.on('popupopen', function (e) { muatJarakOSRMPopup(d, e.popup); });
           markersLayer.addLayer(marker);
         });
 

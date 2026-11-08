@@ -151,6 +151,12 @@ body:not(.mode-siang) .agg.d{background:rgba(59,110,168,.92)}
 .pop table{border-collapse:collapse;width:100%}
 .pop td{padding:2px 4px;vertical-align:top;border-bottom:1px solid var(--hud-border)}
 .pop td:first-child{color:var(--text-secondary);white-space:nowrap}
+.vh-t{margin:8px 0 3px;padding-top:6px;border-top:1px solid var(--hud-border);font:700 .72rem var(--font-head);color:var(--navy);text-transform:uppercase}
+.vh-t i{color:var(--hazard-gold);margin-right:4px}
+.vh{display:flex;flex-wrap:wrap;align-items:center;gap:4px;padding:2px 0;border-bottom:1px dashed var(--hud-border)}
+.vd{width:8px;height:8px;border-radius:50%;flex:none}
+.vp{background:#000;color:#fff;border-radius:3px;padding:0 4px;font:700 10px Arial,sans-serif}
+.vm{flex-basis:100%;font-size:.68rem;color:var(--text-secondary)}
 .leaflet-control-layers{background:var(--hud-bg)!important;color:var(--text-primary)!important;border-radius:var(--radius)!important}
 
 /* Panel legenda atas peta */
@@ -307,6 +313,7 @@ const osm = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { 
 const sat = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', { maxZoom: 19, attribution: '© Esri' });
 const map = L.map('map', { preferCanvas: true, layers: [osm] }).setView([2.0, 103.3], 8);
 L.control.layers({ 'Peta jalan': osm, Satelit: sat }).addTo(map);
+L.control.scale({ metric: true, imperial: false, maxWidth: 100 }).addTo(map);   // bar skala (untuk semak ~50 m)
 map.createPane('kml'); map.getPane('kml').style.zIndex = 350;   // di bawah titik banjir
 const gJag = L.layerGroup().addTo(map), gZon = L.layerGroup().addTo(map), gBal = L.layerGroup().addTo(map);
 const gPts = L.layerGroup().addTo(map);   // titik terperinci
@@ -671,7 +678,7 @@ function balaiFor(r) {
 
 /* --- Route jalan (OSRM) pada zoom dekat --- */
 const ROUTE_ZOOM_MIN = 13;
-const ROUTE_ZOOM_MAX = 25;
+const ROUTE_ZOOM_MAX = 19;   // zoom 19 = skala ~20 m. Lebih dekat daripada ini, flash run & meteor tidak dipaparkan
 const ROUTE_OSRM_URL = 'https://router.project-osrm.org/route/v1/driving';
 const ROUTE_TIMEOUT_MS = 8000;
 const ROUTE_SERENTAK = 2;
@@ -902,6 +909,7 @@ function meteorLoop() {
   ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
   ctx.clearRect(0, 0, w, h);
   if (!meteorOn || !meteorLinks.length) return;
+  if (map.getZoom() > ROUTE_ZOOM_MAX) return;   // lebih dekat daripada skala ~50 m: tiada flash run / meteor
 
   const now = performance.now();
   ctx.lineCap = 'round';
@@ -1295,10 +1303,89 @@ $('#badLink').onclick = (e) => {
 $('#dlgX').onclick = () => $('#dlg').close();
 $('#file').onchange = (e) => { const f = e.target.files[0]; if (f) f.text().then(parse); };
 
+/* ===== Kenderaan 4x4 & Lori setiap balai (data Dashboard Jentera, Google Sheets) =====
+   Sumber: sheet UTILITI dan LAIN-LAIN JENTERA. Tambah gid lain di JENTERA_GID jika perlu
+   (marin: 971189793, rim: 1698197048).
+   Pengelasan guna kata kunci pada MODEL + JENIS + CALLSIGN. Laraskan RE_4X4 / RE_LORI jika ada yang tertinggal.
+   Lokasi balai guna LOKASI SEMASA (sama seperti Dashboard Jentera), fallback PENEMPATAN ASAL. */
+   const JENTERA_BASE = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQt0JkN2yWW_0FeY5GKpmIvs1uI6si89JcqNmSTO3f--rM8FhQZe1Q97YQd8tiAsmaMQdTXO5TQWedy/pub?single=true&output=csv&gid=';
+const JENTERA_GID = { lain: '1761176125', utiliti: '1696956483' };
+const RE_4X4 = /4\s*[X×]\s*4|4WD|HILUX|TRITON|NAVARA|RANGER|D-?MAX/;
+const RE_LORI = /LORI|LORRY|TRUCK|PRIME\s*MOVER|FLATBED/;
+const jenteraBalai = new Map();   // kunci balai (nBalai) -> { x4: [], lori: [] }
+let jenteraSiap = false;
+
+function statJentera(s) {
+  const t = up(s);
+  if (t.includes('BAIK') && t.includes('BEROPERASI')) return ['BAIK', '#16a34a'];
+  if (t.includes('ROSAK MINOR')) return ['ROSAK MINOR', '#d97706'];
+  if (t.includes('ROSAK')) return ['ROSAK', '#dc2626'];
+  if (t.includes('DIPULANGKAN')) return ['DIPULANGKAN', '#2563eb'];
+  return [norm(s) || 'TIADA STATUS', '#64748b'];
+}
+
+async function loadJentera() {
+  const hasil = await Promise.all(Object.entries(JENTERA_GID).map(async ([nama, gid]) => {
+    try {
+      const r = await fetch(JENTERA_BASE + gid, { cache: 'no-store' });
+      if (!r.ok) throw new Error('HTTP ' + r.status);
+      return Papa.parse(await r.text(), { header: true, skipEmptyLines: true, transformHeader: (h) => up(h) }).data;
+    } catch (e) {
+      console.warn('[Jentera]', nama, e.message);
+      return [];
+    }
+  }));
+  jenteraBalai.clear();
+  hasil.flat().forEach((r) => {
+    const model = norm(r['MODEL JENTERA']), jenis = norm(r['JENIS JENTERA'] || r['JENIS']), call = norm(r['CALLSIGN']);
+    const teks = up(model + ' ' + jenis + ' ' + call);
+    const kat = RE_4X4.test(teks) ? 'x4' : RE_LORI.test(teks) ? 'lori' : null;
+    if (!kat) return;
+    const k = nBalai(norm(r['LOKASI SEMASA']) || norm(r['PENEMPATAN ASAL']));
+    if (!k) return;
+    const st = statJentera(r['STATUS JENTERA']);
+    let g = jenteraBalai.get(k);
+    if (!g) { g = { x4: [], lori: [] }; jenteraBalai.set(k, g); }
+    g[kat].push({ call: call, plate: up(r['PLATE']), model: model, st: st[0], w: st[1] });
+  });
+  jenteraSiap = true;
+}
+
+function jenteraUntuk(k) {
+  const out = { x4: [], lori: [] };
+  if (!k) return out;
+  const ada = new Set(balaiList.map((x) => x.k).filter(Boolean));
+  jenteraBalai.forEach((v, kv) => {
+    const sasar = ada.has(kv) ? kv
+      : [...ada].filter((b) => b.includes(kv) || kv.includes(b)).sort((a, b) => b.length - a.length)[0];
+    if (sasar === k) { out.x4.push(...v.x4); out.lori.push(...v.lori); }
+  });
+  return out;
+}
+
+function blokJentera(arr, tajuk, ikon) {
+  const isi = !jenteraSiap ? '<div class="vm">Memuat data jentera…</div>'
+    : arr.length ? arr.map((v) =>
+        '<div class="vh"><span class="vd" style="background:' + v.w + '"></span><b>' + esc(v.call || '-') + '</b>' +
+        (v.plate ? '<span class="vp">' + esc(v.plate) + '</span>' : '') +
+        '<div class="vm">' + esc(v.model || '-') + ' · ' + esc(v.st) + '</div></div>').join('')
+    : '<div class="vm">Tiada rekod</div>';
+  return '<div class="vh-t"><i class="fas ' + ikon + '"></i>' + tajuk + ' <b>(' + (jenteraSiap ? arr.length : '…') + ')</b></div>' + isi;
+}
+
+function balaiPopup(name, desc, k) {
+  const j = jenteraUntuk(k);
+  return '<div class="pop"><h3>' + esc(name) + '</h3><div style="white-space:pre-line">' + esc(desc) + '</div>' +
+    blokJentera(j.x4, 'Kenderaan 4x4', 'fa-truck-pickup') +
+    blokJentera(j.lori, 'Lori', 'fa-truck') + '</div>';
+}
+
+loadJentera();
+
 /* ===== Lapisan KML: kawasan jagaan balai, sempadan zon, ikon balai ===== */
 const KML_URL = 'poligon-kawasan-jagaan.kml';
 const ZCOL = { 1: '#2563eb', 2: '#16a34a', 3: '#d97706', 4: '#dc2626' };
-const HIDE_BALAI = /^\s*(NAMA\s+(TIMB\.?\s+)?KETUA\s+BALAI|GRED\s+KETUA\s+BALAI|BIL\.?\s*.{0,3}TURN\s*OUT|PERJAWATAN)/i;
+const HIDE_BALAI = /^\s*(NAMA\s+(TIMB\.?\s+)?KETUA\s+BALAI|GRED\s+KETUA\s+BALAI|BIL\.?\s*.{0,3}TURN\s*OUT|PERJAWATAN|TAHUN\s+(BER)?OPERASI|(NO\.?\s*)?(TEL\w*\s*[\/&]\s*)?FA[KX]S?\b)/i;
 const cleanDesc = (d) => String(d || '').replace(/<img[^>]*>/gi, '').replace(/<br\s*\/?>/gi, '\n').replace(/<[^>]*>/g, ' ')
   .replace(/&nbsp;/g, ' ').replace(/[ \t]+/g, ' ').split('\n').map((x) => x.trim()).filter((x) => x && !HIDE_BALAI.test(x)).join('\n');
 
@@ -1341,7 +1428,7 @@ function kmlPolys(pm) {
         const lat = parseFloat(c[1]), lng = parseFloat(c[0]);
         if (!isNaN(lat) && !isNaN(lng)) {
           const mk = L.marker([lat, lng], { icon: L.divIcon({ className: '', html: '<div class="bicon">🚒</div>', iconSize: [24, 24], iconAnchor: [12, 12] }), zIndexOffset: 200 })
-            .bindPopup('<div class="pop"><h3>' + esc(name) + '</h3><div style="white-space:pre-line">' + esc(cleanDesc(dsEl ? dsEl.textContent : '')) + '</div></div>', { maxWidth: 300 });
+          .bindPopup(() => balaiPopup(name, cleanDesc(dsEl ? dsEl.textContent : ''), nBalai(name)), { maxWidth: 320 });
           gBal.addLayer(mk); nB++;
           balaiList.push({ name: name, k: nBalai(name), lat: lat, lng: lng });   // untuk meteor
         }
