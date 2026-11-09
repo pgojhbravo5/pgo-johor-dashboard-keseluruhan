@@ -3203,20 +3203,40 @@ function getCaseEmoji(j) {
         container.style.minHeight = height;
 
         mapInstance = L.map('map', {
-          center: JOHOR_BOUNDS.center,
-          zoom: isMobile ? 8 : JOHOR_BOUNDS.defaultZoom,
-          minZoom: 7, maxZoom: 20,
-          maxBounds: [
-            [JOHOR_BOUNDS.south - 0.5, JOHOR_BOUNDS.west - 0.5],
-            [JOHOR_BOUNDS.north + 0.5, JOHOR_BOUNDS.east + 0.5],
-          ],
-          maxBoundsViscosity: 1.0,
-          touchZoom: true, scrollWheelZoom: true, doubleClickZoom: true,
-        });
+  center: JOHOR_BOUNDS.center,
+  zoom: isMobile ? 8 : JOHOR_BOUNDS.defaultZoom,
+  minZoom: 7, maxZoom: 20,
+  maxBounds: [
+    [JOHOR_BOUNDS.south - 0.5, JOHOR_BOUNDS.west - 0.5],
+    [JOHOR_BOUNDS.north + 0.5, JOHOR_BOUNDS.east + 0.5],
+  ],
+  maxBoundsViscosity: 1.0,
+  touchZoom: true, scrollWheelZoom: true, doubleClickZoom: true,
+});
 
-        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-          attribution: '© OpenStreetMap', maxZoom: 20,
-        }).addTo(mapInstance);
+// ===== 3 PILIHAN PETA =====
+const osmLayer = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+  attribution: '© OpenStreetMap contributors',
+  maxZoom: 19, maxNativeZoom: 19,
+}).addTo(mapInstance);
+
+const esriSatLayer = L.tileLayer(
+  'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
+  attribution: '© Esri, Maxar, Earthstar Geographics',
+  maxZoom: 20, maxNativeZoom: 19,
+});
+
+const esriStreetLayer = L.tileLayer(
+  'https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}', {
+  attribution: '© Esri, HERE, Garmin, USGS, Intermap, INCREMENT P, NRCan',
+  maxZoom: 20, maxNativeZoom: 19,
+});
+
+L.control.layers({
+  '🗺️ Peta Jalan (OSM)': osmLayer,
+  '🛰️ Satelit (Esri)': esriSatLayer,
+  '🛣️ Jalan Raya (Esri)': esriStreetLayer,
+}, null, { position: 'topright', collapsed: true }).addTo(mapInstance);
 
         setTimeout(() => { if (mapInstance) mapInstance.invalidateSize(); }, 300);
 

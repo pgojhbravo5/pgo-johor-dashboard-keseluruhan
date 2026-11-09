@@ -307,10 +307,27 @@ const okHex = (s) => /^#([0-9a-f]{3}|[0-9a-f]{6}|[0-9a-f]{8})$/i.test(s);
 })();
 
 /* ===== Peta ===== */
-const osm = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 20, attribution: '© OpenStreetMap' });
-const sat = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', { maxZoom: 20, attribution: '© Esri' });
-const map = L.map('map', { preferCanvas: true, layers: [osm] }).setView([2.0, 103.3], 8);
-L.control.layers({ 'Peta jalan': osm, Satelit: sat }).addTo(map);
+// ===== 3 PILIHAN PETA =====
+const osm = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+  maxZoom: 19, maxNativeZoom: 19,
+  attribution: '© OpenStreetMap contributors'
+});
+const sat = L.tileLayer(
+  'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
+  maxZoom: 20, maxNativeZoom: 19,
+  attribution: '© Esri, Maxar, Earthstar Geographics'
+});
+const esriStreet = L.tileLayer(
+  'https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}', {
+  maxZoom: 20, maxNativeZoom: 19,
+  attribution: '© Esri, HERE, Garmin, USGS, Intermap, INCREMENT P, NRCan'
+});
+const map = L.map('map', { preferCanvas: true, layers: [osm], maxZoom: 20 }).setView([2.0, 103.3], 8);
+L.control.layers({
+  '🗺️ Peta Jalan (OSM)': osm,
+  '🛰️ Satelit (Esri)': sat,
+  '🛣️ Jalan Raya (Esri)': esriStreet,
+}, null, { position: 'topleft', collapsed: true }).addTo(map);
 L.control.scale({ metric: true, imperial: false, maxWidth: 100 }).addTo(map);   // bar skala (untuk semak ~50 m)
 map.createPane('kml'); map.getPane('kml').style.zIndex = 350;   // di bawah titik banjir
 const gJag = L.layerGroup().addTo(map), gZon = L.layerGroup().addTo(map), gBal = L.layerGroup().addTo(map);

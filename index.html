@@ -6704,18 +6704,37 @@ body.mode-siang .peta-legend-overlay .pts-line + .pts-line {
                 if (!mapEl || petaJenteraMapInstance || typeof L === 'undefined') return;
 
                 petaJenteraMapInstance = L.map('petaJenteraMap', {
-                    zoomControl: true,
-                    scrollWheelZoom: false,
-                    minZoom: 8,
-                    maxZoom: 20,
-                    maxBounds: [[1.15, 102.45], [2.85, 104.55]],
-                    maxBoundsViscosity: 1.0
-                }).setView([1.85, 103.55], 9);
+    zoomControl: true,
+    scrollWheelZoom: false,
+    minZoom: 8,
+    maxZoom: 20,
+    maxBounds: [[1.15, 102.45], [2.85, 104.55]],
+    maxBoundsViscosity: 1.0
+}).setView([1.85, 103.55], 9);
 
-                L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-                    attribution: '&copy; OpenStreetMap contributors',
-                    maxZoom: 20
-                }).addTo(petaJenteraMapInstance);
+// ===== 3 PILIHAN PETA =====
+const petaOsmLayer = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    attribution: '&copy; OpenStreetMap contributors',
+    maxZoom: 19, maxNativeZoom: 19,
+}).addTo(petaJenteraMapInstance);
+
+const petaEsriSatLayer = L.tileLayer(
+    'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
+    attribution: '&copy; Esri, Maxar, Earthstar Geographics',
+    maxZoom: 20, maxNativeZoom: 19,
+});
+
+const petaEsriStreetLayer = L.tileLayer(
+    'https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}', {
+    attribution: '&copy; Esri, HERE, Garmin, USGS, Intermap, INCREMENT P, NRCan',
+    maxZoom: 20, maxNativeZoom: 19,
+});
+
+L.control.layers({
+    '🗺️ Peta Jalan (OSM)': petaOsmLayer,
+    '🛰️ Satelit (Esri)': petaEsriSatLayer,
+    '🛣️ Jalan Raya (Esri)': petaEsriStreetLayer,
+}, null, { position: 'topleft', collapsed: true }).addTo(petaJenteraMapInstance);
 
                 petaJenteraMapInstance.setMaxBounds([[1.15, 102.45], [2.85, 104.55]]);
 
