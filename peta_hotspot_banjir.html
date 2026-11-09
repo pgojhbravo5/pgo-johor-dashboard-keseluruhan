@@ -958,9 +958,6 @@ function meteorLoop() {
 
 initMeteorCanvas();
 
-$('#tgMeteor').onchange = (e) => { meteorOn = e.target.checked; rebuildMeteor(); };
-$('#tgMeteorJarak').onchange = (e) => { meteorLabelOn = e.target.checked; };
-
 /* ===== Panel legenda & ringkasan atas peta ===== */
 const kesCtl = L.control({ position: 'topright' });
 kesCtl.onAdd = function () {
