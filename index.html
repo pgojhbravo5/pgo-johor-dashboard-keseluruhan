@@ -5170,16 +5170,6 @@ body.mode-siang .peta-legend-overlay .pts-line + .pts-line {
                                     <i class="fas fa-location-crosshairs"></i>
                                     <span data-ms="Lokasi Kes" data-en="Case Locations">Lokasi Kes</span>
                                 </label>
-                                <label class="peta-layer-toggle" title="Tunjuk/Sembunyi animasi meteor balai ke lokasi kes">
-                                    <input type="checkbox" class="peta-layer-check" id="toggleMeteor" checked />
-                                    <i class="fas fa-meteor"></i>
-                                    <span data-ms="Meteor Kes" data-en="Case Meteors">Meteor Kes</span>
-                                </label>
-                                <label class="peta-layer-toggle" title="Tunjuk/Sembunyi label jarak (KM) pada setiap meteor">
-                                    <input type="checkbox" class="peta-layer-check" id="toggleMeteorJarak" checked />
-                                    <i class="fas fa-ruler-horizontal"></i>
-                                    <span data-ms="Jarak (KM)" data-en="Distance (KM)">Jarak (KM)</span>
-                                </label>
                             </div>
                                                         <div class="peta-map-wrap">
                                 <div id="petaJenteraMap"></div>
@@ -8472,87 +8462,6 @@ function lukisRouteArus(ctx, l, rt, now, labelCalon, peta) {
                             }
                         }
                         return;   // langkau lukisan meteor
-                    }
-                    
-                    const p0 = petaJenteraMapInstance.latLngToContainerPoint(l.from);
-                    const p2 = petaJenteraMapInstance.latLngToContainerPoint(l.to);
-                    const dx = p2.x - p0.x, dy = p2.y - p0.y;
-                    if (Math.hypot(dx, dy) < 6) return;
-
-                    // Titik kawalan: melengkung ke atas skrin
-                    let nx = dy, ny = -dx;
-                    if (ny > 0) { nx = -nx; ny = -ny; }
-                    const c = { x: (p0.x + p2.x) / 2 + nx * 0.25, y: (p0.y + p2.y) / 2 + ny * 0.25 };
-
-                    // 1) Garis arc malap (jaringan)
-                    ctx.beginPath();
-                    ctx.moveTo(p0.x, p0.y);
-                    ctx.quadraticCurveTo(c.x, c.y, p2.x, p2.y);
-                    ctx.strokeStyle = hexKeRgba(l.warna, 0.22);
-                    ctx.lineWidth = 1;
-                    ctx.stroke();
-
-                                        // 2) Titik asal di balai
-                                        ctx.beginPath();
-                    ctx.arc(p0.x, p0.y, 2.2, 0, Math.PI * 2);
-                    ctx.fillStyle = hexKeRgba(l.warna, 0.55);
-                    ctx.fill();
-
-                    // 2b) Calon label jarak di titik tengah arc (kuadratik t = 0.5)
-                    if (meteorLabelOn && l.jarakKm > 0 && Math.hypot(dx, dy) >= METEOR_LABEL_MIN_PX) {
-                        const fasaL = meteorKurangGerak ? 0 : ((now - l.t0) % (l.dur + l.pause));
-                        const aktif = meteorKurangGerak || fasaL <= l.dur + 700;   // meteor sedang meluncur
-                        labelCalon.push({
-                            x: p2.x,
-                            y: p2.y - 8,
-                                    teks: (l.jarakCsv ? '' : '~') + l.jarakKm.toFixed(1) + ' km',
-                            warna: l.warna,
-                            alpha: aktif ? 1 : 0.55
-                        });
-                    }
-
-                    if (meteorKurangGerak) return;   // hormati tetapan "kurangkan gerakan"
-
-                    const kitar = l.dur + l.pause;
-                    const fasa = (now - l.t0) % kitar;
-
-                    if (fasa <= l.dur) {
-                        const t = fasa / l.dur;
-
-                        // 3) Ekor meteor (makin ke kepala makin tebal & terang)
-                        let [px, py] = titikBezier(p0, c, p2, Math.max(0, t - METEOR_EKOR));
-                        for (let i = 1; i <= METEOR_SEGMEN; i++) {
-                            const tt = t - METEOR_EKOR * (1 - i / METEOR_SEGMEN);
-                            if (tt < 0) continue;
-                            const [x, y] = titikBezier(p0, c, p2, tt);
-                            const f = i / METEOR_SEGMEN;
-                            ctx.beginPath();
-                            ctx.moveTo(px, py);
-                            ctx.lineTo(x, y);
-                            ctx.strokeStyle = hexKeRgba(l.warna, 0.9 * f * f);
-                            ctx.lineWidth = 0.6 + f * 2.4;
-                            ctx.stroke();
-                            px = x; py = y;
-                        }
-
-                        // 4) Kepala meteor + cahaya
-                        const [hx, hy] = titikBezier(p0, c, p2, t);
-                        ctx.save();
-                        ctx.shadowColor = l.warna;
-                        ctx.shadowBlur = 12;
-                        ctx.beginPath();
-                        ctx.arc(hx, hy, 2.6, 0, Math.PI * 2);
-                        ctx.fillStyle = '#ffffff';
-                        ctx.fill();
-                        ctx.restore();
-                    } else if (fasa <= l.dur + 700) {
-                        // 5) Riak di lokasi kes bila meteor tiba
-                        const r = (fasa - l.dur) / 700;
-                        ctx.beginPath();
-                        ctx.arc(p2.x, p2.y, 4 + r * 16, 0, Math.PI * 2);
-                                                ctx.strokeStyle = hexKeRgba(l.warna, 0.8 * (1 - r));
-                        ctx.lineWidth = 2 * (1 - r) + 0.5;
-                        ctx.stroke();
                     }
                 });
 

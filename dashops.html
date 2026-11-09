@@ -1843,12 +1843,6 @@
             <button class="kml-toggle-btn" id="kmlToggleBtn" onclick="toggleKMLLayer()" title="Papar/Sembunyi sempadan kawasan jagaan">
               🗺️ SEMPADAN ✓
             </button>
-            <button class="kml-toggle-btn" id="meteorToggleBtn" style="bottom:34px;" onclick="toggleMeteor()" title="Papar/Sembunyi meteor balai ke kes">
-              ☄️ METEOR ✓
-            </button>
-            <button class="kml-toggle-btn" id="jarakToggleBtn" style="bottom:60px;" onclick="toggleMeteorJarak()" title="Papar/Sembunyi label jarak (KM)">
-              📏 JARAK ✓
-            </button>
           </div>
         </div>
       </div>
@@ -4383,78 +4377,6 @@ function getCaseEmoji(j) {
               }
             }
             return;
-          }
-
-          const p0 = mapInstance.latLngToContainerPoint(l.from);
-          const p2 = mapInstance.latLngToContainerPoint(l.to);
-          const dx = p2.x - p0.x, dy = p2.y - p0.y;
-          if (Math.hypot(dx, dy) < 6) return;
-
-          let nx = dy, ny = -dx;
-          if (ny > 0) { nx = -nx; ny = -ny; }
-          const c = { x: (p0.x + p2.x) / 2 + nx * 0.25, y: (p0.y + p2.y) / 2 + ny * 0.25 };
-
-          // 1) Garis arc malap
-          ctx.beginPath();
-          ctx.moveTo(p0.x, p0.y);
-          ctx.quadraticCurveTo(c.x, c.y, p2.x, p2.y);
-          ctx.strokeStyle = hexKeRgba(l.warna, 0.22);
-          ctx.lineWidth = 1;
-          ctx.stroke();
-
-          // 2) Titik asal di balai
-          ctx.beginPath();
-          ctx.arc(p0.x, p0.y, 2.2, 0, Math.PI * 2);
-          ctx.fillStyle = hexKeRgba(l.warna, 0.55);
-          ctx.fill();
-
-          // 2b) Label jarak di atas titik lat long kes
-          if (meteorLabelOn && l.jarakKm > 0 && Math.hypot(dx, dy) >= METEOR_LABEL_MIN_PX) {
-            const fasaL = meteorKurangGerak ? 0 : ((now - l.t0) % (l.dur + l.pause));
-            const aktif = meteorKurangGerak || fasaL <= l.dur + 700;
-            labelCalon.push({
-              x: p2.x, y: p2.y - labelOffsetY(),
-              teks: (l.jarakCsv ? '' : '~') + l.jarakKm.toFixed(1) + ' km',
-              warna: l.warna, alpha: aktif ? 1 : 0.55,
-            });
-          }
-
-          if (meteorKurangGerak) return;
-
-          const kitar = l.dur + l.pause;
-          const fasa = (now - l.t0) % kitar;
-
-          if (fasa <= l.dur) {
-            const t = fasa / l.dur;
-            // 3) Ekor meteor
-            let [px, py] = titikBezier(p0, c, p2, Math.max(0, t - METEOR_EKOR));
-            for (let i = 1; i <= METEOR_SEGMEN; i++) {
-              const tt = t - METEOR_EKOR * (1 - i / METEOR_SEGMEN);
-              if (tt < 0) continue;
-              const [x, y] = titikBezier(p0, c, p2, tt);
-              const f = i / METEOR_SEGMEN;
-              ctx.beginPath();
-              ctx.moveTo(px, py); ctx.lineTo(x, y);
-              ctx.strokeStyle = hexKeRgba(l.warna, 0.9 * f * f);
-              ctx.lineWidth = 0.6 + f * 2.4;
-              ctx.stroke();
-              px = x; py = y;
-            }
-            // 4) Kepala meteor
-            const [hx, hy] = titikBezier(p0, c, p2, t);
-            ctx.save();
-            ctx.shadowColor = l.warna; ctx.shadowBlur = 12;
-            ctx.beginPath(); ctx.arc(hx, hy, 2.6, 0, Math.PI * 2);
-            ctx.fillStyle = '#ffffff'; ctx.fill();
-            ctx.restore();
-          } else if (fasa <= l.dur + 700) {
-            // 5) Riak di lokasi kes
-            const r = (fasa - l.dur) / 700;
-            ctx.beginPath();
-            ctx.arc(p2.x, p2.y, 4 + r * 16, 0, Math.PI * 2);
-            ctx.strokeStyle = hexKeRgba(l.warna, 0.8 * (1 - r));
-            ctx.lineWidth = 2 * (1 - r) + 0.5;
-            ctx.stroke();
           }
         });
 
