@@ -1386,6 +1386,227 @@ fetch(CSV_URL)
   .then((r) => { if (!r.ok) throw new Error(r.status); return r.text(); })
   .then(parse)
   .catch(() => { showMsg('Gagal memuat CSV dari Google Sheets.'); $('#fb').style.display = 'block'; });
+
+  (function () {
+  'use strict';
+  if (typeof map === 'undefined' || typeof L === 'undefined' || typeof rows === 'undefined') {
+    console.error('[ETA] Letak <script src="eta-aliran.js"> SELEPAS skrip utama peta.');
+    return;
+  }
+ 
+  const ELEV_URL = 'https://api.open-meteo.com/v1/elevation';
+  const MAX_CAND = 3000, MAX_LINES = 80, MAX_LABEL = 40, MAX_LIST = 300;
+  const BANDS = [[6, '#dc2626'], [12, '#ea580c'], [24, '#ca8a04'], [48, '#2563eb'], [Infinity, '#64748b']];
+  const bandCol = (h) => BANDS.find((b) => h <= b[0])[1];
+  const fmt = (h) => (h < 1 ? '<1 jam' : h.toFixed(1) + ' jam');
+  const keyOf = (r) => r._c[0].toFixed(4) + ',' + r._c[1].toFixed(4);
+  const elevCache = new Map();
+  const gEta = L.layerGroup().addTo(map);
+  let busy = false;
+ 
+  /* ---------- Masa aliran rujukan JPS (skematik 16/11/2025) ---------- */
+  const JPS_REF = [
+    { t: 'Sg. Muar', k: ['MUAR'], s: [
+      ['Kg. Awat → Buloh Kasap (38 km)', '24'], ['Buloh Kasap → Bukit Kepong (50 km)', '35'],
+      ['Bandar Segamat → Bukit Kepong (32 km)', '18'], ['Bukit Kepong → Panchor (44 km)', '44'],
+      ['Panchor → Sg. Mati (31 km)', '44'], ['Sg. Mati → Tg. Agas / muara (20 km)', '30']] },
+    { t: 'Sg. Johor (Kota Tinggi)', k: ['SUNGAI JOHOR', 'SG JOHOR', 'SG. JOHOR'], s: [
+      ['Sg. Sayong → Sg. Johor @ Rantau Panjang', '2'],
+      ['Rantau Panjang → Bandar Kota Tinggi (ada baraj)', '12–24']] },
+    { t: 'Sg. Skudai', k: ['SKUDAI'], s: [
+      ['Kg. Pertanian → Kg. Jaya Sepakat', '2'], ['Kg. Jaya Sepakat → Kg. Laut', '1'], ['Kg. Laut → hilir Sg. Skudai', '2']] },
+    { t: 'Sg. Tebrau', k: ['TEBRAU'], s: [['Hulu Tebrau → Kg. Maju Jaya', '3'], ['Kg. Maju Jaya → Kangkar Tebrau', '3']] },
+    { t: 'Sg. Plentong', k: ['PLENTONG'], s: [['Hulu Plentong → Kg. Baru Plentong', '2']] },
+    { t: 'Sg. Tiram', k: ['TIRAM'], s: [
+      ['Hulu Tiram → Kg. Oren', '2'], ['Kg. Oren → Kg. Sg. Tiram Bt. 18', '1.5'], ['Kg. Sg. Tiram Bt. 18 → Kg. Dagang', '1']] },
+    { t: 'Sg. Pulai', k: ['PULAI'], s: [['Kangkar Pulai → Kg. Ulu Pulai', '2']] },
+    { t: 'Sg. Pontian Besar / Ayer Hitam', k: ['PONTIAN', 'AYER HITAM', 'AIR HITAM'], s: [
+      ['Kg. Sri Paya → Kg. Kabong', '6'], ['Puncak Gunung Pulai → Kg. Paya Embun', '2']] },
+    { t: 'Sg. Benut', k: ['BENUT'], s: [['Empangan Machap → Simpang Renggam', '4'], ['Simpang Renggam → Pt. Salleh', '6']] },
+    { t: 'Sg. Endau', k: ['ENDAU', 'MENGKIBOL', 'SEMBRONG BESAR', 'KAHANG', 'PALOH', 'MELANTAI'], s: [
+      ['Hulu Mengkibol → Stesen Mengkibol (Bandar)', '2'], ['Mengkibol (Bandar) → Sg. Sembrong Besar', '4'],
+      ['Hulu Kahang → Sg. Sembrong Besar', '6']] },
+    { t: 'Sg. Batu Pahat', k: ['BATU PAHAT', 'BEKOK', 'SEMBRONG', 'SIMPANG KIRI', 'SIMPANG KANAN', 'LENIK'], s: [
+      ['Ladang Chaah → Sri Medan', '24'], ['Sri Medan → Pt. Sulong', '2'], ['Pt. Sulong → Tebing Tinggi', '1'],
+      ['Empangan Bekok → Bandar Yong Peng', '4'], ['Bandar Yong Peng → Pt. Karjo', '24'],
+      ['Empangan Sembrong → Sembrong Bt. 2', '2'], ['Sembrong Bt. 2 → Pt. Karjo', '2'],
+      ['Pt. Karjo → Pt. Besar', '2'], ['Pt. Besar → Sg. Batu Pahat', '1']] }
+  ];
+  function refHtml(src) {
+    const txt = (src._lb + ' ' + src._sb).toUpperCase();
+    const hit = JPS_REF.filter((x) => x.k.some((k) => txt.includes(k)));
+    if (!hit.length) return '<p class="hint">Tiada masa rujukan JPS untuk lembangan ini dalam skematik 16/11/2025.</p>';
+    return hit.map((x) => '<div class="eta-ref"><b>Rujukan JPS — ' + x.t + '</b><ul>' +
+      x.s.map((s) => '<li>' + esc(s[0]) + ' — <b>' + s[1] + ' jam</b></li>').join('') + '</ul></div>').join('');
+  }
+ 
+  /* ---------- CSS ---------- */
+  const st = document.createElement('style');
+  st.textContent =
+    '.eta .eta-f{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:6px}' +
+    '.eta label{font-size:.66rem;color:var(--text-secondary);display:flex;flex-direction:column;gap:2px}' +
+    '.eta select,.eta input[type=number]{padding:.3rem .4rem;border:1px solid var(--border-strong);border-radius:var(--radius-sm);background:var(--hud-bg);color:var(--text-primary);font-size:.74rem;width:100%}' +
+    '.eta label.chk{grid-column:1/-1;flex-direction:row;align-items:center;gap:6px;font-size:.7rem}' +
+    '.eta-res{max-height:280px;overflow-y:auto;font-size:.72rem;margin-top:6px}' +
+    '.eta-sum{padding:6px 8px;border-left:3px solid var(--fire-red);background:var(--hud-card-bg);border-radius:var(--radius-sm);margin-bottom:4px;line-height:1.5}' +
+    '.eta-row{display:flex;align-items:center;gap:6px;padding:4px 3px;border-bottom:1px solid var(--hud-border);cursor:pointer}' +
+    '.eta-row:hover{background:var(--glass-highlight)}' +
+    '.eta-row small{display:block;color:var(--text-secondary);font-size:.62rem}' +
+    '.eta-row .h{margin-left:auto;font-weight:700;white-space:nowrap}' +
+    '.eta-ref{margin-top:6px;font-size:.68rem}.eta-ref ul{margin:2px 0 0;padding-left:16px}' +
+    '.eta-act{margin-top:8px}' +
+    '.eta-btn{width:100%;font:700 .72rem var(--font-head);padding:.45rem;border:1px solid var(--fire-red);background:var(--fire-red);color:#fff;border-radius:var(--radius-sm);cursor:pointer}' +
+    '.eta-btn:hover{filter:brightness(1.1)}' +
+    '.etatip{font:700 10px var(--font-head);padding:1px 5px;border-radius:3px;background:var(--hud-bg);color:var(--text-primary);border:1px solid var(--hud-border)}.etatip::before{display:none}';
+  document.head.appendChild(st);
+ 
+  /* ---------- Panel sisi ---------- */
+  const panel = document.createElement('div');
+  panel.className = 'grp eta';
+  panel.innerHTML =
+    '<h2><span><i class="fas fa-stopwatch"></i>Analisa ETA Banjir</span><small id="etaStat"></small></h2>' +
+    '<p class="hint" style="margin-bottom:6px">Klik satu titik hotspot di peta, kemudian tekan <b>Analisa ETA banjir</b> dalam popup. Anggaran masa (jam) air tiba ke hotspot di hilir, dalam sub lembangan yang sama.</p>' +
+    '<div class="eta-f">' +
+    '<label>Halaju aliran<select id="etaVel"><option value="1">Perlahan 1.0 km/j (monsun, sungai besar)</option><option value="1.5" selected>Sederhana 1.5 km/j</option><option value="3">Laju 3.0 km/j (banjir kilat)</option></select></label>' +
+    '<label>Tetingkap ETA<select id="etaWin"><option value="6">≤ 6 jam</option><option value="12">≤ 12 jam</option><option value="24" selected>≤ 24 jam</option><option value="48">≤ 48 jam</option><option value="72">≤ 72 jam</option><option value="0">Semua</option></select></label>' +
+    '<label>Faktor kelok sungai<input type="number" id="etaK" value="1.4" min="1" max="3" step="0.1"></label>' +
+    '<label>Toleransi ketinggian (m)<input type="number" id="etaTol" value="2" min="0" max="20" step="0.5"></label>' +
+    '<label class="chk"><input type="checkbox" id="etaLb"> Sertakan sub lembangan lain dalam lembangan sama (keyakinan rendah)</label>' +
+    '</div>' +
+    '<div class="row"><button class="btn" id="etaClr"><i class="fas fa-eraser"></i> Kosongkan ETA</button></div>' +
+    '<div class="eta-res" id="etaRes"></div>' +
+    '<p class="hint" style="margin-top:6px">Anggaran saringan: halaju ialah andaian (belum ditentukur), arah aliran daripada DEM ~90 m, tidak mengambil kira keamatan hujan, empangan, air pasang atau saliran bandar. Rujuk amaran rasmi JPS/MET.</p>';
+  const gr = document.getElementById('groups');
+  gr.parentNode.insertBefore(panel, gr);
+  const rd = (id, def) => { const v = parseFloat(document.getElementById(id).value); return isNaN(v) ? def : v; };
+  const setStat = (t) => { document.getElementById('etaStat').textContent = t; };
+ 
+  /* ---------- Ketinggian (Open-Meteo) ---------- */
+  async function ensureElev(arr) {
+    const need = [], seen = new Set();
+    arr.forEach((r) => { const k = keyOf(r); if (!elevCache.has(k) && !seen.has(k)) { seen.add(k); need.push(r._c); } });
+    for (let i = 0; i < need.length; i += 100) {
+      const ch = need.slice(i, i + 100);
+      const url = ELEV_URL + '?latitude=' + ch.map((c) => c[0].toFixed(5)).join(',') + '&longitude=' + ch.map((c) => c[1].toFixed(5)).join(',');
+      const ctrl = new AbortController(), tid = setTimeout(() => ctrl.abort(), 12000);
+      try {
+        const resp = await fetch(url, { signal: ctrl.signal });
+        if (!resp.ok) throw new Error('HTTP ' + resp.status);
+        const d = await resp.json();
+        if (!d.elevation || d.elevation.length !== ch.length) throw new Error('format');
+        ch.forEach((c, j) => elevCache.set(c[0].toFixed(4) + ',' + c[1].toFixed(4), d.elevation[j]));
+      } catch (e) {
+        console.warn('[ETA] ketinggian gagal:', e.message);
+        return false;
+      } finally { clearTimeout(tid); }
+    }
+    return true;
+  }
+ 
+  /* ---------- Analisa ---------- */
+  async function analyse(id) {
+    if (busy) return;
+    const src = rows.find((r) => r._id === id);
+    if (!src || !src._c) return;
+    busy = true; setStat('mengira…');
+    const v = rd('etaVel', 1.5), K = rd('etaK', 1.4), tol = rd('etaTol', 2), win = rd('etaWin', 24), incLb = document.getElementById('etaLb').checked;
+    const srcKey = keyOf(src), seen = new Map();
+ 
+    rows.forEach((r) => {
+      if (!r._c) return;
+      const k = keyOf(r);
+      if (k === srcKey) return;
+      let tier = 0;
+      if (src._sb !== '(TIADA)' && r._sb === src._sb) tier = 1;
+      else if (incLb && src._lb !== '(TIADA)' && r._lb === src._lb) tier = 2;
+      if (!tier) return;
+      const e = seen.get(k);
+      if (e) { e.n++; if (tier < e.tier) e.tier = tier; return; }   // lokasi sama berulang antara tahun
+      seen.set(k, { r, tier, n: 1, k });
+    });
+    let list = [...seen.values()];
+    if (list.length > MAX_CAND) {
+      list.forEach((x) => (x.d0 = haversineKm(src._c[0], src._c[1], x.r._c[0], x.r._c[1])));
+      list = list.sort((a, b) => a.d0 - b.d0).slice(0, MAX_CAND);
+    }
+ 
+    const elevOK = await ensureElev([src, ...list.map((x) => x.r)]);
+    const es = elevCache.get(srcKey);
+    let nHulu = 0, nLuar = 0;
+    const out = [];
+    list.forEach((x) => {
+      const et = elevCache.get(x.k);
+      let dir = '?', dz = null;
+      if (elevOK && es != null && et != null) {
+        dz = es - et;
+        dir = dz > tol ? 'hilir' : dz < -tol ? 'hulu' : 'sama';
+      }
+      if (dir === 'hulu') { nHulu++; return; }
+      if (x.tier === 2 && dir !== 'hilir') return;
+      const km = haversineKm(src._c[0], src._c[1], x.r._c[0], x.r._c[1]) * K;
+      out.push({ r: x.r, tier: x.tier, n: x.n, dir, dz, km, h: km / v });
+    });
+    out.sort((a, b) => a.h - b.h);
+    const shown = out.filter((o) => !win || o.h <= win);
+    nLuar = out.length - shown.length;
+ 
+    /* peta */
+    gEta.clearLayers();
+    L.circleMarker(src._c, { radius: 12, color: '#c8102e', weight: 3, fillColor: '#c8102e', fillOpacity: 0.35 })
+      .bindTooltip('PUNCA: ' + esc(src._kw), { className: 'etatip' }).addTo(gEta);
+    shown.slice(0, MAX_LINES).forEach((o, i) => {
+      const col = bandCol(o.h), firm = o.dir === 'hilir';
+      L.polyline([src._c, o.r._c], { color: col, weight: 2, opacity: firm ? 0.8 : 0.5, dashArray: firm ? '6 5' : '2 6', interactive: false }).addTo(gEta);
+      L.circleMarker(o.r._c, { radius: 7, color: '#fff', weight: 1.5, fillColor: col, fillOpacity: 0.9 })
+        .bindTooltip(esc(o.r._kw) + ' — ' + fmt(o.h), { className: 'etatip', permanent: i < MAX_LABEL, direction: 'top', offset: [0, -6] }).addTo(gEta);
+    });
+    const bpts = [src._c, ...shown.slice(0, MAX_LINES).map((o) => o.r._c)];
+    if (bpts.length > 1) map.fitBounds(L.latLngBounds(bpts), { padding: [50, 50], maxZoom: 14 });
+ 
+    /* panel */
+    const nHilir = shown.filter((o) => o.dir === 'hilir').length;
+    const dirTxt = { hilir: 'hilir', sama: 'aras sama', '?': 'arah tidak pasti' };
+    let html = '<div class="eta-sum"><b>Punca:</b> ' + esc(src._kw) + '<br><small>' + esc(src._sb) + ' · ' + esc(src._lb) + '</small><br>' +
+      '<b>' + shown.length + '</b> titik dalam ' + (win ? win + ' jam' : 'semua tempoh') + ' (hilir: ' + nHilir + ')' +
+      '<br><small>Hulu / tidak terkesan: ' + nHulu + ' · Di luar tetingkap: ' + nLuar + ' · Halaju ' + v + ' km/j × kelok ' + K + '</small>' +
+      (elevOK ? '' : '<br><b style="color:var(--fire-red)">Data ketinggian gagal dimuat — arah hulu/hilir tidak dapat ditentukan.</b>') +
+      '</div>';
+    html += shown.slice(0, MAX_LIST).map((o, i) =>
+      '<div class="eta-row" data-i="' + i + '"><span class="dot" style="background:' + bandCol(o.h) + '"></span><span>' + esc(o.r._kw) +
+      '<small>' + esc(o.r._mk) + ' · ' + (o.tier === 1 ? 'sub sama' : 'lembangan sama') + ' · ' + dirTxt[o.dir] +
+      (o.dz != null ? ' (Δ' + o.dz.toFixed(0) + ' m)' : '') + ' · ' + o.km.toFixed(1) + ' km' + (o.n > 1 ? ' · ' + o.n + ' rekod' : '') + '</small></span>' +
+      '<span class="h">' + fmt(o.h) + '</span></div>').join('');
+    if (!shown.length) html += '<p class="hint">Tiada hotspot hilir dalam tetingkap ini. Cuba besarkan tetingkap atau sertakan sub lembangan lain.</p>';
+    html += refHtml(src);
+    const box = document.getElementById('etaRes');
+    box.innerHTML = html;
+    box.querySelectorAll('.eta-row').forEach((el) => (el.onclick = () => {
+      const o = shown[+el.dataset.i];
+      if (o) map.setView(o.r._c, Math.max(map.getZoom(), 15));
+    }));
+    setStat(shown.length + ' titik');
+    if (typeof showMsg === 'function') showMsg('ETA dikira dari "' + src._kw + '": ' + shown.length + ' titik hilir dalam ' + (win ? win + ' jam' : 'semua tempoh') + '.');
+    busy = false;
+  }
+ 
+  /* ---------- Sambung ke popup hotspot ---------- */
+  const _popup = popup;
+  popup = function (r) {
+    const h = _popup(r);
+    const btn = '<div class="eta-act"><button class="eta-btn" data-id="' + r._id + '"><i class="fas fa-stopwatch"></i> Analisa ETA banjir</button></div>';
+    return h.replace(/<\/table><\/div>$/, '</table>' + btn + '</div>');
+  };
+  map.on('popupopen', (e) => {
+    const el = e.popup.getElement();
+    if (!el) return;
+    el.querySelectorAll('.eta-btn').forEach((b) => (b.onclick = () => { map.closePopup(); analyse(+b.dataset.id); }));
+  });
+  document.getElementById('etaClr').onclick = () => {
+    gEta.clearLayers();
+    document.getElementById('etaRes').innerHTML = '';
+    setStat('');
+  };
+})();
 </script>
 </body>
 </html>
