@@ -312,8 +312,8 @@ function checkMatch() { // bantuan debug (lihat Console)
 })();
 
 /* ===== Peta ===== */
-const osm = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 19, attribution: '© OpenStreetMap' });
-const sat = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', { maxZoom: 19, attribution: '© Esri' });
+const osm = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 20, attribution: '© OpenStreetMap' });
+const sat = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', { maxZoom: 20, attribution: '© Esri' });
 const map = L.map('map', { preferCanvas: true, layers: [osm] }).setView([2.0, 103.3], 8);
 L.control.layers({ 'Peta jalan': osm, Satelit: sat }).addTo(map);
 const gZon = L.layerGroup().addTo(map), gJag = L.layerGroup().addTo(map),
@@ -590,8 +590,8 @@ function rrPath(ctx, x, y, w, h, r) {
 }
 
 /* --- Route jalan (OSRM) pada zoom dekat --- */
-const ROUTE_ZOOM_MIN = 13;
-const ROUTE_ZOOM_MAX = 25;
+const ROUTE_ZOOM_MIN = 12;
+const ROUTE_ZOOM_MAX = 20;
 const ROUTE_OSRM_URL = 'https://router.project-osrm.org/route/v1/driving';
 const ROUTE_TIMEOUT_MS = 8000;
 const ROUTE_SERENTAK = 2;

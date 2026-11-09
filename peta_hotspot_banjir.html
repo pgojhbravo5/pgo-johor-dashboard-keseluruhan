@@ -307,8 +307,8 @@ const okHex = (s) => /^#([0-9a-f]{3}|[0-9a-f]{6}|[0-9a-f]{8})$/i.test(s);
 })();
 
 /* ===== Peta ===== */
-const osm = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 19, attribution: '© OpenStreetMap' });
-const sat = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', { maxZoom: 19, attribution: '© Esri' });
+const osm = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 20, attribution: '© OpenStreetMap' });
+const sat = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', { maxZoom: 20, attribution: '© Esri' });
 const map = L.map('map', { preferCanvas: true, layers: [osm] }).setView([2.0, 103.3], 8);
 L.control.layers({ 'Peta jalan': osm, Satelit: sat }).addTo(map);
 L.control.scale({ metric: true, imperial: false, maxWidth: 100 }).addTo(map);   // bar skala (untuk semak ~50 m)
@@ -675,8 +675,8 @@ function balaiFor(r) {
 }
 
 /* --- Route jalan (OSRM) pada zoom dekat --- */
-const ROUTE_ZOOM_MIN = 13;
-const ROUTE_ZOOM_MAX = 19;   // zoom 19 = skala ~20 m. Lebih dekat daripada ini, flash run & meteor tidak dipaparkan
+const ROUTE_ZOOM_MIN = 12;
+const ROUTE_ZOOM_MAX = 20;   // zoom 19 = skala ~20 m. Lebih dekat daripada ini, flash run & meteor tidak dipaparkan
 const ROUTE_OSRM_URL = 'https://router.project-osrm.org/route/v1/driving';
 const ROUTE_TIMEOUT_MS = 8000;
 const ROUTE_SERENTAK = 2;

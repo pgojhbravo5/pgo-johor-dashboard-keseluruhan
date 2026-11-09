@@ -3205,7 +3205,7 @@ function getCaseEmoji(j) {
         mapInstance = L.map('map', {
           center: JOHOR_BOUNDS.center,
           zoom: isMobile ? 8 : JOHOR_BOUNDS.defaultZoom,
-          minZoom: 7, maxZoom: 18,
+          minZoom: 7, maxZoom: 20,
           maxBounds: [
             [JOHOR_BOUNDS.south - 0.5, JOHOR_BOUNDS.west - 0.5],
             [JOHOR_BOUNDS.north + 0.5, JOHOR_BOUNDS.east + 0.5],
@@ -3215,7 +3215,7 @@ function getCaseEmoji(j) {
         });
 
         L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-          attribution: '© OpenStreetMap', maxZoom: 18,
+          attribution: '© OpenStreetMap', maxZoom: 20,
         }).addTo(mapInstance);
 
         setTimeout(() => { if (mapInstance) mapInstance.invalidateSize(); }, 300);
@@ -4125,8 +4125,8 @@ function getCaseEmoji(j) {
       }
 
       // ---- Route jalan (OSRM) pada zoom dekat ----
-      const ROUTE_ZOOM_MIN = 13;
-      const ROUTE_ZOOM_MAX = 25;
+      const ROUTE_ZOOM_MIN = 12;
+      const ROUTE_ZOOM_MAX = 20;
       const ROUTE_OSRM_URL = 'https://router.project-osrm.org/route/v1/driving';
       const ROUTE_TIMEOUT_MS = 8000;
       const ROUTE_SERENTAK = 2;

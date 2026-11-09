@@ -6707,13 +6707,14 @@ body.mode-siang .peta-legend-overlay .pts-line + .pts-line {
                     zoomControl: true,
                     scrollWheelZoom: false,
                     minZoom: 8,
+                    maxZoom: 20,
                     maxBounds: [[1.15, 102.45], [2.85, 104.55]],
                     maxBoundsViscosity: 1.0
                 }).setView([1.85, 103.55], 9);
 
                 L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
                     attribution: '&copy; OpenStreetMap contributors',
-                    maxZoom: 18
+                    maxZoom: 20
                 }).addTo(petaJenteraMapInstance);
 
                 petaJenteraMapInstance.setMaxBounds([[1.15, 102.45], [2.85, 104.55]]);
@@ -8157,8 +8158,8 @@ hari.forEach(d => {
             // ============================================================
 // ===== ROUTE JALAN (OSRM) PADA ZOOM ~1 KM =====
 // ============================================================
-const ROUTE_ZOOM_MIN = 13;          // 14 = skala bar ~1 km. Tukar kedua-duanya ke 14/15 jika mahu julat lebih luas
-const ROUTE_ZOOM_MAX = 25;
+const ROUTE_ZOOM_MIN = 12;          // 14 = skala bar ~1 km. Tukar kedua-duanya ke 14/15 jika mahu julat lebih luas
+const ROUTE_ZOOM_MAX = 20;
 const ROUTE_OSRM_URL = 'https://router.project-osrm.org/route/v1/driving';
 const ROUTE_TIMEOUT_MS = 8000;
 const ROUTE_SERENTAK = 2;           // elak kena had OSRM awam
