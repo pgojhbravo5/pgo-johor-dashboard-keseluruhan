@@ -204,6 +204,17 @@ dialog th{color:var(--navy);font-family:var(--font-head)}
   .footer{font-size:.6rem;padding:.4rem .7rem;justify-content:center;text-align:center}
   dialog{width:96%;padding:10px}
 }
+
+/* ===== Lapisan Kes Banjir RT 2026 ===== */
+.rt-pt{filter:drop-shadow(0 0 3px rgba(0,0,0,.5))}
+.rtp .st{display:inline-block;padding:1px 8px;border-radius:10px;color:#fff;font:700 .65rem var(--font-head)}
+.rt-lg{display:flex;gap:10px;flex-wrap:wrap;font-size:.7rem;color:var(--text-secondary);margin-bottom:6px}
+.rt-lg span{display:flex;align-items:center;gap:4px}
+.rt-ic{width:26px;height:26px;display:flex;align-items:center;justify-content:center;border:2px solid #fff;border-radius:7px;color:#fff;font-size:12px;box-shadow:0 1px 5px rgba(0,0,0,.55);position:relative}
+.rt-ic.on::after{content:'';position:absolute;inset:-6px;border-radius:10px;border:2px solid #c8102e;opacity:0;animation:rtpulse 1.8s ease-out infinite}
+@keyframes rtpulse{0%{opacity:.8;transform:scale(.7)}100%{opacity:0;transform:scale(1.25)}}
+.rt-sq{display:inline-flex;width:14px;height:14px;border-radius:4px;border:1.5px solid #fff;align-items:center;justify-content:center;color:#fff;font-size:8px;box-shadow:0 0 0 1px rgba(0,0,0,.2)}
+@media (prefers-reduced-motion:reduce){.rt-ic.on::after{animation:none;opacity:.5}}
 </style>
 </head>
 <body class="mode-siang">
@@ -246,7 +257,7 @@ dialog th{color:var(--navy);font-family:var(--font-head)}
         <label><input type="checkbox" id="tgZon" checked><i class="fas fa-border-all"></i><span>Sempadan zon</span></label>
         <label><input type="checkbox" id="tgBal" checked><i class="fas fa-truck-field"></i><span>Ikon balai bomba</span></label>
       </div>
-      <p class="hint" style="margin-top:6px"><i class="fas fa-route"></i> <b>Nota:</b> Meteor hanya muncul pada paparan titik terperinci. Pada zoom dekat, animasi flash run &amp; jarak (KM) adalah anggaran laluan jalan daripada OSRM; ia tidak semestinya laluan sebenar balai ke lokasi. Tanda "~" = anggaran garis lurus.</p>
+      <p class="hint" style="margin-top:6px"><i class="fas fa-route"></i> <b>Nota:</b> Pada zoom dekat 3 Kilometer hingga 20 Meter, animasi flash run &amp; jarak (KM) adalah anggaran laluan jalan daripada OSRM; ia tidak semestinya laluan sebenar balai ke lokasi.</p>
     </div>
     <div id="groups" style="display:flex;flex-direction:column;gap:10px"></div>
     <p class="hint">Logik tapisan: pilihan dalam satu kumpulan = ATAU; antara kumpulan = DAN. Warna titik mengikut lajur WARNA dalam data.</p>
@@ -1606,6 +1617,344 @@ fetch(CSV_URL)
     document.getElementById('etaRes').innerHTML = '';
     setStat('');
   };
+})();
+
+/* ============================================================
+   ===== LAPISAN KES BANJIR RT 2026 (Sub Kategori 1 = 09. Bencana Alam, keyword BANJIR) =====
+   ============================================================ */
+(function () {
+  'use strict';
+  if (typeof map === 'undefined' || typeof L === 'undefined' || typeof Papa === 'undefined') return;
+
+  /* --- Konfigurasi --- */
+  const RT_BASE = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vSJW-jSCCmeTK8V4j5SqWl9KZ7xOFjAwUmPV0fyWFsvOn-sXpkctFzO0TtfF8urbWV4ibLBUtBZg4pS/pub?single=true&output=csv';
+  const RT_GID = '0';   // tab Data (tab pertama)
+  const RT_URL = RT_BASE + (RT_GID ? '&gid=' + RT_GID : '');
+  const RT_EXTRA = [];  // (pilihan) nama header tambahan untuk dipaparkan dalam popup, cth ['Balai', 'DAERAH', 'Zon']
+  const COL_ON = '#c8102e', COL_OFF = '#16a34a';
+  const ST_ON = 'MASIH BEROPERASI', ST_OFF = 'OPERASI TAMAT';
+
+  const hk = (h) => up(h).replace(/\s*\([^)]*\)\s*/g, ' ').replace(/\s+/g, ' ').trim();
+  const kosong = (v) => { const t = norm(v); return !t || /^[-–—]+$/.test(t) || /^#?N\/?A$/i.test(t); };
+  const MONTHS = ['JANUARI','FEBRUARI','MAC','APRIL','MEI','JUN','JULAI','OGOS','SEPTEMBER','OKTOBER','NOVEMBER','DISEMBER'];
+  const DAYS = ['ISNIN','SELASA','RABU','KHAMIS','JUMAAT','SABTU','AHAD'];
+  const monthIdx = (s) => {
+    const n = parseInt(s, 10);
+    if (!isNaN(n) && n >= 1 && n <= 12) return n - 1;
+    const i = MONTHS.findIndex((m) => s.startsWith(m.slice(0, 3)));
+    return i < 0 ? 99 : i;
+  };
+  const dayIdx = (s) => { const i = DAYS.indexOf(s); return i < 0 ? 99 : i; };
+  const dateKey = (s) => { const m = String(s).match(/(\d{1,2})[\/\-.](\d{1,2})[\/\-.](\d{2,4})/); if (!m) return 0; let y = +m[3]; if (y < 100) y += 2000; return y * 10000 + (+m[2]) * 100 + (+m[1]); };
+
+  /* --- Kumpulan tapisan --- */
+  const FG = [
+    { k: 'bln', t: 'Bulan',          ic: 'fa-calendar',      sort: (a, b) => monthIdx(a) - monthIdx(b) || a.localeCompare(b) },
+    { k: 'day', t: 'Day',            ic: 'fa-calendar-day',  sort: (a, b) => dayIdx(a) - dayIdx(b) || a.localeCompare(b) },
+    { k: 'tk',  t: 'Tarikh Kejadian', ic: 'fa-calendar-check', sort: (a, b) => dateKey(b) - dateKey(a) || b.localeCompare(a) },
+    { k: 'bl',  t: 'Balai',          ic: 'fa-truck-field',   sort: (a, b) => a.localeCompare(b) },
+    { k: 'st',  t: 'Status Operasi', ic: 'fa-tower-broadcast', sort: (a) => (a === ST_ON ? -1 : 1), isNew: true }
+    ];
+  const FS = {}, FO = {};
+  FG.forEach((g) => { FS[g.k] = new Set(); FO[g.k] = new Map(); });
+
+  let rtRows = [], H = {};
+  const gRT = L.layerGroup();
+  map.createPane('rt'); map.getPane('rt').style.zIndex = 420;
+  gRT.addTo(map);
+
+  /* --- Panel sisi --- */
+  const panel = document.createElement('div');
+  panel.className = 'grp new';
+  panel.id = 'rt-panel';
+  panel.innerHTML =
+    '<h2><span><i class="fas fa-house-flood-water"></i>Kes Banjir RT 2026</span><small id="rtStat">memuat…</small></h2>' +
+    '<label style="display:flex;align-items:center;gap:6px;font-size:.76rem;margin-bottom:6px"><input type="checkbox" id="rtShow" checked style="accent-color:var(--navy)"> Papar titik kes banjir RT</label>' +
+    '<div class="rt-lg"><span><i class="rt-sq" style="background:' + COL_ON + '"><i class="fas fa-house-flood-water"></i></i>Kes RT masih beroperasi</span><span><i class="rt-sq" style="background:' + COL_OFF + '"><i class="fas fa-house-flood-water"></i></i>Kes RT tamat</span><span><i class="dot" style="background:#555"></i>Titik hotspot (bulatan)</span></div>' +
+    '<p class="hint" id="rtMsg" style="margin-bottom:6px"></p>' +
+    '<div id="rtGroups" style="display:flex;flex-direction:column;gap:8px"></div>' +
+    '<div class="row" style="margin-top:8px"><button class="btn" id="rtReset"><i class="fas fa-rotate-left"></i> Kosongkan tapisan RT</button></div>';
+  const gr = document.getElementById('groups');
+  gr.parentNode.insertBefore(panel, gr);
+
+  FG.forEach((g) => {
+    const el = document.createElement('div');
+    el.className = 'grp';
+    el.id = 'rtg-' + g.k;
+    el.style.boxShadow = 'none';
+    el.innerHTML =
+      '<h2><span><i class="fas ' + g.ic + '"></i>' + g.t + '</span><small></small></h2>' +
+      (g.k === 'st' ? '' : '<input type="search" placeholder="Cari ' + g.t.toLowerCase() + '...">') +
+      '<div class="btns"><button data-a="all">Pilih semua</button><button data-a="none">Kosongkan</button></div>' +
+      '<div class="list"></div>';
+    document.getElementById('rtGroups').appendChild(el);
+
+    el.querySelectorAll('.btns button').forEach((b) => (b.onclick = () => {
+      el.querySelectorAll('.list label').forEach((l) => {
+        if (l.style.display === 'none') return;
+        b.dataset.a === 'all' ? FS[g.k].add(l.dataset.v) : FS[g.k].delete(l.dataset.v);
+        l.firstChild.checked = b.dataset.a === 'all';
+      });
+      draw(true);
+    }));
+    const s = el.querySelector('input[type=search]');
+    if (s) s.oninput = () => {
+      const q = s.value.toUpperCase();
+      el.querySelectorAll('.list label').forEach((l) => (l.style.display = l.dataset.v.includes(q) ? '' : 'none'));
+    };
+  });
+
+  const msg = (t) => { document.getElementById('rtMsg').textContent = t || ''; };
+  const stat = (t) => { document.getElementById('rtStat').textContent = t; };
+
+  document.getElementById('rtShow').onchange = (e) => (e.target.checked ? map.addLayer(gRT) : map.removeLayer(gRT));
+  document.getElementById('rtReset').onclick = () => {
+    FG.forEach((g) => { FS[g.k].clear(); buildList(g); const s = document.querySelector('#rtg-' + g.k + ' input[type=search]'); if (s) s.value = ''; });
+    draw(true);
+  };
+
+  function buildList(g) {
+    const box = document.querySelector('#rtg-' + g.k + ' .list');
+    box.innerHTML = '';
+    const vals = [...FO[g.k].keys()].sort(g.sort);
+    vals.forEach((v) => {
+      const l = document.createElement('label');
+      l.dataset.v = v;
+      const dot = g.k === 'st' ? '<span class="dot" style="background:' + (v === ST_ON ? COL_ON : COL_OFF) + '"></span>' : '';
+      l.innerHTML = '<input type="checkbox">' + dot + '<span>' + esc(v) + '</span><span class="n">' + FO[g.k].get(v) + '</span>';
+      l.firstChild.checked = FS[g.k].has(v);
+      l.firstChild.onchange = (e) => { e.target.checked ? FS[g.k].add(v) : FS[g.k].delete(v); draw(true); };
+      box.appendChild(l);
+    });
+    document.querySelector('#rtg-' + g.k + ' h2 small').textContent = vals.length + ' pilihan';
+  }
+
+  /* --- Muat & proses CSV --- */
+  function parseRT(text) {
+    const res = Papa.parse(text, { header: true, skipEmptyLines: true, transformHeader: hk });
+    const keys = res.meta.fields || [];
+    const f = (...re) => { for (const r of re) { const k = keys.find((x) => r.test(x)); if (k) return k; } return null; };
+    H = {
+      s1: f(/^SUB KATEGORI 1/), s2: f(/^SUB KATEGORI 2/), jn: f(/^JENIS PANGGILAN OPERASI/),
+      bln: f(/^BULAN/), day: f(/^DAY$/, /^HARI/), tk: f(/^TARIKH KEJADIAN/),
+      mt: f(/^MASA OPERASI DITAMATKAN/), tt: f(/^TARIKH OPERASI DITAMATKAN/), jam: f(/^JUMLAH JAM OPERASI/),
+      lat: f(/^(LAT|LATITUDE|LATITUD)\b/, /LAT/), lng: f(/^(LONG|LONGITUDE|LONGITUD|LNG)\b/, /LONG|LNG/),
+      kor: f(/KOORDINAT|COORD/),
+      alamat: f(/^ALAMAT/),
+      mSel: f(/^MANGSA\s+DISELAMAT/, /^MANGSA.*SELAMAT/),
+      mMati: f(/^MANGSA\s+MATI/),
+      mMaut: f(/^MANGSA\s+MAUT/),
+      balai: f(/^BALAI$/),
+      jarak: f(/^JARAK BALAI/),
+      toa: f(/^TOA HADIR/),
+      cc: f(/^CALL CARD/),
+      syif: f(/^SYIF/),
+      bb: keys.filter((x) => /^BALAI BANTUAN\s*\d/.test(x))
+        .sort((a, b) => parseInt(a.replace(/\D/g, ''), 10) - parseInt(b.replace(/\D/g, ''), 10))
+    };
+    console.log('[RT] header mangsa:', H.mSel, '|', H.mMati, '|', H.mMaut);    
+    const need = { s1: 'SUB KATEGORI 1', s2: 'SUB KATEGORI 2', jn: 'JENIS PANGGILAN OPERASI', bln: 'BULAN', day: 'DAY', tk: 'TARIKH KEJADIAN', mt: 'MASA OPERASI DITAMATKAN', tt: 'TARIKH OPERASI DITAMATKAN', jam: 'JUMLAH JAM OPERASI' };
+    const miss = Object.keys(need).filter((k) => !H[k]).map((k) => need[k]);
+    if (!H.lat && !H.lng && !H.kor) miss.push('LATITUDE/LONGITUDE');
+    if (!H.s1 || (!H.s2 && !H.jn)) { stat('gagal'); msg('Header penting tiada dalam CSV: ' + miss.join(', ') + '. Semak RT_GID (mesti tab Data).'); return; }
+
+    const g = (r, k) => (H[k] ? norm(r[H[k]]) : '');
+    rtRows = [];
+    let nCat = 0, nBad = 0;
+    res.data.forEach((r) => {
+      if (!/^0?9[\s.\-]*BENCANA\s*ALAM/.test(up(g(r, 's1')))) return;
+      if (!/BANJIR/.test(up(g(r, 's2'))) && !/BANJIR/.test(up(g(r, 'jn')))) return;
+      nCat++;
+      let a, b;
+      if (H.lat && H.lng) { a = num(r[H.lat]); b = num(r[H.lng]); }
+      else if (H.kor) { const p = String(r[H.kor] || '').split(/[,;\s]+/); a = num(p[0]); b = num(p[1]); }
+      if (a == null || b == null) { nBad++; return; }
+      if (!okLat(a) && okLat(b) && okLng(a)) { const t = a; a = b; b = t; }
+      if (!okLat(a) || !okLng(b)) { nBad++; return; }
+      const tamat = !kosong(g(r, 'mt')) || !kosong(g(r, 'tt'));
+      rtRows.push({
+        i: rtRows.length,
+        raw: r, c: [a, b],
+        bln: up(g(r, 'bln')) || '(TIADA)', day: up(g(r, 'day')) || '(TIADA)', tk: g(r, 'tk') || '(TIADA)',
+        bl: up(g(r, 'balai')) || '(TIADA)',
+        st: tamat ? ST_OFF : ST_ON
+      });
+    });
+
+    FG.forEach((gp) => {
+      FO[gp.k] = new Map();
+      rtRows.forEach((r) => FO[gp.k].set(r[gp.k], (FO[gp.k].get(r[gp.k]) || 0) + 1));
+      buildList(gp);
+    });
+    msg((miss.length ? 'Header tidak dijumpai: ' + miss.join(', ') + '. ' : '') +
+      nCat + ' kes banjir ditemui' + (nBad ? ', ' + nBad + ' tiada koordinat sah (tidak dipaparkan)' : '') + '.');
+    draw(false);
+  }
+
+    /* --- Jarak jalan OSRM (balai -> kes), dikira bila popup dibuka --- */
+    const rtRoute = new Map();   // indeks kes -> km (nombor) atau 'tiada'
+  function balaiRT(r) {
+    const k = nBalai(H.balai ? r.raw[H.balai] : '');
+    if (!k || !balaiList.length) return null;
+    return balaiList.find((x) => x.k === k) || balaiList.find((x) => x.k && (x.k.includes(k) || k.includes(x.k))) || null;
+  }
+  async function osrmRT(r) {
+    const b = balaiRT(r);
+    if (!b) return 'tiada';
+    const ctrl = new AbortController(), tid = setTimeout(() => ctrl.abort(), 8000);
+    try {
+      const url = ROUTE_OSRM_URL + '/' + b.lng + ',' + b.lat + ';' + r.c[1] + ',' + r.c[0] + '?overview=false';
+      const resp = await fetch(url, { signal: ctrl.signal });
+      if (!resp.ok) throw new Error('HTTP ' + resp.status);
+      const d = await resp.json();
+      if (d.code !== 'Ok' || !d.routes || !d.routes[0]) throw new Error('Tiada route');
+      return d.routes[0].distance / 1000;
+    } finally { clearTimeout(tid); }
+  }
+  const osrmText = (v) => (typeof v === 'number' ? v.toFixed(1) + ' km'
+    : v === 'tiada' ? 'Balai tidak dijumpai dalam KML' : 'Gagal dimuat');
+  map.on('popupopen', (e) => {
+    const el = e.popup.getElement();
+    if (!el) return;
+    el.querySelectorAll('.rt-osrm').forEach(async (td) => {
+      const i = +td.dataset.i;
+      if (rtRoute.has(i)) { td.textContent = osrmText(rtRoute.get(i)); return; }
+      let v;
+      try { v = await osrmRT(rtRows[i]); rtRoute.set(i, v); }
+      catch (err) { v = 'gagal'; console.warn('[RT OSRM]', err.message); }   // tidak disimpan, cuba lagi bila popup dibuka semula
+      td.textContent = osrmText(v);
+    });
+  });
+
+    /* --- FLASH RUN kes RT: balai -> lokasi kes (laluan OSRM) --- */
+    const RT_FLASH_ZOOM_MIN = 10;          // flash run bermula pada zoom ini (hotspot guna 12)
+  const rtGeo = new Map();               // indeks kes -> { pts, km, bounds }
+  const rtGeoGagal = new Map();          // indeks kes -> masa gagal (cooldown)
+  const rtGeoFetch = new Set(), rtGeoQueue = [];
+  let rtHit = [], rtGeoAktif = 0;
+
+  async function fetchGeoRT(r) {
+    const b = balaiRT(r);
+    if (!b) throw new Error('Balai tiada dalam KML');
+    const url = ROUTE_OSRM_URL + '/' + b.lng + ',' + b.lat + ';' + r.c[1] + ',' + r.c[0] + '?geometries=geojson&overview=full&steps=false';
+    const ctrl = new AbortController(), tid = setTimeout(() => ctrl.abort(), 8000);
+    try {
+      const resp = await fetch(url, { signal: ctrl.signal });
+      if (!resp.ok) throw new Error('HTTP ' + resp.status);
+      const d = await resp.json();
+      if (d.code !== 'Ok' || !d.routes || !d.routes[0]) throw new Error('Tiada route');
+      const rt = d.routes[0];
+      const pts = rt.geometry.coordinates.map((c) => [c[1], c[0]]);
+      rtGeo.set(r.i, { pts, km: rt.distance / 1000, bounds: L.latLngBounds(pts) });
+      rtRoute.set(r.i, rt.distance / 1000);   // kongsi dengan popup (Jarak OSRM)
+      rtGeoGagal.delete(r.i);
+    } catch (e) {
+      rtGeoGagal.set(r.i, Date.now());
+      console.warn('[RT flash]', e.message);
+    } finally { clearTimeout(tid); }
+  }
+  function prosesGeoRT() {
+    while (rtGeoAktif < 2 && rtGeoQueue.length) {
+      const r = rtGeoQueue.shift();
+      rtGeoAktif++;
+      fetchGeoRT(r).finally(() => { rtGeoAktif--; rtGeoFetch.delete(r.i); prosesGeoRT(); });
+    }
+  }
+  function rtFetchVisible() {
+    if (!map.hasLayer(gRT) || map.getZoom() < RT_FLASH_ZOOM_MIN) return;
+    const lihat = map.getBounds().pad(0.3);
+    rtHit.forEach((r) => {
+      if (rtGeo.has(r.i) || rtGeoFetch.has(r.i) || !lihat.contains(r.c)) return;
+      const g = rtGeoGagal.get(r.i);
+      if (g && Date.now() - g < 60000) return;
+      rtGeoFetch.add(r.i);
+      rtGeoQueue.push(r);
+    });
+    prosesGeoRT();
+  }
+  map.on('moveend zoomend', rtFetchVisible);
+  setInterval(rtFetchVisible, 3000);   // cuba lagi bila KML balai siap dimuat
+
+  const rtCv = document.createElement('canvas');
+  rtCv.className = 'peta-meteor-canvas';
+  rtCv.style.zIndex = 455;
+  map.getContainer().appendChild(rtCv);
+  const rtCtx = rtCv.getContext('2d');
+  (function rtLoop() {
+    requestAnimationFrame(rtLoop);
+    const kont = map.getContainer(), w = kont.clientWidth, h = kont.clientHeight, dpr = window.devicePixelRatio || 1;
+    if (rtCv.width !== Math.round(w * dpr) || rtCv.height !== Math.round(h * dpr)) {
+      rtCv.width = Math.round(w * dpr); rtCv.height = Math.round(h * dpr);
+    }
+    rtCtx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    rtCtx.clearRect(0, 0, w, h);
+    const z = map.getZoom();
+    if (!map.hasLayer(gRT) || z < RT_FLASH_ZOOM_MIN || z > ROUTE_ZOOM_MAX) return;
+    const now = performance.now();
+    rtCtx.lineCap = 'round';
+    rtHit.forEach((r) => {
+      const rt = rtGeo.get(r.i);
+      if (!rt) return;
+      const l = { warna: r.st === ST_ON ? COL_ON : COL_OFF, t0: -((r.i * 613) % 4000) };
+      lukisRouteArus(rtCtx, l, rt, now, []);
+    });
+  })();
+
+  /* --- Popup --- */
+  function popupRT(r) {
+    const g = (k) => (H[k] ? norm(r.raw[H[k]]) : '');
+    const row = (k, v) => (v ? '<tr><td>' + k + '</td><td>' + esc(v) + '</td></tr>' : '');
+    const mg = (k, label) => row(label, H[k] ? (g(k) || '-') : '(header tidak dijumpai)');
+    const on = r.st === ST_ON;
+    const jam = g('jam');
+    const bb = (H.bb || []).map((k) => norm(r.raw[k])).filter((v) => !kosong(v)).join(', ');
+    const extra = RT_EXTRA.map((h) => { const k = hk(h); return row(esc(h), r.raw[k] ? norm(r.raw[k]) : ''); }).join('');
+    return '<div class="pop rtp"><h3><span class="dot" style="background:' + (on ? COL_ON : COL_OFF) + '"></span>' + esc(g('jn') || g('s2') || 'Kes Banjir') + '</h3><table>' +
+      row('Sub Kategori 1', g('s1')) + row('Sub Kategori 2', g('s2')) + row('Jenis Panggilan', g('jn')) +
+      row('Alamat Kejadian', g('alamat')) +
+      row('Balai', g('balai')) + row('TOA Hadir', g('toa')) + row('Balai Bantuan', bb) +
+      row('No. Call Card', g('cc')) + row('Syif Bertugas', g('syif')) +
+      row('Bulan', g('bln')) + row('Day', g('day')) + row('Tarikh Kejadian', g('tk')) +
+      '<tr><td>Status Operasi</td><td><span class="st" style="background:' + (on ? COL_ON : COL_OFF) + '">' + r.st + '</span></td></tr>' +
+      row('Masa Op. Ditamatkan', on ? '' : g('mt')) + row('Tarikh Op. Ditamatkan', on ? '' : g('tt')) +
+      row('Jumlah Jam Operasi', on ? 'Masih beroperasi' : (jam || '-')) +
+      row('Jarak Balai-Lokasi (CSV)', /^[\d.,]+$/.test(g('jarak')) ? g('jarak') + ' km' : g('jarak')) +
+      '<tr><td>Jarak OSRM</td><td class="rt-osrm" data-i="' + r.i + '">' +
+        (rtRoute.has(r.i) ? osrmText(rtRoute.get(r.i)) : 'memuat…') + '</td></tr>' +
+      mg('mSel', 'Mangsa Diselamatkan') + mg('mMati', 'Mangsa Mati') + mg('mMaut', 'Mangsa Maut') +
+      extra +
+      row('Lat, Long', r.c[0].toFixed(6) + ', ' + r.c[1].toFixed(6)) +
+      '</table></div>';
+  }
+  /* --- Lukis ikut tapisan --- */
+  function draw(fit) {
+    gRT.clearLayers();
+    const act = FG.some((g) => FS[g.k].size);
+    const hit = rtRows.filter((r) => FG.every((g) => !FS[g.k].size || FS[g.k].has(r[g.k])));
+    hit.forEach((r) => {
+      const on = r.st === ST_ON, col = on ? COL_ON : COL_OFF;
+      const ic = L.divIcon({
+        className: '',
+        html: '<div class="rt-ic' + (on ? ' on' : '') + '" style="background:' + col + '"><i class="fas fa-house-flood-water"></i></div>',
+        iconSize: [26, 26], iconAnchor: [13, 13], popupAnchor: [0, -14]
+      });
+      L.marker(r.c, { icon: ic, zIndexOffset: 800 })
+        .bindPopup(() => popupRT(r), { maxWidth: 360 }).addTo(gRT);
+    });
+    rtHit = hit;
+    setTimeout(rtFetchVisible, 0);
+    const nOn = hit.filter((r) => r.st === ST_ON).length;
+    stat(hit.length + ' kes · ' + nOn + ' aktif');
+    if (fit && act && hit.length) {
+      const bd = L.latLngBounds(hit.map((r) => r.c));
+      if (bd.isValid()) map.fitBounds(bd, { padding: [40, 40], maxZoom: 14 });
+    }
+  }
+
+  fetch(RT_URL, { cache: 'no-store' })
+    .then((r) => { if (!r.ok) throw new Error('HTTP ' + r.status); return r.text(); })
+    .then(parseRT)
+    .catch((e) => { stat('gagal'); msg('Gagal memuat CSV RT 2026: ' + e.message); });
 })();
 </script>
 </body>
