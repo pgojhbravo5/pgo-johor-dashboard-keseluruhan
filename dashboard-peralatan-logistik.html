@@ -249,9 +249,10 @@ tbody tr:hover{background:var(--glass-highlight)}
     <div id="msg"></div>
 
     <div class="row">
-      <button class="btn primary" id="reset"><i class="fas fa-rotate-left"></i> Kosongkan tapisan</button>
-      <button class="btn" id="exportBtn"><i class="fas fa-file-csv"></i> Eksport CSV</button>
-    </div>
+        <button class="btn primary" id="reset"><i class="fas fa-rotate-left"></i> Kosongkan tapisan</button>
+        <button class="btn" id="exportBtn"><i class="fas fa-file-csv"></i> Eksport Ditapis</button>
+        <button class="btn" id="exportAllBtn" title="Muat turun SEMUA rekod & SEMUA kolum"><i class="fas fa-database"></i> Eksport SEMUA</button>
+      </div>
 
     <div class="grp">
       <h2><span><i class="fas fa-magnifying-glass"></i>Carian Global</span><small id="globalCount"></small></h2>
@@ -659,29 +660,46 @@ function renderTable(rows) {
     fmt(rows.length) + ' rekod' + (rows.length > LIMIT ? ' — papar ' + LIMIT + ' pertama' : '');
 }
 
-/* ===== Eksport CSV ===== */
-$('#exportBtn').onclick = () => {
-  if (!lastFiltered.length) {
+/* ===== Eksport CSV — fungsi umum ===== */
+function downloadCSV(rows, filename) {
+  if (!rows.length) {
     showMsg('Tiada rekod untuk dieksport.');
     return;
   }
 
-  const out = lastFiltered.map((r) => {
+  // Semua kolum dalam COLS akan dieksport (tanpa tertinggal)
+  const out = rows.map((r) => {
     const o = {};
-    COLS.forEach((c) => (o[c] = r[c]));
+    COLS.forEach((c) => {
+      const v = r[c];
+      o[c] = (v === undefined || v === null) ? '' : v;
+    });
     return o;
   });
 
-  const csv = Papa.unparse(out);
+  // Papa.unparse akan hasilkan header + semua baris
+  const csv = Papa.unparse(out, { columns: COLS });
   const blob = new Blob(["\uFEFF" + csv], { type: 'text/csv;charset=utf-8;' });
   const url = URL.createObjectURL(blob);
   const a = document.createElement('a');
   a.href = url;
-  a.download = 'peralatan-logistik-jbpm-johor.csv';
+  a.download = filename;
   document.body.appendChild(a);
   a.click();
   a.remove();
   URL.revokeObjectURL(url);
+}
+
+/* ===== Eksport data selepas tapisan (semua kolum) ===== */
+$('#exportBtn').onclick = () => {
+  const stamp = new Date().toISOString().slice(0, 10);
+  downloadCSV(lastFiltered, 'peralatan-logistik-jbpm-johor-ditapis-' + stamp + '.csv');
+};
+
+/* ===== Eksport SEMUA data (tanpa tapisan, semua kolum) ===== */
+$('#exportAllBtn').onclick = () => {
+  const stamp = new Date().toISOString().slice(0, 10);
+  downloadCSV(DATA, 'peralatan-logistik-jbpm-johor-SEMUA-' + stamp + '.csv');
 };
 
 /* ===== Reset ===== */
