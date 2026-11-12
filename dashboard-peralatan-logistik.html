@@ -85,6 +85,7 @@ body:not(.mode-siang) #msg{background:rgba(217,169,105,.1); border-color:rgba(21
 .stat{
   background:var(--hud-card-bg); border:1px solid var(--hud-border); border-left:3px solid var(--navy);
   border-radius:var(--radius); padding:9px 10px; box-shadow:var(--shadow-sm);
+  position: relative;
 }
 .stat b{display:block; font:700 1.25rem var(--font-head); color:var(--text-primary); line-height:1.2}
 .stat span{font-size:.62rem; font-weight:600; text-transform:uppercase; letter-spacing:.05rem; color:var(--text-secondary)}
@@ -137,6 +138,11 @@ body:not(.mode-siang) .kat-card { border-left-color: var(--hazard-gold); }
 .kat-card:hover {
   transform: translateY(-2px); box-shadow: var(--shadow);
   border-color: var(--border-strong); background: var(--hud-card-bg);
+}
+.kat-card.active {
+  border-left-color: var(--fire-red) !important;
+  box-shadow: 0 0 0 2px rgba(200,16,46,0.25), var(--shadow);
+  background: var(--hud-card-bg);
 }
 .kat-card .kat-name {
   font-size: 0.72rem; font-weight: 700; color: var(--text-secondary);
@@ -204,6 +210,7 @@ body:not(.mode-siang) .kat-card .kat-count { color: var(--text-primary); }
 .panel-h{
   display:flex; align-items:center; justify-content:space-between; gap:10px;
   padding:9px 11px; border-bottom:1px solid var(--hud-border); background:var(--hud-card-bg);
+  flex-wrap: wrap;
 }
 .panel-h h2{
   margin:0; font:700 .76rem var(--font-head); letter-spacing:.6px; text-transform:uppercase; color:var(--navy);
@@ -211,6 +218,41 @@ body:not(.mode-siang) .kat-card .kat-count { color: var(--text-primary); }
 .panel-h h2 i{margin-right:.4rem; color:var(--hazard-gold)}
 .panel-b{padding:10px 11px}
 .grid2{display:grid; grid-template-columns:1fr 1fr; gap:12px}
+
+/* ═══════════════════════════════════════════════════
+   MULTI-SELECT DROPDOWN (Table Columns) - sama UI File 1
+   ═══════════════════════════════════════════════════ */
+.ms { position: relative; width: 100%; }
+.ms-trigger { width: 100%; padding: 6px 10px; border-radius: var(--radius-sm); border: 1px solid var(--hud-border); background: var(--hud-bg); color: var(--text-primary); font-size: 12px; cursor: pointer; display: flex; align-items: center; gap: 6px; transition: 0.15s; font-family: inherit; text-align: left; min-height: 30px; }
+.ms-trigger:hover { border-color: var(--navy); }
+.ms.open .ms-trigger { border-color: var(--navy); box-shadow: 0 0 0 3px rgba(0, 43, 92, 0.15); }
+body:not(.mode-siang) .ms.open .ms-trigger { box-shadow: 0 0 0 3px rgba(59, 110, 168, 0.3); }
+.ms-value { flex: 1; color: var(--text-primary); font-size: 12px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-weight: 600; }
+.ms-value.empty { color: var(--text-secondary); font-weight: 400; }
+.ms-value .ms-chip { display: inline-block; background: var(--glass-highlight); color: var(--navy); font-size: 10.5px; font-weight: 700; padding: 1px 6px; border-radius: 3px; }
+body:not(.mode-siang) .ms-value .ms-chip { color: #8ab4fb; }
+.ms-caret { color: var(--text-secondary); transition: transform 0.15s; flex-shrink: 0; width: 14px; height: 14px;}
+.ms.open .ms-caret { transform: rotate(180deg); color: var(--navy); }
+.ms-popup { position: absolute; top: calc(100% + 6px); right: 0; left: auto; z-index: 300; background: var(--hud-bg); border: 1px solid var(--border-strong); border-radius: var(--radius); box-shadow: var(--shadow); padding: 10px; width: 260px; max-width: calc(100vw - 40px); max-height: 400px; display: flex; flex-direction: column; gap: 8px; }
+.ms-popup[hidden] { display: none !important; }
+.ms-search-wrap { display: flex; align-items: center; gap: 6px; padding: 6px 8px; border: 1px solid var(--hud-border); border-radius: var(--radius-sm); background: var(--hud-card-bg); }
+.ms-search-wrap .ico { color: var(--text-secondary); width: 14px; height: 14px;}
+.ms-search { border: none; outline: none; background: transparent; flex: 1; font-size: 12px; color: var(--text-primary); font-family: inherit; }
+.ms-actions { display: flex; gap: 4px; padding-bottom: 6px; border-bottom: 1px solid var(--hud-border); }
+.ms-action { background: transparent; border: none; color: var(--navy); font-size: 11px; font-weight: 600; cursor: pointer; padding: 4px 8px; border-radius: var(--radius-sm); font-family: inherit; }
+body:not(.mode-siang) .ms-action { color: #8ab4fb; }
+.ms-action:hover { background: var(--glass-highlight); }
+.ms-options { overflow-y: auto; max-height: 220px; display: flex; flex-direction: column; gap: 1px; }
+.ms-options::-webkit-scrollbar { width: 4px; }
+.ms-options::-webkit-scrollbar-thumb { background: var(--hud-border); border-radius: 2px; }
+.ms-opt { display: flex; align-items: center; gap: 8px; padding: 6px 8px; border-radius: var(--radius-sm); cursor: pointer; font-size: 12px; color: var(--text-primary); user-select: none; }
+.ms-opt:hover { background: var(--glass-highlight); }
+.ms-opt input[type='checkbox'] { width: 14px; height: 14px; accent-color: var(--navy); cursor: pointer; flex-shrink: 0; }
+.ms-opt span { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.ms-footer { display: flex; justify-content: space-between; align-items: center; padding-top: 6px; border-top: 1px solid var(--hud-border); font-size: 11px; color: var(--text-secondary); }
+.ms-apply { background: var(--navy); color: #fff; border: none; padding: 4px 10px; border-radius: var(--radius-sm); font-size: 11px; font-weight: 600; cursor: pointer; font-family: inherit; }
+.ms-apply:hover { opacity: 0.9; }
+.ms-empty { padding: 12px 8px; text-align: center; color: var(--text-secondary); font-size: 11px; font-style: italic; }
 
 .bar-row{display:grid; grid-template-columns:130px 1fr 44px; align-items:center; gap:8px; margin:5px 0; font-size:.73rem}
 .bar-label{overflow:hidden; text-overflow:ellipsis; white-space:nowrap; color:var(--text-primary)}
@@ -220,21 +262,17 @@ body:not(.mode-siang) .kat-card .kat-count { color: var(--text-primary); }
 
 .table-wrap{max-height:520px; overflow:auto; border-top:1px solid var(--hud-border); position:relative;}
 table{width:100%; border-collapse:collapse; font-size:.73rem}
-/* Text Center untuk semua sel */
 th,td{padding:6px 8px; border-bottom:1px solid var(--hud-border); text-align:center; vertical-align:middle;}
 
-/* Kelas khas untuk align kiri */
 th.text-left, td.text-left { text-align: left !important; }
 th.text-left .th-wrap { justify-content: flex-start !important; }
 
-/* Header sticky */
 thead th{
   position:sticky; top:0; z-index:3;
   background:var(--hud-card-bg); color:var(--navy);
   font:700 .68rem var(--font-head); text-transform:uppercase; letter-spacing:.04rem; white-space:nowrap;
 }
 
-/* Butang Ikon Tapisan dalam TH */
 .th-wrap { display:flex; align-items:center; justify-content:center; gap:6px; }
 .th-filter-btn {
   background:transparent; border:none; color:var(--text-secondary); cursor:pointer;
@@ -245,7 +283,6 @@ thead th{
 .th-filter-btn:hover { background:var(--glass-highlight); color:var(--navy); }
 .th-filter-btn.active { color:var(--fire-red); background:rgba(200,16,46,0.1); }
 
-/* Dropdown Panel Tapisan Kolum */
 .col-dropdown {
   position:fixed; z-index:9999; background:var(--hud-bg); border:1px solid var(--hud-border);
   border-radius:var(--radius); box-shadow:var(--shadow); width:260px;
@@ -290,8 +327,7 @@ tbody tr:hover{background:var(--glass-highlight)}
 .empty{padding:18px; text-align:center; color:var(--text-secondary); font-size:.78rem}
 
 /* ═══════════════════════════════════════════════════
-   DASHBOARD EXPAND PANEL — Fungsi dr File 1
-   (UI kekal ikut tema File 2)
+   DASHBOARD EXPAND PANEL
    ═══════════════════════════════════════════════════ */
 .dash-expand-panel {
   margin-top: 12px;
@@ -462,7 +498,7 @@ body:not(.mode-siang) .dash-expand-panel { border-left-color: var(--hazard-gold)
 
     <div class="row">
         <button class="btn primary" id="reset"><i class="fas fa-rotate-left"></i> Kosongkan tapisan</button>
-        <button class="btn" id="exportBtn"><i class="fas fa-file-csv"></i> Eksport Ditapis</button>
+        <button class="btn" id="exportBtn" title="Muat turun rekod yang ditapis (semua kolum)"><i class="fas fa-file-csv"></i> Eksport Ditapis</button>
         <button class="btn" id="exportAllBtn" title="Muat turun SEMUA rekod & SEMUA kolum"><i class="fas fa-database"></i> Eksport SEMUA</button>
       </div>
 
@@ -530,10 +566,17 @@ body:not(.mode-siang) .dash-expand-panel { border-left-color: var(--hazard-gold)
     <!-- PAGE 2: DATA (JADUAL) -->
     <div id="page-data" class="view-section">
       <section class="panel">
+        <!-- 
+          Komponen Multi-Select (ms) diletakkan di header panel di sebelah kanan
+        -->
         <div class="panel-h">
           <h2><i class="fas fa-table-list"></i>Senarai Peralatan Logistik</h2>
-          <span class="hint" id="tableInfo">–</span>
+          <div style="display:flex; align-items:center; gap:12px; margin-left:auto;">
+            <span class="hint" id="tableInfo">–</span>
+            <div class="ms" data-key="tableCols" style="min-width: 220px; max-width: 300px;"></div>
+          </div>
         </div>
+
         <div class="table-wrap">
           <table id="tbl">
             <thead></thead>
@@ -554,7 +597,6 @@ body:not(.mode-siang) .dash-expand-panel { border-left-color: var(--hazard-gold)
 <script>
 /* ============================================================
    DASHBOARD PERALATAN LOGISTIK JBPM JOHOR
-   Sumber: Google Sheets published CSV — tab DATA (gid=0)
    ============================================================ */
 
 const CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRHOUAyF12rAnzTIZcSaWfrsREQcHElus7BTNc0ZzNhkmzqd6mALa0rOQqMQpzQ5ilWMlO4yZMRHJt7/pub?gid=0&single=true&output=csv';
@@ -818,7 +860,6 @@ function applyFilters() {
 
   $('#globalCount').textContent = fmt(lastFiltered.length) + ' rekod';
 
-  // Refresh expand panel kalau aktif (supaya data konsisten)
   if (dashExpandState.activeType) {
     renderDashExpand();
   }
@@ -864,18 +905,19 @@ function renderCharts(rows) {
   const katCol = findCol(/KATEGORI PERALATAN/) || findCol(/KATEGORI/);
   const lokCol = findCol(/LOKASI SEMASA/) || findCol(/LOKASI/);
 
-  // 1. Render Kategori Peralatan sebagai KAD (Cards)
+  // 1. Render Kategori Peralatan sebagai KAD
   const elKat = $('#chartKat');
   if (katCol) {
     const entries = countBy(rows, katCol);
     const total = rows.length;
-    
+
     if (!entries.length) {
       elKat.innerHTML = '<p class="hint">Tiada data untuk dipaparkan.</p>';
     } else {
       elKat.innerHTML = '<div class="kat-grid">' + entries.map(([label, val]) => {
         const pct = total ? Math.round((val / total) * 100) : 0;
-        return `<div class="kat-card" onclick="filterByCategory(decodeURIComponent('${encodeURIComponent(label)}'))" title="Klik untuk tapis: ${esc(label)}">
+        const isActive = dashExpandState.activeType === 'kategori:' + label;
+        return `<div class="kat-card${isActive ? ' active' : ''}" onclick="filterByCategory(decodeURIComponent('${encodeURIComponent(label)}'))" title="Klik untuk tapis: ${esc(label)}">
                   <div class="kat-name">${esc(label)}</div>
                   <div class="kat-count">${fmt(val)}</div>
                   <div class="kat-pct">${pct}% dari jumlah</div>
@@ -890,7 +932,7 @@ function renderCharts(rows) {
 
 /* ===== Jadual dengan tapisan kolum (Checkbox Popup) ===== */
 const colFilters = new Map();
-let tableHeadRendered = 0;
+let tableHeadRendered = '';   // signature string (kosong = paksa render semula)
 let activeColDropdown = null;
 
 function matchColFilter(cellValue, filterSet) {
@@ -957,14 +999,14 @@ function openFilterDropdown(colName, btnEl) {
   const renderList = (q = '') => {
     listEl.innerHTML = '';
     const filteredVals = colVals.filter(v => v.toLowerCase().includes(q.toLowerCase()));
-    
+
     filteredVals.forEach(v => {
       const l = document.createElement('label');
       const isChecked = tempSet.has(v);
       l.innerHTML = `<input type="checkbox" value="${esc(v)}" ${isChecked ? 'checked' : ''}>
                      <span>${esc(displayVal(v))}</span>
                      <span class="cd-count">${counts.get(v)}</span>`;
-      
+
       l.querySelector('input').onchange = (e) => {
         if (e.target.checked) tempSet.add(v);
         else tempSet.delete(v);
@@ -980,12 +1022,12 @@ function openFilterDropdown(colName, btnEl) {
   };
 
   dd.querySelector('.cd-search input').oninput = (e) => renderList(e.target.value);
-  
+
   dd.querySelector('.cd-all').onclick = () => {
     colVals.forEach(v => tempSet.add(v));
     renderList(dd.querySelector('.cd-search input').value);
   };
-  
+
   dd.querySelector('.cd-none').onclick = () => {
     tempSet.clear();
     renderList(dd.querySelector('.cd-search input').value);
@@ -995,7 +1037,7 @@ function openFilterDropdown(colName, btnEl) {
     colFilters.delete(colName);
     dd.remove();
     activeColDropdown = null;
-    tableHeadRendered = 0;
+    tableHeadRendered = '';
     applyFilters();
   };
 
@@ -1007,7 +1049,7 @@ function openFilterDropdown(colName, btnEl) {
     }
     dd.remove();
     activeColDropdown = null;
-    tableHeadRendered = 0;
+    tableHeadRendered = '';
     applyFilters();
   };
 
@@ -1017,13 +1059,28 @@ function openFilterDropdown(colName, btnEl) {
 }
 
 function renderTableHead() {
-  if (tableHeadRendered === COLS.length) return;
+  const visible = getVisibleCols();
+  const activeFilters = visible
+    .filter(c => colFilters.has(c) && colFilters.get(c).size > 0)
+    .sort()
+    .join(',');
+  const sig = visible.join('|') + '||' + activeFilters;
+
+  if (tableHeadRendered === sig) return;
+
   const thead = $('#tbl thead');
 
-  const headRow = COLS.map((c) => {
+  if (visible.length === 0) {
+    thead.innerHTML = '';
+    tableHeadRendered = sig;
+    return;
+  }
+
+  const headRow = visible.map((c) => {
     const isActive = colFilters.has(c) && colFilters.get(c).size > 0;
-    const isLeft = /PERALATAN|KATEGORI/i.test(c); 
-    
+    // PERUBAHAN: Tambah LOKASI dalam regex
+    const isLeft = /PERALATAN|KATEGORI|LOKASI/i.test(c);
+
     return `<th class="${isLeft ? 'text-left' : ''}">
       <div class="th-wrap">
         <span>${esc(c)}</span>
@@ -1043,23 +1100,31 @@ function renderTableHead() {
     };
   });
 
-  tableHeadRendered = COLS.length;
+  tableHeadRendered = sig;
 }
 
 function renderTableBody(rows) {
   const tbody = $('#tbl tbody');
+  const visible = getVisibleCols();
+
+  if (visible.length === 0) {
+    tbody.innerHTML = '<tr><td class="empty">Sila pilih sekurang-kurangnya 1 kolum di atas.</td></tr>';
+    return;
+  }
+
   const LIMIT = 500;
   const shown = rows.slice(0, LIMIT);
 
   if (!shown.length) {
-    tbody.innerHTML = '<tr><td class="empty" colspan="' + COLS.length + '">Tiada rekod sepadan dengan tapisan.</td></tr>';
+    tbody.innerHTML = '<tr><td class="empty" colspan="' + visible.length + '">Tiada rekod sepadan dengan tapisan.</td></tr>';
     return;
   }
 
   tbody.innerHTML = shown.map((r) => {
-    return '<tr>' + COLS.map((c) => {
+    return '<tr>' + visible.map((c) => {
       const v = cellVal(r, c);
-      const isLeft = /PERALATAN|KATEGORI/i.test(c);
+      // PERUBAHAN: Tambah LOKASI dalam regex
+      const isLeft = /PERALATAN|KATEGORI|LOKASI/i.test(c);
       return `<td class="${isLeft ? 'text-left' : ''}">${esc(displayVal(v))}</td>`;
     }).join('') + '</tr>';
   }).join('');
@@ -1083,7 +1148,16 @@ function renderTable(rows) {
     $('#tbl thead').innerHTML = '';
     $('#tbl tbody').innerHTML = '<tr><td class="empty">Tiada data dimuatkan.</td></tr>';
     $('#tableInfo').textContent = '–';
-    tableHeadRendered = 0;
+    tableHeadRendered = '';
+    return;
+  }
+
+  const visible = getVisibleCols();
+  if (visible.length === 0) {
+    $('#tbl thead').innerHTML = '';
+    $('#tbl tbody').innerHTML = '<tr><td class="empty">Sila pilih sekurang-kurangnya 1 kolum di atas.</td></tr>';
+    $('#tableInfo').textContent = '0 kolum dipilih';
+    tableHeadRendered = '';
     return;
   }
 
@@ -1091,6 +1165,205 @@ function renderTable(rows) {
   const filtered = applyColFilters(rows);
   renderTableBody(filtered);
   updateTableInfo(filtered.length, rows.length);
+}
+
+/* ═══════════════════════════════════════════════════
+   MULTI-SELECT DROPDOWN COMPONENT (Table Columns)
+   ═══════════════════════════════════════════════════ */
+const MultiSelect = (() => {
+  const instances = {};
+  let globalListenerAttached = false;
+  
+  function closeAllPopups(exceptKey = null) {
+    document.querySelectorAll('.ms.open').forEach((el) => {
+      if (exceptKey && el.dataset.key === exceptKey) return;
+      el.classList.remove('open');
+      const p = el.querySelector('[data-ms-popup]');
+      if (p) { p.hidden = true; p.style.display = 'none'; }
+    });
+  }
+  
+  function attachGlobalListener() {
+    if (globalListenerAttached) return;
+    globalListenerAttached = true;
+    document.addEventListener('click', (e) => { if (!e.target.closest('.ms')) closeAllPopups(); });
+    document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeAllPopups(); });
+  }
+  
+  function create(key, container, opts) {
+    const { items, onChange } = opts;
+    instances[key] = { options: [...items], selected: new Set(), onChange: onChange || (() => {}) };
+    container.dataset.key = key;
+    container.innerHTML = `
+      <button type="button" class="ms-trigger" data-ms-trigger>
+        <span class="ms-value empty" data-ms-value>Semua</span>
+        <svg class="ico ms-caret" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg>
+      </button>
+      <div class="ms-popup" data-ms-popup hidden style="display:none">
+        <div class="ms-search-wrap">
+          <svg class="ico" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+          <input type="text" class="ms-search" placeholder="Cari..." data-ms-search />
+        </div>
+        <div class="ms-actions">
+          <button type="button" class="ms-action" data-ms-all>Pilih Semua</button>
+          <button type="button" class="ms-action" data-ms-none>Kosongkan</button>
+        </div>
+        <div class="ms-options" data-ms-options></div>
+        <div class="ms-footer">
+          <span data-ms-count>0 dipilih</span>
+          <button type="button" class="ms-apply" data-ms-apply>Tutup</button>
+        </div>
+      </div>`;
+      
+    const trigger = container.querySelector('[data-ms-trigger]');
+    const popup = container.querySelector('[data-ms-popup]');
+    const search = container.querySelector('[data-ms-search]');
+    const optionsEl = container.querySelector('[data-ms-options]');
+    const valueEl = container.querySelector('[data-ms-value]');
+    const countEl = container.querySelector('[data-ms-count]');
+    
+    function renderOptions(filter = '') {
+      const f = filter.toLowerCase();
+      const list = instances[key].options.filter((o) => o.toLowerCase().includes(f));
+      if (list.length === 0) { optionsEl.innerHTML = `<div class="ms-empty">Tiada padanan</div>`; return; }
+      optionsEl.innerHTML = list.map((o) => {
+        const checked = instances[key].selected.has(o) ? 'checked' : '';
+        const safe = String(o).replace(/"/g, '&quot;');
+        return `<label class="ms-opt"><input type="checkbox" value="${safe}" ${checked} /><span>${o}</span></label>`;
+      }).join('');
+      optionsEl.querySelectorAll('input[type=checkbox]').forEach((cb) => {
+        cb.addEventListener('change', () => {
+          if (cb.checked) instances[key].selected.add(cb.value);
+          else instances[key].selected.delete(cb.value);
+          updateUI();
+          instances[key].onChange();
+        });
+      });
+    }
+    
+    function updateUI() {
+      const sel = instances[key].selected;
+      countEl.textContent = `${sel.size} dipilih`;
+      if (sel.size === 0) { valueEl.textContent = 'Semua'; valueEl.classList.add('empty'); }
+      else if (sel.size === 1) { valueEl.textContent = [...sel][0]; valueEl.classList.remove('empty'); }
+      else { valueEl.innerHTML = `<span class="ms-chip">${sel.size} dipilih</span>`; valueEl.classList.remove('empty'); }
+    }
+    
+    function openPopup() {
+      closeAllPopups(key);
+      container.classList.add('open');
+      popup.hidden = false;
+      popup.style.display = 'flex';
+      search.value = '';
+      renderOptions();
+      setTimeout(() => search.focus({ preventScroll: true }), 30);
+    }
+    
+    function closePopup(apply = true) {
+      container.classList.remove('open');
+      popup.hidden = true;
+      popup.style.display = 'none';
+      if (apply) instances[key].onChange();
+    }
+    
+    trigger.addEventListener('click', (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      if (container.classList.contains('open')) closePopup(true); else openPopup();
+    });
+    
+    popup.addEventListener('click', (e) => e.stopPropagation());
+    search.addEventListener('input', () => renderOptions(search.value));
+    
+    container.querySelector('[data-ms-all]').addEventListener('click', (e) => {
+      e.stopPropagation();
+      optionsEl.querySelectorAll('input[type=checkbox]').forEach((cb) => { cb.checked = true; instances[key].selected.add(cb.value); });
+      updateUI(); instances[key].onChange();
+    });
+    
+    container.querySelector('[data-ms-none]').addEventListener('click', (e) => {
+      e.stopPropagation();
+      instances[key].selected.clear();
+      optionsEl.querySelectorAll('input[type=checkbox]').forEach((cb) => { cb.checked = false; });
+      updateUI(); instances[key].onChange();
+    });
+    
+    container.querySelector('[data-ms-apply]').addEventListener('click', (e) => { e.stopPropagation(); closePopup(true); });
+    
+    instances[key]._setSelected = (values) => {
+      instances[key].selected.clear();
+      values.forEach((v) => { if (instances[key].options.includes(v)) instances[key].selected.add(v); });
+      updateUI(); renderOptions();
+    };
+    
+    renderOptions();
+    updateUI();
+  }
+  
+  function getSelected(key) { return instances[key] ? [...instances[key].selected] : []; }
+  function setSelected(key, values) { if (instances[key] && instances[key]._setSelected) instances[key]._setSelected(values); }
+  
+  return { create, getSelected, setSelected, attachGlobalListener, closeAllPopups };
+})();
+
+const HIDDEN_COLS_KEY = 'pgo_hidden_cols_v1';
+let visibleCols = new Set();
+
+function loadVisibleCols() {
+  visibleCols = new Set(COLS);
+  try {
+    const raw = localStorage.getItem(HIDDEN_COLS_KEY);
+    if (!raw) return;
+    const hidden = JSON.parse(raw);
+    if (Array.isArray(hidden)) {
+      hidden.forEach((c) => visibleCols.delete(c));
+    }
+  } catch (e) {}
+  if (visibleCols.size === 0 && COLS.length > 0) {
+    visibleCols = new Set(COLS);
+  }
+}
+
+function saveVisibleCols() {
+  try {
+    const hidden = COLS.filter((c) => !visibleCols.has(c));
+    if (hidden.length === 0) {
+      localStorage.removeItem(HIDDEN_COLS_KEY);
+    } else {
+      localStorage.setItem(HIDDEN_COLS_KEY, JSON.stringify(hidden));
+    }
+  } catch (e) {}
+}
+
+function getVisibleCols() {
+  return COLS.filter((c) => visibleCols.has(c));
+}
+
+function initTableColDropdown() {
+  const container = document.querySelector('.ms[data-key="tableCols"]');
+  if (!container) return;
+  container.innerHTML = ''; // clear previous if any
+  
+  MultiSelect.create('tableCols', container, {
+    items: COLS,
+    onChange: () => {
+      const sel = MultiSelect.getSelected('tableCols');
+      if (sel.length === 0) {
+         MultiSelect.setSelected('tableCols', [COLS[0]]);
+         visibleCols = new Set([COLS[0]]);
+      } else {
+         visibleCols = new Set(sel);
+      }
+      saveVisibleCols();
+      tableHeadRendered = '';
+      applyFilters();
+    }
+  });
+  
+  MultiSelect.attachGlobalListener();
+  
+  // Set initial selection
+  MultiSelect.setSelected('tableCols', [...visibleCols]);
 }
 
 /* ===== Eksport CSV — fungsi umum ===== */
@@ -1140,12 +1413,14 @@ $('#reset').onclick = () => {
   });
 
   colFilters.clear();
-  tableHeadRendered = 0;
-  
+  tableHeadRendered = '';
+
   if (activeColDropdown) {
     activeColDropdown.remove();
     activeColDropdown = null;
   }
+
+  closeDashExpand();
 
   $$('#groups input[type=checkbox]').forEach((i) => (i.checked = false));
   $$('#groups input[type=search]').forEach((i) => (i.value = ''));
@@ -1174,17 +1449,18 @@ function switchPage(pageId) {
 }
 
 /* ═══════════════════════════════════════════════════
-   DASHBOARD EXPAND PANEL — Fungsi dari File 1
-   Klik kad statistik → buka panel senarai terperinci
-   dengan carian, kiraan, tutup, dan "Tunjuk Semua".
+   DASHBOARD EXPAND PANEL
    ═══════════════════════════════════════════════════ */
 const dashExpandState = {
-  activeType: null,  // 'total' | 'baik' | 'rosak' | 'kategori' | 'lokasi' | null
+  activeType: null,
   search: '',
   showAll: false
 };
 
 function getDashExpandTitle(type) {
+  if (type && type.indexOf('kategori:') === 0) {
+    return 'Kategori: ' + type.substring('kategori:'.length);
+  }
   const map = {
     'total': 'Semua Rekod Peralatan',
     'baik': 'Rekod Dengan Unit BAIK',
@@ -1197,7 +1473,7 @@ function getDashExpandTitle(type) {
 
 function getDashExpandRecords(type) {
   if (type === 'total') return DATA.slice();
-  
+
   if (type === 'baik') {
     const col = findCol(/^BAIK$/) || findCol(/BAIK/);
     if (!col) return [];
@@ -1206,7 +1482,7 @@ function getDashExpandRecords(type) {
       return n !== null && n > 0;
     });
   }
-  
+
   if (type === 'rosak') {
     const col = findCol(/^ROSAK$/) || findCol(/ROSAK/);
     if (!col) return [];
@@ -1215,71 +1491,82 @@ function getDashExpandRecords(type) {
       return n !== null && n > 0;
     });
   }
-  
-  // kategori & lokasi → semua rekod
+
+  if (type && type.indexOf('kategori:') === 0) {
+    const catName = type.substring('kategori:'.length);
+    const col = findCol(/KATEGORI PERALATAN/) || findCol(/KATEGORI/);
+    if (!col) return [];
+    return DATA.filter(r => cellVal(r, col) === catName);
+  }
+
   return DATA.slice();
 }
 
 function closeDashExpand() {
+  const wasKat = dashExpandState.activeType && dashExpandState.activeType.indexOf('kategori:') === 0;
   dashExpandState.activeType = null;
   dashExpandState.search = '';
   dashExpandState.showAll = false;
-  
+
   document.querySelectorAll('.stat.clickable').forEach(el => el.classList.remove('active'));
+  if (wasKat) {
+    try { renderCharts(lastFiltered); } catch (e) {}
+  }
   const panel = document.getElementById('dashExpandPanel');
   if (panel) panel.remove();
 }
 
 function filterByCard(type) {
-  // Toggle: klik kad sama → tutup
   if (dashExpandState.activeType === type) {
     closeDashExpand();
     return;
   }
-  
+
   dashExpandState.activeType = type;
   dashExpandState.search = '';
   dashExpandState.showAll = false;
-  
+
   document.querySelectorAll('.stat.clickable').forEach(el => el.classList.remove('active'));
   const cardEl = document.querySelector('.stat.clickable[data-card="' + type + '"]');
   if (cardEl) cardEl.classList.add('active');
-  
+
+  try { renderCharts(lastFiltered); } catch (e) {}
+
   renderDashExpand();
 }
 
 function renderDashExpand() {
   const existing = document.getElementById('dashExpandPanel');
   if (existing) existing.remove();
-  
+
   if (!dashExpandState.activeType) return;
   if (!COLS.length) return;
-  
+
   const type = dashExpandState.activeType;
   const records = getDashExpandRecords(type);
   const q = (dashExpandState.search || '').toLowerCase().trim();
-  
+
   const filtered = q
     ? records.filter(r => COLS.some(c => String(r[c] || '').toLowerCase().includes(q)))
     : records;
-  
+
   const LIMIT = 50;
   const shown = dashExpandState.showAll ? filtered : filtered.slice(0, LIMIT);
-  
+
   const panel = document.createElement('div');
   panel.id = 'dashExpandPanel';
   panel.className = 'dash-expand-panel';
-  
+
   // ── Header ──
   const head = document.createElement('div');
   head.className = 'dash-expand-head';
-  
+
   const titleEl = document.createElement('span');
   titleEl.className = 'dash-expand-title';
   titleEl.textContent = getDashExpandTitle(type);
   titleEl.title = getDashExpandTitle(type);
   head.appendChild(titleEl);
-  
+
   const searchWrap = document.createElement('div');
   searchWrap.className = 'dash-expand-search';
   const searchInput = document.createElement('input');
@@ -1289,7 +1576,6 @@ function renderDashExpand() {
   searchInput.addEventListener('input', function () {
     dashExpandState.search = searchInput.value;
     renderDashExpand();
-    // Focus semula pada input selepas render (kerana panel di-rebuild)
     const newInput = document.querySelector('#dashExpandPanel .dash-expand-search input');
     if (newInput) {
       newInput.focus();
@@ -1298,12 +1584,12 @@ function renderDashExpand() {
   });
   searchWrap.appendChild(searchInput);
   head.appendChild(searchWrap);
-  
+
   const countEl = document.createElement('span');
   countEl.className = 'dash-expand-count';
   countEl.textContent = filtered.length + ' rekod';
   head.appendChild(countEl);
-  
+
   const closeBtn = document.createElement('button');
   closeBtn.type = 'button';
   closeBtn.className = 'dash-expand-close';
@@ -1312,15 +1598,15 @@ function renderDashExpand() {
   closeBtn.setAttribute('aria-label', 'Tutup senarai');
   closeBtn.addEventListener('click', closeDashExpand);
   head.appendChild(closeBtn);
-  
+
   panel.appendChild(head);
-  
+
   // ── Body (table) ──
   const body = document.createElement('div');
   body.className = 'dash-expand-body';
-  
+
   const tbl = document.createElement('table');
-  
+
   const thead = document.createElement('thead');
   const trh = document.createElement('tr');
   COLS.forEach(c => {
@@ -1331,7 +1617,7 @@ function renderDashExpand() {
   });
   thead.appendChild(trh);
   tbl.appendChild(thead);
-  
+
   const tbody = document.createElement('tbody');
   if (shown.length === 0) {
     const tr = document.createElement('tr');
@@ -1357,11 +1643,11 @@ function renderDashExpand() {
   tbl.appendChild(tbody);
   body.appendChild(tbl);
   panel.appendChild(body);
-  
+
   // ── Footer ──
   const foot = document.createElement('div');
   foot.className = 'dash-expand-foot';
-  
+
   const info = document.createElement('span');
   info.className = 'de-info';
   if (filtered.length > LIMIT && !dashExpandState.showAll) {
@@ -1370,7 +1656,7 @@ function renderDashExpand() {
     info.innerHTML = 'Jumlah: <b>' + filtered.length + '</b> rekod' + (q ? ' (carian)' : '');
   }
   foot.appendChild(info);
-  
+
   if (filtered.length > LIMIT) {
     const btnToggle = document.createElement('button');
     btnToggle.type = 'button';
@@ -1386,29 +1672,31 @@ function renderDashExpand() {
     });
     foot.appendChild(btnToggle);
   }
-  
+
   panel.appendChild(foot);
-  
-  // ── Insert selepas .stats, sebelum .grid2 ──
+
   const statsEl = document.querySelector('#page-dashboard .stats');
   if (statsEl && statsEl.parentNode) {
     statsEl.parentNode.insertBefore(panel, statsEl.nextElementSibling);
   }
 }
 
-/* ===== Logik Klik Kad Kategori Peralatan (kekal) ===== */
 window.filterByCategory = function(categoryName) {
-  if (typeof switchPage === 'function') switchPage('data');
-  colFilters.clear();
-  tableHeadRendered = 0; 
+  const type = 'kategori:' + categoryName;
 
-  const col = findCol(/KATEGORI PERALATAN/) || findCol(/KATEGORI/);
-  if (col) {
-    colFilters.set(col, new Set([categoryName]));
+  if (dashExpandState.activeType === type) {
+    closeDashExpand();
+    return;
   }
 
-  if (typeof showMsg === 'function') showMsg('Menapis Kategori: ' + categoryName);
-  if (typeof applyFilters === 'function') applyFilters();
+  dashExpandState.activeType = type;
+  dashExpandState.search = '';
+  dashExpandState.showAll = false;
+
+  document.querySelectorAll('.stat.clickable').forEach(el => el.classList.remove('active'));
+  try { renderCharts(lastFiltered); } catch (e) {}
+
+  renderDashExpand();
 };
 
 /* ===== Parse CSV ===== */
@@ -1438,7 +1726,7 @@ function loadCSV(text) {
 
     // Reset tapisan bila data baru dimuat
     colFilters.clear();
-    tableHeadRendered = 0;
+    tableHeadRendered = '';
     if (activeColDropdown) {
       activeColDropdown.remove();
       activeColDropdown = null;
@@ -1451,6 +1739,11 @@ function loadCSV(text) {
     const oldPanel = document.getElementById('dashExpandPanel');
     if (oldPanel) oldPanel.remove();
     document.querySelectorAll('.stat.clickable').forEach(el => el.classList.remove('active'));
+
+    // ✅ Column visibility: muat semula dari localStorage,
+    //    dan initialize Multi-Select dropdown
+    loadVisibleCols();
+    initTableColDropdown();
 
     buildColumnConfig();
     buildFilters();
