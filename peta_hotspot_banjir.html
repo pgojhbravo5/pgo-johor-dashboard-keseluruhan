@@ -1647,15 +1647,16 @@ fetch(CSV_URL)
   const dayIdx = (s) => { const i = DAYS.indexOf(s); return i < 0 ? 99 : i; };
   const dateKey = (s) => { const m = String(s).match(/(\d{1,2})[\/\-.](\d{1,2})[\/\-.](\d{2,4})/); if (!m) return 0; let y = +m[3]; if (y < 100) y += 2000; return y * 10000 + (+m[2]) * 100 + (+m[1]); };
 
-  /* --- Kumpulan tapisan --- */
-  const FG = [
-    { k: 'bln', t: 'Bulan',          ic: 'fa-calendar',      sort: (a, b) => monthIdx(a) - monthIdx(b) || a.localeCompare(b) },
-    { k: 'day', t: 'Day',            ic: 'fa-calendar-day',  sort: (a, b) => dayIdx(a) - dayIdx(b) || a.localeCompare(b) },
-    { k: 'tk',  t: 'Tarikh Kejadian', ic: 'fa-calendar-check', sort: (a, b) => dateKey(b) - dateKey(a) || b.localeCompare(a) },
-    { k: 'bl',  t: 'Balai',          ic: 'fa-truck-field',   sort: (a, b) => a.localeCompare(b) },
-    { k: 'st',  t: 'Status Operasi', ic: 'fa-tower-broadcast', sort: (a) => (a === ST_ON ? -1 : 1), isNew: true }
+   /* --- Kumpulan tapisan --- */
+   const FG = [
+    { k: 'bln',  t: 'Bulan',           ic: 'fa-calendar',            sort: (a, b) => monthIdx(a) - monthIdx(b) || a.localeCompare(b) },
+    { k: 'day',  t: 'Day',             ic: 'fa-calendar-day',        sort: (a, b) => dayIdx(a) - dayIdx(b) || a.localeCompare(b) },
+    { k: 'tk',   t: 'Tarikh Kejadian', ic: 'fa-calendar-check',      sort: (a, b) => dateKey(b) - dateKey(a) || b.localeCompare(a) },
+    { k: 'fasa', t: 'Fasa Monsun',     ic: 'fa-cloud-showers-heavy', sort: (a, b) => a.localeCompare(b) },
+    { k: 'bl',   t: 'Balai',           ic: 'fa-truck-field',         sort: (a, b) => a.localeCompare(b) },
+    { k: 'st',   t: 'Status Operasi',  ic: 'fa-tower-broadcast',     sort: (a) => (a === ST_ON ? -1 : 1), isNew: true }
     ];
-  const FS = {}, FO = {};
+    const FS = {}, FO = {};
   FG.forEach((g) => { FS[g.k] = new Set(); FO[g.k] = new Map(); });
 
   let rtRows = [], H = {};
@@ -1737,6 +1738,7 @@ fetch(CSV_URL)
     H = {
       s1: f(/^SUB KATEGORI 1/), s2: f(/^SUB KATEGORI 2/), jn: f(/^JENIS PANGGILAN OPERASI/),
       bln: f(/^BULAN/), day: f(/^DAY$/, /^HARI/), tk: f(/^TARIKH KEJADIAN/),
+      fasa: f(/^FASA\s*MONSUN/),
       mt: f(/^MASA OPERASI DITAMATKAN/), tt: f(/^TARIKH OPERASI DITAMATKAN/), jam: f(/^JUMLAH JAM OPERASI/),
       lat: f(/^(LAT|LATITUDE|LATITUD)\b/, /LAT/), lng: f(/^(LONG|LONGITUDE|LONGITUD|LNG)\b/, /LONG|LNG/),
       kor: f(/KOORDINAT|COORD/),
@@ -1776,6 +1778,7 @@ fetch(CSV_URL)
         i: rtRows.length,
         raw: r, c: [a, b],
         bln: up(g(r, 'bln')) || '(TIADA)', day: up(g(r, 'day')) || '(TIADA)', tk: g(r, 'tk') || '(TIADA)',
+        fasa: up(g(r, 'fasa')) || '(TIADA)',
         bl: up(g(r, 'balai')) || '(TIADA)',
         st: tamat ? ST_OFF : ST_ON
       });
@@ -1915,6 +1918,7 @@ fetch(CSV_URL)
       row('Balai', g('balai')) + row('TOA Hadir', g('toa')) + row('Balai Bantuan', bb) +
       row('No. Call Card', g('cc')) + row('Syif Bertugas', g('syif')) +
       row('Bulan', g('bln')) + row('Day', g('day')) + row('Tarikh Kejadian', g('tk')) +
+      row('Fasa Monsun', g('fasa')) +
       '<tr><td>Status Operasi</td><td><span class="st" style="background:' + (on ? COL_ON : COL_OFF) + '">' + r.st + '</span></td></tr>' +
       row('Masa Op. Ditamatkan', on ? '' : g('mt')) + row('Tarikh Op. Ditamatkan', on ? '' : g('tt')) +
       row('Jumlah Jam Operasi', on ? 'Masih beroperasi' : (jam || '-')) +
