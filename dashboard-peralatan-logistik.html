@@ -160,15 +160,74 @@ body:not(.mode-siang) #msg{background:rgba(217,169,105,.1); border-color:rgba(21
 .bar-track i{display:block; height:100%; border-radius:8px; transition:width .5s ease}
 .bar-row b{text-align:right; font-size:.72rem; color:var(--text-secondary)}
 
-.table-wrap{max-height:520px; overflow:auto; border-top:1px solid var(--hud-border)}
+.table-wrap{max-height:520px; overflow:auto; border-top:1px solid var(--hud-border); position:relative;}
 table{width:100%; border-collapse:collapse; font-size:.73rem}
-th,td{padding:6px 8px; border-bottom:1px solid var(--hud-border); text-align:left; vertical-align:top}
-th{
-  position:sticky; top:0; z-index:2; background:var(--hud-card-bg); color:var(--navy);
+/* Text Center untuk semua sel */
+th,td{padding:6px 8px; border-bottom:1px solid var(--hud-border); text-align:center; vertical-align:middle;}
+
+/* Kelas khas untuk align kiri */
+th.text-left, td.text-left { text-align: left !important; }
+th.text-left .th-wrap { justify-content: flex-start !important; }
+
+/* Header sticky */
+thead th{
+  position:sticky; top:0; z-index:3;
+  background:var(--hud-card-bg); color:var(--navy);
   font:700 .68rem var(--font-head); text-transform:uppercase; letter-spacing:.04rem; white-space:nowrap;
 }
-td{color:var(--text-primary)}
-td.num{text-align:right; font-variant-numeric:tabular-nums; white-space:nowrap}
+
+/* Butang Ikon Tapisan dalam TH */
+.th-wrap { display:flex; align-items:center; justify-content:center; gap:6px; }
+.th-filter-btn {
+  background:transparent; border:none; color:var(--text-secondary); cursor:pointer;
+  width:1.5rem; height:1.5rem; border-radius:var(--radius-sm);
+  display:flex; align-items:center; justify-content:center; font-size:0.75rem;
+  transition:0.2s;
+}
+.th-filter-btn:hover { background:var(--glass-highlight); color:var(--navy); }
+.th-filter-btn.active { color:var(--fire-red); background:rgba(200,16,46,0.1); }
+
+/* Dropdown Panel Tapisan Kolum */
+.col-dropdown {
+  position:fixed; z-index:9999; background:var(--hud-bg); border:1px solid var(--hud-border);
+  border-radius:var(--radius); box-shadow:var(--shadow); width:260px;
+  display:none; flex-direction:column; font-family:var(--font-main);
+}
+.col-dropdown.show { display:flex; animation:dropFade 0.15s ease-out; }
+@keyframes dropFade { from{opacity:0; transform:translateY(-5px);} to{opacity:1; transform:translateY(0);} }
+
+.cd-search { padding:8px; border-bottom:1px solid var(--hud-border); }
+.cd-search input {
+  width:100%; padding:6px 8px; border:1px solid var(--border-strong);
+  border-radius:var(--radius-sm); background:var(--hud-bg); color:var(--text-primary); font-size:0.75rem; outline:none;
+}
+.cd-btns { display:flex; gap:6px; padding:8px; border-bottom:1px solid var(--hud-border); }
+.cd-btns button {
+  flex:1; padding:4px 0; font-size:0.68rem; font-weight:600; cursor:pointer;
+  background:var(--hud-card-bg); border:1px solid var(--hud-border); color:var(--text-primary);
+  border-radius:var(--radius-sm);
+}
+.cd-btns button:hover { border-color:var(--border-strong); color:var(--navy); }
+
+.cd-list { max-height:200px; overflow-y:auto; padding:6px 8px; }
+.cd-list label {
+  display:flex; align-items:center; gap:8px; padding:5px 4px; font-size:0.73rem;
+  cursor:pointer; border-radius:var(--radius-sm);
+}
+.cd-list label:hover { background:var(--glass-highlight); }
+.cd-list input { accent-color:var(--navy); width:14px; height:14px; }
+.cd-list .cd-count { margin-left:auto; font-size:0.65rem; color:var(--text-secondary); background:var(--hud-card-bg); padding:2px 6px; border-radius:10px; }
+
+.cd-footer { display:flex; align-items:center; justify-content:space-between; padding:8px; border-top:1px solid var(--hud-border); background:var(--hud-card-bg); border-radius:0 0 var(--radius) var(--radius); }
+.cd-footer span { font-size:0.65rem; color:var(--text-secondary); }
+.cd-actions { display:flex; gap:6px; }
+.cd-actions button {
+  padding:4px 10px; font-size:0.7rem; font-weight:700; cursor:pointer; border-radius:var(--radius-sm); border:1px solid;
+}
+.cd-reset { background:var(--hud-bg); border-color:var(--border-strong); color:var(--text-primary); }
+.cd-apply { background:var(--navy); border-color:var(--navy); color:#fff; }
+.cd-apply:hover { background:var(--fire-red); border-color:var(--fire-red); }
+
 tbody tr:hover{background:var(--glass-highlight)}
 .empty{padding:18px; text-align:center; color:var(--text-secondary); font-size:.78rem}
 
@@ -625,39 +684,225 @@ function renderCharts(rows) {
   renderBars($('#chartLok'), countBy(rows, lokCol), 'var(--hazard-gold)');
 }
 
-/* ===== Jadual ===== */
-function renderTable(rows) {
-  const thead = $('#tbl thead');
-  const tbody = $('#tbl tbody');
+/* ===== Jadual dengan tapisan kolum (Checkbox Popup) ===== */
+const colFilters = new Map();     // nama kolum -> Set(nilai terpilih)
+let tableHeadRendered = 0;
+let activeColDropdown = null;     // Rujukan dropdown yang sedang aktif
 
-  if (!COLS.length) {
-    thead.innerHTML = '';
-    tbody.innerHTML = '<tr><td class="empty">Tiada data dimuatkan.</td></tr>';
-    $('#tableInfo').textContent = '–';
-    return;
+/* Semak satu sel terhadap tapisan kolum */
+function matchColFilter(cellValue, filterSet) {
+  if (!filterSet || filterSet.size === 0) return true;
+  return filterSet.has(String(cellValue));
+}
+
+/* Tapis senarai rekod dengan semua tapisan kolum */
+function applyColFilters(rows) {
+  if (colFilters.size === 0) return rows;
+  return rows.filter((r) => {
+    for (const [col, filterSet] of colFilters) {
+      if (filterSet.size > 0 && !filterSet.has(cellVal(r, col))) return false;
+    }
+    return true;
+  });
+}
+
+/* Tutup dropdown jika klik di luar */
+document.addEventListener('click', (e) => {
+  if (activeColDropdown && !e.target.closest('.col-dropdown') && !e.target.closest('.th-filter-btn')) {
+    activeColDropdown.remove();
+    activeColDropdown = null;
   }
+});
 
-  const numCols = new Set(COL_CFG.filter((c) => c.numeric).map((c) => c.col));
+/* Bina dan papar Dropdown Tapisan */
+function openFilterDropdown(colName, btnEl) {
+  if (activeColDropdown) activeColDropdown.remove();
 
-  thead.innerHTML = '<tr>' + COLS.map((c) => '<th>' + esc(c) + '</th>').join('') + '</tr>';
+  const colVals = [...new Set(DATA.map(r => cellVal(r, colName)))].sort((a, b) => a.localeCompare(b, undefined, { numeric: true }));
+  const counts = new Map();
+  DATA.forEach(r => {
+    const v = cellVal(r, colName);
+    counts.set(v, (counts.get(v) || 0) + 1);
+  });
 
+  // Nilai sedia ada (jika ada)
+  let selectedSet = colFilters.get(colName) ? new Set(colFilters.get(colName)) : new Set(colVals);
+  let tempSet = new Set(selectedSet);
+
+  const dd = document.createElement('div');
+  dd.className = 'col-dropdown show';
+
+  // Posisi dropdown di bawah butang
+  const rect = btnEl.getBoundingClientRect();
+  dd.style.top = (rect.bottom + window.scrollY + 5) + 'px';
+  dd.style.left = Math.max(10, (rect.left + window.scrollX) - 100) + 'px'; // center roughly
+
+  // Render HTML dalaman dropdown
+  dd.innerHTML = `
+    <div class="cd-search"><input type="search" placeholder="Cari..."></div>
+    <div class="cd-btns">
+      <button class="cd-all">Pilih Semua</button>
+      <button class="cd-none">Kosongkan</button>
+    </div>
+    <div class="cd-list"></div>
+    <div class="cd-footer">
+      <span class="cd-count">0 dipilih</span>
+      <div class="cd-actions">
+        <button class="cd-reset">Reset</button>
+        <button class="cd-apply">Guna</button>
+      </div>
+    </div>
+  `;
+
+  const listEl = dd.querySelector('.cd-list');
+  const countEl = dd.querySelector('.cd-count');
+
+  // Fungsi render senarai checkbox
+  const renderList = (q = '') => {
+    listEl.innerHTML = '';
+    const filteredVals = colVals.filter(v => v.toLowerCase().includes(q.toLowerCase()));
+    
+    filteredVals.forEach(v => {
+      const l = document.createElement('label');
+      const isChecked = tempSet.has(v);
+      l.innerHTML = `<input type="checkbox" value="${esc(v)}" ${isChecked ? 'checked' : ''}>
+                     <span>${esc(displayVal(v))}</span>
+                     <span class="cd-count">${counts.get(v)}</span>`;
+      
+      l.querySelector('input').onchange = (e) => {
+        if (e.target.checked) tempSet.add(v);
+        else tempSet.delete(v);
+        updateCount();
+      };
+      listEl.appendChild(l);
+    });
+    updateCount();
+  };
+
+  const updateCount = () => {
+    countEl.textContent = `${tempSet.size} dipilih`;
+  };
+
+  // Event Listeners
+  dd.querySelector('.cd-search input').oninput = (e) => renderList(e.target.value);
+  
+  dd.querySelector('.cd-all').onclick = () => {
+    colVals.forEach(v => tempSet.add(v));
+    renderList(dd.querySelector('.cd-search input').value);
+  };
+  
+  dd.querySelector('.cd-none').onclick = () => {
+    tempSet.clear();
+    renderList(dd.querySelector('.cd-search input').value);
+  };
+
+  dd.querySelector('.cd-reset').onclick = () => {
+    colFilters.delete(colName);
+    dd.remove();
+    activeColDropdown = null;
+    tableHeadRendered = 0; // Paksa render semula header untuk buang status 'active'
+    applyFilters();
+  };
+
+  dd.querySelector('.cd-apply').onclick = () => {
+    if (tempSet.size === colVals.length) {
+      colFilters.delete(colName); // Jika pilih semua, anggap tiada tapisan
+    } else {
+      colFilters.set(colName, new Set(tempSet));
+    }
+    dd.remove();
+    activeColDropdown = null;
+    tableHeadRendered = 0; // Paksa render semula header
+    applyFilters();
+  };
+
+  document.body.appendChild(dd);
+  renderList();
+  activeColDropdown = dd;
+}
+
+/* Render <thead> */
+    function renderTableHead() {
+  if (tableHeadRendered === COLS.length) return;
+  const thead = $('#tbl thead');
+
+  const headRow = COLS.map((c) => {
+    const isActive = colFilters.has(c) && colFilters.get(c).size > 0;
+    // Semak jika kolum adalah PERALATAN atau KATEGORI PERALATAN
+    const isLeft = /PERALATAN|KATEGORI/i.test(c); 
+    
+    return `<th class="${isLeft ? 'text-left' : ''}">
+      <div class="th-wrap">
+        <span>${esc(c)}</span>
+        <button class="th-filter-btn ${isActive ? 'active' : ''}" data-col="${esc(c)}" title="Tapis ${esc(c)}">
+          <i class="fas fa-filter"></i>
+        </button>
+      </div>
+    </th>`;
+  }).join('');
+
+  thead.innerHTML = '<tr>' + headRow + '</tr>';
+
+  thead.querySelectorAll('.th-filter-btn').forEach(btn => {
+    btn.onclick = (e) => {
+      e.stopPropagation();
+      openFilterDropdown(btn.dataset.col, btn);
+    };
+  });
+
+  tableHeadRendered = COLS.length;
+}
+
+/* Render <tbody> */
+    function renderTableBody(rows) {
+  const tbody = $('#tbl tbody');
   const LIMIT = 500;
   const shown = rows.slice(0, LIMIT);
 
   if (!shown.length) {
     tbody.innerHTML = '<tr><td class="empty" colspan="' + COLS.length + '">Tiada rekod sepadan dengan tapisan.</td></tr>';
-  } else {
-    tbody.innerHTML = shown.map((r) => {
-      return '<tr>' + COLS.map((c) => {
-        const v = cellVal(r, c);
-        const cls = numCols.has(c) ? 'num' : '';
-        return '<td class="' + cls + '">' + esc(displayVal(v)) + '</td>';
-      }).join('') + '</tr>';
-    }).join('');
+    return;
   }
 
-  $('#tableInfo').textContent =
-    fmt(rows.length) + ' rekod' + (rows.length > LIMIT ? ' — papar ' + LIMIT + ' pertama' : '');
+  tbody.innerHTML = shown.map((r) => {
+    return '<tr>' + COLS.map((c) => {
+      const v = cellVal(r, c);
+      // Semak jika kolum adalah PERALATAN atau KATEGORI PERALATAN
+      const isLeft = /PERALATAN|KATEGORI/i.test(c);
+      return `<td class="${isLeft ? 'text-left' : ''}">${esc(displayVal(v))}</td>`;
+    }).join('') + '</tr>';
+  }).join('');
+}
+
+/* Kemas kini info bilangan rekod */
+function updateTableInfo(filtered, total) {
+  const LIMIT = 500;
+  let txt = (filtered === total) ? fmt(total) + ' rekod' : fmt(filtered) + ' dari ' + fmt(total) + ' rekod';
+  if (filtered > LIMIT) txt += ' — papar ' + LIMIT + ' pertama';
+  $('#tableInfo').textContent = txt;
+}
+
+/* Refresh tbody sahaja */
+function refreshTableBodyOnly() {
+  const filtered = applyColFilters(lastFiltered);
+  renderTableBody(filtered);
+  updateTableInfo(filtered.length, lastFiltered.length);
+}
+
+/* Render jadual penuh */
+function renderTable(rows) {
+  if (!COLS.length) {
+    $('#tbl thead').innerHTML = '';
+    $('#tbl tbody').innerHTML = '<tr><td class="empty">Tiada data dimuatkan.</td></tr>';
+    $('#tableInfo').textContent = '–';
+    tableHeadRendered = 0;
+    return;
+  }
+
+  renderTableHead();
+  const filtered = applyColFilters(rows);
+  renderTableBody(filtered);
+  updateTableInfo(filtered.length, rows.length);
 }
 
 /* ===== Eksport CSV — fungsi umum ===== */
@@ -710,6 +955,16 @@ $('#reset').onclick = () => {
     st.max = '';
   });
 
+  // Reset tapisan kolum jadual
+  colFilters.clear();
+  tableHeadRendered = 0;
+  
+  // Tutup dropdown jika ada yang terbuka
+  if (activeColDropdown) {
+    activeColDropdown.remove();
+    activeColDropdown = null;
+  }
+
   $$('#groups input[type=checkbox]').forEach((i) => (i.checked = false));
   $$('#groups input[type=search]').forEach((i) => (i.value = ''));
   $$('#groups input[type=number]').forEach((i) => (i.value = ''));
@@ -747,12 +1002,20 @@ function loadCSV(text) {
 
     if (!DATA.length) throw new Error('Tiada baris data dijumpai.');
 
-    buildColumnConfig();
-    buildFilters();
-    applyFilters();
+// Reset tapisan kolum bila data baru dimuat
+colFilters.clear();
+tableHeadRendered = 0;
+if (activeColDropdown) {
+  activeColDropdown.remove();
+  activeColDropdown = null;
+}
 
-    $('#upd').textContent = new Date().toLocaleString('ms-MY');
-    $('#fb').style.display = 'none';
+buildColumnConfig();
+buildFilters();
+applyFilters();
+
+$('#upd').textContent = new Date().toLocaleString('ms-MY');
+$('#fb').style.display = 'none';
     showMsg('Data dimuatkan: ' + fmt(DATA.length) + ' rekod.');
   } catch (e) {
     console.error(e);
