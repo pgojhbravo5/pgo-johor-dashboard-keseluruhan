@@ -4960,8 +4960,179 @@ body.mode-siang .peta-legend-overlay .pts-line + .pts-line {
         font-size: 0.65rem !important;
     }
 }
-    </style>        
-</head>
+
+/* ===== PASSWORD MODAL UNTUK KAD LOGISTIK ===== */
+.password-modal-overlay {
+    position: fixed; inset: 0;
+    background: rgba(0, 0, 0, 0.78);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    z-index: 9999;
+    display: none; align-items: center; justify-content: center;
+    padding: 1rem; opacity: 0; transition: opacity 0.25s ease;
+}
+.password-modal-overlay.open {
+    display: flex; opacity: 1;
+    animation: passwordModalFade 0.25s ease;
+}
+@keyframes passwordModalFade { from{opacity:0} to{opacity:1} }
+
+.password-modal {
+    background: var(--hud-bg);
+    border: 1px solid var(--hud-border);
+    border-radius: var(--radius);
+    width: 100%; max-width: 24rem;
+    display: flex; flex-direction: column; overflow: hidden;
+    box-shadow: 0 2rem 5rem rgba(0, 0, 0, 0.65);
+    animation: passwordModalSlide 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+}
+@keyframes passwordModalSlide {
+    from { opacity: 0; transform: translateY(1.5rem) scale(0.97); }
+    to   { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+.password-modal-header {
+    display: flex; align-items: center; gap: 0.75rem;
+    padding: 0.9rem 1rem;
+    border-bottom: 1px solid var(--hud-border);
+    background: var(--hud-card-bg);
+}
+.password-modal-icon {
+    width: 2.5rem; height: 2.5rem; flex-shrink: 0;
+    border-radius: var(--radius-sm);
+    background: rgba(200, 16, 46, 0.12);
+    border: 1px solid rgba(200, 16, 46, 0.3);
+    color: var(--fire-red);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.1rem;
+}
+.password-modal-title-text {
+    display: flex; flex-direction: column; gap: 0.1rem;
+    flex: 1; min-width: 0;
+}
+.password-modal-title-text h3 {
+    margin: 0; font-size: 0.9rem; font-weight: 800;
+    color: var(--navy); text-transform: uppercase;
+    letter-spacing: 0.05rem; font-family: var(--font-head);
+}
+.password-modal-subtitle {
+    font-size: 0.65rem; color: var(--text-secondary);
+    font-weight: 600; overflow: hidden;
+    text-overflow: ellipsis; white-space: nowrap;
+}
+.password-modal-close {
+    width: 2rem; height: 2rem; flex-shrink: 0;
+    border-radius: var(--radius-sm);
+    background: var(--hud-bg);
+    border: 1px solid var(--hud-border);
+    color: var(--text-secondary);
+    cursor: pointer; display: flex;
+    align-items: center; justify-content: center;
+    font-size: 0.9rem; transition: all 0.2s ease;
+}
+.password-modal-close:hover {
+    background: rgba(200, 16, 46, 0.15);
+    color: var(--fire-red);
+    border-color: rgba(200, 16, 46, 0.4);
+}
+
+.password-modal-body { padding: 1rem 1.1rem 1.1rem; }
+.password-modal-info {
+    margin: 0 0 0.75rem; font-size: 0.75rem;
+    color: var(--text-secondary); line-height: 1.5;
+}
+.password-input-wrap {
+    position: relative; display: flex; align-items: center;
+    border: 1px solid var(--border-strong);
+    border-radius: var(--radius-sm);
+    background: var(--hud-bg);
+    padding: 0 0.5rem 0 2.2rem;
+    margin-bottom: 0.4rem;
+    transition: border-color 0.2s ease;
+}
+.password-input-wrap:focus-within {
+    border-color: var(--navy);
+    box-shadow: 0 0 0 3px rgba(59, 110, 168, 0.12);
+}
+.password-input-wrap > i.fa-key {
+    position: absolute; left: 0.75rem; top: 50%;
+    transform: translateY(-50%);
+    color: var(--text-secondary); font-size: 0.75rem;
+    pointer-events: none;
+}
+.password-input-wrap input {
+    flex: 1; border: none; background: transparent; outline: none;
+    padding: 0.65rem 0; color: var(--text-primary);
+    font-size: 0.85rem; font-family: var(--font-main);
+    letter-spacing: 0.05rem; min-width: 0;
+}
+.password-input-wrap input::placeholder {
+    color: var(--text-secondary); letter-spacing: normal;
+}
+.password-toggle {
+    background: transparent; border: none;
+    color: var(--text-secondary); cursor: pointer;
+    padding: 0.3rem; font-size: 0.85rem;
+    transition: color 0.2s ease;
+}
+.password-toggle:hover { color: var(--navy); }
+
+.password-error {
+    margin: 0 0 0.75rem; font-size: 0.7rem;
+    color: var(--fire-red); font-weight: 600;
+    min-height: 1em;
+}
+.password-actions {
+    display: flex; gap: 0.5rem;
+    justify-content: flex-end; margin-top: 0.5rem;
+}
+.password-btn-cancel,
+.password-btn-submit {
+    padding: 0.5rem 1.1rem;
+    border-radius: var(--radius-sm);
+    font-size: 0.75rem; font-weight: 700;
+    cursor: pointer; transition: all 0.2s ease;
+    font-family: var(--font-main); border: 1px solid;
+}
+.password-btn-cancel {
+    background: var(--hud-bg);
+    border-color: var(--hud-border);
+    color: var(--text-primary);
+}
+.password-btn-cancel:hover {
+    background: var(--hud-card-bg);
+    border-color: var(--border-strong);
+}
+.password-btn-submit {
+    background: var(--navy);
+    border-color: var(--navy);
+    color: #fff; min-width: 5rem;
+}
+.password-btn-submit:hover {
+    background: var(--fire-red);
+    border-color: var(--fire-red);
+}
+
+body.mode-siang .password-modal { background: #ffffff; }
+body.mode-siang .password-input-wrap input { color: #1a202c; }
+body.mode-siang .password-input-wrap { background: #ffffff; }
+body.mode-siang .password-modal-icon { background: rgba(200, 16, 46, 0.08); }
+
+@keyframes passwordShake {
+    0%, 100% { transform: translateX(0); }
+    20%, 60% { transform: translateX(-6px); }
+    40%, 80% { transform: translateX(6px); }
+}
+.password-input-wrap.shake {
+    animation: passwordShake 0.4s ease;
+    border-color: var(--fire-red) !important;
+}
+
+@media (max-width: 480px) {
+    .password-modal { max-width: 100%; }
+}
+    </style>
+    </head>
 <body>
 
     <!-- ===== HEADER ===== -->
@@ -5420,7 +5591,43 @@ body.mode-siang .peta-legend-overlay .pts-line + .pts-line {
         </section>
     </div>
 </div>
-                                               <!-- KATEGORI "DALAM PEMBANGUNAN" TELAH DIBUANG -->
+<!-- DALAM PEMBANGUNAN -->
+<div class="cat-group">
+    <button type="button" class="cat-toggle" data-cat-target="catPanelDev" aria-expanded="false">
+        <span class="cat-toggle-label">
+            <i class="fas fa-code-branch"></i>
+            <span data-ms="DALAM PEMBANGUNAN" data-en="IN DEVELOPMENT">DALAM PEMBANGUNAN</span>
+            <span class="status-badge dev">● DEV</span>
+        </span>
+        <i class="fas fa-chevron-down cat-arrow"></i>
+    </button>
+    <div class="cat-panel" id="catPanelDev">
+        <section class="section-status">
+            <div class="apps-grid">
+
+                <!-- Kad Data Peralatan Logistik (PASSWORD PROTECTED) -->
+                <a href="#" class="app-card" id="logistikLink" rel="noopener noreferrer">
+                    <div class="icon"><i class="fas fa-boxes-stacked"></i></div>
+                    <div>
+                        <h3 data-ms="Data <span class=&quot;highlight&quot;>Peralatan Logistik</span> JBPM Johor"
+                            data-en="JBPM Johor <span class=&quot;highlight&quot;>Logistics Equipment</span> Data">
+                            Data <span class="highlight">Peralatan Logistik</span> JBPM Johor
+                        </h3>
+                        <p data-ms="Pemantauan peralatan logistik & aset JBPM Negeri Johor."
+                           data-en="Monitoring of JBPM Johor logistics equipment & assets.">
+                            Pemantauan peralatan logistik & aset JBPM Negeri Johor.
+                        </p>
+                    </div>
+                    <div class="card-footer">
+                        <span class="badge dev" id="logistikBadge">🔒 PASSWORD</span>
+                        <span class="arrow"><i class="fas fa-lock" id="logistikArrow"></i></span>
+                    </div>
+                </a>
+
+            </div>
+        </section>
+    </div>
+</div>
                     </div>
                 </div><!-- /panel 3 -->
 
@@ -5698,6 +5905,49 @@ body.mode-siang .peta-legend-overlay .pts-line + .pts-line {
                 <div class="pasukan-modal-empty">
                     <i class="fas fa-spinner fa-spin"></i>
                     <span data-ms="Memuatkan..." data-en="Loading...">Memuatkan...</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== MODAL PASSWORD (KAD LOGISTIK) ===== -->
+    <div class="password-modal-overlay" id="passwordModalOverlay">
+        <div class="password-modal" role="dialog" aria-modal="true" aria-labelledby="passwordModalTitle">
+            <div class="password-modal-header">
+                <div class="password-modal-icon"><i class="fas fa-lock"></i></div>
+                <div class="password-modal-title-text">
+                    <h3 id="passwordModalTitle" data-ms="AKSES TERKAWAL" data-en="RESTRICTED ACCESS">AKSES TERKAWAL</h3>
+                    <span class="password-modal-subtitle"
+                          data-ms="Data Peralatan Logistik JBPM Johor"
+                          data-en="JBPM Johor Logistics Equipment Data">Data Peralatan Logistik JBPM Johor</span>
+                </div>
+                <button class="password-modal-close" id="passwordModalClose" aria-label="Tutup">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="password-modal-body">
+                <p class="password-modal-info"
+                   data-ms="Sila masukkan kata laluan untuk mengakses dashboard ini."
+                   data-en="Please enter the password to access this dashboard.">
+                    Sila masukkan kata laluan untuk mengakses dashboard ini.
+                </p>
+                <div class="password-input-wrap">
+                    <i class="fas fa-key"></i>
+                    <input type="password" id="passwordInput"
+                           placeholder="Kata Laluan..."
+                           data-ms-placeholder="Kata Laluan..."
+                           data-en-placeholder="Password..."
+                           autocomplete="off" />
+                    <button type="button" class="password-toggle" id="passwordToggle" aria-label="Tunjuk / sembunyi">
+                        <i class="fas fa-eye"></i>
+                    </button>
+                </div>
+                <p class="password-error" id="passwordError"></p>
+                <div class="password-actions">
+                    <button class="password-btn-cancel" id="passwordCancel"
+                            data-ms="Batal" data-en="Cancel">Batal</button>
+                    <button class="password-btn-submit" id="passwordSubmit"
+                            data-ms="Buka" data-en="Open">Buka</button>
                 </div>
             </div>
         </div>
@@ -8666,12 +8916,8 @@ function lukisRouteArus(ctx, l, rt, now, labelCalon, peta) {
             //    Guna localStorage 'bomba-ui-prefs' yang fail ke-2 sedia baca.
             window.pgoOpenDashboardSistem = function (e) {
                 if (e) e.preventDefault();
-
-                // Tukar nama fail ini kepada nama sebenar fail ke-2 anda
                 const URL_SISTEM_KEKUATAN = 'kekuatan-anggota.html';
-
                 try {
-                    // Set view ke 'dashboard' supaya fail ke-2 terus buka tab Dashboard
                     const sediaAda = JSON.parse(localStorage.getItem('bomba-ui-prefs') || '{}');
                     localStorage.setItem('bomba-ui-prefs', JSON.stringify({
                         view: 'dashboard',
@@ -8680,11 +8926,115 @@ function lukisRouteArus(ctx, l, rt, now, labelCalon, peta) {
                 } catch (err) {
                     console.warn('[pgoOpenDashboardSistem] Gagal set localStorage:', err);
                 }
-
                 window.location.href = URL_SISTEM_KEKUATAN;
             };
 
         });
     </script>
+
+    <script>
+    /* ============================================================
+       PASSWORD PROTECTION — KAD DATA PERALATAN LOGISTIK JBPM JOHOR
+       ============================================================ */
+    (function () {
+        'use strict';
+
+        const PASSWORD    = 'Logistikjhr26';
+        const TARGET_URL  = 'dashboard-peralatan-logistik.html';   // ← tukar jika nama fail berbeza
+        const STORAGE_KEY = 'pgo_logistik_unlocked';
+
+        const linkEl    = document.getElementById('logistikLink');
+        const overlay   = document.getElementById('passwordModalOverlay');
+        const input     = document.getElementById('passwordInput');
+        const errorEl   = document.getElementById('passwordError');
+        const submitBtn = document.getElementById('passwordSubmit');
+        const cancelBtn = document.getElementById('passwordCancel');
+        const closeBtn  = document.getElementById('passwordModalClose');
+        const toggleBtn = document.getElementById('passwordToggle');
+        const badgeEl   = document.getElementById('logistikBadge');
+        const arrowEl   = document.getElementById('logistikArrow');
+
+        if (!linkEl || !overlay) return;
+
+        let isUnlocked = false;
+        try { isUnlocked = sessionStorage.getItem(STORAGE_KEY) === '1'; } catch (e) {}
+
+        function updateLockIcon() {
+            if (isUnlocked) {
+                if (badgeEl) { badgeEl.className = 'badge online'; badgeEl.innerHTML = '● TERBUKA'; }
+                if (arrowEl) arrowEl.className = 'fas fa-arrow-right';
+            } else {
+                if (badgeEl) { badgeEl.className = 'badge dev'; badgeEl.innerHTML = '🔒 PASSWORD'; }
+                if (arrowEl) arrowEl.className = 'fas fa-lock';
+            }
+        }
+        updateLockIcon();
+
+        function openModal() {
+            overlay.classList.add('open');
+            document.body.style.overflow = 'hidden';
+            errorEl.textContent = '';
+            input.value = '';
+            input.type = 'password';
+            if (toggleBtn) toggleBtn.querySelector('i').className = 'fas fa-eye';
+            setTimeout(() => input.focus(), 200);
+        }
+
+        function closeModal() {
+            overlay.classList.remove('open');
+            document.body.style.overflow = '';
+        }
+
+        function unlock() {
+            isUnlocked = true;
+            try { sessionStorage.setItem(STORAGE_KEY, '1'); } catch (e) {}
+            updateLockIcon();
+        }
+
+        function trySubmit() {
+            if (input.value === PASSWORD) {
+                unlock();
+                closeModal();
+                window.location.href = TARGET_URL;
+            } else {
+                const en = document.body.classList.contains('lang-en');
+                errorEl.textContent = en
+                    ? '❌ Incorrect password. Please try again.'
+                    : '❌ Kata laluan salah. Sila cuba lagi.';
+                input.value = '';
+                input.focus();
+                const wrap = input.closest('.password-input-wrap');
+                if (wrap) {
+                    wrap.classList.add('shake');
+                    setTimeout(() => wrap.classList.remove('shake'), 500);
+                }
+            }
+        }
+
+        linkEl.addEventListener('click', function (e) {
+            if (!isUnlocked) { e.preventDefault(); openModal(); }
+        });
+
+        submitBtn.addEventListener('click', trySubmit);
+        cancelBtn.addEventListener('click', closeModal);
+        closeBtn.addEventListener('click', closeModal);
+        overlay.addEventListener('click', function (e) {
+            if (e.target === overlay) closeModal();
+        });
+
+        input.addEventListener('keydown', function (e) {
+            if (e.key === 'Enter')  { e.preventDefault(); trySubmit(); }
+            if (e.key === 'Escape') { closeModal(); }
+        });
+
+        if (toggleBtn) {
+            toggleBtn.addEventListener('click', function () {
+                const isPwd = input.type === 'password';
+                input.type = isPwd ? 'text' : 'password';
+                this.querySelector('i').className = isPwd ? 'fas fa-eye-slash' : 'fas fa-eye';
+            });
+        }
+    })();
+    </script>
     </body>
-</html> 
+</html>
