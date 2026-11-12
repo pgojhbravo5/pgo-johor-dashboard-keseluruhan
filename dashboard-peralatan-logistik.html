@@ -92,6 +92,64 @@ body:not(.mode-siang) #msg{background:rgba(217,169,105,.1); border-color:rgba(21
 .stat.good{border-left-color:#16a34a}
 .stat.gold{border-left-color:var(--hazard-gold)}
 
+/* Interaksi Kad Dashboard */
+.stat.clickable { cursor: pointer; transition: transform 0.2s, box-shadow 0.2s, border-color 0.2s; }
+.stat.clickable:hover { transform: translateY(-2px); box-shadow: var(--shadow); border-color: var(--border-strong); }
+.stat.clickable:active { transform: translateY(0); }
+.stat.clickable::after { 
+  content: '\f061'; font-family: 'Font Awesome 6 Free'; font-weight: 900; 
+  position: absolute; right: 8px; bottom: 8px; font-size: 0.6rem; color: var(--text-secondary); opacity: 0.3; transition: 0.2s;
+}
+.stat.clickable:hover::after { opacity: 1; color: var(--navy); right: 6px; }
+.stat.clickable.active {
+  border-left-color: var(--fire-red) !important;
+  box-shadow: 0 0 0 2px rgba(200,16,46,0.25), var(--shadow) !important;
+}
+
+/* Tab Navigasi Halaman */
+.page-tabs { display: flex; gap: 6px; margin-bottom: 12px; background: var(--hud-bg); padding: 4px; border-radius: var(--radius); border: 1px solid var(--hud-border); width: fit-content; }
+.page-tab-btn {
+  padding: 8px 16px; border: none; background: transparent; color: var(--text-secondary);
+  font: 700 0.75rem var(--font-head); text-transform: uppercase; border-radius: var(--radius-sm);
+  cursor: pointer; transition: 0.2s; display: flex; align-items: center; gap: 6px;
+}
+.page-tab-btn:hover { color: var(--navy); }
+.page-tab-btn.active { background: var(--navy); color: #fff; box-shadow: var(--shadow-sm); }
+
+/* Paparan Halaman */
+.view-section { display: none; flex-direction: column; gap: 12px; width: 100%; }
+.view-section.active { display: flex; animation: fadeIn 0.3s ease-out; }
+@keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
+
+/* Gaya Kad Kategori Peralatan */
+.kat-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+  gap: 8px;
+}
+.kat-card {
+  background: var(--hud-bg); border: 1px solid var(--hud-border);
+  border-left: 3px solid var(--navy); border-radius: var(--radius);
+  padding: 10px; cursor: pointer; transition: all 0.2s ease;
+  display: flex; flex-direction: column; text-align: left; position: relative;
+}
+body:not(.mode-siang) .kat-card { border-left-color: var(--hazard-gold); }
+.kat-card:hover {
+  transform: translateY(-2px); box-shadow: var(--shadow);
+  border-color: var(--border-strong); background: var(--hud-card-bg);
+}
+.kat-card .kat-name {
+  font-size: 0.72rem; font-weight: 700; color: var(--text-secondary);
+  margin-bottom: 6px; line-height: 1.3; width: 100%;
+  display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
+}
+.kat-card .kat-count {
+  font: 800 1.3rem var(--font-head); color: var(--navy); line-height: 1;
+}
+body:not(.mode-siang) .kat-card .kat-count { color: var(--text-primary); }
+.kat-card .kat-pct {
+  font-size: 0.65rem; font-weight: 600; color: var(--text-secondary); margin-top: 2px;
+}
 .btn{
   font-size:.72rem; font-weight:600; padding:.45rem .7rem; border:1px solid var(--hud-border);
   background:var(--hud-bg); color:var(--text-primary); border-radius:var(--radius-sm); cursor:pointer; transition:.2s;
@@ -231,6 +289,101 @@ thead th{
 tbody tr:hover{background:var(--glass-highlight)}
 .empty{padding:18px; text-align:center; color:var(--text-secondary); font-size:.78rem}
 
+/* ═══════════════════════════════════════════════════
+   DASHBOARD EXPAND PANEL — Fungsi dr File 1
+   (UI kekal ikut tema File 2)
+   ═══════════════════════════════════════════════════ */
+.dash-expand-panel {
+  margin-top: 12px;
+  background: var(--hud-bg);
+  border: 1px solid var(--hud-border);
+  border-left: 3px solid var(--navy);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  overflow: hidden;
+  animation: expandIn 0.2s ease-out;
+}
+body:not(.mode-siang) .dash-expand-panel { border-left-color: var(--hazard-gold); }
+@keyframes expandIn {
+  from { opacity: 0; transform: translateY(-4px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.dash-expand-head {
+  display: flex; align-items: center; gap: 8px; flex-wrap: wrap;
+  padding: 9px 11px; border-bottom: 1px solid var(--hud-border);
+  background: var(--hud-card-bg);
+}
+.dash-expand-title {
+  flex: 1 1 auto; min-width: 0;
+  font: 700 0.78rem var(--font-head);
+  letter-spacing: 0.4px; text-transform: uppercase;
+  color: var(--navy);
+  overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+}
+.dash-expand-search {
+  flex: 1 1 180px; min-width: 140px; max-width: 300px;
+}
+.dash-expand-search input {
+  width: 100%; padding: 6px 9px;
+  border: 1px solid var(--border-strong); border-radius: var(--radius-sm);
+  background: var(--hud-bg); color: var(--text-primary);
+  font-size: 0.75rem; outline: none;
+}
+.dash-expand-search input:focus { border-color: var(--hazard-gold); }
+.dash-expand-count {
+  font: 700 0.7rem var(--font-head);
+  color: var(--navy); background: var(--hud-bg);
+  border: 1px solid var(--hud-border); border-radius: 999px;
+  padding: 3px 10px; white-space: nowrap;
+}
+.dash-expand-close {
+  width: 28px; height: 28px; flex-shrink: 0;
+  display: inline-flex; align-items: center; justify-content: center;
+  background: transparent; border: 1px solid var(--hud-border);
+  color: var(--text-secondary); cursor: pointer;
+  border-radius: var(--radius-sm); font-size: 1rem; line-height: 1;
+  transition: 0.15s;
+}
+.dash-expand-close:hover {
+  color: var(--fire-red); background: rgba(200,16,46,0.1);
+  border-color: var(--fire-red);
+}
+.dash-expand-body { max-height: 420px; overflow: auto; }
+.dash-expand-body table { width: 100%; border-collapse: collapse; font-size: 0.73rem; }
+.dash-expand-body thead th {
+  position: sticky; top: 0; z-index: 2;
+  background: var(--hud-card-bg); color: var(--navy);
+  font: 700 0.68rem var(--font-head);
+  text-transform: uppercase; letter-spacing: 0.04rem;
+  white-space: nowrap; padding: 6px 8px;
+  border-bottom: 1px solid var(--hud-border);
+  text-align: center;
+}
+.dash-expand-body thead th.text-left { text-align: left; }
+.dash-expand-body tbody td {
+  padding: 6px 8px; border-bottom: 1px solid var(--hud-border);
+  text-align: center;
+}
+.dash-expand-body tbody td.text-left { text-align: left; }
+.dash-expand-body tbody tr:hover { background: var(--glass-highlight); }
+.dash-expand-body tbody tr.empty td {
+  text-align: center; padding: 18px;
+  color: var(--text-secondary); font-size: 0.78rem;
+}
+.dash-expand-foot {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 10px; flex-wrap: wrap;
+  padding: 8px 11px; border-top: 1px solid var(--hud-border);
+  background: var(--hud-card-bg);
+}
+.dash-expand-foot .de-info {
+  font-size: 0.72rem; color: var(--text-secondary);
+}
+.dash-expand-foot .de-info b { color: var(--navy); }
+.dash-expand-foot .btn.small {
+  padding: 4px 10px; font-size: 0.7rem;
+}
+
 .footer{
   position:relative; flex:none; display:flex; justify-content:space-between; gap:.5rem; flex-wrap:wrap;
   padding:.5rem 1rem; background:var(--hud-bg); border-top:3px solid var(--navy);
@@ -327,42 +480,68 @@ tbody tr:hover{background:var(--glass-highlight)}
   </aside>
 
   <main id="main">
-    <div class="stats">
-      <div class="stat"><b id="sTotal">–</b><span>Jumlah rekod peralatan</span></div>
-      <div class="stat good"><b id="sBaik">–</b><span>Jumlah unit BAIK</span></div>
-      <div class="stat bad"><b id="sRosak">–</b><span>Jumlah unit ROSAK</span></div>
-      <div class="stat gold"><b id="sKat">–</b><span>Kategori peralatan</span></div>
-      <div class="stat"><b id="sLok">–</b><span>Lokasi semasa</span></div>
+    <!-- Tab Navigasi -->
+    <div class="page-tabs">
+      <button class="page-tab-btn active" id="tabDashboard" onclick="switchPage('dashboard')">
+        <i class="fas fa-chart-pie"></i> Dashboard & Statistik
+      </button>
+      <button class="page-tab-btn" id="tabData" onclick="switchPage('data')">
+        <i class="fas fa-table-list"></i> Data Peralatan
+      </button>
     </div>
 
-    <div class="grid2">
-      <section class="panel">
-        <div class="panel-h">
-          <h2><i class="fas fa-chart-bar"></i>Kategori Peralatan</h2>
+    <!-- PAGE 1: DASHBOARD -->
+    <div id="page-dashboard" class="view-section active">
+      <div class="stats">
+        <div class="stat clickable" data-card="total" onclick="filterByCard('total')" title="Klik untuk lihat semua data">
+          <b id="sTotal">–</b><span>Jumlah rekod peralatan</span>
         </div>
-        <div class="panel-b" id="chartKat"></div>
-      </section>
+        <div class="stat good clickable" data-card="baik" onclick="filterByCard('baik')" title="Klik untuk lihat data BAIK">
+          <b id="sBaik">–</b><span>Jumlah unit BAIK</span>
+        </div>
+        <div class="stat bad clickable" data-card="rosak" onclick="filterByCard('rosak')" title="Klik untuk lihat data ROSAK">
+          <b id="sRosak">–</b><span>Jumlah unit ROSAK</span>
+        </div>
+        <div class="stat gold clickable" data-card="kategori" onclick="filterByCard('kategori')" title="Klik untuk lihat data mengikut kategori">
+          <b id="sKat">–</b><span>Kategori peralatan</span>
+        </div>
+        <div class="stat clickable" data-card="lokasi" onclick="filterByCard('lokasi')" title="Klik untuk lihat data mengikut lokasi">
+          <b id="sLok">–</b><span>Lokasi semasa</span>
+        </div>
+      </div>
 
-      <section class="panel">
-        <div class="panel-h">
-          <h2><i class="fas fa-location-dot"></i>Lokasi Semasa</h2>
-        </div>
-        <div class="panel-b" id="chartLok"></div>
-      </section>
+      <div class="grid2">
+        <section class="panel">
+          <div class="panel-h">
+            <h2><i class="fas fa-chart-bar"></i>Kategori Peralatan</h2>
+          </div>
+          <div class="panel-b" id="chartKat"></div>
+        </section>
+
+        <section class="panel">
+          <div class="panel-h">
+            <h2><i class="fas fa-location-dot"></i>Lokasi Semasa</h2>
+          </div>
+          <div class="panel-b" id="chartLok"></div>
+        </section>
+      </div>
     </div>
 
-    <section class="panel">
-      <div class="panel-h">
-        <h2><i class="fas fa-table-list"></i>Senarai Peralatan Logistik</h2>
-        <span class="hint" id="tableInfo">–</span>
-      </div>
-      <div class="table-wrap">
-        <table id="tbl">
-          <thead></thead>
-          <tbody></tbody>
-        </table>
-      </div>
-    </section>
+    <!-- PAGE 2: DATA (JADUAL) -->
+    <div id="page-data" class="view-section">
+      <section class="panel">
+        <div class="panel-h">
+          <h2><i class="fas fa-table-list"></i>Senarai Peralatan Logistik</h2>
+          <span class="hint" id="tableInfo">–</span>
+        </div>
+        <div class="table-wrap">
+          <table id="tbl">
+            <thead></thead>
+            <tbody></tbody>
+          </table>
+        </div>
+      </section>
+    </div>
   </main>
 </div>
 
@@ -638,6 +817,11 @@ function applyFilters() {
   renderTable(lastFiltered);
 
   $('#globalCount').textContent = fmt(lastFiltered.length) + ' rekod';
+
+  // Refresh expand panel kalau aktif (supaya data konsisten)
+  if (dashExpandState.activeType) {
+    renderDashExpand();
+  }
 }
 
 /* ===== Statistik ===== */
@@ -680,22 +864,40 @@ function renderCharts(rows) {
   const katCol = findCol(/KATEGORI PERALATAN/) || findCol(/KATEGORI/);
   const lokCol = findCol(/LOKASI SEMASA/) || findCol(/LOKASI/);
 
-  renderBars($('#chartKat'), countBy(rows, katCol), 'var(--navy)');
+  // 1. Render Kategori Peralatan sebagai KAD (Cards)
+  const elKat = $('#chartKat');
+  if (katCol) {
+    const entries = countBy(rows, katCol);
+    const total = rows.length;
+    
+    if (!entries.length) {
+      elKat.innerHTML = '<p class="hint">Tiada data untuk dipaparkan.</p>';
+    } else {
+      elKat.innerHTML = '<div class="kat-grid">' + entries.map(([label, val]) => {
+        const pct = total ? Math.round((val / total) * 100) : 0;
+        return `<div class="kat-card" onclick="filterByCategory(decodeURIComponent('${encodeURIComponent(label)}'))" title="Klik untuk tapis: ${esc(label)}">
+                  <div class="kat-name">${esc(label)}</div>
+                  <div class="kat-count">${fmt(val)}</div>
+                  <div class="kat-pct">${pct}% dari jumlah</div>
+                </div>`;
+      }).join('') + '</div>';
+    }
+  }
+
+  // 2. Render Lokasi Semasa kekal sebagai Bar Chart
   renderBars($('#chartLok'), countBy(rows, lokCol), 'var(--hazard-gold)');
 }
 
 /* ===== Jadual dengan tapisan kolum (Checkbox Popup) ===== */
-const colFilters = new Map();     // nama kolum -> Set(nilai terpilih)
+const colFilters = new Map();
 let tableHeadRendered = 0;
-let activeColDropdown = null;     // Rujukan dropdown yang sedang aktif
+let activeColDropdown = null;
 
-/* Semak satu sel terhadap tapisan kolum */
 function matchColFilter(cellValue, filterSet) {
   if (!filterSet || filterSet.size === 0) return true;
   return filterSet.has(String(cellValue));
 }
 
-/* Tapis senarai rekod dengan semua tapisan kolum */
 function applyColFilters(rows) {
   if (colFilters.size === 0) return rows;
   return rows.filter((r) => {
@@ -706,7 +908,6 @@ function applyColFilters(rows) {
   });
 }
 
-/* Tutup dropdown jika klik di luar */
 document.addEventListener('click', (e) => {
   if (activeColDropdown && !e.target.closest('.col-dropdown') && !e.target.closest('.th-filter-btn')) {
     activeColDropdown.remove();
@@ -714,7 +915,6 @@ document.addEventListener('click', (e) => {
   }
 });
 
-/* Bina dan papar Dropdown Tapisan */
 function openFilterDropdown(colName, btnEl) {
   if (activeColDropdown) activeColDropdown.remove();
 
@@ -725,19 +925,16 @@ function openFilterDropdown(colName, btnEl) {
     counts.set(v, (counts.get(v) || 0) + 1);
   });
 
-  // Nilai sedia ada (jika ada)
   let selectedSet = colFilters.get(colName) ? new Set(colFilters.get(colName)) : new Set(colVals);
   let tempSet = new Set(selectedSet);
 
   const dd = document.createElement('div');
   dd.className = 'col-dropdown show';
 
-  // Posisi dropdown di bawah butang
   const rect = btnEl.getBoundingClientRect();
   dd.style.top = (rect.bottom + window.scrollY + 5) + 'px';
-  dd.style.left = Math.max(10, (rect.left + window.scrollX) - 100) + 'px'; // center roughly
+  dd.style.left = Math.max(10, (rect.left + window.scrollX) - 100) + 'px';
 
-  // Render HTML dalaman dropdown
   dd.innerHTML = `
     <div class="cd-search"><input type="search" placeholder="Cari..."></div>
     <div class="cd-btns">
@@ -757,7 +954,6 @@ function openFilterDropdown(colName, btnEl) {
   const listEl = dd.querySelector('.cd-list');
   const countEl = dd.querySelector('.cd-count');
 
-  // Fungsi render senarai checkbox
   const renderList = (q = '') => {
     listEl.innerHTML = '';
     const filteredVals = colVals.filter(v => v.toLowerCase().includes(q.toLowerCase()));
@@ -783,7 +979,6 @@ function openFilterDropdown(colName, btnEl) {
     countEl.textContent = `${tempSet.size} dipilih`;
   };
 
-  // Event Listeners
   dd.querySelector('.cd-search input').oninput = (e) => renderList(e.target.value);
   
   dd.querySelector('.cd-all').onclick = () => {
@@ -800,19 +995,19 @@ function openFilterDropdown(colName, btnEl) {
     colFilters.delete(colName);
     dd.remove();
     activeColDropdown = null;
-    tableHeadRendered = 0; // Paksa render semula header untuk buang status 'active'
+    tableHeadRendered = 0;
     applyFilters();
   };
 
   dd.querySelector('.cd-apply').onclick = () => {
     if (tempSet.size === colVals.length) {
-      colFilters.delete(colName); // Jika pilih semua, anggap tiada tapisan
+      colFilters.delete(colName);
     } else {
       colFilters.set(colName, new Set(tempSet));
     }
     dd.remove();
     activeColDropdown = null;
-    tableHeadRendered = 0; // Paksa render semula header
+    tableHeadRendered = 0;
     applyFilters();
   };
 
@@ -821,14 +1016,12 @@ function openFilterDropdown(colName, btnEl) {
   activeColDropdown = dd;
 }
 
-/* Render <thead> */
-    function renderTableHead() {
+function renderTableHead() {
   if (tableHeadRendered === COLS.length) return;
   const thead = $('#tbl thead');
 
   const headRow = COLS.map((c) => {
     const isActive = colFilters.has(c) && colFilters.get(c).size > 0;
-    // Semak jika kolum adalah PERALATAN atau KATEGORI PERALATAN
     const isLeft = /PERALATAN|KATEGORI/i.test(c); 
     
     return `<th class="${isLeft ? 'text-left' : ''}">
@@ -853,8 +1046,7 @@ function openFilterDropdown(colName, btnEl) {
   tableHeadRendered = COLS.length;
 }
 
-/* Render <tbody> */
-    function renderTableBody(rows) {
+function renderTableBody(rows) {
   const tbody = $('#tbl tbody');
   const LIMIT = 500;
   const shown = rows.slice(0, LIMIT);
@@ -867,14 +1059,12 @@ function openFilterDropdown(colName, btnEl) {
   tbody.innerHTML = shown.map((r) => {
     return '<tr>' + COLS.map((c) => {
       const v = cellVal(r, c);
-      // Semak jika kolum adalah PERALATAN atau KATEGORI PERALATAN
       const isLeft = /PERALATAN|KATEGORI/i.test(c);
       return `<td class="${isLeft ? 'text-left' : ''}">${esc(displayVal(v))}</td>`;
     }).join('') + '</tr>';
   }).join('');
 }
 
-/* Kemas kini info bilangan rekod */
 function updateTableInfo(filtered, total) {
   const LIMIT = 500;
   let txt = (filtered === total) ? fmt(total) + ' rekod' : fmt(filtered) + ' dari ' + fmt(total) + ' rekod';
@@ -882,14 +1072,12 @@ function updateTableInfo(filtered, total) {
   $('#tableInfo').textContent = txt;
 }
 
-/* Refresh tbody sahaja */
 function refreshTableBodyOnly() {
   const filtered = applyColFilters(lastFiltered);
   renderTableBody(filtered);
   updateTableInfo(filtered.length, lastFiltered.length);
 }
 
-/* Render jadual penuh */
 function renderTable(rows) {
   if (!COLS.length) {
     $('#tbl thead').innerHTML = '';
@@ -912,7 +1100,6 @@ function downloadCSV(rows, filename) {
     return;
   }
 
-  // Semua kolum dalam COLS akan dieksport (tanpa tertinggal)
   const out = rows.map((r) => {
     const o = {};
     COLS.forEach((c) => {
@@ -922,7 +1109,6 @@ function downloadCSV(rows, filename) {
     return o;
   });
 
-  // Papa.unparse akan hasilkan header + semua baris
   const csv = Papa.unparse(out, { columns: COLS });
   const blob = new Blob(["\uFEFF" + csv], { type: 'text/csv;charset=utf-8;' });
   const url = URL.createObjectURL(blob);
@@ -935,13 +1121,11 @@ function downloadCSV(rows, filename) {
   URL.revokeObjectURL(url);
 }
 
-/* ===== Eksport data selepas tapisan (semua kolum) ===== */
 $('#exportBtn').onclick = () => {
   const stamp = new Date().toISOString().slice(0, 10);
   downloadCSV(lastFiltered, 'peralatan-logistik-jbpm-johor-ditapis-' + stamp + '.csv');
 };
 
-/* ===== Eksport SEMUA data (tanpa tapisan, semua kolum) ===== */
 $('#exportAllBtn').onclick = () => {
   const stamp = new Date().toISOString().slice(0, 10);
   downloadCSV(DATA, 'peralatan-logistik-jbpm-johor-SEMUA-' + stamp + '.csv');
@@ -955,11 +1139,9 @@ $('#reset').onclick = () => {
     st.max = '';
   });
 
-  // Reset tapisan kolum jadual
   colFilters.clear();
   tableHeadRendered = 0;
   
-  // Tutup dropdown jika ada yang terbuka
   if (activeColDropdown) {
     activeColDropdown.remove();
     activeColDropdown = null;
@@ -976,6 +1158,258 @@ $('#reset').onclick = () => {
 
 /* ===== Carian global ===== */
 $('#globalSearch').oninput = applyFilters;
+
+/* ===== Logik Tukar Halaman (Tab) ===== */
+function switchPage(pageId) {
+  document.querySelectorAll('.view-section').forEach(el => el.classList.remove('active'));
+  document.querySelectorAll('.page-tab-btn').forEach(el => el.classList.remove('active'));
+
+  document.getElementById('page-' + pageId).classList.add('active');
+  document.getElementById('tab' + pageId.charAt(0).toUpperCase() + pageId.slice(1)).classList.add('active');
+
+  if (typeof activeColDropdown !== 'undefined' && activeColDropdown) {
+    activeColDropdown.remove();
+    activeColDropdown = null;
+  }
+}
+
+/* ═══════════════════════════════════════════════════
+   DASHBOARD EXPAND PANEL — Fungsi dari File 1
+   Klik kad statistik → buka panel senarai terperinci
+   dengan carian, kiraan, tutup, dan "Tunjuk Semua".
+   ═══════════════════════════════════════════════════ */
+const dashExpandState = {
+  activeType: null,  // 'total' | 'baik' | 'rosak' | 'kategori' | 'lokasi' | null
+  search: '',
+  showAll: false
+};
+
+function getDashExpandTitle(type) {
+  const map = {
+    'total': 'Semua Rekod Peralatan',
+    'baik': 'Rekod Dengan Unit BAIK',
+    'rosak': 'Rekod Dengan Unit ROSAK',
+    'kategori': 'Semua Rekod — Kategori Peralatan',
+    'lokasi': 'Semua Rekod — Lokasi Semasa'
+  };
+  return map[type] || 'Senarai Rekod';
+}
+
+function getDashExpandRecords(type) {
+  if (type === 'total') return DATA.slice();
+  
+  if (type === 'baik') {
+    const col = findCol(/^BAIK$/) || findCol(/BAIK/);
+    if (!col) return [];
+    return DATA.filter(r => {
+      const n = numVal(r[col]);
+      return n !== null && n > 0;
+    });
+  }
+  
+  if (type === 'rosak') {
+    const col = findCol(/^ROSAK$/) || findCol(/ROSAK/);
+    if (!col) return [];
+    return DATA.filter(r => {
+      const n = numVal(r[col]);
+      return n !== null && n > 0;
+    });
+  }
+  
+  // kategori & lokasi → semua rekod
+  return DATA.slice();
+}
+
+function closeDashExpand() {
+  dashExpandState.activeType = null;
+  dashExpandState.search = '';
+  dashExpandState.showAll = false;
+  
+  document.querySelectorAll('.stat.clickable').forEach(el => el.classList.remove('active'));
+  const panel = document.getElementById('dashExpandPanel');
+  if (panel) panel.remove();
+}
+
+function filterByCard(type) {
+  // Toggle: klik kad sama → tutup
+  if (dashExpandState.activeType === type) {
+    closeDashExpand();
+    return;
+  }
+  
+  dashExpandState.activeType = type;
+  dashExpandState.search = '';
+  dashExpandState.showAll = false;
+  
+  document.querySelectorAll('.stat.clickable').forEach(el => el.classList.remove('active'));
+  const cardEl = document.querySelector('.stat.clickable[data-card="' + type + '"]');
+  if (cardEl) cardEl.classList.add('active');
+  
+  renderDashExpand();
+}
+
+function renderDashExpand() {
+  const existing = document.getElementById('dashExpandPanel');
+  if (existing) existing.remove();
+  
+  if (!dashExpandState.activeType) return;
+  if (!COLS.length) return;
+  
+  const type = dashExpandState.activeType;
+  const records = getDashExpandRecords(type);
+  const q = (dashExpandState.search || '').toLowerCase().trim();
+  
+  const filtered = q
+    ? records.filter(r => COLS.some(c => String(r[c] || '').toLowerCase().includes(q)))
+    : records;
+  
+  const LIMIT = 50;
+  const shown = dashExpandState.showAll ? filtered : filtered.slice(0, LIMIT);
+  
+  const panel = document.createElement('div');
+  panel.id = 'dashExpandPanel';
+  panel.className = 'dash-expand-panel';
+  
+  // ── Header ──
+  const head = document.createElement('div');
+  head.className = 'dash-expand-head';
+  
+  const titleEl = document.createElement('span');
+  titleEl.className = 'dash-expand-title';
+  titleEl.textContent = getDashExpandTitle(type);
+  titleEl.title = getDashExpandTitle(type);
+  head.appendChild(titleEl);
+  
+  const searchWrap = document.createElement('div');
+  searchWrap.className = 'dash-expand-search';
+  const searchInput = document.createElement('input');
+  searchInput.type = 'text';
+  searchInput.placeholder = 'Cari dalam senarai...';
+  searchInput.value = dashExpandState.search;
+  searchInput.addEventListener('input', function () {
+    dashExpandState.search = searchInput.value;
+    renderDashExpand();
+    // Focus semula pada input selepas render (kerana panel di-rebuild)
+    const newInput = document.querySelector('#dashExpandPanel .dash-expand-search input');
+    if (newInput) {
+      newInput.focus();
+      try { newInput.setSelectionRange(newInput.value.length, newInput.value.length); } catch (e) {}
+    }
+  });
+  searchWrap.appendChild(searchInput);
+  head.appendChild(searchWrap);
+  
+  const countEl = document.createElement('span');
+  countEl.className = 'dash-expand-count';
+  countEl.textContent = filtered.length + ' rekod';
+  head.appendChild(countEl);
+  
+  const closeBtn = document.createElement('button');
+  closeBtn.type = 'button';
+  closeBtn.className = 'dash-expand-close';
+  closeBtn.innerHTML = '✕';
+  closeBtn.title = 'Tutup senarai';
+  closeBtn.setAttribute('aria-label', 'Tutup senarai');
+  closeBtn.addEventListener('click', closeDashExpand);
+  head.appendChild(closeBtn);
+  
+  panel.appendChild(head);
+  
+  // ── Body (table) ──
+  const body = document.createElement('div');
+  body.className = 'dash-expand-body';
+  
+  const tbl = document.createElement('table');
+  
+  const thead = document.createElement('thead');
+  const trh = document.createElement('tr');
+  COLS.forEach(c => {
+    const th = document.createElement('th');
+    if (/PERALATAN|KATEGORI/i.test(c)) th.className = 'text-left';
+    th.textContent = c;
+    trh.appendChild(th);
+  });
+  thead.appendChild(trh);
+  tbl.appendChild(thead);
+  
+  const tbody = document.createElement('tbody');
+  if (shown.length === 0) {
+    const tr = document.createElement('tr');
+    tr.className = 'empty';
+    const td = document.createElement('td');
+    td.colSpan = COLS.length;
+    td.textContent = q ? 'Tiada padanan carian.' : 'Tiada rekod.';
+    tr.appendChild(td);
+    tbody.appendChild(tr);
+  } else {
+    shown.forEach(r => {
+      const tr = document.createElement('tr');
+      COLS.forEach(c => {
+        const v = cellVal(r, c);
+        const td = document.createElement('td');
+        if (/PERALATAN|KATEGORI/i.test(c)) td.className = 'text-left';
+        td.textContent = displayVal(v);
+        tr.appendChild(td);
+      });
+      tbody.appendChild(tr);
+    });
+  }
+  tbl.appendChild(tbody);
+  body.appendChild(tbl);
+  panel.appendChild(body);
+  
+  // ── Footer ──
+  const foot = document.createElement('div');
+  foot.className = 'dash-expand-foot';
+  
+  const info = document.createElement('span');
+  info.className = 'de-info';
+  if (filtered.length > LIMIT && !dashExpandState.showAll) {
+    info.innerHTML = 'Menunjuk <b>' + shown.length + '</b> / <b>' + filtered.length + '</b> rekod';
+  } else {
+    info.innerHTML = 'Jumlah: <b>' + filtered.length + '</b> rekod' + (q ? ' (carian)' : '');
+  }
+  foot.appendChild(info);
+  
+  if (filtered.length > LIMIT) {
+    const btnToggle = document.createElement('button');
+    btnToggle.type = 'button';
+    btnToggle.className = 'btn primary small';
+    btnToggle.style.fontSize = '0.7rem';
+    btnToggle.style.padding = '4px 10px';
+    btnToggle.textContent = dashExpandState.showAll
+      ? '↑ Tunjuk ' + LIMIT + ' pertama'
+      : '↓ Tunjuk Semua (' + filtered.length + ')';
+    btnToggle.addEventListener('click', function () {
+      dashExpandState.showAll = !dashExpandState.showAll;
+      renderDashExpand();
+    });
+    foot.appendChild(btnToggle);
+  }
+  
+  panel.appendChild(foot);
+  
+  // ── Insert selepas .stats, sebelum .grid2 ──
+  const statsEl = document.querySelector('#page-dashboard .stats');
+  if (statsEl && statsEl.parentNode) {
+    statsEl.parentNode.insertBefore(panel, statsEl.nextElementSibling);
+  }
+}
+
+/* ===== Logik Klik Kad Kategori Peralatan (kekal) ===== */
+window.filterByCategory = function(categoryName) {
+  if (typeof switchPage === 'function') switchPage('data');
+  colFilters.clear();
+  tableHeadRendered = 0; 
+
+  const col = findCol(/KATEGORI PERALATAN/) || findCol(/KATEGORI/);
+  if (col) {
+    colFilters.set(col, new Set([categoryName]));
+  }
+
+  if (typeof showMsg === 'function') showMsg('Menapis Kategori: ' + categoryName);
+  if (typeof applyFilters === 'function') applyFilters();
+};
 
 /* ===== Parse CSV ===== */
 function loadCSV(text) {
@@ -1002,20 +1436,28 @@ function loadCSV(text) {
 
     if (!DATA.length) throw new Error('Tiada baris data dijumpai.');
 
-// Reset tapisan kolum bila data baru dimuat
-colFilters.clear();
-tableHeadRendered = 0;
-if (activeColDropdown) {
-  activeColDropdown.remove();
-  activeColDropdown = null;
-}
+    // Reset tapisan bila data baru dimuat
+    colFilters.clear();
+    tableHeadRendered = 0;
+    if (activeColDropdown) {
+      activeColDropdown.remove();
+      activeColDropdown = null;
+    }
 
-buildColumnConfig();
-buildFilters();
-applyFilters();
+    // ✅ Reset dashboard expand panel (jika aktif)
+    dashExpandState.activeType = null;
+    dashExpandState.search = '';
+    dashExpandState.showAll = false;
+    const oldPanel = document.getElementById('dashExpandPanel');
+    if (oldPanel) oldPanel.remove();
+    document.querySelectorAll('.stat.clickable').forEach(el => el.classList.remove('active'));
 
-$('#upd').textContent = new Date().toLocaleString('ms-MY');
-$('#fb').style.display = 'none';
+    buildColumnConfig();
+    buildFilters();
+    applyFilters();
+
+    $('#upd').textContent = new Date().toLocaleString('ms-MY');
+    $('#fb').style.display = 'none';
     showMsg('Data dimuatkan: ' + fmt(DATA.length) + ' rekod.');
   } catch (e) {
     console.error(e);
