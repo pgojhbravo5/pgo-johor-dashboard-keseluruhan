@@ -1714,6 +1714,12 @@ function loadCSV(text) {
       .map((c) => norm(c))
       .filter((c) => c && !c.startsWith('__'));
 
+          // ── TAMBAHAN: PASTIKAN 'BIL' DI HADAPAN ──
+    if (COLS.includes('BIL')) {
+      COLS = ['BIL', ...COLS.filter(c => c !== 'BIL')];
+    }
+    // ────────────────────────────────────────
+
     if (!COLS.length) throw new Error('Tiada header kolum dijumpai.');
 
     DATA = res.data.map((r, i) => {
@@ -1756,6 +1762,23 @@ function loadCSV(text) {
     console.error(e);
     showMsg('Gagal proses CSV: ' + e.message);
   }
+
+  function loadVisibleCols() {
+  visibleCols = new Set(COLS);
+  try {
+    const raw = localStorage.getItem(HIDDEN_COLS_KEY);
+    if (!raw) return;
+    const hidden = JSON.parse(raw);
+    if (Array.isArray(hidden)) {
+      hidden.forEach((c) => visibleCols.delete(c));
+    }
+  } catch (e) {}
+  if (visibleCols.size === 0 && COLS.length > 0) {
+    visibleCols = new Set(COLS);
+  }
+  // TAMBAH BARIS INI:
+  if (COLS.includes('BIL')) visibleCols.add('BIL'); // Paksa BIL sentiasa nampak
+}
 }
 
 /* ===== Muat data ===== */
