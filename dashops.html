@@ -28,6 +28,7 @@
         --text-muted: #7f8fa6;
         --text-blue: #3b6ea8;
         --text-gold: #b8935a;
+        --hazard-gold: #b8935a;
         --red: #c8102e;
         --orange: #d97757;
         --green: #0f7b4f;
@@ -1361,7 +1362,8 @@
       .weather-modal-subtitle { color: var(--text-secondary); }
       .weather-hour-item { background: var(--bg-card); }
       .weather-hour-time { color: var(--text-secondary); }
-      .header-center h1 { color: var(--text-primary); }
+      .header-center h1 { color: var(--text-blue); text-transform: uppercase; }
+      .header-center h1 .t-gold { color: var(--hazard-gold); }
       header { border-bottom-color: var(--red); }
 
       .popup-case-item {
@@ -1424,6 +1426,21 @@
 
       .fullscreen-btn, .force-refresh-btn, .theme-toggle-btn, .btn-back,
       .panel-refresh-btn, .panel-zoom-btn, .filter-toggle-btn { border-radius: var(--radius); }
+
+      /* Butang header: samaparas fail Taburan Kes & Hotspot Banjir */
+      .fullscreen-btn, .force-refresh-btn, .theme-toggle-btn, .btn-back {
+        background: var(--bg-panel);
+        border: 1px solid var(--border-color);
+        color: var(--text-secondary);
+        font: 700 0.72rem var(--font-head);
+        letter-spacing: 0.06rem;
+        text-transform: uppercase;
+      }
+      .fullscreen-btn:hover, .force-refresh-btn:hover, .theme-toggle-btn:hover, .btn-back:hover {
+        background: var(--bg-card);
+        color: var(--text-blue);
+        border-color: var(--border-strong);
+      }
 
       .footer { border-top-color: var(--border-color); }
       .watermark-line1, .watermark-line2 { color: var(--text-muted); }
@@ -1602,10 +1619,11 @@
 }
     </style>
 
-    <link
-      rel="stylesheet"
-      href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
-    />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+<link
+  rel="stylesheet"
+  href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+/>
   </head>
   <body id="bodyElement">
     <!-- OVERLAYS & MODALS -->
@@ -1674,21 +1692,22 @@
             class="header-logo"
             loading="lazy"
           />
-          <span>PGO JOHOR DASH-OPS - 24 JAM</span>
+          <span>PGO JOHOR</span>
+          <span class="t-gold">DASH-OPS - 24 JAM</span>
         </h1>
       </div>
       
       <div class="header-right">
         <button class="theme-toggle-btn" onclick="toggleTheme()" id="themeToggleBtn">
-          🌙 MODE MALAM
+          <i class="fas fa-moon"></i> MODE MALAM
         </button>
         <button class="force-refresh-btn" onclick="forceRefresh()" id="forceRefreshBtn">
-          🔄 REFRESH
+          <i class="fas fa-sync-alt"></i> REFRESH
         </button>
         <button class="fullscreen-btn" onclick="toggleFullscreen()" id="fullscreenBtn">
-          📺 FULL SCREEN
+          <i class="fas fa-expand"></i> FULL SCREEN
         </button>
-        <a href="index.html" class="btn-back">⬅️ MENU UTAMA</a>
+        <a href="index.html" class="btn-back"><i class="fas fa-house"></i> MENU UTAMA</a>
       </div>
     </header>
 
@@ -4006,8 +4025,10 @@ L.control.layers({
 
       function updateFullscreenButton() {
         const isFullscreen = document.fullscreenElement || document.webkitFullscreenElement;
-        document.getElementById('fullscreenBtn').innerHTML = isFullscreen ? '🔲 KELUAR' : '📺 FULL SCREEN';
-        document.body.classList.toggle('fullscreen-mode', !!isFullscreen);
+        document.getElementById('fullscreenBtn').innerHTML = isFullscreen
+          ? '<i class="fas fa-compress"></i> KELUAR'
+          : '<i class="fas fa-expand"></i> FULL SCREEN';
+          document.body.classList.toggle('fullscreen-mode', !!isFullscreen);
         setTimeout(() => { if (mapInstance) mapInstance.invalidateSize(); }, 300);
         setTimeout(relocateSearchBar, 350);
         setTimeout(updateOngoingTicker, 400);
@@ -4020,11 +4041,11 @@ L.control.layers({
         const button = document.getElementById('themeToggleBtn');
         if (body.classList.contains('light-mode')) {
           body.classList.remove('light-mode');
-          button.innerHTML = '🌙 MODE MALAM';
+          button.innerHTML = '<i class="fas fa-moon"></i> MODE MALAM';
           localStorage.setItem('pgoTheme', 'dark');
         } else {
           body.classList.add('light-mode');
-          button.innerHTML = '☀️ MODE SIANG';
+          button.innerHTML = '<i class="fas fa-sun"></i> MODE SIANG';
           localStorage.setItem('pgoTheme', 'light');
         }
         if (mapInstance) setTimeout(() => mapInstance.invalidateSize(), 300);
@@ -4448,7 +4469,7 @@ L.control.layers({
       (function init() {
         if (localStorage.getItem('pgoTheme') === 'light') {
           document.body.classList.add('light-mode');
-          document.getElementById('themeToggleBtn').innerHTML = '☀️ MODE SIANG';
+          document.getElementById('themeToggleBtn').innerHTML = '<i class="fas fa-sun"></i> MODE SIANG';
         }
         setInterval(updateClock, 1000);
         updateClock();
