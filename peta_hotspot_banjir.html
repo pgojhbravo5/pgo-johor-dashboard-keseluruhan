@@ -194,9 +194,11 @@ dialog th{color:var(--navy);font-family:var(--font-head)}
   .icon-btn{width:2.15rem;height:2.15rem;font-size:.95rem}
   .menu-btn{width:2.15rem;padding:0;gap:0}
   .menu-btn span{display:none}
-  #side{width:100%;height:auto;max-height:36vh;max-height:36dvh;flex:none;padding:10px;gap:8px;border-right:0;border-bottom:1px solid var(--hud-border)}
+  #app{flex-direction:column;overflow:hidden}
+  #map{order:-1;flex:none;height:55vh;height:55dvh;min-height:280px}
+  #side{order:1;width:100%;max-height:none;flex:1 1 auto;min-height:0;padding:10px;gap:8px;border-right:0;border-top:1px solid var(--hud-border);border-bottom:0}
   body.hide-side #side{display:none}
-  #map{flex:1 1 auto;height:50vh;height:50dvh;min-height:260px}
+  body.hide-side #map{flex:1 1 auto;height:auto}
   #app{overflow-y:auto}
   .stat{padding:5px 8px}
   .stat b{font-size:1.05rem}
