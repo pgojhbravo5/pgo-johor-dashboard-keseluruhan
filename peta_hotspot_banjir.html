@@ -47,7 +47,7 @@ body{display:flex;flex-direction:column;font:14px/1.45 var(--font-main);color:va
 body.hide-side #side{display:none}
 
 /* Butang mata (buka/tutup panel) di sebelah kanan butang layer map */
-.leaflet-left .leaflet-control.side-eye{clear:none;margin-left:6px}
+.leaflet-left .leaflet-control.side-eye{margin-bottom:8px}
 .side-eye button{width:34px;height:34px;display:flex;align-items:center;justify-content:center;padding:0;cursor:pointer;font-size:15px;background:var(--hud-bg);color:var(--text-secondary);border:2px solid rgba(0,0,0,.2);border-radius:5px;box-shadow:var(--shadow-sm);transition:.2s}
 .side-eye button:hover{color:var(--navy);background:var(--hud-card-bg)}
 .side-eye.off button{color:var(--navy);border-color:var(--navy)}
@@ -370,13 +370,7 @@ const esriStreet = L.tileLayer(
   attribution: '© Esri, HERE, Garmin, USGS, Intermap, INCREMENT P, NRCan'
 });
 const map = L.map('map', { preferCanvas: true, layers: [osm], maxZoom: 20 }).setView([2.0, 103.3], 8);
-L.control.layers({
-  '🗺️ Peta Jalan (OSM)': osm,
-  '🛰️ Satelit (Esri)': sat,
-  '🛣️ Jalan Raya (Esri)': esriStreet,
-}, null, { position: 'topleft', collapsed: true }).addTo(map);
-
-/* ===== Butang mata: buka / tutup seluruh panel sisi ===== */
+/* ===== Butang mata: buka / tutup seluruh panel sisi (di ATAS butang layer) ===== */
 const eyeCtl = L.control({ position: 'topleft' });
 eyeCtl.onAdd = function () {
   const d = L.DomUtil.create('div', 'leaflet-control side-eye');
@@ -392,7 +386,14 @@ eyeCtl.onAdd = function () {
   };
   return d;
 };
-eyeCtl.addTo(map);
+eyeCtl.addTo(map);   // ditambah dahulu supaya berada di atas
+
+L.control.layers({
+  '🗺️ Peta Jalan (OSM)': osm,
+  '🛰️ Satelit (Esri)': sat,
+  '🛣️ Jalan Raya (Esri)': esriStreet,
+}, null, { position: 'topleft', collapsed: true }).addTo(map);
+
 window.addEventListener('load', () => setTimeout(() => map.invalidateSize(), 300));
 L.control.scale({ metric: true, imperial: false, maxWidth: 100 }).addTo(map);
 // bar skala (untuk semak ~50 m)
