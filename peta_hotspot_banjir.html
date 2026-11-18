@@ -43,7 +43,8 @@ body{display:flex;flex-direction:column;font:14px/1.45 var(--font-main);color:va
 .icon-btn{width:2.25rem;height:2.25rem;display:flex;align-items:center;justify-content:center;border-radius:var(--radius-sm);background:var(--hud-bg);border:1px solid var(--hud-border);color:var(--text-secondary);cursor:pointer;font-size:1rem;text-decoration:none;transition:.2s}
 .icon-btn:hover{background:var(--hud-card-bg);color:var(--navy);border-color:var(--border-strong)}
 .icon-btn.active{background:var(--hud-card-bg);color:var(--navy);border-color:var(--navy)}
-#sideBtn{display:none}
+#sideBtn{display:flex}
+body.hide-side #side{display:none}
 .menu-btn{width:auto;padding:0 .75rem;gap:.45rem;font:700 .72rem var(--font-head);letter-spacing:.06rem;text-transform:uppercase;white-space:nowrap}
 
 #app{flex:1;min-height:0;display:flex}
@@ -51,6 +52,8 @@ body{display:flex;flex-direction:column;font:14px/1.45 var(--font-main);color:va
 #map{flex:1;min-width:0;background:#0b1220}
 .title{margin:0;font:700 .8rem var(--font-head);letter-spacing:.6px;text-transform:uppercase;color:var(--navy);padding-bottom:.5rem;border-bottom:1px solid var(--hud-border)}
 .title i{margin-right:.4rem}
+.title.tt{display:flex;align-items:center;justify-content:space-between;gap:.5rem}
+.title.tt .kes-tg{flex:none}
 .hint{margin:0;font-size:.7rem;color:var(--text-secondary)}
 #msg{display:none;font-size:.75rem;color:#92400e;background:#fffbeb;border:1px solid #fde68a;border-radius:var(--radius);padding:8px}
 #msg.show{display:block}
@@ -231,13 +234,17 @@ dialog th{color:var(--navy);font-family:var(--font-head)}
     <a class="icon-btn menu-btn" href="index.html" aria-label="Kembali ke menu utama" title="Kembali ke menu utama"><i class="fas fa-house"></i><span>MENU UTAMA</span></a>
     <button class="icon-btn" id="sideBtn" aria-label="Tunjuk atau sembunyi panel tapisan" aria-pressed="false"><i class="fas fa-filter"></i></button>
     <button class="icon-btn" id="modeBtn" aria-label="Tukar mod siang malam"><i class="fas fa-sun"></i></button>
+    <button class="icon-btn" id="fsBtn" aria-label="Skrin penuh" title="Skrin penuh"><i class="fas fa-expand"></i></button>
     <button class="icon-btn" id="refreshBtn" aria-label="Muat semula"><i class="fas fa-sync-alt"></i></button>
-  </div>
+    </div>
 </header>
 
 <div id="app">
   <aside id="side">
-    <h2 class="title"><i class="fas fa-filter"></i>Tapisan Lokasi</h2>
+    <h2 class="title tt">
+      <span><i class="fas fa-filter"></i>Tapisan Lokasi</span>
+      <button class="kes-tg" id="sideTg" aria-label="Sembunyi atau papar kandungan tapisan" aria-expanded="true"><i class="fas fa-eye-slash"></i></button>
+    </h2>
     <p class="hint">Tick tahun / daerah / mukim / kawasan / lembangan / sub / jenis untuk menapis titik di peta. Jika tiada tapisan, semua titik dipaparkan.</p>
     <p class="hint"><i class="fas fa-magnifying-glass-plus"></i> Zoom jauh = jumlah ikut daerah / kawasan jagaan balai. Zoom masuk sedikit sahaja, titik lokasi terus dipaparkan. Klik gelembung untuk zoom masuk.</p>
     <div id="msg"></div>
@@ -308,6 +315,31 @@ const okHex = (s) => /^#([0-9a-f]{3}|[0-9a-f]{6}|[0-9a-f]{8})$/i.test(s);
     ic();
   };
   $('#refreshBtn').onclick = () => location.reload();
+
+  /* ===== Skrin penuh ===== */
+  const fsBtn = $('#fsBtn');
+  const fsEl = document.documentElement;
+  const fsOn = () => document.fullscreenElement || document.webkitFullscreenElement;
+  const fsIc = () => {
+    const on = !!fsOn();
+    fsBtn.querySelector('i').className = on ? 'fas fa-compress' : 'fas fa-expand';
+    fsBtn.title = on ? 'Keluar skrin penuh' : 'Skrin penuh';
+    fsBtn.setAttribute('aria-label', fsBtn.title);
+    setTimeout(() => { if (typeof map !== 'undefined') map.invalidateSize(); }, 200);
+  };
+  if (!(fsEl.requestFullscreen || fsEl.webkitRequestFullscreen)) {
+    fsBtn.style.display = 'none';   // iPhone Safari tidak menyokong
+  } else {
+    fsBtn.onclick = () => {
+      if (fsOn()) (document.exitFullscreen || document.webkitExitFullscreen).call(document);
+      else (fsEl.requestFullscreen || fsEl.webkitRequestFullscreen).call(fsEl);
+    };
+    document.addEventListener('fullscreenchange', fsIc);
+    document.addEventListener('webkitfullscreenchange', fsIc);
+  }
+
+  /* ===== Hide seluruh panel sisi (mata dalam panel -> guna butang header sedia ada) ===== */
+  $('#sideTg').onclick = () => $('#sideBtn').click();
 })();
 
 /* ===== Peta ===== */
