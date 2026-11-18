@@ -63,6 +63,7 @@ body.hide-side #side{display:none}
 #app{flex:1;min-height:0;display:flex}
 #side{width:350px;flex:none;overflow-y:auto;padding:12px;display:flex;flex-direction:column;gap:10px;background:var(--bg-body);border-right:1px solid var(--hud-border);overscroll-behavior:contain}
 #map{flex:1;min-width:0;background:#0b1220}
+body.mode-siang #map{background:#e8e4d8}
 .title{margin:0;font:700 .8rem var(--font-head);letter-spacing:.6px;text-transform:uppercase;color:var(--navy);padding-bottom:.5rem;border-bottom:1px solid var(--hud-border)}
 .title i{margin-right:.4rem}
 .hint{margin:0;font-size:.7rem;color:var(--text-secondary)}
@@ -153,6 +154,10 @@ body:not(.mode-siang) .agg.d{background:rgba(59,110,168,.92)}
 @media (max-width:800px){.ai-box{width:min(300px,calc(100vw - 28px));font-size:.7rem}.ai-b{max-height:36vh}}
 
 .leaflet-container{font-family:var(--font-main)!important}
+
+/* Hilangkan garis jahitan antara jubin peta */
+.leaflet-container img.leaflet-tile{mix-blend-mode:plus-lighter}
+.leaflet-tile-container img{outline:1px solid transparent}
 .leaflet-popup-content-wrapper,.leaflet-popup-tip{background:var(--hud-bg)!important;color:var(--text-primary)!important;border-radius:var(--radius)!important;box-shadow:var(--shadow)!important}
 .pop{max-height:300px;overflow-y:auto;font-size:12px;min-width:230px}
 .pop h3{margin:0 0 5px;padding-bottom:5px;border-bottom:1px solid var(--hud-border);font:700 .85rem var(--font-head);color:var(--navy);display:flex;align-items:center;gap:6px}
