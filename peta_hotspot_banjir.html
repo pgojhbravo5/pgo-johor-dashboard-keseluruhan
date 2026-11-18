@@ -194,9 +194,10 @@ dialog th{color:var(--navy);font-family:var(--font-head)}
   .icon-btn{width:2.15rem;height:2.15rem;font-size:.95rem}
   .menu-btn{width:2.15rem;padding:0;gap:0}
   .menu-btn span{display:none}
-  #side{width:100%;height:auto;max-height:44vh;max-height:44dvh;flex:0 1 auto;padding:10px;gap:8px;border-right:0;border-bottom:1px solid var(--hud-border)}
+  #side{width:100%;height:auto;max-height:36vh;max-height:36dvh;flex:none;padding:10px;gap:8px;border-right:0;border-bottom:1px solid var(--hud-border)}
   body.hide-side #side{display:none}
-  #map{flex:1 1 0;min-height:240px;height:auto}
+  #map{flex:1 1 auto;height:50vh;height:50dvh;min-height:260px}
+  #app{overflow-y:auto}
   .stat{padding:5px 8px}
   .stat b{font-size:1.05rem}
   .stat span{font-size:.56rem}
@@ -283,8 +284,16 @@ dialog th{color:var(--navy);font-family:var(--font-head)}
   <div id="dlgBody" style="max-height:60vh;overflow:auto"></div>
 </dialog>
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
+<script>
+  window.addEventListener('error', function (e) {
+    var d = document.createElement('div');
+    d.style.cssText = 'position:fixed;left:0;right:0;bottom:0;z-index:99999;background:#c8102e;color:#fff;font:12px monospace;padding:8px;white-space:pre-wrap';
+    d.textContent = 'RALAT: ' + e.message + ' (baris ' + e.lineno + ')';
+    (document.body || document.documentElement).appendChild(d);
+  });
+  </script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
 <script>
 const CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vSecxv6lwAvZsP35UEn2fLYHBxaJCWbJiDo-psMfPzq8D4u-v3xifgCPR8u9rTqsJUpXvEM27B6vo4k/pub?output=csv';
 
@@ -382,6 +391,7 @@ eyeCtl.onAdd = function () {
   return d;
 };
 eyeCtl.addTo(map);
+window.addEventListener('load', () => setTimeout(() => map.invalidateSize(), 300));
 L.control.scale({ metric: true, imperial: false, maxWidth: 100 }).addTo(map);
 // bar skala (untuk semak ~50 m)
 map.createPane('kml'); map.getPane('kml').style.zIndex = 350;   // di bawah titik banjir
