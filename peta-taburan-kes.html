@@ -119,6 +119,16 @@ button{font:inherit}
 /* Canvas meteor (balai -> lokasi kes) */
 .peta-meteor-canvas{position:absolute;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:450}
 
+/* Gelembung jumlah kes (ikut daerah / zon) */
+.agg{display:flex;align-items:center;justify-content:center;border-radius:50%;color:#fff;font:700 13px var(--font-head);border:2px solid #fff;box-shadow:0 1px 6px rgba(0,0,0,.45);cursor:pointer;transition:transform .15s;animation:aggpop .35s ease-out}
+@keyframes aggpop{from{opacity:0;transform:scale(.4)}to{opacity:1;transform:scale(1)}}
+.agg:hover{transform:scale(1.1)}
+.agg.d{background:rgba(0,43,92,.88)}
+.agg.j{background:rgba(200,16,46,.88)}
+body:not(.mode-siang) .agg.d{background:rgba(59,110,168,.92)}
+.aggtip{font:700 11px var(--font-head);padding:2px 6px;border-radius:var(--radius-sm);background:var(--hud-bg);color:var(--text-primary);border:1px solid var(--hud-border);box-shadow:var(--shadow-sm)}
+.aggtip::before{display:none}
+
 /* Popup & Leaflet */
 .leaflet-container{font-family:var(--font-main)!important}
 
@@ -295,6 +305,28 @@ const KML_URL = 'poligon-kawasan-jagaan.kml';
 /* ======================================================================= */
 
 const ZCOL = { 'ZON 1': '#2563eb', 'ZON 2': '#16a34a', 'ZON 3': '#d97706', 'ZON 4': '#dc2626' };
+
+/* Warna setiap balai (dijana automatik, tetap ikut susunan abjad nama balai) */
+const BCOL = {};
+const balaiColor = (b) => BCOL[b] || '#555555';
+function hslHex(h, s, l) {
+  s /= 100; l /= 100;
+  const a = s * Math.min(l, 1 - l);
+  const f = (n) => {
+    const k = (n + h / 30) % 12;
+    const c = l - a * Math.max(-1, Math.min(k - 3, 9 - k, 1));
+    return Math.round(255 * c).toString(16).padStart(2, '0');
+  };
+  return '#' + f(0) + f(8) + f(4);
+}
+function buildBalaiColors() {
+  Object.keys(BCOL).forEach((k) => delete BCOL[k]);
+  [...OPT.b.keys()].sort().forEach((b, i) => {
+    const h = Math.round((i * 137.508) % 360);   // sudut emas supaya warna jiran berbeza jauh
+    const l = [48, 38, 56][i % 3];               // variasi cerah/gelap untuk bezakan lagi
+    BCOL[b] = hslHex(h, 75, l);
+  });
+}
 const $ = (s) => document.querySelector(s);
 const norm = (s) => String(s == null ? '' : s).replace(/\s+/g, ' ').trim();
 const up = (s) => norm(s).toUpperCase();
@@ -402,7 +434,18 @@ L.control.layers({
 
 window.addEventListener('load', () => setTimeout(() => map.invalidateSize(), 300));
 const gZon = L.layerGroup().addTo(map), gJag = L.layerGroup().addTo(map),
-      gBal = L.layerGroup().addTo(map), gKes = L.layerGroup().addTo(map);
+      gBal = L.layerGroup().addTo(map), gKes = L.layerGroup().addTo(map),
+      gAgg = L.layerGroup().addTo(map);
+
+/* ===== Tahap zoom gelembung jumlah =====
+   zoom <= Z_DAERAH_MAX                 -> gelembung ikut DAERAH
+   Z_DAERAH_MAX < zoom <= Z_LEVEL2_MAX  -> gelembung ikut AGG_KEY2 (zon)
+   zoom > Z_LEVEL2_MAX                  -> titik kes terperinci (flash run bermula zoom 12)
+   Nak gelembung ikut balai ganti zon: tukar AGG_KEY2 kepada '_b' */
+const Z_DAERAH_MAX = 9;
+const Z_LEVEL2_MAX = 11;
+const AGG_KEY2 = '_z';
+let kesMarkers = [];
 
 /* ===== Penyesuaian peta untuk mudah alih ===== */
 (function () {
@@ -529,9 +572,11 @@ function parse(text) {
   $('#sAll').textContent = rows.length.toLocaleString();
   $('#sBad').textContent = bad.length;
   $('#upd').textContent = new Date().toLocaleString('ms-MY');
+  buildBalaiColors();
   GROUPS.forEach((g) => buildList(g.k));
   update();
-  if (warn.length) showMsg('Lajur tidak dijumpai: ' + warn.join(', ').toUpperCase() + ' — filter berkaitan tidak akan berfungsi.');
+  if (warn.length)
+  showMsg('Lajur tidak dijumpai: ' + warn.join(', ').toUpperCase() + ' — filter berkaitan tidak akan berfungsi.');
   checkMatch();
 }
 
@@ -544,8 +589,9 @@ function buildList(g) {
   vals.forEach((v) => {
     const l = document.createElement('label');
     l.dataset.v = v;
-    const dot = g === 'z' ? '<span class="dot" style="background:' + (ZCOL[v] || '#666') + '"></span>' : '';
-    l.innerHTML = '<input type="checkbox">' + dot + '<span>' + esc(v) + '</span><span class="n">' + OPT[g].get(v) + '</span>';
+    const dot = g === 'z' ? '<span class="dot" style="background:' + (ZCOL[v] || '#666') + '"></span>'
+      : g === 'b' ? '<span class="dot" style="background:' + balaiColor(v) + '"></span>' : '';
+      l.innerHTML = '<input type="checkbox">' + dot + '<span>' + esc(v) + '</span><span class="n">' + OPT[g].get(v) + '</span>';
     l.firstChild.checked = S[g].has(v);
     l.firstChild.onchange = (e) => { e.target.checked ? S[g].add(v) : S[g].delete(v); update(); };
     box.appendChild(l);
@@ -573,8 +619,9 @@ function popup(r) {
 const toLL = (g) => g.map((pg) => pg.map((rg) => rg.map((c) => [c[1], c[0]])));
 
 function update() {
-  [gZon, gJag, gBal, gKes].forEach((g) => g.clearLayers());
+  [gZon, gJag, gBal, gKes, gAgg].forEach((g) => g.clearLayers());
   curHit = [];
+  kesMarkers = [];
   const act = GROUPS.some((g) => S[g.k].size);
   const pass = (r) => GROUPS.every((g) => !S[g.k].size || S[g.k].has(r['_' + g.k]));
   const locAct = S.d.size || S.z.size || S.b.size;
@@ -590,9 +637,9 @@ sel = hit.length;
     hit.forEach((r) => {
       if (!r._c) return;
       vis++;
-      const m = L.circleMarker(r._c, { radius: 5, color: '#fff', weight: 1, fillColor: ZCOL[r._z] || '#555', fillOpacity: 0.85 })
-        .bindPopup(() => popup(r), { maxWidth: 360 });
-      gKes.addLayer(m); all.addLayer(m);
+      const m = L.circleMarker(r._c, { radius: 5, color: '#fff', weight: 1, fillColor: balaiColor(r._b), fillOpacity: 0.85 })
+      .bindPopup(() => popup(r), { maxWidth: 360 });
+      kesMarkers.push(m); all.addLayer(m);
     });
     if (HAS_KML()) {
       KML.zon.forEach((z) => {
@@ -630,10 +677,52 @@ sel = hit.length;
   updateStats(pass, act);
 
   if (rows.length) showMsg(act ? '' : 'Tiada tapisan dipilih. Tick sekurang-kurangnya satu daerah, zon, balai, kategori atau jenis kes untuk memaparkan kes.');
+  renderKes();
   scheduleMeteor();
 }
 
 function showMsg(t) { const m = $('#msg'); m.textContent = t; m.classList.toggle('show', !!t); }
+
+/* ===== Gelembung jumlah ikut zoom ===== */
+function levelNow() {
+  const z = map.getZoom();
+  if (z <= Z_DAERAH_MAX) return 'daerah';
+  if (z <= Z_LEVEL2_MAX) return 'level2';
+  return 'titik';
+}
+function aggIcon(n, cls) {
+  const s = Math.round(Math.min(64, 30 + Math.sqrt(n) * 3.2));
+  return L.divIcon({ className: '', html: '<div class="agg ' + cls + '" style="width:' + s + 'px;height:' + s + 'px">' + n.toLocaleString() + '</div>', iconSize: [s, s], iconAnchor: [s / 2, s / 2] });
+}
+function renderKes() {
+  gKes.clearLayers(); gAgg.clearLayers();
+  const lvl = levelNow();
+  if (lvl === 'titik') { kesMarkers.forEach((m) => gKes.addLayer(m)); return; }
+
+  const key = lvl === 'daerah' ? '_d' : AGG_KEY2;
+  const cls = lvl === 'daerah' ? 'd' : 'j';
+  const minZ = (lvl === 'daerah' ? Z_DAERAH_MAX : Z_LEVEL2_MAX) + 1;   // zoom minimum supaya gelembung pecah
+  const grp = new Map();
+  curHit.forEach((r) => {
+    if (!r._c) return;
+    const k = r[key] || '(TIADA)';
+    let g = grp.get(k);
+    if (!g) { g = { n: 0, lat: 0, lng: 0, pts: [] }; grp.set(k, g); }
+    g.n++; g.lat += r._c[0]; g.lng += r._c[1]; g.pts.push(r._c);
+  });
+  grp.forEach((g, name) => {
+    const m = L.marker([g.lat / g.n, g.lng / g.n], { icon: aggIcon(g.n, cls), zIndexOffset: 400 });
+    m.bindTooltip(esc(name) + ' — ' + g.n.toLocaleString() + ' kes', {
+      direction: 'bottom', offset: [0, 4], className: 'aggtip', permanent: lvl === 'daerah'
+    });
+    m.on('click', () => {
+      const b = L.latLngBounds(g.pts);
+      map.setView(b.getCenter(), Math.min(17, Math.max(map.getBoundsZoom(b.pad(0.15)), minZ)));
+    });
+    gAgg.addLayer(m);
+  });
+}
+map.on('zoomend', renderKes);
 
 /* ============================================================
    ===== METEOR: BALAI -> LOKASI KES + JARAK (KM) + FLASH RUN =====
@@ -852,7 +941,7 @@ function scheduleMeteor() {
   meteorTimer = setTimeout(rebuildMeteor, 120);
 }
 function rebuildMeteor() {
-  if (!meteorOn || !HAS_KML() || !curHit.length) {
+  if (!meteorOn || !HAS_KML() || !curHit.length || levelNow() !== 'titik') {
     meteorLinks = [];
     routeQueue.splice(0).forEach((l) => routeSedangFetch.delete(l.id));
     return;
@@ -873,7 +962,7 @@ function rebuildMeteor() {
     const b = balaiByKey[bkey(r._b)];
     if (!b) continue;
     const id = r._id;
-    const warna = ZCOL[r._z] || '#555555';
+    const warna = balaiColor(r._b);
     const csv = r._jk > 0;
     const km = csv ? r._jk : haversineKm(b.lat, b.lng, r._c[0], r._c[1]);
     const sedia = lama.get(id);
