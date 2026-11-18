@@ -727,8 +727,7 @@ function sediaCanvas(ctx, w, h, dpr) {
   ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
   ctx.clearRect(0, 0, w, h);
   const kont = map.getContainer().getBoundingClientRect();
-  const els = map.getContainer().querySelectorAll('.leaflet-popup-content-wrapper, .leaflet-popup-tip');
-  if (!els.length) return;
+  const els = map.getContainer().querySelectorAll('.leaflet-popup-content-wrapper, .leaflet-popup-tip, .leaflet-tooltip.etatip');  if (!els.length) return;
   ctx.save(); ctx._sv = true;
   ctx.beginPath();
   ctx.rect(0, 0, w, h);
@@ -1026,11 +1025,17 @@ function meteorLoop() {
     ctx.textBaseline = 'middle';
     const dipakai = [];
     labelCalon.sort((a, b) => b.alpha - a.alpha);
+    const kontR = kont.getBoundingClientRect();
+    const tipRects = [...kont.querySelectorAll('.leaflet-tooltip.etatip')].map((el) => {
+      const r = el.getBoundingClientRect();
+      return { x: r.left - kontR.left, y: r.top - kontR.top, w: r.width, h: r.height };
+    });
     labelCalon.forEach((lb) => {
       const lw = ctx.measureText(lb.teks).width + 12, lh = 16;
       const x = lb.x - lw / 2, y = lb.y - lh / 2 - 8;
       if (x < 0 || y < 0 || x + lw > w || y + lh > h) return;
       if (dipakai.some((r) => x < r.x + r.w + 2 && x + lw + 2 > r.x && y < r.y + r.h + 2 && y + lh + 2 > r.y)) return;
+      if (tipRects.some((r) => x < r.x + r.w + 2 && x + lw + 2 > r.x && y < r.y + r.h + 2 && y + lh + 2 > r.y)) return;
       dipakai.push({ x, y, w: lw, h: lh });
       ctx.globalAlpha = lb.alpha;
       rrPath(ctx, x, y, lw, lh, 8);
