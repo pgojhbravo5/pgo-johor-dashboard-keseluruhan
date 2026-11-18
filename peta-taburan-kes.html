@@ -531,6 +531,10 @@ function parse(text) {
     hari: f(/^DAY$/) || f(/^HARI$/),
     syif: f(/^SYIF/)
     };
+  // Lajur BALAI BANTUAN 1, 2, 3... (disusun ikut nombor)
+  C.bb = keys.filter((x) => /^BALAI BANTUAN/.test(x))
+    .sort((a, b) => (parseInt(a.replace(/\D/g, ''), 10) || 0) - (parseInt(b.replace(/\D/g, ''), 10) || 0));
+  C.toa = f(/^TOA HADIR/);
   const jarakMeter = C.jarak ? /\(\s*M\s*\)|\bMETER\b|\bMETRE\b/.test(C.jarak) : false;
 
   const miss = ['balai', 'zon', 'daerah', 'lat', 'lng'].filter((k) => !C[k]);
@@ -608,8 +612,10 @@ function popup(r) {
   if (r._jk > 0) jarak += row('Jarak balai (CSV)', r._jk.toFixed(1) + ' km');
   else if (bl && r._c) jarak += row('Jarak garis lurus', '~' + haversineKm(bl.lat, bl.lng, r._c[0], r._c[1]).toFixed(1) + ' km');
   if (rt) jarak += row('Jarak jalan (OSRM)', rt.km.toFixed(1) + ' km');
-  return '<div class="pop"><h3>' + esc(g('kat') || 'Kes') + (g('bil') ? ' #' + esc(g('bil')) : '') + '</h3><table>' +
-    row('Tarikh', g('tarikh')) + row('Syif Bertugas', g('syif')) + row('Call card', g('card')) + row('Balai', r._b) + jarak + row('Daerah', r._d) + row('Zon', r._z) +
+  const bb = (C.bb || []).map((k) => norm(r[k]))
+    .filter((v) => v && !/^[-–—]+$/.test(v) && !/^#?N\/?A$/i.test(v)).join(', ');
+    return '<div class="pop"><h3>' + esc(g('kat') || 'Kes') + (g('bil') ? ' #' + esc(g('bil')) : '') + '</h3><table>' +
+    row('Tarikh', g('tarikh')) + row('Syif Bertugas', g('syif')) + row('Call card', g('card')) + row('Balai', r._b) + row('TOA Hadir', g('toa')) + row('Balai Bantuan', bb) + jarak + row('Daerah', r._d) + row('Zon', r._z) +
     row('Kategori', g('kat')) + row('Sub kategori', [g('sub1'), g('sub2')].filter(Boolean).join(' › ')) +
     row('Jenis', g('jenis')) + row('Alamat', g('alamat')) +
     row('Lat, Long', r._c[0].toFixed(6) + ', ' + r._c[1].toFixed(6)) +
