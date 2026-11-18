@@ -45,6 +45,20 @@ body{display:flex;flex-direction:column;font:14px/1.45 var(--font-main);color:va
 .icon-btn:hover{background:var(--hud-card-bg);color:var(--navy);border-color:var(--border-strong)}
 .icon-btn.active{background:var(--hud-card-bg);color:var(--navy);border-color:var(--navy)}
 #sideBtn{display:none}
+body.hide-side #side{display:none}
+
+/* Butang mata (buka/tutup panel) di atas butang layer map */
+.leaflet-left .leaflet-control.side-eye{margin-bottom:8px}
+.side-eye button{width:34px;height:34px;display:flex;align-items:center;justify-content:center;padding:0;cursor:pointer;font-size:15px;background:var(--hud-bg);color:var(--text-secondary);border:2px solid rgba(0,0,0,.2);border-radius:5px;box-shadow:var(--shadow-sm);transition:.2s}
+.side-eye button:hover{color:var(--navy);background:var(--hud-card-bg)}
+.side-eye.off button{color:var(--navy);border-color:var(--navy)}
+
+/* Seragamkan butang layer map dengan butang mata (34x34) */
+.leaflet-control-layers{border:2px solid rgba(0,0,0,.2)!important;border-radius:5px!important;box-shadow:var(--shadow-sm)!important;background-clip:padding-box}
+.leaflet-control-layers-toggle{width:34px!important;height:34px!important;background-size:20px 20px!important;background-position:center!important}
+.leaflet-retina .leaflet-control-layers-toggle{background-size:20px 20px!important}
+.leaflet-touch .leaflet-control-layers{border:2px solid rgba(0,0,0,.2)!important}
+.leaflet-touch .leaflet-control-layers-toggle{width:34px!important;height:34px!important}
 .menu-btn{width:auto;padding:0 .75rem;gap:.45rem;font:700 .72rem var(--font-head);letter-spacing:.06rem;text-transform:uppercase;white-space:nowrap}
 
 /* Layout */
@@ -153,22 +167,24 @@ dialog th{color:var(--navy);font-family:var(--font-head)}
   .icon-btn{width:2.15rem;height:2.15rem;font-size:.95rem}
   .menu-btn{width:2.15rem;padding:0;gap:0}
   .menu-btn span{display:none}
-  #sideBtn{display:flex}
+  #sideBtn{display:none}
 
-  #app{flex-direction:column}
+  #app{flex-direction:column;overflow:hidden}
 
   #side{
+    order:-1;
     width:100%;height:auto;
-    max-height:44vh;
-    max-height:44dvh;
-    flex:0 1 auto;
+    max-height:35vh;
+    max-height:35dvh;
+    flex:none;
     padding:10px;gap:8px;
-    border-right:0;border-bottom:1px solid var(--hud-border);
+    border-right:0;border-top:0;border-bottom:1px solid var(--hud-border);
     overscroll-behavior:contain;
   }
   body.hide-side #side{display:none}
 
-  #map{flex:1 1 auto;min-height:200px;height:auto}
+  #map{order:1;flex:1 1 auto;height:auto;min-height:280px}
+  body.hide-side #map{flex:1 1 auto;height:auto}
 
   .title{font-size:.72rem;padding-bottom:.4rem}
   .hint{font-size:.66rem}
@@ -219,8 +235,9 @@ dialog th{color:var(--navy);font-family:var(--font-head)}
     <a class="icon-btn menu-btn" href="index.html" aria-label="Kembali ke menu utama" title="Kembali ke menu utama"><i class="fas fa-house"></i><span>MENU UTAMA</span></a>
     <button class="icon-btn" id="sideBtn" aria-label="Tunjuk atau sembunyi panel tapisan" aria-pressed="false"><i class="fas fa-filter"></i></button>
     <button class="icon-btn" id="modeBtn" aria-label="Tukar mod siang malam"><i class="fas fa-sun"></i></button>
+    <button class="icon-btn" id="fsBtn" aria-label="Skrin penuh" title="Skrin penuh"><i class="fas fa-expand"></i></button>
     <button class="icon-btn" id="refreshBtn" aria-label="Muat semula"><i class="fas fa-sync-alt"></i></button>
-  </div>
+    </div>
 </header>
 
 <div id="app">
@@ -309,6 +326,32 @@ function checkMatch() { // bantuan debug (lihat Console)
     ic();
   };
   $('#refreshBtn').onclick = () => location.reload();
+
+  /* ===== Skrin penuh (selamat: tak ganggu skrip lain) ===== */
+  try {
+    const fsBtn = document.getElementById('fsBtn');
+    const fsEl = document.documentElement;
+    if (fsBtn) {
+      const reqFs = fsEl.requestFullscreen || fsEl.webkitRequestFullscreen;
+      const fsOn = () => document.fullscreenElement || document.webkitFullscreenElement;
+      if (!reqFs) {
+        fsBtn.style.display = 'none';   // iPhone Safari tidak menyokong
+      } else {
+        const fsIc = () => {
+          const on = !!fsOn();
+          fsBtn.querySelector('i').className = on ? 'fas fa-compress' : 'fas fa-expand';
+          fsBtn.title = on ? 'Keluar skrin penuh' : 'Skrin penuh';
+          setTimeout(() => { if (typeof map !== 'undefined') map.invalidateSize(); }, 200);
+        };
+        fsBtn.onclick = () => {
+          if (fsOn()) (document.exitFullscreen || document.webkitExitFullscreen).call(document);
+          else reqFs.call(fsEl);
+        };
+        document.addEventListener('fullscreenchange', fsIc);
+        document.addEventListener('webkitfullscreenchange', fsIc);
+      }
+    }
+  } catch (e) { console.warn('[Fullscreen]', e); }
 })();
 
 /* ===== Peta ===== */
@@ -328,11 +371,31 @@ const esriStreet = L.tileLayer(
   attribution: '© Esri, HERE, Garmin, USGS, Intermap, INCREMENT P, NRCan'
 });
 const map = L.map('map', { preferCanvas: true, layers: [osm], maxZoom: 20 }).setView([2.0, 103.3], 8);
+/* ===== Butang mata: buka / tutup seluruh panel sisi (di ATAS butang layer) ===== */
+const eyeCtl = L.control({ position: 'topleft' });
+eyeCtl.onAdd = function () {
+  const d = L.DomUtil.create('div', 'leaflet-control side-eye');
+  d.innerHTML = '<button type="button" aria-label="Sembunyi atau papar panel" title="Sembunyi / papar panel"><i class="fas fa-eye-slash"></i></button>';
+  L.DomEvent.disableClickPropagation(d);
+  d.querySelector('button').onclick = () => {
+    const hid = document.body.classList.toggle('hide-side');
+    d.classList.toggle('off', hid);
+    d.querySelector('i').className = hid ? 'fas fa-eye' : 'fas fa-eye-slash';
+    const sb = document.getElementById('sideBtn');
+    if (sb) { sb.classList.toggle('active', hid); sb.setAttribute('aria-pressed', hid ? 'true' : 'false'); }
+    setTimeout(() => map.invalidateSize(), 180);
+  };
+  return d;
+};
+eyeCtl.addTo(map);   // ditambah dahulu supaya berada di atas
+
 L.control.layers({
   '🗺️ Peta Jalan (OSM)': osm,
   '🛰️ Satelit (Esri)': sat,
   '🛣️ Jalan Raya (Esri)': esriStreet,
 }, null, { position: 'topleft', collapsed: true }).addTo(map);
+
+window.addEventListener('load', () => setTimeout(() => map.invalidateSize(), 300));
 const gZon = L.layerGroup().addTo(map), gJag = L.layerGroup().addTo(map),
       gBal = L.layerGroup().addTo(map), gKes = L.layerGroup().addTo(map);
 
