@@ -721,7 +721,26 @@ function rrPath(ctx, x, y, w, h, r) {
   ctx.closePath();
 }
 
+/* Potong kawasan popup daripada canvas supaya flash run & label jarak lalu di BAWAH popup */
+function sediaCanvas(ctx, w, h, dpr) {
+  if (ctx._sv) { ctx.restore(); ctx._sv = false; }      // buang clip frame lepas
+  ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  ctx.clearRect(0, 0, w, h);
+  const kont = map.getContainer().getBoundingClientRect();
+  const els = map.getContainer().querySelectorAll('.leaflet-popup-content-wrapper, .leaflet-popup-tip');
+  if (!els.length) return;
+  ctx.save(); ctx._sv = true;
+  ctx.beginPath();
+  ctx.rect(0, 0, w, h);
+  els.forEach((el) => {
+    const r = el.getBoundingClientRect();
+    if (r.width && r.height) ctx.rect(r.left - kont.left, r.top - kont.top, r.width, r.height);
+  });
+  ctx.clip('evenodd');                                   // semua kecuali kawasan popup
+}
+
 /* --- Padankan titik hotspot dengan balai --- */
+
 const nBalai = (s) => String(s || '').toUpperCase().replace(/\(.*?\)/g, '')
   .replace(/\b(BALAI|BBP|BOMBA|DAN|PENYELAMAT|FIRE|POST|KAWASAN|JAGAAN)\b/g, '').replace(/[^A-Z0-9]/g, '');
 
@@ -974,8 +993,7 @@ function meteorLoop() {
     meteorCanvas.height = Math.round(h * dpr);
   }
   const ctx = meteorCtx;
-  ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-  ctx.clearRect(0, 0, w, h);
+  sediaCanvas(ctx, w, h, dpr);
   if (!meteorOn || !meteorLinks.length) return;
   if (map.getZoom() > ROUTE_ZOOM_MAX) return;   // lebih dekat daripada skala ~50 m: tiada flash run / meteor
 
@@ -1965,8 +1983,7 @@ fetch(CSV_URL)
     if (rtCv.width !== Math.round(w * dpr) || rtCv.height !== Math.round(h * dpr)) {
       rtCv.width = Math.round(w * dpr); rtCv.height = Math.round(h * dpr);
     }
-    rtCtx.setTransform(dpr, 0, 0, dpr, 0, 0);
-    rtCtx.clearRect(0, 0, w, h);
+    sediaCanvas(rtCtx, w, h, dpr);
     const z = map.getZoom();
     if (!map.hasLayer(gRT) || z < RT_FLASH_ZOOM_MIN || z > ROUTE_ZOOM_MAX) return;
     const now = performance.now();

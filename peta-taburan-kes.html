@@ -769,7 +769,26 @@ function rrPath(ctx, x, y, w, h, r) {
   ctx.closePath();
 }
 
+/* Potong kawasan popup daripada canvas supaya flash run & label jarak lalu di BAWAH popup */
+function sediaCanvas(ctx, w, h, dpr) {
+  if (ctx._sv) { ctx.restore(); ctx._sv = false; }      // buang clip frame lepas
+  ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  ctx.clearRect(0, 0, w, h);
+  const kont = map.getContainer().getBoundingClientRect();
+  const els = map.getContainer().querySelectorAll('.leaflet-popup-content-wrapper, .leaflet-popup-tip');
+  if (!els.length) return;
+  ctx.save(); ctx._sv = true;
+  ctx.beginPath();
+  ctx.rect(0, 0, w, h);
+  els.forEach((el) => {
+    const r = el.getBoundingClientRect();
+    if (r.width && r.height) ctx.rect(r.left - kont.left, r.top - kont.top, r.width, r.height);
+  });
+  ctx.clip('evenodd');                                   // semua kecuali kawasan popup
+}
+
 /* --- Route jalan (OSRM) pada zoom dekat --- */
+
 const ROUTE_ZOOM_MIN = 12;
 const ROUTE_ZOOM_MAX = 20;
 const ROUTE_OSRM_URL = 'https://router.project-osrm.org/route/v1/driving';
@@ -1001,10 +1020,9 @@ function meteorLoop() {
     meteorCanvas.height = Math.round(h * dpr);
   }
   const ctx = meteorCtx;
-  ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-  ctx.clearRect(0, 0, w, h);
+  sediaCanvas(ctx, w, h, dpr);
   if (!meteorOn || !meteorLinks.length) return;
-
+  
   const now = performance.now();
   ctx.lineCap = 'round';
   const labelCalon = [];
