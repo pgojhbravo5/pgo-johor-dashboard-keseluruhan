@@ -486,8 +486,8 @@ function parse(text) {
     card: f(/^CALL CARD/), mangsa: f(/^MELIBATKAN MANGSA/), jam: f(/^JUMLAH JAM OPERASI/), peny: f(/^NAMA PENYELIA/),
     bulan: f(/^BULAN$/),
     hari: f(/^DAY$/) || f(/^HARI$/),
-    syif: f(/^SYIF$/)
-  };
+    syif: f(/^SYIF/)
+    };
   const jarakMeter = C.jarak ? /\(\s*M\s*\)|\bMETER\b|\bMETRE\b/.test(C.jarak) : false;
 
   const miss = ['balai', 'zon', 'daerah', 'lat', 'lng'].filter((k) => !C[k]);
@@ -563,7 +563,7 @@ function popup(r) {
   else if (bl && r._c) jarak += row('Jarak garis lurus', '~' + haversineKm(bl.lat, bl.lng, r._c[0], r._c[1]).toFixed(1) + ' km');
   if (rt) jarak += row('Jarak jalan (OSRM)', rt.km.toFixed(1) + ' km');
   return '<div class="pop"><h3>' + esc(g('kat') || 'Kes') + (g('bil') ? ' #' + esc(g('bil')) : '') + '</h3><table>' +
-    row('Tarikh', g('tarikh')) + row('Call card', g('card')) + row('Balai', r._b) + jarak + row('Daerah', r._d) + row('Zon', r._z) +
+    row('Tarikh', g('tarikh')) + row('Syif Bertugas', g('syif')) + row('Call card', g('card')) + row('Balai', r._b) + jarak + row('Daerah', r._d) + row('Zon', r._z) +
     row('Kategori', g('kat')) + row('Sub kategori', [g('sub1'), g('sub2')].filter(Boolean).join(' › ')) +
     row('Jenis', g('jenis')) + row('Alamat', g('alamat')) +
     row('Lat, Long', r._c[0].toFixed(6) + ', ' + r._c[1].toFixed(6)) +
