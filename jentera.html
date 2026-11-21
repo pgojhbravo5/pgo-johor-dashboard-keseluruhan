@@ -1016,7 +1016,7 @@
         border-color: #e879f9;
       }
     </style>
-    
+
   </head>
   <body class="min-h-screen flex flex-col">
     <!-- LOADING OVERLAY -->
@@ -3857,9 +3857,9 @@
 
               // ===== LABEL JOCKEY (JC) - hanya jika status = YA =====
               const jcBadge = isJockey(item)
-                ? `<span class="text-[8px] font-extrabold px-1 rounded border shrink-0 leading-tight" style="background:rgba(245,158,11,0.2);color:#d97706;border-color:rgba(245,158,11,0.5);" title="Jentera Jockey">JC</span>`
+                ? `<span class="jc-badge text-[8px] font-extrabold px-1 rounded shrink-0 leading-tight" title="Jentera Jockey">JC</span>`
                 : '';
-
+                
               return `<div class="jentera-card ${glowClass} ${item._tc} relative group" onclick="showVehicleModal('${itemJson}')" title="${callsign} - ${status} (${model})">
                     <button onclick="event.stopPropagation(); copySingleAssetInfo('${itemJson}', this)" class="copy-btn" title="Salin maklumat"><i class="fa-regular fa-copy"></i></button>
                     <div class="flex items-center justify-between gap-1 pr-3 min-w-0">
