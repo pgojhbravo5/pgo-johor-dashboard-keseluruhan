@@ -1003,8 +1003,20 @@
       body.light-mode .badge-rosak { color: #991b1b; background: #fee2e2; border-color: #fca5a5; }
       body.light-mode .badge-pulang { color: #1e40af; background: #dbeafe; border-color: #93c5fd; }
       body.light-mode .badge-unknown { color: #475569; background: #f1f5f9; border-color: #cbd5e1; }
-    </style>
 
+      /* ---- Label JC (Jentera Jockey) ---- */
+      .jc-badge {
+        color: #f0abfc;                        /* MALAM: fuchsia cerah */
+        background: rgba(217, 70, 239, 0.18);
+        border: 1px solid rgba(217, 70, 239, 0.5);
+      }
+      body.light-mode .jc-badge {
+        color: #a21caf;                        /* SIANG: fuchsia gelap */
+        background: #fae8ff;
+        border-color: #e879f9;
+      }
+    </style>
+    
   </head>
   <body class="min-h-screen flex flex-col">
     <!-- LOADING OVERLAY -->
@@ -2513,6 +2525,18 @@
         return 'U';
       }
 
+      // Semak lajur "Status Jentera Jockey" => true jika nilai = YA
+      function isJockey(item) {
+        if (!item) return false;
+        for (const k in item) {
+          const key = k.replace(/\s+/g, ' ').trim().toUpperCase();
+          if (key === 'STATUS JENTERA JOCKEY') {
+            return (item[k] || '').trim().toUpperCase() === 'YA';
+          }
+        }
+        return false;
+      }
+
       // ============================================================
       // FETCH & LOAD
       // ============================================================
@@ -3831,10 +3855,15 @@
                     .replace('FIRE POST', 'FP')
                 : '-';
 
+              // ===== LABEL JOCKEY (JC) - hanya jika status = YA =====
+              const jcBadge = isJockey(item)
+                ? `<span class="text-[8px] font-extrabold px-1 rounded border shrink-0 leading-tight" style="background:rgba(245,158,11,0.2);color:#d97706;border-color:rgba(245,158,11,0.5);" title="Jentera Jockey">JC</span>`
+                : '';
+
               return `<div class="jentera-card ${glowClass} ${item._tc} relative group" onclick="showVehicleModal('${itemJson}')" title="${callsign} - ${status} (${model})">
                     <button onclick="event.stopPropagation(); copySingleAssetInfo('${itemJson}', this)" class="copy-btn" title="Salin maklumat"><i class="fa-regular fa-copy"></i></button>
                     <div class="flex items-center justify-between gap-1 pr-3 min-w-0">
-                      <div class="flex items-center gap-1 min-w-0"><span class="w-1.5 h-1.5 rounded-full ${statusDotBg} shrink-0"></span><span class="text-[10px] font-extrabold tracking-tight leading-none truncate" style="color:var(--text-primary);" title="${callsign}">${callsign}</span></div>
+                      <div class="flex items-center gap-1 min-w-0"><span class="w-1.5 h-1.5 rounded-full ${statusDotBg} shrink-0"></span><span class="text-[10px] font-extrabold tracking-tight leading-none truncate" style="color:var(--text-primary);" title="${callsign}">${callsign}</span>${jcBadge}</div>
                       <span class="text-[8px] font-extrabold px-1 py-0.2 rounded border shrink-0 ${typeColor}">${typeTag}</span>
                     </div>
                     <div class="flex items-center justify-between gap-1 text-[9px] pt-0.5 min-w-0">
